@@ -1,0 +1,8 @@
+^README\.Rmd$
+^revdep$
+^tune\.Rproj$
+^\.Rproj\.user$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^\.travis\.yml$

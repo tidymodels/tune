@@ -1,0 +1,30 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# tune
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
+<!-- badges: end -->
+
+The goal of tune is to faciltate the tuning of hyperparameters the tidymodels packages. 
+
+## Installation
+
+You can install the released version of tune from [CRAN](https://CRAN.R-project.org) with:
+
+``` r
+install.packages("tune")
+```
