@@ -1,5 +1,5 @@
 Package: tune
-Title: Tidy Tools for Tuning
+Title: Tidy Tuning Tools 
 Version: 0.0.0.9000
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
@@ -29,7 +29,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Remotes:
-    tidymodels/recipes,
-    tidymodels/dials,
+    tidymodels/recipes@step-changes,
+    tidymodels/dials@parameters-method,
     tidymodels/parsnip,
     topepo/workflows   
