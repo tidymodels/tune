@@ -15,6 +15,9 @@ tune <- function(id = "") {
   if (!is.character(id) || length(id) != 1) {
     stop("The `id` should be a single character string.", call. = FALSE)
   }
+  if (is.na(id)) {
+    stop("The `id` cannot be NA.", call. = FALSE)
+  }
   if (id != "") {
     res <- rlang::call2("tune", id)
   } else {
