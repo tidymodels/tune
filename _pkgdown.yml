@@ -1,1 +1,34 @@
+template:
+  package: tidytemplate
+  params:
+    part_of: <a href="https://github.com/tidymodels">tidymodels</a>
+    footer: tune is a part of the <strong>tidymodels</strong> ecosystem, a collection of modeling packages designed with common APIs and a shared philosophy.
+
 destination: docs
+home:
+  strip_header: true
+
+figures:
+  fig.width: 8
+  fig.height: 5.75
+
+reference:
+  - title: User-Facing Functions
+    contents:
+    - tune
+  - title: Low-Level Functions
+    contents:
+    - merge.recipe
+    - param_set.workflow
+    - tunable
+    - tune_args
+
+navbar:
+  left:
+  - text: Reference
+    href: reference/index.html
+  - text: News
+    href: news/index.html
+
+
+
