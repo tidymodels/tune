@@ -6,27 +6,6 @@
 \alias{no_param}
 \alias{tunable.step}
 \alias{tunable.model_spec}
-\alias{tunable.step_bagimpute}
-\alias{tunable.step_bs}
-\alias{tunable.step_corr}
-\alias{tunable.step_discretizes}
-\alias{tunable.step_downsample}
-\alias{tunable.step_ica}
-\alias{tunable.step_isomap}
-\alias{tunable.step_knnimpute}
-\alias{tunable.step_kpca_poly}
-\alias{tunable.step_kpca_rbf}
-\alias{tunable.step_meanimpute}
-\alias{tunable.step_nnmf}
-\alias{tunable.step_ns}
-\alias{tunable.step_nzv}
-\alias{tunable.step_other}
-\alias{tunable.step_pca}
-\alias{tunable.step_poly}
-\alias{tunable.step_pls}
-\alias{tunable.step_rollimpute}
-\alias{tunable.step_upsample}
-\alias{tunable.step_window}
 \alias{tunable.step_embed}
 \alias{tunable.step_umap}
 \alias{tunable.step_woe}
@@ -46,50 +25,6 @@ no_param
 \method{tunable}{step}(x, ...)
 
 \method{tunable}{model_spec}(x, ...)
-
-\method{tunable}{step_bagimpute}(x, ...)
-
-\method{tunable}{step_bs}(x, ...)
-
-\method{tunable}{step_corr}(x, ...)
-
-\method{tunable}{step_discretizes}(x, ...)
-
-\method{tunable}{step_downsample}(x, ...)
-
-\method{tunable}{step_ica}(x, ...)
-
-\method{tunable}{step_isomap}(x, ...)
-
-\method{tunable}{step_knnimpute}(x, ...)
-
-\method{tunable}{step_kpca_poly}(x, ...)
-
-\method{tunable}{step_kpca_rbf}(x, ...)
-
-\method{tunable}{step_meanimpute}(x, ...)
-
-\method{tunable}{step_nnmf}(x, ...)
-
-\method{tunable}{step_ns}(x, ...)
-
-\method{tunable}{step_nzv}(x, ...)
-
-\method{tunable}{step_other}(x, ...)
-
-\method{tunable}{step_pca}(x, ...)
-
-\method{tunable}{step_poly}(x, ...)
-
-\method{tunable}{step_pls}(x, ...)
-
-\method{tunable}{step_rollimpute}(x, ...)
-
-\method{tunable}{step_rollimpute}(x, ...)
-
-\method{tunable}{step_upsample}(x, ...)
-
-\method{tunable}{step_window}(x, ...)
 
 \method{tunable}{step_embed}(x, ...)
 
