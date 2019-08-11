@@ -83,9 +83,11 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
     }
     if (nrow(param_info) == 1) {
       if (param_info$component_id == "main") {
-        object$args[[param_info$name]] <- grid[[i]]
+        object$args[[param_info$name]] <-
+          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
       } else {
-        object$eng_args[[param_info$name]] <- grid[[i]]
+        object$eng_args[[param_info$name]] <-
+          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
       }
     }
   }
@@ -95,7 +97,7 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
 update_recipe <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset %>% dplyr::filter(id == i & source == "recipe")
-    # check nrow()
+    if (nrow(param_info))
     idx <- which(step_id == param_info$component_id)
     # check index
     # should use the contructor but maybe dangerous/difficult
@@ -118,12 +120,18 @@ merger <- function(x, y, ...) {
   grid_name <- colnames(y)
   # We will deliberately allow `y` to lack some tunable parameters in `x`
 
-  step_ids <- purrr::map_chr(x$steps, ~ .x$id)
 
   if (inherits(x, "recipe")) {
     updater <- update_recipe
+    step_ids <- purrr::map_chr(x$steps, ~ .x$id)
   } else {
     updater <- update_model
+    step_ids <- NULL
+  }
+
+  if (!any(grid_name %in% pset$id)) {
+    res <- tibble::tibble(x = map(1:nrow(y), ~ x))
+    return(res)
   }
 
   y %>%
