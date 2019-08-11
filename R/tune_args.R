@@ -105,7 +105,16 @@ tune_args.recipe <- function(object, full = FALSE, ...) {
     return(tune_tbl())
   }
 
-  purrr::map_dfr(object$steps, tune_args, full = full)
+  res <- purrr::map_dfr(object$steps, tune_args, full = full)
+  tune_tbl(
+    res$name,
+    res$tunable,
+    res$id,
+    res$source,
+    res$component,
+    res$component_id,
+    full = full
+  )
 }
 
 #' @export
@@ -179,12 +188,12 @@ tune_tbl <- function(name = character(),
   }
 
   vry_tbl <- tibble::tibble(
-    name = name,
-    tunable = tunable,
-    id = id,
-    source = source,
-    component = component,
-    component_id = component_id
+    name = as.character(name),
+    tunable = as.logical(tunable),
+    id = as.character(id),
+    source = as.character(source),
+    component = as.character(component),
+    component_id = as.character(component_id)
   )
 
   if (!full) {

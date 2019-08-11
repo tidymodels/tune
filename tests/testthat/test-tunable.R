@@ -6,18 +6,6 @@ source("helper-objects.R")
 
 # ------------------------------------------------------------------------------
 
-check_tunable_tibble <- function(x) {
-  expect_equal(names(x), c("name", "call_info", "source", "component", "component_id"))
-  expect_equal(class(x$name), "character")
-  expect_equal(class(x$call_info), "list")
-  expect_equal(class(x$source), "character")
-  expect_equal(class(x$component), "character")
-  expect_equal(class(x$component_id), "character")
-  invisible(TRUE)
-}
-
-# ------------------------------------------------------------------------------
-
 test_that('recipe with no steps', {
   bare_info <- tunable(bare_rec)
   check_tunable_tibble(bare_info)
@@ -31,15 +19,17 @@ test_that('recipe with no tunable parameters', {
 })
 
 test_that('recipe with tunable parameters', {
-  # pca_info <- tunable(pca_rec)
-  # check_tunable_tibble(pca_info)
-  # expect_equal(pca_info$component[1], "step_other")
-  # expect_true(all(pca_info$component[-1] == "step_pca"))
-  # expect_true(all(pca_info$source == "recipe"))
-  # nms <- c("threshold", "neighbors", "num_comp", "min_dist", "learn_rate", "epochs")
-  # expect_equal(pca_info$name, nms)
-  # expect_true(all(purrr::map_lgl(pca_info$call_info, ~ .x$pkg == "dials")))
-  # expect_equal(purrr::map_chr(pca_info$call_info, ~ .x$fun), nms)
+  isomap_info <- tunable(isomap_rec)
+  check_tunable_tibble(isomap_info)
+  expect_equal(
+    isomap_info$component,
+    c('step_knnimpute', 'step_other', 'step_isomap', 'step_isomap'),
+  )
+  expect_true(all(isomap_info$source == "recipe"))
+  nms <- c('neighbors', 'threshold', 'num_terms', 'neighbors')
+  expect_equal(isomap_info$name, nms)
+  expect_true(all(purrr::map_lgl(isomap_info$call_info, ~ .x$pkg == "dials")))
+  expect_equal(purrr::map_chr(isomap_info$call_info, ~ .x$fun), nms)
 })
 
 # ------------------------------------------------------------------------------
