@@ -76,16 +76,48 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
 }
 
 predict_model_from_recipe <- function(split, model, recipe, grid, ...) {
-  new_vals <- recipes::bake(recipe, rsample::assessment(split))
   y_names <- outcome_names(recipe)
-  res <- try(
-    predict(model, new_vals %>% dplyr::select(-one_of(y_names))) %>%
-      cbind(grid, row.names = NULL) %>%
-      dplyr::mutate(.row = as.integer(split, data = "assessment")) %>%
+  new_vals <- recipes::bake(recipe, rsample::assessment(split))
+  x_vals <- new_vals %>% dplyr::select(-one_of(y_names))
+  orig_rows <- as.integer(split, data = "assessment")
+
+
+  # Split `grid` from the parameters used to fit the model and any poential
+  # sub-model parameters
+  fixed_param <- grid %>% dplyr::select(-.submodels)
+
+  # Regular predictions
+  res <-
+    predict(model, x_vals) %>%
+    mutate(.row = orig_rows) %>%
+    dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
+    cbind(fixed_param, row.names = NULL)
+
+  # Are there submodels?
+  submod_length <- map_int(grid$.submodels[[1]], length)
+  has_submodels <- any(submod_length > 0)
+
+  if (has_submodels) {
+    submod_param <- names(grid$.submodels[[1]])
+    mp_call <-
+      call2(
+        "multi_predict",
+        .ns = "parsnip",
+        object = expr(model),
+        new_data = expr(x_vals),
+        !!!grid$.submodels[[1]]
+      )
+    res <-
+      eval_tidy(mp_call) %>%
+      mutate(.row = orig_rows) %>%
       dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
-      tibble::as_tibble(),
-    silent = TRUE
-  )
+      unnest() %>%
+      cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
+            row.names = NULL) %>%
+      dplyr::select(dplyr::one_of(names(res))) %>%
+      dplyr::bind_rows(res)
+  }
+
   res
 }
 
@@ -155,6 +187,7 @@ summarizer <- function(.data, ...) {
 #' @export
 grid_control <- function(verbose = FALSE) {
   # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
+  # seeds per resample
   verbose = verbose
 }
 
