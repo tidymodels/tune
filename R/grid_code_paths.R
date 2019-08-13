@@ -1,0 +1,160 @@
+# TODOs
+# - Flatten tune_rec and tune_mod so that parallel is more workable?
+# - have an on.exit to capture current results?
+
+
+tune_nothing <- function() {
+  stop("No tuning parameters were given.", call. = FALSE)
+}
+
+tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
+  B <- nrow(rs)
+  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+  param_names <- names(grid)
+
+  # ----------------------------------------------------------------------------
+
+  for (rs_iter in 1:B) {
+
+    for (param_iter in 1:nrow(grid)) {
+
+      messenger(ctrl, rs$splits[[rs_iter]], "recipe")
+      tmp_rec <- train_recipe(rs$splits[[rs_iter]], object, grid[param_iter, ])
+      messenger(ctrl, rs$splits[[rs_iter]], "recipe", fini = TRUE)
+
+      y_names <- outcome_names(tmp_rec)
+
+      messenger(ctrl, rs$splits[[rs_iter]], "model")
+      tmp_fit <-
+        train_model_from_recipe(object, tmp_rec, grid[param_iter, ], control = fit_ctrl)
+
+      # check for failure
+      if (!inherits(tmp_fit$fit, "try-error")) {
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE)
+
+        tmp_pred <-
+          predict_model_from_recipe(
+            rs$splits[[rs_iter]], tmp_fit, tmp_rec, grid[param_iter, ]
+          )
+
+        # Add multi_predict here
+
+        tmp_est <- estimate_perf(tmp_pred, perf, object)
+
+        if (param_iter == 1) {
+          perf_est <- tmp_est
+        } else {
+          perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
+        }
+
+      } else {
+        # Failed model
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE, cool = FALSE)
+        tmp_est <- empty_perf
+      }
+    }
+
+    rs$.metrics[[rs_iter]] <- perf_est
+  }
+
+  rs
+}
+
+# ------------------------------------------------------------------------------
+
+tune_rec <- function(rs, grid, object, perf, ctrl) {
+  B <- nrow(rs)
+  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+  param_names <- names(grid)
+
+  # ----------------------------------------------------------------------------
+
+  for (rs_iter in 1:B) {
+
+    for (param_iter in 1:nrow(grid)) {
+
+      tmp_rec <- train_recipe(rs$splits[[rs_iter]], object, grid[param_iter, ])
+      y_names <- outcome_names(tmp_rec)
+
+      tmp_fit <-
+        train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
+
+      # check for failure
+      if (!inherits(tmp_fit$fit, "try-error")) {
+
+        tmp_pred <-
+          predict_model_from_recipe(
+            rs$splits[[rs_iter]], tmp_fit, tmp_rec, grid[param_iter, ]
+          )
+
+        tmp_est <- estimate_perf(tmp_pred, perf, object)
+
+        if (param_iter == 1) {
+          perf_est <- tmp_est
+        } else {
+          perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
+        }
+
+      } else {
+        # Failed model
+        tmp_est <- empty_perf
+      }
+    }
+    rs$.metrics[[rs_iter]] <- perf_est
+  }
+
+  rs
+}
+
+# ------------------------------------------------------------------------------
+
+tune_mod <- function(rs, grid, object, perf, ctrl) {
+  B <- nrow(rs)
+  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+  param_names <- names(grid)
+
+  # ----------------------------------------------------------------------------
+
+  for (rs_iter in 1:B) {
+
+    tmp_rec <- train_recipe(rs$splits[[rs_iter]], object, NULL)
+    y_names <- outcome_names(tmp_rec)
+
+    for (param_iter in 1:nrow(grid)) {
+
+      tmp_fit <-
+        train_model_from_recipe(object, tmp_rec, grid[param_iter, ], control = fit_ctrl)
+
+      # check for failure
+      if (!inherits(tmp_fit$fit, "try-error")) {
+
+        tmp_pred <-
+          predict_model_from_recipe(
+            rs$splits[[rs_iter]], tmp_fit, tmp_rec, grid[param_iter, ]
+          )
+
+        # Add multi_predict here
+
+        tmp_est <- estimate_perf(tmp_pred, perf, object)
+
+        if (param_iter == 1) {
+          perf_est <- tmp_est
+        } else {
+          perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
+        }
+
+      } else {
+        # Failed model
+        tmp_est <- empty_perf
+      }
+    }
+    rs$.metrics[[rs_iter]] <- perf_est
+  }
+
+  rs
+}
+
+
+tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
+  stop("to-do")
+}

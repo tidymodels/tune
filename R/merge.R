@@ -97,11 +97,12 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
 update_recipe <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset %>% dplyr::filter(id == i & source == "recipe")
-    if (nrow(param_info))
-    idx <- which(step_id == param_info$component_id)
-    # check index
-    # should use the contructor but maybe dangerous/difficult
-    object$steps[[ idx ]][[param_info$name]] <- grid[[i]]
+    if (nrow(param_info) == 1) {
+      idx <- which(step_id == param_info$component_id)
+      # check index
+      # should use the contructor but maybe dangerous/difficult
+      object$steps[[ idx ]][[param_info$name]] <- grid[[i]]
+    }
   }
   object
 }

@@ -16,9 +16,14 @@ Imports:
     purrr (>= 0.3.2),
     dials (>= 0.0.2.9001),
     utils,
-    glue
-Suggests: 
+    glue,
+    cli, 
+    crayon,
     workflows,
+    yardstick,
+    rsample,
+    tidyr
+Suggests: 
     parsnip (>= 0.0.3.9000),
     recipes (>= 0.1.6.9000),
     testthat,
