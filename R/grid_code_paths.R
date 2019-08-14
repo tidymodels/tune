@@ -115,14 +115,18 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
     for (param_iter in 1:nrow(grid)) {
 
+      messenger(ctrl, rs$splits[[rs_iter]], "recipe")
       tmp_rec <- train_recipe(rs$splits[[rs_iter]], object, grid[param_iter, ])
+      messenger(ctrl, rs$splits[[rs_iter]], "recipe", fini = TRUE)
       y_names <- outcome_names(tmp_rec)
 
+      messenger(ctrl, rs$splits[[rs_iter]], "model")
       tmp_fit <-
         train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE)
 
         tmp_pred <-
           predict_model_from_recipe(
@@ -139,6 +143,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
       } else {
         # Failed model
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE, cool = FALSE)
         tmp_est <- empty_perf
       }
     }
@@ -150,7 +155,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
 # ------------------------------------------------------------------------------
 
-tune_mod <- function(rs, grid, object, perf, ctrl) {
+tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   param_names <- names(grid)
@@ -159,27 +164,35 @@ tune_mod <- function(rs, grid, object, perf, ctrl) {
 
   for (rs_iter in 1:B) {
 
+    messenger(ctrl, rs$splits[[rs_iter]], "recipe")
     tmp_rec <- train_recipe(rs$splits[[rs_iter]], object, NULL)
+    messenger(ctrl, rs$splits[[rs_iter]], "recipe", fini = TRUE)
     y_names <- outcome_names(tmp_rec)
 
-    for (param_iter in 1:nrow(grid)) {
+    # Determine the _minimal_ number of models to fit in order to get
+    # predictions on all models.
+    mod_grid_vals <- parsnip::min_grid(object$fit$model$model, grid)
 
+    for (mod_iter in 1:nrow(mod_grid_vals)) {
+
+      messenger(ctrl, rs$splits[[rs_iter]], "model")
       tmp_fit <-
-        train_model_from_recipe(object, tmp_rec, grid[param_iter, ], control = fit_ctrl)
+        train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,], control = fit_ctrl)
+
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
 
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE)
+
         tmp_pred <-
           predict_model_from_recipe(
-            rs$splits[[rs_iter]], tmp_fit, tmp_rec, grid[param_iter, ]
+            rs$splits[[rs_iter]], tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ]
           )
-
-        # Add multi_predict here
 
         tmp_est <- estimate_perf(tmp_pred, perf, object)
 
-        if (param_iter == 1) {
+        if (mod_iter == 1) {
           perf_est <- tmp_est
         } else {
           perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
@@ -187,6 +200,8 @@ tune_mod <- function(rs, grid, object, perf, ctrl) {
 
       } else {
         # Failed model
+        messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE, cool = FALSE)
+
         tmp_est <- empty_perf
       }
     }

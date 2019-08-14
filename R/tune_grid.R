@@ -84,7 +84,8 @@ predict_model_from_recipe <- function(split, model, recipe, grid, ...) {
 
   # Split `grid` from the parameters used to fit the model and any poential
   # sub-model parameters
-  fixed_param <- grid %>% dplyr::select(-.submodels)
+  submod_col <- names(grid) == ".submodels"
+  fixed_param <- grid[, !submod_col]
 
   # Regular predictions
   res <-
@@ -94,28 +95,30 @@ predict_model_from_recipe <- function(split, model, recipe, grid, ...) {
     cbind(fixed_param, row.names = NULL)
 
   # Are there submodels?
-  submod_length <- map_int(grid$.submodels[[1]], length)
-  has_submodels <- any(submod_length > 0)
+  if (any(submod_col)) {
+    submod_length <- map_int(grid$.submodels[[1]], length)
+    has_submodels <- any(submod_length > 0)
 
-  if (has_submodels) {
-    submod_param <- names(grid$.submodels[[1]])
-    mp_call <-
-      call2(
-        "multi_predict",
-        .ns = "parsnip",
-        object = expr(model),
-        new_data = expr(x_vals),
-        !!!grid$.submodels[[1]]
-      )
-    res <-
-      eval_tidy(mp_call) %>%
-      mutate(.row = orig_rows) %>%
-      dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
-      unnest() %>%
-      cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
-            row.names = NULL) %>%
-      dplyr::select(dplyr::one_of(names(res))) %>%
-      dplyr::bind_rows(res)
+    if (has_submodels) {
+      submod_param <- names(grid$.submodels[[1]])
+      mp_call <-
+        call2(
+          "multi_predict",
+          .ns = "parsnip",
+          object = expr(model),
+          new_data = expr(x_vals),
+          !!!grid$.submodels[[1]]
+        )
+      res <-
+        eval_tidy(mp_call) %>%
+        mutate(.row = orig_rows) %>%
+        dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
+        unnest() %>%
+        cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
+              row.names = NULL) %>%
+        dplyr::select(dplyr::one_of(names(res))) %>%
+        dplyr::bind_rows(res)
+    }
   }
 
   res
@@ -151,8 +154,8 @@ quarterback <- function(x) {
                ctrl = expr(control))
   dplyr::case_when(
      tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
-    !tune_rec &  tune_model ~ rlang::call2("tune_mod", !!!args),
      tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
+    !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
      has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
      TRUE ~ rlang::call2("tune_nothing")
   )
@@ -164,12 +167,13 @@ empty_perf <- tibble::tibble(
   .estimate = NA_real_
 )
 
-summarizer <- function(.data, ...) {
-  .data <- tidyr::unnest(.data)
-  all_col <- names(.data)
+#' @export
+summarizer <- function(object, ...) {
+  object <- tidyr::unnest(object)
+  all_col <- names(object)
   excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
   param_names <- all_col[!(all_col %in% excl_cols)]
-  .data %>%
+  object %>%
     tibble::as_tibble() %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
     dplyr::summarize(
@@ -188,7 +192,7 @@ summarizer <- function(.data, ...) {
 grid_control <- function(verbose = FALSE) {
   # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
   # seeds per resample
-  verbose = verbose
+  list(verbose = verbose)
 }
 
 messenger <- function(control, split, task, fini = FALSE, cool = TRUE) {
