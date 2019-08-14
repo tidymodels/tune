@@ -21,28 +21,29 @@ chi_rec <-
   step_corr(one_of(!!stations), threshold = tune())
 
 
-knn_model <-
-  nearest_neighbor(mode = "regression", neighbors = tune(), weight_func = tune()) %>%
-  set_engine("kknn")
+lm_model <-
+  linear_reg(mode = "regression") %>%
+  set_engine("lm")
 
 chi_wflow <-
   workflow() %>%
   add_recipe(chi_rec) %>%
-  add_model(knn_model)
+  add_model(lm_model)
 
 chi_grid <-
   param_set(chi_wflow) %>%
   update(id = "threshold", threshold(c(.8, .99))) %>%
-  grid_regular(levels = c(10, 3, 5))
+  grid_regular(levels = 10)
+
 
 res <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
 
 summarizer(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   select(-n, -std_err, -.estimator, -.metric) %>%
-  ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
-  geom_point() + geom_line() +
-  facet_wrap(~threshold, scales = "free_x")
+  ggplot(aes(x = threshold, y = mean)) +
+  geom_point() +
+  geom_line()
 
 summarizer(res) %>%
   dplyr::filter(.metric == "rmse") %>%
