@@ -89,11 +89,14 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
         } else {
           # Failed model
           messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE, cool = FALSE)
-          tmp_est <- empty_perf
+          cat(tmp_fit$fit, "\n")
         }
+
       } # end model loop
 
-      rs$.metrics[[rs_iter]] <- perf_est
+      if (!is.null(perf_est)) {
+        rs$.metrics[[rs_iter]] <- perf_est
+      }
 
     } # end recipe loop
 
@@ -192,21 +195,22 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
 
         tmp_est <- estimate_perf(tmp_pred, perf, object)
 
-        if (mod_iter == 1) {
-          perf_est <- tmp_est
-        } else {
-          perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
-        }
 
       } else {
         # Failed model
         messenger(ctrl, rs$splits[[rs_iter]], "model", fini = TRUE, cool = FALSE)
+        cat(tmp_fit$fit, "\n")
 
-        tmp_est <- empty_perf
+        tmp_est <- NULL
       }
-    }
+      if (mod_iter == 1) {
+        perf_est <- tmp_est
+      } else {
+        perf_est  <- dplyr::bind_rows(perf_est, tmp_est)
+      }
+    } # end model loop
     rs$.metrics[[rs_iter]] <- perf_est
-  }
+  } # end resample loop
 
   rs
 }

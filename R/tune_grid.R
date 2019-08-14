@@ -128,7 +128,7 @@ estimate_perf <- function(dat, metric, object, other_names = NULL) {
   # other_names will take additional columns from the recipe (if any)
 
   if (inherits(dat, "try-error")) {
-    return(empty_perf)
+    return(NULL)
   }
 
   # This will use attributes in metric sets in future yardstick versions to

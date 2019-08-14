@@ -2,6 +2,7 @@ library(tidymodels)
 library(workflows)
 library(tune)
 library(AmesHousing)
+library(earth) # req for muti_predict
 
 # ------------------------------------------------------------------------------
 
@@ -44,16 +45,17 @@ ames_wflow <-
 set.seed(4567367)
 ames_grid <-
   param_set(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .2))) %>%
-  update(id = "num_terms", num_terms(c(2, 40))) %>%
-  grid_regular(levels = c(30, 2, 10))
+  update(id = "threshold", threshold(c(0, .1))) %>%
+  update(id = "num_terms", num_terms(c(2, 20))) %>%
+  grid_regular(levels = c(18, 2, 5))
 
 res <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
 
 summarizer(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
-  geom_point() +
+  geom_point(cex = 1) +
+  geom_path() +
   facet_wrap(~ threshold)
 
 summarizer(res) %>%
