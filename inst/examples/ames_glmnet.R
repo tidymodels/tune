@@ -43,17 +43,20 @@ ames_wflow <-
   add_model(lm_mod)
 
 
-set.seed(4567367)
-ames_grid <-
+set.seed(46724)
+ames_set <-
   param_set(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .2))) %>%
-  update(id = "long df", deg_free(c(3, 10))) %>%
-  update(id = "lat df", deg_free(c(3, 10))) %>%
-  grid_max_entropy(size = 50)
+  update(id = "threshold", threshold(c(0, .5))) %>%
+  update(id = "long df", deg_free(c(3, 15))) %>%
+  update(id = "lat df", deg_free(c(3, 15)))
 
-res <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
+ames_grid <-
+  ames_set %>%
+  grid_max_entropy(size = 5)
 
-summarizer(res) %>%
+ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
+
+summarizer(ames_glmnet) %>%
   dplyr::filter(.metric == "rmse") %>%
   select(-n, -std_err, -.estimator, -.metric) %>%
   mutate(penalty = log10(penalty)) %>%
@@ -62,7 +65,7 @@ summarizer(res) %>%
   geom_point() +
   facet_wrap(~parameter, scales = "free_x")
 
-summarizer(res) %>%
+summarizer(ames_glmnet) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

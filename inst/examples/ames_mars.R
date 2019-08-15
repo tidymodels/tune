@@ -20,15 +20,13 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec <-
-  recipe(Sale_Price ~ Bldg_Type + Neighborhood + Year_Built + Gr_Liv_Area +
-           Full_Bath + Year_Sold + Lot_Area + Central_Air + Longitude + Latitude,
-         data = ames_train) %>%
+  recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_rm(Utilities, Condition_2, Overall_Cond, Roof_Matl,
+          Exterior_1st, Exterior_2nd, Misc_Feature, Lot_Frontage) %>%
   step_log(Sale_Price, base = 10) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = tune())  %>%
-  step_dummy(all_nominal()) %>%
-  step_interact(~ starts_with("Central_Air"):Year_Built)  %>%
-  step_normalize(all_predictors())
+  step_dummy(all_nominal())
 
 
 mars_mod <-
@@ -43,11 +41,14 @@ ames_wflow <-
 
 
 set.seed(4567367)
-ames_grid <-
+ames_set <-
   param_set(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .1))) %>%
-  update(id = "num_terms", num_terms(c(2, 20))) %>%
-  grid_regular(levels = c(18, 2, 5))
+  update(id = "threshold", threshold(c(0, .2))) %>%
+  update(id = "num_terms", num_terms(c(2, 20)))
+
+ames_grid <-
+  ames_set %>%
+  grid_max_entropy(size = 5)
 
 res <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
 
@@ -63,3 +64,14 @@ summarizer(res) %>%
   arrange(mean) %>%
   slice(1)
 
+
+test <-
+  tune_Bayes(
+    ames_wflow,
+    cv_splits,
+    param_info = ames_set,
+    initial = summarizer(res),
+    metrics = metric_set(rmse, rsq),
+    iter = 15,
+    control = Bayes_control(verbose = TRUE)
+  )

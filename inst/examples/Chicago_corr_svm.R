@@ -1,7 +1,6 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-library(kknn)
 
 # ------------------------------------------------------------------------------
 
@@ -22,46 +21,51 @@ chi_rec <-
   step_corr(one_of(!!stations), threshold = tune())
 
 
-knn_model <-
-  nearest_neighbor(mode = "regression", neighbors = tune(), weight_func = tune(), dist_power = tune()) %>%
-  set_engine("kknn")
+svm_mod <-
+  svm_rbf(mode = "regression", cost = tune(), rbf_sigma = tune(), margin = tune()) %>%
+  set_engine("kernlab")
 
 chi_wflow <-
   workflow() %>%
   add_recipe(chi_rec) %>%
-  add_model(knn_model)
+  add_model(svm_mod)
 
-chi_param <-
+cor_mat <- Chicago %>% dplyr::select(one_of(stations)) %>% cor()
+cor_mat <- tibble(cor = cor_mat[upper.tri(cor_mat)])
+ggplot(cor_mat, aes(x = cor)) + geom_histogram(binwidth = .01, col = "white")
+
+chi_set <-
   param_set(chi_wflow) %>%
   update(id = "threshold", threshold(c(.8, .99))) %>%
-  update(id = "neighbors", neighbors(c(1, 50))) %>%
-  update(id = "dist_power", dist_power())
-
+  update(id = "cost", cost(c(-10, 3)))
 
 chi_grid <-
-  chi_param %>%
-  grid_latin_hypercube(size = 6)
+  chi_set %>%
+  grid_max_entropy(size = 5)
+
 
 res <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
 
 summarizer(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   select(-n, -std_err, -.estimator, -.metric) %>%
-  ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
-  geom_point() + geom_line() +
-  facet_wrap(~threshold, scales = "free_x")
+  ggplot(aes(x = threshold, y = mean)) +
+  geom_point() +
+  geom_line()
 
 summarizer(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)
 
+
 test <-
   tune_Bayes(
     chi_wflow,
     data_folds,
-    param_info = chi_param,
+    param_info = chi_set,
     initial = summarizer(res),
     metrics = metric_set(rmse, rsq),
-    iter = 5
+    iter = 15,
+    control = Bayes_control(verbose = TRUE)
   )
