@@ -15,11 +15,11 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
   model_param <-
     param_set(object) %>%
     dplyr::filter(source == "model_spec") %>%
-    pull(id)
+    dplyr::pull(id)
   rec_param <-
     param_set(object) %>%
     dplyr::filter(source == "recipe") %>%
-    pull(id)
+    dplyr::pull(id)
 
   rec_grid <- tidyr::nest(grid, !!!model_param)
 
@@ -41,11 +41,9 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
         dplyr::slice(rec_iter) %>%
         dplyr::select(-data)
 
-      messenger(ctrl, split, rec_msg)
+      grid_msg(ctrl, split, rec_msg)
       tmp_rec <- train_recipe(split, object, rec_grid_vals)
-      messenger(ctrl, split, rec_msg, fini = TRUE)
-
-      y_names <- outcome_names(tmp_rec)
+      grid_msg(ctrl, split, rec_msg, fini = TRUE)
 
       # All model tune parameters associated with the current recipe
       # parameters
@@ -53,7 +51,7 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
         rec_grid %>%
         dplyr::slice(rec_iter) %>%
         dplyr::select(-one_of(rec_param)) %>%
-        unnest()
+        tidyr::unnest()
 
       # Determine the _minimal_ number of models to fit in order to get
       # predictions on all models.
@@ -65,19 +63,19 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
       for (mod_iter in 1:num_mod) {
         mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-        fixed_param <- mod_grid_vals %>% slice(mod_iter) %>% select(-.submodels)
-        submd_param <- mod_grid_vals %>% slice(mod_iter) %>% select(.submodels)
+        fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
+        submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
         submd_param <- submd_param$.submodels[[1]]
 
-        messenger(ctrl, split, mod_msg)
+        grid_msg(ctrl, split, mod_msg)
         tmp_fit <-
           train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl)
 
         # check for failure
         if (!inherits(tmp_fit$fit, "try-error")) {
-          messenger(ctrl, split, mod_msg, fini = TRUE)
+          grid_msg(ctrl, split, mod_msg, fini = TRUE)
 
-          all_param <- bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
+          all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
           tmp_pred <-
             try(
@@ -93,7 +91,7 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
 
         } else {
           # Failed model
-          messenger(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
+          grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
           cat(tmp_fit$fit, "\n")
         }
 
@@ -127,17 +125,17 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
     for (param_iter in 1:num_rec) {
       rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
 
-      messenger(ctrl, split, rec_msg)
+      grid_msg(ctrl, split, rec_msg)
       tmp_rec <- train_recipe(split, object, grid[param_iter, ])
-      messenger(ctrl, split, rec_msg, fini = TRUE)
+      grid_msg(ctrl, split, rec_msg, fini = TRUE)
 
-      messenger(ctrl, split, paste0(rec_msg, ", model 1/1"))
+      grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"))
       tmp_fit <-
         train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
-        messenger(ctrl, split, paste0(rec_msg, ", model 1/1"), fini = TRUE)
+        grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"), fini = TRUE)
 
         tmp_pred <-
           predict_model_from_recipe(
@@ -150,7 +148,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
       } else {
         # Failed model
-        messenger(ctrl, split, paste0(rec_msg, ", model 1/1"),
+        grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"),
                   fini = TRUE, cool = FALSE)
       }
     }
@@ -175,9 +173,9 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
     split <- rs$splits[[rs_iter]]
     perf_est <- NULL
 
-    messenger(ctrl, split, "recipe 1/1")
+    grid_msg(ctrl, split, "recipe 1/1")
     tmp_rec <- train_recipe(split, object, NULL)
-    messenger(ctrl, split, "recipe", fini = TRUE)
+    grid_msg(ctrl, split, "recipe", fini = TRUE)
     y_names <- outcome_names(tmp_rec)
 
     # Determine the _minimal_ number of models to fit in order to get
@@ -188,7 +186,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
     for (mod_iter in 1:num_mod) {
       mod_msg <- paste0("recipe 1/1, model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-      messenger(ctrl, split, mod_msg)
+      grid_msg(ctrl, split, mod_msg)
       tmp_fit <-
         train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,], control = fit_ctrl)
 
@@ -196,7 +194,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
 
-        messenger(ctrl, split, mod_msg, fini = TRUE)
+        grid_msg(ctrl, split, mod_msg, fini = TRUE)
 
         tmp_pred <-
           predict_model_from_recipe(
@@ -208,7 +206,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
         perf_est <- dplyr::bind_rows(perf_est, tmp_est)
       } else {
         # Failed model
-        messenger(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
+        grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
         cat(tmp_fit$fit, "\n")
       }
 

@@ -169,6 +169,9 @@ empty_perf <- tibble::tibble(
 
 #' @export
 summarizer <- function(object, ...) {
+  tibble_metrics <- purrr::map_lgl(object$.metrics, tibble::is_tibble)
+  object <- object[tibble_metrics, ]
+
   object <- tidyr::unnest(object)
   all_col <- names(object)
   excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
@@ -195,9 +198,9 @@ grid_control <- function(verbose = FALSE) {
   list(verbose = verbose)
 }
 
-messenger <- function(control, split, task, fini = FALSE, cool = TRUE) {
+grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {
   if (!control$verbose) {
-    invisible(NULL)
+    return(invisible(NULL))
   }
 
   labs <- labels(split)

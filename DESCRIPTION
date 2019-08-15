@@ -22,7 +22,8 @@ Imports:
     workflows,
     yardstick,
     rsample,
-    tidyr
+    tidyr,
+    kernlab
 Suggests: 
     parsnip (>= 0.0.3.9000),
     recipes (>= 0.1.6.9000),
