@@ -123,13 +123,13 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
       tmp_rec <- train_recipe(split, object, grid[param_iter, ])
       grid_msg(ctrl, split, rec_msg, fini = TRUE)
 
-      grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"))
+      grid_msg(ctrl, split, paste0(rec_msg, ", model"))
       tmp_fit <-
         train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
-        grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"), fini = TRUE)
+        grid_msg(ctrl, split, paste0(rec_msg, ", model"), fini = TRUE)
 
         tmp_pred <-
           predict_model_from_recipe(
@@ -142,7 +142,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
       } else {
         # Failed model
-        grid_msg(ctrl, split, paste0(rec_msg, ", model 1/1"),
+        grid_msg(ctrl, split, paste0(rec_msg, ", model"),
                   fini = TRUE, cool = FALSE)
       }
     }
@@ -167,7 +167,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
     split <- rs$splits[[rs_iter]]
     perf_est <- NULL
 
-    grid_msg(ctrl, split, "recipe 1/1")
+    grid_msg(ctrl, split, "recipe")
     tmp_rec <- train_recipe(split, object, NULL)
     grid_msg(ctrl, split, "recipe", fini = TRUE)
     y_names <- outcome_names(tmp_rec)
@@ -178,7 +178,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
 
     num_mod <- nrow(mod_grid_vals)
     for (mod_iter in 1:num_mod) {
-      mod_msg <- paste0("recipe 1/1, model ", format(1:num_mod)[mod_iter], "/", num_mod)
+      mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
       grid_msg(ctrl, split, mod_msg)
       tmp_fit <-

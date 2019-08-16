@@ -44,9 +44,9 @@ chi_grid <-
   grid_regular(levels = c(30, 3, 3))
 
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
+reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
 
-summarizer(res) %>%
+estimate(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
   ggplot(aes(x = neighbors, y = mean, col = factor(weight_func))) +
   geom_path() +
@@ -54,8 +54,32 @@ summarizer(res) %>%
   facet_wrap(~ dist_power)
 
 
-summarizer(res) %>%
+estimate(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)
+
+# ------------------------------------------------------------------------------
+
+set.seed(255)
+smol_grid <-
+  chi_wflow %>%
+  param_set %>%
+  update(id = "neighbors", neighbors(c(1, 30))) %>%
+  update(id = "dist_power", dist_power(c(1/10, 2))) %>%
+  grid_random(size = 5)
+
+
+smol_knn_grid <- tune_grid(chi_wflow, data_folds, smol_grid, control = list(verbose = TRUE))
+
+knn_search <-
+  tune_Bayes(
+    chi_wflow,
+    data_folds,
+    param_info = chi_param,
+    initial = estimate(smol_knn_grid),
+    metrics = metric_set(rmse, rsq),
+    iter = 10,
+    control = Bayes_control(verbose = TRUE, random_value = Inf)
+  )
 
