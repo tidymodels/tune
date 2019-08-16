@@ -21,13 +21,12 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 
 ames_rec <-
   recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_rm(Utilities, Condition_2, Overall_Cond, Roof_Matl,
-          Exterior_1st, Exterior_2nd, Misc_Feature, Lot_Frontage) %>%
+  recipe(Sale_Price ~ ., data = ames_train) %>%
   step_log(Sale_Price, base = 10) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = tune())  %>%
-  step_dummy(all_nominal())
-
+  step_dummy(all_nominal()) %>%
+  step_zv(all_predictors())
 
 mars_mod <-
   mars(mode = "regression", num_terms = tune(), prod_degree = tune()) %>%

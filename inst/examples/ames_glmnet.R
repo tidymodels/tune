@@ -20,8 +20,6 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 
 ames_rec <-
   recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_rm(Utilities, Condition_2, Overall_Cond, Roof_Matl,
-          Exterior_1st, Exterior_2nd, Misc_Feature, Lot_Frontage) %>%
   step_log(Sale_Price, base = 10) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = tune())  %>%
@@ -44,7 +42,7 @@ ames_wflow <-
   add_model(lm_mod)
 
 
-set.seed(46724)
+set.seed(8)
 ames_set <-
   param_set(ames_wflow) %>%
   update(id = "threshold", threshold(c(0, .5))) %>%
@@ -78,6 +76,6 @@ test <-
     param_info = ames_set,
     initial = summarizer(ames_glmnet),
     metrics = metric_set(rmse, rsq),
-    iter = 50,
+    iter = 500,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )
