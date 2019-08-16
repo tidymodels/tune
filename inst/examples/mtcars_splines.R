@@ -40,14 +40,14 @@ cars_grid <-
 
 cars_res <- tune_grid(cars_wflow, data_folds, cars_grid, control = list(verbose = TRUE))
 
-summarizer(cars_res) %>%
+estimate(cars_res) %>%
   dplyr::filter(.metric == "rmse") %>%
   ggplot(aes(x = deg_free, y = mean, col = factor(degree))) +
   geom_path() +
   geom_point()
 
 
-summarizer(cars_res) %>%
+estimate(cars_res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

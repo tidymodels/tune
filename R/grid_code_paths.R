@@ -1,4 +1,3 @@
-
 tune_nothing <- function() {
   stop("No tuning parameters were given.", call. = FALSE)
 }

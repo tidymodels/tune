@@ -5,10 +5,12 @@
 #' @param param_info A `dials::param_set()` object or `NULL`. If none is given,
 #' a parameters set is derived from the workflow.
 #' @param metrics A `metric_set()`
+#' @param iter The maximum number of search iterations.
 #' @param objective A character string for what metric should be optimized or
 #' an aquisition function object.
 #' @param initial An initial set of results in a tidy format.
 #' @param control A control object
+#' @param ... Not currently used.
 #' @export
 tune_Bayes <-
   function(object, rs, iter = 10, param_info = NULL, metrics = NULL, objective = NULL,
@@ -57,7 +59,7 @@ tune_Bayes <-
                        "Unceretainty sample"))
         candidates <-
           candidates %>%
-          dplyr::arrange(desc(.sd)) %>%
+          dplyr::arrange(dplyr::desc(.sd)) %>%
           dplyr::slice(1:floor(.1*nrow(candidates))) %>%
           dplyr::sample_n(1)
         last_impr <- 0
@@ -67,8 +69,8 @@ tune_Bayes <-
       tmp_res <- more_results(object, rs, candidates, perf, control)
 
       if (!inherits(tmp_res, "try-error")) {
-        res <- dplyr::bind_rows(res, summarizer(tmp_res) %>% dplyr::mutate(.iter = i))
-        current_val <- tmp_res %>% summarizer() %>% dplyr::filter(.metric == "rmse") %>% dplyr::pull(mean)
+        res <- dplyr::bind_rows(res, estimate(tmp_res) %>% dplyr::mutate(.iter = i))
+        current_val <- tmp_res %>% estimate() %>% dplyr::filter(.metric == "rmse") %>% dplyr::pull(mean)
         if (current_val < best_val) {
           last_impr <- 0
           best_val <- current_val
@@ -259,7 +261,10 @@ more_results <- function(object, rs, candidates, perf, control) {
 #' Control the Bayesian search process
 #'
 #' @param verbose A logical for logging results as they are generated.
-#'
+#' @param random_value The number of iterations with no improvment before an
+#' uncertainty sample is created where a sample with high predicted variance is
+#' chosen.
+#' @param seed An integer for controlling the random number stream.
 #' @export
 Bayes_control <- function(verbose = FALSE, random_value = 3, seed = sample.int(10^5, 1)) {
   # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.

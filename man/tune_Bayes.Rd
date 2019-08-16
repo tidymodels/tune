@@ -12,6 +12,8 @@ tune_Bayes(object, rs, iter = 10, param_info = NULL, metrics = NULL,
 
 \item{rs}{A resample object.}
 
+\item{iter}{The maximum number of search iterations.}
+
 \item{param_info}{A \code{dials::param_set()} object or \code{NULL}. If none is given,
 a parameters set is derived from the workflow.}
 
@@ -23,6 +25,8 @@ an aquisition function object.}
 \item{initial}{An initial set of results in a tidy format.}
 
 \item{control}{A control object}
+
+\item{...}{Not currently used.}
 }
 \description{
 Baeysian optmization of model parameters.

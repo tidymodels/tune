@@ -46,14 +46,14 @@ chi_grid <-
 
 res <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
 
-summarizer(res) %>%
+estimate(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   select(-n, -std_err, -.estimator, -.metric) %>%
   ggplot(aes(x = threshold, y = mean)) +
   geom_point() +
   geom_line()
 
-summarizer(res) %>%
+estimate(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)
@@ -64,7 +64,7 @@ test <-
     chi_wflow,
     data_folds,
     param_info = chi_set,
-    initial = summarizer(res),
+    initial = estimate(res),
     metrics = metric_set(rmse, rsq),
     iter = 30,
     control = Bayes_control(verbose = TRUE)

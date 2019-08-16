@@ -1,0 +1,34 @@
+#' Estimate performance values
+#'
+#' @param x An object.
+#' @param ... Not currently used.
+#' @return A tibble with parameter values and summaries of their results. A
+#' column for the average (`mean`), the standard error of the mean (`std_err`),
+#' and the number of non-missing values (`n`). These are computed for each
+#' metric and estimator type.
+#' @export
+estimate <- function(x, ...) {
+  UseMethod("estimate")
+}
+
+
+#' @export
+#' @rdname estimate
+estimate.grid_results <- function(x, ...) {
+  tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
+  x <- x[tibble_metrics, ]
+
+  x <- tidyr::unnest(x)
+  all_col <- names(x)
+  excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
+  param_names <- all_col[!(all_col %in% excl_cols)]
+  x %>%
+    tibble::as_tibble() %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
+    dplyr::summarize(
+      mean = mean(.estimate, na.rm = TRUE),
+      n = sum(!is.na(.estimate)),
+      std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
+    ) %>%
+    ungroup()
+}

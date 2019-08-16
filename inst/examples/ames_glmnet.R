@@ -55,7 +55,7 @@ ames_grid <-
 
 ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
 
-# summarizer(ames_glmnet) %>%
+# estimate(ames_glmnet) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   select(-n, -std_err, -.estimator, -.metric) %>%
 #   mutate(penalty = log10(penalty)) %>%
@@ -64,7 +64,7 @@ ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbos
 #   geom_point() +
 #   facet_wrap(~parameter, scales = "free_x")
 #
-# summarizer(ames_glmnet) %>%
+# estimate(ames_glmnet) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   arrange(mean) %>%
 #   slice(1)
@@ -74,8 +74,8 @@ test <-
     ames_wflow,
     cv_splits,
     param_info = ames_set,
-    initial = summarizer(ames_glmnet),
+    initial = estimate(ames_glmnet),
     metrics = metric_set(rmse, rsq),
-    iter = 500,
+    iter = 50,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )

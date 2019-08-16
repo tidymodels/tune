@@ -125,16 +125,14 @@ tune_args.step <- function(object, full = FALSE, ...) {
   # Grab the step class before the subset, as that removes the class
   step_type <- class(object)[1]
 
+  tune_param_list <- tunable(object)$name
+
+  # remove the non-tunable arguments as they are not important
+  object <- object[tune_param_list]
+
   # Remove NULL argument steps. These are reserved
   # for deprecated args or those set at prep() time.
   object <- object[!purrr::map_lgl(object, is.null)]
-
-  # remove the non-tunable arguments as they are not important
-  object <- object[!(names(object) %in% non_tunable_step_arguments)]
-
-  # ensure the user didn't specify a non-tunable argument as vary()
-  # TODO update this
-  # validate_only_allowed_step_args(res, step_type)
 
   res <- purrr::map_chr(object, find_tune_id)
   res <- ifelse(res == "", names(res), res)
@@ -202,47 +200,6 @@ tune_tbl <- function(name = character(),
 
   vry_tbl
 }
-
-validate_only_allowed_step_args <- function(x, step_type) {
-
-  check_allowed_arg <- function(x, nm) {
-
-    # not tunable
-    if (rlang::is_false(x)) {
-      return(invisible(x))
-    }
-
-    # not a non-tunable step arg name
-    bad_nm <- nm %in% non_tunable_step_arguments
-    if (!bad_nm) {
-      return(invisible(x))
-    }
-
-    rlang::abort(glue::glue(
-      "The following argument for a recipe step of type ",
-      "'{step_type}' is not allowed to tune: '{nm}'."
-    ))
-  }
-
-  purrr::iwalk(x, check_allowed_arg)
-  invisible(x)
-}
-
-# TODO use tunable method
-non_tunable_step_arguments <- c(
-  '...', 'abbr', 'base', 'class', 'column', 'columns', 'convert',
-  'custom_token', 'data', 'default', 'denom', 'dictionary', 'features',
-  'func', 'id', 'impute_with', 'index', 'input', 'inputs', 'inverse', 'keep',
-  'key', 'label', 'language', 'lat', 'levels', 'limits', 'log', 'lon', 'mapping',
-  'max', 'means', 'medians', 'min', 'models', 'modes', 'na_rm', 'name', 'names',
-  'naming', 'new_level', 'norm', 'normalize', 'object', 'objects', 'options',
-  'ordinal', 'other', 'outcome', 'pattern', 'pct', 'percentage', 'predictors',
-  'prefix', 'preserve', 'profile', 'ranges', 'ratio', 'recipe', 'ref_data',
-  'ref_first', 'removals', 'replace', 'res', 'result', 'retain', 'reverse',
-  'role', 'sds', 'seed', 'seed_val', 'sep', 'skip', 'statistic', 'strict',
-  'sublinear_tf', 'target', 'terms', 'trained', 'transform', 'use', 'value',
-  'verbose', 'vocabulary', 'x', 'zero_based'
-)
 
 # helpers ----------------------------------------------------------------------
 

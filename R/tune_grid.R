@@ -167,26 +167,6 @@ empty_perf <- tibble::tibble(
   .estimate = NA_real_
 )
 
-#' @export
-summarizer <- function(object, ...) {
-  tibble_metrics <- purrr::map_lgl(object$.metrics, tibble::is_tibble)
-  object <- object[tibble_metrics, ]
-
-  object <- tidyr::unnest(object)
-  all_col <- names(object)
-  excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
-  param_names <- all_col[!(all_col %in% excl_cols)]
-  object %>%
-    tibble::as_tibble() %>%
-    dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
-    dplyr::summarize(
-      mean = mean(.estimate, na.rm = TRUE),
-      n = sum(!is.na(.estimate)),
-      std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
-    ) %>%
-    ungroup()
-}
-
 #' Control the grid search process
 #'
 #' @param verbose A logical for logging results as they are generated.

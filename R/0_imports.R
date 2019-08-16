@@ -1,5 +1,5 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
-#' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n
+#' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int
 #' @importFrom tibble tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
@@ -26,6 +26,6 @@ utils::globalVariables(
   c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
-    ".iter", "mean", ".submodels", "metrics", "data")
+    ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd")
   )
 
