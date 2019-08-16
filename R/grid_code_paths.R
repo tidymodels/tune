@@ -1,8 +1,3 @@
-# TODOs
-# - Flatten tune_rec and tune_mod so that parallel is more workable?
-# - have an on.exit to capture current results?
-# - check min_grid for cases where id != name in model
-
 
 tune_nothing <- function() {
   stop("No tuning parameters were given.", call. = FALSE)

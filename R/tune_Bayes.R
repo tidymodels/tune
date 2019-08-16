@@ -83,13 +83,6 @@ tune_Bayes <-
     res
   }
 
-# TODO
-# - convergance crietion
-# - aquisition funcitons
-# - random point iters
-# - avoid duplicates (anti-join?) or points very close
-# - save pred mean and sd?
-
 create_initial_set <- function(param, rs, n = NULL) {
   if (is.null(n)) {
     n <- nrow(param) + 1
