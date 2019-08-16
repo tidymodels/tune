@@ -27,6 +27,7 @@ utils::globalVariables(
   c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
-    ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd")
+    ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
+    "rs_iter", "pkg")
   )
 
