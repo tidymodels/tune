@@ -1,5 +1,5 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
-#' @importFrom dplyr one_of ungroup slice bind_cols pull
+#' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int
 #' @importFrom tibble tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name

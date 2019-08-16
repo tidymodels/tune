@@ -66,6 +66,6 @@ test <-
     param_info = chi_set,
     initial = summarizer(res),
     metrics = metric_set(rmse, rsq),
-    iter = 15,
+    iter = 30,
     control = Bayes_control(verbose = TRUE)
   )

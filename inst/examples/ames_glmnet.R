@@ -19,21 +19,22 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec <-
-  recipe(Sale_Price ~ Bldg_Type + Neighborhood + Year_Built + Gr_Liv_Area +
-           Full_Bath + Year_Sold + Lot_Area + Central_Air + Longitude + Latitude,
-         data = ames_train) %>%
+  recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_rm(Utilities, Condition_2, Overall_Cond, Roof_Matl,
+          Exterior_1st, Exterior_2nd, Misc_Feature, Lot_Frontage) %>%
   step_log(Sale_Price, base = 10) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = tune())  %>%
   step_dummy(all_nominal()) %>%
   step_interact(~ starts_with("Central_Air"):Year_Built)  %>%
+  step_zv(all_predictors()) %>%
   step_normalize(all_predictors()) %>%
   step_bs(Longitude, deg_free = tune("long df"))  %>%
   step_bs(Latitude, deg_free = tune("lat df"))
 
 
 lm_mod <-
-  linear_reg(penalty= tune(), mixture = tune()) %>%
+  linear_reg(penalty = tune(), mixture = tune()) %>%
   set_engine("glmnet")
 
 
@@ -56,17 +57,27 @@ ames_grid <-
 
 ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = list(verbose = TRUE))
 
-summarizer(ames_glmnet) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  select(-n, -std_err, -.estimator, -.metric) %>%
-  mutate(penalty = log10(penalty)) %>%
-  gather(parameter, value, -mean) %>%
-  ggplot(aes(x = value, y = mean)) +
-  geom_point() +
-  facet_wrap(~parameter, scales = "free_x")
+# summarizer(ames_glmnet) %>%
+#   dplyr::filter(.metric == "rmse") %>%
+#   select(-n, -std_err, -.estimator, -.metric) %>%
+#   mutate(penalty = log10(penalty)) %>%
+#   gather(parameter, value, -mean) %>%
+#   ggplot(aes(x = value, y = mean)) +
+#   geom_point() +
+#   facet_wrap(~parameter, scales = "free_x")
+#
+# summarizer(ames_glmnet) %>%
+#   dplyr::filter(.metric == "rmse") %>%
+#   arrange(mean) %>%
+#   slice(1)
 
-summarizer(ames_glmnet) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
-  slice(1)
-
+test <-
+  tune_Bayes(
+    ames_wflow,
+    cv_splits,
+    param_info = ames_set,
+    initial = summarizer(ames_glmnet),
+    metrics = metric_set(rmse, rsq),
+    iter = 50,
+    control = Bayes_control(verbose = TRUE, random_value = 5)
+  )

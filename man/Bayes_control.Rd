@@ -4,7 +4,7 @@
 \alias{Bayes_control}
 \title{Control the Bayesian search process}
 \usage{
-Bayes_control(verbose = FALSE)
+Bayes_control(verbose = FALSE, random_value = 3)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}

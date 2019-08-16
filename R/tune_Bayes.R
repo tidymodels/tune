@@ -30,7 +30,8 @@ tune_Bayes <-
     }
 
     res <- initial %>% dplyr::mutate(.iter = 0)
-
+    best_val <- 10^38
+    last_impr <- 0
     for (i in 1:iter) {
 
       if (control$verbose) {
@@ -38,20 +39,42 @@ tune_Bayes <-
       }
       hist_summarizer(control, res, objective = "rmse")
 
-      set.seed(i)
+      set.seed(control$seed[1] + i)
       gp_mod <- fit_gp(res %>% dplyr::select(-.iter), param_info,
                        metric = "rmse", control, ...)
 
       # get aqu functions
-      candidates <-
-        pred_gp(gp_mod, param_info, control = control) %>%
-        dplyr::arrange(.mean) %>%
-        dplyr::slice(1)
+      set.seed(control$seed[1] + i + 1)
+      candidates <- pred_gp(gp_mod, param_info, control = control)
 
+      if (last_impr < control$random_value) {
+        candidates <-
+          candidates %>%
+          dplyr::arrange(.mean) %>%
+          dplyr::slice(1)
+      } else {
+        message(paste(crayon::blue(cli::symbol$circle_question_mark),
+                       "Unceretainty sample"))
+        candidates <-
+          candidates %>%
+          dplyr::arrange(desc(.sd)) %>%
+          dplyr::slice(1:floor(.1*nrow(candidates))) %>%
+          dplyr::sample_n(1)
+        last_impr <- 0
+      }
+
+      set.seed(control$seed[1] + i + 2)
       tmp_res <- more_results(object, rs, candidates, perf, control)
 
       if (!inherits(tmp_res, "try-error")) {
         res <- dplyr::bind_rows(res, summarizer(tmp_res) %>% dplyr::mutate(.iter = i))
+        current_val <- tmp_res %>% summarizer() %>% dplyr::filter(.metric == "rmse") %>% dplyr::pull(mean)
+        if (current_val < best_val) {
+          last_impr <- 0
+          best_val <- current_val
+        } else {
+          last_impr <- last_impr + 1
+        }
       }
 
       current_summarizer(control, res, objective = "rmse")
@@ -76,7 +99,7 @@ create_initial_set <- function(param, rs, n = NULL) {
 
 # ------------------------------------------------------------------------------
 
-# TODO what happens to integers and logicals?
+# TODO what happens to  logicals?
 encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   is_qual <- purrr::map_lgl(pset$object, ~ inherits(.x, "qual_param"))
   if (any(is_qual)) {
@@ -234,6 +257,10 @@ more_results <- function(object, rs, candidates, perf, control) {
   tmp_res
 }
 
+
+
+
+
 # ------------------------------------------------------------------------------
 
 #' Control the Bayesian search process
@@ -241,9 +268,9 @@ more_results <- function(object, rs, candidates, perf, control) {
 #' @param verbose A logical for logging results as they are generated.
 #'
 #' @export
-Bayes_control <- function(verbose = FALSE) {
+Bayes_control <- function(verbose = FALSE, random_value = 3, seed = sample.int(10^5, 1)) {
   # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
   # seeds per resample
-  list(verbose = verbose)
+  list(verbose = verbose, random_value = random_value, seed = seed)
 }
 
