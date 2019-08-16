@@ -4,10 +4,13 @@
 \alias{grid_control}
 \title{Control the grid search process}
 \usage{
-grid_control(verbose = FALSE)
+grid_control(verbose = FALSE, allow_par = TRUE)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}
+
+\item{allow_par}{A logical to allow parallel processing (if a parallel
+backend is registered).}
 }
 \description{
 Control the grid search process

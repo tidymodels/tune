@@ -38,7 +38,7 @@ cars_grid <-
   grid_regular(levels = c(3, 2, 3, 2))
 
 
-cars_res <- tune_grid(cars_wflow, data_folds, cars_grid, control = list(verbose = TRUE))
+cars_res <- tune_grid(cars_wflow, data_folds, cars_grid, control = grid_control(verbose = TRUE))
 
 estimate(cars_res) %>%
   dplyr::filter(.metric == "rmse") %>%

@@ -28,7 +28,11 @@ tune_Bayes <-
     if (is.null(initial) || is.numeric(initial)) {
       initial_grid <- create_initial_set(param_info, rs, initial)
     } else {
-      initial_grid <- initial
+      if (inherits(initial, "grid_results")) {
+        initial_grid <- estimate(initial)
+      } else {
+        initial_grid <- initial
+      }
     }
 
     res <- initial %>% dplyr::mutate(.iter = 0)

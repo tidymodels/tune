@@ -44,7 +44,7 @@ chi_grid <-
   grid_max_entropy(size = 5)
 
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
+res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
 
 estimate(res) %>%
   dplyr::filter(.metric == "rmse") %>%

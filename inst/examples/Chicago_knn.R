@@ -44,7 +44,7 @@ chi_grid <-
   grid_regular(levels = c(30, 3, 3))
 
 
-reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = list(verbose = TRUE))
+reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
 
 estimate(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
@@ -61,22 +61,25 @@ estimate(reg_knn_grid) %>%
 
 # ------------------------------------------------------------------------------
 
-set.seed(255)
-smol_grid <-
+chi_set <-
   chi_wflow %>%
   param_set %>%
   update(id = "neighbors", neighbors(c(1, 30))) %>%
-  update(id = "dist_power", dist_power(c(1/10, 2))) %>%
+  update(id = "dist_power", dist_power(c(1/10, 2)))
+
+set.seed(255)
+smol_grid <-
+  chi_set %>%
   grid_random(size = 5)
 
 
-smol_knn_grid <- tune_grid(chi_wflow, data_folds, smol_grid, control = list(verbose = TRUE))
+smol_knn_grid <- tune_grid(chi_wflow, data_folds, smol_grid, control = grid_control(verbose = TRUE))
 
 knn_search <-
   tune_Bayes(
     chi_wflow,
     data_folds,
-    param_info = chi_param,
+    param_info = chi_set,
     initial = estimate(smol_knn_grid),
     metrics = metric_set(rmse, rsq),
     iter = 10,

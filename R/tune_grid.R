@@ -24,6 +24,8 @@
 tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
   param_info <- dials::param_set(object)
 
+  check_rset(rs)
+
   if (is.null(grid)) {
     grid <- dials::grid_latin_hypercube(param_info, size = 10)
   }
@@ -170,12 +172,14 @@ empty_perf <- tibble::tibble(
 #' Control the grid search process
 #'
 #' @param verbose A logical for logging results as they are generated.
+#' @param allow_par A logical to allow parallel processing (if a parallel
+#' backend is registered).
 #'
 #' @export
-grid_control <- function(verbose = FALSE) {
-  # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
+grid_control <- function(verbose = FALSE, allow_par = TRUE) {
+  # add options for `extract`, `save_predictions`, and other stuff.
   # seeds per resample
-  list(verbose = verbose)
+  list(verbose = verbose, allow_par = allow_par)
 }
 
 grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {

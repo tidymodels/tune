@@ -13,6 +13,7 @@
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss
 #' @importFrom tidyr unnest
 #' @importFrom kernlab gausspr predict
+#' @importFrom parsnip get_from_env
 
 # ------------------------------------------------------------------------------
 
