@@ -82,8 +82,11 @@ tune_Bayes <-
       set.seed(control$seed[1] + i + 2)
       tmp_res <- more_results(object, rs, candidates, perf, control)
 
-      if (!inherits(tmp_res, "try-error")) {
-        res <- dplyr::bind_rows(res, estimate(tmp_res) %>% dplyr::mutate(.iter = i))
+      all_bad <- is_cataclysmic(tmp_res)
+
+      if (!inherits(tmp_res, "try-error") & !all_bad) {
+        rs_estimate <- estimate(tmp_res)
+        res <- dplyr::bind_rows(res, rs_estimate %>% dplyr::mutate(.iter = i))
         current_val <- tmp_res %>% estimate() %>% dplyr::filter(.metric == perf_name) %>% dplyr::pull(mean)
 
         if (maximize) {
@@ -99,9 +102,12 @@ tune_Bayes <-
         } else {
           last_impr <- last_impr + 1
         }
+        current_summarizer(control, res, objective = perf_name)
+      } else {
+        if (all_bad) {
+          Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
+        }
       }
-
-      current_summarizer(control, res, objective = perf_name)
     }
     res
   }
@@ -271,13 +277,30 @@ more_results <- function(object, rs, candidates, perf, control) {
   if (inherits(tmp_res, "try-error")) {
     Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
   } else {
-    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = TRUE)
+    all_bad <- is_cataclysmic(tmp_res)
+    if (all_bad) {
+      p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
+      p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
+      msg <- paste("All models failed for:", p_chr)
+      Bayes_msg(control, msg, fini = TRUE, cool = FALSE)
+      tmp_res <- simpleError(msg)
+    } else {
+      Bayes_msg(control, "Estimating performance", fini = TRUE, cool = TRUE)
+    }
   }
   tmp_res
 }
 
 
-
+is_cataclysmic <- function(x) {
+  is_err <- purrr:::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
+  if (any(!is_err)) {
+    is_good <- purrr:::map_lgl(x$.metrics[!is_err],
+                               ~ tibble::is_tibble(.x) && nrow(.x) > 0)
+    is_err[!is_err] <- !is_good
+  }
+  all(is_err)
+}
 
 
 # ------------------------------------------------------------------------------
