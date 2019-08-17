@@ -221,8 +221,9 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
            objective,
            "=",
            signif(bst_val, digits = digits),
-           "+/-",
-           signif(bst_se, digits = digits))
+           " (+/-",
+           signif(bst_se, digits = digits - 1),
+           ")")
 
   if (bst_iter == max_iter) {
     msg <- paste0(crayon::red(cli::symbol$heart), msg)
