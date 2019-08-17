@@ -19,6 +19,9 @@ tune_Bayes <-
     check_object(object, check_dials = TRUE)
     check_Bayes_control(control)
     perf <- check_perf(perf, object)
+    perf_data <- perf_info(perf)
+    perf_name <- get_objective_name(objective, perf)
+    maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
 
     if (is.null(param_info)) {
       param_info <- param_set(object)
@@ -26,32 +29,48 @@ tune_Bayes <-
 
     initial_grid <- check_initial(initial, param_info)
 
-    res <- initial %>% dplyr::mutate(.iter = 0)
-    best_val <- 10^38
+    res <- initial_grid %>% dplyr::mutate(.iter = 0)
+
+    if (maximize) {
+      best_val <-
+        initial_grid %>%
+        dplyr::filter(.metric == perf_name) %>%
+        dplyr::summarize(mean = max(mean, na.rm = TRUE)) %>%
+        pull(mean)
+    } else {
+      best_val <-
+        initial_grid %>%
+        dplyr::filter(.metric == perf_name) %>%
+        dplyr::summarize(mean = min(mean, na.rm = TRUE)) %>%
+        pull(mean)
+    }
+    best_iter <- 0
+
     last_impr <- 0
     for (i in 1:iter) {
 
       if (control$verbose) {
         message(cli::rule(left = crayon::bold(paste("Iteration", i))))
       }
-      hist_summarizer(control, res, objective = "rmse")
+      hist_summarizer(control, best_val, best_iter, perf_name)
 
       set.seed(control$seed[1] + i)
       gp_mod <- fit_gp(res %>% dplyr::select(-.iter), param_info,
-                       metric = "rmse", control, ...)
+                       metric = perf_name, control, ...)
 
       # get aqu functions
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control)
 
       if (last_impr < control$random_value) {
-        candidates <-
-          candidates %>%
-          dplyr::arrange(.mean) %>%
-          dplyr::slice(1)
+        if (maximize) {
+          candidates <- candidates %>% dplyr::arrange(dplyr::desc(.mean)) %>% dplyr::slice(1)
+        } else {
+          candidates <- candidates %>% dplyr::arrange(.mean) %>% dplyr::slice(1)
+        }
       } else {
         message(paste(crayon::blue(cli::symbol$circle_question_mark),
-                       "Unceretainty sample"))
+                       "Uncertainty sample"))
         candidates <-
           candidates %>%
           dplyr::arrange(dplyr::desc(.sd)) %>%
@@ -65,17 +84,24 @@ tune_Bayes <-
 
       if (!inherits(tmp_res, "try-error")) {
         res <- dplyr::bind_rows(res, estimate(tmp_res) %>% dplyr::mutate(.iter = i))
-        current_val <- tmp_res %>% estimate() %>% dplyr::filter(.metric == "rmse") %>% dplyr::pull(mean)
-        if (current_val < best_val) {
+        current_val <- tmp_res %>% estimate() %>% dplyr::filter(.metric == perf_name) %>% dplyr::pull(mean)
+
+        if (maximize) {
+          is_better <- current_val > best_val
+        } else {
+          is_better <- current_val < best_val
+        }
+
+        if (is_better) {
           last_impr <- 0
           best_val <- current_val
+          best_iter <- i
         } else {
           last_impr <- last_impr + 1
         }
       }
 
-      current_summarizer(control, res, objective = "rmse")
-
+      current_summarizer(control, res, objective = perf_name)
     }
     res
   }
@@ -86,6 +112,7 @@ create_initial_set <- function(param, n = NULL) {
   }
   dials::grid_latin_hypercube(param, size = n)
 }
+
 
 # ------------------------------------------------------------------------------
 
@@ -156,42 +183,34 @@ pred_gp <- function(object, pset, size = 5000, aqf = NULL, control) {
     dplyr::mutate(.mean = mean_pred[,1], .sd = sd_pred)
 }
 
-hist_summarizer <- function(control, x, minimize = TRUE, objective = NULL, digits = 4) {
+hist_summarizer <- function(control, value, iter, nm, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
-  x <- dplyr::filter(x, .metric == objective)
-  if (minimize) {
-    bst <- which.min(x$mean)
-  } else {
-    bst <- which.max(x$mean)
-  }
-  bst_iter <- x$.iter[bst]
-  bst_val <- x$mean[bst]
   msg <-
     paste0(
       cli::symbol$play,
       " Current best:\t\t",
-      objective,
+      nm,
       "=",
-      signif(bst_val, digits = digits),
+      signif(value, digits = digits),
       " (@iter ",
-      bst_iter,
+      iter,
       ")"
     )
   message(msg)
 }
 
-current_summarizer <- function(control, x, minimize = TRUE, objective = NULL, digits = 4) {
+current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
 
   x <- dplyr::filter(x, .metric == objective)
-  if (minimize) {
-    bst <- which.min(x$mean)
-  } else {
+  if (maximize) {
     bst <- which.max(x$mean)
+  } else {
+    bst <- which.min(x$mean)
   }
   bst_iter <- x$.iter[bst]
   max_iter <- max(x$.iter)

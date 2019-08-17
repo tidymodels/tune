@@ -70,7 +70,7 @@ check_perf <- function(x, object) {
     }
   } else {
     if (object$fit$model$model$mode == "regression") {
-      x <- yardstick::metric_set(rsq, rmse)
+      x <- yardstick::metric_set(rmse, rsq)
     } else {
       x <- yardstick::metric_set(mn_log_loss, accuracy)
     }
@@ -119,3 +119,12 @@ check_initial <- function(x, pset) {
   x
 }
 
+get_objective_name <- function(x, perf) {
+  if (is.null(x)) {
+    metric_data <- perf_info(perf)
+    x <- metric_data$.metric[1]
+  } else {
+    # check for a name or squisition funciton
+  }
+  x
+}
