@@ -34,6 +34,11 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
   rs$.metrics <- vector(mode = "list", length = nrow(rs))
   rs <- rlang::eval_tidy(code_path)
 
+  all_bad <- is_cataclysmic(rs)
+  if (all_bad) {
+    warning("All models failed in tune_grid().", call. = FALSE)
+  }
+
   all_est <- rs %>% dplyr::select(-splits)
   class(all_est) <- c("grid_results", class(all_est))
   all_est
@@ -118,13 +123,13 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
           dplyr::bind_rows(tmp_res)
       }
-      if (!is.null(res)) {
-        res <- dplyr::full_join(res, tmp_res, by = merge_vars)
-      } else {
-        res <- tmp_res
-      }
-      rm(tmp_res)
     }
+    if (!is.null(res)) {
+      res <- dplyr::full_join(res, tmp_res, by = merge_vars)
+    } else {
+      res <- tmp_res
+    }
+    rm(tmp_res)
   } # end type loop
 
   # Add outcome data
@@ -133,7 +138,7 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
     dplyr::select(dplyr::one_of(y_names)) %>%
     dplyr::mutate(.row = orig_rows)
 
-  res <- full_join(res, outcome_dat, by = ".row")
+  res <- dplyr::full_join(res, outcome_dat, by = ".row")
   tibble::as_tibble(res)
 }
 

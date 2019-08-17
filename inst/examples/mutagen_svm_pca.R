@@ -10,7 +10,7 @@ Mutagen_Dragon$Class <- Mutagen_Outcome
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- vfold_cv(Mutagen_Dragon)
+data_folds <- mc_cv(Mutagen_Dragon, times = 1)
 
 # ------------------------------------------------------------------------------
 
@@ -56,6 +56,6 @@ svm_search <-
     param_info = Mutagen_param,
     initial = estimate(res),
     perf = class_only,
-    iter = 200,
+    iter = 5,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )

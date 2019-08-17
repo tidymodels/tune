@@ -227,10 +227,10 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
     paste0(" Newest results:\t",
            objective,
            "=",
-           signif(bst_val, digits = digits),
-           " (+/-",
-           signif(bst_se, digits = digits - 1),
-           ")")
+           signif(bst_val, digits = digits))
+  if (bst_se > 0) {
+    msg <- paste0(msg,  " (+/-", signif(bst_se, digits = digits - 1), ")")
+  }
 
   if (bst_iter == max_iter) {
     msg <- paste0(crayon::red(cli::symbol$heart), msg)
