@@ -4,7 +4,7 @@
 \alias{tune_Bayes}
 \title{Baeysian optmization of model parameters.}
 \usage{
-tune_Bayes(object, rs, iter = 10, param_info = NULL, metrics = NULL,
+tune_Bayes(object, rs, iter = 10, param_info = NULL, perf = NULL,
   objective = NULL, initial = NULL, control = Bayes_control(), ...)
 }
 \arguments{
@@ -17,8 +17,6 @@ tune_Bayes(object, rs, iter = 10, param_info = NULL, metrics = NULL,
 \item{param_info}{A \code{dials::param_set()} object or \code{NULL}. If none is given,
 a parameters set is derived from the workflow.}
 
-\item{metrics}{A \code{metric_set()}}
-
 \item{objective}{A character string for what metric should be optimized or
 an aquisition function object.}
 
@@ -27,6 +25,8 @@ an aquisition function object.}
 \item{control}{A control object}
 
 \item{...}{Not currently used.}
+
+\item{metrics}{A \code{metric_set()}}
 }
 \description{
 Baeysian optmization of model parameters.

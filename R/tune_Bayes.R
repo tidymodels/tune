@@ -13,27 +13,18 @@
 #' @param ... Not currently used.
 #' @export
 tune_Bayes <-
-  function(object, rs, iter = 10, param_info = NULL, metrics = NULL, objective = NULL,
+  function(object, rs, iter = 10, param_info = NULL, perf = NULL, objective = NULL,
            initial = NULL, control = Bayes_control(), ...) {
-    # object must be a workflow
+    check_rset(rs)
+    check_object(object, check_dials = TRUE)
+    check_Bayes_control(control)
+    perf <- check_perf(perf, object)
 
     if (is.null(param_info)) {
       param_info <- param_set(object)
     }
 
-    # check to see finalized
-
-    perf <- yardstick::metric_set(rmse, rsq)
-
-    if (is.null(initial) || is.numeric(initial)) {
-      initial_grid <- create_initial_set(param_info, rs, initial)
-    } else {
-      if (inherits(initial, "grid_results")) {
-        initial_grid <- estimate(initial)
-      } else {
-        initial_grid <- initial
-      }
-    }
+    initial_grid <- check_initial(initial, param_info)
 
     res <- initial %>% dplyr::mutate(.iter = 0)
     best_val <- 10^38
@@ -89,7 +80,7 @@ tune_Bayes <-
     res
   }
 
-create_initial_set <- function(param, rs, n = NULL) {
+create_initial_set <- function(param, n = NULL) {
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
@@ -235,6 +226,8 @@ Bayes_msg <- function(control, msg, fini = FALSE, cool = TRUE) {
 
 more_results <- function(object, rs, candidates, perf, control) {
   Bayes_msg(control, "Estimating performance", fini = FALSE, cool = TRUE)
+
+  candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd"))]
 
   tmp_res <-
     try(

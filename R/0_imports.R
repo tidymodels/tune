@@ -3,11 +3,10 @@
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int
 #' @importFrom tibble tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
-#' @importFrom rlang is_false eval_tidy expr sym
+#' @importFrom rlang is_false eval_tidy expr sym env_get
 #' @importFrom glue glue
 #' @importFrom utils globalVariables capture.output
-#' @importFrom glue glue
-#' @importFrom dials param_set_constr
+#' @importFrom dials param_set_constr is_unknown
 #' @importFrom stats sd
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss

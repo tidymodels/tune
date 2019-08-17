@@ -22,20 +22,12 @@
 #' the log-likelihood and overall accuracy are computed.
 #' @export
 tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
-  param_info <- dials::param_set(object)
 
   check_rset(rs)
-
-  if (is.null(grid)) {
-    grid <- dials::grid_latin_hypercube(param_info, size = 10)
-  }
-  if (is.null(perf)) {
-    if (object$fit$model$model$mode == "regression") {
-      perf <- yardstick::metric_set(rsq, rmse)
-    } else {
-      perf <- yardstick::metric_set(mn_log_loss, accuracy)
-    }
-  }
+  check_object(object)
+  check_grid_control(control)
+  perf <- check_perf(perf, object)
+  grid <- check_grid(grid, object)
 
   code_path <- quarterback(object)
 

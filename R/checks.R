@@ -16,14 +16,106 @@ check_rset <- function(x) {
 }
 
 
-check_grid <- function(x) {
-
+check_grid <- function(x, object) {
+  tune_param <- tune_args(object)
+  if (!is.null(grid)) {
+    if (!is.data.frame(x) & !inherits(x, "param_grid")) {
+      stop("The `grid` argument should be either a data frame or a 'param_grid' ",
+           "object", call. = FALSE)
+    }
+    if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
+      stop("Based on the workflow, the grid object should have columns: ",
+           paste0("'", tune_param$id, "'", collapse = ", "),
+           call. = FALSE)
+    }
+  } else {
+    check_object(object, check_dials = TRUE)
+    x <- dials::grid_latin_hypercube(param_set(object), size = 10)
+  }
+  x
 }
 
-check_object <- function(x) {
+check_object <- function(x, check_dials = FALSE) {
+  if (!inherits(x, "workflow")) {
+    stop("The `object` argument should be a 'workflow' object.",
+         call. = FALSE)
+  }
+  if (check_dials) {
+    params <- purrr:::map_lgl(x$object, inherits, "param")
+    if (!all(params)) {
+      stop("The workflow has arguments to be tuned that are missing some ",
+           "parameter objects: ", paste0("'", x$id, "'", collapse = ", "),
+           call. = FALSE)
+    }
+    quant_param <- purrr:::map_lgl(x$object, inherits, "quant_param")
+    quant_name <- x$id[quant_param]
+    compl <- map_lgl(x$object[quant_param],
+                     ~ !dials::is_unknown(.x$lower) & !dials::is_unknown(.x$upper))
+    if (any(!compl)) {
+      stop("The workflow has arguments whose ranges are not finalized: ",
+           paste0("'", quant_name[!compl], "'", collapse = ", "),
+           call. = FALSE)
+    }
+  }
 
+  invisible(NULL)
 }
 
-check_perf <- function(x) {
+check_perf <- function(x, object) {
+  if (!is.null(x)) {
+    cls <- c("numeric_metric_set", "class_prob_metric_set")
+    if (!inherits(x, cls)) {
+      stop("The `perf` argument should be the results of `yardstick::metric_set()`.",
+           call. = FALSE)
+    }
+  } else {
+    if (object$fit$model$model$mode == "regression") {
+      x <- yardstick::metric_set(rsq, rmse)
+    } else {
+      x <- yardstick::metric_set(mn_log_loss, accuracy)
+    }
+  }
 
+  x
 }
+
+perf_info <- function(x) {
+  metric_list <- rlang::env_get(environment(x), "fns")
+  metric_dir <- map_chr(metric_list, attr, "direction")
+  res <- tibble(.metric = names(metric_dir), direction = unname(metric_dir))
+  res
+}
+
+check_grid_control <- function(x) {
+  exp_names <- names(grid_control())
+  if (!isTRUE(all(all.equal(names(x), exp_names)))) {
+    miss_names <- exp_names[!(exp_names %in% names(x))]
+    stop("The grid control object is missing element(s): ",
+         paste0(miss_names, collapse = ", "))
+  }
+  invisible(x)
+}
+
+check_Bayes_control <- function(x) {
+  exp_names <- names(Bayes_control())
+  if (!isTRUE(all(all.equal(names(x), exp_names)))) {
+    miss_names <- exp_names[!(exp_names %in% names(x))]
+    stop("The Baysian optimization control object is missing element(s): ",
+         paste0(miss_names, collapse = ", "))
+  }
+  invisible(x)
+}
+
+check_initial <- function(x, pset) {
+  if (is.null(x) || is.numeric(x)) {
+    x <- create_initial_set(pset)
+  } else {
+    if (inherits(x, "grid_results")) {
+      x <- estimate(x)
+    } else {
+      x <- x
+    }
+  }
+  x
+}
+
