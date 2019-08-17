@@ -41,13 +41,13 @@ check_object <- function(x, check_dials = FALSE) {
          call. = FALSE)
   }
   if (check_dials) {
-    params <- purrr:::map_lgl(x$object, inherits, "param")
+    params <- purrr::map_lgl(x$object, inherits, "param")
     if (!all(params)) {
       stop("The workflow has arguments to be tuned that are missing some ",
            "parameter objects: ", paste0("'", x$id, "'", collapse = ", "),
            call. = FALSE)
     }
-    quant_param <- purrr:::map_lgl(x$object, inherits, "quant_param")
+    quant_param <- purrr::map_lgl(x$object, inherits, "quant_param")
     quant_name <- x$id[quant_param]
     compl <- map_lgl(x$object[quant_param],
                      ~ !dials::is_unknown(.x$lower) & !dials::is_unknown(.x$upper))

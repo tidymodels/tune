@@ -7,12 +7,13 @@
 #' @importFrom glue glue
 #' @importFrom utils globalVariables capture.output
 #' @importFrom dials param_set_constr is_unknown
-#' @importFrom stats sd
+#' @importFrom stats sd qt
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss
 #' @importFrom tidyr unnest
 #' @importFrom kernlab gausspr predict
 #' @importFrom parsnip get_from_env
+#' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap
 
 # ------------------------------------------------------------------------------
 
@@ -27,6 +28,6 @@ utils::globalVariables(
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
-    "rs_iter", "pkg")
+    "rs_iter", "pkg", ".pred_class", "std_err", "const")
   )
 
