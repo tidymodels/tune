@@ -107,6 +107,7 @@ tune_Bayes <-
         if (all_bad) {
           Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
         }
+        last_impr <- last_impr + 1
       }
     }
     res
