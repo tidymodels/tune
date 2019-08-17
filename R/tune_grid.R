@@ -69,72 +69,75 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
   tmp_fit
 }
 
-predict_model_from_recipe <- function(split, model, recipe, grid, ...) {
+predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
   y_names <- outcome_names(recipe)
   new_vals <- recipes::bake(recipe, rsample::assessment(split))
   x_vals <- new_vals %>% dplyr::select(-one_of(y_names))
   orig_rows <- as.integer(split, data = "assessment")
 
+  # Determine the type of prediction that is required
+  type_info <- perf_info(perf)
+  types <- unique(type_info$type)
 
   # Split `grid` from the parameters used to fit the model and any poential
   # sub-model parameters
   submod_col <- names(grid) == ".submodels"
   fixed_param <- grid[, !submod_col]
 
-  # Regular predictions
-  res <-
-    predict(model, x_vals) %>%
-    mutate(.row = orig_rows) %>%
-    dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
-    cbind(fixed_param, row.names = NULL)
+  res <- NULL
+  merge_vars <- c(".row", names(fixed_param))
 
-  # Are there submodels?
-  if (any(submod_col)) {
-    submod_length <- map_int(grid$.submodels[[1]], length)
-    has_submodels <- any(submod_length > 0)
+  for (type_iter in types) {
+    # Regular predictions
+    tmp_res <-
+      predict(model, x_vals, type = type_iter) %>%
+      mutate(.row = orig_rows) %>%
+      cbind(fixed_param, row.names = NULL)
 
-    if (has_submodels) {
-      submod_param <- names(grid$.submodels[[1]])
-      mp_call <-
-        call2(
-          "multi_predict",
-          .ns = "parsnip",
-          object = expr(model),
-          new_data = expr(x_vals),
-          !!!grid$.submodels[[1]]
-        )
-      res <-
-        eval_tidy(mp_call) %>%
-        mutate(.row = orig_rows) %>%
-        dplyr::bind_cols(new_vals %>% dplyr::select(one_of(y_names))) %>%
-        unnest() %>%
-        cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
-              row.names = NULL) %>%
-        dplyr::select(dplyr::one_of(names(res))) %>%
-        dplyr::bind_rows(res)
+    if (any(submod_col)) {
+      submod_length <- map_int(grid$.submodels[[1]], length)
+      has_submodels <- any(submod_length > 0)
+
+      if (has_submodels) {
+        submod_param <- names(grid$.submodels[[1]])
+        mp_call <-
+          call2(
+            "multi_predict",
+            .ns = "parsnip",
+            object = expr(model),
+            new_data = expr(x_vals),
+            type = type_iter,
+            !!!grid$.submodels[[1]]
+          )
+        tmp_res <-
+          eval_tidy(mp_call) %>%
+          mutate(.row = orig_rows) %>%
+          unnest() %>%
+          cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
+                row.names = NULL) %>%
+          dplyr::select(dplyr::one_of(names(tmp_res))) %>%
+          dplyr::bind_rows(tmp_res)
+      }
+      if (!is.null(res)) {
+        res <- dplyr::full_join(res, tmp_res, by = merge_vars)
+      } else {
+        res <- tmp_res
+      }
+      rm(tmp_res)
     }
-  }
+  } # end type loop
 
-  res
+  # Add outcome data
+  outcome_dat <-
+    new_vals %>%
+    dplyr::select(dplyr::one_of(y_names)) %>%
+    dplyr::mutate(.row = orig_rows)
+
+  res <- full_join(res, outcome_dat, by = ".row")
+  tibble::as_tibble(res)
 }
 
-estimate_perf <- function(dat, metric, object, other_names = NULL) {
-  # other_names will take additional columns from the recipe (if any)
-
-  if (inherits(dat, "try-error")) {
-    return(NULL)
-  }
-
-  # This will use attributes in metric sets in future yardstick versions to
-  # determine .pred vs .pred_class etc.
-  y_names <- outcome_names(object)
-  param_names <- param_set(object)$id
-  res <-
-    dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
-    metric(estimate = .pred, truth = !!sym(y_names))
-  res
-}
+# ------------------------------------------------------------------------------
 
 quarterback <- function(x) {
   y <- param_set(x)

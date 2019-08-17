@@ -74,7 +74,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
         tmp_pred <-
           try(
             predict_model_from_recipe(
-              split, tmp_fit, tmp_rec, all_param
+              split, tmp_fit, tmp_rec, all_param, perf
             ),
             silent = TRUE
           )
@@ -136,7 +136,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
       tmp_pred <-
         predict_model_from_recipe(
-          split, tmp_fit, tmp_rec, grid[param_iter, ]
+          split, tmp_fit, tmp_rec, grid[param_iter, ], perf
         )
 
       tmp_est <- estimate_perf(tmp_pred, perf, object)
@@ -213,7 +213,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
       tmp_pred <-
         predict_model_from_recipe(
-          split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ]
+          split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ], perf
         )
 
       tmp_est <- estimate_perf(tmp_pred, perf, object)

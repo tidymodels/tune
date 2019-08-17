@@ -82,9 +82,25 @@ check_perf <- function(x, object) {
 perf_info <- function(x) {
   metric_list <- rlang::env_get(environment(x), "fns")
   metric_dir <- map_chr(metric_list, attr, "direction")
-  res <- tibble(.metric = names(metric_dir), direction = unname(metric_dir))
+  res <- tibble(
+    .metric = names(metric_dir),
+    direction = unname(metric_dir),
+    type = unname(purrr::map_chr(metric_list, pred_type))
+    )
   res
 }
+
+pred_type <- function(x) {
+  cls <- class(x)[class(x) != "function"][1]
+  res <- dplyr::case_when(
+    cls == "class_metric" ~ "class",
+    cls == "prob_metric" ~ "prob",
+    cls == "numeric_metric" ~ "numeric",
+    TRUE ~ "unknown"
+  )
+  res
+}
+
 
 check_grid_control <- function(x) {
   exp_names <- names(grid_control())

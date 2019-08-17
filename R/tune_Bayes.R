@@ -215,7 +215,14 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
   bst_iter <- x$.iter[bst]
   max_iter <- max(x$.iter)
   bst_val <- x$mean[x$.iter == max_iter]
-  msg <- paste0(" Newest results:\t", objective, "=", signif(bst_val, digits = digits))
+  bst_se <- x$std_err[x$.iter == max_iter]
+  msg <-
+    paste0(" Newest results:\t",
+           objective,
+           "=",
+           signif(bst_val, digits = digits),
+           "+/-",
+           signif(bst_se, digits = digits))
 
   if (bst_iter == max_iter) {
     msg <- paste0(crayon::red(cli::symbol$heart), msg)
