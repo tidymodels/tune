@@ -38,7 +38,7 @@ svm_search <-
   tune_Bayes(
     two_class_wflow,
     data_folds,
-    initial = estimate(res),
+    initial = res,
     perf = class_only,
     iter = 150,
     control = Bayes_control(verbose = TRUE, random_value = 5)

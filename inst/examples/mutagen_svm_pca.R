@@ -54,7 +54,7 @@ svm_search <-
     Mutagen_wflow,
     data_folds,
     param_info = Mutagen_param,
-    initial = estimate(res),
+    initial = res,
     perf = class_only,
     iter = 5,
     control = Bayes_control(verbose = TRUE, random_value = 5)

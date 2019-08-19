@@ -74,7 +74,7 @@ test <-
     ames_wflow,
     cv_splits,
     param_info = ames_set,
-    initial = estimate(ames_glmnet),
+    initial = ames_glmnet,
     metrics = metric_set(rmse, rsq),
     iter = 50,
     control = Bayes_control(verbose = TRUE, random_value = 5)

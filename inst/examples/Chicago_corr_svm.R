@@ -64,7 +64,7 @@ test <-
     chi_wflow,
     data_folds,
     param_info = chi_set,
-    initial = estimate(res),
+    initial = res,
     metrics = metric_set(rmse, rsq),
     iter = 30,
     control = Bayes_control(verbose = TRUE)

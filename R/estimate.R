@@ -15,6 +15,11 @@ estimate <- function(x, ...) {
 #' @export
 #' @rdname estimate
 estimate.grid_results <- function(x, ...) {
+  all_bad <- is_cataclysmic(x)
+  if (all_bad) {
+    stop("All of the models failed.", call. = FALSE)
+  }
+
   tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
   x <- x[tibble_metrics, ]
 

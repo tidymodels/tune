@@ -60,7 +60,18 @@ tune_Bayes <-
 
       # get aqu functions
       set.seed(control$seed[1] + i + 1)
-      candidates <- pred_gp(gp_mod, param_info, control = control)
+      candidates <- pred_gp(gp_mod, param_info, control = control,
+                            current = res %>% dplyr::select(dplyr::one_of(param_info$id)))
+
+      if (all(is.na(candidates$.mean))) {
+        if (nrow(candidates) < 2) {
+          Bayes_msg(control, "Halting search", fini = TRUE, cool = FALSE)
+          break
+        } else {
+          Bayes_msg(control, "Skipping ot next iteration", fini = TRUE, cool = FALSE)
+          next
+        }
+      }
 
       if (last_impr < control$random_value) {
         if (maximize) {
@@ -79,6 +90,7 @@ tune_Bayes <-
         last_impr <- 0
       }
 
+      param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
       tmp_res <- more_results(object, rs, candidates, perf, control)
 
@@ -172,19 +184,25 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 }
 
 
-pred_gp <- function(object, pset, size = 5000, aqf = NULL, control) {
-  Bayes_msg(control, "Generating candidates", fini = FALSE, cool = TRUE)
-  pred_grid <- dials::grid_latin_hypercube(pset, size = size)
-  if (inherits(object, "try-error")) {
-    Bayes_msg(control, "Generating candidates", fini = TRUE, cool = FALSE)
+pred_gp <- function(object, pset, size = 5000, aqf = NULL, current, control) {
+  pred_grid <-
+    dials::grid_latin_hypercube(pset, size = size) %>%
+    dplyr::distinct() %>%
+    dplyr::anti_join(current, by = pset$id)
+
+  if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
+    Bayes_msg(control, "Could not generate candidates", fini = TRUE, cool = FALSE)
     return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd =  NA_real_))
   }
+
+  Bayes_msg(control, paste("Generating", nrow(pred_grid), "candidates"),
+            fini = FALSE, cool = TRUE)
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   mean_pred <- kernlab::predict(object, x, type = "response")
   sd_pred <- kernlab::predict(object, x, type = "sdeviation")
 
-  Bayes_msg(control, "Generating candidates", fini = TRUE, cool = TRUE)
+  Bayes_msg(control, "Predicted candidates", fini = TRUE, cool = TRUE)
 
   pred_grid %>%
     dplyr::mutate(.mean = mean_pred[,1], .sd = sd_pred)
@@ -196,8 +214,8 @@ hist_summarizer <- function(control, value, iter, nm, digits = 4) {
   }
   msg <-
     paste0(
-      cli::symbol$play,
-      " Current best:\t\t",
+      cli::symbol$star,
+      " Current best:\t",
       nm,
       "=",
       signif(value, digits = digits),
@@ -258,10 +276,26 @@ Bayes_msg <- function(control, msg, fini = FALSE, cool = TRUE) {
 }
 
 
+param_msg <- function(control, candidate) {
+  if (!control$verbose) {
+    return(invisible(NULL))
+  }
+  candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd"))]
+  p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
+  message(
+    paste0(
+      cli:::symbol$square,
+      " ",
+      glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
+    )
+  )
+}
+
 more_results <- function(object, rs, candidates, perf, control) {
   Bayes_msg(control, "Estimating performance", fini = FALSE, cool = TRUE)
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd"))]
+  p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
 
   tmp_res <-
     try(
@@ -280,7 +314,6 @@ more_results <- function(object, rs, candidates, perf, control) {
   } else {
     all_bad <- is_cataclysmic(tmp_res)
     if (all_bad) {
-      p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
       p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
       msg <- paste("All models failed for:", p_chr)
       Bayes_msg(control, msg, fini = TRUE, cool = FALSE)

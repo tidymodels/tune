@@ -48,10 +48,13 @@ reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_contro
 
 estimate(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
-  ggplot(aes(x = neighbors, y = mean, col = factor(weight_func))) +
+  mutate(RMSE = mean, `Minkowski distance parameter` = dist_power, weights = weight_func) %>%
+  ggplot(aes(x = neighbors, y = RMSE, col = weights)) +
   geom_path() +
   geom_point() +
-  facet_wrap(~ dist_power)
+  facet_wrap(~ `Minkowski distance parameter`) +
+  theme_bw() +
+  xlab("# Nearest-Neighbors")
 
 
 estimate(reg_knn_grid) %>%
@@ -80,9 +83,46 @@ knn_search <-
     chi_wflow,
     data_folds,
     param_info = chi_set,
-    initial = estimate(smol_knn_grid),
+    initial = smol_knn_grid,
     metrics = metric_set(rmse, rsq),
-    iter = 10,
-    control = Bayes_control(verbose = TRUE, random_value = Inf)
+    iter = 100,
+    control = Bayes_control(verbose = TRUE, random_value = 10)
   )
 
+ggplot(
+  knn_search %>% filter(.metric == "rmse"),
+  aes(x = neighbors, y = dist_power, col = weight_func, size = mean)) +
+  geom_point(alpha = .4) +
+  theme_bw() +
+  ylab("Minkowski distance parameter") +
+  xlab("# Nearest-Neighbors")
+
+
+library(gganimate)
+
+for (i in 0:40) {
+  cumulative_data <-
+    knn_search %>%
+    filter(.metric == "rmse" & .iter <= i) %>%
+    mutate(frame = i + 1, RMSE = mean, weights = weight_func)
+  if (i == 0) {
+    ani_data <- cumulative_data
+  } else {
+    ani_data <- bind_rows(cumulative_data, ani_data)
+  }
+}
+
+
+p <-
+  ggplot(
+  ani_data,
+  aes(x = neighbors, y = dist_power, col = weights, size = RMSE)) +
+  geom_point(alpha = 0.4) +
+  labs(title = 'Iteration: {closest_state}') +
+  transition_states(frame, state_length = 1) +
+  ease_aes('linear') +
+  theme_bw() +
+  ylab("Minkowski distance parameter") +
+  xlab("# Nearest-Neighbors")
+
+animate(p, nframes = max(knn_search$.iter), width = 520, duration = 25)
