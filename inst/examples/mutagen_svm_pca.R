@@ -59,3 +59,15 @@ svm_search <-
     iter = 5,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )
+
+set.seed(378)
+more_svm_search <-
+  tune_Bayes(
+    Mutagen_wflow,
+    data_folds,
+    param_info = Mutagen_param,
+    initial = svm_search,
+    perf = class_only,
+    iter = 10,
+    control = Bayes_control(verbose = TRUE, random_value = 5)
+  )

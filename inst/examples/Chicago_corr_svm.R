@@ -59,13 +59,24 @@ estimate(res) %>%
   slice(1)
 
 
-test <-
+svm_search <-
   tune_Bayes(
     chi_wflow,
     data_folds,
     param_info = chi_set,
     initial = res,
     metrics = metric_set(rmse, rsq),
-    iter = 30,
+    iter = 15,
+    control = Bayes_control(verbose = TRUE, random_value = 3)
+  )
+
+svm_search <-
+  tune_Bayes(
+    chi_wflow,
+    data_folds,
+    param_info = chi_set,
+    initial = res,
+    metrics = metric_set(rmse, rsq),
+    iter = 20,
     control = Bayes_control(verbose = TRUE)
   )

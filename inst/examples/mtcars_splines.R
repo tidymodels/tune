@@ -31,9 +31,9 @@ cars_set <-
   cars_wflow %>%
   param_set %>%
   update(id = "^degree", degree_int(1:2)) %>%
-  update(id = "^deg_free", deg_free(c(7, 10))) %>%
+  update(id = "^deg_free", deg_free(c(2, 10))) %>%
   update(id = "wt degree", degree_int(1:2)) %>%
-  update(id = "wt df$", deg_free(c(8, 10)))
+  update(id = "wt df$", deg_free(c(2, 10)))
 
 set.seed(255)
 cars_grid <-
@@ -50,6 +50,18 @@ spline_search <-
     param_info = cars_set,
     initial = cars_res,
     metrics = metric_set(rmse, rsq),
-    iter = 100,
+    iter = 10,
     control = Bayes_control(verbose = TRUE, random_value = 10)
   )
+
+more_spline_search <-
+  tune_Bayes(
+    cars_wflow,
+    data_folds,
+    param_info = cars_set,
+    initial = spline_search,
+    metrics = metric_set(rmse, rsq),
+    iter = 10,
+    control = Bayes_control(verbose = TRUE, random_value = 10)
+  )
+

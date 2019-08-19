@@ -29,28 +29,39 @@ tune_Bayes <-
 
     initial_grid <- check_initial(initial, param_info)
 
-    res <- initial_grid %>% dplyr::mutate(.iter = 0)
+    if (!any(names(initial_grid) == ".iter")) {
+      res <- initial_grid %>% dplyr::mutate(.iter = 0)
+    } else {
+      res <- initial_grid
+    }
+
+    best_res <-
+      res %>%
+      dplyr::filter(.metric == perf_name) %>%
+      dplyr::filter(!is.na(mean))
 
     if (maximize) {
-      best_val <-
-        initial_grid %>%
-        dplyr::filter(.metric == perf_name) %>%
-        dplyr::summarize(mean = max(mean, na.rm = TRUE)) %>%
-        pull(mean)
+      best_res <-
+        best_res %>%
+        arrange(desc(mean)) %>%
+        slice(1)
     } else {
-      best_val <-
-        initial_grid %>%
-        dplyr::filter(.metric == perf_name) %>%
-        dplyr::summarize(mean = min(mean, na.rm = TRUE)) %>%
-        pull(mean)
+      best_res <-
+        best_res %>%
+        arrange(mean) %>%
+        slice(1)
     }
-    best_iter <- 0
-
+    best_val <- best_res$mean[1]
+    best_iter <- best_res$.iter[1]
     last_impr <- 0
-    for (i in 1:iter) {
+    overall_iter <- max(res$.iter)
+
+    for (i in (1:iter) + overall_iter) {
 
       if (control$verbose) {
+        message("")
         message(cli::rule(left = crayon::bold(paste("Iteration", i))))
+        message("")
       }
       hist_summarizer(control, best_val, best_iter, perf_name)
 
@@ -162,7 +173,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
-  Bayes_msg(control, "GP model", fini = FALSE, cool = TRUE)
+  Bayes_msg(control, "Fitting Gaussian process model", fini = FALSE, cool = TRUE)
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
@@ -175,9 +186,9 @@ fit_gp <- function(dat, pset, metric, control, ...) {
                   silent = TRUE)
   )
   if (inherits(gp_fit, "try-error")) {
-    Bayes_msg(control, "GP model", fini = TRUE, cool = FALSE)
+    Bayes_msg(control, "Gaussian process model failed", fini = TRUE, cool = FALSE)
   } else {
-    Bayes_msg(control, "GP model", fini = TRUE, cool = TRUE)
+    Bayes_msg(control, "Gaussian process model complete", fini = TRUE, cool = TRUE)
   }
 
   gp_fit
@@ -246,7 +257,7 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
            objective,
            "=",
            signif(bst_val, digits = digits))
-  if (bst_se > 0) {
+  if (!is.na(bst_se) && bst_se > 0) {
     msg <- paste0(msg,  " (+/-", signif(bst_se, digits = digits - 1), ")")
   }
 

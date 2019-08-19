@@ -69,7 +69,7 @@ ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_contro
 #   arrange(mean) %>%
 #   slice(1)
 
-test <-
+search_res <-
   tune_Bayes(
     ames_wflow,
     cv_splits,
@@ -79,3 +79,16 @@ test <-
     iter = 50,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )
+
+
+more_search_res <-
+  tune_Bayes(
+    ames_wflow,
+    cv_splits,
+    param_info = ames_set,
+    initial = search_res,
+    metrics = metric_set(rmse, rsq),
+    iter = 50,
+    control = Bayes_control(verbose = TRUE, random_value = 5)
+  )
+
