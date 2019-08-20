@@ -12,7 +12,7 @@
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss
 #' @importFrom tidyr unnest
-#' @importFrom kernlab gausspr predict
+#' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap
 

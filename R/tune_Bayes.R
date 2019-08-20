@@ -176,11 +176,12 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dplyr::filter(.metric == metric) %>%
     dplyr::select(dplyr::one_of(pset$id), mean)
 
+  # do this only for quant parameters
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
   tmp_output <- capture.output(
     gp_fit <-
-      try(kernlab::gausspr(x = x, y = dat$mean, variance.model = TRUE, scaled = FALSE),
+      try(GPfit::GP_fit(X = x, Y = dat$mean),
           silent = TRUE)
   )
   if (inherits(gp_fit, "try-error")) {
@@ -196,8 +197,8 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 pred_gp <- function(object, pset, size = 5000, aqf = NULL, current, control) {
   pred_grid <-
     dials::grid_latin_hypercube(pset, size = size) %>%
-    dplyr::distinct() %>%
-    dplyr::anti_join(current, by = pset$id)
+    dplyr::distinct()
+    # dplyr::anti_join(current, by = pset$id)
 
   if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
     Bayes_msg(control, "Could not generate candidates", fini = TRUE, cool = FALSE)
@@ -208,13 +209,12 @@ pred_gp <- function(object, pset, size = 5000, aqf = NULL, current, control) {
             fini = FALSE, cool = TRUE)
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
-  mean_pred <- kernlab::predict(object, x, type = "response")
-  sd_pred <- kernlab::predict(object, x, type = "sdeviation")
+  gp_pred <- predict(object, x)
 
   Bayes_msg(control, "Predicted candidates", fini = TRUE, cool = TRUE)
 
   pred_grid %>%
-    dplyr::mutate(.mean = mean_pred[,1], .sd = sd_pred)
+    dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
 }
 
 hist_summarizer <- function(control, value, iter, nm, digits = 4) {

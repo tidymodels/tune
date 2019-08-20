@@ -25,7 +25,7 @@ Imports:
     yardstick,
     rsample,
     tidyr,
-    kernlab,
+    GPfit,
     foreach,
     parsnip (>= 0.0.3.9000),
 Suggests: 
