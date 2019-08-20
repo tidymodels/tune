@@ -23,10 +23,12 @@ two_class_wflow <-
   add_recipe(two_class_rec) %>%
   add_model(svm_model)
 
+two_class_set <- param_set(two_class_wflow)
+
 set.seed(552)
 two_class_grid <-
-  param_set(two_class_wflow) %>%
-  grid_max_entropy(size = 50)
+  two_class_set %>%
+  grid_max_entropy(size = 20)
 
 class_only <- metric_set(accuracy, kap, mcc)
 
@@ -40,6 +42,73 @@ svm_search <-
     data_folds,
     initial = res,
     perf = class_only,
-    iter = 150,
+    iter = 30,
     control = Bayes_control(verbose = TRUE, random_value = 5)
   )
+
+
+# ------------------------------------------------------------------------------
+
+svm_model <-
+  svm_poly(mode = "classification", cost = tune()) %>%
+  set_engine("kernlab")
+
+two_class_wflow <-
+  workflow() %>%
+  add_recipe(two_class_rec) %>%
+  add_model(svm_model)
+
+set.seed(552)
+two_class_grid <-
+  two_class_set %>%
+  grid_random(size = 5)
+
+class_only <- metric_set(accuracy)
+
+grid_res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
+
+ggplot(estimate(grid_res), aes(x = cost, y = mean)) +
+  geom_point() +
+  scale_x_log10() +
+  theme_bw()
+
+cost_grid <-
+  two_class_set %>%
+  grid_regular(levels = 100)
+
+acc_vals_0 <- estimate(grid_res)
+
+gp_data_0 <-
+  tune:::encode_set(acc_vals_0 %>% select(cost), two_class_set) %>%
+  set_names("cost") %>%
+  mutate(mean = acc_vals_0$mean)
+
+gp_grid <-
+  tune:::encode_set(cost_grid, two_class_set)  %>%
+  set_names("cost")
+
+library(GPfit)
+gp_0 <- GP_fit(X = as.matrix(gp_data_0[,1, drop = FALSE]), Y = gp_data_0$mean)
+gp_fit_0 <-
+  predict(gp_0, as.matrix(gp_grid[,1, drop = FALSE]))$complete_data %>%
+  as_tibble() %>%
+  setNames(c("cost", "mean", "var")) %>%
+  # dplyr::select(-cost) %>%
+  mutate(sd = sqrt(var),
+         lower = mean - 1 * sd,
+         upper = mean + 1 * sd)
+
+ggplot(gp_fit_0, aes(x = cost, y = sd)) +
+  geom_path() +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3)
+
+ggplot(gp_fit_0, aes(x = cost)) +
+  geom_path(aes(y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1) +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  geom_point(data = gp_data_0, aes(y = mean))
+
+
+
