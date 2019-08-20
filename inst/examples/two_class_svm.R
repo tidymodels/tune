@@ -23,7 +23,9 @@ two_class_wflow <-
   add_recipe(two_class_rec) %>%
   add_model(svm_model)
 
-two_class_set <- param_set(two_class_wflow)
+two_class_set <-
+  param_set(two_class_wflow) %>%
+  update("cost", cost(c(-10, 4)))
 
 set.seed(552)
 two_class_grid <-
@@ -58,7 +60,8 @@ two_class_wflow <-
   add_recipe(two_class_rec) %>%
   add_model(svm_model)
 
-set.seed(552)
+
+set.seed(37)
 two_class_grid <-
   two_class_set %>%
   grid_random(size = 5)
@@ -80,35 +83,45 @@ acc_vals_0 <- estimate(grid_res)
 
 gp_data_0 <-
   tune:::encode_set(acc_vals_0 %>% select(cost), two_class_set) %>%
-  set_names("cost") %>%
-  mutate(mean = acc_vals_0$mean)
+  set_names("scaled_cost") %>%
+  mutate(
+    mean = acc_vals_0$mean,
+    cost = acc_vals_0$cost)
 
 gp_grid <-
   tune:::encode_set(cost_grid, two_class_set)  %>%
-  set_names("cost")
+  set_names("scaled_cost") %>%
+  mutate(cost = cost_grid$cost)
 
 library(GPfit)
 gp_0 <- GP_fit(X = as.matrix(gp_data_0[,1, drop = FALSE]), Y = gp_data_0$mean)
 gp_fit_0 <-
   predict(gp_0, as.matrix(gp_grid[,1, drop = FALSE]))$complete_data %>%
   as_tibble() %>%
-  setNames(c("cost", "mean", "var")) %>%
-  # dplyr::select(-cost) %>%
+  setNames(c("scaled_cost", "mean", "var")) %>%
   mutate(sd = sqrt(var),
          lower = mean - 1 * sd,
-         upper = mean + 1 * sd)
+         upper = mean + 1 * sd) %>%
+  bind_cols(gp_grid %>% select(cost))
 
 ggplot(gp_fit_0, aes(x = cost, y = sd)) +
   geom_path() +
   theme_bw() +
-  geom_vline(xintercept = gp_data_0$cost, lty = 3)
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  scale_x_log10()
 
 ggplot(gp_fit_0, aes(x = cost)) +
   geom_path(aes(y = mean)) +
   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1) +
   theme_bw() +
   geom_vline(xintercept = gp_data_0$cost, lty = 3) +
-  geom_point(data = gp_data_0, aes(y = mean))
+  geom_point(data = gp_data_0, aes(y = mean)) +
+  scale_x_log10()
 
 
+ggplot(gp_fit_0, aes(x = cost, y = lower)) +
+  geom_path() +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  scale_x_log10()
 
