@@ -147,16 +147,9 @@ create_initial_set <- function(param, n = NULL) {
 # ------------------------------------------------------------------------------
 
 # TODO what happens to  logicals?
-encode_set <- function(x, pset, as_matrix = FALSE, ...) {
-  is_qual <- purrr::map_lgl(pset$object, ~ inherits(.x, "qual_param"))
-  if (any(is_qual)) {
-    idx <- which(is_qual)
-    for (i in idx) {
-      x[[ pset$id[i] ]] <-
-        dials::encode_unit(pset$object[[i]], x[[ pset$id[i] ]], direction = "forward")
-    }
-  }
 
+encode_set <- function(x, pset, as_matrix = FALSE, ...) {
+  # change the numeric variables to the transformed scale (if any)
   has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
   if (any(has_trans)) {
     idx <- which(has_trans)
@@ -165,6 +158,10 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
         dials::value_transform(pset$object[[i]], x[[ pset$id[i] ]])
     }
   }
+
+  # Convert all data to the [0, 1] scale based on their possible range (not on
+  # their observed range)
+  x <- purrr:::map2_dfc(pset$object, x, encode_unit, direction = "forward")
 
   if (as_matrix) {
     x <- as.matrix(x)
@@ -182,8 +179,9 @@ fit_gp <- function(dat, pset, metric, control, ...) {
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
   tmp_output <- capture.output(
-    gp_fit <- try(kernlab::gausspr(x = x, y = dat$mean, variance.model = TRUE),
-                  silent = TRUE)
+    gp_fit <-
+      try(kernlab::gausspr(x = x, y = dat$mean, variance.model = TRUE, scaled = FALSE),
+          silent = TRUE)
   )
   if (inherits(gp_fit, "try-error")) {
     Bayes_msg(control, "Gaussian process model failed", fini = TRUE, cool = FALSE)
@@ -262,6 +260,7 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
   }
 
   if (bst_iter == max_iter) {
+    # TODO this is not being triggered
     msg <- paste0(crayon::red(cli::symbol$heart), msg)
   } else {
     msg <- paste0(crayon::silver(cli::symbol$circle_cross), msg)
