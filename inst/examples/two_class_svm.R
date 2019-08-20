@@ -125,3 +125,34 @@ ggplot(gp_fit_0, aes(x = cost, y = lower)) +
   geom_vline(xintercept = gp_data_0$cost, lty = 3) +
   scale_x_log10()
 
+# ------------------------------------------------------------------------------
+
+library(tgp)
+
+
+tgp_0 <- btgp(X = as.matrix(gp_data_0[,1, drop = FALSE]), Z = gp_data_0$mean)
+tgp_res_0 <- predict(tgp_0, as.matrix(gp_grid[,1, drop = FALSE]))
+
+tgp_fit_0 <-
+  gp_grid %>%
+  mutate(
+    mean = tgp_res_0$ZZ.mean,
+    sd = sqrt(tgp_res_0$ZZ.ks2),
+    lower = mean - 1 * sd,
+    upper = mean + 1 * sd
+  )
+
+ggplot(tgp_fit_0, aes(x = cost, y = sd)) +
+  geom_path() +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  scale_x_log10()
+
+ggplot(tgp_fit_0, aes(x = cost)) +
+  geom_path(aes(y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1) +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  geom_point(data = gp_data_0, aes(y = mean)) +
+  scale_x_log10()
+
