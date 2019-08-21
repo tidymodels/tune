@@ -8,7 +8,7 @@
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output
 #' @importFrom dials param_set_constr is_unknown encode_unit
-#' @importFrom stats sd qt qnorm dnorm pnorm predict
+#' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss
 #' @importFrom tidyr unnest

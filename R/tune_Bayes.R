@@ -115,7 +115,11 @@ tune_Bayes <-
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         rs_estimate <- estimate(tmp_res)
         res <- dplyr::bind_rows(res, rs_estimate %>% dplyr::mutate(.iter = i))
-        current_val <- tmp_res %>% estimate() %>% dplyr::filter(.metric == perf_name) %>% dplyr::pull(mean)
+        current_val <-
+          tmp_res %>%
+          estimate() %>%
+          dplyr::filter(.metric == perf_name) %>%
+          dplyr::pull(mean)
 
         if (maximize) {
           is_better <- current_val > best_val
@@ -164,12 +168,21 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
     }
   }
 
+  is_quant <- purrr::map_lgl(pset$object, inherits, "quant_param")
   # Convert all data to the [0, 1] scale based on their possible range (not on
   # their observed range)
-  x <- purrr::map2_dfc(pset$object, x, encode_unit, direction = "forward")
+  x[, is_quant] <- purrr::map2_dfc(pset$object[is_quant], x[, is_quant],
+                                   encode_unit, direction = "forward")
+
+  # Ensure that the right levels are used to create dummy variables
+  if (any(!is_quant)) {
+    for(i in which(!is_quant)) {
+      x[[i]] <- factor(x[[i]], levels = pset$object[[i]]$values)
+    }
+  }
 
   if (as_matrix) {
-    x <- as.matrix(x)
+    x <- stats::model.matrix(~ .  + 0, data = x)
   }
   x
 }

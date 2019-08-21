@@ -10,7 +10,7 @@ prob_improve(trade_off = 0, eps = .Machine$double.eps)
 
 exp_improve(trade_off = 0, eps = .Machine$double.eps)
 
-conf_bound(kappa = qnorm(0.975))
+conf_bound(kappa = 1)
 }
 \arguments{
 \item{trade_off}{A number or function that describes the trade-off between
