@@ -23,13 +23,18 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
     stop("`trade_off` should be a number or a function.", call. = FALSE)
   }
+
+  lab <- "the probability of improvement"
+
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if(length(farg) != 1) {
       stop("The `trade_off` function should only have a single argument.", call. = FALSE)
     }
+    lab <- paste(lab, "with variable trade-off values.")
   }
-  res <- list(trade_off = trade_off, eps = eps)
+
+  res <- list(trade_off = trade_off, eps = eps, lable = lab)
   class(res) <- c("prob_improve", "acquisition_function")
   res
 }
@@ -71,13 +76,17 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
     stop("`trade_off` should be a number or a function.", call. = FALSE)
   }
+
+  lab <- "the expected improvement"
+
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if(length(farg) != 1) {
       stop("The `trade_off` function should only have a single argument.", call. = FALSE)
     }
+    lab <- paste(lab, "with variable trade-off values.")
   }
-  res <- list(trade_off = trade_off, eps = eps)
+  res <- list(trade_off = trade_off, eps = eps, label = lab)
   class(res) <- c("exp_improve", "acquisition_function")
   res
 
@@ -114,17 +123,19 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
 
 #' @export
 #' @rdname prob_improve
-conf_bound <- function(kappa = qnorm(0.975)) {
+conf_bound <- function(kappa = 1) {
   if (!is.numeric(kappa) & !is_function(kappa)) {
     stop("`kappa` should be a number or a function.", call. = FALSE)
   }
+  lab <- "the confidence bound"
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
     if(length(farg) != 1) {
       stop("The `kappa` function should only have a single argument.", call. = FALSE)
     }
+    lab <- paste(lab, "with variable kappa values.")
   }
-  res <- list(kappa = kappa)
+  res <- list(kappa = kappa, label = lab)
   class(res) <- c("conf_bound", "acquisition_function")
   res
 

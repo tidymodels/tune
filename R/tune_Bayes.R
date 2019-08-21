@@ -59,6 +59,8 @@ tune_Bayes <-
     last_impr <- 0
     overall_iter <- max(res$.iter)
 
+    message(paste("Optimizing", perf_name, "using", objective$label))
+
     for (i in (1:iter) + overall_iter) {
 
       if (control$verbose) {
