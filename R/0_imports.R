@@ -1,14 +1,14 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
-#' @importFrom dplyr distinct
+#' @importFrom dplyr distinct arrange
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int map2_dfc
 #' @importFrom tibble tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
-#' @importFrom rlang is_false eval_tidy expr sym env_get
+#' @importFrom rlang is_false eval_tidy expr sym env_get is_function
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output
-#' @importFrom dials param_set_constr is_unknown
-#' @importFrom stats sd qt
+#' @importFrom dials param_set_constr is_unknown encode_unit
+#' @importFrom stats sd qt qnorm dnorm pnorm predict
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy mn_log_loss
 #' @importFrom tidyr unnest
@@ -29,6 +29,7 @@ utils::globalVariables(
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
-    "rs_iter", "pkg", ".pred_class", "std_err", "const")
+    "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
+    "sd_trunc", "snr", "z")
   )
 

@@ -5,7 +5,8 @@
 \title{Baeysian optmization of model parameters.}
 \usage{
 tune_Bayes(object, rs, iter = 10, param_info = NULL, perf = NULL,
-  objective = NULL, initial = NULL, control = Bayes_control(), ...)
+  objective = exp_improve(), initial = NULL,
+  control = Bayes_control(), ...)
 }
 \arguments{
 \item{object}{A workflow object.}
@@ -17,6 +18,10 @@ tune_Bayes(object, rs, iter = 10, param_info = NULL, perf = NULL,
 \item{param_info}{A \code{dials::param_set()} object or \code{NULL}. If none is given,
 a parameters set is derived from the workflow.}
 
+\item{perf}{A \code{yardstick::metric_set()} object containing infomration on how
+models will be evaluated for performance. The first metric in \code{perf} is the
+one that will be optimized.}
+
 \item{objective}{A character string for what metric should be optimized or
 an aquisition function object.}
 
@@ -25,8 +30,6 @@ an aquisition function object.}
 \item{control}{A control object}
 
 \item{...}{Not currently used.}
-
-\item{metrics}{A \code{metric_set()}}
 }
 \description{
 Baeysian optmization of model parameters.

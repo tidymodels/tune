@@ -85,7 +85,7 @@ knn_search <-
     param_info = chi_set,
     initial = smol_knn_grid,
     metrics = metric_set(rmse, rsq),
-    iter = 100,
+    iter = 30,
     control = Bayes_control(verbose = TRUE, random_value = 10)
   )
 
@@ -100,7 +100,7 @@ ggplot(
 
 library(gganimate)
 
-for (i in 0:40) {
+for (i in 0:max(knn_search$.iter)) {
   cumulative_data <-
     knn_search %>%
     filter(.metric == "rmse" & .iter <= i) %>%
@@ -125,4 +125,4 @@ p <-
   ylab("Minkowski distance parameter") +
   xlab("# Nearest-Neighbors")
 
-animate(p, nframes = max(knn_search$.iter), width = 520, duration = 25)
+animate(p, nframes = max(knn_search$.iter), width = 520)

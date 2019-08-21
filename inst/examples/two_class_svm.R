@@ -1,7 +1,9 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-
+load("~/Downloads/two_class_svm.RData")
+library(doMC)
+registerDoMC(cores=8)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
@@ -27,10 +29,10 @@ two_class_set <-
   param_set(two_class_wflow) %>%
   update("cost", cost(c(-10, 4)))
 
-set.seed(552)
+set.seed(2494)
 two_class_grid <-
   two_class_set %>%
-  grid_max_entropy(size = 20)
+  grid_max_entropy(size = 5)
 
 class_only <- metric_set(accuracy, kap, mcc)
 
@@ -42,6 +44,7 @@ svm_search <-
   tune_Bayes(
     two_class_wflow,
     data_folds,
+    param_info = two_class_set,
     initial = res,
     perf = class_only,
     iter = 30,
@@ -101,7 +104,10 @@ gp_fit_0 <-
   setNames(c("scaled_cost", "mean", "var")) %>%
   mutate(sd = sqrt(var),
          lower = mean - 1 * sd,
-         upper = mean + 1 * sd) %>%
+         upper = mean + 1 * sd,
+         snr = (mean - max(gp_data_0$mean))/sd,
+         prob_imp = pnorm(snr)
+         ) %>%
   bind_cols(gp_grid %>% select(cost))
 
 ggplot(gp_fit_0, aes(x = cost, y = sd)) +
@@ -120,6 +126,12 @@ ggplot(gp_fit_0, aes(x = cost)) +
 
 
 ggplot(gp_fit_0, aes(x = cost, y = lower)) +
+  geom_path() +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$cost, lty = 3) +
+  scale_x_log10()
+
+ggplot(gp_fit_0, aes(x = cost, y = prob_imp)) +
   geom_path() +
   theme_bw() +
   geom_vline(xintercept = gp_data_0$cost, lty = 3) +

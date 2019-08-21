@@ -4,7 +4,9 @@
 #' @param rs A resample object.
 #' @param param_info A `dials::param_set()` object or `NULL`. If none is given,
 #' a parameters set is derived from the workflow.
-#' @param metrics A `metric_set()`
+#' @param perf A `yardstick::metric_set()` object containing infomration on how
+#' models will be evaluated for performance. The first metric in `perf` is the
+#' one that will be optimized.
 #' @param iter The maximum number of search iterations.
 #' @param objective A character string for what metric should be optimized or
 #' an aquisition function object.
@@ -13,14 +15,15 @@
 #' @param ... Not currently used.
 #' @export
 tune_Bayes <-
-  function(object, rs, iter = 10, param_info = NULL, perf = NULL, objective = NULL,
+  function(object, rs, iter = 10, param_info = NULL, perf = NULL,
+           objective = exp_improve(),
            initial = NULL, control = Bayes_control(), ...) {
     check_rset(rs)
     check_object(object, check_dials = TRUE)
     check_Bayes_control(control)
     perf <- check_perf(perf, object)
     perf_data <- perf_info(perf)
-    perf_name <- get_objective_name(objective, perf)
+    perf_name <- perf_data$.metric[1]
     maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
 
     if (is.null(param_info)) {
@@ -43,12 +46,12 @@ tune_Bayes <-
     if (maximize) {
       best_res <-
         best_res %>%
-        arrange(desc(mean)) %>%
+        dplyr::arrange(desc(mean)) %>%
         slice(1)
     } else {
       best_res <-
         best_res %>%
-        arrange(mean) %>%
+        dplyr::arrange(mean) %>%
         slice(1)
     }
     best_val <- best_res$mean[1]
@@ -66,13 +69,17 @@ tune_Bayes <-
       hist_summarizer(control, best_val, best_iter, perf_name)
 
       set.seed(control$seed[1] + i)
-      gp_mod <- fit_gp(res %>% dplyr::select(-.iter), param_info,
-                       metric = perf_name, control, ...)
+      gp_mod <- fit_gp(res %>% dplyr::select(-.iter), pset = param_info,
+                       metric = perf_name, control = control, ...)
 
       # get aqu functions
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control,
                             current = res %>% dplyr::select(dplyr::one_of(param_info$id)))
+      candidates <-
+        dplyr::bind_cols(candidates,
+                         stats::predict(objective, candidates, iter = i,
+                                        maximize = maximize, best_val))
 
       if (all(is.na(candidates$.mean))) {
         if (nrow(candidates) < 2) {
@@ -85,11 +92,7 @@ tune_Bayes <-
       }
 
       if (last_impr < control$random_value) {
-        if (maximize) {
-          candidates <- candidates %>% dplyr::arrange(dplyr::desc(.mean)) %>% dplyr::slice(1)
-        } else {
-          candidates <- candidates %>% dplyr::arrange(.mean) %>% dplyr::slice(1)
-        }
+        candidates <- candidates %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
       } else {
         message(paste(crayon::blue(cli::symbol$circle_question_mark),
                        "Uncertainty sample"))
@@ -161,7 +164,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 
   # Convert all data to the [0, 1] scale based on their possible range (not on
   # their observed range)
-  x <- purrr:::map2_dfc(pset$object, x, encode_unit, direction = "forward")
+  x <- purrr::map2_dfc(pset$object, x, encode_unit, direction = "forward")
 
   if (as_matrix) {
     x <- as.matrix(x)
@@ -194,7 +197,7 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 }
 
 
-pred_gp <- function(object, pset, size = 5000, aqf = NULL, current, control) {
+pred_gp <- function(object, pset, size = 5000, current, control) {
   pred_grid <-
     dials::grid_latin_hypercube(pset, size = size) %>%
     dplyr::distinct()
@@ -290,11 +293,11 @@ param_msg <- function(control, candidate) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
-  candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd"))]
+  candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
   message(
     paste0(
-      cli:::symbol$square,
+      cli::symbol$square,
       " ",
       glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
     )
@@ -304,7 +307,7 @@ param_msg <- function(control, candidate) {
 more_results <- function(object, rs, candidates, perf, control) {
   Bayes_msg(control, "Estimating performance", fini = FALSE, cool = TRUE)
 
-  candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd"))]
+  candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
 
   tmp_res <-
@@ -337,9 +340,9 @@ more_results <- function(object, rs, candidates, perf, control) {
 
 
 is_cataclysmic <- function(x) {
-  is_err <- purrr:::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
+  is_err <- purrr::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
   if (any(!is_err)) {
-    is_good <- purrr:::map_lgl(x$.metrics[!is_err],
+    is_good <- purrr::map_lgl(x$.metrics[!is_err],
                                ~ tibble::is_tibble(.x) && nrow(.x) > 0)
     is_err[!is_err] <- !is_good
   }
