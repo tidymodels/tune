@@ -70,12 +70,12 @@ svm_search <-
     control = Bayes_control(verbose = TRUE, random_value = 3)
   )
 
-svm_search <-
+svm_search_2 <-
   tune_Bayes(
     chi_wflow,
     data_folds,
     param_info = chi_set,
-    initial = res,
+    initial = svm_search,
     metrics = metric_set(rmse, rsq),
     iter = 20,
     control = Bayes_control(verbose = TRUE)

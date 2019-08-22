@@ -215,8 +215,8 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 pred_gp <- function(object, pset, size = 5000, current, control) {
   pred_grid <-
     dials::grid_latin_hypercube(pset, size = size) %>%
-    dplyr::distinct()
-    # dplyr::anti_join(current, by = pset$id)
+    dplyr::distinct() %>%
+    dplyr::anti_join(current, by = pset$id)
 
   if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
     Bayes_msg(control, "Could not generate candidates", fini = TRUE, cool = FALSE)
