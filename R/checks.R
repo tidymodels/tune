@@ -18,7 +18,7 @@ check_rset <- function(x) {
 
 check_grid <- function(x, object) {
   tune_param <- tune_args(object)
-  if (!is.null(grid)) {
+  if (!is.null(x)) {
     if (!is.data.frame(x) & !inherits(x, "param_grid")) {
       stop("The `grid` argument should be either a data frame or a 'param_grid' ",
            "object", call. = FALSE)
@@ -41,16 +41,18 @@ check_object <- function(x, check_dials = FALSE) {
          call. = FALSE)
   }
   if (check_dials) {
-    params <- purrr::map_lgl(x$object, inherits, "param")
+    y <- param_set(x)
+    params <- purrr::map_lgl(y$object, inherits, "param")
     if (!all(params)) {
       stop("The workflow has arguments to be tuned that are missing some ",
-           "parameter objects: ", paste0("'", x$id, "'", collapse = ", "),
+           "parameter objects: ", paste0("'", y$id, "'", collapse = ", "),
            call. = FALSE)
     }
-    quant_param <- purrr::map_lgl(x$object, inherits, "quant_param")
-    quant_name <- x$id[quant_param]
-    compl <- map_lgl(x$object[quant_param],
-                     ~ !dials::is_unknown(.x$lower) & !dials::is_unknown(.x$upper))
+    quant_param <- purrr::map_lgl(y$object, inherits, "quant_param")
+    quant_name <- y$id[quant_param]
+    compl <- map_lgl(y$object[quant_param],
+                     ~ !dials::is_unknown(.x$range$lower) &
+                       !dials::is_unknown(.x$range$upper))
     if (any(!compl)) {
       stop("The workflow has arguments whose ranges are not finalized: ",
            paste0("'", quant_name[!compl], "'", collapse = ", "),
@@ -124,7 +126,10 @@ check_Bayes_control <- function(x) {
 
 check_initial <- function(x, pset) {
   if (is.null(x) || is.numeric(x)) {
-    x <- create_initial_set(pset)
+    if (is.null(x)) {
+      x <- 3
+    }
+    x <- create_initial_set(pset, n = x)
   } else {
     if (inherits(x, "grid_results")) {
       x <- estimate(x)
@@ -140,7 +145,7 @@ get_objective_name <- function(x, perf) {
     metric_data <- perf_info(perf)
     x <- metric_data$.metric[1]
   } else {
-    # check for a name or squisition funciton
+    # check for a name or acquisition funciton
   }
   x
 }

@@ -92,9 +92,9 @@ test_that('GP scoring', {
   expect_true(tibble::is_tibble(svm_scores))
   expect_equal(
     colnames(svm_scores),
-    c(colnames(curr)[1:3], ".mean", ".sd")
+    c('C', '%^*#', 'scale_factor', '.mean', '.sd')
   )
-  expect_equal(nrow(svm_scores, 20))
+  expect_equal(nrow(svm_scores), 20)
 
 })
 
