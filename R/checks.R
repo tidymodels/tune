@@ -144,3 +144,22 @@ get_objective_name <- function(x, perf) {
   }
   x
 }
+
+
+# ------------------------------------------------------------------------------
+# acq functions
+
+check_direction <- function(x) {
+  if (!is.logical(x) || length(x) != 1) {
+    stop("`maximize` should be a single logical.", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+
+check_best <- function(x) {
+  if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
+    stop("`best` should be a single, non-missing numeric", call. = FALSE)
+  }
+  invisible(NULL)
+}

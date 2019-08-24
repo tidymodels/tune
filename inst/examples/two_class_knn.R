@@ -1,8 +1,8 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-library(doMC)
-registerDoMC(cores=8)
+# library(doMC)
+# registerDoMC(cores=8)
 
 # ------------------------------------------------------------------------------
 
@@ -18,9 +18,9 @@ two_class_rec <-
 knn_model <-
   nearest_neighbor(
     mode = "classification",
-    neighbors = tune(),
+    neighbors = tune("K"),
     weight_func = tune(),
-    dist_power = tune()
+    dist_power = tune("exponent")
   ) %>%
   set_engine("kknn")
 
@@ -31,13 +31,13 @@ two_class_wflow <-
 
 two_class_set <-
   param_set(two_class_wflow) %>%
-  update(id = "neighbors", neighbors(c(1, 50))) %>%
-  update(id = "dist_power", dist_power(c(1/10, 2)))
+  update(id = "K", neighbors(c(1, 50))) %>%
+  update(id = "exponent", dist_power(c(1/10, 2)))
 
 set.seed(2494)
 two_class_grid <-
   two_class_set %>%
-  grid_max_entropy(size = 5)
+  grid_max_entropy(size = 10)
 
 class_only <- metric_set(accuracy, kap, mcc)
 

@@ -194,7 +194,6 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dplyr::filter(.metric == metric) %>%
     dplyr::select(dplyr::one_of(pset$id), mean)
 
-  # do this only for quant parameters
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
   tmp_output <- capture.output(

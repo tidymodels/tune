@@ -39,13 +39,18 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   res
 }
 
+#' @export
 print.prob_improve <- function(x, ...) {
   cat("Acquisition Function: probability of improvment\n")
   invisible(x)
 }
 
+#' @export
 predict.prob_improve <-
   function(object, new_data, maximize, iter, best,  ...) {
+    check_direction(maximize)
+    check_best(best)
+
     if (is.function(object$trade_off)) {
       trade_off <- object$trade_off(iter)
     } else {
@@ -65,7 +70,9 @@ predict.prob_improve <-
         new_data %>%
         mutate(delta = ((trade_off + best - .mean )/.sd))
     }
-    tibble(objective = pnorm(delta))
+    new_data %>%
+      dplyr::mutate(objective = pnorm(delta)) %>%
+      dplyr::select(objective)
   }
 
 # ------------------------------------------------------------------------------
@@ -94,6 +101,9 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
 
 #' @export
 predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
+  check_direction(maximize)
+  check_best(best)
+
   if (is.function(object$trade_off)) {
     trade_off <- object$trade_off(iter)
   } else {
@@ -143,6 +153,8 @@ conf_bound <- function(kappa = 1) {
 
 #' @export
 predict.conf_bound<- function(object, new_data, maximize, iter, ...) {
+  check_direction(maximize)
+
   if (is.function(object$kappa)) {
     kappa <- object$kappa(iter)
   } else {
@@ -156,4 +168,3 @@ predict.conf_bound<- function(object, new_data, maximize, iter, ...) {
   }
   new_data %>% dplyr::select(objective)
 }
-

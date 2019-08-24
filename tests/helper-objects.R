@@ -1,6 +1,3 @@
-context("creating test objects")
-
-# ------------------------------------------------------------------------------
 
 library(tune)
 library(recipes)
