@@ -1,15 +1,15 @@
-#' Baeysian optmization of model parameters.
+#' Bayesian optimization of model parameters.
 #'
 #' @param object A workflow object.
 #' @param rs A resample object.
 #' @param param_info A `dials::param_set()` object or `NULL`. If none is given,
 #' a parameters set is derived from the workflow.
-#' @param perf A `yardstick::metric_set()` object containing infomration on how
+#' @param perf A `yardstick::metric_set()` object containing information on how
 #' models will be evaluated for performance. The first metric in `perf` is the
 #' one that will be optimized.
 #' @param iter The maximum number of search iterations.
 #' @param objective A character string for what metric should be optimized or
-#' an aquisition function object.
+#' an acquisition function object.
 #' @param initial An initial set of results in a tidy format.
 #' @param control A control object
 #' @param ... Not currently used.
