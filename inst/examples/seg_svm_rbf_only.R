@@ -1,9 +1,8 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-library(caret)
 
-data("segmentationData")
+load(url("http://bit.ly/seg-data"))
 
 theme_set(theme_bw())
 
