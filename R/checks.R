@@ -74,7 +74,7 @@ check_perf <- function(x, object) {
     if (object$fit$model$model$mode == "regression") {
       x <- yardstick::metric_set(rmse, rsq)
     } else {
-      x <- yardstick::metric_set(mn_log_loss, accuracy)
+      x <- yardstick::metric_set(accuracy, kap)
     }
   }
 
