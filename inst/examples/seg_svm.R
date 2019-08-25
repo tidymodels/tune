@@ -61,11 +61,14 @@ estimate(grid_results)
 
 # ------------------------------------------------------------------------------
 
+library(doMC)
+registerDoMC(cores = 10)
+
 kappa_only <- metric_set(kap)
 
 svm_search <- tune_Bayes(svm_wflow, rs = folds,
                          initial = grid_results,
-                         iter = 10,
+                         iter = 15,
                          perf = kappa_only,
                          param_info = svm_set,
                          control = Bayes_control(verbose = TRUE))
@@ -76,7 +79,7 @@ plot_perf_vs_iter(svm_search, "kap")
 
 svm_search_2 <- tune_Bayes(svm_wflow, rs = folds,
                            initial = svm_search,
-                           iter = 10,
+                           iter = 15,
                            perf = kappa_only,
                            param_info = svm_set,
                            control = Bayes_control(verbose = TRUE))
