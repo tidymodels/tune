@@ -19,7 +19,7 @@ tune_Bayes <-
            objective = exp_improve(),
            initial = NULL, control = Bayes_control(), ...) {
     check_rset(rs)
-    check_object(object, check_dials = TRUE)
+    check_object(object, check_dials = is.null(param_info))
     check_Bayes_control(control)
     perf <- check_perf(perf, object)
     perf_data <- perf_info(perf)
