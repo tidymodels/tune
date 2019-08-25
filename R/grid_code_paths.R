@@ -86,10 +86,8 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
         grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
         cat(tmp_fit$fit, "\n")
       }
-
+      perf_est <- dplyr::bind_rows(perf_est, tmp_est)
     } # end model loop
-
-    perf_est <- dplyr::bind_rows(perf_est, tmp_est)
 
   } # end recipe loop
 
