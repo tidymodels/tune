@@ -16,6 +16,13 @@ reference:
   - title: User-Facing Functions
     contents:
     - tune
+    - tune_grid
+    - tune_Bayes
+    - conf_bound
+    - Bayes_control
+    - grid_control
+    - estimate
+    - plot_perf_vs_iter
   - title: Low-Level Functions
     contents:
     - merge.recipe
@@ -25,6 +32,8 @@ reference:
 
 navbar:
   left:
+  - text: Bayesian Optimization of Classification Model
+    href: articles/articles/Classification.html  
   - text: Reference
     href: reference/index.html
   - text: News

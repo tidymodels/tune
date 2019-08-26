@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Control the Bayesian search process — Bayes_control • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,9 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
+<meta property="og:title" content="Control the Bayesian search process — Bayes_control" />
 
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparam_set
-" />
+<meta property="og:description" content="Control the Bayesian search process" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,27 +104,45 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
+    <h1>Control the Bayesian search process</h1>
     
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <div class="hidden name"><code>Bayes_control.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dials</dt><dd><p><code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></code></p></dd>
-</dl>
+    <p>Control the Bayesian search process</p>
     
     </div>
 
-        
+    <pre class="usage"><span class='fu'>Bayes_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>random_value</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span>(<span class='fl'>10</span>^<span class='fl'>5</span>, <span class='fl'>1</span>))</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>verbose</th>
+      <td><p>A logical for logging results as they are generated.</p></td>
+    </tr>
+    <tr>
+      <th>random_value</th>
+      <td><p>The number of iterations with no improvment before an
+uncertainty sample is created where a sample with high predicted variance is
+chosen.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>An integer for controlling the random number stream.</p></td>
+    </tr>
+    </table>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
   </div>

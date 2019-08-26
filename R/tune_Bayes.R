@@ -30,7 +30,7 @@ tune_Bayes <-
       param_info <- param_set(object)
     }
 
-    initial_grid <- check_initial(initial, param_info)
+    initial_grid <- check_initial(initial, param_info, object, rs, perf, control)
 
     if (!any(names(initial_grid) == ".iter")) {
       res <- initial_grid %>% dplyr::mutate(.iter = 0)
@@ -59,7 +59,9 @@ tune_Bayes <-
     last_impr <- 0
     overall_iter <- max(res$.iter)
 
-    message(paste("Optimizing", perf_name, "using", objective$label))
+    if (control$verbose) {
+      message(paste("Optimizing", perf_name, "using", objective$label))
+    }
 
     for (i in (1:iter) + overall_iter) {
 

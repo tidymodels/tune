@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Acquisition function for scoring parameter combinations — prob_improve • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,10 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
+<meta property="og:title" content="Acquisition function for scoring parameter combinations — prob_improve" />
 
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparam_set
-" />
+<meta property="og:description" content="These functions can be used to score candidate tuning parameter combinations
+as a function of their predicted mean and variation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,28 +105,70 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
+    <h1>Acquisition function for scoring parameter combinations</h1>
     
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <div class="hidden name"><code>prob_improve.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dials</dt><dd><p><code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></code></p></dd>
-</dl>
+    <p>These functions can be used to score candidate tuning parameter combinations
+as a function of their predicted mean and variation.</p>
     
     </div>
 
-        
+    <pre class="usage"><span class='fu'>prob_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
 
+<span class='fu'>exp_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
+
+<span class='fu'>conf_bound</span>(<span class='kw'>kappa</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>trade_off</th>
+      <td><p>A number or function that describes the trade-off between
+exploitation and exploration.</p></td>
+    </tr>
+    <tr>
+      <th>eps</th>
+      <td><p>A small constant to avoid division by zero.</p></td>
+    </tr>
+    <tr>
+      <th>kappa</th>
+      <td><p>A positive number (or function) that corresponds to the multiplier
+of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
+95$%$ confidence intervals).</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An object of class <code>prob_improve</code>, <code>exp_improve</code>, or <code>conf_bounds</code>
+along with an extra class of <code>acquisition_function</code>.`</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The acquisition functions often combine the mean and variance predictions
+from the Gaussian process model into an objective to be optimized.</p>
+<p>There is a choice between exploitation and exploration.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>prob_improve</span>()</div><div class='output co'>#&gt; Acquisition Function: probability of improvment</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-                </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

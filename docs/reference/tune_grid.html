@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Model tuning via grid search — tune_grid • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,9 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
+<meta property="og:title" content="Model tuning via grid search — tune_grid" />
 
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparam_set
-" />
+<meta property="og:description" content="Model tuning via grid search" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,28 +104,69 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
+    <h1>Model tuning via grid search</h1>
     
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <div class="hidden name"><code>tune_grid.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dials</dt><dd><p><code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></code></p></dd>
-</dl>
+    <p>Model tuning via grid search</p>
     
     </div>
 
-        
+    <pre class="usage"><span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>())</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>A model workflow object.</p></td>
+    </tr>
+    <tr>
+      <th>rs</th>
+      <td><p>An <code>rset()</code> object.</p></td>
+    </tr>
+    <tr>
+      <th>grid</th>
+      <td><p>A data frame of tuning combinations or <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>perf</th>
+      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> or <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>An object used to modify the tuning process.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble of results.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If no tuning grid is provided, a semi-random grid (via
+<code><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is create with 10 candidate parameter
+combinations.</p>
+<p>If no metric set is used, one is set. For regression models, the root mean
+squared error and coefficient of determination are computed. For classification,
+the log-likelihood and overall accuracy are computed.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-                </ul>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>

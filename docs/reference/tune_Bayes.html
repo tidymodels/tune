@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Bayesian optimization of model parameters. — tune_Bayes • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,9 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
+<meta property="og:title" content="Bayesian optimization of model parameters. — tune_Bayes" />
 
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparam_set
-" />
+<meta property="og:description" content="Bayesian optimization of model parameters." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -108,27 +104,72 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
+    <h1>Bayesian optimization of model parameters.</h1>
     
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <div class="hidden name"><code>tune_Bayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dials</dt><dd><p><code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></code></p></dd>
-</dl>
+    <p>Bayesian optimization of model parameters.</p>
     
     </div>
 
-        
+    <pre class="usage"><span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>A workflow object.</p></td>
+    </tr>
+    <tr>
+      <th>rs</th>
+      <td><p>A resample object.</p></td>
+    </tr>
+    <tr>
+      <th>iter</th>
+      <td><p>The maximum number of search iterations.</p></td>
+    </tr>
+    <tr>
+      <th>param_info</th>
+      <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>dials::param_set()</a></code> object or <code>NULL</code>. If none is given,
+a parameters set is derived from the workflow.</p></td>
+    </tr>
+    <tr>
+      <th>perf</th>
+      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> object containing information on how
+models will be evaluated for performance. The first metric in <code>perf</code> is the
+one that will be optimized.</p></td>
+    </tr>
+    <tr>
+      <th>objective</th>
+      <td><p>A character string for what metric should be optimized or
+an acquisition function object.</p></td>
+    </tr>
+    <tr>
+      <th>initial</th>
+      <td><p>An initial set of results in a tidy format.</p></td>
+    </tr>
+    <tr>
+      <th>control</th>
+      <td><p>A control object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not currently used.</p></td>
+    </tr>
+    </table>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
                 </ul>
 
   </div>

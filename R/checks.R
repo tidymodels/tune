@@ -124,12 +124,28 @@ check_Bayes_control <- function(x) {
   invisible(x)
 }
 
-check_initial <- function(x, pset) {
+check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
   if (is.null(x) || is.numeric(x)) {
     if (is.null(x)) {
       x <- 3
     }
     x <- create_initial_set(pset, n = x)
+    if (ctrl$verbose) {
+      message()
+      msg <-
+        paste0(
+          cli::symbol$play,
+          " Generating a set of ", nrow(x), " initial parameter results"
+        )
+      message(msg)
+    }
+    x <- tune_grid(wflow, rs = rs, grid = x, perf = perf)
+    x <- estimate(x)
+    if (ctrl$verbose) {
+      msg <- paste(crayon::green(cli::symbol$tick), "Initialization complete")
+      message(msg)
+      message()
+    }
   } else {
     if (inherits(x, "grid_results")) {
       x <- estimate(x)

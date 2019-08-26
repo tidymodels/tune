@@ -1,0 +1,146 @@
+---
+title: "Classification Example"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Classification Example}
+output:
+  knitr:::html_vignette:
+    toc: yes
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  digits = 3,
+  collapse = TRUE,
+  comment = "#>"
+)
+options(digits = 3)
+library(tidymodels)
+library(workflows)
+library(tune)
+library(kernlab)
+library(crayon)
+library(rlang)
+
+theme_set(theme_bw())
+
+library(doMC)
+registerDoMC(cores = parallel::detectCores())
+```
+
+The cell segmentation data from [Hill, LaPan, Li and Haney (2007)](http://www.biomedcentral.com/1471-2105/8/340) will be used to demonstrate tuning for a classification model. For these data, the predictors are aspects of cells (like size, shape, etc.). These cells are measured using image analysis and manual curation of the cells are used to determine if the boundaries of the cells were adequately captured. The outcome is either poorly segmented (`PS`) or well segmented (`WS`). The point of the analysis is to predict whether _future_ cells were properly delineated. The predictors tend to be highly correlated. 
+
+After first loading the data set, we remove indicators for the cell identifier, the original author's training/test allocation, and two predictors that are scientifically unimportant. A new training/test split is created and a scheme for 10-fold cross-validation is also created. 
+
+```{r import-data}
+library(tidymodels)
+library(workflows)
+library(tune)
+library(kernlab)
+
+# Load data
+load(url("http://bit.ly/seg-data"))
+
+segmentationData <-
+  segmentationData %>%
+  select(-Case, -Cell, -contains("Centroid"))
+
+set.seed(8567)
+tr_te_split <- initial_split(segmentationData)
+
+seg_train <- training(tr_te_split)
+seg_test  <-  testing(tr_te_split)
+
+set.seed(5121)
+folds <- vfold_cv(seg_train)
+```
+
+## Defining the tuning scheme
+
+Since the predictors are highly correlated, we can used a recipe to convert the original predictors to principal component scores. There is also slight class imbalance in these data; about `r floor(mean(segmentationData$Class == "PS") * 100)`% of the data are poorly segmented. To mitigate this, the data will be down-sampled at the end of the pre-processing such that the number of poorly and well segmented cells occur with equal frequency. A recipe will be used to process the data. However, the number of principal components will need to be tuned so that we have enough (but not too many) representations of the data. 
+
+```{r recipe}
+seg_pre_proc <-
+  recipe(Class ~ ., data = seg_train) %>%
+  step_YeoJohnson(all_predictors()) %>%
+  step_normalize(all_predictors()) %>%
+  step_pca(all_predictors(), num_comp = tune()) %>%
+  step_downsample(Class)
+```
+
+Like the original analysis, a support vector machine will be used to model the data. A radial basis function (RBF) kernel will be used and its main parameter ($\sigma$) will be tuned. Additionally, the main SVM parameter, the cost value, also needs optimization. 
+
+```{r model}
+svm_mod <-
+  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) %>%
+  set_engine("kernlab")
+```
+
+These two objects will be combined into a single object via the `workflows` package and this object will be used to fuel the optimization process. 
+
+```{r workflow}
+svm_wflow <-
+  workflow() %>%
+  add_model(svm_mod) %>%
+  add_recipe(seg_pre_proc)
+```
+
+From this object, we can derive information about what parameters are slated to be tuned. A parameter set is derived: 
+
+```{r pset}
+svm_set <- param_set(svm_wflow)
+svm_set
+```
+
+The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the `update()` function. Let's constrain the search to one to twenty components:
+
+```{r update}
+svm_set <- svm_set %>% update("num_comp", num_comp(c(1, 20)))
+```
+
+## Sequential tuning 
+
+Bayesian optimization is a sequential method that uses a model to predict new candidate parameters for assessment. When scoring potential parameter value, the mean and variance of performance are predicted. The strategy used to define how these two statistical quantities are used is defined by an _acquisition function_. 
+
+For example, one approach for scoring new candidates is to use a confidence bound. Suppose accuracy is being optimized. For a metric that we want to maximize, a lower confidence bound can be used. The multiplier on the standard error (denoted as $\kappa$) is a value that can be used to make trade-offs between _exploration_ and _exploitation_. 
+
+ * _exploration_ means that the search will consider candidates in untested space
+
+ * _exploitation_ focuses in areas where the previous best results occurred. 
+
+The variance predicted by the Bayesian model is mostly spatial variation; the value will be large for candidate values that are not close to values that have already been evaluated. If the standard error multiplier is high, the search process will be more likely to avoid areas without candidate values in the vicinity. 
+
+We'll use another acquisition function, _expected improvement_, that calculates the determines which candidates likely to to be helpful relative to the current best results. 
+
+```{r search, cache = TRUE}
+set.seed(243)
+search_res <- 
+  tune_Bayes(
+    svm_wflow, 
+    rs = folds,
+    # To use non-default parameter ranges
+    param_info = svm_set,
+    # Generate five at semi-random to start
+    initial = 5,
+    iter = 50,
+    # How to measure performance
+    perf = metric_set(kap),
+    # Acquisition function
+    objective = exp_improve(),
+    control = Bayes_control(random_value = Inf)
+  )
+search_res
+```
+
+The best performance of the initial set of candidate values was `kappa = `r max(search_res$mean[search_res$.iter == 0])` `. The best results were achieved at iteration `r search_res$.iter[which.max(search_res$mean)]` with a corresponding Kappa value of `r max(search_res$mean)`. The five best results were:
+
+```{r best}
+search_res %>% arrange(desc(mean)) %>% slice(1:5)
+```
+
+A plot of the search can be created via:
+
+```{r bo-plot}
+plot_perf_vs_iter(search_res)
+```
+

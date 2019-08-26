@@ -86,6 +86,7 @@ svm_search_2 <- tune_Bayes(svm_wflow, rs = folds,
 
 plot_perf_vs_iter(svm_search_2, "kap")
 
+# ------------------------------------------------------------------------------
 
 svm_search_2 %>% dplyr::filter(.iter > 0) %>%
   ggplot(aes(x = cost, y = rbf_sigma)) +
