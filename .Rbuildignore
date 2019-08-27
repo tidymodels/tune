@@ -6,4 +6,4 @@
 ^pkgdown$
 ^docs$
 ^\.travis\.yml$
-^vignettes/articles/Classification_cache
+^vignettes

@@ -118,19 +118,19 @@ test_that('initial values', {
   wflow_1 <-
     workflows::workflow() %>%
     add_model(glmn) %>%
-    add_recipe(bare_rec)
+    add_recipe(recipe(mpg ~ ., data = mtcars))
 
   grid_1 <- tune:::check_initial(NULL, param_set(wflow_1), wflow_1,
-                                 folds, yardstick::metric_set(kap),
+                                 mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), 3)
 
-  grid_2 <- tune:::check_initial(20, param_set(wflow_1), wflow_1,
-                                 folds, yardstick::metric_set(kap),
+  grid_2 <- tune:::check_initial(2, param_set(wflow_1), wflow_1,
+                                 mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_2))
-  expect_equal(nrow(grid_2), 20)
+  expect_equal(nrow(grid_2), 2)
 
 })
 
