@@ -19,6 +19,7 @@ seg_train <- training(tr_te_split)
 seg_test  <-  testing(tr_te_split)
 
 folds <- vfold_cv(seg_train)
+# could also be a simple modeling/validation split
 
 # ------------------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ svm_wflow <-
 svm_set <-
   svm_wflow %>%
   param_set() %>%
+  # In case you want to manually adjust the parameter specification
   update("num_comp", num_comp(c(1, 20)))
 
 set.seed(1558)

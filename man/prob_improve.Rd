@@ -10,21 +10,21 @@ prob_improve(trade_off = 0, eps = .Machine$double.eps)
 
 exp_improve(trade_off = 0, eps = .Machine$double.eps)
 
-conf_bound(kappa = 1)
+conf_bound(kappa = 0.1)
 }
 \arguments{
 \item{trade_off}{A number or function that describes the trade-off between
-exploitation and exploration.}
+exploitation and exploration. Smaller values favor exploitation.}
 
 \item{eps}{A small constant to avoid division by zero.}
 
 \item{kappa}{A positive number (or function) that corresponds to the multiplier
 of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
-95$\%$ confidence intervals).}
+95 percent confidence intervals). Smaller values lean more towards exploitation.}
 }
 \value{
 An object of class \code{prob_improve}, \code{exp_improve}, or \code{conf_bounds}
-along with an extra class of \code{acquisition_function}.`
+along with an extra class of \code{acquisition_function}.
 }
 \description{
 These functions can be used to score candidate tuning parameter combinations
@@ -34,7 +34,23 @@ as a function of their predicted mean and variation.
 The acquisition functions often combine the mean and variance predictions
 from the Gaussian process model into an objective to be optimized.
 
-There is a choice between exploitation and exploration.
+For this documentation, we assume that the metric in question is better
+when \emph{maximized} (e.g. accuracy, the coefficient of determination, etc).
+
+The expected improvement of a point \code{x} is based on the predicted mean and
+variation at that point as well as the current best value (denoted here as
+\code{x_b}). The vignette linked below contains the formulas for this acquisition
+function. When the \code{trade_off} parameter is greater than zero, the
+acquisition function will down-play the effect of the \emph{mean} prediction and
+give more weight to the variation. This has the effect of searching for new
+parameter combinations that are in areas that have yet to be sampled.
+
+Note that for \code{exp_improve()} and \code{prob_improve()}, the \code{trade_off} value is
+in the units of the outcome. The functions are parameterized so that the
+\code{trade_off} value should always be non-negative.
+
+The confidence bound function does not take into account the current best
+results in the data.
 }
 \examples{
 prob_improve()

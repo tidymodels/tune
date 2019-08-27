@@ -6,6 +6,9 @@ load(url("http://bit.ly/seg-data"))
 
 theme_set(theme_bw())
 
+library(doMC)
+registerDoMC(cores = 20)
+
 # ------------------------------------------------------------------------------
 
 segmentationData <-
@@ -50,11 +53,6 @@ grid <- tibble(cost = 10^(-2.75), num_comp = 15,
 
 grid_results <- tune_grid(svm_wflow, rs = folds, grid = grid,
                           control = grid_control(verbose = TRUE))
-
-grid_results
-
-grid_results$.metrics[[1]]
-
 estimate(grid_results)
 
 ggplot(
@@ -63,58 +61,54 @@ ggplot(
   geom_path() +
   scale_x_log10()
 
-# functions to pick best or other rules
-
 # ------------------------------------------------------------------------------
 
-kappa_only <- metric_set(kap)
+sigma_set <-
+  svm_set %>%
+  slice(2) %>%
+  update("rbf_sigma", rbf_sigma(c(-8, 0)))
 
-svm_search <- tune_Bayes(svm_wflow, rs = folds,
-                         initial = grid_results,
-                         iter = 10,
-                         perf = kappa_only,
-                         param_info = svm_set,
-                         control = Bayes_control(verbose = TRUE))
+sigma_grid <- tibble(rbf_sigma = 10^seq(-8, 0, length = 100))
 
-plot_perf_vs_iter(svm_search, "kap")
+acc_vals_0 <-
+  estimate(grid_results) %>%
+  slice(c(80, 125, 150))
 
 # ------------------------------------------------------------------------------
-
-svm_search_2 <- tune_Bayes(svm_wflow, rs = folds,
-                           initial = svm_search,
-                           iter = 10,
-                           perf = kappa_only,
-                           param_info = svm_set,
-                           control = Bayes_control(verbose = TRUE))
-
-plot_perf_vs_iter(svm_search_2, "kap")
+# iteration 1
 
 
-svm_search_2 %>% dplyr::filter(.iter > 0) %>%
-  ggplot(aes(x = cost, y = rbf_sigma)) +
-  geom_path(aes(x = cost, y = rbf_sigma), col = "black") +
-  geom_point(aes(col = num_comp, size = mean))  +
-  geom_point(data = svm_search_2, aes(col = num_comp, size = mean), pch = 1) +
-  scale_x_log10() +
-  scale_y_log10()
+gp_data_0 <-
+  tune:::encode_set(acc_vals_0 %>% select(rbf_sigma), sigma_set) %>%
+  set_names("scaled_sigma") %>%
+  mutate(
+    mean = acc_vals_0$mean,
+    rbf_sigma = acc_vals_0$rbf_sigma)
 
-svm_search_2 %>%
-  dplyr::filter(.metric == "kap") %>%
-  dplyr::select(-.estimator, -.metric, -n, -std_err) %>%
-  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) %>%
-  gather(variable, value, -mean, -.iter) %>%
-  ggplot(aes(x = .iter, y = value)) +
-  geom_point() +
-  facet_wrap(~ variable, scales = "free_y")
+gp_grid <-
+  tune:::encode_set(sigma_grid, sigma_set)  %>%
+  set_names("scaled_sigma") %>%
+  mutate(rbf_sigma = sigma_grid$rbf_sigma)
 
+library(GPfit)
+gp_0 <- GP_fit(X = as.matrix(gp_data_0[,1, drop = FALSE]), Y = gp_data_0$mean)
+gp_fit_0 <-
+  predict(gp_0, as.matrix(gp_grid[,1, drop = FALSE]))$complete_data %>%
+  as_tibble() %>%
+  setNames(c("scaled_sigma", "mean", "var")) %>%
+  mutate(sd = sqrt(var),
+         lower = mean - 1 * sd,
+         upper = mean + 1 * sd,
+         snr = (mean - max(gp_data_0$mean))/sd,
+         prob_imp = pnorm(snr)
+  ) %>%
+  bind_cols(gp_grid %>% select(rbf_sigma))
 
-svm_search_2 %>%
-  dplyr::filter(.metric == "kap") %>%
-  dplyr::select(-.estimator, -.metric, -n, -std_err) %>%
-  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) %>%
-  gather(variable, value, -mean, -.iter) %>%
-  ggplot(aes(x = value, y = mean)) +
-  geom_point() +
-  facet_wrap(~ variable, scales = "free_x")
-
+ggplot(gp_fit_0, aes(x = rbf_sigma)) +
+  geom_path(aes(y = mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1) +
+  theme_bw() +
+  geom_vline(xintercept = gp_data_0$rbf_sigma, lty = 3) +
+  geom_point(data = gp_data_0, aes(y = mean)) +
+  scale_x_continuous(limits = range(sigma_grid$rbf_sigma), trans = "log10")
 
