@@ -10,7 +10,7 @@
 #' @importFrom dials param_set_constr is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix
 #' @importFrom workflows outcome_names
-#' @importFrom yardstick rsq rmse accuracy mn_log_loss
+#' @importFrom yardstick rsq rmse accuracy kap
 #' @importFrom tidyr unnest
 #' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env

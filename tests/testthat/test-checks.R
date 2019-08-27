@@ -120,11 +120,15 @@ test_that('initial values', {
     add_model(glmn) %>%
     add_recipe(bare_rec)
 
-  grid_1 <- tune:::check_initial(NULL, param_set(wflow_1))
+  grid_1 <- tune:::check_initial(NULL, param_set(wflow_1), wflow_1,
+                                 folds, yardstick::metric_set(kap),
+                                 Bayes_control())
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), 3)
 
-  grid_2 <- tune:::check_initial(20, param_set(wflow_1))
+  grid_2 <- tune:::check_initial(20, param_set(wflow_1), wflow_1,
+                                 folds, yardstick::metric_set(kap),
+                                 Bayes_control())
   expect_true(is.data.frame(grid_2))
   expect_equal(nrow(grid_2), 20)
 

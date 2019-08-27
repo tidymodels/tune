@@ -20,7 +20,7 @@ test_that('conf_bound interface', {
 
 test_that('conf_bound calculations', {
   expect_equal(
-    predict(conf_bound(), test_res, maximize = TRUE, iter = 1),
+    predict(conf_bound(kappa = 1), test_res, maximize = TRUE, iter = 1),
     test_res %>% mutate(objective = .mean - 1 * .sd) %>% select(objective)
   )
   expect_equal(
@@ -32,7 +32,7 @@ test_that('conf_bound calculations', {
     test_res %>% mutate(objective = .mean - 4 * .sd) %>% select(objective)
   )
   expect_equal(
-    predict(conf_bound(), test_res, maximize = FALSE, iter = 1),
+    predict(conf_bound(kappa = 1), test_res, maximize = FALSE, iter = 1),
     test_res %>% mutate(objective = .mean + 1 * .sd) %>% select(objective)
   )
 })

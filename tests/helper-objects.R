@@ -3,6 +3,7 @@ library(tune)
 library(recipes)
 library(parsnip)
 library(workflows)
+library(rsample)
 data("Chicago", package = "dials")
 
 # ------------------------------------------------------------------------------
@@ -53,6 +54,10 @@ chi_wflow <-
   workflow() %>%
   add_recipe(isomap_rec) %>%
   add_model(glmn)
+
+# ------------------------------------------------------------------------------
+
+folds <- vfold_cv(mtcars)
 
 # ------------------------------------------------------------------------------
 
