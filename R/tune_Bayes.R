@@ -38,6 +38,11 @@ tune_Bayes <-
       res <- initial_grid
     }
 
+    on.exit({
+      warning("Optimization failed; returning current results.", call. = FALSE)
+      return(res)
+    })
+
     best_res <-
       res %>%
       dplyr::filter(.metric == perf_name) %>%
