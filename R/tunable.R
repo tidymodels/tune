@@ -95,7 +95,6 @@ tunable.model_spec <- function(x, ...) {
       tibble::tibble(name = c(names(x$args), names(x$eng_args))),
       by = "name"
     ) %>%
-    # TODO inlcude submodels?
     dplyr::mutate(
       source = "model_spec",
       component = mod_type(x),

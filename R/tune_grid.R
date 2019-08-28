@@ -36,7 +36,11 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
 
   all_bad <- is_cataclysmic(rs)
   if (all_bad) {
-    warning("All models failed in tune_grid().", call. = FALSE)
+    warning(
+      "All models failed in tune_grid(). From the first failure:",
+      as.character(res$.metrics[[1]]),
+      call. = FALSE
+      )
   }
 
   all_est <- rs %>% dplyr::select(-splits)

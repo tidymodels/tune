@@ -284,7 +284,6 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
   }
 
   if (bst_iter == max_iter) {
-    # TODO this is not being triggered
     msg <- paste0(crayon::red(cli::symbol$heart), msg)
   } else {
     msg <- paste0(crayon::silver(cli::symbol$circle_cross), msg)
