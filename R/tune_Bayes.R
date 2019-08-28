@@ -136,7 +136,7 @@ tune_Bayes <-
         } else {
           last_impr <- last_impr + 1
         }
-        current_summarizer(control, res, objective = perf_name)
+        current_summarizer(control, x = res, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
           Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
