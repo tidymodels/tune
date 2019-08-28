@@ -107,11 +107,18 @@ param_set.recipe <- function(x, ...) {
 
 # ------------------------------------------------------------------------------
 
-eval_call_info <- function(x) {
+eval_call_info <-  function(x) {
   if (!is.null(x)) {
-    res <- try(rlang::eval_tidy(rlang::call2(x$fun, .ns = x$pkg)), silent = TRUE)
+    # Look for other options
+    allowed_opts <- c("range", "trans", "values")
+    if (any(names(x) %in% allowed_opts)) {
+      opts <- x[names(x) %in% allowed_opts]
+    } else {
+      opts <- list()
+    }
+    res <- try(rlang::eval_tidy(rlang::call2(x$fun, .ns = x$pkg, !!!opts)), silent = TRUE)
     if (inherits(res, "try-error")) {
-      res <- NA
+      stop(paste0("Error when calling ", x$fun, "(): ", as.character(res)))
     }
   } else {
     res <- NA
