@@ -1,10 +1,10 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
-#' @importFrom dplyr distinct arrange rename
+#' @importFrom dplyr distinct arrange rename mutate_if
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int map2_dfc
-#' @importFrom tibble tibble
+#' @importFrom tibble tibble lst
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
-#' @importFrom rlang is_false eval_tidy expr sym env_get is_function
+#' @importFrom rlang is_false eval_tidy expr sym env_get is_function :=
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output
 #' @importFrom dials param_set_constr is_unknown encode_unit
@@ -30,8 +30,6 @@ utils::globalVariables(
     ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
-    "sd_trunc", "snr", "z", "trees", "max_tree", "num_terms", "max_terms",
-    "neighbors", "sub_neighbors", "penalty", "max_penalty", "max_neighbor",
-    "has_submodel")
+    "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel")
   )
 

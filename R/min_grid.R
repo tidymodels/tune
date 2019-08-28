@@ -58,7 +58,8 @@ min_grid.model_spec <- function(x, grid, ...) {
 # Template for model results that do no have the sub-model feature
 blank_submodels <- function(grid) {
   grid %>%
-    dplyr::mutate(.submodels = map(1:nrow(grid), ~ list()))
+    dplyr::mutate(.submodels = map(1:nrow(grid), ~ list())) %>%
+    dplyr::mutate_if(is.factor, as.character)
 }
 
 get_fixed_args <- function(info) {
@@ -67,6 +68,9 @@ get_fixed_args <- function(info) {
 }
 
 get_submodel_info <- function(spec, grid) {
+  if (is.null(spec$engine)) {
+    stop("Please set the model's engine.", call. = FALSE)
+  }
   param_info <-
     get_from_env(paste0(class(spec)[1], "_args")) %>%
     dplyr::filter(engine == spec$engine) %>%
@@ -87,6 +91,51 @@ get_submodel_info <- function(spec, grid) {
   param_info %>% dplyr::filter(name %in% grid_names)
 }
 
+# Assumes only one sub-model parameter and that the fitted one is the
+# maximum value
+submod_only <- function(grid) {
+  if (nrow(grid) == 1) {
+    grid$.submodels <- list(list())
+    return(grid)
+  }
+  nm <- colnames(grid)[1]
+  fit_only <- tibble(nm = max(grid[[nm]], na.rm = TRUE))
+  names(fit_only) <- nm
+  sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
+  names(sub_mods) <- nm
+  fit_only$.submodels <- list(sub_mods)
+  dplyr::select(fit_only, dplyr::one_of(names(grid)), .submodels)
+}
+
+# Assumes only one sub-model parameter and that the fitted one is the
+# maximum value
+submod_and_others <- function(grid, fixed_args) {
+  orig_names <- names(grid)
+  subm_nm <- orig_names[!(orig_names %in% fixed_args)]
+
+  # avoid more rlangedness related to names until end:
+  grid <- grid %>% dplyr::rename(..val = !!subm_nm)
+
+  fit_only <-
+    grid %>%
+    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
+    dplyr::summarize(max_val = max(..val, na.rm = TRUE)) %>%
+    dplyr::ungroup()
+
+  min_grid_df <-
+    dplyr::full_join(fit_only, grid, by = fixed_args) %>%
+    dplyr::filter(..val != max_val) %>%
+    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
+    dplyr::summarize(.submodels = list(lst(!!subm_nm := ..val))) %>%
+    dplyr::ungroup() %>%
+    dplyr::full_join(fit_only, by = fixed_args) %>%
+    dplyr::rename(!!subm_nm := max_val)
+
+  dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
+    dplyr::mutate_if(is.factor, as.character)
+}
+
+
 # ------------------------------------------------------------------------------
 # specific methods
 
@@ -97,36 +146,26 @@ get_submodel_info <- function(spec, grid) {
 #' @export min_grid.boost_tree
 #' @rdname min_grid
 min_grid.boost_tree <- function(x, grid, ...) {
-  grid_names <- names(grid)
   param_info <- get_submodel_info(x, grid)
 
-  # No ability to do submodels? Finish here:
   if (!any(param_info$has_submodel)) {
     return(blank_submodels(grid))
   }
 
   fixed_args <- get_fixed_args(param_info)
 
-  # For boosted trees, fit the model with the most trees (conditional on the
-  # other parameters) so that you can do predictions on the smaller models.
-  fit_only <-
-    grid %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(trees = max(trees, na.rm = TRUE)) %>%
-    dplyr::ungroup()
+  if (!any(param_info$has_submodel)) {
+    return(blank_submodels(grid))
+  }
 
-  # Add a column .submodels that is a list with what should be predicted
-  # by `multi_predict()` (assuming `predict()` has already been executed
-  # on the original value of 'trees')
-  min_grid_df <-
-    dplyr::full_join(fit_only %>% rename(max_tree = trees), grid, by = fixed_args) %>%
-    dplyr::filter(trees != max_tree) %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(list(trees = trees))) %>%
-    dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, grid, by = fixed_args)
+  fixed_args <- get_fixed_args(param_info)
 
-  min_grid_df  %>% dplyr::select(dplyr::one_of(grid_names), .submodels)
+  if (all(names(grid) == "trees")) {
+    res <- submod_only(grid)
+  } else {
+    res <- submod_and_others(grid, fixed_args)
+  }
+  res
 }
 
 # ------------------------------------------------------------------------------
@@ -148,13 +187,9 @@ min_grid.linear_reg <- function(x, grid, ...) {
   fixed_args <- get_fixed_args(param_info)
 
   if (all(names(grid) == "penalty")) {
-    res <- penalty_only(grid)
+    res <- submod_only(grid)
   } else {
-    if (length(unique(grid$penalty)) == 1) {
-      res <- one_penalty(grid)
-    } else {
-      res <- penalty_and_others(grid, fixed_args)
-    }
+    res <- submod_and_others(grid, fixed_args)
   }
   res
 }
@@ -166,35 +201,6 @@ no_penalty <- function(x) {
   }
   invisible(NULL)
 }
-
-penalty_only <- function(grid) {
-  fit_only <- tibble(penalty = max(grid$penalty, na.rm = TRUE))
-  fit_only$.submodels <- list(list(penalty = grid$penalty[-which.max(grid$penalty)]))
-  dplyr::select(fit_only, dplyr::one_of(names(grid)), .submodels)
-}
-
-one_penalty <- function(grid) {
-  grid$.submodels <- list(list())
-  grid
-}
-
-
-penalty_and_others <- function(grid, fixed_args) {
-  fit_only <-
-    grid %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(penalty = max(penalty, na.rm = TRUE)) %>%
-    dplyr::ungroup()
-  min_grid_df <-
-    dplyr::full_join(fit_only %>% rename(max_penalty = penalty), grid, by = fixed_args) %>%
-    dplyr::filter(penalty != max_penalty) %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(list(penalty = penalty))) %>%
-    dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, grid, by = fixed_args)
-  dplyr::select(min_grid_df, dplyr::one_of(names(grid)), .submodels)
-}
-
 
 # ------------------------------------------------------------------------------
 # logistic regression
@@ -215,7 +221,6 @@ min_grid.logistic_reg <- min_grid.linear_reg
 #' @rdname min_grid
 min_grid.mars <- function(x, grid, ...) {
 
-  grid_names <- names(grid)
   param_info <- get_submodel_info(x, grid)
 
   if (!any(param_info$has_submodel)) {
@@ -224,21 +229,18 @@ min_grid.mars <- function(x, grid, ...) {
 
   fixed_args <- get_fixed_args(param_info)
 
-  fit_only <-
-    grid %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(num_terms = max(num_terms, na.rm = TRUE)) %>%
-    dplyr::ungroup()
+  if (!any(param_info$has_submodel)) {
+    return(blank_submodels(grid))
+  }
 
-  min_grid_df <-
-    dplyr::full_join(fit_only %>% rename(max_terms = num_terms), grid, by = fixed_args) %>%
-    dplyr::filter(num_terms != max_terms) %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(list(num_terms = num_terms))) %>%
-    dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, grid, by = fixed_args)
+  fixed_args <- get_fixed_args(param_info)
 
-  min_grid_df  %>% dplyr::select(dplyr::one_of(grid_names), .submodels)
+  if (all(names(grid) == "num_terms")) {
+    res <- submod_only(grid)
+  } else {
+    res <- submod_and_others(grid, fixed_args)
+  }
+  res
 }
 
 # ------------------------------------------------------------------------------
@@ -257,7 +259,6 @@ min_grid.multinom_reg <- min_grid.linear_reg
 #' @rdname min_grid
 min_grid.nearest_neighbor <- function(x, grid, ...) {
 
-  grid_names <- names(grid)
   param_info <- get_submodel_info(x, grid)
 
   if (!any(param_info$has_submodel)) {
@@ -266,22 +267,18 @@ min_grid.nearest_neighbor <- function(x, grid, ...) {
 
   fixed_args <- get_fixed_args(param_info)
 
-  fit_only <-
-    grid %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(neighbors = max(neighbors, na.rm = TRUE)) %>%
-    dplyr::ungroup()
+  if (!any(param_info$has_submodel)) {
+    return(blank_submodels(grid))
+  }
 
-  min_grid_df <-
-    dplyr::full_join(fit_only %>% rename(max_neighbor = neighbors), grid, by = fixed_args) %>%
-    dplyr::filter(neighbors != max_neighbor) %>%
-    dplyr::rename(sub_neighbors = neighbors, neighbors = max_neighbor) %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(list(neighbors = sub_neighbors))) %>%
-    dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, grid, by = fixed_args)
+  fixed_args <- get_fixed_args(param_info)
 
-  min_grid_df  %>% dplyr::select(dplyr::one_of(grid_names), .submodels)
+  if (all(names(grid) == "neighbors")) {
+    res <- submod_only(grid)
+  } else {
+    res <- submod_and_others(grid, fixed_args)
+  }
+  res
 }
 
 

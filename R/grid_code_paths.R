@@ -49,7 +49,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
-    mod_grid_vals <- parsnip::min_grid(object$fit$model$model, mod_grid_vals)
+    mod_grid_vals <- min_grid(object$fit$model$model, mod_grid_vals)
 
     # ------------------------------------------------------------------------
 
@@ -193,7 +193,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- parsnip::min_grid(object$fit$model$model, grid)
+  mod_grid_vals <- min_grid(object$fit$model$model, grid)
 
   num_mod <- nrow(mod_grid_vals)
   for (mod_iter in 1:num_mod) {
