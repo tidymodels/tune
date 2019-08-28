@@ -67,28 +67,20 @@ get_fixed_args <- function(info) {
   fixed_args <- info$name[!info$has_submodel]
 }
 
-get_submodel_info <- function(spec, grid) {
+get_submodel_info <- function(spec) {
   if (is.null(spec$engine)) {
     stop("Please set the model's engine.", call. = FALSE)
   }
   param_info <-
     get_from_env(paste0(class(spec)[1], "_args")) %>%
     dplyr::filter(engine == spec$engine) %>%
-    dplyr::select(name = parsnip, has_submodel)
-
-  # In case a recipe or other activity has grid parameter columns,
-  # add those to the results
-  grid_names <- names(grid)
-  is_mod_param <- grid_names %in% param_info$name
-  if (any(!is_mod_param)) {
-    param_info <-
-      param_info %>%
-      dplyr::bind_rows(
-        tibble::tibble(name = grid_names[!is_mod_param],
-                       has_submodel = FALSE)
-      )
-  }
-  param_info %>% dplyr::filter(name %in% grid_names)
+    dplyr::select(name = parsnip, has_submodel) %>%
+    dplyr::full_join(
+      param_set(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
+      by = "name"
+    ) %>%
+    dplyr::mutate(id = ifelse(is.na(id), name, id))
+  param_info
 }
 
 # Assumes only one sub-model parameter and that the fitted one is the
@@ -135,6 +127,29 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::mutate_if(is.factor, as.character)
 }
 
+# Determine the correct sub-model structure when the sub-model parameter's
+# fit value should be the maximum (e.g. fit the largest number of boosting
+# iterations and use muti_predict() for the others)
+# Assumes a single sub-model parameter
+fit_max_value <- function(x, grid, ...) {
+  gr_nms <- names(grid)
+  param_info <- get_submodel_info(x)
+  sub_nm <- param_info$id[param_info$has_submodel]
+
+  if (length(sub_nm) == 0) {
+    return(blank_submodels(grid))
+  }
+
+  fixed_args <- gr_nms[gr_nms != sub_nm]
+
+  if (length(fixed_args) == 0) {
+    res <- submod_only(grid)
+  } else {
+    res <- submod_and_others(grid, fixed_args)
+  }
+  res
+}
+
 
 # ------------------------------------------------------------------------------
 # specific methods
@@ -145,28 +160,7 @@ submod_and_others <- function(grid, fixed_args) {
 #' @export
 #' @export min_grid.boost_tree
 #' @rdname min_grid
-min_grid.boost_tree <- function(x, grid, ...) {
-  param_info <- get_submodel_info(x, grid)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (all(names(grid) == "trees")) {
-    res <- submod_only(grid)
-  } else {
-    res <- submod_and_others(grid, fixed_args)
-  }
-  res
-}
+min_grid.boost_tree <- fit_max_value
 
 # ------------------------------------------------------------------------------
 # linear regression
@@ -175,18 +169,22 @@ min_grid.boost_tree <- function(x, grid, ...) {
 #' @export min_grid.linear_reg
 #' @rdname min_grid
 min_grid.linear_reg <- function(x, grid, ...) {
-  no_penalty(grid)
+  # This is basically `fit_max_value()` with an extra error trap
+  gr_nms <- names(grid)
+  param_info <- get_submodel_info(x)
+  sub_nm <- param_info$id[param_info$has_submodel]
 
-  grid_names <- names(grid)
-  param_info <- get_submodel_info(x, grid)
+  if (x$engine == "glmnet") {
+    no_penalty(grid, sub_nm)
+  }
 
-  if (!any(param_info$has_submodel)) {
+  if (length(sub_nm) == 0) {
     return(blank_submodels(grid))
   }
 
-  fixed_args <- get_fixed_args(param_info)
+  fixed_args <- gr_nms[gr_nms != sub_nm]
 
-  if (all(names(grid) == "penalty")) {
+  if (length(fixed_args) == 0) {
     res <- submod_only(grid)
   } else {
     res <- submod_and_others(grid, fixed_args)
@@ -194,9 +192,8 @@ min_grid.linear_reg <- function(x, grid, ...) {
   res
 }
 
-
-no_penalty <- function(x) {
-  if (all(colnames(x) != "penalty")) {
+no_penalty <- function(x, nm) {
+  if (length(nm) == 0 || all(colnames(x) != nm)) {
     stop("At least one penalty value is required for glmnet.", call. = FALSE)
   }
   invisible(NULL)
@@ -219,29 +216,7 @@ min_grid.logistic_reg <- min_grid.linear_reg
 #' @export
 #' @export min_grid.mars
 #' @rdname min_grid
-min_grid.mars <- function(x, grid, ...) {
-
-  param_info <- get_submodel_info(x, grid)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (all(names(grid) == "num_terms")) {
-    res <- submod_only(grid)
-  } else {
-    res <- submod_and_others(grid, fixed_args)
-  }
-  res
-}
+min_grid.mars <- fit_max_value
 
 # ------------------------------------------------------------------------------
 # multinomial regression
@@ -257,30 +232,4 @@ min_grid.multinom_reg <- min_grid.linear_reg
 #' @export
 #' @export min_grid.nearest_neighbor
 #' @rdname min_grid
-min_grid.nearest_neighbor <- function(x, grid, ...) {
-
-  param_info <- get_submodel_info(x, grid)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (!any(param_info$has_submodel)) {
-    return(blank_submodels(grid))
-  }
-
-  fixed_args <- get_fixed_args(param_info)
-
-  if (all(names(grid) == "neighbors")) {
-    res <- submod_only(grid)
-  } else {
-    res <- submod_and_others(grid, fixed_args)
-  }
-  res
-}
-
-
-
-
+min_grid.nearest_neighbor <- fit_max_value
