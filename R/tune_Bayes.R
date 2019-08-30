@@ -39,7 +39,7 @@ tune_Bayes <-
     }
 
     on.exit({
-      warning("Optimization failed; returning current results.", call. = FALSE)
+      warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
       return(res)
     })
 
