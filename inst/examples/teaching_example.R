@@ -6,7 +6,16 @@ library(gridExtra)
 
 load(url("http://bit.ly/seg-data"))
 
-theme_set(theme_bw())
+thm <-
+  theme_bw() +
+  theme(
+    panel.background = element_rect(fill = "transparent", colour = NA),
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    legend.position = "top",
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    legend.key = element_rect(fill = "transparent", colour = NA)
+  )
+theme_set(thm)
 
 library(doMC)
 registerDoMC(cores = 20)
@@ -139,6 +148,19 @@ acc_vals <-
   acc_results %>%
   slice(c(30, 50, 85))
 
+sigma_grid <- tibble(rbf_sigma = 10^seq(-3, 0, length = 500))
+
+
+p0 <-
+  ggplot(acc_vals, aes(x = rbf_sigma, y = mean)) +
+  geom_point()  +
+  ylab("Accuracy") +
+  ggtitle("Initial Grid") +
+  scale_x_continuous(limits = range(sigma_grid$rbf_sigma), trans = "log10")  +
+  xlab("Parameter") +
+  ylim(c(.67, .81))
+
+
 obj <- prob_improve(trade_off = .05)
 
 for (iter in 1:25) {
@@ -153,7 +175,8 @@ for (iter in 1:25) {
     scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
     ylab("Accuracy") +
     ggtitle(paste("Iteration", iter)) +
-    ylim(c(.67, .81))
+    ylim(c(.67, .81))  +
+    xlab("Parameter")
 
   min_y <-
     acc_vals %>%
@@ -166,7 +189,8 @@ for (iter in 1:25) {
           axis.ticks.y = element_blank()) +
     geom_point(data = min_y, aes(x = rbf_sigma, y = y)) +
     scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
-    ylab(obj$label)
+    ylab(obj$label)  +
+    xlab("Parameter")
 
   gA <- ggplotGrob(p_upper)
   gB <- ggplotGrob(p_lower)
@@ -192,5 +216,185 @@ for (iter in 1:25) {
     )
 }
 
+# ------------------------------------------------------------------------------
+# For presentation
+
+acc_vals <-
+  acc_results %>%
+  slice(c(30, 50, 85))
+
+sigma_grid <- tibble(rbf_sigma = 10^seq(-3, 0, length = 500))
 
 
+p0 <-
+  ggplot(acc_vals, aes(x = rbf_sigma, y = mean)) +
+  geom_point()  +
+  ylab("Accuracy") +
+  ggtitle("Initial Grid") +
+  scale_x_continuous(limits = range(sigma_grid$rbf_sigma), trans = "log10")  +
+  xlab("Parameter") +
+  ylim(c(.67, .81))
+
+svg("~/tmp/initial.svg", height = 4)
+plot(p0)
+dev.off()
+
+obj <- exp_improve(trade_off = 0)
+
+results <- gp_iter(acc_vals, sigma_set, obj)
+
+iter <- 1
+
+p_upper <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = .mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1, fill = "blue") +
+  geom_point(data = acc_vals, aes(y = mean)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab("Accuracy") +
+  ggtitle(paste("Iteration", iter)) +
+  ylim(c(.67, .81))  +
+  xlab("Parameter")
+
+min_y <-
+  acc_vals %>%
+  mutate(y = min(results$objective))
+
+p_lower <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = objective)) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  geom_point(data = min_y, aes(x = rbf_sigma, y = y)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab(obj$label)  +
+  xlab("Parameter")
+
+gA <- ggplotGrob(p_upper)
+gB <- ggplotGrob(p_lower)
+maxWidth <- grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+gA$widths[2:5] <- as.list(maxWidth)
+gB$widths[2:5] <- as.list(maxWidth)
+
+svg("~/tmp/iter_1.svg")
+grid.arrange(gA, gB, ncol = 1)
+dev.off()
+
+for (iter in 2:25) {
+
+  results <- gp_iter(acc_vals, sigma_set, obj)
+
+  best <-
+    results %>%
+    arrange(desc(objective)) %>% slice(1) %>%
+    select(best = rbf_sigma) %>%
+    cbind(acc_results) %>%
+    mutate(error = abs(best - rbf_sigma)) %>%
+    arrange(error) %>%
+    slice(1) %>%
+    select(rbf_sigma)
+
+  acc_vals <-
+    acc_vals %>%
+    bind_rows(
+      inner_join(acc_results, best, by = "rbf_sigma")
+    )
+}
+
+p_upper <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = .mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1, fill = "blue") +
+  geom_point(data = acc_vals, aes(y = mean)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab("Accuracy") +
+  ggtitle(paste("Iteration", iter)) +
+  ylim(c(.67, .81))  +
+  xlab("Parameter")
+
+min_y <-
+  acc_vals %>%
+  mutate(y = min(results$objective))
+
+p_lower <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = objective)) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  geom_point(data = min_y, aes(x = rbf_sigma, y = y)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab(obj$label)  +
+  xlab("Parameter")
+
+gA <- ggplotGrob(p_upper)
+gB <- ggplotGrob(p_lower)
+maxWidth <- grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+gA$widths[2:5] <- as.list(maxWidth)
+gB$widths[2:5] <- as.list(maxWidth)
+
+svg("~/tmp/iter_14.svg")
+grid.arrange(gA, gB, ncol = 1)
+dev.off()
+
+
+acc_vals <-
+  acc_results %>%
+  slice(c(30, 50, 85))
+
+obj <- exp_improve(trade_off = 0.01)
+
+for (iter in 1:14) {
+
+  results <- gp_iter(acc_vals, sigma_set, obj)
+
+  best <-
+    results %>%
+    arrange(desc(objective)) %>% slice(1) %>%
+    select(best = rbf_sigma) %>%
+    cbind(acc_results) %>%
+    mutate(error = abs(best - rbf_sigma)) %>%
+    arrange(error) %>%
+    slice(1) %>%
+    select(rbf_sigma)
+
+  acc_vals <-
+    acc_vals %>%
+    bind_rows(
+      inner_join(acc_results, best, by = "rbf_sigma")
+    )
+}
+
+p_upper <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = .mean)) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = .1, fill = "blue") +
+  geom_point(data = acc_vals, aes(y = mean)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab("Accuracy") +
+  ggtitle(paste("Iteration", iter)) +
+  ylim(c(.67, .81))  +
+  xlab("Parameter")
+
+min_y <-
+  acc_vals %>%
+  mutate(y = min(results$objective))
+
+p_lower <-
+  ggplot(results, aes(x = rbf_sigma)) +
+  geom_path(aes(y = objective)) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  geom_point(data = min_y, aes(x = rbf_sigma, y = y)) +
+  scale_x_continuous(limits = range(results$rbf_sigma), trans = "log10") +
+  ylab(obj$label)  +
+  xlab("Parameter")
+
+gA <- ggplotGrob(p_upper)
+gB <- ggplotGrob(p_lower)
+maxWidth <- grid::unit.pmax(gA$widths[2:5], gB$widths[2:5])
+gA$widths[2:5] <- as.list(maxWidth)
+gB$widths[2:5] <- as.list(maxWidth)
+
+svg("~/tmp/trade_off_14.svg")
+grid.arrange(gA, gB, ncol = 1)
+dev.off()
