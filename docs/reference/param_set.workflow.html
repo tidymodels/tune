@@ -32,10 +32,10 @@
 
 
 <meta property="og:title" content="Determination of parameter sets for other objects — param_set.workflow" />
+
 <meta property="og:description" content="These methods extend the generic dials::param_set() to work with more
 complex objects, such as recipes, model specifications, and workflows." />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -56,6 +56,7 @@ complex objects, such as recipes, model specifications, and workflows." />
 
  gtag('config', 'UA-115082821-1');
 </script>
+
   </head>
 
   <body>
@@ -81,8 +82,25 @@ complex objects, such as recipes, model specifications, and workflows." />
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a></a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
+      <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
         
       </ul>
@@ -92,6 +110,7 @@ complex objects, such as recipes, model specifications, and workflows." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -103,19 +122,21 @@ complex objects, such as recipes, model specifications, and workflows." />
     </div>
 
     <div class="ref-description">
-    <p>These methods extend the generic <code><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>dials::param_set()</a></code> to work with more
+    
+    <p>These methods extend the generic <code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>dials::param_set()</a></code> to work with more
 complex objects, such as recipes, model specifications, and workflows.</p>
+    
     </div>
 
     <pre class="usage"><span class='co'># S3 method for workflow</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for model_spec</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for recipe</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
-
+<span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -128,52 +149,60 @@ complex objects, such as recipes, model specifications, and workflows.</p>
       <td><p>Not currently used.</p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A parameter set object</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>tibble</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>recipes</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tibble</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/recipe'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/step_knnimpute'>step_knnimpute</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/has_role'>all_predictors</a></span>(), <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/step_pca'>step_pca</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/has_role'>all_predictors</a></span>(), <span class='kw'>num_comp</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_knnimpute.html'>step_knnimpute</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_pca.html'>step_pca</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>num_comp</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; </div><div class='input'>
  <span class='co'># A peak under the hood</span>
- <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span>(<span class='no'>.Last.value</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 0 x 0</span><span></div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/recipe'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/step_ns'>step_ns</a></span>(<span class='no'>disp</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"disp df"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/step_ns'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt df"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+ <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span>(<span class='no'>.Last.value</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Calling `as_tibble()` on a vector is discouraged, because the behavior is likely to change in the future. Use `tibble::enframe(name = NULL)` instead.</span>
+#&gt; <span class='warning'><span style='color: #555555;'>This warning is displayed once per session.</span><span></span></div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 1</span><span>
+#&gt;   value                                                         
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                                                         
+#&gt; </span><span style='color: #555555;'>1</span><span> /Library/Frameworks/R.framework/Versions/3.6/Resources/library</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"disp df"</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt df"</span>)) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; </div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/recipe'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/step_normalize'>step_normalize</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/recipes/topics/has_role'>all_predictors</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
+<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_normalize.html'>step_normalize</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
 #&gt; </div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
-<span class='fu'><a href='https://www.rdocumentation.org/packages/parsnip/topics/boost_tree'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/parsnip/topics/set_engine'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; </div><div class='input'>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/parsnip/topics/boost_tree'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/parsnip/topics/set_engine'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/dials/topics/param_set'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      
       <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="tidyverse">
@@ -186,11 +215,14 @@ complex objects, such as recipes, model specifications, and workflows.</p>
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

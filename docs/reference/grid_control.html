@@ -32,9 +32,9 @@
 
 
 <meta property="og:title" content="Control the grid search process — grid_control" />
+
 <meta property="og:description" content="Control the grid search process" />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -55,6 +55,7 @@
 
  gtag('config', 'UA-115082821-1');
 </script>
+
   </head>
 
   <body>
@@ -80,8 +81,25 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a></a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
+      <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
         
       </ul>
@@ -91,6 +109,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -102,11 +121,13 @@
     </div>
 
     <div class="ref-description">
+    
     <p>Control the grid search process</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>grid_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -120,17 +141,18 @@
 backend is registered).</p></td>
     </tr>
     </table>
-
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="tidyverse">
@@ -143,11 +165,14 @@ backend is registered).</p></td>
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

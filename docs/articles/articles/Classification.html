@@ -46,8 +46,25 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
 <li>
-  <a></a>
+      <a href="../../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
+      <a href="../../articles/acquisition_functions.html">Acquisition Functions</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../../news/index.html">News</a>
 </li>
         
       </ul>
@@ -59,6 +76,7 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -74,25 +92,25 @@
     
 <p>The cell segmentation data from <a href="http://www.biomedcentral.com/1471-2105/8/340">Hill, LaPan, Li and Haney (2007)</a> will be used to demonstrate tuning for a classification model. For these data, the predictors are aspects of cells (like size, shape, etc.). These cells are measured using image analysis and manual curation of the cells are used to determine if the boundaries of the cells were adequately captured. The outcome is either poorly segmented (<code>PS</code>) or well segmented (<code>WS</code>). The point of the analysis is to predict whether <em>future</em> cells were properly delineated. The predictors tend to be highly correlated.</p>
 <p>After first loading the data set, we remove indicators for the cell identifier, the original author’s training/test allocation, and two predictors that are scientifically unimportant. A new training/test split is created and a scheme for 10-fold cross-validation is also created.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidymodels)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(workflows)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tune)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(kernlab)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(workflows)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(kernlab)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># Load data</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/connections">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">segmentationData &lt;-</a>
 <a class="sourceLine" id="cb1-10" data-line-number="10"><span class="st">  </span>segmentationData <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Case, <span class="op">-</span>Cell, <span class="op">-</span><span class="kw">contains</span>(<span class="st">"Centroid"</span>))</a>
 <a class="sourceLine" id="cb1-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">8567</span>)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8567</span>)</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">tr_te_split &lt;-<span class="st"> </span><span class="kw">initial_split</span>(segmentationData)</a>
 <a class="sourceLine" id="cb1-15" data-line-number="15"></a>
 <a class="sourceLine" id="cb1-16" data-line-number="16">seg_train &lt;-<span class="st"> </span><span class="kw">training</span>(tr_te_split)</a>
 <a class="sourceLine" id="cb1-17" data-line-number="17">seg_test  &lt;-<span class="st">  </span><span class="kw">testing</span>(tr_te_split)</a>
 <a class="sourceLine" id="cb1-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">5121</span>)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">5121</span>)</a>
 <a class="sourceLine" id="cb1-20" data-line-number="20">folds &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(seg_train)</a></code></pre></div>
 <div id="defining-the-tuning-scheme" class="section level2">
 <h2 class="hasAnchor">
@@ -110,15 +128,15 @@
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kernlab"</span>)</a></code></pre></div>
 <p>These two objects will be combined into a single object via the <code>workflows</code> package and this object will be used to fuel the optimization process.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">svm_wflow &lt;-</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/workflow">workflow</a></span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/add_model">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/add_recipe">add_recipe</a></span>(seg_pre_proc)</a></code></pre></div>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(seg_pre_proc)</a></code></pre></div>
 <p>From this object, we can derive information about what parameters are slated to be tuned. A parameter set is derived:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/dials/topics/param_set">param_set</a></span>(svm_wflow)</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>(svm_wflow)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">svm_set</a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Collection of 3 parameters for tuning</span></a></code></pre></div>
-<p>The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the <code><a href="https://www.rdocumentation.org/packages/stats/topics/update">update()</a></code> function. Let’s constrain the search to one to twenty components:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/update">update</a></span>(<span class="st">"num_comp"</span>, <span class="kw">num_comp</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</a></code></pre></div>
+<p>The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> function. Let’s constrain the search to one to twenty components:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="st">"num_comp"</span>, <span class="kw">num_comp</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</a></code></pre></div>
 </div>
 <div id="sequential-tuning" class="section level2">
 <h2 class="hasAnchor">
@@ -131,7 +149,7 @@
 </ul>
 <p>The variance predicted by the Bayesian model is mostly spatial variation; the value will be large for candidate values that are not close to values that have already been evaluated. If the standard error multiplier is high, the search process will be more likely to avoid areas without candidate values in the vicinity.</p>
 <p>We’ll use another acquisition function, <em>expected improvement</em>, that calculates the determines which candidates likely to to be helpful relative to the current best results.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">9961</span>)</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">9961</span>)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">search_res &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../../reference/tune_Bayes.html">tune_Bayes</a></span>(</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">    svm_wflow, </a>
@@ -147,7 +165,7 @@
 <a class="sourceLine" id="cb7-14" data-line-number="14">    <span class="dt">objective =</span> <span class="kw"><a href="../../reference/prob_improve.html">exp_improve</a></span>(),</a>
 <a class="sourceLine" id="cb7-15" data-line-number="15">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/Bayes_control.html">Bayes_control</a></span>(<span class="dt">random_value =</span> <span class="ot">Inf</span>)</a>
 <a class="sourceLine" id="cb7-16" data-line-number="16">  )</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; Warning: Optimization failed; returning current results.</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; Warning: Optimization stopped prematurely; returning current results.</span></a>
 <a class="sourceLine" id="cb7-18" data-line-number="18">search_res</a>
 <a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; # A tibble: 55 x 9</span></a>
 <a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt;        cost rbf_sigma num_comp .metric .estimator  mean     n std_err .iter</span></a>
@@ -180,7 +198,6 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -194,6 +211,7 @@
 </div>
 
 
+
       <footer><div class="tidyverse">
   <p>tune is a part of the <strong>tidymodels</strong> ecosystem, a collection of modeling packages designed with common APIs and a shared philosophy.</p>
 </div>
@@ -204,10 +222,12 @@
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

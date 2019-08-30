@@ -32,11 +32,11 @@
 
 
 <meta property="og:title" content="Determine the minimum set of model fits — min_grid" />
+
 <meta property="og:description" content="min_grid determines exactly what models should be fit in order to
 evaluate the entire set of tuning parameter combinations. This is for
 internal use only and the API may change in the near future." />
 <meta name="twitter:card" content="summary" />
-
 
 
 
@@ -57,6 +57,7 @@ internal use only and the API may change in the near future." />
 
  gtag('config', 'UA-115082821-1');
 </script>
+
   </head>
 
   <body>
@@ -82,8 +83,25 @@ internal use only and the API may change in the near future." />
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a></a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
+      <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">News</a>
 </li>
         
       </ul>
@@ -93,6 +111,7 @@ internal use only and the API may change in the near future." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -104,9 +123,11 @@ internal use only and the API may change in the near future." />
     </div>
 
     <div class="ref-description">
+    
     <p><code>min_grid</code> determines exactly what models should be fit in order to
 evaluate the entire set of tuning parameter combinations. This is for
 internal use only and the API may change in the near future.</p>
+    
     </div>
 
     <pre class="usage"><span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
@@ -131,7 +152,7 @@ internal use only and the API may change in the near future.</p>
 
 <span class='co'># S3 method for nearest_neighbor</span>
 <span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)</pre>
-
+    
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -148,22 +169,25 @@ internal use only and the API may change in the near future.</p>
       <td><p>Not currently used.</p></td>
     </tr>
     </table>
-
+    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble with the minimum tuning parameters to fit and an additional
 list column with the parameter combinations used for prediction.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      
       <li><a href="#value">Value</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="tidyverse">
@@ -176,11 +200,14 @@ list column with the parameter combinations used for prediction.</p>
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
