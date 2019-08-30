@@ -51,6 +51,12 @@ in the units of the outcome. The functions are parameterized so that the
 
 The confidence bound function does not take into account the current best
 results in the data.
+
+If a function is passed to  \code{exp_improve()} or \code{prob_improve()}, the function
+can have multiple arguments but only the first (the current iteration number)
+is given to the function. In other words, the function argument should have
+defaults for all but the first argument. See \code{expo_decay()} as an example of
+a function.
 }
 \examples{
 prob_improve()

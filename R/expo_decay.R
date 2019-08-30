@@ -4,6 +4,10 @@
 #' over iterations. This can be used to dynamically set parameters for
 #' acquisition functions as iterations of Bayesian optimization proceed.
 #'
+#' Note that, when used with the acquisition functions in `tune()` a wrapper
+#' would be required since only the first argument would be evaluated during
+#' tuning.
+#'
 #' @param iter An integer for the current iteration number.
 #' @param start_val The number returned for the first iteration.
 #' @param limit_val The number that the process converges to over iterations.
