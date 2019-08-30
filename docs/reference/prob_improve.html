@@ -32,10 +32,10 @@
 
 
 <meta property="og:title" content="Acquisition function for scoring parameter combinations — prob_improve" />
-
 <meta property="og:description" content="These functions can be used to score candidate tuning parameter combinations
 as a function of their predicted mean and variation." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -56,7 +56,6 @@ as a function of their predicted mean and variation." />
 
  gtag('config', 'UA-115082821-1');
 </script>
-
   </head>
 
   <body>
@@ -83,13 +82,7 @@ as a function of their predicted mean and variation." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
+  <a></a>
 </li>
         
       </ul>
@@ -99,7 +92,6 @@ as a function of their predicted mean and variation." />
 </div><!--/.navbar -->
 
       
-
       </header>
 
 <div class="row">
@@ -111,25 +103,23 @@ as a function of their predicted mean and variation." />
     </div>
 
     <div class="ref-description">
-    
     <p>These functions can be used to score candidate tuning parameter combinations
 as a function of their predicted mean and variation.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>prob_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
 
 <span class='fu'>exp_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
 
-<span class='fu'>conf_bound</span>(<span class='kw'>kappa</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
-    
+<span class='fu'>conf_bound</span>(<span class='kw'>kappa</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>trade_off</th>
       <td><p>A number or function that describes the trade-off between
-exploitation and exploration.</p></td>
+exploitation and exploration. Smaller values favor exploitation.</p></td>
     </tr>
     <tr>
       <th>eps</th>
@@ -139,21 +129,32 @@ exploitation and exploration.</p></td>
       <th>kappa</th>
       <td><p>A positive number (or function) that corresponds to the multiplier
 of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
-95$%$ confidence intervals).</p></td>
+95 percent confidence intervals). Smaller values lean more towards exploitation.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>prob_improve</code>, <code>exp_improve</code>, or <code>conf_bounds</code>
-along with an extra class of <code>acquisition_function</code>.`</p>
-    
+along with an extra class of <code>acquisition_function</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The acquisition functions often combine the mean and variance predictions
 from the Gaussian process model into an objective to be optimized.</p>
-<p>There is a choice between exploitation and exploration.</p>
-    
+<p>For this documentation, we assume that the metric in question is better
+when <em>maximized</em> (e.g. accuracy, the coefficient of determination, etc).</p>
+<p>The expected improvement of a point <code>x</code> is based on the predicted mean and
+variation at that point as well as the current best value (denoted here as
+<code>x_b</code>). The vignette linked below contains the formulas for this acquisition
+function. When the <code>trade_off</code> parameter is greater than zero, the
+acquisition function will down-play the effect of the <em>mean</em> prediction and
+give more weight to the variation. This has the effect of searching for new
+parameter combinations that are in areas that have yet to be sampled.</p>
+<p>Note that for <code>exp_improve()</code> and <code>prob_improve()</code>, the <code>trade_off</code> value is
+in the units of the outcome. The functions are parameterized so that the
+<code>trade_off</code> value should always be non-negative.</p>
+<p>The confidence bound function does not take into account the current best
+results in the data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>prob_improve</span>()</div><div class='output co'>#&gt; Acquisition Function: probability of improvment</div></pre>
@@ -162,17 +163,13 @@ from the Gaussian process model into an objective to be optimized.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
-
 
       <footer>
       <div class="tidyverse">
@@ -185,14 +182,11 @@ from the Gaussian process model into an objective to be optimized.</p>
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
-
       </footer>
    </div>
 
   
 
-
   </body>
 </html>
-
 

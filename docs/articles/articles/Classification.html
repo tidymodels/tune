@@ -47,13 +47,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="../../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
-</li>
-<li>
-  <a href="../../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../../news/index.html">News</a>
+  <a></a>
 </li>
         
       </ul>
@@ -65,7 +59,6 @@
 <!--/.navbar -->
 
       
-
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -81,25 +74,25 @@
     
 <p>The cell segmentation data from <a href="http://www.biomedcentral.com/1471-2105/8/340">Hill, LaPan, Li and Haney (2007)</a> will be used to demonstrate tuning for a classification model. For these data, the predictors are aspects of cells (like size, shape, etc.). These cells are measured using image analysis and manual curation of the cells are used to determine if the boundaries of the cells were adequately captured. The outcome is either poorly segmented (<code>PS</code>) or well segmented (<code>WS</code>). The point of the analysis is to predict whether <em>future</em> cells were properly delineated. The predictors tend to be highly correlated.</p>
 <p>After first loading the data set, we remove indicators for the cell identifier, the original author’s training/test allocation, and two predictors that are scientifically unimportant. A new training/test split is created and a scheme for 10-fold cross-validation is also created.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(workflows)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(kernlab)</a>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tidymodels)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(workflows)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tune)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(kernlab)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># Load data</span></a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/load">load</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/connections">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">segmentationData &lt;-</a>
 <a class="sourceLine" id="cb1-10" data-line-number="10"><span class="st">  </span>segmentationData <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Case, <span class="op">-</span>Cell, <span class="op">-</span><span class="kw">contains</span>(<span class="st">"Centroid"</span>))</a>
 <a class="sourceLine" id="cb1-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8567</span>)</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">8567</span>)</a>
 <a class="sourceLine" id="cb1-14" data-line-number="14">tr_te_split &lt;-<span class="st"> </span><span class="kw">initial_split</span>(segmentationData)</a>
 <a class="sourceLine" id="cb1-15" data-line-number="15"></a>
 <a class="sourceLine" id="cb1-16" data-line-number="16">seg_train &lt;-<span class="st"> </span><span class="kw">training</span>(tr_te_split)</a>
 <a class="sourceLine" id="cb1-17" data-line-number="17">seg_test  &lt;-<span class="st">  </span><span class="kw">testing</span>(tr_te_split)</a>
 <a class="sourceLine" id="cb1-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">5121</span>)</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">5121</span>)</a>
 <a class="sourceLine" id="cb1-20" data-line-number="20">folds &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(seg_train)</a></code></pre></div>
 <div id="defining-the-tuning-scheme" class="section level2">
 <h2 class="hasAnchor">
@@ -117,20 +110,15 @@
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kernlab"</span>)</a></code></pre></div>
 <p>These two objects will be combined into a single object via the <code>workflows</code> package and this object will be used to fuel the optimization process.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">svm_wflow &lt;-</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(seg_pre_proc)</a></code></pre></div>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/workflow">workflow</a></span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/add_model">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://www.rdocumentation.org/packages/workflows/topics/add_recipe">add_recipe</a></span>(seg_pre_proc)</a></code></pre></div>
 <p>From this object, we can derive information about what parameters are slated to be tuned. A parameter set is derived:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>(svm_wflow)</a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/dials/topics/param_set">param_set</a></span>(svm_wflow)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">svm_set</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Collection of 3 parameters for tuning</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Recipe parameters needing finalization:</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;    # Components ('num_comp')</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; See `?dials::finalize` for more information.</span></a></code></pre></div>
-<p>The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> function. Let’s constrain the search to one to twenty components:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="st">"num_comp"</span>, <span class="kw">num_comp</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</a></code></pre></div>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Collection of 3 parameters for tuning</span></a></code></pre></div>
+<p>The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the <code><a href="https://www.rdocumentation.org/packages/stats/topics/update">update()</a></code> function. Let’s constrain the search to one to twenty components:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/update">update</a></span>(<span class="st">"num_comp"</span>, <span class="kw">num_comp</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</a></code></pre></div>
 </div>
 <div id="sequential-tuning" class="section level2">
 <h2 class="hasAnchor">
@@ -143,7 +131,7 @@
 </ul>
 <p>The variance predicted by the Bayesian model is mostly spatial variation; the value will be large for candidate values that are not close to values that have already been evaluated. If the standard error multiplier is high, the search process will be more likely to avoid areas without candidate values in the vicinity.</p>
 <p>We’ll use another acquisition function, <em>expected improvement</em>, that calculates the determines which candidates likely to to be helpful relative to the current best results.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">243</span>)</a>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/Random">set.seed</a></span>(<span class="dv">9961</span>)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">search_res &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../../reference/tune_Bayes.html">tune_Bayes</a></span>(</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">    svm_wflow, </a>
@@ -159,31 +147,32 @@
 <a class="sourceLine" id="cb7-14" data-line-number="14">    <span class="dt">objective =</span> <span class="kw"><a href="../../reference/prob_improve.html">exp_improve</a></span>(),</a>
 <a class="sourceLine" id="cb7-15" data-line-number="15">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/Bayes_control.html">Bayes_control</a></span>(<span class="dt">random_value =</span> <span class="ot">Inf</span>)</a>
 <a class="sourceLine" id="cb7-16" data-line-number="16">  )</a>
-<a class="sourceLine" id="cb7-17" data-line-number="17">search_res</a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; # A tibble: 55 x 9</span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt;       cost rbf_sigma num_comp .metric .estimator  mean     n std_err .iter</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt;  1 0.00206  3.96e- 6       12 kap     binary     0.537    10  0.0277     0</span></a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co">#&gt;  2 0.0108   2.62e- 3       18 kap     binary     0.526    10  0.0310     0</span></a>
-<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co">#&gt;  3 0.0147   7.65e- 7       12 kap     binary     0.537    10  0.0277     0</span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="co">#&gt;  4 0.0747   5.44e-10        9 kap     binary     0.244    10  0.0492     0</span></a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#&gt;  5 0.166    9.59e- 1        2 kap     binary     0.438    10  0.0350     0</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#&gt;  6 0.0234   6.90e- 2       11 kap     binary     0.556    10  0.0373     1</span></a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt;  7 0.00153  6.61e- 7        1 kap     binary     0.294    10  0.0229     2</span></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#&gt;  8 0.246    1.88e- 3       17 kap     binary     0.539    10  0.0334     3</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#&gt;  9 0.00445  1.76e- 4        8 kap     binary     0.533    10  0.0265     4</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#&gt; 10 0.0570   2.91e- 1       20 kap     binary     0.383    10  0.0362     5</span></a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt; # … with 45 more rows</span></a></code></pre></div>
-<p>The best performance of the initial set of candidate values was <code>kappa = 0.537</code>. The best results were achieved at iteration 50 with a corresponding Kappa value of 0.601. The five best results were:</p>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; Warning: Optimization failed; returning current results.</span></a>
+<a class="sourceLine" id="cb7-18" data-line-number="18">search_res</a>
+<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; # A tibble: 55 x 9</span></a>
+<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt;        cost rbf_sigma num_comp .metric .estimator  mean     n std_err .iter</span></a>
+<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co">#&gt;  1  0.00150  3.00e- 6       16 kap     binary     0.523    10  0.0325     0</span></a>
+<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co">#&gt;  2  0.0101   2.64e- 3       14 kap     binary     0.540    10  0.0264     0</span></a>
+<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="co">#&gt;  3  0.170    4.92e- 7        8 kap     binary     0.530    10  0.0275     0</span></a>
+<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#&gt;  4  3.27     1.18e-10        3 kap     binary     0.524    10  0.0249     0</span></a>
+<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#&gt;  5  4.94     7.17e- 2       11 kap     binary     0.558    10  0.0298     0</span></a>
+<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt;  6 25.5      8.15e- 1        2 kap     binary     0.436    10  0.0345     1</span></a>
+<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#&gt;  7  6.91     9.40e- 1       12 kap     binary     0.414    10  0.0222     2</span></a>
+<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#&gt;  8  0.848    3.78e- 2       10 kap     binary     0.594    10  0.0297     3</span></a>
+<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#&gt;  9  6.99     2.03e- 2        1 kap     binary     0.352    10  0.0323     4</span></a>
+<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt; 10  9.04    10.00e- 3       10 kap     binary     0.586    10  0.0317     5</span></a>
+<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; # … with 45 more rows</span></a></code></pre></div>
+<p>The best performance of the initial set of candidate values was <code>kappa = 0.558</code>. The best results were achieved at iteration 3 with a corresponding Kappa value of 0.594. The five best results were:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">search_res <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>)</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; # A tibble: 5 x 9</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt;    cost rbf_sigma num_comp .metric .estimator  mean     n std_err .iter</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 1 0.451    0.168         8 kap     binary     0.601    10  0.0319    50</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 2 0.495    0.273         7 kap     binary     0.600    10  0.0374    37</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 3 0.443    0.156         7 kap     binary     0.599    10  0.0396    21</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 4 0.395    0.118         9 kap     binary     0.589    10  0.0302    32</span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt; 5 0.184    0.0849       10 kap     binary     0.588    10  0.0312    24</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt;     cost rbf_sigma num_comp .metric .estimator  mean     n std_err .iter</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 1  0.848   0.0378        10 kap     binary     0.594    10  0.0297     3</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 2  0.902   0.0387         9 kap     binary     0.592    10  0.0309    33</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 3  1.77    0.0224        10 kap     binary     0.591    10  0.0302    11</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 4 30.0     0.00344       20 kap     binary     0.587    10  0.0322    42</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt; 5  9.04    0.01000       10 kap     binary     0.586    10  0.0317     5</span></a></code></pre></div>
 <p>A plot of the search can be created via:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="../../reference/plot_perf_vs_iter.html">plot_perf_vs_iter</a></span>(search_res)</a></code></pre></div>
 <p><img src="Classification_files/figure-html/bo-plot-1.png" width="768"></p>
@@ -191,6 +180,7 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+
         <div id="tocnav">
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
@@ -204,7 +194,6 @@
 </div>
 
 
-
       <footer><div class="tidyverse">
   <p>tune is a part of the <strong>tidymodels</strong> ecosystem, a collection of modeling packages designed with common APIs and a shared philosophy.</p>
 </div>
@@ -215,12 +204,10 @@
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
-
       </footer>
 </div>
 
   
-
 
   </body>
 </html>

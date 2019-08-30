@@ -113,7 +113,7 @@ The variance predicted by the Bayesian model is mostly spatial variation; the va
 We'll use another acquisition function, _expected improvement_, that calculates the determines which candidates likely to to be helpful relative to the current best results. 
 
 ```{r search, cache = TRUE}
-set.seed(243)
+set.seed(9961)
 search_res <- 
   tune_Bayes(
     svm_wflow, 

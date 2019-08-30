@@ -32,8 +32,12 @@ reference:
 
 navbar:
   left:
-  - text: Bayesian Optimization of Classification Model
-    href: articles/articles/Classification.html  
+  - title: Articles
+    menu:
+    - text: Bayesian Optimization of Classification Model
+      href: articles/articles/Classification.html
+    - text: Acquisition Functions
+      href: articles/acquisition_functions.html
   - text: Reference
     href: reference/index.html
   - text: News

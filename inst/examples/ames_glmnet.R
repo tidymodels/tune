@@ -44,10 +44,7 @@ ames_wflow <-
 
 set.seed(8)
 ames_set <-
-  param_set(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .5))) %>%
-  update(id = "long df", deg_free(c(3, 15))) %>%
-  update(id = "lat df", deg_free(c(3, 15)))
+  param_set(ames_wflow)
 
 ames_grid <-
   ames_set %>%

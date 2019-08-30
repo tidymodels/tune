@@ -32,9 +32,9 @@
 
 
 <meta property="og:title" content="Model tuning via grid search — tune_grid" />
-
 <meta property="og:description" content="Model tuning via grid search" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -55,7 +55,6 @@
 
  gtag('config', 'UA-115082821-1');
 </script>
-
   </head>
 
   <body>
@@ -82,13 +81,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../articles/articles/Classification.html">Bayesian Optimization of Classification Model</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
+  <a></a>
 </li>
         
       </ul>
@@ -98,7 +91,6 @@
 </div><!--/.navbar -->
 
       
-
       </header>
 
 <div class="row">
@@ -110,14 +102,12 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Model tuning via grid search</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>())</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -135,42 +125,37 @@
     </tr>
     <tr>
       <th>perf</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> or <code>NULL</code>.</p></td>
+      <td><p>A <code><a href='https://www.rdocumentation.org/packages/yardstick/topics/metric_set'>yardstick::metric_set()</a></code> or <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>control</th>
       <td><p>An object used to modify the tuning process.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble of results.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>If no tuning grid is provided, a semi-random grid (via
-<code><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is create with 10 candidate parameter
+<code><a href='https://www.rdocumentation.org/packages/dials/topics/grid_max_entropy'>dials::grid_latin_hypercube()</a></code>) is create with 10 candidate parameter
 combinations.</p>
 <p>If no metric set is used, one is set. For regression models, the root mean
 squared error and coefficient of determination are computed. For classification,
 the log-likelihood and overall accuracy are computed.</p>
-    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-          </ul>
+    </ul>
 
   </div>
 </div>
-
 
       <footer>
       <div class="tidyverse">
@@ -183,14 +168,11 @@ the log-likelihood and overall accuracy are computed.</p>
     Site built by <a href="https://pkgdown.r-lib.org">pkgdown</a>.
   </p>
 </div>
-
       </footer>
    </div>
 
   
 
-
   </body>
 </html>
-
 
