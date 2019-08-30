@@ -40,7 +40,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Remotes:
-    tidymodels/recipes@step-changes,
-    tidymodels/dials@parameters-method,
+    tidymodels/recipes,
+    tidymodels/dials,
     tidymodels/parsnip,
     topepo/workflows@updating-elements   
