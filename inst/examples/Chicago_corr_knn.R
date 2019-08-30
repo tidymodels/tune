@@ -3,8 +3,8 @@ library(workflows)
 library(tune)
 library(kknn)
 library(doMC)
-registerDoMC(cores=8)
-load("~/Downloads/chi_corr_knn_search.RData")
+registerDoMC(cores=20)
+# load("~/Downloads/chi_corr_knn_search.RData")
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
@@ -34,10 +34,10 @@ chi_wflow <-
   add_model(knn_model)
 
 chi_param <-
-  param_set(chi_wflow) %>%
-  update(id = "threshold", threshold(c(.8, .99))) %>%
-  update(id = "neighbors", neighbors(c(1, 50))) %>%
-  update(id = "dist_power", dist_power())
+  param_set(chi_wflow)
+  # update(id = "threshold", threshold(c(.8, .99))) %>%
+  # update(id = "neighbors", neighbors(c(1, 50))) %>%
+  # update(id = "dist_power", dist_power())
 
 
 chi_grid <-
@@ -58,13 +58,16 @@ estimate(res) %>%
   arrange(mean) %>%
   slice(1)
 
-test <-
+set.seed(354)
+knn_search <-
   tune_Bayes(
     chi_wflow,
     data_folds,
     param_info = chi_param,
     initial = res,
-    metrics = metric_set(rmse, rsq),
+    metrics = metric_set(rmse),
     iter = 10,
-    control = Bayes_control(verbose = TRUE, random_value = 3)
+    control = Bayes_control(verbose = TRUE, random_value = 5)
   )
+
+plot_perf_vs_iter(knn_search)

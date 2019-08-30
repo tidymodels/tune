@@ -41,19 +41,7 @@ ames_wflow <-
   add_recipe(ames_rec) %>%
   add_model(lm_mod)
 
-
-set.seed(8)
-ames_set <-
-  param_set(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .5))) %>%
-  update(id = "long df", deg_free(c(3, 15))) %>%
-  update(id = "lat df", deg_free(c(3, 15)))
-
-ames_grid <-
-  ames_set %>%
-  grid_max_entropy(size = 5)
-
-ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
+ames_glmnet <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE))
 
 # estimate(ames_glmnet) %>%
 #   dplyr::filter(.metric == "rmse") %>%
@@ -69,11 +57,11 @@ ames_glmnet <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_contro
 #   arrange(mean) %>%
 #   slice(1)
 
+set.seed(9890)
 search_res <-
   tune_Bayes(
     ames_wflow,
     cv_splits,
-    param_info = ames_set,
     initial = ames_glmnet,
     metrics = metric_set(rmse, rsq),
     iter = 50,
