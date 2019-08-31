@@ -25,6 +25,12 @@
 #' The confidence bound function does not take into account the current best
 #'  results in the data.
 #'
+#' If a function is passed to  `exp_improve()` or `prob_improve()`, the function
+#' can have multiple arguments but only the first (the current iteration number)
+#' is given to the function. In other words, the function argument should have
+#' defaults for all but the first argument. See `expo_decay()` as an example of
+#' a function.
+#'
 #' @param trade_off A number or function that describes the trade-off between
 #' exploitation and exploration. Smaller values favor exploitation.
 #' @param eps A small constant to avoid division by zero.
@@ -46,8 +52,8 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
 
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
-    if(length(farg) != 1) {
-      stop("The `trade_off` function should only have a single argument.", call. = FALSE)
+    if (length(farg) == 0) {
+      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -106,8 +112,8 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
 
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
-    if(length(farg) != 1) {
-      stop("The `trade_off` function should only have a single argument.", call. = FALSE)
+    if (length(farg) == 0) {
+      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -158,8 +164,8 @@ conf_bound <- function(kappa = 0.1) {
   lab <- "the confidence bound"
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
-    if(length(farg) != 1) {
-      stop("The `kappa` function should only have a single argument.", call. = FALSE)
+    if (length(farg) == 0) {
+      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
     }
     lab <- paste(lab, "with variable kappa values.")
   }

@@ -85,6 +85,9 @@ tune_Bayes <-
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control,
                             current = res %>% dplyr::select(dplyr::one_of(param_info$id)))
+
+      acq_summarizer(control, iter = i, objective = objective)
+
       candidates <-
         dplyr::bind_cols(candidates,
                          stats::predict(objective, candidates, iter = i,
@@ -149,6 +152,7 @@ tune_Bayes <-
         last_impr <- last_impr + 1
       }
     }
+    on.exit()
     res
   }
 
@@ -323,6 +327,32 @@ param_msg <- function(control, candidate) {
     )
   )
 }
+
+
+acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
+  if (!control$verbose) {
+    return(invisible(NULL))
+  }
+  if (inherits(objective, "conf_bound") && is.function(objective$kappa)) {
+    val <- paste0(cli::symbol$info, " Kappa value: ",
+                  signif(objective$kappa(iter), digits = digits))
+  } else {
+    if (inherits(objective, c("exp_improve", "prob_improve"))) {
+      val <- paste0(cli::symbol$info, " Trade-off value: ",
+                    signif(objective$trade_off(iter), digits = digits))
+
+    } else {
+      val <- NULL
+    }
+  }
+  if (!is.null(val)) {
+    message(val)
+  }
+  invisible(NULL)
+}
+
+# ------------------------------------------------------------------------------
+
 
 more_results <- function(object, rs, candidates, perf, control) {
   Bayes_msg(control, "Estimating performance", fini = FALSE, cool = TRUE)

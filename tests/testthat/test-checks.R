@@ -56,19 +56,15 @@ test_that('workflow objects', {
 
   expect_null(tune:::check_object(x = chi_wflow))
   expect_null(tune:::check_object(x = wflow_1))
-  expect_error(tune:::check_object(x = chi_wflow, TRUE),
-               "ranges are not finalized: 'num_terms'")
 
-  l_mod <- parsnip::linear_reg(, penalty = tune()) %>%
-    parsnip::set_engine("glmnet", maxit = tune())
   wflow_2 <-
     workflows::workflow() %>%
-    add_model(l_mod ) %>%
+    add_model(boost_tree(mtry = tune()) %>% set_engine("xgboost")) %>%
     add_recipe(bare_rec)
 
   expect_null(tune:::check_object(x = wflow_2))
   expect_error(tune:::check_object(x = wflow_2, TRUE),
-               "missing some parameter objects")
+               "arguments whose ranges are not finalized")
 
 })
 

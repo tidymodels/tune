@@ -14,7 +14,7 @@ dbled <- function(x) x^2
 
 test_that('conf_bound interface', {
   expect_error(conf_bound("a"))
-  expect_error(conf_bound(function(a, b) a))
+  expect_error(conf_bound(function() 1))
   expect_error(predict(conf_bound(), test_res, maximize = 2, iter = 1))
 })
 
@@ -42,7 +42,7 @@ test_that('conf_bound calculations', {
 
 test_that('prob_improve interface', {
   expect_error(prob_improve("a"))
-  expect_error(prob_improve(function(a, b) a))
+  expect_error(prob_improve(function() 1))
   expect_error(predict(prob_improve(), test_res, maximize = 2, iter = 1))
   expect_error(predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = NA))
   expect_error(predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT"))
@@ -94,7 +94,7 @@ test_that('prob_improve calculations', {
 
 test_that('exp_improve interface', {
   expect_error(exp_improve("a"))
-  expect_error(exp_improve(function(a, b) a))
+  expect_error(exp_improve(function() 2))
   expect_error(predict(exp_improve(), test_res, maximize = 2, iter = 1))
   expect_error(predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = NA))
   expect_error(predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT"))

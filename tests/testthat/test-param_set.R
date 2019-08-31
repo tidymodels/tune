@@ -31,10 +31,10 @@ test_that('recipe with tunable parameters', {
   ids <- c('imputation', 'threshold', 'num_terms', 'neighbors')
   expect_equal(isomap_info$id, ids)
 
-  expect_equal(isomap_info$object[[1]], dials::neighbors())
-  expect_equal(isomap_info$object[[2]], dials::threshold())
-  expect_equal(isomap_info$object[[3]], dials::num_terms())
-  expect_equal(isomap_info$object[[4]], dials::neighbors())
+  expect_equal(isomap_info$object[[1]], dials::neighbors(c(1, 10)))
+  expect_equal(isomap_info$object[[2]], dials::threshold(c(0, 1/10)))
+  expect_equal(isomap_info$object[[3]], dials::num_terms(c(1, 4)))
+  expect_equal(isomap_info$object[[4]], dials::neighbors(c(1, 15)))
 
 })
 

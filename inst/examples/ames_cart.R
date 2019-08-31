@@ -40,6 +40,10 @@ initial_grid <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose 
 
 # ------------------------------------------------------------------------------
 
+foo <- function(i) {
+  expo_decay(i, start_val = .02, 0, slope = 1/10)
+}
+
 set.seed(463)
 test <-
   tune_Bayes(
@@ -47,6 +51,7 @@ test <-
     cv_splits,
     initial = initial_grid,
     metrics = metric_set(rmse),
-    iter = 15,
+    objective = exp_improve(foo),
+    iter = 50,
     control = Bayes_control(verbose = TRUE, random_value = 10)
   )
