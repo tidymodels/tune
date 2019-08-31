@@ -342,7 +342,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
                     signif(objective$trade_off(iter), digits = digits))
 
     } else {
-      val <- BULL
+      val <- NULL
     }
   }
   if (!is.null(val)) {
