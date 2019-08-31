@@ -84,6 +84,7 @@ as a function of their predicted mean and variation." />
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
      
     <span class="caret"></span>
   </a>
@@ -177,6 +178,11 @@ in the units of the outcome. The functions are parameterized so that the
 <code>trade_off</code> value should always be non-negative.</p>
 <p>The confidence bound function does not take into account the current best
 results in the data.</p>
+<p>If a function is passed to  <code>exp_improve()</code> or <code>prob_improve()</code>, the function
+can have multiple arguments but only the first (the current iteration number)
+is given to the function. In other words, the function argument should have
+defaults for all but the first argument. See <code><a href='expo_decay.html'>expo_decay()</a></code> as an example of
+a function.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

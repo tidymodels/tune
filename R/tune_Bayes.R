@@ -209,7 +209,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 
   # Ensure that the right levels are used to create dummy variables
   if (any(!is_quant)) {
-    for(i in which(!is_quant)) {
+    for (i in which(!is_quant)) {
       x[[i]] <- factor(x[[i]], levels = pset$object[[i]]$values)
     }
   }

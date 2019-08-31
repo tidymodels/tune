@@ -32,7 +32,7 @@ reference:
 
 navbar:
   left:
-  - title: Articles
+  - text: "Articles"
     menu:
     - text: Bayesian Optimization of Classification Model
       href: articles/articles/Classification.html
