@@ -18,6 +18,8 @@ tune_Bayes <-
   function(object, rs, iter = 10, param_info = NULL, perf = NULL,
            objective = exp_improve(),
            initial = NULL, control = Bayes_control(), ...) {
+    start_time <- proc.time()[3]
+
     check_rset(rs)
     check_object(object, check_dials = is.null(param_info))
     check_Bayes_control(control)
@@ -30,7 +32,14 @@ tune_Bayes <-
       param_info <- param_set(object)
     }
 
+    on.exit({
+      warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
+      return(initial)
+    })
+
     initial_grid <- check_initial(initial, param_info, object, rs, perf, control)
+
+    check_time(start_time, control$time_limit)
 
     if (!any(names(initial_grid) == ".iter")) {
       res <- initial_grid %>% dplyr::mutate(.iter = 0)
@@ -77,14 +86,20 @@ tune_Bayes <-
       }
       hist_summarizer(control, best_val, best_iter, perf_name)
 
+      check_time(start_time, control$time_limit)
+
       set.seed(control$seed[1] + i)
       gp_mod <- fit_gp(res %>% dplyr::select(-.iter), pset = param_info,
                        metric = perf_name, control = control, ...)
+
+      check_time(start_time, control$time_limit)
 
       # get aqu functions
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control,
                             current = res %>% dplyr::select(dplyr::one_of(param_info$id)))
+
+      check_time(start_time, control$time_limit)
 
       acq_summarizer(control, iter = i, objective = objective)
 
@@ -92,6 +107,8 @@ tune_Bayes <-
         dplyr::bind_cols(candidates,
                          stats::predict(objective, candidates, iter = i,
                                         maximize = maximize, best_val))
+
+      check_time(start_time, control$time_limit)
 
       if (all(is.na(candidates$.mean))) {
         if (nrow(candidates) < 2) {
@@ -103,7 +120,7 @@ tune_Bayes <-
         }
       }
 
-      if (last_impr < control$random_value) {
+      if (last_impr < control$uncertain) {
         candidates <- candidates %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
       } else {
         message(paste(crayon::blue(cli::symbol$circle_question_mark),
@@ -116,9 +133,13 @@ tune_Bayes <-
         last_impr <- 0
       }
 
+      check_time(start_time, control$time_limit)
+
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
       tmp_res <- more_results(object, rs, candidates, perf, control)
+
+      check_time(start_time, control$time_limit)
 
       all_bad <- is_cataclysmic(tmp_res)
 
@@ -151,6 +172,7 @@ tune_Bayes <-
         }
         last_impr <- last_impr + 1
       }
+      check_time(start_time, control$time_limit)
     }
     on.exit()
     res
@@ -337,7 +359,8 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     val <- paste0(cli::symbol$info, " Kappa value: ",
                   signif(objective$kappa(iter), digits = digits))
   } else {
-    if (inherits(objective, c("exp_improve", "prob_improve"))) {
+    if (inherits(objective, c("exp_improve", "prob_improve")) &&
+        is.function(objective$trade_off)) {
       val <- paste0(cli::symbol$info, " Trade-off value: ",
                     signif(objective$trade_off(iter), digits = digits))
 
@@ -405,14 +428,42 @@ is_cataclysmic <- function(x) {
 #' Control the Bayesian search process
 #'
 #' @param verbose A logical for logging results as they are generated.
-#' @param random_value The number of iterations with no improvment before an
-#' uncertainty sample is created where a sample with high predicted variance is
-#' chosen.
+#' @param uncertain The number of iterations with no improvment before an
+#'  uncertainty sample is created where a sample with high predicted variance is
+#'  chosen.
 #' @param seed An integer for controlling the random number stream.
+#' @param time_limit A number for the minimum number of _minutes_ (elapsed)
+#'  that the function should execute. The elapsed time is evaluated at internal
+#'  checkpoints and, if over time, the results at that time are returned (with a
+#'  warning). This means that the `time_limit` is not an exact limit, but a
+#'  minimum time limit.
 #' @export
-Bayes_control <- function(verbose = FALSE, random_value = 3, seed = sample.int(10^5, 1)) {
-  # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
-  # seeds per resample
-  list(verbose = verbose, random_value = random_value, seed = seed)
+Bayes_control <-
+  function(verbose = FALSE,
+           uncertain = Inf,
+           seed = sample.int(10^5, 1),
+           time_limit = NA) {
+    # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
+    # seeds per resample
+    list(
+      verbose = verbose,
+      uncertain = uncertain,
+      seed = seed,
+      time_limit = time_limit
+    )
+  }
+
+
+check_time <- function(origin, limit) {
+  if (is.na(limit)) {
+    return(invisible(NULL))
+  }
+  now_time <- proc.time()[3]
+  if (now_time - origin >= limit * 60) {
+    stop(paste("The time limit of", limit, "minutes has been reached."), call. = FALSE)
+  }
+  invisible(NULL)
 }
 
+# May be better to completely refactor things to a high-level call then use
+# base's setTimeLimit().

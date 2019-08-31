@@ -67,7 +67,7 @@ svm_search <-
     objective = conf_bound(kappa = decr_kappa),
     perf = class_only,
     iter = 30,
-    control = Bayes_control(verbose = TRUE, random_value = 5)
+    control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
 
 ggplot(svm_search %>%  filter(.metric == "accuracy")) +

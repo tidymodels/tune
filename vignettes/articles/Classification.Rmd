@@ -127,7 +127,7 @@ search_res <-
     perf = metric_set(kap),
     # Acquisition function
     objective = exp_improve(),
-    control = Bayes_control(random_value = Inf)
+    control = Bayes_control(uncertain = Inf)
   )
 search_res
 ```

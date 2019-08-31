@@ -16,8 +16,6 @@ ames_train <- training(data_split)
 
 set.seed(2453)
 cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
-set.seed(2453)
-big_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price", repeats = 10)
 
 # ------------------------------------------------------------------------------
 
@@ -81,8 +79,8 @@ test <-
     ames_wflow,
     cv_splits,
     param_info = ames_set,
-    initial = res,
+    initial = initial_grid,
     metrics = metric_set(rmse, rsq),
     iter = 15,
-    control = Bayes_control(verbose = TRUE, random_value = 3)
+    control = Bayes_control(verbose = TRUE, time_limit = 1)
   )

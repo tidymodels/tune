@@ -96,13 +96,13 @@ test_that('Bayes control objects', {
   expect_error(Bayes_control(), NA)
   expect_error(Bayes_control(tomato = 1))
   expect_error(
-    tune:::check_Bayes_control(list(verbose = TRUE, random_value = 3, seed = 1)),
+    tune:::check_Bayes_control(list(verbose = TRUE, uncertain = 3, seed = 1)),
     NA
   )
   expect_warning(
     expect_error(
       tune:::check_Bayes_control(list(verbose = TRUE, random_val = 3, seed = 1)),
-      "random_value"
+      "uncertain"
     )
   )
 

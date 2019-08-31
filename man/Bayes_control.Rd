@@ -4,17 +4,21 @@
 \alias{Bayes_control}
 \title{Control the Bayesian search process}
 \usage{
-Bayes_control(verbose = FALSE, random_value = 3,
-  seed = sample.int(10^5, 1))
+Bayes_control(verbose = FALSE, uncertain = 3, seed = sample.int(10^5,
+  1), time_limit = NA)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}
 
-\item{random_value}{The number of iterations with no improvment before an
+\item{uncertain}{The number of iterations with no improvment before an
 uncertainty sample is created where a sample with high predicted variance is
 chosen.}
 
 \item{seed}{An integer for controlling the random number stream.}
+
+\item{time_limit}{A number for the total number of \emph{minutes} that the
+function should execute. The results at that time are returned (with a
+warning).}
 }
 \description{
 Control the Bayesian search process

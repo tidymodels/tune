@@ -66,7 +66,7 @@ search_res <-
     initial = ames_glmnet,
     metrics = metric_set(rmse, rsq),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, random_value = 5)
+    control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
 
 
@@ -78,6 +78,6 @@ more_search_res <-
     initial = search_res,
     metrics = metric_set(rmse, rsq),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, random_value = 5)
+    control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
 

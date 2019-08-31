@@ -77,7 +77,7 @@ nn_search <- tune_Bayes(nn_wflow, rs = folds,
                         perf = kappa_only,
                         param_info = nn_set,
                         objective = exp_improve(foo),
-                        control = Bayes_control(verbose = TRUE, random_value = 20))
+                        control = Bayes_control(verbose = TRUE, uncertain = 20))
 
 plot_perf_vs_iter(nn_search, "kap")
 

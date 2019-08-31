@@ -51,7 +51,7 @@ spline_search <-
     initial = cars_res,
     metrics = metric_set(rmse, rsq),
     iter = 15,
-    control = Bayes_control(verbose = TRUE, random_value = 3)
+    control = Bayes_control(verbose = TRUE, uncertain = 3)
   )
 
 more_spline_search <-
@@ -62,6 +62,6 @@ more_spline_search <-
     initial = spline_search,
     metrics = metric_set(rmse, rsq),
     iter = 10,
-    control = Bayes_control(verbose = TRUE, random_value = 10)
+    control = Bayes_control(verbose = TRUE, uncertain = 10)
   )
 
