@@ -36,8 +36,7 @@ ggplot(cor_mat, aes(x = cor)) + geom_histogram(binwidth = .01, col = "white")
 
 chi_set <-
   param_set(chi_wflow) %>%
-  update(id = "threshold", threshold(c(.8, .99))) %>%
-  update(id = "cost", cost(c(-10, 3)))
+  update(id = "threshold", threshold(c(.8, .99)))
 
 chi_grid <-
   chi_set %>%
@@ -58,6 +57,9 @@ estimate(res) %>%
   arrange(mean) %>%
   slice(1)
 
+foo <- function(i) {
+  expo_decay(i, start_val = .5, 0, slope = 1/10)
+}
 
 svm_search <-
   tune_Bayes(
@@ -66,7 +68,8 @@ svm_search <-
     param_info = chi_set,
     initial = res,
     metrics = metric_set(rmse, rsq),
-    iter = 15,
+    objective = exp_improve(foo),
+    iter = 50,
     control = Bayes_control(verbose = TRUE, random_value = 3)
   )
 
