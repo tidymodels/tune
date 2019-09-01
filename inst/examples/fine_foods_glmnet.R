@@ -108,7 +108,7 @@ pre_proc <-
   step_tokenize(review)  %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
-  step_texthash(review, signed = TRUE) %>%
+  step_texthash(review, signed = TRUE, num_terms = tune()) %>%
   step_YeoJohnson(one_of(basics)) %>%
   step_zv(all_predictors()) %>%
   step_normalize(all_predictors())
@@ -127,7 +127,8 @@ set.seed(8935)
 folds <- group_vfold_cv(training_data, "product")
 
 text_grid <- expand.grid(penalty = 10^seq(-10, 1, length = 20),
-                         mixture = seq(0, 1, length = 5))
+                         mixture = seq(0, 1, length = 5),
+                         num_terms = 2^seq(5, 10, by = 1))
 
 set.seed(1559)
 text_glmnet <- tune_grid(text_wflow, folds, grid = text_grid,
@@ -136,12 +137,14 @@ text_glmnet <- tune_grid(text_wflow, folds, grid = text_grid,
 estimate(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
   ggplot(aes(x = log10(penalty), y = mixture, fill = mean)) +
+  facet_wrap(~ num_terms) +
   geom_tile() +
   theme_bw()
 
 estimate(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
-  ggplot(aes(x = penalty, y = mean, col = mixture, group = mixture))  +
+  ggplot(aes(x = penalty, y = mean, col = mixture, group = mixture)) +
+  facet_wrap(~ num_terms) +
   geom_point() + geom_line() +
   scale_x_log10()
 
