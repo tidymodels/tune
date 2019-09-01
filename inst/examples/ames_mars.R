@@ -72,5 +72,5 @@ test <-
     initial = res,
     metrics = metric_set(rmse, rsq),
     iter = 15,
-    control = Bayes_control(verbose = TRUE, random_value = 3)
+    control = Bayes_control(verbose = TRUE, uncertain = 3)
   )

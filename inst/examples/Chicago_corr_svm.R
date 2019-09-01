@@ -70,7 +70,7 @@ svm_search <-
     metrics = metric_set(rmse, rsq),
     objective = exp_improve(foo),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, random_value = 3)
+    control = Bayes_control(verbose = TRUE, uncertain = 3)
   )
 
 svm_search_2 <-

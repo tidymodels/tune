@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot sequential search results — plot_perf_vs_iter • tune</title>
+<title>Exponential decay function — expo_decay • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,9 +31,11 @@
 
 
 
-<meta property="og:title" content="Plot sequential search results — plot_perf_vs_iter" />
+<meta property="og:title" content="Exponential decay function — expo_decay" />
 
-<meta property="og:description" content="Plot sequential search results" />
+<meta property="og:description" content="expo_decay() can be used to increase or decrease a function exponentially
+over iterations. This can be used to dynamically set parameters for
+acquisition functions as iterations of Bayesian optimization proceed." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -116,42 +118,79 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot sequential search results</h1>
+    <h1>Exponential decay function</h1>
     
-    <div class="hidden name"><code>plot_perf_vs_iter.Rd</code></div>
+    <div class="hidden name"><code>expo_decay.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Plot sequential search results</p>
+    <p><code>expo_decay()</code> can be used to increase or decrease a function exponentially
+over iterations. This can be used to dynamically set parameters for
+acquisition functions as iterations of Bayesian optimization proceed.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>plot_perf_vs_iter</span>(<span class='no'>x</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span>(<span class='no'>x</span>$<span class='no'>.iter</span>)/<span class='fl'>75</span>)</pre>
+    <pre class="usage"><span class='fu'>expo_decay</span>(<span class='no'>iter</span>, <span class='no'>start_val</span>, <span class='no'>limit_val</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='fl'>1</span>/<span class='fl'>5</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A tibble of results for <code><a href='tune_Bayes.html'>tune_Bayes()</a></code>.</p></td>
+      <th>iter</th>
+      <td><p>An integer for the current iteration number.</p></td>
     </tr>
     <tr>
-      <th>metric</th>
-      <td><p>A character vector or <code>NULL</code> for which outcome to plot.</p></td>
+      <th>start_val</th>
+      <td><p>The number returned for the first iteration.</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>A number for the width of the confidence interval bars. A value
-of zero prevents them from being shown.</p></td>
+      <th>limit_val</th>
+      <td><p>The number that the process converges to over iterations.</p></td>
+    </tr>
+    <tr>
+      <th>slope</th>
+      <td><p>A coefficient for the exponent to control the rate of decay. The
+sign of the slope controls the direction of decay.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>ggplot2</code> object.</p>
+    <p>A single numeric value.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Note that, when used with the acquisition functions in <code><a href='tune.html'>tune()</a></code> a wrapper
+would be required since only the first argument would be evaluated during
+tuning.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tibble</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>purrr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘purrr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    is_null</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:testthat’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>tibble</a></span>(
+  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>40</span>,
+  <span class='kw'>value</span> <span class='kw'>=</span>  <span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map_dbl</a></span>(
+    <span class='fl'>1</span>:<span class='fl'>40</span>,
+    <span class='no'>expo_decay</span>,
+    <span class='kw'>start_val</span> <span class='kw'>=</span> <span class='fl'>.1</span>,
+    <span class='kw'>limit_val</span> <span class='kw'>=</span> <span class='fl'>0</span>,
+    <span class='kw'>slope</span> <span class='kw'>=</span> <span class='fl'>1</span> / <span class='fl'>5</span>
+  )
+) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>iter</span>, <span class='kw'>y</span> <span class='kw'>=</span><span class='no'>value</span>)) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_path.html'>geom_path</a></span>()</div><div class='img'><img src='expo_decay-1.png' alt='' width='768' height='552' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -159,7 +198,11 @@ of zero prevents them from being shown.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

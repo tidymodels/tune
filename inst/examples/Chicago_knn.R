@@ -86,7 +86,7 @@ knn_search <-
     initial = smol_knn_grid,
     metrics = metric_set(rmse, rsq),
     iter = 30,
-    control = Bayes_control(verbose = TRUE, random_value = 10)
+    control = Bayes_control(verbose = TRUE, uncertain = 10)
   )
 
 ggplot(

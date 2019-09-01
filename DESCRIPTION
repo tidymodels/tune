@@ -28,8 +28,8 @@ Imports:
     GPfit,
     foreach,
     parsnip (>= 0.0.3.9000),
+    recipes (>= 0.1.6.9000)
 Suggests: 
-    recipes (>= 0.1.6.9000),
     testthat,
     knitr,
     covr,

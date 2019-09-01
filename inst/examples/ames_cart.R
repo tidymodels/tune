@@ -53,5 +53,5 @@ test <-
     metrics = metric_set(rmse),
     objective = exp_improve(foo),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, random_value = 10)
+    control = Bayes_control(verbose = TRUE, uncertain = 10)
   )

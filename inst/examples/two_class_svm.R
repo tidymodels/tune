@@ -48,7 +48,7 @@ svm_search <-
     initial = res,
     perf = class_only,
     iter = 30,
-    control = Bayes_control(verbose = TRUE, random_value = 5)
+    control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
 
 
