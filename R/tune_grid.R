@@ -80,7 +80,11 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
 
 predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
   y_names <- outcome_names(recipe)
-  new_vals <- recipes::bake(recipe, rsample::assessment(split))
+  new_vals <-
+    recipes::bake(recipe,
+                  rsample::assessment(split),
+                  all_predictors(),
+                  all_outcomes())
   x_vals <- new_vals %>% dplyr::select(-one_of(y_names))
   orig_rows <- as.integer(split, data = "assessment")
 
