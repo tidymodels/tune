@@ -36,7 +36,11 @@ chi_grid <-
   grid_regular(levels = 10)
 
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
+ext <- function(x) {
+  tidy(x$model)
+}
+
+res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE, extract = ext))
 
 summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%

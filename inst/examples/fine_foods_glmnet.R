@@ -17,7 +17,7 @@ classes <- c("bad", "poor", "ok", "good", "great")
 
 raw <-
   read_delim(
-    "finefoods.txt",
+    "~/Downloads/finefoods.txt",
     delim = "\n",
     col_names = "text",
     col_types = cols(text = col_character())
@@ -103,7 +103,7 @@ pre_proc <-
   step_tokenize(review)  %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
-  step_texthash(review, signed = tune(), num_terms = tune()) %>%
+  step_texthash(review, signed = TRUE, num_terms = tune()) %>%
   step_YeoJohnson(one_of(basics)) %>%
   step_zv(all_predictors()) %>%
   step_normalize(all_predictors())

@@ -84,12 +84,20 @@ test_that('yardstick objects', {
 test_that('grid control objects', {
   expect_error(grid_control(), NA)
   expect_error(grid_control(tomato = 1))
-  expect_error(tune:::check_grid_control(list(verbose = TRUE, allow_par = TRUE)), NA)
+  expect_error(
+    tune:::check_grid_control(list(verbose = TRUE, allow_par = TRUE, extract = NULL)),
+    NA
+  )
   expect_warning(
     expect_error(tune:::check_grid_control(list(verbose = TRUE, par = TRUE)),
                  "allow_par")
   )
-
+  expect_warning(
+    expect_error(
+      tune:::check_grid_control(list(verbose = TRUE, par = TRUE, allow_par = TRUE)),
+      "extract"
+    )
+  )
 })
 
 test_that('Bayes control objects', {

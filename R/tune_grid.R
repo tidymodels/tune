@@ -31,7 +31,6 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
 
   code_path <- quarterback(object)
 
-  rs$.metrics <- vector(mode = "list", length = nrow(rs))
   rs <- rlang::eval_tidy(code_path)
 
   all_bad <- is_cataclysmic(rs)
@@ -182,12 +181,15 @@ empty_perf <- tibble::tibble(
 #' @param verbose A logical for logging results as they are generated.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #' backend is registered).
+#' @param extract An optional function with at least one argument (or `NULL`)
+#' that can be used to retain arbitrary objects from the model fit object,
+#' recipe, or other elements of the workflow.
 #'
 #' @export
-grid_control <- function(verbose = FALSE, allow_par = TRUE) {
-  # add options for `extract`, `save_predictions`, and other stuff.
+grid_control <- function(verbose = FALSE, allow_par = TRUE, extract = NULL) {
+  # add options for `save_predictions`, and other stuff.
   # seeds per resample
-  list(verbose = verbose, allow_par = allow_par)
+  list(verbose = verbose, allow_par = allow_par, extract = extract)
 }
 
 grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {

@@ -10,6 +10,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   perf_est <- NULL
+  extracted <- NULL
   split <- rs$splits[[rs_iter]]
 
   model_param <-
@@ -79,19 +80,33 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
             silent = TRUE
           )
 
-        tmp_est <- estimate_perf(tmp_pred, perf, object)
+        perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
 
       } else {
         # Failed model
         grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
         cat(tmp_fit$fit, "\n")
       }
-      perf_est <- dplyr::bind_rows(perf_est, tmp_est)
+
+      tmp_extr <-
+        all_param %>%
+        dplyr::select(-.submodels) %>%
+        dplyr::bind_cols(labels(split)) %>%
+        mutate(
+          .extract = list(
+            extract_details(
+              list(recipe = tmp_rec, model = tmp_fit$fit),
+              ctrl$extract
+            )
+          )
+        )
+
+      extracted <- dplyr::bind_rows(extracted, tmp_extr)
     } # end model loop
 
   } # end recipe loop
 
-  perf_est
+  list(.metrics = perf_est, .extract = extracted)
 }
 
 tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
@@ -101,9 +116,14 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object))
 
-  rs$.metrics <-
+  lab_names <- names(labels(rs$splits[[1]]))
+
+  results <-
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec_and_mod(rs_iter, rs, grid, object, perf, ctrl)
+
+  rs <- pull_metrics(rs, results)
+  rs <- pull_extracts(rs, results, ctrl)
 
   rs
 }
@@ -115,8 +135,9 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL
-
+  extracted <- NULL
   num_rec <- nrow(grid)
+
   for (param_iter in 1:num_rec) {
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
 
@@ -137,17 +158,32 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
           split, tmp_fit, tmp_rec, grid[param_iter, ], perf
         )
 
-      tmp_est <- estimate_perf(tmp_pred, perf, object)
-
-      perf_est <- dplyr::bind_rows(perf_est, tmp_est)
+      perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
 
     } else {
       # Failed model
       grid_msg(ctrl, split, paste0(rec_msg, ", model"),
                fini = TRUE, cool = FALSE)
     }
-  }
-  perf_est
+
+    tmp_extr <-
+      grid[param_iter, ] %>%
+      dplyr::bind_cols(labels(split)) %>%
+      mutate(
+        .extract = list(
+          extract_details(
+            list(recipe = tmp_rec, model = tmp_fit$fit),
+            ctrl$extract
+          )
+        )
+      )
+
+    extracted <- dplyr::bind_rows(extracted, tmp_extr)
+
+  } # recipe parameters
+
+  list(.metrics = perf_est, .extract = extracted)
+
 }
 
 tune_rec <- function(rs, grid, object, perf, ctrl) {
@@ -157,9 +193,12 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object))
 
-  rs$.metrics <-
+  results <-
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec(rs_iter, rs, grid, object, perf, ctrl)
+
+  rs <- pull_metrics(rs, results)
+  rs <- pull_extracts(rs, results, ctrl)
 
   rs
 }
@@ -174,9 +213,12 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object))
 
-  rs$.metrics <-
+  results <-
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_mod_with_recipe(rs_iter, rs, grid, object, perf, ctrl)
+
+  rs <- pull_metrics(rs, results)
+  rs <- pull_extracts(rs, results, ctrl)
 
   rs
 }
@@ -185,6 +227,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL
+  extracted <- NULL
 
   grid_msg(ctrl, split, "recipe")
   tmp_rec <- train_recipe(split, object, NULL)
@@ -203,7 +246,6 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
     tmp_fit <-
       train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,], control = fit_ctrl)
 
-
     # check for failure
     if (!inherits(tmp_fit$fit, "try-error")) {
 
@@ -214,18 +256,32 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
           split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ], perf
         )
 
-      tmp_est <- estimate_perf(tmp_pred, perf, object)
+      perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
 
-      perf_est <- dplyr::bind_rows(perf_est, tmp_est)
     } else {
       # Failed model
       grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
       cat(tmp_fit$fit, "\n")
     }
 
+    tmp_extr <-
+      mod_grid_vals[mod_iter, ] %>%
+      dplyr::select(-.submodels) %>%
+      dplyr::bind_cols(labels(split)) %>%
+      mutate(
+        .extract = list(
+          extract_details(
+            list(recipe = tmp_rec, model = tmp_fit$fit),
+            ctrl$extract
+          )
+        )
+      )
+
+    extracted <- dplyr::bind_rows(extracted, tmp_extr)
+
   } # end model loop
 
-  perf_est
+  list(.metrics = perf_est, .extract = extracted)
 
 }
 

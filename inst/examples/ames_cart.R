@@ -34,9 +34,12 @@ ames_wflow <-
   add_recipe(ames_rec) %>%
   add_model(cart_model)
 
-
+extr <- function(x) {
+  # tibble(num_nods = sum(x$model$frame$var == "<leaf>"))
+  x$model
+}
 set.seed(4567367)
-initial_grid <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE))
+initial_grid <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE, extract = extr))
 
 # ------------------------------------------------------------------------------
 
