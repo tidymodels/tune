@@ -21,7 +21,7 @@ reference:
     - conf_bound
     - Bayes_control
     - grid_control
-    - estimate
+    - summarise.grid_results
     - plot_perf_vs_iter
   - title: Low-Level Functions
     contents:

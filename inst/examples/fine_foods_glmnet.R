@@ -92,14 +92,9 @@ testing_data <-
 
 # ------------------------------------------------------------------------------
 
-basics <-
-  c('n_words', 'n_uq_words', 'n_charS', 'n_uq_charS', 'n_digits', 'n_hashtags',
-    'n_uq_hashtags', 'n_mentions', 'n_uq_mentions', 'n_commas', 'n_periods',
-    'n_exclaims', 'n_extraspaces', 'n_caps', 'n_lowers', 'n_urls', 'n_uq_urls',
-    'n_nonasciis', 'n_puncts', 'politeness', 'first_person', 'first_personp',
-    'second_person', 'second_personp', 'third_person', 'to_be', 'prepositions')
-basics <- paste0("textfeature_review_raw_", basics)
+basics <- names(textfeatures:::count_functions)
 
+basics <- paste0("textfeature_review_raw_", basics)
 pre_proc <-
   recipe(score ~ product + review, data = training_data) %>%
   update_role(product, new_role = "id") %>%
@@ -108,7 +103,7 @@ pre_proc <-
   step_tokenize(review)  %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
-  step_texthash(review, signed = TRUE, num_terms = tune()) %>%
+  step_texthash(review, signed = tune(), num_terms = tune()) %>%
   step_YeoJohnson(one_of(basics)) %>%
   step_zv(all_predictors()) %>%
   step_normalize(all_predictors())
@@ -126,6 +121,8 @@ text_wflow <-
 set.seed(8935)
 folds <- group_vfold_cv(training_data, "product")
 
+# ------------------------------------------------------------------------------
+
 text_grid <- expand.grid(penalty = 10^seq(-10, 1, length = 20),
                          mixture = seq(0, 1, length = 5),
                          num_terms = 2^seq(5, 10, by = 1))
@@ -134,17 +131,41 @@ set.seed(1559)
 text_glmnet <- tune_grid(text_wflow, folds, grid = text_grid,
                          control = grid_control(verbose = TRUE))
 
-estimate(text_glmnet) %>%
+summarize(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
   ggplot(aes(x = log10(penalty), y = mixture, fill = mean)) +
   facet_wrap(~ num_terms) +
   geom_tile() +
   theme_bw()
 
-estimate(text_glmnet) %>%
+summarize(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
   ggplot(aes(x = penalty, y = mean, col = mixture, group = mixture)) +
   facet_wrap(~ num_terms) +
   geom_point() + geom_line() +
   scale_x_log10()
+
+# ------------------------------------------------------------------------------
+
+test_set <-
+  text_wflow %>%
+  param_set() %>%
+  update("num_terms",  num_hash())
+
+trade_decay <- function(iter) {
+  expo_decay(iter, start_val = .1, limit_val = 0, slope = 1/10)
+}
+
+set.seed(8161)
+search_res <-
+  tune_Bayes(
+    text_wflow,
+    folds,
+    initial = 5,
+    iter = 50,
+    objective = exp_improve(trade_decay),
+    control = Bayes_control(verbose = TRUE, uncertain = 5)
+  )
+
+
 

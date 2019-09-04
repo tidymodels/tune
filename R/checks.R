@@ -140,7 +140,7 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
       message(msg)
     }
     x <- tune_grid(wflow, rs = rs, grid = x, perf = perf)
-    x <- estimate(x)
+    x <- summarize(x)
     if (ctrl$verbose) {
       msg <- paste(crayon::green(cli::symbol$tick), "Initialization complete")
       message(msg)
@@ -148,10 +148,13 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
     }
   } else {
     if (inherits(x, "grid_results")) {
-      x <- estimate(x)
+      x <- summarize(x)
     } else {
       x <- x
     }
+  }
+  if (!any(names(x) == ".iter")) {
+    x <- x %>% dplyr::mutate(.iter = 0)
   }
   x
 }

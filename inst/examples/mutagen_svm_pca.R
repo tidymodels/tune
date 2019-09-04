@@ -46,7 +46,7 @@ res <- tune_grid(Mutagen_wflow, data_folds, Mutagen_grid, perf = class_only,
                  control = grid_control(verbose = TRUE))
 
 
-estimate(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
+summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 set.seed(3654)
 svm_search <-

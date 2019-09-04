@@ -51,14 +51,14 @@ ames_grid <-
 
 res <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
   geom_point(cex = 1) +
   geom_path() +
   facet_wrap(~ threshold)
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

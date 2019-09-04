@@ -46,14 +46,14 @@ chi_grid <-
 
 res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   select(-n, -std_err, -.estimator, -.metric) %>%
   ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
   geom_point() + geom_line() +
   facet_wrap(~threshold, scales = "free_x")
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

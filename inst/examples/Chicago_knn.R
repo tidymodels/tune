@@ -46,7 +46,7 @@ chi_grid <-
 
 reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
 
-estimate(reg_knn_grid) %>%
+summarize(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
   mutate(RMSE = mean, `Minkowski distance parameter` = dist_power, weights = weight_func) %>%
   ggplot(aes(x = neighbors, y = RMSE, col = weights)) +
@@ -57,7 +57,7 @@ estimate(reg_knn_grid) %>%
   xlab("# Nearest-Neighbors")
 
 
-estimate(reg_knn_grid) %>%
+summarize(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

@@ -59,7 +59,7 @@ grid_results
 
 grid_results$.metrics[[1]]
 
-estimate(grid_results)
+summarize(grid_results)
 
 # functions to pick best or other rules
 

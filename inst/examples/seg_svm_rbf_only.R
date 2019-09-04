@@ -53,10 +53,10 @@ grid <- tibble(cost = 10^(-2.75), num_comp = 15,
 
 grid_results <- tune_grid(svm_wflow, rs = folds, grid = grid,
                           control = grid_control(verbose = TRUE))
-estimate(grid_results)
+summarize(grid_results)
 
 ggplot(
-  estimate(grid_results) %>% filter(.metric == "accuracy"),
+  summarize(grid_results) %>% filter(.metric == "accuracy"),
   aes(x = rbf_sigma, y = mean)) +
   geom_path() +
   scale_x_log10()
@@ -71,7 +71,7 @@ sigma_set <-
 sigma_grid <- tibble(rbf_sigma = 10^seq(-8, 0, length = 100))
 
 acc_vals_0 <-
-  estimate(grid_results) %>%
+  summarize(grid_results) %>%
   slice(c(80, 125, 150))
 
 # ------------------------------------------------------------------------------
