@@ -8,6 +8,7 @@
 #'
 #' @export
 plot_perf_vs_iter <- function(x, metric = NULL, width = max(x$.iter)/75) {
+  x <- summarize(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }

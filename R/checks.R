@@ -115,8 +115,8 @@ check_grid_control <- function(x) {
 }
 
 check_Bayes_control <- function(x) {
-  exp_names <- names(Bayes_control())
-  if (!isTRUE(all(all.equal(names(x), exp_names)))) {
+  exp_names <- sort(names(Bayes_control()))
+  if (!isTRUE(all(all.equal(sort(names(x)), exp_names)))) {
     miss_names <- exp_names[!(exp_names %in% names(x))]
     stop("The Baysian optimization control object is missing element(s): ",
          paste0(miss_names, collapse = ", "))
@@ -139,18 +139,12 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
         )
       message(msg)
     }
-    x <- tune_grid(wflow, rs = rs, grid = x, perf = perf)
-    x <- summarize(x)
+    x <- tune_grid(wflow, rs = rs, grid = x, perf = perf,
+                   control = grid_control(extract = ctrl$extract))
     if (ctrl$verbose) {
       msg <- paste(crayon::green(cli::symbol$tick), "Initialization complete")
       message(msg)
       message()
-    }
-  } else {
-    if (inherits(x, "grid_results")) {
-      x <- summarize(x)
-    } else {
-      x <- x
     }
   }
   if (!any(names(x) == ".iter")) {

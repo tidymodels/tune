@@ -38,14 +38,21 @@ extr <- function(x) {
   # tibble(num_nods = sum(x$model$frame$var == "<leaf>"))
   x$model
 }
+
+num_leaves <- function(x) {
+  tibble(num_leaves = sum(x$model$frame$var == "<leaf>"))
+}
+
+
 set.seed(4567367)
-initial_grid <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE, extract = extr))
+initial_grid <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE, extract = num_leaves))
 
 # ------------------------------------------------------------------------------
 
 foo <- function(i) {
   expo_decay(i, start_val = .02, 0, slope = 1/10)
 }
+
 
 set.seed(463)
 test <-
@@ -55,6 +62,6 @@ test <-
     initial = initial_grid,
     metrics = metric_set(rmse),
     objective = exp_improve(foo),
-    iter = 50,
-    control = Bayes_control(verbose = TRUE, uncertain = 10)
+    iter = 20,
+    control = Bayes_control(verbose = TRUE, uncertain = 10, extract = num_leaves)
   )
