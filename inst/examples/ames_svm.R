@@ -61,14 +61,14 @@ full_grid <- tune_grid(ames_wflow, big_splits, whole_grid, control = grid_contro
 
 
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
   geom_point(cex = 1) +
   geom_path() +
   facet_wrap(~ threshold)
 
-estimate(res) %>%
+summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)

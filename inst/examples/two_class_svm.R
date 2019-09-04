@@ -37,7 +37,7 @@ two_class_grid <-
 class_only <- metric_set(accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
-estimate(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
+summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 set.seed(365456)
 svm_search <-
@@ -73,7 +73,7 @@ class_only <- metric_set(accuracy)
 
 grid_res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
 
-ggplot(estimate(grid_res), aes(x = cost, y = mean)) +
+ggplot(summarize(grid_res), aes(x = cost, y = mean)) +
   geom_point() +
   scale_x_log10() +
   theme_bw()
@@ -82,7 +82,7 @@ cost_grid <-
   two_class_set %>%
   grid_regular(levels = 100)
 
-acc_vals_0 <- estimate(grid_res)
+acc_vals_0 <- summarize(grid_res)
 
 gp_data_0 <-
   tune:::encode_set(acc_vals_0 %>% select(cost), two_class_set) %>%

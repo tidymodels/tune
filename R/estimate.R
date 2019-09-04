@@ -7,14 +7,8 @@
 #' and the number of non-missing values (`n`). These are computed for each
 #' metric and estimator type.
 #' @export
-estimate <- function(x, ...) {
-  UseMethod("estimate")
-}
-
-
-#' @export
-#' @rdname estimate
-estimate.grid_results <- function(x, ...) {
+#' @rdname summarize.grid_results
+summarise.grid_results <- function(x, ...) {
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
     stop("All of the models failed.", call. = FALSE)
@@ -37,3 +31,4 @@ estimate.grid_results <- function(x, ...) {
     ) %>%
     ungroup()
 }
+

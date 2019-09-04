@@ -7,3 +7,4 @@
 ^docs$
 ^\.travis\.yml$
 ^vignettes
+^inst/examples/finefoods.txt$

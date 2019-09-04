@@ -1,4 +1,4 @@
-context("`estimate` methods")
+context("`summarize` methods")
 
 # ------------------------------------------------------------------------------
 
@@ -16,6 +16,6 @@ compl <-
             std_err = sd(.estimate, na.rm = TRUE)/sqrt(n))
 
 
-test_that('estimate method', {
-  expect_equal(estimate(rcv_results), compl)
+test_that('summarize method', {
+  expect_equal(summarize(rcv_results), compl)
 })

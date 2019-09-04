@@ -32,20 +32,9 @@ tune_Bayes <-
       param_info <- param_set(object)
     }
 
-    on.exit({
-      warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
-      return(initial)
-    })
-
     initial_grid <- check_initial(initial, param_info, object, rs, perf, control)
 
     check_time(start_time, control$time_limit)
-
-    if (!any(names(initial_grid) == ".iter")) {
-      res <- initial_grid %>% dplyr::mutate(.iter = 0)
-    } else {
-      res <- initial_grid
-    }
 
     on.exit({
       warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
@@ -144,11 +133,11 @@ tune_Bayes <-
       all_bad <- is_cataclysmic(tmp_res)
 
       if (!inherits(tmp_res, "try-error") & !all_bad) {
-        rs_estimate <- estimate(tmp_res)
+        rs_estimate <- summarize(tmp_res)
         res <- dplyr::bind_rows(res, rs_estimate %>% dplyr::mutate(.iter = i))
         current_val <-
           tmp_res %>%
-          estimate() %>%
+          summarize() %>%
           dplyr::filter(.metric == perf_name) %>%
           dplyr::pull(mean)
 

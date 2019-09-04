@@ -27,7 +27,7 @@ test_that('GP fit - svm', {
 
   expect_message(
     svm_gp <-
-      tune:::fit_gp(estimate(svm_results),
+      tune:::fit_gp(summarize(svm_results),
                     svm_set,
                     "accuracy",
                     Bayes_control(verbose = TRUE)
@@ -47,7 +47,7 @@ test_that('GP fit - svm', {
 test_that('GP fit - knn', {
   skip_on_cran()
   knn_gp <-
-    tune:::fit_gp(estimate(knn_results),
+    tune:::fit_gp(summarize(knn_results),
                   knn_set,
                   "accuracy",
                   Bayes_control()
@@ -70,12 +70,12 @@ test_that('GP fit - knn', {
 test_that('GP scoring', {
   ctrl <- Bayes_control()
   curr <-
-    estimate(svm_results) %>%
+    summarize(svm_results) %>%
     filter(.metric == "accuracy") %>%
     mutate(.iter = 0)
 
   svm_gp <-
-    tune:::fit_gp(estimate(svm_results),
+    tune:::fit_gp(summarize(svm_results),
                   svm_set,
                   "accuracy",
                   ctrl

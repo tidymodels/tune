@@ -42,7 +42,7 @@ two_class_grid <-
 class_only <- metric_set(accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
-estimate(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
+summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 decr_kappa <- function(i) {
   if (i < 5) {

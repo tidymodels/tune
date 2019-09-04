@@ -44,7 +44,7 @@ ames_wflow <-
 ames_glmnet <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE))
 
 
-# estimate(ames_glmnet) %>%
+# summarize(ames_glmnet) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   select(-n, -std_err, -.estimator, -.metric) %>%
 #   mutate(penalty = log10(penalty)) %>%
@@ -53,7 +53,7 @@ ames_glmnet <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose =
 #   geom_point() +
 #   facet_wrap(~parameter, scales = "free_x")
 #
-# estimate(ames_glmnet) %>%
+# summarize(ames_glmnet) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   arrange(mean) %>%
 #   slice(1)
