@@ -17,7 +17,7 @@ summarise.grid_results <- function(x, ...) {
   tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
   x <- x[tibble_metrics, ]
 
-  x <- tidyr::unnest(x)
+  x <- tidyr::unnest(dplyr::select(x, .metrics))
   all_col <- names(x)
   excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
   param_names <- all_col[!(all_col %in% excl_cols)]
