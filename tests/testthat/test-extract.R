@@ -31,11 +31,6 @@ glmn_mod <-
 set.seed(363)
 mt_folds <- vfold_cv(mtcars, v = 5)
 
-res_2_1 <-
-  workflow() %>%
-  add_recipe(rec_tune_1) %>%
-  add_model(glmn_mod)
-
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {

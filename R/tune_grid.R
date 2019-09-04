@@ -42,7 +42,7 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
       )
   }
 
-  all_est <- rs %>% dplyr::select(-splits)
+  all_est <- rs %>% dplyr::select(- splits)
   class(all_est) <- c("grid_results", class(all_est))
   all_est
 }
@@ -185,6 +185,18 @@ empty_perf <- tibble::tibble(
 #' that can be used to retain arbitrary objects from the model fit object,
 #' recipe, or other elements of the workflow.
 #'
+#'@details
+#'
+#' For `extract`, this function can be used to output the model object, the
+#'  recipe (if used), or some components of either or both. When evaluated, the
+#'  function's sole argument has a named list with elements `recipe` and
+#'  `model`. If the formula method is used, the recipe element will be `NULL`.
+#'
+#' The results of the `extract` function are added to a list column in the
+#'  output called `extract`. Each element of this list is a tibble with tuning
+#'  parameter column and a list column (also called `.extract`) that contains
+#'  the results of the function. If no extraction function is used, there is no
+#'  `.extract` column in the resulting object.
 #' @export
 grid_control <- function(verbose = FALSE, allow_par = TRUE, extract = NULL) {
   # add options for `save_predictions`, and other stuff.
