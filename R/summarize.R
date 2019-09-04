@@ -7,8 +7,8 @@
 #' and the number of non-missing values (`n`). These are computed for each
 #' metric and estimator type.
 #' @export
-#' @rdname summarize.grid_results
-summarise.grid_results <- function(x, ...) {
+#' @rdname summarize.tune_results
+summarise.tune_results <- function(x, ...) {
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
     stop("All of the models failed.", call. = FALSE)
@@ -17,7 +17,12 @@ summarise.grid_results <- function(x, ...) {
   tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
   x <- x[tibble_metrics, ]
 
-  x <- tidyr::unnest(dplyr::select(x, .metrics))
+  if (any(names(x) == ".iter")) {
+    keep_cols <- c(".iter", ".metrics")
+  } else {
+    keep_cols <- ".metrics"
+  }
+  x <- tidyr::unnest(dplyr::select(x, !!!keep_cols))
   all_col <- names(x)
   excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
   param_names <- all_col[!(all_col %in% excl_cols)]

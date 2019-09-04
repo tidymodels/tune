@@ -105,7 +105,7 @@ test_that('Bayes control objects', {
   expect_error(Bayes_control(tomato = 1))
   expect_error(
     tune:::check_Bayes_control(list(verbose = TRUE, uncertain = 3, seed = 1,
-                                    time_limit = 12)),
+                                    time_limit = 12, extract = function(x) x)),
     NA
   )
   expect_warning(
@@ -129,13 +129,15 @@ test_that('initial values', {
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_1))
-  expect_equal(nrow(grid_1), 3)
+  expect_equal(nrow(grid_1), 10)
+  expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 3)))
 
   grid_2 <- tune:::check_initial(2, param_set(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_2))
-  expect_equal(nrow(grid_2), 2)
+  expect_equal(nrow(grid_2), 10)
+  expect_true(all(purrr::map_lgl(grid_2$.metrics, ~ nrow(.x) == 2)))
 
 })
 
