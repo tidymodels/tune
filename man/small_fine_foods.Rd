@@ -10,7 +10,7 @@
 https://snap.stanford.edu/data/web-FineFoods.html
 }
 \value{
-\item{training_data,testing_data}{tibblese}
+\item{training_data,testing_data}{tibbles}
 }
 \description{
 Fine Foods example data
