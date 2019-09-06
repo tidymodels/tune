@@ -43,7 +43,12 @@ chi_grid <-
   grid_max_entropy(size = 5)
 
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
+ext <- function(x) {
+  tibble(num_sv = x$model@nSV)
+}
+
+res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE, extract = ext))
+
 
 summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%

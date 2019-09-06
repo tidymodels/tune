@@ -32,17 +32,18 @@ tune_Bayes <-
       param_info <- param_set(object)
     }
 
-    initial_grid <- check_initial(initial, param_info, object, rs, perf, control)
+    unsummarized <- check_initial(initial, param_info, object, rs, perf, control)
+    mean_stats <- summarize(unsummarized)
 
     check_time(start_time, control$time_limit)
 
     on.exit({
       warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
-      return(res)
+      return(unsummarized)
     })
 
     best_res <-
-      res %>%
+      mean_stats %>%
       dplyr::filter(.metric == perf_name) %>%
       dplyr::filter(!is.na(mean))
 
@@ -60,7 +61,7 @@ tune_Bayes <-
     best_val <- best_res$mean[1]
     best_iter <- best_res$.iter[1]
     last_impr <- 0
-    overall_iter <- max(res$.iter)
+    overall_iter <- max(mean_stats$.iter)
 
     if (control$verbose) {
       message(paste("Optimizing", perf_name, "using", objective$label))
@@ -78,7 +79,7 @@ tune_Bayes <-
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i)
-      gp_mod <- fit_gp(res %>% dplyr::select(-.iter), pset = param_info,
+      gp_mod <- fit_gp(mean_stats %>% dplyr::select(-.iter), pset = param_info,
                        metric = perf_name, control = control, ...)
 
       check_time(start_time, control$time_limit)
@@ -86,7 +87,7 @@ tune_Bayes <-
       # get aqu functions
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control,
-                            current = res %>% dplyr::select(dplyr::one_of(param_info$id)))
+                            current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
 
       check_time(start_time, control$time_limit)
 
@@ -133,8 +134,9 @@ tune_Bayes <-
       all_bad <- is_cataclysmic(tmp_res)
 
       if (!inherits(tmp_res, "try-error") & !all_bad) {
+        unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
         rs_estimate <- summarize(tmp_res)
-        res <- dplyr::bind_rows(res, rs_estimate %>% dplyr::mutate(.iter = i))
+        mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         current_val <-
           tmp_res %>%
           summarize() %>%
@@ -154,7 +156,7 @@ tune_Bayes <-
         } else {
           last_impr <- last_impr + 1
         }
-        current_summarizer(control, x = res, maximize = maximize, objective = perf_name)
+        current_summarizer(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
           Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
@@ -164,7 +166,7 @@ tune_Bayes <-
       check_time(start_time, control$time_limit)
     }
     on.exit()
-    res
+    unsummarized
   }
 
 create_initial_set <- function(param, n = NULL) {
@@ -379,7 +381,7 @@ more_results <- function(object, rs, candidates, perf, control) {
         rs,
         grid = candidates,
         perf = perf,
-        control = grid_control(verbose = FALSE)
+        control = grid_control(verbose = FALSE, extract = control$extract)
       ),
       silent = TRUE
     )
@@ -421,6 +423,10 @@ is_cataclysmic <- function(x) {
 #'  uncertainty sample is created where a sample with high predicted variance is
 #'  chosen.
 #' @param seed An integer for controlling the random number stream.
+#' @param extract An optional function to collection any information from the
+#' model or other objects. See `grid_control()` for details. Note that if
+#' initial results were already generated using `tune_grid()`, care must be
+#' taken if the Bayesian search has a different extraction function.
 #' @param time_limit A number for the minimum number of _minutes_ (elapsed)
 #'  that the function should execute. The elapsed time is evaluated at internal
 #'  checkpoints and, if over time, the results at that time are returned (with a
@@ -431,6 +437,7 @@ Bayes_control <-
   function(verbose = FALSE,
            uncertain = Inf,
            seed = sample.int(10^5, 1),
+           extract = NULL,
            time_limit = NA) {
     # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
     # seeds per resample
@@ -438,6 +445,7 @@ Bayes_control <-
       verbose = verbose,
       uncertain = uncertain,
       seed = seed,
+      extract = extract,
       time_limit = time_limit
     )
   }

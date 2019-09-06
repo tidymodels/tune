@@ -4,14 +4,30 @@
 \alias{grid_control}
 \title{Control the grid search process}
 \usage{
-grid_control(verbose = FALSE, allow_par = TRUE)
+grid_control(verbose = FALSE, allow_par = TRUE, extract = NULL)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}
+
+\item{extract}{An optional function with at least one argument (or \code{NULL})
+that can be used to retain arbitrary objects from the model fit object,
+recipe, or other elements of the workflow.}
 }
 \description{
 Control the grid search process
+}
+\details{
+For \code{extract}, this function can be used to output the model object, the
+recipe (if used), or some components of either or both. When evaluated, the
+function's sole argument has a named list with elements \code{recipe} and
+\code{model}. If the formula method is used, the recipe element will be \code{NULL}.
+
+The results of the \code{extract} function are added to a list column in the
+output called \code{extract}. Each element of this list is a tibble with tuning
+parameter column and a list column (also called \code{.extract}) that contains
+the results of the function. If no extraction function is used, there is no
+\code{.extract} column in the resulting object.
 }
