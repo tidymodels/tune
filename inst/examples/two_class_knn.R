@@ -39,10 +39,11 @@ two_class_grid <-
   two_class_set %>%
   grid_max_entropy(size = 10)
 
-class_only <- metric_set(accuracy, kap, mcc)
+class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
-summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
+res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_metrics)
+
+summarize(res) %>% filter(.metric == "roc_auc") %>% arrange(desc(mean))
 
 decr_kappa <- function(i) {
   if (i < 5) {
@@ -65,12 +66,12 @@ svm_search <-
     param_info = two_class_set,
     initial = res,
     objective = conf_bound(kappa = decr_kappa),
-    perf = class_only,
+    perf = class_metrics,
     iter = 30,
     control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
 
-ggplot(svm_search %>%  filter(.metric == "accuracy")) +
-  aes(x = neighbors, y = dist_power, col = weight_func, size = mean) +
+ggplot(svm_search %>%  summarize() %>% filter(.metric == "roc_auc")) +
+  aes(x = K, y = exponent, col = weight_func, size = mean) +
   geom_point(alpha= .7)
 

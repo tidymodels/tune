@@ -36,6 +36,8 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = max(x$.iter)/75) {
 
   if (length(unique(x$.metric)) > 1) {
     p <- p + facet_wrap(~ .metric, scales = "free_y")
+  } else {
+    p <- p + ylab(unique(x$.metric))
   }
   p
 }
