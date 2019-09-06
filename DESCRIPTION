@@ -10,7 +10,8 @@ Description: The ability to tune models is important. tune contains functions an
     methods, and post-processing steps. 
 License: GPL-2 
 Depends:
-    ggplot2
+    ggplot2,
+    R (>= 2.10)
 Imports:
     dplyr (>= 0.8.3),
     rlang (>= 0.4.0),
