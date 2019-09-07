@@ -198,10 +198,12 @@ empty_perf <- tibble::tibble(
 #'  the results of the function. If no extraction function is used, there is no
 #'  `.extract` column in the resulting object.
 #' @export
-grid_control <- function(verbose = FALSE, allow_par = TRUE, extract = NULL) {
+grid_control <- function(verbose = FALSE, allow_par = TRUE,
+                         extract = NULL, save_pred = FALSE) {
   # add options for `save_predictions`, and other stuff.
   # seeds per resample
-  list(verbose = verbose, allow_par = allow_par, extract = extract)
+  list(verbose = verbose, allow_par = allow_par, extract = extract,
+       save_pred = save_pred)
 }
 
 grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {

@@ -4,7 +4,7 @@
 #' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int map2_dfc
 #' @importFrom tibble tibble lst
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
-#' @importFrom rlang is_false eval_tidy expr sym env_get is_function :=
+#' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output
 #' @importFrom dials param_set_constr is_unknown encode_unit

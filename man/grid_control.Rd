@@ -4,7 +4,8 @@
 \alias{grid_control}
 \title{Control the grid search process}
 \usage{
-grid_control(verbose = FALSE, allow_par = TRUE, extract = NULL)
+grid_control(verbose = FALSE, allow_par = TRUE, extract = NULL,
+  save_pred = FALSE)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}

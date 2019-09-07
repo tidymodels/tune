@@ -381,7 +381,8 @@ more_results <- function(object, rs, candidates, perf, control) {
         rs,
         grid = candidates,
         perf = perf,
-        control = grid_control(verbose = FALSE, extract = control$extract)
+        control = grid_control(verbose = FALSE, extract = control$extract,
+                               save_pred = control$save_pred)
       ),
       silent = TRUE
     )
@@ -427,6 +428,8 @@ is_cataclysmic <- function(x) {
 #' model or other objects. See `grid_control()` for details. Note that if
 #' initial results were already generated using `tune_grid()`, care must be
 #' taken if the Bayesian search has a different extraction function.
+#' @param save_pred A logical to save the out-of-sample predictions from
+#' each resample and each parameter combination. See `grid_control()` for details.
 #' @param time_limit A number for the minimum number of _minutes_ (elapsed)
 #'  that the function should execute. The elapsed time is evaluated at internal
 #'  checkpoints and, if over time, the results at that time are returned (with a
@@ -438,14 +441,16 @@ Bayes_control <-
            uncertain = Inf,
            seed = sample.int(10^5, 1),
            extract = NULL,
+           save_pred = FALSE,
            time_limit = NA) {
-    # add options for `extract`, `save_predictions`, `allow_parallel`, and other stuff.
+    # add options for `allow_parallel`, and other stuff.
     # seeds per resample
     list(
       verbose = verbose,
       uncertain = uncertain,
       seed = seed,
       extract = extract,
+      save_pred = save_pred,
       time_limit = time_limit
     )
   }
