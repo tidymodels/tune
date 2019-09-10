@@ -42,9 +42,8 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
       )
   }
 
-  all_est <- rs %>% dplyr::select(- splits)
-  class(all_est) <- c("tune_results", class(all_est))
-  all_est
+  class(rs) <- c("tune_results", class(rs))
+  rs
 }
 
 train_recipe <- function(split, object, grid) {

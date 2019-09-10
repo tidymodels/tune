@@ -165,6 +165,8 @@ tune_Bayes <-
       }
       check_time(start_time, control$time_limit)
     }
+
+    unsummarized <- reup_rs(rs, unsummarized)
     on.exit()
     unsummarized
   }
@@ -469,3 +471,19 @@ check_time <- function(origin, limit) {
 
 # May be better to completely refactor things to a high-level call then use
 # base's setTimeLimit().
+
+
+reup_rs <- function(rs, res)  {
+  id_cols <- grep("^id", names(rs), value = TRUE)
+  res <- dplyr::arrange(res, .iter, !!!syms(id_cols))
+  att <- attributes(res)
+  rsample_att <- attributes(rs)
+  for (i in names(rsample_att)) {
+    if (!any(names(att) == i)) {
+      attr(res, i) <- rsample_att[[i]]
+    }
+  }
+
+  class(res) <- c("tune_results", class(res))
+  res
+}
