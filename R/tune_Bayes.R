@@ -472,10 +472,13 @@ check_time <- function(origin, limit) {
 # May be better to completely refactor things to a high-level call then use
 # base's setTimeLimit().
 
-
+# Make sure that rset object attributes are kept once joined
 reup_rs <- function(rs, res)  {
-  id_cols <- grep("^id", names(rs), value = TRUE)
-  res <- dplyr::arrange(res, .iter, !!!syms(id_cols))
+  sort_cols <- grep("^id", names(rs), value = TRUE)
+  if (any(names(res) == ".iter")) {
+    sort_cols <- c(".iter", sort_cols)
+  }
+  res <- dplyr::arrange(res, !!!syms(sort_cols))
   att <- attributes(res)
   rsample_att <- attributes(rs)
   for (i in names(rsample_att)) {

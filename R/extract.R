@@ -10,31 +10,37 @@ extract_details <- function(object, extractor) {
 
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
-pull_engine <- function(rs, res, col) {
+pulley <- function(rs, res, col) {
   id_cols <- grep("^id", names(rs), value = TRUE)
   rs <- dplyr::arrange(rs, !!!syms(id_cols))
-  pulled_vals <-
-    purrr::map_dfr(res, ~.x[[col]]) %>%
-    tidyr::nest(-starts_with("id"), .key = !!col) %>%
-    dplyr::arrange(!!!syms(id_cols)) %>%
-    dplyr::select(-!!id_cols)
-  rs %>% bind_cols(pulled_vals)
+  pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
+
+  if (tidyr_new_interface()) {
+    pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
+    names(pulled_vals)[ncol(pulled_vals)] <- col
+  } else {
+    pulled_vals <- tidyr::nest(pulled_vals, -starts_with("id"), .key = !!col)
+  }
+
+  res <- full_join(rs, pulled_vals, by = id_cols)
+  res <- reup_rs(rs, res)
+  res
 }
 
 pull_metrics <- function(rs, res) {
-  pull_engine(rs, res, ".metrics")
+  pulley(rs, res, ".metrics")
 }
 
 pull_extracts <- function(rs, res, control) {
   if (!is.null(control$extract)) {
-    rs <- pull_engine(rs, res, ".extract")
+    rs <- pulley(rs, res, ".extract")
   }
   rs
 }
 
 pull_predictions <- function(rs, res, control) {
   if (control$save_pred) {
-    rs <- pull_engine(rs, res, ".predictions")
+    rs <- pulley(rs, res, ".predictions")
   }
   rs
 }

@@ -37,11 +37,23 @@ get_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
       if (any(colnames(x) == ".iter")) {
         keep_cols <- c(keep_cols, ".iter")
       }
-      x <-
-        tidyr::unnest(x) %>%
-        tidyr::nest(-!!keep_cols, .key = ".predictions")
+
+      x <- tidyr::unnest(x)
+      if (tidyr_new_interface()) {
+        x <- tidyr::nest(x, .predictions = -!!keep_cols)
+      } else {
+        x <- tidyr::nest(-!!keep_cols, .key = ".predictions")
+      }
     }
   }
   x
 }
+
+# ------------------------------------------------------------------------------
+
+tidyr_new_interface <- function() {
+  packageVersion("tidyr") > "0.8.99"
+}
+
+
 

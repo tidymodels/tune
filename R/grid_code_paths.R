@@ -24,7 +24,11 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
     dplyr::filter(source == "recipe") %>%
     dplyr::pull(id)
 
-  rec_grid <- tidyr::nest(grid, !!!model_param)
+  if (tidyr_new_interface()) {
+    rec_grid <- tidyr::nest(grid, data = dplyr::one_of(model_param))
+  } else {
+    rec_grid <- tidyr::nest(grid, !!!model_param)
+  }
 
   # --------------------------------------------------------------------------
 
@@ -48,7 +52,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       rec_grid %>%
       dplyr::slice(rec_iter) %>%
       dplyr::select(-one_of(rec_param)) %>%
-      tidyr::unnest()
+      tidyr::unnest(cols = dplyr::one_of("data"))
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.

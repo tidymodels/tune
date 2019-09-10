@@ -56,7 +56,7 @@ grid <- grid_max_entropy(nn_set, size = 5)
 
 grid_results <- tune_grid(nn_wflow, rs = val_split, grid = grid,
                           perf = roc_set,
-                          control = grid_control(verbose = TRUE))
+                          control = grid_control(verbose = TRUE, save_pred = TRUE))
 
 grid_results
 

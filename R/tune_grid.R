@@ -123,7 +123,7 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
         tmp_res <-
           eval_tidy(mp_call) %>%
           mutate(.row = orig_rows) %>%
-          unnest() %>%
+          unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
                 row.names = NULL) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%

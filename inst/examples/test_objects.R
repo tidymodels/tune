@@ -48,7 +48,9 @@ mt_spln_lm_bo <- tune_Bayes(mt_spln_lm, folds, iter = 3, control = Bayes_control
 # ------------------------------------------------------------------------------
 
 set.seed(8825)
-mt_spln_knn_grid <- tune_grid(mt_spln_knn, folds, control = grid_control(save_pred = TRUE))
+mt_spln_knn_grid <- tune_grid(mt_spln_knn, folds,
+                              grid = grid_regular(param_set(mt_spln_knn)),
+                              control = grid_control(save_pred = TRUE))
 
 set.seed(8825)
 mt_spln_knn_bo <- tune_Bayes(mt_spln_knn, folds, iter = 3, control = Bayes_control(save_pred = TRUE))
@@ -62,6 +64,16 @@ set.seed(8825)
 mt_knn_bo <- tune_Bayes(mt_knn, folds, iter = 3, control = Bayes_control(save_pred = TRUE))
 
 # ------------------------------------------------------------------------------
+
+options(warn = 2, error = traceback)
+set.seed(8825)
+mt_spln_lm_grid_fails <- tune_grid(mt_spln_lm, folds, control = grid_control(save_pred = TRUE))
+
+
+# ------------------------------------------------------------------------------
+
+
+
 
 save.image(file = "tests/testthat/test_objects.RData", version = 2, compress = "xz")
 
