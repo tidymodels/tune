@@ -100,10 +100,10 @@ search_res <-
     text_wflow,
     folds,
     initial = 5,
-    iter = 3,
+    iter = 20,
     perf = cls,
     objective = exp_improve(trade_decay),
-    control = Bayes_control(verbose = TRUE, extract = glmnet_vars, save_pred = TRUE)
+    control = Bayes_control(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
   )
 
 
