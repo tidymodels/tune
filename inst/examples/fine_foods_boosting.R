@@ -11,23 +11,23 @@ data("small_fine_foods")
 
 # ------------------------------------------------------------------------------
 
-basics <-
-  c('n_words', 'n_uq_words', 'n_charS', 'n_uq_charS', 'n_digits', 'n_hashtags',
-    'n_uq_hashtags', 'n_mentions', 'n_uq_mentions', 'n_commas', 'n_periods',
-    'n_exclaims', 'n_extraspaces', 'n_caps', 'n_lowers', 'n_urls', 'n_uq_urls',
-    'n_nonasciis', 'n_puncts', 'politeness', 'first_person', 'first_personp',
-    'second_person', 'second_personp', 'third_person', 'to_be', 'prepositions')
-basics <- paste0("textfeature_review_raw_", basics)
+basics <- names(textfeatures:::count_functions)
 
 pre_proc <-
   recipe(score ~ product + review, data = training_data) %>%
   update_role(product, new_role = "id") %>%
   step_mutate(review_raw = review) %>%
   step_textfeature(review_raw) %>%
+  step_rename_at(
+    starts_with("textfeature_"),
+    fn = ~ gsub("textfeature_review_raw_", "", .)
+  ) %>%
   step_tokenize(review)  %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
   step_texthash(review, signed = TRUE) %>%
+  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
+  step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
   step_YeoJohnson(one_of(basics)) %>%
   step_zv(all_predictors())
 
