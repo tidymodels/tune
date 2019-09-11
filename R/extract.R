@@ -27,7 +27,10 @@ pulley <- function(rs, res, col) {
   res
 }
 
-pull_metrics <- function(rs, res) {
+pull_metrics <- function(rs, res, control) {
+  if (is_cataclysmic(res)) {
+    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
+  }
   pulley(rs, res, ".metrics")
 }
 

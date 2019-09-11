@@ -72,15 +72,5 @@ mt_spln_lm_grid_fails <- tune_grid(mt_spln_lm, folds, control = grid_control(sav
 
 # ------------------------------------------------------------------------------
 
-
-
-
 save.image(file = "tests/testthat/test_objects.RData", version = 2, compress = "xz")
-
-
-
-
-
-
-
 

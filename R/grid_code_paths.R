@@ -129,7 +129,7 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec_and_mod(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
   rs <- pull_predictions(rs, results, ctrl)
 
@@ -208,7 +208,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
   rs <- pull_predictions(rs, results, ctrl)
 
@@ -229,7 +229,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_mod_with_recipe(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
   rs <- pull_predictions(rs, results, ctrl)
 
