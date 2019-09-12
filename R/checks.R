@@ -31,6 +31,7 @@ check_grid <- function(x, object) {
   } else {
     check_object(object, check_dials = TRUE)
     x <- dials::grid_latin_hypercube(param_set(object), size = 10)
+    x <- dplyr::distinct(x)
   }
   x
 }
