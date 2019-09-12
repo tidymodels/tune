@@ -11,6 +11,8 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   perf_est <- NULL
   extracted <- NULL
+  pred_vals <- NULL
+
   split <- rs$splits[[rs_iter]]
 
   model_param <-
@@ -22,7 +24,11 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
     dplyr::filter(source == "recipe") %>%
     dplyr::pull(id)
 
-  rec_grid <- tidyr::nest(grid, !!!model_param)
+  if (tidyr_new_interface()) {
+    rec_grid <- tidyr::nest(grid, data = dplyr::one_of(model_param))
+  } else {
+    rec_grid <- tidyr::nest(grid, !!!model_param)
+  }
 
   # --------------------------------------------------------------------------
 
@@ -46,7 +52,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       rec_grid %>%
       dplyr::slice(rec_iter) %>%
       dplyr::select(-one_of(rec_param)) %>%
-      tidyr::unnest()
+      tidyr::unnest(cols = dplyr::one_of("data"))
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
@@ -81,6 +87,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
           )
 
         perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
+        pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
       } else {
         # Failed model
@@ -106,7 +113,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end recipe loop
 
-  list(.metrics = perf_est, .extract = extracted)
+  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
 }
 
 tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
@@ -122,8 +129,9 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec_and_mod(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
+  rs <- pull_predictions(rs, results, ctrl)
 
   rs
 }
@@ -136,6 +144,8 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
+  pred_vals <- NULL
+
   num_rec <- nrow(grid)
 
   for (param_iter in 1:num_rec) {
@@ -159,6 +169,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
         )
 
       perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
     } else {
       # Failed model
@@ -182,7 +193,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # recipe parameters
 
-  list(.metrics = perf_est, .extract = extracted)
+  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
 
 }
 
@@ -197,8 +208,9 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_rec(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
+  rs <- pull_predictions(rs, results, ctrl)
 
   rs
 }
@@ -217,8 +229,9 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
     foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
     iter_mod_with_recipe(rs_iter, rs, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results)
+  rs <- pull_metrics(rs, results, ctrl)
   rs <- pull_extracts(rs, results, ctrl)
+  rs <- pull_predictions(rs, results, ctrl)
 
   rs
 }
@@ -228,6 +241,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
+  pred_vals <- NULL
 
   grid_msg(ctrl, split, "recipe")
   tmp_rec <- train_recipe(split, object, NULL)
@@ -256,7 +270,8 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
           split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ], perf
         )
 
-      perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
     } else {
       # Failed model
@@ -281,7 +296,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end model loop
 
-  list(.metrics = perf_est, .extract = extracted)
+  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
 
 }
 

@@ -1,8 +1,8 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-# library(doMC)
-# registerDoMC(cores=8)
+library(doMC)
+registerDoMC(cores = 20)
 
 # ------------------------------------------------------------------------------
 
@@ -41,7 +41,14 @@ two_class_grid <-
 
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_metrics)
+res <- tune_grid(two_class_wflow, data_folds, two_class_grid,
+                 perf = class_metrics, control = grid_control(save_pred = TRUE))
+# all_pred <-
+#   res %>%
+#   select(starts_with("id"), .predictions) %>%
+#   unnest() %>%
+#   nest(-K, -weight_func, -exponent)
+
 
 summarize(res) %>% filter(.metric == "roc_auc") %>% arrange(desc(mean))
 
@@ -73,5 +80,5 @@ svm_search <-
 
 ggplot(svm_search %>%  summarize() %>% filter(.metric == "roc_auc")) +
   aes(x = K, y = exponent, col = weight_func, size = mean) +
-  geom_point(alpha= .7)
+  geom_point(alpha = .7)
 

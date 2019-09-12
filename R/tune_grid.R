@@ -42,9 +42,8 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
       )
   }
 
-  all_est <- rs %>% dplyr::select(- splits)
-  class(all_est) <- c("tune_results", class(all_est))
-  all_est
+  class(rs) <- c("tune_results", class(rs))
+  rs
 }
 
 train_recipe <- function(split, object, grid) {
@@ -124,7 +123,7 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
         tmp_res <-
           eval_tidy(mp_call) %>%
           mutate(.row = orig_rows) %>%
-          unnest() %>%
+          unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
                 row.names = NULL) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
@@ -184,6 +183,8 @@ empty_perf <- tibble::tibble(
 #' @param extract An optional function with at least one argument (or `NULL`)
 #' that can be used to retain arbitrary objects from the model fit object,
 #' recipe, or other elements of the workflow.
+#' @param save_pred A logical for whether the out-of-sample predictions should
+#' be saved for each model _evaluated_.
 #'
 #'@details
 #'
@@ -198,10 +199,12 @@ empty_perf <- tibble::tibble(
 #'  the results of the function. If no extraction function is used, there is no
 #'  `.extract` column in the resulting object.
 #' @export
-grid_control <- function(verbose = FALSE, allow_par = TRUE, extract = NULL) {
+grid_control <- function(verbose = FALSE, allow_par = TRUE,
+                         extract = NULL, save_pred = FALSE) {
   # add options for `save_predictions`, and other stuff.
   # seeds per resample
-  list(verbose = verbose, allow_par = allow_par, extract = extract)
+  list(verbose = verbose, allow_par = allow_par, extract = extract,
+       save_pred = save_pred)
 }
 
 grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {

@@ -31,6 +31,7 @@ check_grid <- function(x, object) {
   } else {
     check_object(object, check_dials = TRUE)
     x <- dials::grid_latin_hypercube(param_set(object), size = 10)
+    x <- dplyr::distinct(x)
   }
   x
 }
@@ -117,7 +118,8 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
       message(msg)
     }
     x <- tune_grid(wflow, rs = rs, grid = x, perf = perf,
-                   control = grid_control(extract = ctrl$extract))
+                   control = grid_control(extract = ctrl$extract,
+                                          save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
       msg <- paste(crayon::green(cli::symbol$tick), "Initialization complete")
       message(msg)

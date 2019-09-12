@@ -6,25 +6,75 @@ extract_details <- function(object, extractor) {
   try(extractor(object), silent = TRUE)
 }
 
-pull_metrics <- function(rs, res) {
-  rs %>%
-    dplyr::full_join(
-      purrr::map_dfr(res, ~.x$.metrics) %>% tidyr::nest(-starts_with("id"), .key = .metrics),
-      by = names(labels(rs$splits[[1]]))
-    )
+# ------------------------------------------------------------------------------
+
+# Grab the new results, make sure that they align row-wise with the rsample
+# object and then bind columns
+pulley <- function(rs, res, col) {
+  id_cols <- grep("^id", names(rs), value = TRUE)
+  rs <- dplyr::arrange(rs, !!!syms(id_cols))
+  pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
+
+  if (tidyr_new_interface()) {
+    pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
+    names(pulled_vals)[ncol(pulled_vals)] <- col
+  } else {
+    pulled_vals <- tidyr::nest(pulled_vals, -starts_with("id"), .key = !!col)
+  }
+
+  res <- full_join(rs, pulled_vals, by = id_cols)
+  res <- reup_rs(rs, res)
+  res
+}
+
+maybe_repair <- function(x) {
+  not_null <- !map_lgl(x, is.null)
+  is_tibb <- map_lgl(x, tibble::is_tibble)
+  ok <- not_null & is_tibb
+  if (!any(ok)) {
+    return(x)
+  }
+
+  good_val <- which(ok)[1]
+  template <- x[[good_val]][0,]
+
+  insert_val <- function(x, y) {
+    if (is.null(x)) {
+      x <- y
+    }
+    x
+  }
+
+  x <- map(x, insert_val, y = template)
+  x
+}
+
+
+pull_metrics <- function(rs, res, control) {
+  if (is_cataclysmic(res)) {
+    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
+  }
+  out <- pulley(rs, res, ".metrics")
+  out$.metrics <- maybe_repair(out$.metrics)
+  out
 }
 
 pull_extracts <- function(rs, res, control) {
   if (!is.null(control$extract)) {
-    rs <-
-      rs %>%
-      dplyr::full_join(
-        purrr::map_dfr(res, ~.x$.extract) %>% tidyr::nest(-starts_with("id"), .key = .extract),
-        by = names(labels(rs$splits[[1]]))
-      )
+    rs <- pulley(rs, res, ".extract")
   }
   rs
 }
+
+pull_predictions <- function(rs, res, control) {
+  if (control$save_pred) {
+    rs <- pulley(rs, res, ".predictions")
+    rs$.predictions <- maybe_repair(rs$.predictions)
+  }
+  rs
+}
+
+# ------------------------------------------------------------------------------
 
 append_metrics <- function(collection, predictions, workflow, perf, split) {
   tmp_est <- estimate_perf(predictions, perf, workflow)
@@ -32,3 +82,10 @@ append_metrics <- function(collection, predictions, workflow, perf, split) {
   dplyr::bind_rows(collection, tmp_est)
 }
 
+append_predictions <- function(collection, predictions, split, control) {
+  if (!control$save_pred) {
+    return(NULL)
+  }
+  predictions <- cbind(predictions, labels(split))
+  dplyr::bind_rows(collection, predictions)
+}

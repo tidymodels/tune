@@ -5,7 +5,8 @@
 \title{Control the Bayesian search process}
 \usage{
 Bayes_control(verbose = FALSE, uncertain = Inf,
-  seed = sample.int(10^5, 1), extract = NULL, time_limit = NA)
+  seed = sample.int(10^5, 1), extract = NULL, save_pred = FALSE,
+  time_limit = NA)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated.}
@@ -20,6 +21,9 @@ chosen.}
 model or other objects. See \code{grid_control()} for details. Note that if
 initial results were already generated using \code{tune_grid()}, care must be
 taken if the Bayesian search has a different extraction function.}
+
+\item{save_pred}{A logical to save the out-of-sample predictions from
+each resample and each parameter combination. See \code{grid_control()} for details.}
 
 \item{time_limit}{A number for the minimum number of \emph{minutes} (elapsed)
 that the function should execute. The elapsed time is evaluated at internal

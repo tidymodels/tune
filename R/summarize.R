@@ -22,9 +22,10 @@ summarise.tune_results <- function(x, ...) {
   } else {
     keep_cols <- ".metrics"
   }
-  x <- tidyr::unnest(dplyr::select(x, !!!keep_cols))
+  x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
   all_col <- names(x)
-  excl_cols <- c(".metric", ".estimator", ".estimate", grep("^id", all_col, value = TRUE))
+  excl_cols <- c(".metric", ".estimator", ".estimate", "splits",
+                 grep("^id", all_col, value = TRUE), ".predictions", ".extract")
   param_names <- all_col[!(all_col %in% excl_cols)]
   x %>%
     tibble::as_tibble() %>%

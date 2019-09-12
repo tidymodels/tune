@@ -85,7 +85,7 @@ test_that('grid control objects', {
   expect_error(grid_control(), NA)
   expect_error(grid_control(tomato = 1))
   expect_error(
-    tune:::check_grid_control(list(verbose = TRUE, allow_par = TRUE, extract = NULL)),
+    tune:::check_grid_control(list(verbose = TRUE, allow_par = TRUE, extract = NULL, save_pred = TRUE)),
     NA
   )
   expect_warning(
@@ -105,7 +105,8 @@ test_that('Bayes control objects', {
   expect_error(Bayes_control(tomato = 1))
   expect_error(
     tune:::check_Bayes_control(list(verbose = TRUE, uncertain = 3, seed = 1,
-                                    time_limit = 12, extract = function(x) x)),
+                                    time_limit = 12, extract = function(x) x,
+                                    save_pred = TRUE)),
     NA
   )
   expect_warning(

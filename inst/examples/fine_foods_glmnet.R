@@ -13,16 +13,27 @@ data("small_fine_foods")
 
 basics <- names(textfeatures:::count_functions)
 
-basics <- paste0("textfeature_review_raw_", basics)
+binary_hash <- function(x) {
+  x <- ifelse(x < 0, -1, x)
+  x <- ifelse(x > 0,  1, x)
+  x
+}
+
 pre_proc <-
   recipe(score ~ product + review, data = training_data) %>%
   update_role(product, new_role = "id") %>%
   step_mutate(review_raw = review) %>%
   step_textfeature(review_raw) %>%
+  step_rename_at(
+    starts_with("textfeature_"),
+    fn = ~ gsub("textfeature_review_raw_", "", .)
+  ) %>%
   step_tokenize(review)  %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
   step_texthash(review, signed = TRUE, num_terms = tune()) %>%
+  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
+  step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
   step_YeoJohnson(one_of(basics)) %>%
   step_zv(all_predictors()) %>%
   step_normalize(all_predictors())
@@ -54,7 +65,10 @@ glmnet_vars <- function(x) {
 cls <- metric_set(roc_auc)
 set.seed(1559)
 text_glmnet <- tune_grid(text_wflow, folds, grid = text_grid, perf = cls,
-                         control = grid_control(verbose = TRUE, extract = glmnet_vars))
+                         control = grid_control(verbose = TRUE, extract = glmnet_vars,
+                                                save_pred = TRUE))
+
+print(warnings())
 
 # text_glmnet %>%
 #   select(id, .extract) %>%
@@ -99,11 +113,14 @@ search_res <-
     text_wflow,
     folds,
     initial = 5,
-    iter = 25,
+    iter = 20,
     perf = cls,
     objective = exp_improve(trade_decay),
-    control = Bayes_control(verbose = TRUE, extract = glmnet_vars)
+    control = Bayes_control(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
   )
+
+print(warnings())
+
 
 
 
