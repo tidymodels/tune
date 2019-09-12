@@ -16,6 +16,9 @@ backend is registered).}
 \item{extract}{An optional function with at least one argument (or \code{NULL})
 that can be used to retain arbitrary objects from the model fit object,
 recipe, or other elements of the workflow.}
+
+\item{save_pred}{A logical for whether the out-of-sample predictions should
+be saved for each model \emph{evaluated}.}
 }
 \description{
 Control the grid search process

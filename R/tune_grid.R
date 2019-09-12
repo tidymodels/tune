@@ -183,6 +183,8 @@ empty_perf <- tibble::tibble(
 #' @param extract An optional function with at least one argument (or `NULL`)
 #' that can be used to retain arbitrary objects from the model fit object,
 #' recipe, or other elements of the workflow.
+#' @param save_pred A logical for whether the out-of-sample predictions should
+#' be saved for each model _evaluated_.
 #'
 #'@details
 #'

@@ -27,11 +27,36 @@ pulley <- function(rs, res, col) {
   res
 }
 
+maybe_repair <- function(x) {
+  not_null <- !map_lgl(x, is.null)
+  is_tibb <- map_lgl(x, tibble::is_tibble)
+  ok <- not_null & is_tibb
+  if (!any(ok)) {
+    return(x)
+  }
+
+  good_val <- which(ok)[1]
+  template <- x[[good_val]][0,]
+
+  insert_val <- function(x, y) {
+    if (is.null(x)) {
+      x <- y
+    }
+    x
+  }
+
+  x <- map(x, insert_val, y = template)
+  x
+}
+
+
 pull_metrics <- function(rs, res, control) {
   if (is_cataclysmic(res)) {
     Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
   }
-  pulley(rs, res, ".metrics")
+  out <- pulley(rs, res, ".metrics")
+  out$.metrics <- maybe_repair(out$.metrics)
+  out
 }
 
 pull_extracts <- function(rs, res, control) {
@@ -44,6 +69,7 @@ pull_extracts <- function(rs, res, control) {
 pull_predictions <- function(rs, res, control) {
   if (control$save_pred) {
     rs <- pulley(rs, res, ".predictions")
+    rs$.predictions <- maybe_repair(rs$.predictions)
   }
   rs
 }

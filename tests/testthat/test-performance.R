@@ -39,5 +39,4 @@ test_that("metric information", {
   )
 })
 
-# R/grid_performance.R: 54.00%
 
