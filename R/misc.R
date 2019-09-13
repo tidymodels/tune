@@ -51,6 +51,41 @@ get_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
 
 # ------------------------------------------------------------------------------
 
+tune_log <- function(control, split, task, alert = cli_alert_success) {
+  if (!control$verbose) {
+    return(invisible(NULL))
+  }
+  if (!is.null(split)) {
+    labs <- labels(split)
+    labs <- rev(unlist(labs))
+    labs <- paste0(labs, collapse = ", ")
+    labs <- paste0(labs, ": ")
+  } else {
+    labs <- ""
+  }
+
+  alert(paste0(labs, task))
+}
+
+log_problems <- function(control, split, res, loc) {
+  wrn <- res$signals
+  if (length(wrn) > 0) {
+    wrn_msg <- map_chr(wrn, ~ .x$message)
+    wrn_msg <- unique(wrn_msg)
+    wrn_msg <- paste(wrn_msg, collapse = ", ")
+    wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
+    wrn_msg <- paste0(loc, ": ", wrn_msg)
+    tune_log(control, split, wrn_msg, cli_alert_warning)
+  }
+  if (inherits(res, "try-error")) {
+
+  }
+  NULL
+}
+
+
+# ------------------------------------------------------------------------------
+
 tidyr_new_interface <- function() {
   packageVersion("tidyr") > "0.8.99"
 }

@@ -51,9 +51,6 @@ maybe_repair <- function(x) {
 
 
 pull_metrics <- function(rs, res, control) {
-  if (is_cataclysmic(res)) {
-    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
-  }
   out <- pulley(rs, res, ".metrics")
   out$.metrics <- maybe_repair(out$.metrics)
   out

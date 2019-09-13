@@ -102,10 +102,10 @@ tune_Bayes <-
 
       if (all(is.na(candidates$.mean))) {
         if (nrow(candidates) < 2) {
-          Bayes_msg(control, "Halting search", fini = TRUE, cool = FALSE)
+          tune_log(control, split = NULL, task = "Halting search", alert = cli_alert_danger)
           break
         } else {
-          Bayes_msg(control, "Skipping ot next iteration", fini = TRUE, cool = FALSE)
+          tune_log(control, "Skipping ot next iteration", alert = cli_alert_danger)
           next
         }
       }
@@ -159,7 +159,7 @@ tune_Bayes <-
         current_summarizer(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
-          Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
+          tune_log(control, split = NULL, task = "All models failed", alert = cli_alert_danger)
         }
         last_impr <- last_impr + 1
       }
@@ -214,7 +214,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
-  Bayes_msg(control, "Fitting Gaussian process model", fini = FALSE, cool = TRUE)
+  tune_log(control, split = NULL, task = "Fitting Gaussian process model", alert = cli_alert_info)
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
@@ -228,9 +228,9 @@ fit_gp <- function(dat, pset, metric, control, ...) {
           silent = TRUE)
   )
   if (inherits(gp_fit, "try-error")) {
-    Bayes_msg(control, "Gaussian process model failed", fini = TRUE, cool = FALSE)
+    tune_log(control, split = NULL, task = "Gaussian process model failed", alert = cli_alert_danger)
   } else {
-    Bayes_msg(control, "Gaussian process model complete", fini = TRUE, cool = TRUE)
+    tune_log(control, split = NULL, task = "Gaussian process model complete", alert = cli_alert_success)
   }
 
   gp_fit
@@ -244,17 +244,19 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
     dplyr::anti_join(current, by = pset$id)
 
   if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
-    Bayes_msg(control, "Could not generate candidates", fini = TRUE, cool = FALSE)
+    tune_log(control, split = NULL, task = "Could not generate candidates", alert = cli_alert_warning)
     return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd =  NA_real_))
   }
 
-  Bayes_msg(control, paste("Generating", nrow(pred_grid), "candidates"),
-            fini = FALSE, cool = TRUE)
+  tune_log(control, split = NULL,
+           task = paste("Generating", nrow(pred_grid), "candidates"),
+           alert = cli_alert_info)
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  Bayes_msg(control, "Predicted candidates", fini = TRUE, cool = TRUE)
+  tune_log(control, split = NULL, task = "Predicted candidates",
+           alert = cli_alert_info)
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
@@ -265,17 +267,9 @@ hist_summarizer <- function(control, value, iter, nm, digits = 4) {
     return(invisible(NULL))
   }
   msg <-
-    paste0(
-      cli::symbol$star,
-      " Current best:\t",
-      nm,
-      "=",
-      signif(value, digits = digits),
-      " (@iter ",
-      iter,
-      ")"
-    )
-  message(msg)
+    paste0(" Current best:\t", nm, "=", signif(value, digits = digits),
+           " (@iter ", iter, ")")
+  tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
 }
 
 current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
@@ -310,37 +304,14 @@ current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, di
   message(msg)
 }
 
-Bayes_msg <- function(control, msg, fini = FALSE, cool = TRUE) {
-  if (!control$verbose) {
-    return(invisible(NULL))
-  }
-
-  if (!fini) {
-    msg <- paste0(cli::symbol$play, " ", msg)
-  } else {
-    if (cool) {
-      msg <- paste0(crayon::green(cli::symbol$tick), " ", msg)
-    } else {
-      msg <- paste0(crayon::red(cli::symbol$cross), " ", msg)
-    }
-  }
-  message(msg)
-}
-
-
 param_msg <- function(control, candidate) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
   candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
-  message(
-    paste0(
-      cli::symbol$square,
-      " ",
-      glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
-    )
-  )
+  msg <- glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
+  tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
 }
 
 
@@ -362,7 +333,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    message(val)
+    tune_log(control, split = NULL, task = val, alert = cli_alert_info)
   }
   invisible(NULL)
 }
@@ -371,7 +342,8 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
 
 
 more_results <- function(object, rs, candidates, perf, control) {
-  Bayes_msg(control, "Estimating performance", fini = FALSE, cool = TRUE)
+  tune_log(control, split = NULL, task = "Estimating performance",
+           alert = cli_alert_info)
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
@@ -390,16 +362,18 @@ more_results <- function(object, rs, candidates, perf, control) {
     )
 
   if (inherits(tmp_res, "try-error")) {
-    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
+    tune_log(control, split = NULL, task = "Couldn't estimating performance",
+             alert = cli_alert_danger)
   } else {
     all_bad <- is_cataclysmic(tmp_res)
     if (all_bad) {
       p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
       msg <- paste("All models failed for:", p_chr)
-      Bayes_msg(control, msg, fini = TRUE, cool = FALSE)
+      tune_log(control, split = NULL, task = msg, alert = cli_alert_danger)
       tmp_res <- simpleError(msg)
     } else {
-      Bayes_msg(control, "Estimating performance", fini = TRUE, cool = TRUE)
+      tune_log(control, split = NULL, task = "Estimating performance",
+               alert = cli_alert_success)
     }
   }
   tmp_res
