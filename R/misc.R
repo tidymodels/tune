@@ -103,7 +103,7 @@ log_problems <- function(control, split, res, loc, warn_only = FALSE) {
       err_msg <- paste0(loc, ": ", err_msg)
       tune_log(control, split, err_msg, cli_alert_danger)
     } else {
-      tune_log(control, split, loc, cli_alert_success)
+      tune_log(control, split, loc, cli::cli_alert_success)
     }
   }
   NULL

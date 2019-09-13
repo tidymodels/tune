@@ -117,7 +117,7 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
-      tune_log(ctrl, split = NULL, "Initialization complete", cli_alert_success)
+      tune_log(ctrl, split = NULL, "Initialization complete", cli::cli_alert_success)
       message()
     }
   }
