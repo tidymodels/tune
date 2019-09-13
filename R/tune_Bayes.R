@@ -244,7 +244,13 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
     dplyr::anti_join(current, by = pset$id)
 
   if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
-    tune_log(control, split = NULL, task = "Could not generate candidates", alert = cli_alert_warning)
+    if (nrow(pred_grid) == 0) {
+      msg <- "No remaining candidate models"
+    } else {
+      msg <- "An error occurred when creating candidates parameters: "
+      msg <- paste(msg, as.character(object))
+    }
+    tune_log(control, split = NULL, task = msg, alert = cli_alert_warning)
     return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd =  NA_real_))
   }
 

@@ -64,7 +64,7 @@ catcher <- function(expr) {
 
 # ------------------------------------------------------------------------------
 
-tune_log <- function(control, split, task, alert = cli_alert_success) {
+tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
@@ -77,7 +77,12 @@ tune_log <- function(control, split, task, alert = cli_alert_success) {
     labs <- ""
   }
 
-  alert(paste0(labs, task))
+  if (isTRUE(all.equal(alert, cli::cli_alert_warning))) {
+    alert(cli::col_yellow(paste0(labs, task)))
+  } else {
+    alert(paste0(labs, task))
+  }
+  NULL
 }
 
 log_problems <- function(control, split, res, loc, warn_only = FALSE) {
@@ -92,7 +97,8 @@ log_problems <- function(control, split, res, loc, warn_only = FALSE) {
   }
   if (!warn_only) {
     if (inherits(res$res, "try-error")) {
-      err_msg <- attr(res$res,"condition")$message
+      err_msg <- as.character(attr(res$res,"condition"))
+      err_msg <- gsub("\n$", "", err_msg)
       err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
       err_msg <- paste0(loc, ": ", err_msg)
       tune_log(control, split, err_msg, cli_alert_danger)

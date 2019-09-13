@@ -36,8 +36,7 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
   all_bad <- is_cataclysmic(rs)
   if (all_bad) {
     warning(
-      "All models failed in tune_grid(). From the first failure:",
-      as.character(res$.metrics[[1]]),
+      "All models failed in tune_grid().",
       call. = FALSE
       )
   }
@@ -73,6 +72,7 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
       y = recipes::juice(recipe, recipes::all_outcomes()) %>% dplyr::pull(1),
       ...
     )
+
   tmp_fit
 }
 
