@@ -82,7 +82,7 @@ tune_log <- function(control, split, task, alert = cli_alert_success) {
   alert(paste0(labs, task))
 }
 
-log_problems <- function(control, split, res, loc) {
+log_problems <- function(control, split, res, loc, warn_only = FALSE) {
   wrn <- res$signals
   if (length(wrn) > 0) {
     wrn_msg <- map_chr(wrn, ~ .x$message)
@@ -92,13 +92,15 @@ log_problems <- function(control, split, res, loc) {
     wrn_msg <- paste0(loc, ": ", wrn_msg)
     tune_log(control, split, wrn_msg, cli_alert_warning)
   }
-  if (inherits(res$res, "try-error")) {
-    err_msg <- attr(res$res,"condition")$message
-    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
-    err_msg <- paste0(loc, ": ", err_msg)
-    tune_log(control, split, err_msg, cli_alert_danger)
-  } else {
-    tune_log(control, split, loc, cli_alert_success)
+  if (!warn_only) {
+    if (inherits(res$res, "try-error")) {
+      err_msg <- attr(res$res,"condition")$message
+      err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
+      err_msg <- paste0(loc, ": ", err_msg)
+      tune_log(control, split, err_msg, cli_alert_danger)
+    } else {
+      tune_log(control, split, loc, cli_alert_success)
+    }
   }
   NULL
 }
