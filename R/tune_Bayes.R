@@ -39,7 +39,7 @@ tune_Bayes <-
 
     on.exit({
       warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
-      return(unsummarized)
+      return(reup_rs(rs, unsummarized))
     })
 
     best_res <-
@@ -214,7 +214,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
-  tune_log(control, split = NULL, task = "Fitting Gaussian process model", alert = cli_alert_info)
+  tune_log(control, split = NULL, task = "Fitting Gaussian process model", alert = cli_alert)
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
@@ -256,7 +256,7 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
   gp_pred <- predict(object, x)
 
   tune_log(control, split = NULL, task = "Predicted candidates",
-           alert = cli_alert_info)
+           alert = cli_alert)
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
@@ -267,7 +267,7 @@ hist_summarizer <- function(control, value, iter, nm, digits = 4) {
     return(invisible(NULL))
   }
   msg <-
-    paste0(" Current best:\t", nm, "=", signif(value, digits = digits),
+    paste0("Current best:\t\t", nm, "=", signif(value, digits = digits),
            " (@iter ", iter, ")")
   tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
 }
@@ -343,7 +343,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
 
 more_results <- function(object, rs, candidates, perf, control) {
   tune_log(control, split = NULL, task = "Estimating performance",
-           alert = cli_alert_info)
+           alert = cli_alert)
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
