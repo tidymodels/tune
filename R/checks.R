@@ -110,19 +110,14 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
     x <- create_initial_set(pset, n = x)
     if (ctrl$verbose) {
       message()
-      msg <-
-        paste0(
-          cli::symbol$play,
-          " Generating a set of ", nrow(x), " initial parameter results"
-        )
-      message(msg)
+      msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
+      tune_log(ctrl, split = NULL, msg, cli_alert)
     }
     x <- tune_grid(wflow, rs = rs, grid = x, perf = perf,
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
-      msg <- paste(crayon::green(cli::symbol$tick), "Initialization complete")
-      message(msg)
+      tune_log(ctrl, split = NULL, "Initialization complete", cli_alert_success)
       message()
     }
   }
