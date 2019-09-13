@@ -54,9 +54,7 @@ get_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
 catcher <- function(expr) {
   signals <- list()
   add_cond <- function(cnd) {
-    if (inherits(cnd, "warning")) {
-      signals <<- append(signals, list(cnd))
-    }
+    signals <<- append(signals, list(cnd))
     rlang::cnd_muffle(cnd)
   }
 
