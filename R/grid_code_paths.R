@@ -157,14 +157,12 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
     # TODO check for failure here:
     tune_log(ctrl, split, rec_msg, alert = cli_alert_success)
 
-    tune_log(ctrl, split, paste0(rec_msg, ", model 1/1"), alert = cli_alert)
-    tmp_fit <-
-      train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
+    tmp_fit <- catcher(train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl))
+    log_problems(ctrl, split, tmp_fit, loc = paste0(rec_msg, ", model 1/1"))
+    tmp_fit <- tmp_fit$res
 
     # check for failure
     if (!inherits(tmp_fit$fit, "try-error")) {
-      tune_log(ctrl, split, paste0(rec_msg, ", model 1/1"), alert = cli_alert_success)
-
       tmp_pred <-
         predict_model_from_recipe(
           split, tmp_fit, tmp_rec, grid[param_iter, ], perf

@@ -51,6 +51,21 @@ get_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
 
 # ------------------------------------------------------------------------------
 
+catcher <- function(expr) {
+  signals <- list()
+  add_cond <- function(cnd) {
+    if (inherits(cnd, "warning")) {
+      signals <<- append(signals, list(cnd))
+    }
+    rlang::cnd_muffle(cnd)
+  }
+
+  res <- try(withCallingHandlers(warning = add_cond, expr), silent = TRUE)
+  list(res = res, signals = signals)
+}
+
+# ------------------------------------------------------------------------------
+
 tune_log <- function(control, split, task, alert = cli_alert_success) {
   if (!control$verbose) {
     return(invisible(NULL))
@@ -77,8 +92,13 @@ log_problems <- function(control, split, res, loc) {
     wrn_msg <- paste0(loc, ": ", wrn_msg)
     tune_log(control, split, wrn_msg, cli_alert_warning)
   }
-  if (inherits(res, "try-error")) {
-
+  if (inherits(res$res, "try-error")) {
+    err_msg <- attr(res$res,"condition")$message
+    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
+    err_msg <- paste0(loc, ": ", err_msg)
+    tune_log(control, split, err_msg, cli_alert_danger)
+  } else {
+    tune_log(control, split, loc, cli_alert_success)
   }
   NULL
 }
