@@ -42,9 +42,10 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
 
-    grid_msg(ctrl, split, rec_msg)
-    tmp_rec <- train_recipe(split, object, rec_grid_vals)
-    grid_msg(ctrl, split, rec_msg, fini = TRUE)
+    tune_log(ctrl, split, "recipe", alert = cli_alert)
+    tmp_rec <- catcher(train_recipe(split, object, rec_grid_vals))
+    log_problems(ctrl, split, tmp_rec, loc = "recipe")
+    tmp_rec <- tmp_rec$res
 
     # All model tune parameters associated with the current recipe
     # parameters
@@ -68,31 +69,29 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
       submd_param <- submd_param$.submodels[[1]]
 
-      grid_msg(ctrl, split, mod_msg)
+      tune_log(ctrl, split, mod_msg, alert = cli_alert)
       tmp_fit <-
-        train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl)
+        catcher(train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl))
+      log_problems(ctrl, split, tmp_fit, loc = mod_msg)
+      tmp_fit <- tmp_fit$res
+
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
-        grid_msg(ctrl, split, mod_msg, fini = TRUE)
-
         all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
-        tmp_pred <-
-          try(
-            predict_model_from_recipe(
-              split, tmp_fit, tmp_rec, all_param, perf
-            ),
-            silent = TRUE
+        pred_msg <- paste(mod_msg, "(predictions)")
+        tmp_pred <- catcher(
+          predict_model_from_recipe(
+            split, tmp_fit, tmp_rec, all_param, perf
           )
+        )
+        log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
+        tmp_pred <- tmp_pred$res
 
         perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
         pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
-      } else {
-        # Failed model
-        grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
-        cat(tmp_fit$fit, "\n")
       }
 
       tmp_extr <-
@@ -150,31 +149,33 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   for (param_iter in 1:num_rec) {
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
+    mod_msg <- paste0(rec_msg, ", model 1/1")
 
-    grid_msg(ctrl, split, rec_msg)
-    tmp_rec <- train_recipe(split, object, grid[param_iter, ])
-    grid_msg(ctrl, split, rec_msg, fini = TRUE)
+    tune_log(ctrl, split, rec_msg, alert = cli_alert)
+    tmp_rec <- catcher(train_recipe(split, object, grid[param_iter, ]))
+    log_problems(ctrl, split, tmp_rec, loc = rec_msg)
+    tmp_rec <- tmp_rec$res
 
-    grid_msg(ctrl, split, paste0(rec_msg, ", model"))
-    tmp_fit <-
-      train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl)
+    tune_log(ctrl, split, mod_msg, alert = cli_alert)
+    tmp_fit <- catcher(train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl))
+    log_problems(ctrl, split, tmp_fit, loc = mod_msg)
+    tmp_fit <- tmp_fit$res
 
     # check for failure
     if (!inherits(tmp_fit$fit, "try-error")) {
-      grid_msg(ctrl, split, paste0(rec_msg, ", model"), fini = TRUE)
-
-      tmp_pred <-
+      pred_msg <- paste(mod_msg, "(predictions)")
+      tmp_pred <- catcher(
         predict_model_from_recipe(
           split, tmp_fit, tmp_rec, grid[param_iter, ], perf
         )
+      )
+      log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
+      tmp_pred <- tmp_pred$res
+
 
       perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
-    } else {
-      # Failed model
-      grid_msg(ctrl, split, paste0(rec_msg, ", model"),
-               fini = TRUE, cool = FALSE)
     }
 
     tmp_extr <-
@@ -243,9 +244,13 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   extracted <- NULL
   pred_vals <- NULL
 
-  grid_msg(ctrl, split, "recipe")
-  tmp_rec <- train_recipe(split, object, NULL)
-  grid_msg(ctrl, split, "recipe", fini = TRUE)
+  # ----------------------------------------------------------------------------
+
+  tune_log(ctrl, split, "recipe", alert = cli_alert)
+  tmp_rec <- catcher(train_recipe(split, object, NULL))
+  log_problems(ctrl, split, tmp_rec, loc = "recipe")
+  tmp_rec <- tmp_rec$res
+
   y_names <- outcome_names(tmp_rec)
 
   # Determine the _minimal_ number of models to fit in order to get
@@ -256,27 +261,28 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   for (mod_iter in 1:num_mod) {
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-    grid_msg(ctrl, split, mod_msg)
+    tune_log(ctrl, split, mod_msg, alert = cli_alert)
     tmp_fit <-
-      train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,], control = fit_ctrl)
+      catcher(train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,],
+                                      control = fit_ctrl))
+    log_problems(ctrl, split, tmp_fit, loc = mod_msg)
+    tmp_fit <- tmp_fit$res
 
     # check for failure
     if (!inherits(tmp_fit$fit, "try-error")) {
 
-      grid_msg(ctrl, split, mod_msg, fini = TRUE)
-
-      tmp_pred <-
+      pred_msg <- paste(mod_msg, "(predictions)")
+      tmp_pred <- catcher(
         predict_model_from_recipe(
           split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ], perf
         )
+      )
+      log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
+      tmp_pred <- tmp_pred$res
 
       perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
-    } else {
-      # Failed model
-      grid_msg(ctrl, split, mod_msg, fini = TRUE, cool = FALSE)
-      cat(tmp_fit$fit, "\n")
     }
 
     tmp_extr <-

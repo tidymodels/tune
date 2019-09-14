@@ -11,6 +11,14 @@ extract_details <- function(object, extractor) {
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
 pulley <- function(rs, res, col) {
+  if (all(map_lgl(res, inherits, "simpleError"))) {
+    res <-
+      rs %>%
+      mutate(col = map(splits, ~ NULL)) %>%
+      setNames(c(names(rs), col))
+    return(res)
+  }
+
   id_cols <- grep("^id", names(rs), value = TRUE)
   rs <- dplyr::arrange(rs, !!!syms(id_cols))
   pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
@@ -51,9 +59,6 @@ maybe_repair <- function(x) {
 
 
 pull_metrics <- function(rs, res, control) {
-  if (is_cataclysmic(res)) {
-    Bayes_msg(control, "Estimating performance", fini = TRUE, cool = FALSE)
-  }
   out <- pulley(rs, res, ".metrics")
   out$.metrics <- maybe_repair(out$.metrics)
   out

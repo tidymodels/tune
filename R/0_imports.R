@@ -8,7 +8,7 @@
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output packageVersion
 #' @importFrom dials param_set_constr is_unknown encode_unit
-#' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix
+#' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy kap
 #' @importFrom tidyr unnest nest
@@ -16,6 +16,8 @@
 #' @importFrom parsnip get_from_env
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
+#' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
+#' @importFrom cli cli_alert_success cli_alert
 
 # ------------------------------------------------------------------------------
 

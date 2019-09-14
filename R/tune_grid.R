@@ -36,8 +36,7 @@ tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_contr
   all_bad <- is_cataclysmic(rs)
   if (all_bad) {
     warning(
-      "All models failed in tune_grid(). From the first failure:",
-      as.character(res$.metrics[[1]]),
+      "All models failed in tune_grid().",
       call. = FALSE
       )
   }
@@ -73,6 +72,7 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
       y = recipes::juice(recipe, recipes::all_outcomes()) %>% dplyr::pull(1),
       ...
     )
+
   tmp_fit
 }
 
@@ -206,25 +206,3 @@ grid_control <- function(verbose = FALSE, allow_par = TRUE,
   list(verbose = verbose, allow_par = allow_par, extract = extract,
        save_pred = save_pred)
 }
-
-grid_msg <- function(control, split, task, fini = FALSE, cool = TRUE) {
-  if (!control$verbose) {
-    return(invisible(NULL))
-  }
-
-  labs <- labels(split)
-  labs <- rev(unlist(labs))
-  labs <- paste0(labs, collapse = ", ")
-  msg <- paste0(labs, ": ")
-  if (!fini) {
-    msg <- paste0(cli::symbol$play, " ", msg, task)
-  } else {
-    if (cool) {
-      msg <- paste0(crayon::green(cli::symbol$tick), " ", msg, task)
-    } else {
-      msg <- paste0(crayon::red(cli::symbol$cross), " ", msg, task)
-    }
-  }
-  message(msg)
-}
-

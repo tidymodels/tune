@@ -40,10 +40,10 @@ mt_knn <-
 # ------------------------------------------------------------------------------
 
 set.seed(8825)
-mt_spln_lm_grid <- tune_grid(mt_spln_lm, folds, control = grid_control(save_pred = TRUE))
+mt_spln_lm_grid <- tune_grid(mt_spln_lm, folds, control = grid_control(verbose = TRUE, save_pred = TRUE))
 
 set.seed(8825)
-mt_spln_lm_bo <- tune_Bayes(mt_spln_lm, folds, iter = 3, control = Bayes_control(save_pred = TRUE))
+mt_spln_lm_bo <- tune_Bayes(mt_spln_lm, folds, iter = 3, control = Bayes_control(verbose = TRUE, save_pred = TRUE))
 
 # ------------------------------------------------------------------------------
 
