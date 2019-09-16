@@ -5,11 +5,15 @@
 
 #' Model tuning via grid search
 #'
-#' @param object A model workflow object.
-#' @param rs An `rset()` object.
+#' @param object A model workflow or recipe object.
+#' @param formula A traditional model formula.
+#' @param model A `parsnip` model specification (or `NULL` when `object` is a
+#' workflow).
+#' @param rs An `rset()` object. the argument ___should be named___.
 #' @param grid A data frame of tuning combinations or `NULL`.
 #' @param perf A `yardstick::metric_set()` or `NULL`.
 #' @param control An object used to modify the tuning process.
+#' @param ... Not currently used.
 #' @return A tibble of results.
 #'
 #' @details
@@ -21,7 +25,62 @@
 #' squared error and coefficient of determination are computed. For classification,
 #' the log-likelihood and overall accuracy are computed.
 #' @export
-tune_grid <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
+tune_grid <- function(object, ...) {
+  UseMethod("tune_grid")
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.default <- function(object, ...) {
+  stop("The first argument should be either a formula, recipe, or workflow.",
+       call. = FALSE)
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.recipe <- function(object, model, rs, grid = NULL,
+                             perf = NULL, control = grid_control(), ...) {
+  if (is_missing(model) || !inherits(model, "model_spec")) {
+    stop("`model` should be a parsnip model specification object.", call. = FALSE)
+  }
+
+  wflow <-
+    workflows::workflow() %>%
+    workflows::add_recipe(object) %>%
+    workflows::add_model(model)
+
+  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.formula <- function(formula, model, rs, grid = NULL,
+                             perf = NULL, control = grid_control(), ...) {
+  if (is_missing(model) || !inherits(model, "model_spec")) {
+    stop("`model` should be a parsnip model specification object.", call. = FALSE)
+  }
+
+  wflow <-
+    workflows::workflow() %>%
+    workflows::add_formula(formula) %>%
+    workflows::add_model(model)
+
+  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.workflow <- function(object, model = NULL, rs, grid = NULL,
+                             perf = NULL, control = grid_control(), ...) {
+  if (!is.null(model)) {
+    stop("When using a workflow, `model` should be NULL.", call. = FALSE)
+  }
+
+  tune_grid_workflow(object, rs = rs, grid = grid, perf = perf, control = control)
+}
+
+
+tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
 
   check_rset(rs)
   check_object(object)

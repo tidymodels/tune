@@ -2,21 +2,42 @@
 % Please edit documentation in R/tune_grid.R
 \name{tune_grid}
 \alias{tune_grid}
+\alias{tune_grid.default}
+\alias{tune_grid.recipe}
+\alias{tune_grid.formula}
+\alias{tune_grid.workflow}
 \title{Model tuning via grid search}
 \usage{
-tune_grid(object, rs, grid = NULL, perf = NULL,
-  control = grid_control())
+tune_grid(object, ...)
+
+\method{tune_grid}{default}(object, ...)
+
+\method{tune_grid}{recipe}(object, model, rs, grid = NULL, perf = NULL,
+  control = grid_control(), ...)
+
+\method{tune_grid}{formula}(formula, model, rs, grid = NULL,
+  perf = NULL, control = grid_control(), ...)
+
+\method{tune_grid}{workflow}(object, model = NULL, rs, grid = NULL,
+  perf = NULL, control = grid_control(), ...)
 }
 \arguments{
-\item{object}{A model workflow object.}
+\item{object}{A model workflow or recipe object.}
 
-\item{rs}{An \code{rset()} object.}
+\item{...}{Not currently used.}
+
+\item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
+workflow).}
+
+\item{rs}{An \code{rset()} object. the argument \emph{\strong{should be named}}.}
 
 \item{grid}{A data frame of tuning combinations or \code{NULL}.}
 
 \item{perf}{A \code{yardstick::metric_set()} or \code{NULL}.}
 
 \item{control}{An object used to modify the tuning process.}
+
+\item{formula}{A traditional model formula.}
 }
 \value{
 A tibble of results.

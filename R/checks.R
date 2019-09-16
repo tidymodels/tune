@@ -113,7 +113,7 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
       tune_log(ctrl, split = NULL, msg, cli_alert)
     }
-    x <- tune_grid(wflow, rs = rs, grid = x, perf = perf,
+    x <- tune_grid(wflow, model = NULL, rs = rs, grid = x, perf = perf,
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
