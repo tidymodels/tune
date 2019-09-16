@@ -73,7 +73,8 @@ are used as the predictors.
 A large grid of potential hyperparameter combinations is predicted using
 the model and scored using an \emph{acquisition function}. These functions
 usually combine the predicted mean and variance of the GP to decide the best
-parameter combination to try next.
+parameter combination to try next. For more information, see the
+documentation for \code{exp_improve()} and the corresponding package vignette.
 
 The best combination is evaluated using resampling and the process continues.
 
