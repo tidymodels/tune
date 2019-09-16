@@ -1,8 +1,3 @@
-# ------------------------------------------------------------------------------
-# currently assumes recipes and no post-processing and regression
-# and lots of other stuff
-
-
 #' Model tuning via grid search
 #'
 #' `tune_grid()` computes a set of perfomance metrics (e.g. accuracy or RMSE)
