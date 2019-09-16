@@ -29,13 +29,16 @@ tune_grid(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{rs}{An \code{rset()} object. the argument \emph{\strong{should be named}}.}
+\item{rs}{An \code{rset()} object. This argument \strong{should be named}.}
 
-\item{grid}{A data frame of tuning combinations or \code{NULL}.}
+\item{grid}{A data frame of tuning combinations or \code{NULL}. If used, this
+argument \strong{should be named}.}
 
-\item{perf}{A \code{yardstick::metric_set()} or \code{NULL}.}
+\item{perf}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
+\strong{should be named}.}
 
-\item{control}{An object used to modify the tuning process.}
+\item{control}{An object used to modify the tuning process. If used, this
+argument \strong{should be named}.}
 
 \item{formula}{A traditional model formula.}
 }
@@ -43,14 +46,102 @@ workflow).}
 A tibble of results.
 }
 \description{
-Model tuning via grid search
+\code{tune_grid()} computes a set of perfomance metrics (e.g. accuracy or RMSE)
+for a pre-defined set of tuning parameters that correspond to a model or
+recipe across one or more resamples of the data.
 }
 \details{
+Suppose there are \emph{m} tuning parameter combinations. \code{tune_grid()} may not
+require all \emph{m} model/recipe fits across each resample. For example:
+
+\itemize{
+\item In cases where a single model fit can be used to make predictions
+for different parameter values in the grid, only one fit is used.
+For example, for some boosted trees, of 100 iterations of boosting
+are requested, the model object for 100 iterations can be used to
+make predictions on iterations less than 100 (if all other
+parameters are equal).
+\item When the model is being tuned in conjunction with pre-processing
+.        used. For example, if the number of PCA components in a recipe step
+are being tuned over three values (along with model tuning
+parameters), only three recipes are are trained. The alternative
+would be to re-train the same recipe multiple times for each model
+tuning parameter.
+}
+
+The \code{foreach} package is used here. To execute the resampling iterations in
+parallel, register a parallel backend function. See the documentation for
+\code{foreach::foreach()} for examples.
+
+For the most part, warnings generated during training are shown as they occur
+and are associated with a specific resample when \code{control(verbose = TRUE)}.
+They are (usually) not aggregated until the end of processing.
+}
+\section{Parameter Grids}{
+
+
 If no tuning grid is provided, a semi-random grid (via
 \code{dials::grid_latin_hypercube()}) is create with 10 candidate parameter
 combinations.
-
-If no metric set is used, one is set. For regression models, the root mean
-squared error and coefficient of determination are computed. For classification,
-the log-likelihood and overall accuracy are computed.
 }
+
+\section{Performance Metrics}{
+
+
+If no metric set is provided, one is created:
+\itemize{
+\item For regression models, the root mean squared error and coefficient
+of determination are computed.
+\item For classification, the log-likelihood and overall accuracy are
+computed.
+}
+
+Note that the metrics also determine what type of predictions are estimated
+during tuning. For example, in a classification problem, of metrics are used
+that are all associated with hard class predictions, the classification
+probabilities are not created.
+
+The out-of-sample estimates of these metrics are contained in a list column
+called \code{.metrics}. This tibble contains a row for each metric and columns
+for the value, the estimator type, and so on.
+
+A \code{summarize()} method can be used for these objects to collapse the results
+over the resampled (to obtain the final resampling estimates per tuning
+parameter combination).
+}
+
+\section{Obtaining Predictions}{
+
+
+When \code{control(save_preds = TRUE)}, the output tibble contains a list column
+called \code{.predictions} that has the out-of-sample predictions for each
+parameter combination in the grid and each fold (which can be very large).
+
+The elements of the tibble are tibbles with columns for the tuning
+parameters, the row number from the original data object (\code{.row}), the
+outcome data (with the same name(s) of the original data), and any columns
+created by the predictions. For example, for simple regression problems
+generates a column called \code{.pred} and so on. As noted above, the prediction
+columns that are returned are determined by the type of metric(s) requested.
+
+This list column can be \code{unnested} using \code{tidyr::unnest()} or using the
+convenience function \code{collect_predictions()}.
+}
+
+\section{Extracting information}{
+
+
+The \code{extract} control option will result in an additional function to be
+returned called \code{.extracts}. This is a list column that has tibbles
+containing the results of the user's function for each tuning parameter
+combination. This can enable returning each model and/or recipe object that
+is created during resampling. Note that this could result in a large return
+object, depending on what is returned.
+
+Note that the function given to the \code{extract} argument is evaluated on
+every model that is \emph{fit} (as opposed to every model that is \emph{evaluated}).
+As noted above, in some cases, model predictions can be derived for
+sub-models so that, in these cases, not every row in the tuning parameter
+grid has a separate R object associated with it.
+}
+
