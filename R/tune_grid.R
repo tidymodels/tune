@@ -487,10 +487,10 @@ empty_perf <- tibble::tibble(
 #'  `model`. If the formula method is used, the recipe element will be `NULL`.
 #'
 #' The results of the `extract` function are added to a list column in the
-#'  output called `extract`. Each element of this list is a tibble with tuning
-#'  parameter column and a list column (also called `.extract`) that contains
+#'  output called `.extracts`. Each element of this list is a tibble with tuning
+#'  parameter column and a list column (also called `.extracts`) that contains
 #'  the results of the function. If no extraction function is used, there is no
-#'  `.extract` column in the resulting object.
+#'  `.extracts` column in the resulting object.
 #' @export
 grid_control <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE) {

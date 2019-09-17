@@ -30,8 +30,8 @@ function's sole argument has a named list with elements \code{recipe} and
 \code{model}. If the formula method is used, the recipe element will be \code{NULL}.
 
 The results of the \code{extract} function are added to a list column in the
-output called \code{extract}. Each element of this list is a tibble with tuning
-parameter column and a list column (also called \code{.extract}) that contains
+output called \code{.extracts}. Each element of this list is a tibble with tuning
+parameter column and a list column (also called \code{.extracts}) that contains
 the results of the function. If no extraction function is used, there is no
-\code{.extract} column in the resulting object.
+\code{.extracts} column in the resulting object.
 }

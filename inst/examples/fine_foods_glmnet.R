@@ -71,7 +71,7 @@ text_glmnet <- tune_grid(text_wflow, folds, grid = text_grid, perf = cls,
 print(warnings())
 
 # text_glmnet %>%
-#   select(id, .extract) %>%
+#   select(id, .extracts) %>%
 #   unnest() %>%
 #   select(-penalty) %>%
 #   unnest() %>%

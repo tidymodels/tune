@@ -99,7 +99,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
         dplyr::select(-.submodels) %>%
         dplyr::bind_cols(labels(split)) %>%
         mutate(
-          .extract = list(
+          .extracts = list(
             extract_details(
               list(recipe = tmp_rec, model = tmp_fit$fit),
               ctrl$extract
@@ -112,7 +112,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end recipe loop
 
-  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 }
 
 tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
@@ -182,7 +182,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
       grid[param_iter, ] %>%
       dplyr::bind_cols(labels(split)) %>%
       mutate(
-        .extract = list(
+        .extracts = list(
           extract_details(
             list(recipe = tmp_rec, model = tmp_fit$fit),
             ctrl$extract
@@ -194,7 +194,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # recipe parameters
 
-  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 
@@ -290,7 +290,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
       dplyr::select(-.submodels) %>%
       dplyr::bind_cols(labels(split)) %>%
       mutate(
-        .extract = list(
+        .extracts = list(
           extract_details(
             list(recipe = tmp_rec, model = tmp_fit$fit),
             ctrl$extract
@@ -302,7 +302,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end model loop
 
-  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 
@@ -381,7 +381,7 @@ iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
       dplyr::select(-.submodels) %>%
       dplyr::bind_cols(labels(split)) %>%
       mutate(
-        .extract = list(
+        .extracts = list(
           extract_details(
             list(recipe = NULL, model = tmp_fit$fit),
             ctrl$extract
@@ -393,7 +393,7 @@ iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end model loop
 
-  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 

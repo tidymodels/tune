@@ -41,15 +41,16 @@ ext <- function(x) {
   broom::glance(x$model)
 }
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE, extract = ext))
+res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid,
+                 control = grid_control(verbose = TRUE, extract = ext))
 
-# unnest(unnest(res %>% select(id, .extract), cols = .extract), cols = .extract)
+# unnest(unnest(res %>% select(id, .extracts), cols = .extracts), cols = .extract)
 
 lm_stats <-
   res %>%
-  select(id, .extract) %>%
-  unnest(cols = .extract) %>%
-  unnest(cols = .extract) %>%
+  select(id, .extracts) %>%
+  unnest(cols = .extracts) %>%
+  unnest(cols = .extracts) %>%
   select(id, threshold, adj.r.squared, sigma, AIC, BIC) %>%
   group_by(threshold) %>%
   summarize(

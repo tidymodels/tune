@@ -25,7 +25,7 @@ summarise.tune_results <- function(x, ...) {
   x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
   all_col <- names(x)
   excl_cols <- c(".metric", ".estimator", ".estimate", "splits",
-                 grep("^id", all_col, value = TRUE), ".predictions", ".extract")
+                 grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
   param_names <- all_col[!(all_col %in% excl_cols)]
   x %>%
     tibble::as_tibble() %>%

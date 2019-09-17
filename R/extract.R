@@ -66,7 +66,7 @@ pull_metrics <- function(rs, res, control) {
 
 pull_extracts <- function(rs, res, control) {
   if (!is.null(control$extract)) {
-    rs <- pulley(rs, res, ".extract")
+    rs <- pulley(rs, res, ".extracts")
   }
   rs
 }

@@ -45,11 +45,11 @@ test_that('tune recipe only', {
       tune_grid(rs = mt_folds, control = grid_control(extract = extr_1_1)),
     NA
   )
-  expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extract), NA)
+  expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
 
-  expect_true(all(names(extract_1_1) == c("num_comp", ".extract")))
+  expect_true(all(names(extract_1_1) == c("num_comp", ".extracts")))
   expect_true(
-    all(purrr:::map_lgl(extract_1_1$.extract, ~ tibble::is_tibble(.x))),
+    all(purrr:::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
   )
 
 
@@ -67,10 +67,10 @@ test_that('tune recipe only', {
     NA
   )
 
-  expect_error(extract_1_2 <- dplyr::bind_rows(res_1_2$.extract), NA)
-  expect_true(all(names(extract_1_2) == c("num_comp", ".extract")))
+  expect_error(extract_1_2 <- dplyr::bind_rows(res_1_2$.extracts), NA)
+  expect_true(all(names(extract_1_2) == c("num_comp", ".extracts")))
   expect_true(
-    all(purrr:::map_lgl(extract_1_2$.extract, ~ inherits(.x, "try-error"))),
+    all(purrr:::map_lgl(extract_1_2$.extracts, ~ inherits(.x, "try-error"))),
   )
 
 })
@@ -91,14 +91,14 @@ test_that('tune model only', {
       tune_grid(rs = mt_folds, control = grid_control(extract = extr_2_1)),
     NA
   )
-  expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extract), NA)
+  expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
 
-  expect_true(all(names(extract_2_1) == c("penalty", "mixture", ".extract")))
+  expect_true(all(names(extract_2_1) == c("penalty", "mixture", ".extracts")))
   expect_true(
-    all(purrr:::map_lgl(extract_2_1$.extract, ~ tibble::is_tibble(.x))),
+    all(purrr:::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_2_1$.extract, ~ all(names(.x) == c("penalty", "df")))),
+    all(purrr:::map_lgl(extract_2_1$.extracts, ~ all(names(.x) == c("penalty", "df")))),
   )
 
   extr_2_2 <- function(x) {
@@ -115,7 +115,7 @@ test_that('tune model only', {
     NA
   )
 
-  expect_error(extract_2_2 <- dplyr::bind_rows(res_2_2$.extract) %>% tidyr::unnest(), NA)
+  expect_error(extract_2_2 <- dplyr::bind_rows(res_2_2$.extracts) %>% tidyr::unnest(), NA)
   expect_true(all(!extract_2_2$is_null_rec))
 
 })
@@ -142,20 +142,20 @@ test_that('tune model and recipe', {
                          control = grid_control(extract = extr_3_1)),
     NA
   )
-  expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extract), NA)
+  expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "penalty", "mixture", ".extract")))
+  expect_true(all(names(extract_3_1) == c("num_comp", "penalty", "mixture", ".extracts")))
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extract, ~ is.list(.x))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ is.list(.x))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extract, ~ all(names(.x) == c("recipe", "model")))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ all(names(.x) == c("recipe", "model")))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extract, ~ inherits(.x$recipe, "recipe"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extract, ~ inherits(.x$model, "glmnet"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "glmnet"))),
   )
 
 })
