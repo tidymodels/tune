@@ -341,7 +341,8 @@ no_int <- function(x) {
 mf_outcome_cols <- function(x) {
   y_call <- attr(x, "predvars")[attr(x, "response") + 1]
   y_call <- y_call[[1]]
-  if (isTRUE(all.equal(y_call[[1]], rlang::call2("cbind")))) {
+  # If y_call represents a single variable, deparse it.
+  if (!is.name(y_call) && isTRUE(all.equal(y_call[[1]], rlang::call2("cbind")))) {
     # multivariate
     cl_args <- rlang::call_args(y_call)
     cl_args <- purrr::map_chr(cl_args, rlang::expr_text)

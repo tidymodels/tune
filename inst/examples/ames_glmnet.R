@@ -28,7 +28,9 @@ ames_wflow <-
   add_formula(log(Sale_Price) ~ Lot_Area + Gr_Liv_Area + Neighborhood + Longitude + Latitude) %>%
   add_model(lm_mod)
 
-ames_glmnet <- tune_grid(ames_wflow, rs = cv_splits, control = grid_control(verbose = TRUE))
+grid_df <- grid_regular(ames_wflow, levels = c(10, 3))
+
+ames_glmnet <- tune_grid(ames_wflow, rs = cv_splits, grid = grid_df, control = grid_control(verbose = TRUE))
 
 
 # summarize(ames_glmnet) %>%
