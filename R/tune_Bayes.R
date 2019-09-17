@@ -238,7 +238,7 @@ tune_Bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, rs, candidates, perf, control)
+      tmp_res <- more_results(object, rs = rs, candidates = candidates, perf = perf, control = control)
 
       check_time(start_time, control$time_limit)
 
@@ -469,7 +469,7 @@ more_results <- function(object, rs, candidates, perf, control) {
     try(
       tune_grid(
         object,
-        rs,
+        rs = rs,
         grid = candidates,
         perf = perf,
         control = grid_control(verbose = FALSE, extract = control$extract,
@@ -479,7 +479,7 @@ more_results <- function(object, rs, candidates, perf, control) {
     )
 
   if (inherits(tmp_res, "try-error")) {
-    tune_log(control, split = NULL, task = "Couldn't estimating performance",
+    tune_log(control, split = NULL, task = "Couldn't estimate performance",
              alert = cli_alert_danger)
   } else {
     all_bad <- is_cataclysmic(tmp_res)

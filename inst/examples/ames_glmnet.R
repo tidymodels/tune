@@ -18,19 +18,6 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 
 # ------------------------------------------------------------------------------
 
-ames_rec <-
-  recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune())  %>%
-  step_dummy(all_nominal()) %>%
-  step_interact(~ starts_with("Central_Air"):Year_Built)  %>%
-  step_zv(all_predictors()) %>%
-  step_normalize(all_predictors()) %>%
-  step_bs(Longitude, deg_free = tune("long df"))  %>%
-  step_bs(Latitude, deg_free = tune("lat df"))
-
-
 lm_mod <-
   linear_reg(penalty = tune(), mixture = tune()) %>%
   set_engine("glmnet")
@@ -38,10 +25,10 @@ lm_mod <-
 
 ames_wflow <-
   workflow() %>%
-  add_recipe(ames_rec) %>%
+  add_formula(log(Sale_Price) ~ Lot_Area + Gr_Liv_Area + Neighborhood + Longitude + Latitude) %>%
   add_model(lm_mod)
 
-ames_glmnet <- tune_grid(ames_wflow, cv_splits, control = grid_control(verbose = TRUE))
+ames_glmnet <- tune_grid(ames_wflow, rs = cv_splits, control = grid_control(verbose = TRUE))
 
 
 # summarize(ames_glmnet) %>%
@@ -62,11 +49,10 @@ set.seed(9890)
 search_res <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
+    rs = cv_splits,
     initial = ames_glmnet,
-    metrics = metric_set(rmse, rsq),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, uncertain = 5)
+    control = Bayes_control(verbose = TRUE)
   )
 
 

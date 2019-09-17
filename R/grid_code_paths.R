@@ -310,5 +310,90 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
 
 tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
-  stop("to-do")
+  B <- nrow(rs)
+
+  `%op%` <- get_operator(ctrl$allow_par)
+
+  all_pkg <- c(fe_pkg_list, mod_pkgs(object))
+
+  results <-
+    foreach::foreach(rs_iter = 1:B, .packages = all_pkg, .errorhandling = "pass") %op%
+    iter_mod_with_formula(rs_iter, rs, grid, object, perf, ctrl)
+
+  rs <- pull_metrics(rs, results, ctrl)
+  rs <- pull_extracts(rs, results, ctrl)
+  rs <- pull_predictions(rs, results, ctrl)
+
+  rs
 }
+
+iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
+  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+  split <- rs$splits[[rs_iter]]
+  perf_est <- NULL
+  extracted <- NULL
+  pred_vals <- NULL
+
+  # ----------------------------------------------------------------------------
+
+  tune_log(ctrl, split, "formula", alert = cli_alert)
+  tmp_df <- catcher(exec_formula(split, object))
+  log_problems(ctrl, split, tmp_df, loc = "formula")
+  tmp_trms <- tmp_df$res$terms
+  tmp_df <- tmp_df$res[c("x", "y")]
+
+  y_names <- outcome_names(object)
+
+  # Determine the _minimal_ number of models to fit in order to get
+  # predictions on all models.
+  mod_grid_vals <- min_grid(object$fit$model$model, grid)
+
+  num_mod <- nrow(mod_grid_vals)
+  for (mod_iter in 1:num_mod) {
+    mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
+
+    tune_log(ctrl, split, mod_msg, alert = cli_alert)
+    tmp_fit <-
+      catcher(train_model_from_df(object, tmp_df, mod_grid_vals[mod_iter,],
+                                  control = fit_ctrl))
+    log_problems(ctrl, split, tmp_fit, loc = mod_msg)
+    tmp_fit <- tmp_fit$res
+
+    # check for failure
+    if (!inherits(tmp_fit$fit, "try-error")) {
+
+      pred_msg <- paste(mod_msg, "(predictions)")
+      tmp_pred <- catcher(
+        predict_model_from_terms(
+          split, tmp_fit, tmp_trms, mod_grid_vals[mod_iter, ], perf
+        )
+      )
+      log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
+      tmp_pred <- tmp_pred$res
+
+      perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
+
+    }
+
+    tmp_extr <-
+      mod_grid_vals[mod_iter, ] %>%
+      dplyr::select(-.submodels) %>%
+      dplyr::bind_cols(labels(split)) %>%
+      mutate(
+        .extract = list(
+          extract_details(
+            list(recipe = NULL, model = tmp_fit$fit),
+            ctrl$extract
+          )
+        )
+      )
+
+    extracted <- dplyr::bind_rows(extracted, tmp_extr)
+
+  } # end model loop
+
+  list(.metrics = perf_est, .extract = extracted, .predictions = pred_vals)
+
+}
+
