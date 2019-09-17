@@ -470,7 +470,8 @@ empty_perf <- tibble::tibble(
 
 #' Control the grid search process
 #'
-#' @param verbose A logical for logging results as they are generated.
+#' @param verbose A logical for logging results as they are generated. Despite
+#' this argument, warnings and errors are always shown.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #' backend is registered).
 #' @param extract An optional function with at least one argument (or `NULL`)

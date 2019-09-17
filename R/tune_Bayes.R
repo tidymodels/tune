@@ -512,7 +512,8 @@ is_cataclysmic <- function(x) {
 
 #' Control the Bayesian search process
 #'
-#' @param verbose A logical for logging results as they are generated.
+#' @param verbose A logical for logging results as they are generated. Despite
+#' this argument, warnings and errors are always shown.
 #' @param uncertain The number of iterations with no improvment before an
 #'  uncertainty sample is created where a sample with high predicted variance is
 #'  chosen.

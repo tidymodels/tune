@@ -37,6 +37,10 @@ tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
 }
 
 log_problems <- function(control, split, res, loc, warn_only = FALSE) {
+  # Always log warnings and errors
+  control2 <- control
+  control2$verbose = TRUE
+
   wrn <- res$signals
   if (length(wrn) > 0) {
     wrn_msg <- map_chr(wrn, ~ .x$message)
@@ -44,7 +48,7 @@ log_problems <- function(control, split, res, loc, warn_only = FALSE) {
     wrn_msg <- paste(wrn_msg, collapse = ", ")
     wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
     wrn_msg <- paste0(loc, ": ", wrn_msg)
-    tune_log(control, split, wrn_msg, cli_alert_warning)
+    tune_log(control2, split, wrn_msg, cli_alert_warning)
   }
   if (!warn_only) {
     if (inherits(res$res, "try-error")) {
@@ -52,7 +56,7 @@ log_problems <- function(control, split, res, loc, warn_only = FALSE) {
       err_msg <- gsub("\n$", "", err_msg)
       err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
       err_msg <- paste0(loc, ": ", err_msg)
-      tune_log(control, split, err_msg, cli_alert_danger)
+      tune_log(control2, split, err_msg, cli_alert_danger)
     } else {
       tune_log(control, split, loc, cli::cli_alert_success)
     }

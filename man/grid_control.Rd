@@ -8,7 +8,8 @@ grid_control(verbose = FALSE, allow_par = TRUE, extract = NULL,
   save_pred = FALSE)
 }
 \arguments{
-\item{verbose}{A logical for logging results as they are generated.}
+\item{verbose}{A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}

@@ -9,7 +9,8 @@ Bayes_control(verbose = FALSE, uncertain = Inf,
   time_limit = NA)
 }
 \arguments{
-\item{verbose}{A logical for logging results as they are generated.}
+\item{verbose}{A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.}
 
 \item{uncertain}{The number of iterations with no improvment before an
 uncertainty sample is created where a sample with high predicted variance is
