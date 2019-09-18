@@ -32,10 +32,10 @@
 
 
 <meta property="og:title" content="Find recommended methods for generating parameter values — tunable" />
-
 <meta property="og:description" content="tunable() determines which parameters in an object can be tuned along
 with information about the parameters." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -95,6 +95,9 @@ with information about the parameters." />
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -123,10 +126,8 @@ with information about the parameters." />
     </div>
 
     <div class="ref-description">
-    
     <p><code>tunable()</code> determines which parameters in an object <em>can</em> be tuned along
 with information about the parameters.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
@@ -165,7 +166,7 @@ with information about the parameters.</p>
 
 <span class='co'># S3 method for workflow</span>
 <span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -179,11 +180,10 @@ specification.</p></td>
       <td><p>Not currently used.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>An object of class <code>tbl_df</code> (inherits from <code>tbl</code>, <code>data.frame</code>) with 0 rows and 5 columns.</p>
-    
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble with a column for the parameter <code>name</code>, information on the
@@ -194,7 +194,6 @@ about the location of the parameter (e.g. "step_normalize" or recipes or
 "boost_tree" for models). The <code>component_id</code> column contains the unique step
 <code>id</code> field or, for models, a logical for whether the model specification
 argument was a main parameter or one associated with the engine.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>For a model specification, an engine must be chosen.</p>
@@ -204,7 +203,6 @@ named list with an element for the function call and an optional element for
 the source of the function (e.g. the <code>dials</code> package). For model
 specifications, If the parameter is unknown to the underlying <code>tunable</code>
 method, a <code>NULL</code> is returned.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
@@ -251,13 +249,9 @@ method, a <code>NULL</code> is returned.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#format">Format</a></li>
-
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

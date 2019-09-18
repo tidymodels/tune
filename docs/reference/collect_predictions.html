@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determine the minimum set of model fits — min_grid • tune</title>
+<title>Obtain and format results produced by tuning — collect_predictions • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,10 +31,8 @@
 
 
 
-<meta property="og:title" content="Determine the minimum set of model fits — min_grid" />
-<meta property="og:description" content="min_grid determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future." />
+<meta property="og:title" content="Obtain and format results produced by tuning — collect_predictions" />
+<meta property="og:description" content="Obtain and format results produced by tuning" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,61 +119,46 @@ internal use only and the API may change in the near future." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determine the minimum set of model fits</h1>
+    <h1>Obtain and format results produced by tuning</h1>
     
-    <div class="hidden name"><code>min_grid.Rd</code></div>
+    <div class="hidden name"><code>collect_predictions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>min_grid</code> determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future.</p>
+    <p>Obtain and format results produced by tuning</p>
     </div>
 
-    <pre class="usage"><span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>collect_predictions</span>(<span class='no'>x</span>, <span class='kw'>nest_by</span> <span class='kw'>=</span> <span class='st'>"nothing"</span>, <span class='kw'>wflow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='co'># S3 method for model_spec</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for boost_tree</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for linear_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for logistic_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for mars</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for multinom_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for nearest_neighbor</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>collect_metrics</span>(<span class='no'>x</span>, <span class='kw'>nest_by</span> <span class='kw'>=</span> <span class='st'>"nothing"</span>, <span class='kw'>wflow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A model specification.</p></td>
+      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_Bayes.html'>tune_Bayes()</a></code>. For
+<code>collect_predictions()</code>, the control option <code>save_pred = TRUE</code> should have
+been used.</p></td>
     </tr>
     <tr>
-      <th>grid</th>
-      <td><p>A tibble with tuning parameter combinations.</p></td>
+      <th>nest_by</th>
+      <td><p>A character string to indicate which (if any) columns should
+be in the resulting tibble and which should be nested. Values are <code>"nothing"</code>
+(i.e. no nesting), <code>"resamples"</code> (nest the parameter values), and <code>"parameters"</code>
+(nest the resamples).</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <th>wflow</th>
+      <td><p>The workflow associated with the results (only required for
+<code>nest_by = "parameters"</code>).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with the minimum tuning parameters to fit and an additional
-list column with the parameter combinations used for prediction.</p>
+    <p>A tibble. The column names depend on the results and the mode of the
+model.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -4,4 +4,5 @@ pkgdown_sha: 71070c3aa5cbff0bffd5bdc599f0fffbd5065142
 articles:
   acquisition_functions: acquisition_functions.html
   Classification: articles/Classification.html
+  grid: grid.html
 

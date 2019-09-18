@@ -32,9 +32,9 @@
 
 
 <meta property="og:title" content="Control the grid search process — grid_control" />
-
 <meta property="og:description" content="Control the grid search process" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -94,6 +94,9 @@
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -122,34 +125,57 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Control the grid search process</p>
-    
     </div>
 
-    <pre class="usage"><span class='fu'>grid_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>grid_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>verbose</th>
-      <td><p>A logical for logging results as they are generated.</p></td>
+      <td><p>A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.</p></td>
     </tr>
     <tr>
       <th>allow_par</th>
       <td><p>A logical to allow parallel processing (if a parallel
 backend is registered).</p></td>
     </tr>
+    <tr>
+      <th>extract</th>
+      <td><p>An optional function with at least one argument (or <code>NULL</code>)
+that can be used to retain arbitrary objects from the model fit object,
+recipe, or other elements of the workflow.</p></td>
+    </tr>
+    <tr>
+      <th>save_pred</th>
+      <td><p>A logical for whether the out-of-sample predictions should
+be saved for each model <em>evaluated</em>.</p></td>
+    </tr>
     </table>
-    
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For <code>extract</code>, this function can be used to output the model object, the
+recipe (if used), or some components of either or both. When evaluated, the
+function's sole argument has a named list with elements <code>recipe</code> and
+<code>model</code>. If the formula method is used, the recipe element will be <code>NULL</code>.</p>
+<p>The results of the <code>extract</code> function are added to a list column in the
+output called <code>.extracts</code>. Each element of this list is a tibble with tuning
+parameter column and a list column (also called <code>.extracts</code>) that contains
+the results of the function. If no extraction function is used, there is no
+<code>.extracts</code> column in the resulting object.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      <li><a href="#details">Details</a></li>
+    </ul>
 
   </div>
 </div>

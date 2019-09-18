@@ -126,8 +126,7 @@ search_res <-
     # How to measure performance
     perf = metric_set(kap),
     # Acquisition function
-    objective = exp_improve(),
-    control = Bayes_control(uncertain = Inf)
+    objective = exp_improve()
   )
 search_res
 ```
@@ -135,7 +134,10 @@ search_res
 The best performance of the initial set of candidate values was `kappa = `r max(search_res$mean[search_res$.iter == 0])` `. The best results were achieved at iteration `r search_res$.iter[which.max(search_res$mean)]` with a corresponding Kappa value of `r max(search_res$mean)`. The five best results were:
 
 ```{r best}
-search_res %>% arrange(desc(mean)) %>% slice(1:5)
+search_res %>% 
+  summarize() %>% 
+  arrange(desc(mean)) %>% 
+  slice(1:5)
 ```
 
 A plot of the search can be created via:

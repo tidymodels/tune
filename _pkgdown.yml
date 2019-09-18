@@ -21,7 +21,7 @@ reference:
     - conf_bound
     - Bayes_control
     - grid_control
-    - summarise.grid_results
+    - summarise.tune_results
     - plot_perf_vs_iter
   - title: Low-Level Functions
     contents:
@@ -38,6 +38,8 @@ navbar:
       href: articles/articles/Classification.html
     - text: Acquisition Functions
       href: articles/acquisition_functions.html
+    - text: Grid Search
+      href: articles/grid.html
   - text: Reference
     href: reference/index.html
   - text: News

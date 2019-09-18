@@ -1,0 +1,148 @@
+---
+title: "Grid Search"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Grid Search}
+output:
+  knitr:::html_vignette:
+    toc: yes
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidymodels)
+library(tune)
+library(workflows)
+library(mlbench)
+library(kernlab)
+library(crayon)
+library(rlang)
+```
+
+To demonstrate model tuning, we'll use the Ionosphere data in the `mlbench` package:
+
+```{r load-data}
+library(mlbench)
+data(Ionosphere)
+```
+
+There are 43 predictors and a factor outcome. Two of the predictors are factors (`V1` and `V2`) and the rest are numerics that have been scaled to a range of -1 and 1. Note that the two factor predictors have sparse distributions:
+
+```{r factor-pred}
+table(Ionosphere$V1)
+table(Ionosphere$V2)
+```
+
+There's no point of putting `V2` into any model since is is a zero-variance predictor. `V1` is not but it _could_ be if the resampling process ends up sampling all of the same value. Is this an issue? I probably would be since the standard R formula infrastructure fails when this occurs:
+
+```{r glm-fail, error=TRUE}
+glm(Class ~ ., data = Ionosphere, family = binomial)
+
+# Surprisingly, this doesn't help: 
+
+glm(Class ~ . - V2, data = Ionosphere, family = binomial)
+```
+
+At a minimum, let's get rid of the most problematic variable:
+
+```{r ion-rm}
+Ionosphere <- Ionosphere %>% select(-V2)
+```
+
+## Inputs for the Search
+
+To demonstrate, we'll fit a radial basis function support vector machine to these data and tune the SVM cost parameter and the $\sigma$ parameter in the kernel function:
+
+```{r svm-mod}
+svm_mod <-
+  svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+  set_mode("classification") %>%
+  set_engine("kernlab")
+```
+
+In the code below, tuning will be demonstrated using a standard R formula as well as this recipe:
+
+```{r rec}
+iono_rec <-
+  recipe(Class ~ ., data = Ionosphere)  %>%
+  # In case V1 is has a single value sampled
+  step_zv(all_predictors()) %>% 
+  # convert it to a dummy variable
+  step_dummy(V1) %>%
+  # Scale it the same as the others
+  step_range(matches("V1_"))
+```
+
+The only other required item for tuning is a resampling strategy as defined by an `rsample` object. Let's demonstrate using basic bootstrapping:
+
+```{r rs}
+set.seed(443)
+iono_rs <- bootstraps(Ionosphere, times = 30)
+```
+
+## Optional Inputs
+
+An _optional_ step for model tuning is to specify what metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likleihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a `yardstick` function can be used to create a metric set:
+
+```{r roc}
+roc_vals <- metric_set(roc_auc)
+```
+
+If no grid or parameters is provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.
+
+Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off. 
+
+```{r ctrl}
+ctrl <- grid_control(verbose = FALSE)
+```
+
+## Executing the Grid Using a Formula
+
+First, the formula interface will be used:
+
+```{r grid}
+set.seed(325)
+grid_form <- tune_grid(Class ~ ., model = svm_mod, rs = iono_rs, perf = roc_vals, control = ctrl)
+grid_form
+```
+
+The `.metrics` column contains tibbles of the performance metrics for each tuning parameter combinations:
+
+```{r raw-metrics}
+grid_form %>% select(.metrics) %>% slice(1) %>% pull(1)
+```
+
+To get the final resampling estimates, the `summarize` function can be used on the grid object:
+
+```{r metric-estimates}
+estimates <- summarize(grid_form)
+estimates
+```
+
+The best combination was:
+
+```{r sorted-metrics}
+estimates %>% 
+  arrange(desc(mean)) %>% 
+  slice(1)
+```
+
+## Executing the Grid Using a Recipe
+
+The same syntax is used but a recipe is passed in the first argument:
+
+
+```{r recipe}
+set.seed(325)
+rec_form <- tune_grid(iono_rec, model = svm_mod, rs = iono_rs, perf = roc_vals, control = ctrl)
+rec_form
+```
+
+The best setting here was:
+
+```{r best-rec}
+summarize(rec_form) %>% 
+  arrange(desc(mean)) %>% 
+  slice(1)
+```
+

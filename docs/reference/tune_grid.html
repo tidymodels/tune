@@ -32,9 +32,11 @@
 
 
 <meta property="og:title" content="Model tuning via grid search — tune_grid" />
-
-<meta property="og:description" content="Model tuning via grid search" />
+<meta property="og:description" content="tune_grid() computes a set of perfomance metrics (e.g. accuracy or RMSE)
+for a pre-defined set of tuning parameters that correspond to a model or
+recipe across one or more resamples of the data." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -94,6 +96,9 @@
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -122,63 +127,162 @@
     </div>
 
     <div class="ref-description">
-    
-    <p>Model tuning via grid search</p>
-    
+    <p><code>tune_grid()</code> computes a set of perfomance metrics (e.g. accuracy or RMSE)
+for a pre-defined set of tuning parameters that correspond to a model or
+recipe across one or more resamples of the data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>())</pre>
-    
+    <pre class="usage"><span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for recipe</span>
+<span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)
+
+<span class='co'># S3 method for formula</span>
+<span class='fu'>tune_grid</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)
+
+<span class='co'># S3 method for workflow</span>
+<span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>rs</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A model workflow object.</p></td>
+      <td><p>A model workflow or recipe object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not currently used.</p></td>
+    </tr>
+    <tr>
+      <th>model</th>
+      <td><p>A <code>parsnip</code> model specification (or <code>NULL</code> when <code>object</code> is a
+workflow).</p></td>
     </tr>
     <tr>
       <th>rs</th>
-      <td><p>An <code>rset()</code> object.</p></td>
+      <td><p>An <code>rset()</code> object. This argument <strong>should be named</strong>.</p></td>
     </tr>
     <tr>
       <th>grid</th>
-      <td><p>A data frame of tuning combinations or <code>NULL</code>.</p></td>
+      <td><p>A data frame of tuning combinations or <code>NULL</code>. If used, this
+argument <strong>should be named</strong>.</p></td>
     </tr>
     <tr>
       <th>perf</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> or <code>NULL</code>.</p></td>
+      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> or <code>NULL</code>. If used, this argument
+<strong>should be named</strong>.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>An object used to modify the tuning process.</p></td>
+      <td><p>An object used to modify the tuning process. If used, this
+argument <strong>should be named</strong>.</p></td>
+    </tr>
+    <tr>
+      <th>formula</th>
+      <td><p>A traditional model formula.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble of results.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
+    <p>Suppose there are <em>m</em> tuning parameter combinations. <code>tune_grid()</code> may not
+require all <em>m</em> model/recipe fits across each resample. For example:</p>
+<ul>
+<li><p>In cases where a single model fit can be used to make predictions
+for different parameter values in the grid, only one fit is used.
+For example, for some boosted trees, of 100 iterations of boosting
+are requested, the model object for 100 iterations can be used to
+make predictions on iterations less than 100 (if all other
+parameters are equal).</p></li>
+<li><p>When the model is being tuned in conjunction with pre-processing
+.        used. For example, if the number of PCA components in a recipe step
+are being tuned over three values (along with model tuning
+parameters), only three recipes are are trained. The alternative
+would be to re-train the same recipe multiple times for each model
+tuning parameter.</p></li>
+</ul>
+    <p>The <code>foreach</code> package is used here. To execute the resampling iterations in
+parallel, register a parallel backend function. See the documentation for
+<code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach::foreach()</a></code> for examples.</p>
+<p>For the most part, warnings generated during training are shown as they occur
+and are associated with a specific resample when <code>control(verbose = TRUE)</code>.
+They are (usually) not aggregated until the end of processing.</p>
+    <h2 class="hasAnchor" id="parameter-grids"><a class="anchor" href="#parameter-grids"></a>Parameter Grids</h2>
+
+    
     <p>If no tuning grid is provided, a semi-random grid (via
 <code><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is create with 10 candidate parameter
 combinations.</p>
-<p>If no metric set is used, one is set. For regression models, the root mean
-squared error and coefficient of determination are computed. For classification,
-the log-likelihood and overall accuracy are computed.</p>
+    <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
+
     
+    <p>If no metric set is provided, one is created:</p><ul>
+<li><p>For regression models, the root mean squared error and coefficient
+of determination are computed.</p></li>
+<li><p>For classification, the log-likelihood and overall accuracy are
+computed.</p></li>
+</ul>
+    <p>Note that the metrics also determine what type of predictions are estimated
+during tuning. For example, in a classification problem, of metrics are used
+that are all associated with hard class predictions, the classification
+probabilities are not created.</p>
+<p>The out-of-sample estimates of these metrics are contained in a list column
+called <code>.metrics</code>. This tibble contains a row for each metric and columns
+for the value, the estimator type, and so on.</p>
+<p>A <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize()</a></code> method can be used for these objects to collapse the results
+over the resampled (to obtain the final resampling estimates per tuning
+parameter combination).</p>
+    <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
+
+    
+    <p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
+called <code>.predictions</code> that has the out-of-sample predictions for each
+parameter combination in the grid and each fold (which can be very large).</p>
+<p>The elements of the tibble are tibbles with columns for the tuning
+parameters, the row number from the original data object (<code>.row</code>), the
+outcome data (with the same name(s) of the original data), and any columns
+created by the predictions. For example, for simple regression problems
+generates a column called <code>.pred</code> and so on. As noted above, the prediction
+columns that are returned are determined by the type of metric(s) requested.</p>
+<p>This list column can be <code>unnested</code> using <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code> or using the
+convenience function <code><a href='collect_predictions.html'>collect_predictions()</a></code>.</p>
+    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
+
+    
+    <p>The <code>extract</code> control option will result in an additional function to be
+returned called <code>.extracts</code>. This is a list column that has tibbles
+containing the results of the user's function for each tuning parameter
+combination. This can enable returning each model and/or recipe object that
+is created during resampling. Note that this could result in a large return
+object, depending on what is returned.</p>
+<p>Note that the function given to the <code>extract</code> argument is evaluated on
+every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
+As noted above, in some cases, model predictions can be derived for
+sub-models so that, in these cases, not every row in the tuning parameter
+grid has a separate R object associated with it.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-          </ul>
+      <li><a href="#parameter-grids">Parameter Grids</a></li>
+      <li><a href="#performance-metrics">Performance Metrics</a></li>
+      <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
+      <li><a href="#extracting-information">Extracting information</a></li>
+    </ul>
 
   </div>
 </div>

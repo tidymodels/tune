@@ -32,9 +32,10 @@
 
 
 <meta property="og:title" content="Bayesian optimization of model parameters. — tune_Bayes" />
-
-<meta property="og:description" content="Bayesian optimization of model parameters." />
+<meta property="og:description" content="tune_Bayes() uses models to generate new candidate tuning parameter
+combinations based on previous results." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -94,6 +95,9 @@
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -122,25 +126,49 @@
     </div>
 
     <div class="ref-description">
-    
-    <p>Bayesian optimization of model parameters.</p>
-    
+    <p><code>tune_Bayes()</code> uses models to generate new candidate tuning parameter
+combinations based on previous results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
-    
+    <pre class="usage"><span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for recipe</span>
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
+
+<span class='co'># S3 method for formula</span>
+<span class='fu'>tune_Bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
+
+<span class='co'># S3 method for workflow</span>
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A workflow object.</p></td>
+      <td><p>A model workflow or recipe object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not currently used.</p></td>
+    </tr>
+    <tr>
+      <th>model</th>
+      <td><p>A <code>parsnip</code> model specification (or <code>NULL</code> when <code>object</code> is a
+workflow).</p></td>
     </tr>
     <tr>
       <th>rs</th>
-      <td><p>A resample object.</p></td>
+      <td><p>An <code>rset()</code> object. This argument <strong>should be named</strong>.</p></td>
     </tr>
     <tr>
       <th>iter</th>
@@ -149,7 +177,7 @@
     <tr>
       <th>param_info</th>
       <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>dials::param_set()</a></code> object or <code>NULL</code>. If none is given,
-a parameters set is derived from the workflow.</p></td>
+a parameters set is derived from other arguments.</p></td>
     </tr>
     <tr>
       <th>perf</th>
@@ -168,21 +196,43 @@ an acquisition function object.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>A control object</p></td>
+      <td><p>A control object created by <code><a href='Bayes_control.html'>Bayes_control()</a></code></p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <th>formula</th>
+      <td><p>A traditional model formula.</p></td>
     </tr>
     </table>
-    
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble of results that mirror those generated by <code><a href='tune_grid.html'>tune_grid()</a></code>.
+However, these results contain an <code>.iter</code> column and replicate the <code>rset</code>
+object multiple times over iterations (at limited additional memory costs).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The optimization starts with a set of initial results, such as those
+generated by <code><a href='tune_grid.html'>tune_grid()</a></code>. If none exist, the function will create several
+combinations and obtain their performance estimates.</p>
+<p>Using one of the performance estimates as the <em>model outcome</em>, a Gaussian
+process (GP) model is created where the previous tuning parameter combinations
+are used as the predictors.</p>
+<p>A large grid of potential hyperparameter combinations is predicted using
+the model and scored using an <em>acquisition function</em>. These functions
+usually combine the predicted mean and variance of the GP to decide the best
+parameter combination to try next. For more information, see the
+documentation for <code><a href='prob_improve.html'>exp_improve()</a></code> and the corresponding package vignette.</p>
+<p>The best combination is evaluated using resampling and the process continues.</p>
+<p>TODO notes on when to use, pluses and minuses.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+    </ul>
 
   </div>
 </div>

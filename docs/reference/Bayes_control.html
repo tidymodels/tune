@@ -32,9 +32,9 @@
 
 
 <meta property="og:title" content="Control the Bayesian search process — Bayes_control" />
-
 <meta property="og:description" content="Control the Bayesian search process" />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -94,6 +94,9 @@
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -122,20 +125,20 @@
     </div>
 
     <div class="ref-description">
-    
     <p>Control the Bayesian search process</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>Bayes_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>uncertain</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
-  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span>(<span class='fl'>10</span>^<span class='fl'>5</span>, <span class='fl'>1</span>), <span class='kw'>time_limit</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
-    
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span>(<span class='fl'>10</span>^<span class='fl'>5</span>, <span class='fl'>1</span>), <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>time_limit</span> <span class='kw'>=</span> <span class='fl'>NA</span>)</pre>
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>verbose</th>
-      <td><p>A logical for logging results as they are generated.</p></td>
+      <td><p>A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.</p></td>
     </tr>
     <tr>
       <th>uncertain</th>
@@ -148,6 +151,18 @@ chosen.</p></td>
       <td><p>An integer for controlling the random number stream.</p></td>
     </tr>
     <tr>
+      <th>extract</th>
+      <td><p>An optional function to collection any information from the
+model or other objects. See <code><a href='grid_control.html'>grid_control()</a></code> for details. Note that if
+initial results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be
+taken if the Bayesian search has a different extraction function.</p></td>
+    </tr>
+    <tr>
+      <th>save_pred</th>
+      <td><p>A logical to save the out-of-sample predictions from
+each resample and each parameter combination. See <code><a href='grid_control.html'>grid_control()</a></code> for details.</p></td>
+    </tr>
+    <tr>
       <th>time_limit</th>
       <td><p>A number for the minimum number of <em>minutes</em> (elapsed)
 that the function should execute. The elapsed time is evaluated at internal
@@ -156,14 +171,14 @@ warning). This means that the <code>time_limit</code> is not an exact limit, but
 minimum time limit.</p></td>
     </tr>
     </table>
-    
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+    </ul>
 
   </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determine the minimum set of model fits — min_grid • tune</title>
+<title>Fine Foods example data — small_fine_foods • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,10 +31,8 @@
 
 
 
-<meta property="og:title" content="Determine the minimum set of model fits — min_grid" />
-<meta property="og:description" content="min_grid determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future." />
+<meta property="og:title" content="Fine Foods example data — small_fine_foods" />
+<meta property="og:description" content="Fine Foods example data" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -121,68 +119,56 @@ internal use only and the API may change in the near future." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determine the minimum set of model fits</h1>
+    <h1>Fine Foods example data</h1>
     
-    <div class="hidden name"><code>min_grid.Rd</code></div>
+    <div class="hidden name"><code>small_fine_foods.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>min_grid</code> determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future.</p>
+    <p>Fine Foods example data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for model_spec</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for boost_tree</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-<span class='co'># S3 method for linear_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for logistic_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for mars</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for multinom_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for nearest_neighbor</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A model specification.</p></td>
-    </tr>
-    <tr>
-      <th>grid</th>
-      <td><p>A tibble with tuning parameter combinations.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Not currently used.</p></td>
-    </tr>
-    </table>
-
+    <p>https://snap.stanford.edu/data/web-FineFoods.html</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with the minimum tuning parameters to fit and an additional
-list column with the parameter combinations used for prediction.</p>
+    
 
+<dt>training_data,testing_data</dt><dd><p>tibbles</p></dd>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>These data are from Amazon, who describe it as "This dataset consists of
+reviews of fine foods from amazon. The data span a period of more than 10
+years, including all ~500,000 reviews up to October 2012. Reviews include
+product and user information, ratings, and a plaintext review."</p>
+<p>A subset of the data are contained here and are split into a training and
+test set. The training set sampled 25 products and retained all of their
+individual reviews. Since the reviews within these products are correlated,
+we recommend resampling the data using a leave-one-product-out approach. The
+test set sampled 1,000 products that were not included in the training set
+and selected a single review at random for each.</p>
+<p>There is a column for the product, a column for the text of the review, and
+a factor column for a class variable. The outcome is whether the reviewer
+game the product a 5-star rating or not.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>small_fine_foods</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>training_data</span>)</div><div class='output co'>#&gt; Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	5334 obs. of  3 variables:
+#&gt;  $ product: chr  "B003D4IYSU" "B003D4IYSU" "B003D4IYSU" "B003D4IYSU" ...
+#&gt;  $ review : chr  "A well flavored Tea for after dinner or to use when you have trouble sleeping. I have purchaced this enjoyable "| __truncated__ "This is the first time I've tried this brand, this flavor and this type of tea.  It is so good!  With a little "| __truncated__ "This tea is so refreshing, and I just love the taste.  Not a heavy chocolate taste, but really gets the endorph"| __truncated__ "This is delicious hot or cold! There is enough that I could share w/family &amp; friends. The flavor is strong &amp; do"| __truncated__ ...
+#&gt;  $ score  : Factor w/ 2 levels "great","other": 1 1 1 1 1 1 1 2 2 1 ...</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#source">Source</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

@@ -32,10 +32,10 @@
 
 
 <meta property="og:title" content="Acquisition function for scoring parameter combinations — prob_improve" />
-
 <meta property="og:description" content="These functions can be used to score candidate tuning parameter combinations
 as a function of their predicted mean and variation." />
 <meta name="twitter:card" content="summary" />
+
 
 
 
@@ -95,6 +95,9 @@ as a function of their predicted mean and variation." />
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
+    <li>
+      <a href="../articles/grid.html">Grid Search</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -123,10 +126,8 @@ as a function of their predicted mean and variation." />
     </div>
 
     <div class="ref-description">
-    
     <p>These functions can be used to score candidate tuning parameter combinations
 as a function of their predicted mean and variation.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>prob_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
@@ -134,7 +135,7 @@ as a function of their predicted mean and variation.</p>
 <span class='fu'>exp_improve</span>(<span class='kw'>trade_off</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>eps</span> <span class='kw'>=</span> <span class='no'>.Machine</span>$<span class='no'>double.eps</span>)
 
 <span class='fu'>conf_bound</span>(<span class='kw'>kappa</span> <span class='kw'>=</span> <span class='fl'>0.1</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -154,12 +155,11 @@ of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
 95 percent confidence intervals). Smaller values lean more towards exploitation.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>prob_improve</code>, <code>exp_improve</code>, or <code>conf_bounds</code>
 along with an extra class of <code>acquisition_function</code>.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The acquisition functions often combine the mean and variance predictions
@@ -183,7 +183,6 @@ can have multiple arguments but only the first (the current iteration number)
 is given to the function. In other words, the function argument should have
 defaults for all but the first argument. See <code><a href='expo_decay.html'>expo_decay()</a></code> as an example of
 a function.</p>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>prob_improve</span>()</div><div class='output co'>#&gt; Acquisition Function: probability of improvment</div></pre>
@@ -192,11 +191,8 @@ a function.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
