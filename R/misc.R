@@ -28,6 +28,9 @@ tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
     labs <- ""
   }
 
+  # see https://github.com/r-lib/cli/issues/92
+  task <- gsub("\\{", "", task)
+
   if (isTRUE(all.equal(alert, cli::cli_alert_warning))) {
     alert(cli::col_yellow(paste0(labs, task)))
   } else {
@@ -36,7 +39,7 @@ tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
   NULL
 }
 
-log_problems <- function(control, split, res, loc, warn_only = FALSE) {
+log_problems <- function(control, split, loc, res, warn_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose = TRUE
@@ -62,6 +65,13 @@ log_problems <- function(control, split, res, loc, warn_only = FALSE) {
     }
   }
   NULL
+}
+
+catch_and_log <- function(.expr, ..., warn_only = FALSE) {
+  tune_log(..., alert = cli_alert)
+  tmp <- catcher(.expr)
+  log_problems(..., tmp, warn_only = warn_only)
+  tmp$res
 }
 
 # ------------------------------------------------------------------------------
