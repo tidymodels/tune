@@ -22,7 +22,7 @@ knn_mod <-
   nearest_neighbor(mode = "regression", neighbors = tune()) %>%
   set_engine("kknn")
 
-verb <- FALSE
+verb <- TRUE
 g_ctrl <- grid_control(verbose = verb, save_pred = TRUE)
 b_ctrl <- Bayes_control(verbose = verb, save_pred = TRUE)
 

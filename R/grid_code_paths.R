@@ -42,10 +42,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
 
-    tune_log(ctrl, split, "recipe", alert = cli_alert)
-    tmp_rec <- catcher(train_recipe(split, object, rec_grid_vals))
-    log_problems(ctrl, split, tmp_rec, loc = "recipe")
-    tmp_rec <- tmp_rec$res
+    tmp_rec <- catch_and_log(train_recipe(split, object, rec_grid_vals), ctrl, split, "recipe")
 
     # All model tune parameters associated with the current recipe
     # parameters
@@ -69,25 +66,26 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
       submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
       submd_param <- submd_param$.submodels[[1]]
 
-      tune_log(ctrl, split, mod_msg, alert = cli_alert)
       tmp_fit <-
-        catcher(train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl))
-      log_problems(ctrl, split, tmp_fit, loc = mod_msg)
-      tmp_fit <- tmp_fit$res
-
+        catch_and_log(
+          train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl),
+          ctrl,
+          split,
+          mod_msg
+        )
 
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
         all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
-        pred_msg <- paste(mod_msg, "(predictions)")
-        tmp_pred <- catcher(
-          predict_model_from_recipe(
-            split, tmp_fit, tmp_rec, all_param, perf
+        tmp_pred <-
+          catch_and_log(
+            predict_model_from_recipe(split, tmp_fit, tmp_rec, all_param, perf),
+            ctrl,
+            split,
+            paste(mod_msg, "(predictions)"),
+            warn_only = TRUE
           )
-        )
-        log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
-        tmp_pred <- tmp_pred$res
 
         perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
         pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
@@ -148,30 +146,32 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
   num_rec <- nrow(grid)
 
   for (param_iter in 1:num_rec) {
+    param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
 
-    tune_log(ctrl, split, rec_msg, alert = cli_alert)
-    tmp_rec <- catcher(train_recipe(split, object, grid[param_iter, ]))
-    log_problems(ctrl, split, tmp_rec, loc = rec_msg)
-    tmp_rec <- tmp_rec$res
+    tmp_rec <- catch_and_log(train_recipe(split, object, param_vals), ctrl, split, rec_msg)
 
-    tune_log(ctrl, split, mod_msg, alert = cli_alert)
-    tmp_fit <- catcher(train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl))
-    log_problems(ctrl, split, tmp_fit, loc = mod_msg)
-    tmp_fit <- tmp_fit$res
+    tmp_fit <-
+      catch_and_log(
+        train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl),
+        ctrl,
+        split,
+        mod_msg
+      )
+
 
     # check for failure
     if (!inherits(tmp_fit$fit, "try-error")) {
       pred_msg <- paste(mod_msg, "(predictions)")
-      tmp_pred <- catcher(
-        predict_model_from_recipe(
-          split, tmp_fit, tmp_rec, grid[param_iter, ], perf
+      tmp_pred <-
+        catch_and_log(
+          predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, perf),
+          ctrl,
+          split,
+          pred_msg,
+          warn_only = TRUE
         )
-      )
-      log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
-      tmp_pred <- tmp_pred$res
-
 
       perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
