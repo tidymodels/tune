@@ -153,39 +153,14 @@ tune_Bayes_workflow <-
       return(reup_rs(rs, unsummarized))
     })
 
-    best_res <-
-      mean_stats %>%
-      dplyr::filter(.metric == perf_name) %>%
-      dplyr::filter(!is.na(mean))
-
-    if (maximize) {
-      best_res <-
-        best_res %>%
-        dplyr::arrange(desc(mean)) %>%
-        slice(1)
-    } else {
-      best_res <-
-        best_res %>%
-        dplyr::arrange(mean) %>%
-        slice(1)
-    }
-    best_val <- best_res$mean[1]
-    best_iter <- best_res$.iter[1]
-    last_impr <- 0
-    overall_iter <- max(mean_stats$.iter)
+    score_card <- initial_info(mean_stats, perf_name, maximize)
 
     if (control$verbose) {
       message(paste("Optimizing", perf_name, "using", objective$label))
     }
 
-    for (i in (1:iter) + overall_iter) {
-
-      if (control$verbose) {
-        message("")
-        message(cli::rule(left = crayon::bold(paste("Iteration", i))))
-        message("")
-      }
-      hist_summarizer(control, best_val, best_iter, perf_name)
+    for (i in (1:iter) + score_card$overall_iter) {
+      log_best(control, i, perf_name, score_card)
 
       check_time(start_time, control$time_limit)
 
@@ -207,7 +182,7 @@ tune_Bayes_workflow <-
       candidates <-
         dplyr::bind_cols(candidates,
                          stats::predict(objective, candidates, iter = i,
-                                        maximize = maximize, best_val))
+                                        maximize = maximize, score_card$best_val))
 
       check_time(start_time, control$time_limit)
 
@@ -221,7 +196,7 @@ tune_Bayes_workflow <-
         }
       }
 
-      if (last_impr < control$uncertain) {
+      if (score_card$last_impr < control$uncertain) {
         candidates <- candidates %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
       } else {
         message(paste(crayon::blue(cli::symbol$circle_question_mark),
@@ -231,7 +206,7 @@ tune_Bayes_workflow <-
           dplyr::arrange(dplyr::desc(.sd)) %>%
           dplyr::slice(1:floor(.1*nrow(candidates))) %>%
           dplyr::sample_n(1)
-        last_impr <- 0
+        score_card$last_impr <- 0
       }
 
       check_time(start_time, control$time_limit)
@@ -255,24 +230,24 @@ tune_Bayes_workflow <-
           dplyr::pull(mean)
 
         if (maximize) {
-          is_better <- current_val > best_val
+          is_better <- current_val > score_card$best_val
         } else {
-          is_better <- current_val < best_val
+          is_better <- current_val < score_card$best_val
         }
 
         if (is_better) {
-          last_impr <- 0
-          best_val <- current_val
-          best_iter <- i
+          score_card$last_impr <- 0
+          score_card$best_val <- current_val
+          score_card$best_iter <- i
         } else {
-          last_impr <- last_impr + 1
+          score_card$last_impr <- score_card$last_impr + 1
         }
         current_summarizer(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
           tune_log(control, split = NULL, task = "All models failed", alert = cli_alert_danger)
         }
-        last_impr <- last_impr + 1
+        score_card$last_impr <- score_card$last_impr + 1
       }
       check_time(start_time, control$time_limit)
     }
@@ -379,13 +354,25 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
 }
 
-hist_summarizer <- function(control, value, iter, nm, digits = 4) {
+log_best <- function(control, iter, perf, info, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
+
+  message("")
+  message(cli::rule(left = crayon::bold(paste("Iteration", iter))))
+  message("")
+
   msg <-
-    paste0("Current best:\t\t", nm, "=", signif(value, digits = digits),
-           " (@iter ", iter, ")")
+    paste0(
+      "Current best:\t\t",
+      perf,
+      "=",
+      signif(info$best_val, digits = digits),
+      " (@iter ",
+      info$best_iter,
+      ")"
+    )
   tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
 }
 
@@ -454,6 +441,39 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   }
   invisible(NULL)
 }
+
+initial_info <- function(stats, perf, maximize) {
+  best_res <-
+    stats %>%
+    dplyr::filter(.metric == perf) %>%
+    dplyr::filter(!is.na(mean))
+
+  if (maximize) {
+    best_res <-
+      best_res %>%
+      dplyr::arrange(desc(mean)) %>%
+      slice(1)
+  } else {
+    best_res <-
+      best_res %>%
+      dplyr::arrange(mean) %>%
+      slice(1)
+  }
+  best_val <- best_res$mean[1]
+  best_iter <- best_res$.iter[1]
+  last_impr <- 0
+  overall_iter <- max(stats$.iter)
+
+  # outputs:
+
+  list(
+    best_val = best_val,
+    best_iter = best_iter,
+    last_impr = last_impr,
+    overall_iter = overall_iter
+  )
+}
+
 
 # ------------------------------------------------------------------------------
 
