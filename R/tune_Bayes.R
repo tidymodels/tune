@@ -160,7 +160,7 @@ tune_Bayes_workflow <-
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
-      log_best(control, i, perf_name, score_card)
+      log_best(control, i, score_card)
 
       check_time(start_time, control$time_limit)
 
@@ -170,7 +170,6 @@ tune_Bayes_workflow <-
 
       check_time(start_time, control$time_limit)
 
-      # get aqu functions
       set.seed(control$seed[1] + i + 1)
       candidates <- pred_gp(gp_mod, param_info, control = control,
                             current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
@@ -186,26 +185,11 @@ tune_Bayes_workflow <-
 
       check_time(start_time, control$time_limit)
 
-      if (all(is.na(candidates$.mean))) {
-        if (nrow(candidates) < 2) {
-          tune_log(control, split = NULL, task = "Halting search", alert = cli_alert_danger)
-          break
-        } else {
-          tune_log(control, "Skipping ot next iteration", alert = cli_alert_danger)
-          next
-        }
-      }
+      check_and_log_flow(control, candidates)
 
-      if (score_card$last_impr < control$uncertain) {
-        candidates <- candidates %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
-      } else {
-        message(paste(crayon::blue(cli::symbol$circle_question_mark),
-                       "Uncertainty sample"))
-        candidates <-
-          candidates %>%
-          dplyr::arrange(dplyr::desc(.sd)) %>%
-          dplyr::slice(1:floor(.1*nrow(candidates))) %>%
-          dplyr::sample_n(1)
+      candidates <- pick_candidate(candidates, score_card, control)
+
+      if (score_card$last_impr >= control$uncertain) {
         score_card$last_impr <- 0
       }
 
@@ -223,25 +207,7 @@ tune_Bayes_workflow <-
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
         rs_estimate <- summarize(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
-        current_val <-
-          tmp_res %>%
-          summarize() %>%
-          dplyr::filter(.metric == perf_name) %>%
-          dplyr::pull(mean)
-
-        if (maximize) {
-          is_better <- current_val > score_card$best_val
-        } else {
-          is_better <- current_val < score_card$best_val
-        }
-
-        if (is_better) {
-          score_card$last_impr <- 0
-          score_card$best_val <- current_val
-          score_card$best_iter <- i
-        } else {
-          score_card$last_impr <- score_card$last_impr + 1
-        }
+        score_card <- update_score_card(score_card, i, tmp_res)
         current_summarizer(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
@@ -354,7 +320,50 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
 }
 
-log_best <- function(control, iter, perf, info, digits = 4) {
+
+pick_candidate <- function(results, info, control) {
+  if (info$last_impr < control$uncertain) {
+    results <- results %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
+  } else {
+    if (control$verbose) {
+      msg <- paste(crayon::blue(cli::symbol$circle_question_mark), "Uncertainty sample")
+      message(msg)
+    }
+    results <-
+      results %>%
+      dplyr::arrange(dplyr::desc(.sd)) %>%
+      dplyr::slice(1:floor(.1 * nrow(results))) %>%
+      dplyr::sample_n(1)
+  }
+  results
+}
+
+update_score_card <- function(info, iter, results) {
+  current_val <-
+    results %>%
+    summarize() %>%
+    dplyr::filter(.metric == info$perf) %>%
+    dplyr::pull(mean)
+
+  if (info$max) {
+    is_better <- current_val > info$best_val
+  } else {
+    is_better <- current_val < info$best_val
+  }
+
+  if (is_better) {
+    info$last_impr <- 0
+    info$best_val <- current_val
+    info$best_iter <- iter
+  } else {
+    info$last_impr <- info$last_impr + 1
+  }
+  info
+}
+
+# ------------------------------------------------------------------------------
+
+log_best <- function(control, iter, info, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
@@ -366,7 +375,7 @@ log_best <- function(control, iter, perf, info, digits = 4) {
   msg <-
     paste0(
       "Current best:\t\t",
-      perf,
+      info$perf,
       "=",
       signif(info$best_val, digits = digits),
       " (@iter ",
@@ -375,6 +384,20 @@ log_best <- function(control, iter, perf, info, digits = 4) {
     )
   tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
 }
+
+check_and_log_flow <- function(control, results) {
+  if (all(is.na(results$.mean))) {
+    if (nrow(results) < 2) {
+      tune_log(control, split = NULL, task = "Halting search", alert = cli_alert_danger)
+      eval.parent(parse(text = "break"))
+    } else {
+      tune_log(control, "Skipping to next iteration", alert = cli_alert_danger)
+      eval.parent(parse(text = "next"))
+    }
+  }
+  invisible(NULL)
+}
+
 
 current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
   if (!control$verbose) {
@@ -442,6 +465,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   invisible(NULL)
 }
 
+# save perf_name and maximize to simplify!!!!!!!!!!!!!!!
 initial_info <- function(stats, perf, maximize) {
   best_res <-
     stats %>%
@@ -470,7 +494,9 @@ initial_info <- function(stats, perf, maximize) {
     best_val = best_val,
     best_iter = best_iter,
     last_impr = last_impr,
-    overall_iter = overall_iter
+    overall_iter = overall_iter,
+    perf = perf,
+    max = maximize
   )
 }
 
