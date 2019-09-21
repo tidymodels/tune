@@ -34,24 +34,21 @@ chi_wflow <-
   add_model(knn_model)
 
 chi_param <-
-  param_set(chi_wflow)
-  # update(id = "threshold", threshold(c(.8, .99))) %>%
-  # update(id = "neighbors", neighbors(c(1, 50))) %>%
-  # update(id = "dist_power", dist_power())
-
+  param_set(chi_wflow) %>%
+  update(id = "threshold", threshold(c(.8, .99)))
 
 chi_grid <-
   chi_param %>%
-  grid_latin_hypercube(size = 6)
+  grid_latin_hypercube(size = 18)
 
-res <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
+res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
 
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  select(-n, -std_err, -.estimator, -.metric) %>%
-  ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
-  geom_point() + geom_line() +
-  facet_wrap(~threshold, scales = "free_x")
+# summarize(res) %>%
+#   dplyr::filter(.metric == "rmse") %>%
+#   select(-n, -std_err, -.estimator, -.metric) %>%
+#   ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
+#   geom_point() + geom_line() +
+#   facet_wrap(~threshold, scales = "free_x")
 
 summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
@@ -62,12 +59,13 @@ set.seed(354)
 knn_search <-
   tune_Bayes(
     chi_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = chi_param,
     initial = res,
-    metrics = metric_set(rmse),
-    iter = 10,
-    control = Bayes_control(verbose = TRUE, uncertain = 5)
+    perf = metric_set(rmse),
+    iter = 20,
+    control = Bayes_control(verbose = TRUE, uncertain = 5),
+    trace = TRUE
   )
 
 plot_perf_vs_iter(knn_search)

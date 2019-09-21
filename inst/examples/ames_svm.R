@@ -29,7 +29,7 @@ ames_rec <-
 
 svm_model <-
   svm_rbf(
-    mode = "regression", cost = 0.50, rbf_sigma = tune()) %>%
+    mode = "regression", cost = tune(), rbf_sigma = tune()) %>%
   set_engine("kernlab")
 
 
@@ -48,6 +48,7 @@ ames_grid <-
   grid_max_entropy(size = 3)
 
 initial_grid <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
+
 
 test <-
   tune_Bayes(
