@@ -74,7 +74,7 @@ tune_Bayes.recipe <- function(object, model,
 
   tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
-                      control = control)
+                      control = control, ...)
 }
 
 #' @export
@@ -99,7 +99,7 @@ tune_Bayes.formula <- function(formula, model,
 
   tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
-                      control = control)
+                      control = control, ...)
 }
 
 #' @export
@@ -122,7 +122,7 @@ tune_Bayes.workflow <-
 
   tune_Bayes_workflow(object, rs = rs, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
-                      control = control)
+                      control = control, ...)
 }
 
 tune_Bayes_workflow <-
@@ -138,6 +138,7 @@ tune_Bayes_workflow <-
     perf_data <- perf_info(perf)
     perf_name <- perf_data$.metric[1]
     maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
+    corr_param <- NULL
 
     if (is.null(param_info)) {
       param_info <- param_set(object)
@@ -165,14 +166,31 @@ tune_Bayes_workflow <-
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i)
-      gp_mod <- fit_gp(mean_stats %>% dplyr::select(-.iter), pset = param_info,
-                       metric = perf_name, control = control, ...)
+      gp_mod <-
+        catch_and_log(
+          fit_gp(
+            mean_stats %>% dplyr::select(-.iter),
+            pset = param_info,
+            metric = perf_name,
+            control = control,
+            optim_start = corr_param,
+            ...
+          ),
+          control,
+          NULL,
+          "Gaussian process model"
+        )
+
+      start_thresh <- max(10, floor(1.5 * length(gp_mod$beta)))
+      if (nrow(mean_stats %>% dplyr::filter(.metric == perf_name)) > start_thresh) {
+        corr_param <- gp_mod$beta
+        corr_param <- matrix(corr_param, ncol = length(corr_param))
+      }
 
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
-      candidates <- pred_gp(gp_mod, param_info, control = control,
-                            current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
+      candidates <- pred_gp(gp_mod, param_info, control = control, current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
 
       check_time(start_time, control$time_limit)
 
@@ -208,7 +226,7 @@ tune_Bayes_workflow <-
         rs_estimate <- summarize(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
-        current_summarizer(control, x = mean_stats, maximize = maximize, objective = perf_name)
+        log_progress(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
           tune_log(control, split = NULL, task = "All models failed", alert = cli_alert_danger)
@@ -266,7 +284,6 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
-  tune_log(control, split = NULL, task = "Fitting Gaussian process model", alert = cli_alert)
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
@@ -274,15 +291,11 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
-  tmp_output <- capture.output(
-    gp_fit <-
-      try(GPfit::GP_fit(X = x, Y = dat$mean),
-          silent = TRUE)
-  )
-  if (inherits(gp_fit, "try-error")) {
-    tune_log(control, split = NULL, task = "Gaussian process model failed", alert = cli_alert_danger)
+  opts <- list(...)
+  if (any(names(opts) == "trace") && opts$trace) {
+    gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
   } else {
-    tune_log(control, split = NULL, task = "Gaussian process model complete", alert = cli_alert_success)
+    tmp_output <- capture.output(gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...))
   }
 
   gp_fit
@@ -398,8 +411,7 @@ check_and_log_flow <- function(control, results) {
   invisible(NULL)
 }
 
-
-current_summarizer <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
+log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))
   }
