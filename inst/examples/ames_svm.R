@@ -57,5 +57,5 @@ test <-
     initial = initial_grid,
     perf = metric_set(rmse, rsq),
     iter = 3,
-    control = Bayes_control(verbose = TRUE, time_limit = 1)
+    control = Bayes_control(verbose = TRUE)
   )

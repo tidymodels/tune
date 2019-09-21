@@ -138,7 +138,6 @@ tune_Bayes_workflow <-
     perf_data <- perf_info(perf)
     perf_name <- perf_data$.metric[1]
     maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
-    corr_param <- NULL
 
     if (is.null(param_info)) {
       param_info <- param_set(object)
@@ -173,19 +172,12 @@ tune_Bayes_workflow <-
             pset = param_info,
             metric = perf_name,
             control = control,
-            optim_start = corr_param,
             ...
           ),
           control,
           NULL,
           "Gaussian process model"
         )
-
-      start_thresh <- max(10, floor(1.5 * length(gp_mod$beta)))
-      if (nrow(mean_stats %>% dplyr::filter(.metric == perf_name)) > start_thresh) {
-        corr_param <- gp_mod$beta
-        corr_param <- matrix(corr_param, ncol = length(corr_param))
-      }
 
       check_time(start_time, control$time_limit)
 
