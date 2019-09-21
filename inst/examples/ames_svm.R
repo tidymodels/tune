@@ -47,40 +47,15 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 3)
 
-initial_grid <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
-
-# ------------------------------------------------------------------------------
-
-whole_grid <-
-  ames_set %>%
-  grid_regular(levels = 10)
-
-
-set.seed(45)
-full_grid <- tune_grid(ames_wflow, big_splits, whole_grid, control = grid_control(verbose = TRUE))
-
-
-
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
-  geom_point(cex = 1) +
-  geom_path() +
-  facet_wrap(~ threshold)
-
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
-  slice(1)
-
+initial_grid <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
 
 test <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
+    rs = cv_splits,
     param_info = ames_set,
     initial = initial_grid,
-    metrics = metric_set(rmse, rsq),
-    iter = 15,
+    perf = metric_set(rmse, rsq),
+    iter = 3,
     control = Bayes_control(verbose = TRUE, time_limit = 1)
   )
