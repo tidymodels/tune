@@ -29,7 +29,7 @@ ames_rec <-
 
 svm_model <-
   svm_rbf(
-    mode = "regression", cost = 0.50, rbf_sigma = tune()) %>%
+    mode = "regression", cost = tune(), rbf_sigma = tune()) %>%
   set_engine("kernlab")
 
 
@@ -47,7 +47,7 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 3)
 
-initial_grid <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
+initial_grid <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
 
 # ------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ whole_grid <-
 
 
 set.seed(45)
-full_grid <- tune_grid(ames_wflow, big_splits, whole_grid, control = grid_control(verbose = TRUE))
+full_grid <- tune_grid(ames_wflow, rs = big_splits, grid = whole_grid, control = grid_control(verbose = TRUE))
 
 
 
@@ -77,10 +77,11 @@ summarize(res) %>%
 test <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
+    rs = cv_splits,
     param_info = ames_set,
     initial = initial_grid,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     iter = 15,
-    control = Bayes_control(verbose = TRUE, time_limit = 1)
+    control = Bayes_control(verbose = TRUE),
+    trace = TRUE
   )
