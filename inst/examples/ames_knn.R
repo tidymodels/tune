@@ -15,9 +15,7 @@ data_split <- initial_split(ames, strata = "Sale_Price")
 ames_train <- training(data_split)
 
 set.seed(2453)
-cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
-set.seed(2453)
-big_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price", repeats = 10)
+rs_splits <- bootstraps(ames_train, times = 20)
 
 # ------------------------------------------------------------------------------
 
@@ -50,7 +48,7 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 3)
 
-initial_grid <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
+initial_grid <- tune_grid(ames_wflow, rs = rs_splits, grid = ames_grid, control = grid_control(verbose = TRUE, save_pred = TRUE))
 
 # ------------------------------------------------------------------------------
 
@@ -77,7 +75,7 @@ summarize(res) %>%
 test <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
+    rs_splits,
     param_info = ames_set,
     initial = res,
     metrics = metric_set(rmse, rsq),

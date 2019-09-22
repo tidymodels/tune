@@ -149,7 +149,7 @@ tune_Bayes_workflow <-
     check_time(start_time, control$time_limit)
 
     on.exit({
-      warning("Optimization stopped prematurely; returning current results.", call. = FALSE)
+      cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
       return(reup_rs(rs, unsummarized))
     })
 
@@ -182,7 +182,9 @@ tune_Bayes_workflow <-
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
-      candidates <- pred_gp(gp_mod, param_info, control = control, current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
+      candidates <-
+        pred_gp(gp_mod, param_info, control = control,
+                current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
 
       check_time(start_time, control$time_limit)
 
