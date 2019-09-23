@@ -4,13 +4,16 @@
 \alias{Bayes_control}
 \title{Control the Bayesian search process}
 \usage{
-Bayes_control(verbose = FALSE, uncertain = Inf,
+Bayes_control(verbose = FALSE, no_improve = 10, uncertain = Inf,
   seed = sample.int(10^5, 1), extract = NULL, save_pred = FALSE,
   time_limit = NA)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
 this argument, warnings and errors are always shown.}
+
+\item{no_improve}{The integer cutoff for the numer of iterations without better
+results.}
 
 \item{uncertain}{The number of iterations with no improvment before an
 uncertainty sample is created where a sample with high predicted variance is
