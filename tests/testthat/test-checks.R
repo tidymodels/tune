@@ -103,10 +103,18 @@ test_that('grid control objects', {
 test_that('Bayes control objects', {
   expect_error(Bayes_control(), NA)
   expect_error(Bayes_control(tomato = 1))
+  opts <- list(
+    verbose = TRUE,
+    no_improve = 10,
+    uncertain = 3,
+    seed = 1,
+    time_limit = 12,
+    extract = function(x) x,
+    save_pred = TRUE
+  )
+
   expect_error(
-    tune:::check_Bayes_control(list(verbose = TRUE, uncertain = 3, seed = 1,
-                                    time_limit = 12, extract = function(x) x,
-                                    save_pred = TRUE)),
+    tune:::check_Bayes_control(opts),
     NA
   )
   expect_warning(

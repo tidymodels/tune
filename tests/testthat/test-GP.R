@@ -25,15 +25,13 @@ test_that('encoding before model', {
 
 test_that('GP fit - svm', {
 
-  expect_message(
-    svm_gp <-
-      tune:::fit_gp(summarize(svm_results),
-                    svm_set,
-                    "accuracy",
-                    Bayes_control(verbose = TRUE)
-      ),
-    "Gaussian process model"
-  )
+
+  svm_gp <-
+    tune:::fit_gp(summarize(svm_results),
+                  svm_set,
+                  "accuracy",
+                  Bayes_control(verbose = TRUE)
+    )
   expect_equal(class(svm_gp), "GP")
   expect_equal(
     colnames(svm_gp$X),
