@@ -162,6 +162,7 @@ tune_grid.workflow <- function(object, model = NULL, rs, grid = NULL,
   tune_grid_workflow(object, rs = rs, grid = grid, perf = perf, control = control)
 }
 
+# ------------------------------------------------------------------------------
 
 tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
 
@@ -462,41 +463,3 @@ quarterback <- function(x) {
   )
 }
 
-empty_perf <- tibble::tibble(
-  .metric = NA_character_,
-  .estimator = NA_character_,
-  .estimate = NA_real_
-)
-
-#' Control the grid search process
-#'
-#' @param verbose A logical for logging results as they are generated. Despite
-#' this argument, warnings and errors are always shown.
-#' @param allow_par A logical to allow parallel processing (if a parallel
-#' backend is registered).
-#' @param extract An optional function with at least one argument (or `NULL`)
-#' that can be used to retain arbitrary objects from the model fit object,
-#' recipe, or other elements of the workflow.
-#' @param save_pred A logical for whether the out-of-sample predictions should
-#' be saved for each model _evaluated_.
-#'
-#'@details
-#'
-#' For `extract`, this function can be used to output the model object, the
-#'  recipe (if used), or some components of either or both. When evaluated, the
-#'  function's sole argument has a named list with elements `recipe` and
-#'  `model`. If the formula method is used, the recipe element will be `NULL`.
-#'
-#' The results of the `extract` function are added to a list column in the
-#'  output called `.extracts`. Each element of this list is a tibble with tuning
-#'  parameter column and a list column (also called `.extracts`) that contains
-#'  the results of the function. If no extraction function is used, there is no
-#'  `.extracts` column in the resulting object.
-#' @export
-grid_control <- function(verbose = FALSE, allow_par = TRUE,
-                         extract = NULL, save_pred = FALSE) {
-  # add options for `save_predictions`, and other stuff.
-  # seeds per resample
-  list(verbose = verbose, allow_par = allow_par, extract = extract,
-       save_pred = save_pred)
-}
