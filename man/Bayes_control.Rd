@@ -12,12 +12,14 @@ Bayes_control(verbose = FALSE, no_improve = 10, uncertain = Inf,
 \item{verbose}{A logical for logging results as they are generated. Despite
 this argument, warnings and errors are always shown.}
 
-\item{no_improve}{The integer cutoff for the numer of iterations without better
+\item{no_improve}{The integer cutoff for the number of iterations without better
 results.}
 
-\item{uncertain}{The number of iterations with no improvment before an
+\item{uncertain}{The number of iterations with no improvement before an
 uncertainty sample is created where a sample with high predicted variance is
-chosen.}
+chosen. The iteration counter is reset after each uncertainty sample. For
+example, if \code{uncertain = 10}, this condition is triggered every 10 samples
+with no improvement.}
 
 \item{seed}{An integer for controlling the random number stream.}
 

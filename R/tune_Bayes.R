@@ -200,6 +200,9 @@ tune_Bayes_workflow <-
       check_and_log_flow(control, candidates)
 
       candidates <- pick_candidate(candidates, score_card, control)
+      if (score_card$uncertainty >= control$uncertain) {
+        score_card$uncertainty <- -1 # is updated in update_score_card() below
+      }
 
       check_time(start_time, control$time_limit)
 
@@ -331,7 +334,7 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
 
 
 pick_candidate <- function(results, info, control) {
-  if (info$last_impr < control$uncertain) {
+  if (info$uncertainty < control$uncertain) {
     results <- results %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
   } else {
     if (control$verbose) {
@@ -347,7 +350,7 @@ pick_candidate <- function(results, info, control) {
   results
 }
 
-update_score_card <- function(info, iter, results) {
+update_score_card <- function(info, iter, results, control) {
   current_val <-
     results %>%
     summarize() %>%
@@ -364,11 +367,16 @@ update_score_card <- function(info, iter, results) {
     info$last_impr <- 0
     info$best_val <- current_val
     info$best_iter <- iter
+    info$uncertainty <- 0
   } else {
     info$last_impr <- info$last_impr + 1
+    info$uncertainty <- info$uncertainty + 1
   }
   info
 }
+
+
+
 
 # ------------------------------------------------------------------------------
 
@@ -502,6 +510,7 @@ initial_info <- function(stats, perf, maximize) {
     best_val = best_val,
     best_iter = best_iter,
     last_impr = last_impr,
+    uncertainty = 0,
     overall_iter = overall_iter,
     perf = perf,
     max = maximize
@@ -568,11 +577,13 @@ is_cataclysmic <- function(x) {
 #'
 #' @param verbose A logical for logging results as they are generated. Despite
 #' this argument, warnings and errors are always shown.
-#' @param no_improve The integer cutoff for the numer of iterations without better
+#' @param no_improve The integer cutoff for the number of iterations without better
 #' results.
-#' @param uncertain The number of iterations with no improvment before an
+#' @param uncertain The number of iterations with no improvement before an
 #'  uncertainty sample is created where a sample with high predicted variance is
-#'  chosen.
+#'  chosen. The iteration counter is reset after each uncertainty sample. For
+#'  example, if `uncertain = 10`, this condition is triggered every 10 samples
+#'  with no improvement.
 #' @param seed An integer for controlling the random number stream.
 #' @param extract An optional function to collection any information from the
 #' model or other objects. See `grid_control()` for details. Note that if
