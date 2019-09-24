@@ -305,7 +305,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end model loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, si = sessionInfo())
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 
