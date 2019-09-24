@@ -61,10 +61,10 @@ search_res <-
 more_search_res <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
-    param_info = ames_set,
+    rs = cv_splits,
+    # param_info = ames_set,
     initial = search_res,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     iter = 50,
     control = Bayes_control(verbose = TRUE, uncertain = 5)
   )

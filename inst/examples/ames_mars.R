@@ -2,7 +2,6 @@ library(tidymodels)
 library(workflows)
 library(tune)
 library(AmesHousing)
-library(earth) # req for muti_predict
 
 # ------------------------------------------------------------------------------
 
@@ -48,28 +47,28 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 5)
 
-res <- tune_grid(ames_wflow, cv_splits, ames_grid, control = grid_control(verbose = TRUE))
+res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
 
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
-  geom_point(cex = 1) +
-  geom_path() +
-  facet_wrap(~ threshold)
-
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
-  slice(1)
-
+# summarize(res) %>%
+#   dplyr::filter(.metric == "rmse") %>%
+#   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
+#   geom_point(cex = 1) +
+#   geom_path() +
+#   facet_wrap(~ threshold)
+#
+# summarize(res) %>%
+#   dplyr::filter(.metric == "rmse") %>%
+#   arrange(mean) %>%
+#   slice(1)
+#
 
 test <-
   tune_Bayes(
     ames_wflow,
-    cv_splits,
+    rs = cv_splits,
     param_info = ames_set,
     initial = res,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     iter = 15,
     control = Bayes_control(verbose = TRUE, uncertain = 3)
   )

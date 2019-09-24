@@ -4,7 +4,7 @@ library(tune)
 library(kknn)
 library(doMC)
 registerDoMC(cores=20)
-# load("~/Downloads/chi_corr_knn_search.RData")
+
 # ------------------------------------------------------------------------------
 
 set.seed(7898)

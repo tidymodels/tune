@@ -69,10 +69,10 @@ foo <- function(i) {
 svm_search <-
   tune_Bayes(
     chi_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = chi_set,
     initial = res,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     objective = exp_improve(foo),
     iter = 50,
     control = Bayes_control(verbose = TRUE, uncertain = 3)
@@ -81,10 +81,10 @@ svm_search <-
 svm_search_2 <-
   tune_Bayes(
     chi_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = chi_set,
     initial = svm_search,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     iter = 20,
     control = Bayes_control(verbose = TRUE)
   )

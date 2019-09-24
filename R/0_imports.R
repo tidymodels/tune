@@ -20,6 +20,7 @@
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
+#' @importFrom foreach foreach getDoParName
 
 # ------------------------------------------------------------------------------
 

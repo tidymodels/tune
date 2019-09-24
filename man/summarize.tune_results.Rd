@@ -4,7 +4,7 @@
 \alias{summarise.tune_results}
 \title{Estimate performance values}
 \usage{
-summarise.tune_results(x, ...)
+\method{summarise}{tune_results}(x, ...)
 }
 \arguments{
 \item{x}{An object.}

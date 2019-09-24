@@ -2,7 +2,6 @@ library(tidymodels)
 library(workflows)
 library(tune)
 library(AmesHousing)
-library(earth) # req for muti_predict
 
 # ------------------------------------------------------------------------------
 

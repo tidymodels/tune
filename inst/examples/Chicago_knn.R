@@ -76,15 +76,15 @@ smol_grid <-
   grid_random(size = 5)
 
 
-smol_knn_grid <- tune_grid(chi_wflow, data_folds, smol_grid, control = grid_control(verbose = TRUE))
+smol_knn_grid <- tune_grid(chi_wflow, rs = data_folds, grid = smol_grid, control = grid_control(verbose = TRUE))
 
 knn_search <-
   tune_Bayes(
     chi_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = chi_set,
     initial = smol_knn_grid,
-    metrics = metric_set(rmse, rsq),
+    perf = metric_set(rmse, rsq),
     iter = 30,
     control = Bayes_control(verbose = TRUE, uncertain = 10)
   )
