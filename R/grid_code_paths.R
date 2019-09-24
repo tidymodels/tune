@@ -116,8 +116,6 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
-
   lab_names <- names(labels(rs$splits[[1]]))
 
   results <-
@@ -202,8 +200,6 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
-
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
     iter_rec(rs_iter, rs, grid, object, perf, ctrl)
@@ -222,8 +218,6 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
-
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
@@ -311,8 +305,6 @@ tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
-
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
