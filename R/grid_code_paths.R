@@ -114,7 +114,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
-  `%op%` <- get_operator(ctrl$allow_par)
+  `%op%` <- get_operator(ctrl$allow_par, object)
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
@@ -200,7 +200,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 tune_rec <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
-  `%op%` <- get_operator(ctrl$allow_par)
+  `%op%` <- get_operator(ctrl$allow_par, object)
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
@@ -221,7 +221,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
-  `%op%` <- get_operator(ctrl$allow_par)
+  `%op%` <- get_operator(ctrl$allow_par, object)
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
@@ -310,7 +310,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
   B <- nrow(rs)
 
-  `%op%` <- get_operator(ctrl$allow_par)
+  `%op%` <- get_operator(ctrl$allow_par, object)
 
   all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
