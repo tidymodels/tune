@@ -1,7 +1,18 @@
 # ------------------------------------------------------------------------------
 # Helpers for parallel processing
 
-get_operator <- function(allow = TRUE) {
+get_operator <- function(allow = TRUE, object) {
+
+  pkgs <- mod_pkgs(object$fit$model$model)
+  blacklist <- c("keras", "rJava")
+  if (allow && any(pkgs %in% blacklist)) {
+    pkgs <- pkgs[pkgs %in% blacklist]
+    msg <- paste0("'", pkgs, "'", collapse = ", ")
+    msg <- paste("Some required packages prohibit parallel processing: ", msg)
+    cli::cli_alert_warning(msg)
+    allow <- FALSE
+  }
+
   cond <- allow && foreach::getDoParWorkers() > 1
   if (cond) {
     res <- foreach::`%dopar%`
@@ -14,13 +25,5 @@ get_operator <- function(allow = TRUE) {
 fe_pkg_list <- c('cli', 'crayon', 'dplyr', 'parsnip', 'purrr', 'recipes',
                  'rlang', 'rsample', 'tidyr', 'tune', 'yardstick')
 
-mod_pkgs <- function(x) {
-  spec <- x$fit$model$model
-  mod_name <- class(spec)[1]
-  pkg_list <-
-    parsnip::get_from_env(paste0(mod_name, "_pkgs")) %>%
-    dplyr::filter(engine == x$fit$model$model$engine) %>%
-    dplyr::pull(pkg)
-  pkg_list[[1]]
-}
+
 

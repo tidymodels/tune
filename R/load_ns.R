@@ -18,12 +18,7 @@ load_pkgs.character <- function(x, ...) {
 
 #' @export
 load_pkgs.model_spec <- function(x, ...) {
-  ref <- paste(class(x)[1], "pkgs", sep = "_")
-  pkgs <-
-    parsnip:::get_from_env(ref) %>%
-    dplyr::filter(engine == x$engine) %>%
-    dplyr::pull(pkg) %>%
-    purrr::pluck(1)
+  pkgs <- mod_pkgs(x)
   pkgs <- c(pkgs, "recipes", "parsnip", "yardstick", "purrr", "tibble", "dials",
             "rsample")
   load_namespace(pkgs)
@@ -31,7 +26,7 @@ load_pkgs.model_spec <- function(x, ...) {
 
 #' @export
 load_pkgs.workflow <- function(x, ...) {
-  load_pkgs(x$fit$model$model)
+  load_pkgs.model_spec(x$fit$model$model)
 }
 
 full_load <- c("kknn", "earth")
@@ -58,4 +53,11 @@ load_namespace <- function(x) {
   invisible(TRUE)
 }
 
-
+mod_pkgs <- function(x) {
+  mod_name <- class(x)[1]
+  pkg_list <-
+    parsnip::get_from_env(paste0(mod_name, "_pkgs")) %>%
+    dplyr::filter(engine == x$engine) %>%
+    dplyr::pull(pkg)
+  pkg_list[[1]]
+}

@@ -50,7 +50,7 @@
 #' @section Parameter Grids:
 #'
 #' If no tuning grid is provided, a semi-random grid (via
-#' `dials::grid_latin_hypercube()`) is create with 10 candidate parameter
+#' `dials::grid_latin_hypercube()`) is created with 10 candidate parameter
 #' combinations.
 #'
 #' @section Performance Metrics:

@@ -81,7 +81,7 @@ They are (usually) not aggregated until the end of processing.
 
 
 If no tuning grid is provided, a semi-random grid (via
-\code{dials::grid_latin_hypercube()}) is create with 10 candidate parameter
+\code{dials::grid_latin_hypercube()}) is created with 10 candidate parameter
 combinations.
 }
 

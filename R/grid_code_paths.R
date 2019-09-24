@@ -7,8 +7,6 @@ tune_nothing <- function() {
 
 iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   load_pkgs(object)
-  res <- "a;ojfpj"
-# on.exit(return(res))
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   perf_est <- NULL
@@ -74,7 +72,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
           split,
           mod_msg
         )
-res <- list(rec = tmp_rec, fit = tmp_fit)
+
       # check for failure
       if (!inherits(tmp_fit$fit, "try-error")) {
         all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
@@ -87,7 +85,6 @@ res <- list(rec = tmp_rec, fit = tmp_fit)
             paste(mod_msg, "(predictions)"),
             warn_only = TRUE
           )
-res <- list(rec = tmp_rec, fit = tmp_fit, pred = tmp_pred)
 
         perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
         pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
@@ -106,8 +103,6 @@ res <- list(rec = tmp_rec, fit = tmp_fit, pred = tmp_pred)
             )
           )
         )
-res <- list(rec = tmp_rec, fit = tmp_fit, pred = tmp_pred, metrics = perf_est, pred2 = pred_vals)
-
       extracted <- dplyr::bind_rows(extracted, tmp_extr)
     } # end model loop
 
@@ -121,7 +116,7 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object))
+  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   lab_names <- names(labels(rs$splits[[1]]))
 
@@ -207,7 +202,7 @@ tune_rec <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object))
+  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
@@ -228,7 +223,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object))
+  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
@@ -317,7 +312,7 @@ tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par)
 
-  all_pkg <- c(fe_pkg_list, mod_pkgs(object))
+  all_pkg <- c(fe_pkg_list, mod_pkgs(object$fit$model$model))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
