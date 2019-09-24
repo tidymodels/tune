@@ -13,6 +13,12 @@ data("small_fine_foods")
 
 basics <- names(textfeatures:::count_functions)
 
+binary_hash <- function(x) {
+  x <- ifelse(x < 0, -1, x)
+  x <- ifelse(x > 0,  1, x)
+  x
+}
+
 pre_proc <-
   recipe(score ~ product + review, data = training_data) %>%
   update_role(product, new_role = "id") %>%
@@ -62,7 +68,7 @@ decr_trade_off <- function(i) {
 text_search <-
   tune_Bayes(
     text_wflow,
-    folds,
+    rs = folds,
     param_info = text_set,
     objective = exp_improve(decr_trade_off),
     iter = 50,
