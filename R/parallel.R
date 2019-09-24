@@ -22,8 +22,3 @@ get_operator <- function(allow = TRUE, object) {
   res
 }
 
-fe_pkg_list <- c('cli', 'crayon', 'dplyr', 'parsnip', 'purrr', 'recipes',
-                 'rlang', 'rsample', 'tidyr', 'tune', 'yardstick')
-
-
-
