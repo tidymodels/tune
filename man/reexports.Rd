@@ -5,6 +5,7 @@
 \alias{reexports}
 \alias{param_set}
 \alias{summarize}
+\alias{summarise}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -14,6 +15,6 @@ below to see their documentation.
 \describe{
   \item{dials}{\code{\link[dials]{param_set}}}
 
-  \item{dplyr}{\code{\link[dplyr]{summarize}}}
+  \item{dplyr}{\code{\link[dplyr]{summarize}}, \code{\link[dplyr]{summarise}}}
 }}
 

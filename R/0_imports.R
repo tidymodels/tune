@@ -32,6 +32,10 @@ dials::param_set
 #' @export
 dplyr::summarize
 
+#' @importFrom dplyr summarise
+#' @export
+dplyr::summarise
+
 # ------------------------------------------------------------------------------
 
 utils::globalVariables(
