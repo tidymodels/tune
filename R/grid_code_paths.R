@@ -1,8 +1,36 @@
 
-tune_nothing <- function() {
-  stop("No tuning parameters were given.", call. = FALSE)
+tune_nothing <- function(rs, object, grid, perf, ctrl)  {
+  B <- nrow(rs)
+
+  `%op%` <- get_operator(ctrl$allow_par, object)
+
+  lab_names <- names(labels(rs$splits[[1]]))
+
+  results <-
+    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
+    iter_no_tune(rs_iter, rs, object, perf, ctrl)
+
+  rs <- pull_metrics(rs, results, ctrl)
+  rs <- pull_extracts(rs, results, ctrl)
+  rs <- pull_predictions(rs, results, ctrl)
+
+  rs
 }
 
+iter_no_tune <- function(rs_iter, rs, object, perf, ctrl) {
+  load_pkgs(object)
+  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+
+  split <- rs$splits[[rs_iter]]
+  perf_est <- NULL
+  extracted <- NULL
+  pred_vals <- NULL
+
+ # use fit.workflow and predict.workflow
+
+  # list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
+
+}
 # ------------------------------------------------------------------------------
 
 iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
