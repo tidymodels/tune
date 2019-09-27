@@ -4,10 +4,10 @@
 \alias{summarise.tune_results}
 \title{Estimate performance values}
 \usage{
-\method{summarise}{tune_results}(x, ...)
+\method{summarise}{tune_results}(.data, ...)
 }
 \arguments{
-\item{x}{An object.}
+\item{.data}{An object.}
 
 \item{...}{Not currently used.}
 }
