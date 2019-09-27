@@ -1,3 +1,4 @@
+# recipe-oriented helpers
 
 train_recipe <- function(split, object, grid) {
   tmp_rec <- object$pre$recipe$recipe
@@ -103,8 +104,9 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
 }
 
 # ------------------------------------------------------------------------------
+# Formula-oriented helpers
 
-
+# process the formula to get terms (and data)
 exec_formula <- function(split, object) {
   f <- object$pre$formula_processor$formula_processor
   mf <- model.frame(f, data = as.data.frame(split$data), na.action = "na.pass")
@@ -120,7 +122,7 @@ exec_formula <- function(split, object) {
   list(terms = trms, x = x_dat, y = y_dat)
 }
 
-# these should be combinaed somehow
+# execute the terms on the assessment set
 exec_terms <- function(split, trms) {
   dat <- rsample::assessment(split)
   dat <- as.data.frame(dat)
@@ -141,6 +143,7 @@ exec_terms <- function(split, trms) {
   list(x = x_dat, y = y_dat)
 }
 
+
 no_int <- function(x) {
   nms <- colnames(x)
   is_int <- nms == "(Intercept)"
@@ -150,6 +153,7 @@ no_int <- function(x) {
   as.data.frame(x)
 }
 
+# Get the outcome columns and protext against cases with log10(y) in formula
 mf_outcome_cols <- function(x) {
   y_call <- attr(x, "predvars")[attr(x, "response") + 1]
   y_call <- y_call[[1]]
