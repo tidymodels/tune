@@ -24,7 +24,7 @@ tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
   NULL
 }
 
-log_problems <- function(control, split, loc, res, warn_only = FALSE) {
+log_problems <- function(control, split, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose = TRUE
@@ -38,24 +38,24 @@ log_problems <- function(control, split, loc, res, warn_only = FALSE) {
     wrn_msg <- paste0(loc, ": ", wrn_msg)
     tune_log(control2, split, wrn_msg, cli_alert_warning)
   }
-  if (!warn_only) {
-    if (inherits(res$res, "try-error")) {
-      err_msg <- as.character(attr(res$res,"condition"))
-      err_msg <- gsub("\n$", "", err_msg)
-      err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
-      err_msg <- paste0(loc, ": ", err_msg)
-      tune_log(control2, split, err_msg, cli_alert_danger)
-    } else {
+  if (inherits(res$res, "try-error")) {
+    err_msg <- as.character(attr(res$res,"condition"))
+    err_msg <- gsub("\n$", "", err_msg)
+    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
+    err_msg <- paste0(loc, ": ", err_msg)
+    tune_log(control2, split, err_msg, cli_alert_danger)
+  } else {
+    if (!bad_only) {
       tune_log(control, split, loc, cli::cli_alert_success)
     }
   }
   NULL
 }
 
-catch_and_log <- function(.expr, ..., warn_only = FALSE) {
+catch_and_log <- function(.expr, ..., bad_only = FALSE) {
   tune_log(..., alert = cli_alert)
   tmp <- catcher(.expr)
-  log_problems(..., tmp, warn_only = warn_only)
+  log_problems(..., tmp, bad_only = bad_only)
   tmp$res
 }
 

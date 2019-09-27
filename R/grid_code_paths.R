@@ -83,7 +83,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
             ctrl,
             split,
             paste(mod_msg, "(predictions)"),
-            warn_only = TRUE
+            bad_only = TRUE
           )
 
         perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
@@ -167,7 +167,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
           ctrl,
           split,
           pred_msg,
-          warn_only = TRUE
+          bad_only = TRUE
         )
 
       perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
@@ -269,7 +269,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
           split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter, ], perf
         )
       )
-      log_problems(ctrl, split, tmp_pred, loc = pred_msg, warn_only = TRUE)
+      log_problems(ctrl, split, tmp_pred, loc = pred_msg, bad_only = TRUE)
       tmp_pred <- tmp_pred$res
 
       perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
