@@ -133,7 +133,6 @@ tune_Bayes_workflow <-
 
     check_rset(rs)
     check_object(object, check_dials = is.null(param_info))
-    check_Bayes_control(control)
     perf <- check_perf(perf, object)
     perf_data <- perf_info(perf)
     perf_name <- perf_data$.metric[1]
@@ -222,7 +221,7 @@ tune_Bayes_workflow <-
         log_progress(control, x = mean_stats, maximize = maximize, objective = perf_name)
       } else {
         if (all_bad) {
-          tune_log(control, split = NULL, task = "All models failed", alert = cli_alert_danger)
+          tune_log(control, split = NULL, task = "All models failed", type = "danger")
         }
         score_card$last_impr <- score_card$last_impr + 1
       }
@@ -314,19 +313,18 @@ pred_gp <- function(object, pset, size = 5000, current, control) {
       msg <- "An error occurred when creating candidates parameters: "
       msg <- paste(msg, as.character(object))
     }
-    tune_log(control, split = NULL, task = msg, alert = cli_alert_warning)
+    tune_log(control, split = NULL, task = msg, type = "warning")
     return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd =  NA_real_))
   }
 
   tune_log(control, split = NULL,
            task = paste("Generating", nrow(pred_grid), "candidates"),
-           alert = cli_alert_info)
+           type = "info")
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  tune_log(control, split = NULL, task = "Predicted candidates",
-           alert = cli_alert)
+  tune_log(control, split = NULL, task = "Predicted candidates", type = "info")
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
@@ -422,8 +420,7 @@ initial_info <- function(stats, perf, maximize) {
 
 
 more_results <- function(object, rs, candidates, perf, control) {
-  tune_log(control, split = NULL, task = "Estimating performance",
-           alert = cli_alert)
+  tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
@@ -443,17 +440,17 @@ more_results <- function(object, rs, candidates, perf, control) {
 
   if (inherits(tmp_res, "try-error")) {
     tune_log(control, split = NULL, task = "Couldn't estimate performance",
-             alert = cli_alert_danger)
+             type = "danger")
   } else {
     all_bad <- is_cataclysmic(tmp_res)
     if (all_bad) {
       p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
       msg <- paste("All models failed for:", p_chr)
-      tune_log(control, split = NULL, task = msg, alert = cli_alert_danger)
+      tune_log(control, split = NULL, task = msg, type = "danger")
       tmp_res <- simpleError(msg)
     } else {
       tune_log(control, split = NULL, task = "Estimating performance",
-               alert = cli_alert_success)
+               type = "success")
     }
   }
   tmp_res

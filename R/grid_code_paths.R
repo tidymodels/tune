@@ -19,6 +19,7 @@ tune_nothing <- function(rs, object, grid, perf, ctrl)  {
 
 iter_no_tune <- function(rs_iter, rs, object, perf, ctrl) {
   load_pkgs(object)
+  load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   split <- rs$splits[[rs_iter]]
@@ -35,6 +36,7 @@ iter_no_tune <- function(rs_iter, rs, object, perf, ctrl) {
 
 iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   load_pkgs(object)
+  load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   perf_est <- NULL
@@ -160,6 +162,7 @@ tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
 
 iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
   load_pkgs(object)
+  load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   split <- rs$splits[[rs_iter]]
@@ -259,6 +262,7 @@ tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
 
 iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   load_pkgs(object)
+  load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL
@@ -267,7 +271,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   # ----------------------------------------------------------------------------
 
-  tune_log(ctrl, split, "recipe", alert = cli_alert)
+  tune_log(ctrl, split, "recipe", type = "go")
   tmp_rec <- catcher(train_recipe(split, object, NULL))
   log_problems(ctrl, split, tmp_rec, loc = "recipe")
   tmp_rec <- tmp_rec$res
@@ -280,7 +284,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
   for (mod_iter in 1:num_mod) {
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-    tune_log(ctrl, split, mod_msg, alert = cli_alert)
+    tune_log(ctrl, split, mod_msg, type = "go")
     tmp_fit <-
       catcher(train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,],
                                       control = fit_ctrl))
@@ -346,6 +350,7 @@ tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
 
 iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
   load_pkgs(object)
+  load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- rs$splits[[rs_iter]]
   perf_est <- NULL

@@ -4,7 +4,7 @@
 \alias{Bayes_control}
 \title{Control the Bayesian search process}
 \usage{
-Bayes_control(verbose = FALSE, no_improve = 10, uncertain = Inf,
+Bayes_control(verbose = FALSE, no_improve = 10L, uncertain = Inf,
   seed = sample.int(10^5, 1), extract = NULL, save_pred = FALSE,
   time_limit = NA, pkgs = NULL)
 }

@@ -1,6 +1,27 @@
 # Genneral logging to the screen used in various places.
+# ------------------------------------------------------------------------------
 
-tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
+siren <- function(x, type = "info") {
+  msg <- glue::glue(x)
+  symb <- dplyr::case_when(
+    type == "warning" ~ crayon::yellow("!"),
+    type == "go" ~ crayon::black(cli::symbol$pointer ),
+    type == "danger" ~ crayon::red("x"),
+    type == "success" ~ crayon::green("\u2713"),
+    TRUE ~ crayon::blue("i")
+  )
+  msg <- dplyr::case_when(
+    type == "warning" ~ crayon::yellow(msg),
+    type == "go" ~  crayon::black(msg),
+    type == "danger" ~ crayon::red(msg),
+    type == "success" ~  crayon::black(msg),
+    TRUE ~  crayon::black(msg)
+  )
+  message(paste(symb, msg))
+}
+
+
+tune_log <- function(control, split = NULL, task, type = "success") {
   if (!control$verbose) {
     return(invisible(NULL))
   }
@@ -16,11 +37,7 @@ tune_log <- function(control, split, task, alert = cli::cli_alert_success) {
   # see https://github.com/r-lib/cli/issues/92
   task <- gsub("\\{", "", task)
 
-  if (isTRUE(all.equal(alert, cli::cli_alert_warning))) {
-    alert(cli::col_yellow(paste0(labs, task)))
-  } else {
-    alert(paste0(labs, task))
-  }
+  siren(paste0(labs, task), type = type)
   NULL
 }
 
@@ -36,24 +53,24 @@ log_problems <- function(control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- paste(wrn_msg, collapse = ", ")
     wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
     wrn_msg <- paste0(loc, ": ", wrn_msg)
-    tune_log(control2, split, wrn_msg, cli_alert_warning)
+    tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
     err_msg <- as.character(attr(res$res,"condition"))
     err_msg <- gsub("\n$", "", err_msg)
     err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
     err_msg <- paste0(loc, ": ", err_msg)
-    tune_log(control2, split, err_msg, cli_alert_danger)
+    tune_log(control2, split, err_msg, type = "danger")
   } else {
     if (!bad_only) {
-      tune_log(control, split, loc, cli::cli_alert_success)
+      tune_log(control, split, loc, type = "success")
     }
   }
   NULL
 }
 
 catch_and_log <- function(.expr, ..., bad_only = FALSE) {
-  tune_log(..., alert = cli_alert)
+  tune_log(..., type = "info")
   tmp <- catcher(.expr)
   log_problems(..., tmp, bad_only = bad_only)
   tmp$res
@@ -78,16 +95,16 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
+  tune_log(control, split = NULL, task = msg, type = "info")
 }
 
 check_and_log_flow <- function(control, results) {
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      tune_log(control, split = NULL, task = "Halting search", alert = cli_alert_danger)
+      tune_log(control, split = NULL, task = "Halting search", type = "danger")
       eval.parent(parse(text = "break"))
     } else {
-      tune_log(control, "Skipping to next iteration", alert = cli_alert_danger)
+      tune_log(control, split = NULL, task = "Skipping to next iteration", type = "danger")
       eval.parent(parse(text = "next"))
     }
   }
@@ -133,7 +150,7 @@ param_msg <- function(control, candidate) {
   candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
   msg <- glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
-  tune_log(control, split = NULL, task = msg, alert = cli_alert_info)
+  tune_log(control, split = NULL, task = msg, type = "info")
 }
 
 
@@ -155,7 +172,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split = NULL, task = val, alert = cli_alert_info)
+    tune_log(control, split = NULL, task = val, type = "info")
   }
   invisible(NULL)
 }
