@@ -25,7 +25,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
     dplyr::pull(id)
 
   if (tidyr_new_interface()) {
-    rec_grid <- tidyr::nest(grid, data = dplyr::one_of(model_param))
+    rec_grid <- tidyr::nest(tibble::as_tibble(grid), data = dplyr::one_of(model_param))
   } else {
     rec_grid <- tidyr::nest(grid, !!!model_param)
   }
