@@ -15,7 +15,7 @@ train_recipe <- function(split, object, grid) {
 }
 
 train_model_from_recipe <- function(object, recipe, grid, ...) {
-  tmp_fit <- object$fit$model$model
+  tmp_fit <- get_wflow_model(object)
   if (!is.null(grid)) {
     tmp_fit <- merge(tmp_fit, grid)$x[[1]]
   }
@@ -171,7 +171,7 @@ mf_outcome_cols <- function(x) {
 
 
 train_model_from_df <- function(object, dat, grid, ...) {
-  tmp_fit <- object$fit$model$model
+  tmp_fit <- get_wflow_model(object)
   if (!is.null(grid)) {
     tmp_fit <- merge(tmp_fit, grid)$x[[1]]
   }
@@ -256,3 +256,15 @@ predict_model_from_terms <- function(split, model, trms, grid, perf, ...) {
   res <- dplyr::full_join(res, outcome_dat, by = ".row")
   tibble::as_tibble(res)
 }
+
+# ------------------------------------------------------------------------------
+
+get_wflow_model <- function(object) {
+  object$fit$model$model
+}
+
+get_wflow_pre <- function(object) {
+  object$pre$recipe$recipe
+}
+
+# get_wflow_post

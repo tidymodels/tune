@@ -26,7 +26,7 @@ load_pkgs.model_spec <- function(x, ...) {
 
 #' @export
 load_pkgs.workflow <- function(x, ...) {
-  load_pkgs.model_spec(x$fit$model$model)
+  load_pkgs.model_spec(get_wflow_model(x))
 }
 
 full_load <- c("kknn", "earth")

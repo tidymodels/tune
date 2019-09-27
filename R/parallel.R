@@ -1,9 +1,10 @@
 # ------------------------------------------------------------------------------
 # Helpers for parallel processing
 
+# object should be a workflow
 get_operator <- function(allow = TRUE, object) {
   is_par <- foreach::getDoParWorkers() > 1
-  pkgs <- mod_pkgs(object$fit$model$model)
+  pkgs <- object %>% get_wflow_model() %>% mod_pkgs()
   blacklist <- c("keras", "rJava")
   if (is_par & allow && any(pkgs %in% blacklist)) {
     pkgs <- pkgs[pkgs %in% blacklist]

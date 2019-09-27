@@ -72,7 +72,7 @@ check_perf <- function(x, object) {
            call. = FALSE)
     }
   } else {
-    if (object$fit$model$model$mode == "regression") {
+    if (get_wflow_model(object)$mode == "regression") {
       x <- yardstick::metric_set(rmse, rsq)
     } else {
       x <- yardstick::metric_set(accuracy, kap)

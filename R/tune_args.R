@@ -154,7 +154,7 @@ tune_args.step <- function(object, full = FALSE, ...) {
 #' @export
 #' @rdname tune_args
 tune_args.workflow <- function(object, ...) {
-  param_data <- tune_args(object$fit$model$model)
+  param_data <- object %>% get_wflow_model() %>% tune_args()
   if (any(names(object$pre) == "recipe")) {
     param_data <-
       dplyr::bind_rows(

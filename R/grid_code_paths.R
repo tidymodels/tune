@@ -36,15 +36,14 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   for (rec_iter in 1:num_rec) {
     rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
 
-    # current recipe parameters only
+    # Current recipe parameters only
     rec_grid_vals <-
       rec_grid %>%
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
     tmp_rec <- catch_and_log(train_recipe(split, object, rec_grid_vals), ctrl, split, "recipe")
 
-        # All model tune parameters associated with the current recipe
-    # parameters
+    # All model tune parameters associated with the current recipe parameters
     mod_grid_vals <-
       rec_grid %>%
       dplyr::slice(rec_iter) %>%
@@ -53,7 +52,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
-    mod_grid_vals <- min_grid(object$fit$model$model, mod_grid_vals)
+    mod_grid_vals <- get_wflow_model(object) %>% min_grid(mod_grid_vals)
 
     # ------------------------------------------------------------------------
 
@@ -108,7 +107,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end recipe loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, si = sessionInfo())
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 }
 
 tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
@@ -191,7 +190,7 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # recipe parameters
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, si = sessionInfo())
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 
@@ -247,7 +246,7 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- min_grid(object$fit$model$model, grid)
+  mod_grid_vals <- get_wflow_model(object) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   for (mod_iter in 1:num_mod) {
@@ -333,7 +332,7 @@ iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- min_grid(object$fit$model$model, grid)
+  mod_grid_vals <- get_wflow_model(object) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   for (mod_iter in 1:num_mod) {
@@ -383,7 +382,7 @@ iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
   } # end model loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, si = sessionInfo())
+  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals)
 
 }
 

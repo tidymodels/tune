@@ -7,15 +7,16 @@ source("../helper-objects.R")
 # ------------------------------------------------------------------------------
 
 test_that('model package lookup', {
-  expect_equal(tune:::mod_pkgs(chi_wflow), "glmnet")
+  mod_obj <- tune:::get_wflow_model(chi_wflow)
+  expect_equal(tune:::mod_pkgs(mod_obj), "glmnet")
 })
 
 
 # ------------------------------------------------------------------------------
 
 test_that('determine foreach operator', {
-  expect_equal(tune:::get_operator(), foreach::`%do%`)
-  expect_equal(tune:::get_operator(FALSE), foreach::`%do%`)
+  expect_equal(tune:::get_operator(object = chi_wflow), foreach::`%do%`)
+  expect_equal(tune:::get_operator(FALSE, chi_wflow), foreach::`%do%`)
 })
 
 # ------------------------------------------------------------------------------
