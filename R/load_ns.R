@@ -32,6 +32,9 @@ load_pkgs.workflow <- function(x, ...) {
 full_load <- c("kknn", "earth")
 
 load_namespace <- function(x) {
+  if (length(x) == 0) {
+    return(invisible(TRUE))
+  }
   loaded <- purrr::map_lgl(x, isNamespaceLoaded)
   x <- x[!loaded]
 

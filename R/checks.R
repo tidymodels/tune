@@ -82,26 +82,6 @@ check_perf <- function(x, object) {
   x
 }
 
-check_grid_control <- function(x) {
-  exp_names <- names(grid_control())
-  if (!isTRUE(all(all.equal(names(x), exp_names)))) {
-    miss_names <- exp_names[!(exp_names %in% names(x))]
-    stop("The grid control object is missing element(s): ",
-         paste0(miss_names, collapse = ", "))
-  }
-  invisible(x)
-}
-
-check_Bayes_control <- function(x) {
-  exp_names <- sort(names(Bayes_control()))
-  if (!isTRUE(all(all.equal(sort(names(x)), exp_names)))) {
-    miss_names <- exp_names[!(exp_names %in% names(x))]
-    stop("The Baysian optimization control object is missing element(s): ",
-         paste0(miss_names, collapse = ", "))
-  }
-  invisible(x)
-}
-
 check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
   if (is.null(x) || is.numeric(x)) {
     if (is.null(x)) {
@@ -111,13 +91,13 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
     if (ctrl$verbose) {
       message()
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
-      tune_log(ctrl, split = NULL, msg, cli_alert)
+      tune_log(ctrl, split = NULL, msg, type = "go")
     }
     x <- tune_grid(wflow, model = NULL, rs = rs, grid = x, perf = perf,
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
-      tune_log(ctrl, split = NULL, "Initialization complete", cli::cli_alert_success)
+      tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
       message()
     }
   }
@@ -152,6 +132,45 @@ check_direction <- function(x) {
 check_best <- function(x) {
   if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
     stop("`best` should be a single, non-missing numeric", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+
+# ------------------------------------------------------------------------------
+
+check_class_or_null <- function(x, cls = "numeric") {
+  inherits(x, cls) | is.null(x)
+}
+
+val_class_or_null <- function(x, cls = "numeric", where = NULL) {
+  cl <- match.call()
+  fine <- check_class_or_null(x, cls)
+  cls <- paste(cls, collapse = " or ")
+  if (!fine) {
+    msg <- glue::glue("Argument '{deparse(cl$x)}' should be a {cls} or NULL")
+    if (!is.null(where)) {
+      msg <- glue::glue(msg, " in `{where}`")
+    }
+    rlang::abort(msg)
+  }
+  invisible(NULL)
+}
+
+check_class_and_single <- function(x, cls = "numeric") {
+  isTRUE(inherits(x, cls) & length(x) == 1)
+}
+
+val_class_and_single <- function(x, cls = "numeric", where = NULL) {
+  cl <- match.call()
+  fine <- check_class_and_single(x, cls)
+  cls <- paste(cls, collapse = " or ")
+  if (!fine) {
+    msg <- glue::glue("Argument '{deparse(cl$x)}' should be a single {cls} value")
+    if (!is.null(where)) {
+      msg <- glue::glue(msg, " in `{where}`")
+    }
+    rlang::abort(msg)
   }
   invisible(NULL)
 }

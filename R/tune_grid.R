@@ -168,7 +168,6 @@ tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = g
 
   check_rset(rs)
   check_object(object)
-  check_grid_control(control)
   perf <- check_perf(perf, object)
   grid <- check_grid(grid, object)
 

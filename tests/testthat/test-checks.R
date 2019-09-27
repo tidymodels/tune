@@ -84,45 +84,47 @@ test_that('yardstick objects', {
 test_that('grid control objects', {
   expect_error(grid_control(), NA)
   expect_error(grid_control(tomato = 1))
-  expect_error(
-    tune:::check_grid_control(list(verbose = TRUE, allow_par = TRUE, extract = NULL, save_pred = TRUE)),
-    NA
-  )
-  expect_warning(
-    expect_error(tune:::check_grid_control(list(verbose = TRUE, par = TRUE)),
-                 "allow_par")
-  )
-  expect_warning(
-    expect_error(
-      tune:::check_grid_control(list(verbose = TRUE, par = TRUE, allow_par = TRUE)),
-      "extract"
-    )
-  )
+  expect_error(grid_control(verbose = 1), "Argument 'verbose' should be a single logical")
+  expect_error(grid_control(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
+  expect_error(grid_control(allow_par = 1), "Argument 'allow_par' should be a single logical")
+  expect_error(grid_control(save_pred = "no"), "Argument 'save_pred' should be a single logical")
+  expect_error(grid_control(extract = Inf), "Argument 'extract' should be a function or NULL")
+  expect_error(grid_control(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+
+  expect_error(grid_control(verbose = TRUE), NA)
+  expect_error(grid_control(allow_par = FALSE), NA)
+  expect_error(grid_control(save_pred = TRUE), NA)
+  expect_error(grid_control(extract = NULL), NA)
+  expect_error(grid_control(extract = I), NA)
+  expect_error(grid_control(pkgs = NULL), NA)
+  expect_error(grid_control(pkgs = letters), NA)
+
 })
 
 test_that('Bayes control objects', {
   expect_error(Bayes_control(), NA)
   expect_error(Bayes_control(tomato = 1))
-  opts <- list(
-    verbose = TRUE,
-    no_improve = 10,
-    uncertain = 3,
-    seed = 1,
-    time_limit = 12,
-    extract = function(x) x,
-    save_pred = TRUE
-  )
+  expect_error(Bayes_control(verbose = 1), "Argument 'verbose' should be a single logical")
+  expect_error(Bayes_control(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
+  expect_error(Bayes_control(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
+  expect_error(Bayes_control(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
+  expect_error(Bayes_control(seed = FALSE), "Argument 'seed' should be a single numeric")
+  expect_error(Bayes_control(save_pred = "no"), "Argument 'save_pred' should be a single logical")
+  expect_error(Bayes_control(extract = Inf), "Argument 'extract' should be a function or NULL")
+  expect_error(Bayes_control(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+  expect_error(Bayes_control(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
 
-  expect_error(
-    tune:::check_Bayes_control(opts),
-    NA
-  )
-  expect_warning(
-    expect_error(
-      tune:::check_Bayes_control(list(verbose = TRUE, random_val = 3, seed = 1)),
-      "uncertain"
-    )
-  )
+  expect_message(Bayes_control(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
+
+  expect_error(Bayes_control(verbose = TRUE), NA)
+  expect_error(Bayes_control(no_improve = 2), NA)
+  expect_error(Bayes_control(uncertain = 2), NA)
+  expect_error(Bayes_control(save_pred = TRUE), NA)
+  expect_error(Bayes_control(extract = NULL), NA)
+  expect_error(Bayes_control(extract = I), NA)
+  expect_error(Bayes_control(pkgs = NULL), NA)
+  expect_error(Bayes_control(pkgs = letters), NA)
+  expect_error(Bayes_control(time_limit = 2), NA)
 
 })
 

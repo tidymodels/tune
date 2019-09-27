@@ -5,7 +5,7 @@
 \title{Control the grid search process}
 \usage{
 grid_control(verbose = FALSE, allow_par = TRUE, extract = NULL,
-  save_pred = FALSE)
+  save_pred = FALSE, pkgs = NULL)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
@@ -20,6 +20,9 @@ recipe, or other elements of the workflow.}
 
 \item{save_pred}{A logical for whether the out-of-sample predictions should
 be saved for each model \emph{evaluated}.}
+
+\item{pkgs}{An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.}
 }
 \description{
 Control the grid search process

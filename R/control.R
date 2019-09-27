@@ -9,6 +9,8 @@
 #' recipe, or other elements of the workflow.
 #' @param save_pred A logical for whether the out-of-sample predictions should
 #' be saved for each model _evaluated_.
+#' @param pkgs An optional character string of R package names that should be
+#' loaded (by namespace) during parallel processing.
 #'
 #'@details
 #'
@@ -24,11 +26,19 @@
 #'  `.extracts` column in the resulting object.
 #' @export
 grid_control <- function(verbose = FALSE, allow_par = TRUE,
-                         extract = NULL, save_pred = FALSE) {
-  # add options for `save_predictions`, and other stuff.
-  # seeds per resample
+                         extract = NULL, save_pred = FALSE,
+                         pkgs = NULL) {
+  # add options for  seeds per resample
+
+  val_class_and_single(verbose, "logical", "grid_control()")
+  val_class_and_single(allow_par, "logical", "grid_control()")
+  val_class_and_single(save_pred, "logical", "grid_control()")
+  val_class_or_null(pkgs, "character", "grid_control()")
+  val_class_or_null(extract, "function", "grid_control()")
+
+
   list(verbose = verbose, allow_par = allow_par, extract = extract,
-       save_pred = save_pred)
+       save_pred = save_pred, pkgs = pkgs)
 }
 
 
@@ -58,17 +68,28 @@ grid_control <- function(verbose = FALSE, allow_par = TRUE,
 #'  checkpoints and, if over time, the results at that time are returned (with a
 #'  warning). This means that the `time_limit` is not an exact limit, but a
 #'  minimum time limit.
+#' @param pkgs An optional character string of R package names that should be
+#' loaded (by namespace) during parallel processing.
 #' @export
 Bayes_control <-
   function(verbose = FALSE,
-           no_improve = 10,
+           no_improve = 10L,
            uncertain = Inf,
            seed = sample.int(10^5, 1),
            extract = NULL,
            save_pred = FALSE,
-           time_limit = NA) {
-    # add options for `allow_parallel`, and other stuff.
-    # seeds per resample
+           time_limit = NA,
+           pkgs = NULL) {
+    # add options for seeds per resample
+
+    val_class_and_single(verbose, "logical", "Bayes_control()")
+    val_class_and_single(save_pred, "logical", "Bayes_control()")
+    val_class_and_single(no_improve, c("numeric", "integer"), "Bayes_control()")
+    val_class_and_single(uncertain, c("numeric", "integer"), "Bayes_control()")
+    val_class_and_single(seed, c("numeric", "integer"), "Bayes_control()")
+    val_class_or_null(extract, "function", "Bayes_control()")
+    val_class_and_single(time_limit, c("logical", "numeric"), "Bayes_control()")
+    val_class_or_null(pkgs, "character", "Bayes_control()")
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_alert_warning(
@@ -83,6 +104,7 @@ Bayes_control <-
       seed = seed,
       extract = extract,
       save_pred = save_pred,
-      time_limit = time_limit
+      time_limit = time_limit,
+      pkgs = pkgs
     )
   }

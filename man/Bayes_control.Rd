@@ -6,7 +6,7 @@
 \usage{
 Bayes_control(verbose = FALSE, no_improve = 10, uncertain = Inf,
   seed = sample.int(10^5, 1), extract = NULL, save_pred = FALSE,
-  time_limit = NA)
+  time_limit = NA, pkgs = NULL)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
@@ -36,6 +36,9 @@ that the function should execute. The elapsed time is evaluated at internal
 checkpoints and, if over time, the results at that time are returned (with a
 warning). This means that the \code{time_limit} is not an exact limit, but a
 minimum time limit.}
+
+\item{pkgs}{An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.}
 }
 \description{
 Control the Bayesian search process
