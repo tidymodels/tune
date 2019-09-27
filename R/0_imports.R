@@ -18,6 +18,7 @@
 #' @importFrom parsnip get_from_env
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
+#' @importFrom ggplot2 facet_grid
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom foreach foreach getDoParName
@@ -45,7 +46,7 @@ utils::globalVariables(
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
     "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
-    ".extracts", ".metrics")
+    ".extracts", ".metrics", "value")
   )
 
 # ------------------------------------------------------------------------------
