@@ -167,4 +167,18 @@ test_that('Acquisition function objects', {
 
 })
 
+# ------------------------------------------------------------------------------
+
+test_that('validation helpers', {
+  expect_true(tune:::check_class_or_null("a", "character"))
+  expect_true(tune:::check_class_or_null(letters, "character"))
+  expect_true(tune:::check_class_or_null(NULL, "character"))
+  expect_false(tune:::check_class_or_null(NA, "character"))
+
+  expect_true(tune:::check_class_and_single("a", "character"))
+  expect_false(tune:::check_class_and_single(letters, "character"))
+  expect_false(tune:::check_class_and_single(NULL, "character"))
+  expect_false(tune:::check_class_and_single(NA, "character"))
+})
+
 

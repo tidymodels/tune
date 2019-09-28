@@ -2,6 +2,14 @@
 # ------------------------------------------------------------------------------
 
 siren <- function(x, type = "info") {
+  types <- c("warning", "go", "danger", "success", "info")
+  if (!any(type == types)) {
+    rlang::abort(
+      paste("`type` should be one of: ",
+            paste0("'", types, "'", collapse = ", ")
+      )
+    )
+  }
   msg <- glue::glue(x)
   symb <- dplyr::case_when(
     type == "warning" ~ crayon::yellow("!"),
