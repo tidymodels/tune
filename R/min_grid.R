@@ -136,7 +136,7 @@ fit_max_value <- function(x, grid, ...) {
   param_info <- get_submodel_info(x)
   sub_nm <- param_info$id[param_info$has_submodel]
 
-  if (length(sub_nm) == 0) {
+  if (length(sub_nm) == 0 | !any(names(grid) %in% sub_nm)) {
     return(blank_submodels(grid))
   }
 
