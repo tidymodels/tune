@@ -57,6 +57,13 @@ plot_marginals <- function(x, metric = NULL) {
   is_num <- purrr::map_lgl(x %>% dplyr::select(param_cols), is.numeric)
   num_val <- purrr::map_int(x %>% dplyr::select(param_cols), ~ length(unique(.x)))
 
+  if (any(num_val < 2)) {
+    rm_param <- param_cols[num_val < 2]
+    param_cols <- param_cols[num_val >= 2]
+    is_num <- is_num[num_val >= 2]
+    x <- x %>% dplyr::select(-dplyr::one_of(rm_param))
+  }
+
   if (any(!is_num)) {
     num_param_cols <- param_cols[ is_num]
     chr_param_cols <- param_cols[!is_num]
