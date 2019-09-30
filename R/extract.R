@@ -94,3 +94,24 @@ append_predictions <- function(collection, predictions, split, control) {
   predictions <- cbind(predictions, labels(split))
   dplyr::bind_rows(collection, predictions)
 }
+
+append_extracts <- function(collection, rec, mod, param, split, ctrl) {
+  if (any(names(param) == ".submodels")) {
+    param <- param %>% dplyr::select(-.submodels)
+  }
+
+  tmp_extr <-
+    param %>%
+    dplyr::bind_cols(labels(split)) %>%
+    mutate(
+      .extracts = list(
+        extract_details(
+          list(recipe = rec, model = mod),
+          ctrl$extract
+        )
+      )
+    )
+  dplyr::bind_rows(collection, tmp_extr)
+}
+
+
