@@ -34,12 +34,14 @@ navbar:
   left:
   - text: "Articles"
     menu:
-    - text: Bayesian Optimization of Classification Model
-      href: articles/articles/Classification.html
-    - text: Acquisition Functions
-      href: articles/acquisition_functions.html
     - text: Grid Search
       href: articles/grid.html
+    - text: Bayesian Optimization of Classification Model
+      href: articles/extras/Classification.html
+    - text: Acquisition Functions
+      href: articles/acquisition_functions.html
+    - text: Optimizations and Parallel Processing
+      href: articles/extras/optimizations.html
   - text: Reference
     href: reference/index.html
   - text: News
