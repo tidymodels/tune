@@ -23,7 +23,6 @@ Imports:
     glue,
     cli, 
     crayon,
-    workflows,
     yardstick,
     rsample,
     tidyr,
@@ -43,5 +42,4 @@ RoxygenNote: 6.1.1
 Remotes:
     tidymodels/recipes,
     tidymodels/dials@f42cb51,
-    tidymodels/parsnip,
-    topepo/workflows@updating-elements   
+    tidymodels/parsnip

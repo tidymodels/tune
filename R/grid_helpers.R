@@ -267,6 +267,10 @@ get_wflow_pre <- function(object) {
   object$pre$recipe$recipe
 }
 
+get_wflow_form <- function(object) {
+  object$pre$formula_processor$formula_processor
+}
+
 # get_wflow_post
 
 

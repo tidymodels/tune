@@ -36,7 +36,7 @@ test_that('grid objects', {
                "The `grid` argument should")
 
   wflow_1 <-
-    workflows::workflow() %>%
+    workflow() %>%
     add_model(glmn) %>%
     add_recipe(bare_rec)
 
@@ -50,7 +50,7 @@ test_that('grid objects', {
 
 test_that('workflow objects', {
   wflow_1 <-
-    workflows::workflow() %>%
+    workflow() %>%
     add_model(glmn) %>%
     add_recipe(bare_rec)
 
@@ -58,7 +58,7 @@ test_that('workflow objects', {
   expect_null(tune:::check_object(x = wflow_1))
 
   wflow_2 <-
-    workflows::workflow() %>%
+    workflow() %>%
     add_model(boost_tree(mtry = tune()) %>% set_engine("xgboost")) %>%
     add_recipe(bare_rec)
 
@@ -132,7 +132,7 @@ test_that('Bayes control objects', {
 
 test_that('initial values', {
   wflow_1 <-
-    workflows::workflow() %>%
+    workflow() %>%
     add_model(glmn) %>%
     add_recipe(recipe(mpg ~ ., data = mtcars))
 

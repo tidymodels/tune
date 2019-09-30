@@ -37,7 +37,7 @@ navbar:
     - text: Grid Search
       href: articles/grid.html
     - text: Bayesian Optimization of Classification Model
-      href: articles/extras/Classification.html
+      href: articles/extras/classification.html
     - text: Acquisition Functions
       href: articles/acquisition_functions.html
     - text: Optimizations and Parallel Processing

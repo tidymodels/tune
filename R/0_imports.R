@@ -11,7 +11,6 @@
 #' @importFrom dials param_set_constr is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame
-#' @importFrom workflows outcome_names
 #' @importFrom yardstick rsq rmse accuracy kap
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit

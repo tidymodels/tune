@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 .DS_Store
-vignettes/articles/Classification_cache
+vignettes/extras/classification_cache
 inst/examples/finefoods.txt

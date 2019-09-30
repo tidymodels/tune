@@ -1,5 +1,4 @@
 library(tidymodels)
-library(workflows)
 library(tune)
 
 load(url("http://bit.ly/seg-data"))

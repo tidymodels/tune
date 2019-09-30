@@ -1,5 +1,4 @@
 library(tidymodels)
-library(workflows)
 library(tune)
 load("~/Downloads/two_class_svm.RData")
 library(doMC)

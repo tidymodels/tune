@@ -1,4 +1,10 @@
 base
+methods
+datasets
+utils
+grDevices
+graphics
+stats
 tidymodels
 broom
 scales
@@ -13,12 +19,11 @@ tidyr
 rsample
 tibble
 yardstick
-workflows
 tune
 kernlab
 crayon
 rlang
 foreach
 iterators
+parallel
 doMC
-cli

@@ -68,9 +68,9 @@ tune_Bayes.recipe <- function(object, model,
   }
 
   wflow <-
-    workflows::workflow() %>%
-    workflows::add_recipe(object) %>%
-    workflows::add_model(model)
+    workflow() %>%
+    add_recipe(object) %>%
+    add_model(model)
 
   tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
@@ -93,9 +93,9 @@ tune_Bayes.formula <- function(formula, model,
   }
 
   wflow <-
-    workflows::workflow() %>%
-    workflows::add_formula(formula) %>%
-    workflows::add_model(model)
+    workflow() %>%
+    add_formula(formula) %>%
+    add_model(model)
 
   tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,

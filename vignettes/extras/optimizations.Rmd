@@ -109,6 +109,23 @@ plan(cluster, workers = cl)
 
 One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking _tends_ to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the `pkg` option in `control_grid()`. 
 
+Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run in a worker process. For example:
+
+```{r par-tip, eval = FALSE}
+num_pcs <- 3
+
+recipe(Species ~ ., data = iris) %>% 
+  # Bad since num_pcs might not be found in a worker
+  step_pca(all_predictors(), num_comp = num_pcs)
+
+recipe(Species ~ ., data = iris) %>% 
+  # Good since the value is injected into the object
+  step_pca(all_predictors(), num_comp = !!num_pcs)
+```
+
+This issue is likely to occur if `dplyr::one_of()` is used as a sector.  
+
+
 Also note that almost all of the logging provided by `tune_grid()` will not be seen when running in parallel. Again, this is dependent on the backend package and technology being used. 
 
 
