@@ -57,7 +57,7 @@ svm_wflow <-
 svm_set <-
   svm_wflow %>%
   param_set() %>%
-  update("num_comp", num_comp(c(1, 20)))
+  update(num_comp = num_comp(c(1, 20)))
 
 grid <- tibble(cost = 10^(-2.75), num_comp = 15,
                rbf_sigma = 10^seq(-3, 0, length = 100))
@@ -77,7 +77,7 @@ ggplot(
 sigma_set <-
   svm_set %>%
   slice(2) %>%
-  update("rbf_sigma", rbf_sigma(c(-3, 0)))
+  update(rbf_sigma = rbf_sigma(c(-3, 0)))
 
 acc_results <-
   summarize(grid_results) %>%

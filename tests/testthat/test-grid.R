@@ -33,7 +33,7 @@ svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 test_that('tune recipe only', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- param_set(wflow) %>% update("num_comp", num_comp(c(1, 3)))
+  pset <- param_set(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, rs = folds, grid = grid)
@@ -84,7 +84,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 test_that('tune model and recipe', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- param_set(wflow) %>% update("num_comp", num_comp(c(1, 3)))
+  pset <- param_set(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, rs = folds, grid = grid)
@@ -101,7 +101,7 @@ test_that('tune model and recipe', {
 test_that('tune model and recipe (multi-predict)', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(glmn)
-  pset <- param_set(wflow) %>% update("num_comp", num_comp(c(2, 3)))
+  pset <- param_set(wflow) %>% update(num_comp = num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 3, 2))
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, rs = folds, grid = grid)

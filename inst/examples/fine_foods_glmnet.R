@@ -100,7 +100,7 @@ summarize(text_glmnet) %>%
 test_set <-
   text_wflow %>%
   param_set() %>%
-  update("num_terms",  num_hash())
+  update(num_terms = num_hash())
 
 trade_decay <- function(iter) {
   expo_decay(iter, start_val = .1, limit_val = 0, slope = 1/10)

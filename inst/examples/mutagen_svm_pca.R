@@ -33,7 +33,7 @@ Mutagen_wflow <-
 
 Mutagen_param <-
   param_set(Mutagen_wflow) %>%
-  update("num_comp", num_comp(c(1, 20)))
+  update(num_comp = num_comp(c(1, 20)))
 
 set.seed(552)
 Mutagen_grid <-

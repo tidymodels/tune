@@ -2,8 +2,11 @@ library(tidymodels)
 library(workflows)
 library(tune)
 library(textrecipes)
-library(doMC)
-registerDoMC(cores = 20)
+library(doFuture)
+registerDoFuture()
+cl <- makeCluster(availableCores())
+plan(cluster, workers = cl)
+foreach::getDoParWorkers()
 
 # ------------------------------------------------------------------------------
 
@@ -34,7 +37,7 @@ pre_proc <-
   step_texthash(review, signed = TRUE) %>%
   step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
   step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
-  step_YeoJohnson(one_of(basics)) %>%
+  step_YeoJohnson(one_of(!!basics)) %>%
   step_zv(all_predictors())
 
 boost_mod <-
@@ -52,12 +55,17 @@ text_wflow <-
 text_set <-
   text_wflow %>%
   param_set() %>%
-  update("mtry", mtry_long(c(0, 3))) %>%
-  update("sample_size", sample_prop(0:1))
+  update(mtry = mtry_long(c(0, 3))) %>%
+  update(sample_size = sample_prop(0:1))
 
 
 set.seed(8935)
 folds <- group_vfold_cv(training_data, "product")
+
+grid <- grid_latin_hypercube(text_set, size = 3)
+
+res <- tune_grid(text_wflow, rs = folds, grid = grid,
+          control = grid_control(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
 
 # ------------------------------------------------------------------------------
 

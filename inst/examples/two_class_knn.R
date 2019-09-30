@@ -1,8 +1,10 @@
 library(tidymodels)
 library(workflows)
 library(tune)
-library(doMC)
-registerDoMC(cores = 20)
+library("doFuture")
+registerDoFuture()
+plan(multicore)
+
 
 # ------------------------------------------------------------------------------
 
@@ -41,8 +43,10 @@ two_class_grid <-
 
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, data_folds, two_class_grid,
-                 perf = class_metrics, control = grid_control(save_pred = TRUE))
+res <- tune_grid(two_class_wflow, rs = data_folds, grid = two_class_grid,
+                 perf = class_metrics, control = grid_control(verbose = TRUE))
+
+
 # all_pred <-
 #   res %>%
 #   select(starts_with("id"), .predictions) %>%

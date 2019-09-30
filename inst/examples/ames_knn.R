@@ -2,7 +2,6 @@ library(tidymodels)
 library(workflows)
 library(tune)
 library(AmesHousing)
-library(earth) # req for muti_predict
 
 # ------------------------------------------------------------------------------
 
@@ -29,7 +28,7 @@ ames_rec <-
 
 knn_model <-
   nearest_neighbor(
-    mode = "regression", neighbors = tune(), weight_func = "triangular", dist_power = 1) %>%
+    mode = "regression", neighbors = tune(), weight_func = tune(), dist_power = tune()) %>%
   set_engine("kknn")
 
 
@@ -46,7 +45,7 @@ ames_set <-
 
 ames_grid <-
   ames_set %>%
-  grid_max_entropy(size = 3)
+  grid_max_entropy(size = 10)
 
 initial_grid <- tune_grid(ames_wflow, rs = rs_splits, grid = ames_grid, control = grid_control(verbose = TRUE, save_pred = TRUE))
 
@@ -59,7 +58,6 @@ test <-
     rs = rs_splits,
     param_info = ames_set,
     initial = initial_grid,
-    perf = metric_set(rmse, rsq),
     iter = 15,
     control = Bayes_control(verbose = TRUE, uncertain = 3)
   )

@@ -25,7 +25,7 @@ lm_mod <-
 
 ames_wflow <-
   workflow() %>%
-  add_formula(log(Sale_Price) ~ Lot_Area + Gr_Liv_Area + Neighborhood + Longitude + Latitude) %>%
+  add_formula(log(Sale_Price) ~ .) %>%
   add_model(lm_mod)
 
 grid_df <- grid_regular(ames_wflow, levels = c(10, 3))

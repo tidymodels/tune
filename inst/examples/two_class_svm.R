@@ -27,7 +27,7 @@ two_class_wflow <-
 
 two_class_set <-
   param_set(two_class_wflow) %>%
-  update("cost", cost(c(-10, 4)))
+  update(cost = cost(c(-10, 4)))
 
 set.seed(2494)
 two_class_grid <-

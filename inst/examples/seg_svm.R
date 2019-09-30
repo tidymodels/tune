@@ -45,7 +45,7 @@ svm_set <-
   svm_wflow %>%
   param_set() %>%
   # In case you want to manually adjust the parameter specification
-  update("num_comp", num_comp(c(1, 20)))
+  update(num_comp = num_comp(c(1, 20)))
 
 set.seed(1558)
 grid <- grid_max_entropy(svm_set, size = 5)

@@ -95,7 +95,7 @@ svm_set
 The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the `update()` function. Let's constrain the search to one to twenty components:
 
 ```{r update}
-svm_set <- svm_set %>% update("num_comp", num_comp(c(1, 20)))
+svm_set <- svm_set %>% update(num_comp = num_comp(c(1, 20)))
 ```
 
 ## Sequential tuning 

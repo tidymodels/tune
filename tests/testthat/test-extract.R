@@ -134,7 +134,7 @@ test_that('tune model and recipe', {
   set.seed(35)
   grid_3 <-
     param_set(wflow_3) %>%
-    update("num_comp", num_comp(c(2, 5))) %>%
+    update(num_comp = num_comp(c(2, 5))) %>%
     grid_latin_hypercube()
 
   expect_error(

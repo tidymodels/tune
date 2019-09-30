@@ -129,7 +129,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>grid_control</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -154,6 +154,11 @@ recipe, or other elements of the workflow.</p></td>
       <th>save_pred</th>
       <td><p>A logical for whether the out-of-sample predictions should
 be saved for each model <em>evaluated</em>.</p></td>
+    </tr>
+    <tr>
+      <th>pkgs</th>
+      <td><p>An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.</p></td>
     </tr>
     </table>
 

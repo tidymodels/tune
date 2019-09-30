@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Quietly load package namespace — load_pkgs • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,13 +31,10 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparam_set" />
-<meta property="og:description" content="dplyrsummarize, summarise
-" />
+<meta property="og:title" content="Quietly load package namespace — load_pkgs" />
+<meta property="og:description" content="For one or more packages, load the namespace. This is used during parallel
+processing since the different parallel backends handle the package
+environments differently." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -124,27 +121,38 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
+    <h1>Quietly load package namespace</h1>
     
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <div class="hidden name"><code>load_pkgs.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl class='dl-horizontal'>
-  <dt>dials</dt><dd><p><code><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></code></p></dd>
-    <dt>dplyr</dt><dd><p><code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></code>, <code><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarise</a></code></p></dd>
-</dl>
+    <p>For one or more packages, load the namespace. This is used during parallel
+processing since the different parallel backends handle the package
+environments differently.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>load_pkgs</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>A character vector of packages.</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>An invisible NULL.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>
