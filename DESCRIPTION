@@ -21,7 +21,7 @@ Imports:
     dials (>= 0.0.3),
     utils,
     glue,
-    cli, 
+    cli (>= 1.9.9.9000), 
     crayon,
     yardstick,
     rsample,
@@ -41,4 +41,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Remotes:
-    tidymodels/parsnip
+    tidymodels/parsnip,
+    r-lib/cli
