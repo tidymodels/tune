@@ -17,7 +17,7 @@ Tips:
 
    * Even if it about parallel processing, please make sure that it runs sequentially first.
 
- * Make liberal use of `set.seed()` to help reproducibility 
+ * Please use `set.seed()` to ensure any randomness in your code is reproducible.
 
  * Please check <https://stackoverflow.com/> or <https://community.rstudio.com/> to see if someone has already asked the same question (see: [Yihui's Rule](https://yihui.name/en/2017/08/so-gh-email/)). 
 
