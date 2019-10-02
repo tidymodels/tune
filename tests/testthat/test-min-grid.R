@@ -502,21 +502,21 @@ test_that('multinomial regression grid reduction - glmnet', {
   }
 
   # different id names
-  mod_1 <- multinom_reg(penalty = tune("Cortázar")) %>% set_engine("glmnet")
-  reg_grid <- expand.grid(Cortázar = 1:3, mixture = 1:2)
+  mod_1 <- multinom_reg(penalty = tune("Cortazar")) %>% set_engine("glmnet")
+  reg_grid <- expand.grid(Cortazar = 1:3, mixture = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
 
-  expect_equal(reg_grid_smol$Cortázar, rep(3, 2))
+  expect_equal(reg_grid_smol$Cortazar, rep(3, 2))
   expect_equal(reg_grid_smol$mixture, 1:2)
   for (i in 1:nrow(reg_grid_smol)) {
-    expect_equal(reg_grid_smol$.submodels[[i]], list(Cortázar = 1:2))
+    expect_equal(reg_grid_smol$.submodels[[i]], list(Cortazar = 1:2))
   }
 
-  all_sub <- expand.grid(Cortázar = 1:3)
+  all_sub <- expand.grid(Cortazar = 1:3)
   all_sub_smol <- min_grid(mod_1, all_sub)
 
-  expect_equal(all_sub_smol$Cortázar, 3)
-  expect_equal(all_sub_smol$.submodels[[1]], list(Cortázar = 1:2))
+  expect_equal(all_sub_smol$Cortazar, 3)
+  expect_equal(all_sub_smol$.submodels[[1]], list(Cortazar = 1:2))
 
   mod_2 <- multinom_reg(penalty = tune("Shed Garvey")) %>% set_engine("glmnet")
   reg_grid <- expand.grid(`Shed Garvey` = 1:3, mixture = 1:2, ` \t123` = 10:11)
