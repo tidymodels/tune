@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
 <!-- badges: end -->
 
-The goal of tune is to facilitate the tuning of hyperparameters the tidymodels packages. It replies heavily on `recipes`, `parsnip`, and `dials`. 
+The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on `recipes`, `parsnip`, and `dials`. 
 
 ## Installation
 
@@ -31,11 +31,13 @@ devtools::install_github("tidymodels/tune")
 
 ## Examples
 
-The pkgdown site has some examples (and other resources):
+There are a few package vignettes, the first being the [Getting Started]() document. Other examples resources:
 
  - basic grid search
  - Bayesian optimization example
- - a text mining example
+ - an advanced text mining example
+ - notes on optimizations and parallel processing
+ - details on acquisition function for scoring parameter combinations
  
 ## Important Notes
 
@@ -45,3 +47,4 @@ There are references to _workflow_ objects in `tune`. We have another package be
 
 In this version, you can jointly tune pre-processing parameters (via a recipe) and model parameters. Once `workflows` is released, you can also optimize post-processing parameters at the same time (e.g. the probability threshold for two-class problems). 
 
+ 

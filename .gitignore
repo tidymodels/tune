@@ -5,3 +5,4 @@
 .DS_Store
 vignettes/extras/classification_cache
 inst/examples/finefoods.txt
+vignettes/extras/text_analysis_cache

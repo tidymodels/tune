@@ -7,10 +7,10 @@
 #'  product and user information, ratings, and a plaintext review."
 #'
 #' A subset of the data are contained here and are split into a training and
-#'  test set. The training set sampled 25 products and retained all of their
+#'  test set. The training set sampled 10 products and retained all of their
 #'  individual reviews. Since the reviews within these products are correlated,
 #'  we recommend resampling the data using a leave-one-product-out approach. The
-#'  test set sampled 1,000 products that were not included in the training set
+#'  test set sampled 500 products that were not included in the training set
 #'  and selected a single review at random for each.
 #'
 #' There is a column for the product, a column for the text of the review, and

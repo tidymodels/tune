@@ -5,5 +5,7 @@ articles:
   acquisition_functions: acquisition_functions.html
   classification: extras/classification.html
   optimizations: extras/optimizations.html
+  text_analysis: extras/text_analysis.html
+  getting_started: getting_started.html
   grid: grid.html
 

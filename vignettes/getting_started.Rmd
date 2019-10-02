@@ -1,0 +1,273 @@
+---
+title: "Getting Started with tune"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Getting Started with tune}
+output:
+  knitr:::html_vignette:
+    toc: yes
+---
+  
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  digits = 3,
+  collapse = TRUE,
+  comment = "#>"
+)
+options(digits = 3)
+library(tidymodels)
+library(tune)
+theme_set(theme_bw())
+```
+
+## Introduction 
+
+The `tune` package helps optimize the modeling process. Users can _tag_ arguments in recipes and model objects for optimization. The search routines in `tune` can discover these arguments and test candidate values until a combination with good performance is found. 
+
+As an example, let's model the Ames housing data:
+
+```{r startup}
+library(tidymodels)
+library(tune)
+library(AmesHousing)
+
+ames <- make_ames()
+
+set.seed(4595)
+data_split <- initial_split(ames, strata = "Sale_Price")
+ames_train <- training(data_split)
+ames_test  <- testing(data_split)
+```
+
+For simplicity, the sale price of a house will be modeled as a function of its geo-location. These predictors appear to have nonlinear relationships with the outcome:
+
+```{r geo-plots}
+ames_train %>% 
+  dplyr::select(Sale_Price, Longitude, Latitude) %>% 
+  tidyr::pivot_longer(cols = c(Longitude, Latitude), 
+                      names_to = "predictor", values_to = "value") %>% 
+  ggplot(aes(x = value, Sale_Price)) + 
+  geom_point(alpha = .2) + 
+  geom_smooth(se = FALSE) + 
+  scale_y_log10() +
+  facet_wrap(~ predictor, scales = "free_x")
+```
+
+These two predictors could be modeled using [natural splines]() with a linear model. The amount of "wiggliness" in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a _tuning parameter_ (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values. 
+
+We can tag these parameters for optimization using the `tune()` function: 
+
+```{r tag-rec}
+ames_rec <- 
+  recipe(Sale_Price ~ Longitude + Latitude, data = ames_train) %>% 
+  step_log(Sale_Price, base = 10) %>% 
+  step_ns(Longitude, Latitude, deg_free = tune())
+```
+
+The package can detect these values and optimize them. 
+
+However, based on the plot above, the potential non-linear relationship between the sale price and the might be different. The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that. 
+
+Individual `step_ns()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
+
+`tune()` has an option to provide a text annotation so that each tuning parameter has a unique identifier:
+
+```{r tag-rec-d}
+ames_rec <- 
+  recipe(Sale_Price ~ Longitude + Latitude, data = ames_train) %>% 
+  step_log(Sale_Price, base = 10) %>% 
+  step_ns(Longitude, deg_free = tune("long df")) %>% 
+  step_ns(Latitude,  deg_free = tune("lat df"))
+```
+
+The `dials` package has a function called `param_set()` that can detect and collect the parameters flagged for tuning:
+
+```{r p-set}
+param_set(ames_rec)
+```
+
+The `dials` package has default ranges for many parameters. The generic parameter function for `deg_free` has a fairly small range:
+
+```{r df}
+deg_free()
+```
+
+but there is a `dials` function that is more appropriate for splines:
+
+```{r sdf}
+spline_degree()
+```
+
+The parameter objects can be easily changed using the `update()` function:
+
+```{r updated}
+ames_param <- 
+  ames_rec %>% 
+  param_set() %>% 
+  update(
+    `long df` = spline_degree(), 
+    `lat df` = spline_degree()
+  )
+ames_param
+```
+
+## Grid Search
+
+Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the "id" column above. You could use one of the `dials` functions `grid_*`:
+
+```{r sf-grid}
+# A space-filling design:
+spline_grid <- grid_max_entropy(ames_param, size = 10)
+spline_grid
+```
+
+Alternately, `expand.grid()` also works:
+
+```{r grid}
+df_vals <- seq(2, 18, by = 2)
+# A regular grid:
+spline_grid <- expand.grid(`long df` = df_vals, `lat df` = df_vals)
+```
+
+Note that a 2 degree of freedom model is a simple quadratic fit. 
+
+There are two other ingredients that are needed. First, is a model specification. Using `parsnip`, a basic linear model can be used:
+
+```{r mod}
+lm_mod <- linear_reg() %>% set_engine("lm")
+```
+
+No tuning parameters here. 
+
+We also need a resampling specification. The  Ames data set are large enough to use simple 10-fold cross-validation:
+
+```{r folds}
+set.seed(2453)
+cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
+```
+
+Using these objects, `tune_grid()` can be used:
+
+```{r grid-search}
+ames_res <- tune_grid(ames_rec, model = lm_mod, rs = cv_splits, grid = spline_grid)
+```
+
+The object is similar to the `rsample` object but with some extra columns:
+
+```{r res}
+ames_res
+```
+
+The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that is uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `perf` option.] for each parameter combination: 
+
+```{r res-ex}
+ames_res$.metrics[[1]]
+```
+
+To get the average metric value for each parameter combination, `summarize()` can be put to use:
+
+```{r mean-res}
+estimates <- summarize(ames_res)
+estimates
+```
+
+The values in the `mean` column are the averages of the `r nrow(cv_splits)` resamples. The best RMSE values corresponded to:
+
+```{r best-rmse}
+rmse_vals <- 
+  estimates %>% 
+  dplyr::filter(.metric == "rmse") %>% 
+  arrange(mean)
+rmse_vals
+```
+
+Smaller degrees of freedom values correspond to more linear functions but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
+
+```{r rmse-tile}
+rmse_vals %>% 
+  # convert to factors for easier plotting
+  mutate(`lat df` = factor(format(`lat df`))) %>% 
+  ggplot(aes(x = `long df`, y = mean, col = `lat df`)) + 
+  geom_point() + 
+  geom_line() + 
+  ylab("Mean RMSE")
+```
+
+Interestingly, latitude does _not_ like any degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? Let's plot these along with a value that did poorly: 
+
+```{r final-vals}
+ames_train %>% 
+  dplyr::select(Sale_Price, Longitude, Latitude) %>% 
+  tidyr::pivot_longer(cols = c(Longitude, Latitude), 
+                      names_to = "predictor", values_to = "value") %>% 
+  ggplot(aes(x = value, Sale_Price)) + 
+  geom_point(alpha = .2) + 
+  geom_smooth(se = FALSE, method = lm, formula = y ~ splines::ns(x, df = 3),  col = "red")  + 
+  geom_smooth(se = FALSE, method = lm, formula = y ~ splines::ns(x, df = 16)) +
+  scale_y_log10() +
+  facet_wrap(~ predictor, scales = "free_x")
+```
+
+Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would results in poor RMSE values when computed on the hold-out data. 
+
+Based on these results, a new recipe would be created with the optimized values (using the entire training set) and this would be combined with a linear model created form the entire training set. 
+
+## Model Optimization
+
+Instead of a linear regression, a nonlinear model might provide good performance. A K-nearest neighbor fit will also be optimized. For this example, the number of neighbors and the distance weighting function will be optimized:
+
+```{r knn}
+knn_mod <- 
+  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
+  set_engine("kknn") %>% 
+  set_mode("regression")
+```
+
+The easiest approach to optimize the pre-processing and model parameters is to bundle these objects into a _workflow_:
+
+```{r knn-wflow}
+knn_wflow <- 
+  workflow() %>% 
+  add_model(knn_mod) %>% 
+  add_recipe(ames_rec)
+```
+
+From this, the parameter set can be used to modify the range and values of parameters being optimized^[One of the tuning parameters (`weight_func`) is categorical and, by default, has `r length(dials::values_weight_func)` unique values. The model used to predict new test parameters is a Gaussian process model, and this can become slow to fit when the number of tuning parameters is large or when a categorical parameter generates many dummy variables. We've reduced the number of categories for this parameter to speed things up a bit.]:
+
+```{r knn-set}
+knn_param <- 
+  knn_wflow %>% 
+  param_set() %>% 
+    update(
+    `long df` = spline_degree(c(2, 18)), 
+    `lat df` = spline_degree(c(2, 18)),
+    neighbors = neighbors(c(3, 50)),
+    weight_func = weight_func(values = c("rectangular", "inv", "gaussian", "triangular"))
+  )
+```
+
+Instead of using grid search, an iterative method called [Bayesian optimization]() can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate. 
+
+```{r bo}
+ctrl <- Bayes_control(verbose = TRUE)
+set.seed(8154)
+knn_search <- tune_Bayes(knn_wflow, rs = cv_splits, initial = 5, iter = 20,
+                         param_info = knn_param, control = ctrl)
+```
+
+Visually, the performance gain was:
+ 
+```{r bo-iter}
+plot_perf_vs_iter(knn_search, metric = "rmse")
+```
+
+The best results here were:
+
+```{r bo-best}
+summarize(knn_search) %>% 
+  dplyr::filter(.metric == "rmse") %>% 
+  arrange(mean)
+```
+
+With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe. 
+

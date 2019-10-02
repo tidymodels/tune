@@ -75,7 +75,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
         </div>
       </div>
     </div>
@@ -89,16 +89,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/grid.html">Grid Search</a>
+      <a href="../articles/getting_started.html">Getting Started</a>
     </li>
     <li>
-      <a href="../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="../articles/grid.html">Grid Search</a>
     </li>
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
+      <a href="../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
+    </li>
+    <li>
+      <a href="../articles/extras/text_analysis.html">Text Analysis Example</a>
     </li>
   </ul>
 </li>
@@ -149,10 +155,10 @@ reviews of fine foods from amazon. The data span a period of more than 10
 years, including all ~500,000 reviews up to October 2012. Reviews include
 product and user information, ratings, and a plaintext review."</p>
 <p>A subset of the data are contained here and are split into a training and
-test set. The training set sampled 25 products and retained all of their
+test set. The training set sampled 10 products and retained all of their
 individual reviews. Since the reviews within these products are correlated,
 we recommend resampling the data using a leave-one-product-out approach. The
-test set sampled 1,000 products that were not included in the training set
+test set sampled 500 products that were not included in the training set
 and selected a single review at random for each.</p>
 <p>There is a column for the product, a column for the text of the review, and
 a factor column for a class variable. The outcome is whether the reviewer
@@ -160,7 +166,7 @@ game the product a 5-star rating or not.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>small_fine_foods</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>training_data</span>)</div><div class='output co'>#&gt; Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	5334 obs. of  3 variables:
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>training_data</span>)</div><div class='output co'>#&gt; Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	1656 obs. of  3 variables:
 #&gt;  $ product: chr  "B003D4IYSU" "B003D4IYSU" "B003D4IYSU" "B003D4IYSU" ...
 #&gt;  $ review : chr  "A well flavored Tea for after dinner or to use when you have trouble sleeping. I have purchaced this enjoyable "| __truncated__ "This is the first time I've tried this brand, this flavor and this type of tea.  It is so good!  With a little "| __truncated__ "This tea is so refreshing, and I just love the taste.  Not a heavy chocolate taste, but really gets the endorph"| __truncated__ "This is delicious hot or cold! There is enough that I could share w/family &amp; friends. The flavor is strong &amp; do"| __truncated__ ...
 #&gt;  $ score  : Factor w/ 2 levels "great","other": 1 1 1 1 1 1 1 2 2 1 ...</div></pre>
