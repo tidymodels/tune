@@ -3,7 +3,7 @@ name: Bug report or feature request
 about: Describe a bug you've seen or make a case for a new feature
 ---
 
-# Making a new issue for `tune`
+# PLEASE READ: Making a new issue for `tune`
 
 
 Please follow the template below. 
