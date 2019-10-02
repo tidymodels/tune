@@ -128,9 +128,9 @@ tune_grid.recipe <- function(object, model, rs, grid = NULL,
   }
 
   wflow <-
-    workflows::workflow() %>%
-    workflows::add_recipe(object) %>%
-    workflows::add_model(model)
+    workflow() %>%
+    add_recipe(object) %>%
+    add_model(model)
 
   tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
 }
@@ -144,9 +144,9 @@ tune_grid.formula <- function(formula, model, rs, grid = NULL,
   }
 
   wflow <-
-    workflows::workflow() %>%
-    workflows::add_formula(formula) %>%
-    workflows::add_model(model)
+    workflow() %>%
+    add_formula(formula) %>%
+    add_model(model)
 
   tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
 }

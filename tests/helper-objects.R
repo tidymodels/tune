@@ -2,7 +2,6 @@
 library(tune)
 library(recipes)
 library(parsnip)
-library(workflows)
 library(rsample)
 data("Chicago", package = "dials")
 

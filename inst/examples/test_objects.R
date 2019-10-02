@@ -1,5 +1,4 @@
 library(tidymodels)
-library(workflows)
 library(tune)
 
 # ------------------------------------------------------------------------------

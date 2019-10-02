@@ -1,6 +1,5 @@
 library(tidymodels)
 library(tune)
-library(workflows)
 library(readr)
 
 # From https://github.com/juliasilge/supervised-ML-case-studies-course

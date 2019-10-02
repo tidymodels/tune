@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 )
 options(digits = 3)
 library(tidymodels)
-library(workflows)
 library(tune)
 library(kernlab)
 library(crayon)
@@ -34,7 +33,6 @@ After first loading the data set, we remove indicators for the cell identifier, 
 
 ```{r import-data}
 library(tidymodels)
-library(workflows)
 library(tune)
 library(kernlab)
 
@@ -52,7 +50,7 @@ seg_train <- training(tr_te_split)
 seg_test  <-  testing(tr_te_split)
 
 set.seed(5121)
-folds <- vfold_cv(seg_train)
+folds <- vfold_cv(seg_train, repeats = 2)
 ```
 
 ## Defining the tuning scheme
@@ -76,7 +74,7 @@ svm_mod <-
   set_engine("kernlab")
 ```
 
-These two objects will be combined into a single object via the `workflows` package and this object will be used to fuel the optimization process. 
+These two objects will be combined into a single object via the `workflow()` function and this object will be used to fuel the optimization process. 
 
 ```{r workflow}
 svm_wflow <-
@@ -110,10 +108,10 @@ For example, one approach for scoring new candidates is to use a confidence boun
 
 The variance predicted by the Bayesian model is mostly spatial variation; the value will be large for candidate values that are not close to values that have already been evaluated. If the standard error multiplier is high, the search process will be more likely to avoid areas without candidate values in the vicinity. 
 
-We'll use another acquisition function, _expected improvement_, that calculates the determines which candidates likely to to be helpful relative to the current best results. 
+We'll use another acquisition function, _expected improvement_, that calculates the determines which candidates likely to to be helpful relative to the current best results. This is the default acquisition function.
 
 ```{r search, cache = TRUE}
-set.seed(9961)
+set.seed(991)
 search_res <- 
   tune_Bayes(
     svm_wflow, 
@@ -122,20 +120,31 @@ search_res <-
     param_info = svm_set,
     # Generate five at semi-random to start
     initial = 5,
-    iter = 50,
+    iter = 30,
     # How to measure performance
-    perf = metric_set(kap),
-    # Acquisition function
-    objective = exp_improve()
+    perf = metric_set(roc_auc),
+    control = Bayes_control(no_improve = 20, verbose = TRUE)
   )
+```
+
+The resulting tibble is a stacked set of rows of the `rsample` object with an additional column for the iteration number:
+
+```{r show-iters}
 search_res
 ```
 
-The best performance of the initial set of candidate values was `kappa = `r max(search_res$mean[search_res$.iter == 0])` `. The best results were achieved at iteration `r search_res$.iter[which.max(search_res$mean)]` with a corresponding Kappa value of `r max(search_res$mean)`. The five best results were:
+As with grid search, we can summarize the results over resamples:
+
+```{r summarize-iters}
+estimates <- summarize(search_res) %>% arrange(.iter)
+estimates
+```
+
+
+The best performance of the initial set of candidate values was `AUC = `r max(estimates$mean[estimates$.iter == 0])` `. The best results were achieved at iteration `r estimates$.iter[which.max(estimates$mean)]` with a corresponding AUC value of `r max(estimates$mean)`. The five best results were:
 
 ```{r best}
-search_res %>% 
-  summarize() %>% 
+estimates %>% 
   arrange(desc(mean)) %>% 
   slice(1:5)
 ```
@@ -145,4 +154,3 @@ A plot of the search can be created via:
 ```{r bo-plot}
 plot_perf_vs_iter(search_res)
 ```
-

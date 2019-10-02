@@ -12,7 +12,6 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidymodels)
 library(tune)
-library(workflows)
 library(mlbench)
 library(kernlab)
 library(crayon)

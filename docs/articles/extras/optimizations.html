@@ -40,7 +40,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
         </div>
       </div>
     </div>
@@ -54,16 +54,22 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../../articles/grid.html">Grid Search</a>
+      <a href="../../articles/getting_started.html">Getting Started</a>
     </li>
     <li>
-      <a href="../../articles/extras/Classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="../../articles/grid.html">Grid Search</a>
     </li>
     <li>
       <a href="../../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
+      <a href="../../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+    </li>
+    <li>
       <a href="../../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
+    </li>
+    <li>
+      <a href="../../articles/extras/text_analysis.html">Text Analysis Example</a>
     </li>
   </ul>
 </li>
@@ -201,6 +207,17 @@
 <a class="sourceLine" id="cb10-5" data-line-number="5">cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(all_cores)</a>
 <a class="sourceLine" id="cb10-6" data-line-number="6"><span class="kw">plan</span>(cluster, <span class="dt">workers =</span> cl)</a></code></pre></div>
 <p>One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking <em>tends</em> to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the <code>pkg</code> option in <code>control_grid()</code>.</p>
+<p>Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run in a worker process. For example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">num_pcs &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">  </span><span class="co"># Bad since num_pcs might not be found in a worker</span></a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> num_pcs)</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="st">  </span><span class="co"># Good since the value is injected into the object</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> <span class="op">!!</span>num_pcs)</a></code></pre></div>
+<p>This issue is likely to occur if <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">dplyr::one_of()</a></code> is used as a sector.</p>
 <p>Also note that almost all of the logging provided by <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel. Again, this is dependent on the backend package and technology being used.</p>
 </div>
 <div class="footnotes">

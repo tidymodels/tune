@@ -167,13 +167,11 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     return(invisible(NULL))
   }
   if (inherits(objective, "conf_bound") && is.function(objective$kappa)) {
-    val <- paste0(cli::symbol$info, " Kappa value: ",
-                  signif(objective$kappa(iter), digits = digits))
+    val <- paste0("Kappa value: ", signif(objective$kappa(iter), digits = digits))
   } else {
     if (inherits(objective, c("exp_improve", "prob_improve")) &&
         is.function(objective$trade_off)) {
-      val <- paste0(cli::symbol$info, " Trade-off value: ",
-                    signif(objective$trade_off(iter), digits = digits))
+      val <- paste0("Trade-off value: ", signif(objective$trade_off(iter), digits = digits))
 
     } else {
       val <- NULL
