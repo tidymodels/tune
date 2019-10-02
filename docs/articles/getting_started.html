@@ -130,7 +130,7 @@
 <a class="sourceLine" id="cb2-9" data-line-number="9"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>predictor, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</span></a></code></pre></div>
 <p><img src="getting_started_files/figure-html/geo-plots-1.png" width="768"></p>
-<p>These two predictors could be modeled using <a href="">natural splines</a> with a linear model. The amount of “wiggliness” in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a <em>tuning parameter</em> (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values.</p>
+<p>These two predictors could be modeled using <a href="https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac">natural splines</a> with a linear model. The amount of “wiggliness” in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a <em>tuning parameter</em> (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values.</p>
 <p>We can tag these parameters for optimization using the <code><a href="../reference/tune.html">tune()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ames_rec &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">recipe</span>(Sale_Price <span class="op">~</span><span class="st"> </span>Longitude <span class="op">+</span><span class="st"> </span>Latitude, <span class="dt">data =</span> ames_train) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -324,7 +324,7 @@
 <a class="sourceLine" id="cb22-7" data-line-number="7">    <span class="dt">neighbors =</span> <span class="kw">neighbors</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">50</span>)),</a>
 <a class="sourceLine" id="cb22-8" data-line-number="8">    <span class="dt">weight_func =</span> <span class="kw">weight_func</span>(<span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"rectangular"</span>, <span class="st">"inv"</span>, <span class="st">"gaussian"</span>, <span class="st">"triangular"</span>))</a>
 <a class="sourceLine" id="cb22-9" data-line-number="9">  )</a></code></pre></div>
-<p>Instead of using grid search, an iterative method called <a href="">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
+<p>Instead of using grid search, an iterative method called <a href="http://krasserm.github.io/2018/03/21/bayesian-optimization/">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Bayes_control.html">Bayes_control</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8154</span>)</a>
 <a class="sourceLine" id="cb23-3" data-line-number="3">knn_search &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_Bayes.html">tune_Bayes</a></span>(knn_wflow, <span class="dt">rs =</span> cv_splits, <span class="dt">initial =</span> <span class="dv">5</span>, <span class="dt">iter =</span> <span class="dv">20</span>,</a>
@@ -335,7 +335,7 @@
 <a class="sourceLine" id="cb23-8" data-line-number="8"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-9" data-line-number="9"><span class="co">#&gt; Optimizing rmse using the expected improvement</span></a>
 <a class="sourceLine" id="cb23-10" data-line-number="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="co">#&gt; ── Iteration 1 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-11" data-line-number="11"><span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-12" data-line-number="12"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-13" data-line-number="13"><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></a>
 <a class="sourceLine" id="cb23-14" data-line-number="14"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -347,7 +347,7 @@
 <a class="sourceLine" id="cb23-20" data-line-number="20"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-21" data-line-number="21"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1069 (+/-0.00319)</span></a>
 <a class="sourceLine" id="cb23-22" data-line-number="22"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-23" data-line-number="23"><span class="co">#&gt; ── Iteration 2 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-23" data-line-number="23"><span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-24" data-line-number="24"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-25" data-line-number="25"><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></a>
 <a class="sourceLine" id="cb23-26" data-line-number="26"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -359,7 +359,7 @@
 <a class="sourceLine" id="cb23-32" data-line-number="32"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-33" data-line-number="33"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1023 (+/-0.00298)</span></a>
 <a class="sourceLine" id="cb23-34" data-line-number="34"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-35" data-line-number="35"><span class="co">#&gt; ── Iteration 3 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-35" data-line-number="35"><span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-36" data-line-number="36"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-37" data-line-number="37"><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></a>
 <a class="sourceLine" id="cb23-38" data-line-number="38"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -371,7 +371,7 @@
 <a class="sourceLine" id="cb23-44" data-line-number="44"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-45" data-line-number="45"><span class="co">#&gt; ♥ Newest results:    rmse=0.09818 (+/-0.00316)</span></a>
 <a class="sourceLine" id="cb23-46" data-line-number="46"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-47" data-line-number="47"><span class="co">#&gt; ── Iteration 4 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-47" data-line-number="47"><span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-48" data-line-number="48"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-49" data-line-number="49"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-50" data-line-number="50"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -383,7 +383,7 @@
 <a class="sourceLine" id="cb23-56" data-line-number="56"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-57" data-line-number="57"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1009 (+/-0.00279)</span></a>
 <a class="sourceLine" id="cb23-58" data-line-number="58"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-59" data-line-number="59"><span class="co">#&gt; ── Iteration 5 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-59" data-line-number="59"><span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-60" data-line-number="60"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-61" data-line-number="61"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-62" data-line-number="62"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -395,7 +395,7 @@
 <a class="sourceLine" id="cb23-68" data-line-number="68"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-69" data-line-number="69"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09842 (+/-0.0035)</span></a>
 <a class="sourceLine" id="cb23-70" data-line-number="70"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-71" data-line-number="71"><span class="co">#&gt; ── Iteration 6 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-71" data-line-number="71"><span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-72" data-line-number="72"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-73" data-line-number="73"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-74" data-line-number="74"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -407,7 +407,7 @@
 <a class="sourceLine" id="cb23-80" data-line-number="80"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-81" data-line-number="81"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1047 (+/-0.00291)</span></a>
 <a class="sourceLine" id="cb23-82" data-line-number="82"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-83" data-line-number="83"><span class="co">#&gt; ── Iteration 7 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-83" data-line-number="83"><span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-84" data-line-number="84"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-85" data-line-number="85"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-86" data-line-number="86"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -419,7 +419,7 @@
 <a class="sourceLine" id="cb23-92" data-line-number="92"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-93" data-line-number="93"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09829 (+/-0.00326)</span></a>
 <a class="sourceLine" id="cb23-94" data-line-number="94"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-95" data-line-number="95"><span class="co">#&gt; ── Iteration 8 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-95" data-line-number="95"><span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-96" data-line-number="96"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-97" data-line-number="97"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-98" data-line-number="98"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -431,7 +431,7 @@
 <a class="sourceLine" id="cb23-104" data-line-number="104"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-105" data-line-number="105"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1018 (+/-0.00256)</span></a>
 <a class="sourceLine" id="cb23-106" data-line-number="106"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-107" data-line-number="107"><span class="co">#&gt; ── Iteration 9 ─────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-107" data-line-number="107"><span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-108" data-line-number="108"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-109" data-line-number="109"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-110" data-line-number="110"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -443,7 +443,7 @@
 <a class="sourceLine" id="cb23-116" data-line-number="116"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-117" data-line-number="117"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1003 (+/-0.00304)</span></a>
 <a class="sourceLine" id="cb23-118" data-line-number="118"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-119" data-line-number="119"><span class="co">#&gt; ── Iteration 10 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-119" data-line-number="119"><span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-120" data-line-number="120"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-121" data-line-number="121"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-122" data-line-number="122"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -455,7 +455,7 @@
 <a class="sourceLine" id="cb23-128" data-line-number="128"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-129" data-line-number="129"><span class="co">#&gt; ⓧ Newest results:    rmse=0.0991 (+/-0.00342)</span></a>
 <a class="sourceLine" id="cb23-130" data-line-number="130"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-131" data-line-number="131"><span class="co">#&gt; ── Iteration 11 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-131" data-line-number="131"><span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-132" data-line-number="132"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-133" data-line-number="133"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-134" data-line-number="134"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -467,7 +467,7 @@
 <a class="sourceLine" id="cb23-140" data-line-number="140"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-141" data-line-number="141"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1005 (+/-0.00329)</span></a>
 <a class="sourceLine" id="cb23-142" data-line-number="142"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-143" data-line-number="143"><span class="co">#&gt; ── Iteration 12 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-143" data-line-number="143"><span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-144" data-line-number="144"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-145" data-line-number="145"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
 <a class="sourceLine" id="cb23-146" data-line-number="146"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -479,7 +479,7 @@
 <a class="sourceLine" id="cb23-152" data-line-number="152"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-153" data-line-number="153"><span class="co">#&gt; ♥ Newest results:    rmse=0.09792 (+/-0.0031)</span></a>
 <a class="sourceLine" id="cb23-154" data-line-number="154"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-155" data-line-number="155"><span class="co">#&gt; ── Iteration 13 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-155" data-line-number="155"><span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-156" data-line-number="156"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-157" data-line-number="157"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
 <a class="sourceLine" id="cb23-158" data-line-number="158"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -491,7 +491,7 @@
 <a class="sourceLine" id="cb23-164" data-line-number="164"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-165" data-line-number="165"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1019 (+/-0.00284)</span></a>
 <a class="sourceLine" id="cb23-166" data-line-number="166"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-167" data-line-number="167"><span class="co">#&gt; ── Iteration 14 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-167" data-line-number="167"><span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-168" data-line-number="168"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-169" data-line-number="169"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
 <a class="sourceLine" id="cb23-170" data-line-number="170"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -503,7 +503,7 @@
 <a class="sourceLine" id="cb23-176" data-line-number="176"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-177" data-line-number="177"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1045 (+/-0.00303)</span></a>
 <a class="sourceLine" id="cb23-178" data-line-number="178"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-179" data-line-number="179"><span class="co">#&gt; ── Iteration 15 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-179" data-line-number="179"><span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-180" data-line-number="180"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-181" data-line-number="181"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
 <a class="sourceLine" id="cb23-182" data-line-number="182"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -515,7 +515,7 @@
 <a class="sourceLine" id="cb23-188" data-line-number="188"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-189" data-line-number="189"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1062 (+/-0.0031)</span></a>
 <a class="sourceLine" id="cb23-190" data-line-number="190"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-191" data-line-number="191"><span class="co">#&gt; ── Iteration 16 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-191" data-line-number="191"><span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-192" data-line-number="192"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-193" data-line-number="193"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
 <a class="sourceLine" id="cb23-194" data-line-number="194"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -527,7 +527,7 @@
 <a class="sourceLine" id="cb23-200" data-line-number="200"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-201" data-line-number="201"><span class="co">#&gt; ♥ Newest results:    rmse=0.09703 (+/-0.00309)</span></a>
 <a class="sourceLine" id="cb23-202" data-line-number="202"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-203" data-line-number="203"><span class="co">#&gt; ── Iteration 17 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-203" data-line-number="203"><span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-204" data-line-number="204"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-205" data-line-number="205"><span class="co">#&gt; i Current best:      rmse=0.09703 (@iter 16)</span></a>
 <a class="sourceLine" id="cb23-206" data-line-number="206"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -539,7 +539,7 @@
 <a class="sourceLine" id="cb23-212" data-line-number="212"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-213" data-line-number="213"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09743 (+/-0.00298)</span></a>
 <a class="sourceLine" id="cb23-214" data-line-number="214"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-215" data-line-number="215"><span class="co">#&gt; ── Iteration 18 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-215" data-line-number="215"><span class="co">#&gt; ── Iteration 18 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-216" data-line-number="216"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-217" data-line-number="217"><span class="co">#&gt; i Current best:      rmse=0.09703 (@iter 16)</span></a>
 <a class="sourceLine" id="cb23-218" data-line-number="218"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -551,7 +551,7 @@
 <a class="sourceLine" id="cb23-224" data-line-number="224"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-225" data-line-number="225"><span class="co">#&gt; ♥ Newest results:    rmse=0.09694 (+/-0.00294)</span></a>
 <a class="sourceLine" id="cb23-226" data-line-number="226"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-227" data-line-number="227"><span class="co">#&gt; ── Iteration 19 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-227" data-line-number="227"><span class="co">#&gt; ── Iteration 19 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-228" data-line-number="228"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-229" data-line-number="229"><span class="co">#&gt; i Current best:      rmse=0.09694 (@iter 18)</span></a>
 <a class="sourceLine" id="cb23-230" data-line-number="230"><span class="co">#&gt; i Gaussian process model</span></a>
@@ -563,7 +563,7 @@
 <a class="sourceLine" id="cb23-236" data-line-number="236"><span class="co">#&gt; ✓ Estimating performance</span></a>
 <a class="sourceLine" id="cb23-237" data-line-number="237"><span class="co">#&gt; ♥ Newest results:    rmse=0.09669 (+/-0.003)</span></a>
 <a class="sourceLine" id="cb23-238" data-line-number="238"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-239" data-line-number="239"><span class="co">#&gt; ── Iteration 20 ────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb23-239" data-line-number="239"><span class="co">#&gt; ── Iteration 20 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-240" data-line-number="240"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-241" data-line-number="241"><span class="co">#&gt; i Current best:      rmse=0.09669 (@iter 19)</span></a>
 <a class="sourceLine" id="cb23-242" data-line-number="242"><span class="co">#&gt; i Gaussian process model</span></a>

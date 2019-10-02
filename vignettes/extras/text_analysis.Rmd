@@ -243,7 +243,7 @@ five_star_set <-
 
 This is passed to the search function via the `param_info` argument. 
 
-Finally, the initial rounds of search can be biased more towards exploration of the parameter space (as opposed to staying near the current best results). If expected improvement is used as the acquisition function, the trade-off value can be slowly moved from exploration to exploitation over iterations^[See the vignette on [acquisition functions]() for more details.]. `tune` has a built-in function called `expo_decay()` that can help accomplish this:
+Finally, the initial rounds of search can be biased more towards exploration of the parameter space (as opposed to staying near the current best results). If expected improvement is used as the acquisition function, the trade-off value can be slowly moved from exploration to exploitation over iterations^[See the vignette on [acquisition functions](../acquisition_functions.html) for more details.]. `tune` has a built-in function called `expo_decay()` that can help accomplish this:
  
 ```{r decay}
 trade_off_decay <- function(iter) {
@@ -308,7 +308,7 @@ extracted <-
 extracted
 ```
 
-One thing to realize here is that `tune_grid()` [may not fit all of the models]() that are evaluated. In this case, for each value of `mixture` and `num_terms`, the model is fit overall _all_ penalty values^[This is a feature of this particular model and is not generally true for other engines.]. To select the best parameter set, we can exclude the `penalty` column in `extracted`:
+One thing to realize here is that `tune_grid()` [may not fit all of the models](optimizations.html) that are evaluated. In this case, for each value of `mixture` and `num_terms`, the model is fit overall _all_ penalty values^[This is a feature of this particular model and is not generally true for other engines.]. To select the best parameter set, we can exclude the `penalty` column in `extracted`:
 
 
 ```{r select-best}

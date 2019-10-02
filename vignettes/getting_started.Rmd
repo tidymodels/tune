@@ -53,7 +53,7 @@ ames_train %>%
   facet_wrap(~ predictor, scales = "free_x")
 ```
 
-These two predictors could be modeled using [natural splines]() with a linear model. The amount of "wiggliness" in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a _tuning parameter_ (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values. 
+These two predictors could be modeled using [natural splines](https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac) with a linear model. The amount of "wiggliness" in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a _tuning parameter_ (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values. 
 
 We can tag these parameters for optimization using the `tune()` function: 
 
@@ -246,7 +246,7 @@ knn_param <-
   )
 ```
 
-Instead of using grid search, an iterative method called [Bayesian optimization]() can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate. 
+Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate. 
 
 ```{r bo}
 ctrl <- Bayes_control(verbose = TRUE)
