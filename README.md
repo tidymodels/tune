@@ -1,15 +1,15 @@
----
-output: github_document
----
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 
 # tune
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
+[![Travis build status](https://travis-ci.org/tidymodels/tune.svg?branch=master)](https://travis-ci.org/tidymodels/tune)
+[![Codecov test coverage](https://codecov.io/gh/tidymodels/tune/branch/master/graph/badge.svg)](https://codecov.io/gh/tidymodels/tune?branch=master)
+[![Azure pipelines build status](https://img.shields.io/azure-devops/build/tidymodels/tune/2)](https://dev.azure.com/tidymodels/tune/_build/latest?definitionId=1&branchName=master)
+[![Azure pipelines test status](https://img.shields.io/azure-devops/tests/tidymodels/tune/2?color=brightgreen&compact_message)](https://dev.azure.com/tidymodels/tune/_build/latest?definitionId=1&branchName=master)
+[![Azure pipelines coverage status](https://img.shields.io/azure-devops/coverage/tidymodels/tune/2)](https://dev.azure.com/tidymodels/tune/_build/latest?definitionId=1&branchName=master)
 <!-- badges: end -->
 
 The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on `recipes`, `parsnip`, and `dials`. 
@@ -24,13 +24,13 @@ devtools::install_github("tidymodels/tune")
 
 ## Examples
 
-There are a few package vignettes, the first being the _Getting Started_ document. Other examples resources:
+There are a few package vignettes, the first being the [_Getting Started_](https://tidymodels.github.io/tune/articles/getting_started.html) document. Other examples resources:
 
- - basic grid search
- - Bayesian optimization example
- - an advanced text mining example
- - notes on optimizations and parallel processing
- - details on acquisition function for scoring parameter combinations
+ - [basic grid search](https://tidymodels.github.io/tune/articles/grid.html)
+ - [Bayesian optimization example](https://tidymodels.github.io/tune/articles/extras/Classification.html)
+ - [an advanced text mining example](https://tidymodels.github.io/tune/articles/extras/text_analysis.html)
+ - [notes on optimizations and parallel processing](https://tidymodels.github.io/tune/articles/extras/optimizations.html)
+ - [details on acquisition function for scoring parameter combinations](https://tidymodels.github.io/tune/articles/acquisition_functions.html)
  
 ## Important Notes
 

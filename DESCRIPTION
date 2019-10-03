@@ -35,8 +35,7 @@ Suggests:
     covr,
     kernlab,
     glmnet,
-    xml2,
-    covr
+    xml2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
