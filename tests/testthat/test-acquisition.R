@@ -105,8 +105,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = 15),
     test_res %>%
       mutate(
-        objective = ((.mean - 15) * pnorm((.mean - 15)/.sd)) +
-          (.sd * dnorm((.mean - 15)/.sd))
+        diff = .mean - 15,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
@@ -114,8 +115,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(), test_res, maximize = FALSE, iter = 1, best = 15),
     test_res %>%
       mutate(
-        objective = ((15 - .mean) * pnorm((15 - .mean)/.sd)) +
-          (.sd * dnorm((15 - .mean)/.sd))
+        diff = 15 - .mean,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
@@ -124,8 +126,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(1), test_res, maximize = TRUE, iter = 1, best = 15),
     test_res %>%
       mutate(
-        objective = ((.mean - 16) * pnorm((.mean - 16)/.sd)) +
-          (.sd * dnorm((.mean - 16)/.sd))
+        diff = .mean - 16,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
@@ -133,8 +136,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(1), test_res, maximize = FALSE, iter = 1, best = 15),
     test_res %>%
       mutate(
-        objective = ((16 - .mean) * pnorm((16 - .mean)/.sd)) +
-          (.sd * dnorm((16 - .mean)/.sd))
+        diff = 16 - .mean,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
@@ -144,8 +148,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(dbled), test_res, maximize = TRUE, iter = 2, best = 15),
     test_res %>%
       mutate(
-        objective = ((.mean - 19) * pnorm((.mean - 19)/.sd)) +
-          (.sd * dnorm((.mean - 19)/.sd))
+        diff = .mean - 19,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
@@ -153,8 +158,9 @@ test_that('exp_improve calculations', {
     predict(exp_improve(dbled), test_res, maximize = FALSE, iter = 2, best = 15),
     test_res %>%
       mutate(
-        objective = ((19 - .mean) * pnorm((19 - .mean)/.sd)) +
-          (.sd * dnorm((19 - .mean)/.sd))
+        diff = 19 - .mean,
+        diff = ifelse(diff < 0, 0, diff),
+        objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
   )
