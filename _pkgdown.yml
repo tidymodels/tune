@@ -32,20 +32,20 @@ reference:
 
 navbar:
   left:
+  - text: Getting Started
+    href: articles/getting_started.html
   - text: "Articles"
     menu:
-    - text: Getting Started
-      href: articles/getting_started.html      
     - text: Grid Search
       href: articles/grid.html
     - text: Acquisition Functions
       href: articles/acquisition_functions.html
     - text: Bayesian Optimization of Classification Model
-      href: articles/extras/classification.html      
+      href: articles/extras/classification.html
     - text: Optimizations and Parallel Processing
       href: articles/extras/optimizations.html
     - text: Text Analysis Example
-      href: articles/extras/text_analysis.html      
+      href: articles/extras/text_analysis.html
   - text: Reference
     href: reference/index.html
   - text: News

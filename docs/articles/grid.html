@@ -46,6 +46,9 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="../articles/getting_started.html">Getting Started</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
@@ -54,9 +57,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/getting_started.html">Getting Started</a>
-    </li>
-    <li>
       <a href="../articles/grid.html">Grid Search</a>
     </li>
     <li>
@@ -115,7 +115,7 @@
 <pre><code>## 
 ##   0 
 ## 351</code></pre>
-<p>There’s no point of putting <code>V2</code> into any model since is is a zero-variance predictor. <code>V1</code> is not but it <em>could</em> be if the resampling process ends up sampling all of the same value. Is this an issue? I probably would be since the standard R formula infrastructure fails when this occurs:</p>
+<p>There’s no point of putting <code>V2</code> into any model since is is a zero-variance predictor. <code>V1</code> is not but it <em>could</em> be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when this there is only a single observed value:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Ionosphere, <span class="dt">family =</span> binomial)</a></code></pre></div>
 <pre><code>## Error in `contrasts&lt;-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]): contrasts can be applied only to factors with 2 or more levels</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Surprisingly, this doesn't help: </span></a>
@@ -142,7 +142,7 @@
 <a class="sourceLine" id="cb12-7" data-line-number="7"><span class="st">  </span><span class="co"># Scale it the same as the others</span></a>
 <a class="sourceLine" id="cb12-8" data-line-number="8"><span class="st">  </span><span class="kw">step_range</span>(<span class="kw">matches</span>(<span class="st">"V1_"</span>))</a></code></pre></div>
 <p>The only other required item for tuning is a resampling strategy as defined by an <code>rsample</code> object. Let’s demonstrate using basic bootstrapping:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">443</span>)</a>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">4943</span>)</a>
 <a class="sourceLine" id="cb13-2" data-line-number="2">iono_rs &lt;-<span class="st"> </span><span class="kw">bootstraps</span>(Ionosphere, <span class="dt">times =</span> <span class="dv">30</span>)</a></code></pre></div>
 </div>
 <div id="optional-inputs" class="section level2">
@@ -150,7 +150,7 @@
 <a href="#optional-inputs" class="anchor"></a>Optional Inputs</h2>
 <p>An <em>optional</em> step for model tuning is to specify what metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likleihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a <code>yardstick</code> function can be used to create a metric set:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">roc_vals &lt;-<span class="st"> </span><span class="kw">metric_set</span>(roc_auc)</a></code></pre></div>
-<p>If no grid or parameters is provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.</p>
+<p>If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.</p>
 <p>Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/grid_control.html">grid_control</a></span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
@@ -158,23 +158,23 @@
 <h2 class="hasAnchor">
 <a href="#executing-the-grid-using-a-formula" class="anchor"></a>Executing the Grid Using a Formula</h2>
 <p>First, the formula interface will be used:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">325</span>)</a>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">35</span>)</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">grid_form &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">model =</span> svm_mod, <span class="dt">rs =</span> iono_rs, <span class="dt">perf =</span> roc_vals, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">grid_form</a></code></pre></div>
 <pre><code>## # Bootstrap sampling 
 ## # A tibble: 30 x 3
 ##    splits            id          .metrics         
 ##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
-##  1 &lt;split [351/126]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
-##  2 &lt;split [351/127]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
-##  3 &lt;split [351/128]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
-##  4 &lt;split [351/132]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
-##  5 &lt;split [351/143]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
-##  6 &lt;split [351/116]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
-##  7 &lt;split [351/124]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
-##  8 &lt;split [351/138]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
-##  9 &lt;split [351/134]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
-## 10 &lt;split [351/127]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
+##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
+##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
+##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
+##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
+##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
+##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
+##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
+##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
+##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
+## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The <code>.metrics</code> column contains tibbles of the performance metrics for each tuning parameter combinations:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">grid_form <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(.metrics) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="dv">1</span>)</a></code></pre></div>
@@ -182,40 +182,40 @@
 ## # A tibble: 10 x 5
 ##        cost rbf_sigma .metric .estimator .estimate
 ##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-##  1  0.00296  3.83e- 6 roc_auc binary         0.897
-##  2  9.39     2.28e-10 roc_auc binary         0.816
-##  3  0.385    2.76e- 2 roc_auc binary         0.985
-##  4 15.6      1.82e- 1 roc_auc binary         1    
-##  5  1.61     3.64e- 8 roc_auc binary         0.897
-##  6  0.143    2.43e- 3 roc_auc binary         0.943
-##  7  0.841    6.91e- 4 roc_auc binary         0.914
-##  8  0.0499   3.35e- 5 roc_auc binary         0.897
-##  9  0.0220   8.29e- 9 roc_auc binary         0.895
-## 10  0.00198  4.24e- 7 roc_auc binary         0.896</code></pre>
+##  1  0.00849  1.11e-10 roc_auc binary         0.872
+##  2  0.176    7.28e- 8 roc_auc binary         0.907
+##  3 14.9      3.93e- 4 roc_auc binary         0.942
+##  4  5.51     2.10e- 3 roc_auc binary         0.966
+##  5  1.87     3.53e- 7 roc_auc binary         0.906
+##  6  0.00719  1.45e- 5 roc_auc binary         0.908
+##  7  0.00114  8.41e- 2 roc_auc binary         0.985
+##  8  0.950    1.74e- 1 roc_auc binary         1    
+##  9  0.189    3.13e- 6 roc_auc binary         0.906
+## 10  0.0364   4.96e- 9 roc_auc binary         0.909</code></pre>
 <p>To get the final resampling estimates, the <code>summarize</code> function can be used on the grid object:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(grid_form)</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">estimates</a></code></pre></div>
 <pre><code>## # A tibble: 10 x 7
-##        cost rbf_sigma .metric .estimator  mean     n std_err
-##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-##  1  0.00198  4.24e- 7 roc_auc binary     0.913    30 0.00467
-##  2  0.00296  3.83e- 6 roc_auc binary     0.914    30 0.00463
-##  3  0.0220   8.29e- 9 roc_auc binary     0.910    30 0.00469
-##  4  0.0499   3.35e- 5 roc_auc binary     0.915    30 0.00462
-##  5  0.143    2.43e- 3 roc_auc binary     0.956    30 0.00307
-##  6  0.385    2.76e- 2 roc_auc binary     0.986    30 0.00143
-##  7  0.841    6.91e- 4 roc_auc binary     0.932    30 0.00403
-##  8  1.61     3.64e- 8 roc_auc binary     0.915    30 0.00462
-##  9  9.39     2.28e-10 roc_auc binary     0.788    30 0.00603
-## 10 15.6      1.82e- 1 roc_auc binary     1        30 0</code></pre>
+##        cost rbf_sigma .metric .estimator  mean     n  std_err
+##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
+##  1  0.00114  8.41e- 2 roc_auc binary     0.982    30 0.00204 
+##  2  0.00719  1.45e- 5 roc_auc binary     0.919    30 0.00402 
+##  3  0.00849  1.11e-10 roc_auc binary     0.890    30 0.00486 
+##  4  0.0364   4.96e- 9 roc_auc binary     0.919    30 0.00387 
+##  5  0.176    7.28e- 8 roc_auc binary     0.917    30 0.00407 
+##  6  0.189    3.13e- 6 roc_auc binary     0.918    30 0.00411 
+##  7  0.950    1.74e- 1 roc_auc binary     0.995    30 0.000883
+##  8  1.87     3.53e- 7 roc_auc binary     0.918    30 0.00411 
+##  9  5.51     2.10e- 3 roc_auc binary     0.980    30 0.00177 
+## 10 14.9      3.93e- 4 roc_auc binary     0.959    30 0.00284</code></pre>
 <p>The best combination was:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">estimates <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 7
-##    cost rbf_sigma .metric .estimator  mean     n std_err
-##   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-## 1  15.6     0.182 roc_auc binary         1    30       0</code></pre>
+##    cost rbf_sigma .metric .estimator  mean     n  std_err
+##   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
+## 1 0.950     0.174 roc_auc binary     0.995    30 0.000883</code></pre>
 </div>
 <div id="executing-the-grid-using-a-recipe" class="section level2">
 <h2 class="hasAnchor">
@@ -228,16 +228,16 @@
 ## # A tibble: 30 x 3
 ##    splits            id          .metrics         
 ##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
-##  1 &lt;split [351/126]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
-##  2 &lt;split [351/127]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
-##  3 &lt;split [351/128]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
-##  4 &lt;split [351/132]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
-##  5 &lt;split [351/143]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
-##  6 &lt;split [351/116]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
-##  7 &lt;split [351/124]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
-##  8 &lt;split [351/138]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
-##  9 &lt;split [351/134]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
-## 10 &lt;split [351/127]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
+##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
+##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
+##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
+##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
+##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
+##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
+##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
+##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
+##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
+## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The best setting here was:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(rec_form) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -246,7 +246,7 @@
 <pre><code>## # A tibble: 1 x 7
 ##    cost rbf_sigma .metric .estimator  mean     n std_err
 ##   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-## 1  15.6     0.182 roc_auc binary     0.984    30 0.00177</code></pre>
+## 1  15.6     0.182 roc_auc binary     0.981    30 0.00215</code></pre>
 </div>
   </div>
 

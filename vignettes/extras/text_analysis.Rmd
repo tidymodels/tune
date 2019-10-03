@@ -19,11 +19,13 @@ library(tidymodels)
 library(tune)
 library(textrecipes)
 library(textfeatures)
-
-theme_set(theme_bw())
-
 library(doMC)
 registerDoMC(cores = 10)
+
+data("small_fine_foods")
+num_prod <- length(unique(training_data$product))
+
+theme_set(theme_bw())
 ```
 
 This advanced example shows how to process text data with recipes and use them in a predictive model. It also has an example of extracting information from each model fit for later use. 
@@ -32,7 +34,7 @@ The data are from Amazon:
 
 > "This dataset consists of reviews of fine foods from amazon. The data span a period of more than 10 years, including all ~500,000 reviews up to October 2012. Reviews include product and user information, ratings, and a plaintext review."
 
-A small subset of the data are contained here and are split into a training and test set. The training set sampled 15 products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.
+A small subset of the data are contained here and are split into a training and test set. The training set sampled `r num_prod` products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.
 
 There is a column for the product, a column for the text of the review, and a factor column for a class variable. The outcome is whether the reviewer game the product a five-star rating or not.
 
@@ -152,9 +154,9 @@ A regular grid is used. For `glmnet` models, evaluating penalty values is fairly
 ```{r grid}
 five_star_grid <- 
   expand.grid(
-    penalty = 10^seq(-3, 1, length = 20),
+    penalty = 10^seq(-3, 0, length = 20),
     mixture = seq(0, 1, length = 5),
-    num_terms = 2^seq(5, 10, by = 1)
+    num_terms = 2^(8:10)
   )
 ```
 
@@ -198,7 +200,7 @@ What was the relationship between performance and the tuning parameters?
 ```{r grid-plot}
 ggplot(grid_roc, aes(x = penalty, y = mean, col = factor(mixture), group = factor(mixture))) +
   facet_wrap(~ num_terms) +
-  geom_point() + 
+  geom_point(cex = 1) + 
   geom_line() +
   scale_x_log10() + 
   theme(legend.position = "top")
@@ -220,7 +222,7 @@ Let's pretend that we haven't seen the grid search results. We'll initialize the
 It might be good to use a custom `dials` object for the number of hash terms. The default object, `num_terms()`, uses a linear range and tries to set the upper bound of the parameter using the data. Instead, let's create a parameter set, change the scale to be log2, and define the same range as was used in grid search. 
 
 ```{r hash-range}
-hash_range <- num_terms(c(5, 10), trans = log2_trans())
+hash_range <- num_terms(c(8, 10), trans = log2_trans())
 ```
 
 To use this, we have to merge the recipe and `parsnip` model object into a workflow:
@@ -238,7 +240,7 @@ Then we can extract and manipulate the corresponding parameter set:
 five_star_set <-
   five_star_wflow %>%
   param_set() %>%
-  update(num_terms = hash_range)
+  update(num_terms = hash_range, penalty = penalty(c(-3, 0)))
 ```
 
 This is passed to the search function via the `param_info` argument. 
@@ -247,28 +249,28 @@ Finally, the initial rounds of search can be biased more towards exploration of 
  
 ```{r decay}
 trade_off_decay <- function(iter) {
-  expo_decay(iter, start_val = .1, limit_val = 0, slope = 1/2)
+  expo_decay(iter, start_val = .01, limit_val = 0, slope = 1/4)
 }
 ```
 
 Using these values, let's run the search:
 
 ```{r search, cache = TRUE}
-set.seed(81)
+set.seed(12)
 five_star_search <-
   tune_Bayes(
     five_star_wflow, 
     rs = folds,
     param_info = five_star_set,
     initial = 5,
-    iter = 20,
+    iter = 30,
     perf = roc_scores,
     objective = exp_improve(trade_off_decay),
     control = Bayes_control(verbose = TRUE)
   )
 ```
 
-The results here are not bad. The reason that so many settings are sub-optimal is that, as shown in the figure above, there are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge^[Sorry, pun intended.] where good performance can be achieved. Using more iterations would probably result in the search finding better results. 
+The results here are not bad but also not spectacular either. The issue is that so many settings are sub-optimal, as shown in the figure above. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge^[Sorry, pun intended.] where good performance can be achieved. Using more iterations would probably result in the search finding better results. 
 
 A plot of model performance versus the search iterations:
 
@@ -334,7 +336,7 @@ Let's look at a plot of these results (per resample):
 
 ```{r var-plot}
 ggplot(extracted, aes(x = penalty, y = num_vars)) + 
-  geom_line(aes(group = id), alpha = .1) + 
+  geom_line(aes(group = id, col = id), alpha = .1) + 
   ylab("Number of retained predictors") + 
   scale_x_log10()  + 
   ggtitle(paste("mixture = ", params$mixture, "and", params$num_terms, "features"))

@@ -22,7 +22,7 @@ theme_set(theme_bw())
 
 ## Introduction 
 
-The `tune` package helps optimize the modeling process. Users can _tag_ arguments in recipes and model objects for optimization. The search routines in `tune` can discover these arguments and test candidate values until a combination with good performance is found. 
+The `tune` package helps optimize the modeling process. Users can _tag_ arguments in recipes and model objects for optimization. The search routines in `tune` can discover these arguments and evaluate candidate values until a combination with good performance is found. 
 
 As an example, let's model the Ames housing data:
 
@@ -53,7 +53,7 @@ ames_train %>%
   facet_wrap(~ predictor, scales = "free_x")
 ```
 
-These two predictors could be modeled using [natural splines](https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac) with a linear model. The amount of "wiggliness" in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a _tuning parameter_ (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values. 
+These two predictors could be modeled using [natural splines](https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac) in conjunction with a linear model. The amount of "wiggliness" in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a _tuning parameter_ (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values. 
 
 We can tag these parameters for optimization using the `tune()` function: 
 
@@ -66,9 +66,9 @@ ames_rec <-
 
 The package can detect these values and optimize them. 
 
-However, based on the plot above, the potential non-linear relationship between the sale price and the might be different. The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that. 
+However, based on the plot above, the potential _amount_ non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude.  The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.  
 
-Individual `step_ns()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
+To accomplish this, individual `step_ns()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
 
 `tune()` has an option to provide a text annotation so that each tuning parameter has a unique identifier:
 
@@ -80,7 +80,7 @@ ames_rec <-
   step_ns(Latitude,  deg_free = tune("lat df"))
 ```
 
-The `dials` package has a function called `param_set()` that can detect and collect the parameters flagged for tuning:
+The `dials` package has a function called `param_set()` that can detect and collect the parameters that have been flagged for tuning:
 
 ```{r p-set}
 param_set(ames_rec)
@@ -113,15 +113,14 @@ ames_param
 
 ## Grid Search
 
-Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the "id" column above. You could use one of the `dials` functions `grid_*`:
+Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the "id" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
 
 ```{r sf-grid}
-# A space-filling design:
 spline_grid <- grid_max_entropy(ames_param, size = 10)
 spline_grid
 ```
 
-Alternately, `expand.grid()` also works:
+Alternately, `expand.grid()` also works to create a regular grid:
 
 ```{r grid}
 df_vals <- seq(2, 18, by = 2)
@@ -131,7 +130,9 @@ spline_grid <- expand.grid(`long df` = df_vals, `lat df` = df_vals)
 
 Note that a 2 degree of freedom model is a simple quadratic fit. 
 
-There are two other ingredients that are needed. First, is a model specification. Using `parsnip`, a basic linear model can be used:
+There are two other ingredients that are required before tuning. 
+
+First, is a model specification. Using `parsnip`, a basic linear model can be used:
 
 ```{r mod}
 lm_mod <- linear_reg() %>% set_engine("lm")
@@ -146,13 +147,13 @@ set.seed(2453)
 cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 ```
 
-Using these objects, `tune_grid()` can be used:
+Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `log10(Sale_Price) ~ Longitude + Latitude`. A recipe is not required.]:
 
-```{r grid-search}
+```{r grid-search, cache = TRUE}
 ames_res <- tune_grid(ames_rec, model = lm_mod, rs = cv_splits, grid = spline_grid)
 ```
 
-The object is similar to the `rsample` object but with some extra columns:
+The object is similar to the `rsample` object but with one or more extra columns:
 
 ```{r res}
 ames_res
@@ -193,7 +194,9 @@ rmse_vals %>%
   ylab("Mean RMSE")
 ```
 
-Interestingly, latitude does _not_ like any degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? Let's plot these along with a value that did poorly: 
+Interestingly, latitude does _not_ do well with degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? 
+
+Let's plot these spline functions over the data for booth good and bad values of `deg_free`:  
 
 ```{r final-vals}
 ames_train %>% 
@@ -208,7 +211,7 @@ ames_train %>%
   facet_wrap(~ predictor, scales = "free_x")
 ```
 
-Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would results in poor RMSE values when computed on the hold-out data. 
+Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would result in poor RMSE values when computed on the hold-out data. 
 
 Based on these results, a new recipe would be created with the optimized values (using the entire training set) and this would be combined with a linear model created form the entire training set. 
 
@@ -248,7 +251,7 @@ knn_param <-
 
 Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate. 
 
-```{r bo}
+```{r bo, cache = TRUE}
 ctrl <- Bayes_control(verbose = TRUE)
 set.seed(8154)
 knn_search <- tune_Bayes(knn_wflow, rs = cv_splits, initial = 5, iter = 20,

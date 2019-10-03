@@ -10,9 +10,6 @@ output: github_document
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
-[![Azure pipelines build status](https://img.shields.io/azure-devops/build/topepo/tune/2)](https://dev.azure.com/topepo/tune/_build/latest?definitionId=1&branchName=master)
-[![Azure pipelines test status](https://img.shields.io/azure-devops/tests/topepo/tune/2?color=brightgreen&compact_message)](https://dev.azure.com/topepo/tune/_build/latest?definitionId=1&branchName=master)
-[![Azure pipelines coverage status](https://img.shields.io/azure-devops/coverage/topepo/tune/2)](https://dev.azure.com/topepo/tune/_build/latest?definitionId=1&branchName=master)
 <!-- badges: end -->
 
 The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on `recipes`, `parsnip`, and `dials`. 

@@ -18,7 +18,7 @@ library(tune)
 
 ## Sub-model speed-ups
 
-For some types of models, such as boosted models or regularized models, the number of models that are actually _fit_ can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This "sub-model trick" can greatly speed up the training time for many models (e.g. see the example in the `caret` documentation). 
+For some types of models, such as boosted models or regularized models, the number of models that are actually _fit_ can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This "sub-model trick" can greatly speed up the training time for many models (e.g. see [this example](https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost) in the `caret` documentation). 
 
 In order to know what models allow this, the `parsnip` package contains a `multi_predict()` function that enables this feature. Printing the S3 methods for it lists the possible models:
 
@@ -60,7 +60,7 @@ grid <-
 grid 
 ```
 
-To evaluate these `r nrow(grid)` candidate models, we would have to recompute the same recipe 70 times (per resample). Since Isomap is expensive, this is really inefficient. 
+To evaluate these `r nrow(grid)` candidate models, we would have to recompute the same recipe 69 additional times (per resample). Since Isomap is expensive, this is really inefficient. 
 
 `tune_grid()` determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:
 
@@ -109,13 +109,13 @@ plan(cluster, workers = cl)
 
 One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking _tends_ to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the `pkg` option in `control_grid()`. 
 
-Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run in a worker process. For example:
+Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:
 
 ```{r par-tip, eval = FALSE}
 num_pcs <- 3
 
 recipe(Species ~ ., data = iris) %>% 
-  # Bad since num_pcs might not be found in a worker
+  # Bad since num_pcs might not be found by a worker process
   step_pca(all_predictors(), num_comp = num_pcs)
 
 recipe(Species ~ ., data = iris) %>% 

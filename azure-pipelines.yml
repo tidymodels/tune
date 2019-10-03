@@ -8,7 +8,7 @@ resources:
     - repository: r-azure-pipelines
       type: github
       name: r-lib/r-azure-pipelines
-      endpoint: topepo
+      endpoint: tidymodels
 
 jobs:
   - job: 'Linux'

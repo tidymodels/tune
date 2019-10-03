@@ -46,6 +46,9 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="../articles/getting_started.html">Getting Started</a>
+</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
@@ -54,9 +57,6 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/getting_started.html">Getting Started</a>
-    </li>
-    <li>
       <a href="../articles/grid.html">Grid Search</a>
     </li>
     <li>
@@ -106,7 +106,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The <code>tune</code> package helps optimize the modeling process. Users can <em>tag</em> arguments in recipes and model objects for optimization. The search routines in <code>tune</code> can discover these arguments and test candidate values until a combination with good performance is found.</p>
+<p>The <code>tune</code> package helps optimize the modeling process. Users can <em>tag</em> arguments in recipes and model objects for optimization. The search routines in <code>tune</code> can discover these arguments and evaluate candidate values until a combination with good performance is found.</p>
 <p>As an example, let’s model the Ames housing data:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
@@ -130,22 +130,22 @@
 <a class="sourceLine" id="cb2-9" data-line-number="9"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>predictor, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; `geom_smooth()` using method = 'gam' and formula 'y ~ s(x, bs = "cs")'</span></a></code></pre></div>
 <p><img src="getting_started_files/figure-html/geo-plots-1.png" width="768"></p>
-<p>These two predictors could be modeled using <a href="https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac">natural splines</a> with a linear model. The amount of “wiggliness” in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a <em>tuning parameter</em> (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values.</p>
+<p>These two predictors could be modeled using <a href="https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac">natural splines</a> in conjunction with a linear model. The amount of “wiggliness” in these splines is determined by the degrees of freedom. An appropriate value of this parameter cannot be analytically determined from the data, so it is a <em>tuning parameter</em> (a.k.a. a hyper-parameter). A common approach is to use resampling to estimate model performance over different values of these parameters and use these results to set reasonable values.</p>
 <p>We can tag these parameters for optimization using the <code><a href="../reference/tune.html">tune()</a></code> function:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ames_rec &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">recipe</span>(Sale_Price <span class="op">~</span><span class="st"> </span>Longitude <span class="op">+</span><span class="st"> </span>Latitude, <span class="dt">data =</span> ames_train) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">step_log</span>(Sale_Price, <span class="dt">base =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw">step_ns</span>(Longitude, Latitude, <span class="dt">deg_free =</span> <span class="kw"><a href="../reference/tune.html">tune</a></span>())</a></code></pre></div>
 <p>The package can detect these values and optimize them.</p>
-<p>However, based on the plot above, the potential non-linear relationship between the sale price and the might be different. The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.</p>
-<p>Individual <code>step_ns()</code> terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can’t tell the difference between the two <code>deg_free</code> parameters.</p>
+<p>However, based on the plot above, the potential <em>amount</em> non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude. The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.</p>
+<p>To accomplish this, individual <code>step_ns()</code> terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can’t tell the difference between the two <code>deg_free</code> parameters.</p>
 <p><code><a href="../reference/tune.html">tune()</a></code> has an option to provide a text annotation so that each tuning parameter has a unique identifier:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">ames_rec &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span><span class="kw">recipe</span>(Sale_Price <span class="op">~</span><span class="st"> </span>Longitude <span class="op">+</span><span class="st"> </span>Latitude, <span class="dt">data =</span> ames_train) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw">step_log</span>(Sale_Price, <span class="dt">base =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw">step_ns</span>(Longitude, <span class="dt">deg_free =</span> <span class="kw"><a href="../reference/tune.html">tune</a></span>(<span class="st">"long df"</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw">step_ns</span>(Latitude,  <span class="dt">deg_free =</span> <span class="kw"><a href="../reference/tune.html">tune</a></span>(<span class="st">"lat df"</span>))</a></code></pre></div>
-<p>The <code>dials</code> package has a function called <code><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set()</a></code> that can detect and collect the parameters flagged for tuning:</p>
+<p>The <code>dials</code> package has a function called <code><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>(ames_rec)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Collection of 2 parameters for tuning</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; </span></a>
@@ -178,37 +178,37 @@
 <div id="grid-search" class="section level2">
 <h2 class="hasAnchor">
 <a href="#grid-search" class="anchor"></a>Grid Search</h2>
-<p>Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the “id” column above. You could use one of the <code>dials</code> functions <code>grid_*</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co"># A space-filling design:</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">spline_grid &lt;-<span class="st"> </span><span class="kw">grid_max_entropy</span>(ames_param, <span class="dt">size =</span> <span class="dv">10</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3">spline_grid</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;    `long df` `lat df`</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;        &lt;int&gt;    &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt;  1         3        9</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;  2         5        7</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;  3         6       10</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;  4         8        6</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;  5         8        3</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;  6         8        8</span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;  7        10        7</span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;  8         4        6</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt;  9         5        3</span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; 10         9       10</span></a></code></pre></div>
-<p>Alternately, <code><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid()</a></code> also works:</p>
+<p>Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the “id” column above. There are several <code>dials</code> functions to created grids (named <code>grid_*</code>). For example, a space-filling design can be created by:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">spline_grid &lt;-<span class="st"> </span><span class="kw">grid_max_entropy</span>(ames_param, <span class="dt">size =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">spline_grid</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; # A tibble: 10 x 2</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt;    `long df` `lat df`</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;        &lt;int&gt;    &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;  1         3        9</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt;  2         5        7</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;  3         6       10</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;  4         8        6</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;  5         8        3</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;  6         8        8</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;  7        10        7</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;  8         4        6</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;  9         5        3</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 10         9       10</span></a></code></pre></div>
+<p>Alternately, <code><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid()</a></code> also works to create a regular grid:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">df_vals &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">2</span>, <span class="dv">18</span>, <span class="dt">by =</span> <span class="dv">2</span>)</a>
 <a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co"># A regular grid:</span></a>
 <a class="sourceLine" id="cb10-3" data-line-number="3">spline_grid &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span>(<span class="st">`</span><span class="dt">long df</span><span class="st">`</span> =<span class="st"> </span>df_vals, <span class="st">`</span><span class="dt">lat df</span><span class="st">`</span> =<span class="st"> </span>df_vals)</a></code></pre></div>
 <p>Note that a 2 degree of freedom model is a simple quadratic fit.</p>
-<p>There are two other ingredients that are needed. First, is a model specification. Using <code>parsnip</code>, a basic linear model can be used:</p>
+<p>There are two other ingredients that are required before tuning.</p>
+<p>First, is a model specification. Using <code>parsnip</code>, a basic linear model can be used:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">lm_mod &lt;-<span class="st"> </span><span class="kw">linear_reg</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">set_engine</span>(<span class="st">"lm"</span>)</a></code></pre></div>
 <p>No tuning parameters here.</p>
 <p>We also need a resampling specification. The Ames data set are large enough to use simple 10-fold cross-validation:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">2453</span>)</a>
 <a class="sourceLine" id="cb12-2" data-line-number="2">cv_splits &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(ames_train, <span class="dt">v =</span> <span class="dv">10</span>, <span class="dt">strata =</span> <span class="st">"Sale_Price"</span>)</a></code></pre></div>
-<p>Using these objects, <code><a href="../reference/tune_grid.html">tune_grid()</a></code> can be used:</p>
+<p>Using these objects, <code><a href="../reference/tune_grid.html">tune_grid()</a></code> can be used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">ames_res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(ames_rec, <span class="dt">model =</span> lm_mod, <span class="dt">rs =</span> cv_splits, <span class="dt">grid =</span> spline_grid)</a></code></pre></div>
-<p>The object is similar to the <code>rsample</code> object but with some extra columns:</p>
+<p>The object is similar to the <code>rsample</code> object but with one or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">ames_res</a>
 <a class="sourceLine" id="cb14-2" data-line-number="2"><span class="co">#&gt; #  10-fold cross-validation using stratification </span></a>
 <a class="sourceLine" id="cb14-3" data-line-number="3"><span class="co">#&gt; # A tibble: 10 x 3</span></a>
@@ -224,7 +224,7 @@
 <a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt;  8 &lt;split [2K/220]&gt; Fold08 &lt;tibble [162 × 5]&gt;</span></a>
 <a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt;  9 &lt;split [2K/220]&gt; Fold09 &lt;tibble [162 × 5]&gt;</span></a>
 <a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt; 10 &lt;split [2K/218]&gt; Fold10 &lt;tibble [162 × 5]&gt;</span></a></code></pre></div>
-<p>The <code>.metrics</code> column has all of the holdout performance estimates<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> for each parameter combination:</p>
+<p>The <code>.metrics</code> column has all of the holdout performance estimates<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for each parameter combination:</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">ames_res<span class="op">$</span>.metrics[[<span class="dv">1</span>]]</a>
 <a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co">#&gt; # A tibble: 162 x 5</span></a>
 <a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate</span></a>
@@ -286,7 +286,8 @@
 <a class="sourceLine" id="cb18-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb18-7" data-line-number="7"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">"Mean RMSE"</span>)</a></code></pre></div>
 <p><img src="getting_started_files/figure-html/rmse-tile-1.png" width="768"></p>
-<p>Interestingly, latitude does <em>not</em> like any degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? Let’s plot these along with a value that did poorly:</p>
+<p>Interestingly, latitude does <em>not</em> do well with degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom?</p>
+<p>Let’s plot these spline functions over the data for booth good and bad values of <code>deg_free</code>:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">ames_train <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb19-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(Sale_Price, Longitude, Latitude) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb19-3" data-line-number="3"><span class="st">  </span>tidyr<span class="op">::</span><span class="kw"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span>(<span class="dt">cols =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(Longitude, Latitude), </a>
@@ -298,7 +299,7 @@
 <a class="sourceLine" id="cb19-9" data-line-number="9"><span class="st">  </span><span class="kw">scale_y_log10</span>() <span class="op">+</span></a>
 <a class="sourceLine" id="cb19-10" data-line-number="10"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>predictor, <span class="dt">scales =</span> <span class="st">"free_x"</span>)</a></code></pre></div>
 <p><img src="getting_started_files/figure-html/final-vals-1.png" width="768"></p>
-<p>Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would results in poor RMSE values when computed on the hold-out data.</p>
+<p>Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would result in poor RMSE values when computed on the hold-out data.</p>
 <p>Based on these results, a new recipe would be created with the optimized values (using the entire training set) and this would be combined with a linear model created form the entire training set.</p>
 </div>
 <div id="model-optimization" class="section level2">
@@ -314,7 +315,7 @@
 <a class="sourceLine" id="cb21-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb21-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/workflow.html">add_model</a></span>(knn_mod) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb21-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/workflow.html">add_recipe</a></span>(ames_rec)</a></code></pre></div>
-<p>From this, the parameter set can be used to modify the range and values of parameters being optimized<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>:</p>
+<p>From this, the parameter set can be used to modify the range and values of parameters being optimized<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">knn_param &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">  </span>knn_wflow <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -342,10 +343,10 @@
 <a class="sourceLine" id="cb23-15" data-line-number="15"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-16" data-line-number="16"><span class="co">#&gt; i Generating 4658 candidates</span></a>
 <a class="sourceLine" id="cb23-17" data-line-number="17"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-18" data-line-number="18"><span class="co">#&gt; i neighbors=15, weight_func=gaussian, long df=2, lat df=11</span></a>
+<a class="sourceLine" id="cb23-18" data-line-number="18"><span class="co">#&gt; i neighbors=5, weight_func=rectangular, long df=18, lat df=10</span></a>
 <a class="sourceLine" id="cb23-19" data-line-number="19"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-20" data-line-number="20"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-21" data-line-number="21"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1069 (+/-0.00319)</span></a>
+<a class="sourceLine" id="cb23-21" data-line-number="21"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09998 (+/-0.00331)</span></a>
 <a class="sourceLine" id="cb23-22" data-line-number="22"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-23" data-line-number="23"><span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-24" data-line-number="24"><span class="co">#&gt; </span></a>
@@ -354,226 +355,132 @@
 <a class="sourceLine" id="cb23-27" data-line-number="27"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-28" data-line-number="28"><span class="co">#&gt; i Generating 4685 candidates</span></a>
 <a class="sourceLine" id="cb23-29" data-line-number="29"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-30" data-line-number="30"><span class="co">#&gt; i neighbors=3, weight_func=gaussian, long df=18, lat df=5</span></a>
+<a class="sourceLine" id="cb23-30" data-line-number="30"><span class="co">#&gt; i neighbors=12, weight_func=inv, long df=16, lat df=18</span></a>
 <a class="sourceLine" id="cb23-31" data-line-number="31"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-32" data-line-number="32"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-33" data-line-number="33"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1023 (+/-0.00298)</span></a>
+<a class="sourceLine" id="cb23-33" data-line-number="33"><span class="co">#&gt; ♥ Newest results:    rmse=0.09799 (+/-0.00326)</span></a>
 <a class="sourceLine" id="cb23-34" data-line-number="34"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-35" data-line-number="35"><span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-36" data-line-number="36"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-37" data-line-number="37"><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></a>
+<a class="sourceLine" id="cb23-37" data-line-number="37"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-38" data-line-number="38"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-39" data-line-number="39"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-40" data-line-number="40"><span class="co">#&gt; i Generating 4694 candidates</span></a>
 <a class="sourceLine" id="cb23-41" data-line-number="41"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-42" data-line-number="42"><span class="co">#&gt; i neighbors=24, weight_func=inv, long df=18, lat df=18</span></a>
+<a class="sourceLine" id="cb23-42" data-line-number="42"><span class="co">#&gt; i neighbors=6, weight_func=gaussian, long df=18, lat df=17</span></a>
 <a class="sourceLine" id="cb23-43" data-line-number="43"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-44" data-line-number="44"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-45" data-line-number="45"><span class="co">#&gt; ♥ Newest results:    rmse=0.09818 (+/-0.00316)</span></a>
+<a class="sourceLine" id="cb23-45" data-line-number="45"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09841 (+/-0.00308)</span></a>
 <a class="sourceLine" id="cb23-46" data-line-number="46"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-47" data-line-number="47"><span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-48" data-line-number="48"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-49" data-line-number="49"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-49" data-line-number="49"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-50" data-line-number="50"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-51" data-line-number="51"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-52" data-line-number="52"><span class="co">#&gt; i Generating 4703 candidates</span></a>
 <a class="sourceLine" id="cb23-53" data-line-number="53"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-54" data-line-number="54"><span class="co">#&gt; i neighbors=3, weight_func=gaussian, long df=17, lat df=14</span></a>
+<a class="sourceLine" id="cb23-54" data-line-number="54"><span class="co">#&gt; i neighbors=4, weight_func=inv, long df=5, lat df=2</span></a>
 <a class="sourceLine" id="cb23-55" data-line-number="55"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-56" data-line-number="56"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-57" data-line-number="57"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1009 (+/-0.00279)</span></a>
+<a class="sourceLine" id="cb23-57" data-line-number="57"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1003 (+/-0.0028)</span></a>
 <a class="sourceLine" id="cb23-58" data-line-number="58"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-59" data-line-number="59"><span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-60" data-line-number="60"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-61" data-line-number="61"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-61" data-line-number="61"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-62" data-line-number="62"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-63" data-line-number="63"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-64" data-line-number="64"><span class="co">#&gt; i Generating 4686 candidates</span></a>
 <a class="sourceLine" id="cb23-65" data-line-number="65"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-66" data-line-number="66"><span class="co">#&gt; i neighbors=18, weight_func=inv, long df=14, lat df=18</span></a>
+<a class="sourceLine" id="cb23-66" data-line-number="66"><span class="co">#&gt; i neighbors=50, weight_func=inv, long df=18, lat df=14</span></a>
 <a class="sourceLine" id="cb23-67" data-line-number="67"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-68" data-line-number="68"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-69" data-line-number="69"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09842 (+/-0.0035)</span></a>
+<a class="sourceLine" id="cb23-69" data-line-number="69"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1025 (+/-0.00311)</span></a>
 <a class="sourceLine" id="cb23-70" data-line-number="70"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-71" data-line-number="71"><span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-72" data-line-number="72"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-73" data-line-number="73"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-73" data-line-number="73"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-74" data-line-number="74"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-75" data-line-number="75"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-76" data-line-number="76"><span class="co">#&gt; i Generating 4684 candidates</span></a>
 <a class="sourceLine" id="cb23-77" data-line-number="77"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-78" data-line-number="78"><span class="co">#&gt; i neighbors=48, weight_func=gaussian, long df=18, lat df=15</span></a>
+<a class="sourceLine" id="cb23-78" data-line-number="78"><span class="co">#&gt; i neighbors=5, weight_func=rectangular, long df=2, lat df=18</span></a>
 <a class="sourceLine" id="cb23-79" data-line-number="79"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-80" data-line-number="80"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-81" data-line-number="81"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1047 (+/-0.00291)</span></a>
+<a class="sourceLine" id="cb23-81" data-line-number="81"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1116 (+/-0.0039)</span></a>
 <a class="sourceLine" id="cb23-82" data-line-number="82"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-83" data-line-number="83"><span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-84" data-line-number="84"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-85" data-line-number="85"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-85" data-line-number="85"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-86" data-line-number="86"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-87" data-line-number="87"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-88" data-line-number="88"><span class="co">#&gt; i Generating 4692 candidates</span></a>
 <a class="sourceLine" id="cb23-89" data-line-number="89"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-90" data-line-number="90"><span class="co">#&gt; i neighbors=24, weight_func=inv, long df=17, lat df=18</span></a>
+<a class="sourceLine" id="cb23-90" data-line-number="90"><span class="co">#&gt; i neighbors=49, weight_func=rectangular, long df=18, lat df=16</span></a>
 <a class="sourceLine" id="cb23-91" data-line-number="91"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-92" data-line-number="92"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-93" data-line-number="93"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09829 (+/-0.00326)</span></a>
+<a class="sourceLine" id="cb23-93" data-line-number="93"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1175 (+/-0.00265)</span></a>
 <a class="sourceLine" id="cb23-94" data-line-number="94"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-95" data-line-number="95"><span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-96" data-line-number="96"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-97" data-line-number="97"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-97" data-line-number="97"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-98" data-line-number="98"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-99" data-line-number="99"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-100" data-line-number="100"><span class="co">#&gt; i Generating 4717 candidates</span></a>
 <a class="sourceLine" id="cb23-101" data-line-number="101"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-102" data-line-number="102"><span class="co">#&gt; i neighbors=3, weight_func=inv, long df=17, lat df=15</span></a>
+<a class="sourceLine" id="cb23-102" data-line-number="102"><span class="co">#&gt; i neighbors=50, weight_func=gaussian, long df=2, lat df=16</span></a>
 <a class="sourceLine" id="cb23-103" data-line-number="103"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-104" data-line-number="104"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-105" data-line-number="105"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1018 (+/-0.00256)</span></a>
+<a class="sourceLine" id="cb23-105" data-line-number="105"><span class="co">#&gt; ⓧ Newest results:    rmse=0.121 (+/-0.00278)</span></a>
 <a class="sourceLine" id="cb23-106" data-line-number="106"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-107" data-line-number="107"><span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-108" data-line-number="108"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-109" data-line-number="109"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-109" data-line-number="109"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-110" data-line-number="110"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-111" data-line-number="111"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-112" data-line-number="112"><span class="co">#&gt; i Generating 4704 candidates</span></a>
+<a class="sourceLine" id="cb23-112" data-line-number="112"><span class="co">#&gt; i Generating 4703 candidates</span></a>
 <a class="sourceLine" id="cb23-113" data-line-number="113"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-114" data-line-number="114"><span class="co">#&gt; i neighbors=21, weight_func=gaussian, long df=18, lat df=16</span></a>
+<a class="sourceLine" id="cb23-114" data-line-number="114"><span class="co">#&gt; i neighbors=12, weight_func=inv, long df=15, lat df=2</span></a>
 <a class="sourceLine" id="cb23-115" data-line-number="115"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-116" data-line-number="116"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-117" data-line-number="117"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1003 (+/-0.00304)</span></a>
+<a class="sourceLine" id="cb23-117" data-line-number="117"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1032 (+/-0.00324)</span></a>
 <a class="sourceLine" id="cb23-118" data-line-number="118"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-119" data-line-number="119"><span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-120" data-line-number="120"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-121" data-line-number="121"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-121" data-line-number="121"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-122" data-line-number="122"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-123" data-line-number="123"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-124" data-line-number="124"><span class="co">#&gt; i Generating 4679 candidates</span></a>
 <a class="sourceLine" id="cb23-125" data-line-number="125"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-126" data-line-number="126"><span class="co">#&gt; i neighbors=28, weight_func=inv, long df=14, lat df=18</span></a>
+<a class="sourceLine" id="cb23-126" data-line-number="126"><span class="co">#&gt; i neighbors=49, weight_func=rectangular, long df=2, lat df=2</span></a>
 <a class="sourceLine" id="cb23-127" data-line-number="127"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-128" data-line-number="128"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-129" data-line-number="129"><span class="co">#&gt; ⓧ Newest results:    rmse=0.0991 (+/-0.00342)</span></a>
+<a class="sourceLine" id="cb23-129" data-line-number="129"><span class="co">#&gt; ⓧ Newest results:    rmse=0.121 (+/-0.00274)</span></a>
 <a class="sourceLine" id="cb23-130" data-line-number="130"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-131" data-line-number="131"><span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-132" data-line-number="132"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-133" data-line-number="133"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-133" data-line-number="133"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-134" data-line-number="134"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-135" data-line-number="135"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-136" data-line-number="136"><span class="co">#&gt; i Generating 4698 candidates</span></a>
+<a class="sourceLine" id="cb23-136" data-line-number="136"><span class="co">#&gt; i Generating 4699 candidates</span></a>
 <a class="sourceLine" id="cb23-137" data-line-number="137"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-138" data-line-number="138"><span class="co">#&gt; i neighbors=9, weight_func=gaussian, long df=13, lat df=18</span></a>
+<a class="sourceLine" id="cb23-138" data-line-number="138"><span class="co">#&gt; i neighbors=49, weight_func=inv, long df=11, lat df=13</span></a>
 <a class="sourceLine" id="cb23-139" data-line-number="139"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-140" data-line-number="140"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-141" data-line-number="141"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1005 (+/-0.00329)</span></a>
+<a class="sourceLine" id="cb23-141" data-line-number="141"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1011 (+/-0.00313)</span></a>
 <a class="sourceLine" id="cb23-142" data-line-number="142"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-143" data-line-number="143"><span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb23-144" data-line-number="144"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-145" data-line-number="145"><span class="co">#&gt; i Current best:      rmse=0.09818 (@iter 3)</span></a>
+<a class="sourceLine" id="cb23-145" data-line-number="145"><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></a>
 <a class="sourceLine" id="cb23-146" data-line-number="146"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb23-147" data-line-number="147"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-148" data-line-number="148"><span class="co">#&gt; i Generating 4677 candidates</span></a>
+<a class="sourceLine" id="cb23-148" data-line-number="148"><span class="co">#&gt; i Generating 4675 candidates</span></a>
 <a class="sourceLine" id="cb23-149" data-line-number="149"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-150" data-line-number="150"><span class="co">#&gt; i neighbors=20, weight_func=inv, long df=18, lat df=15</span></a>
+<a class="sourceLine" id="cb23-150" data-line-number="150"><span class="co">#&gt; i neighbors=42, weight_func=inv, long df=2, lat df=8</span></a>
 <a class="sourceLine" id="cb23-151" data-line-number="151"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb23-152" data-line-number="152"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-153" data-line-number="153"><span class="co">#&gt; ♥ Newest results:    rmse=0.09792 (+/-0.0031)</span></a>
-<a class="sourceLine" id="cb23-154" data-line-number="154"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-155" data-line-number="155"><span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-156" data-line-number="156"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-157" data-line-number="157"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
-<a class="sourceLine" id="cb23-158" data-line-number="158"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-159" data-line-number="159"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-160" data-line-number="160"><span class="co">#&gt; i Generating 4672 candidates</span></a>
-<a class="sourceLine" id="cb23-161" data-line-number="161"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-162" data-line-number="162"><span class="co">#&gt; i neighbors=50, weight_func=inv, long df=3, lat df=6</span></a>
-<a class="sourceLine" id="cb23-163" data-line-number="163"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-164" data-line-number="164"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-165" data-line-number="165"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1019 (+/-0.00284)</span></a>
-<a class="sourceLine" id="cb23-166" data-line-number="166"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-167" data-line-number="167"><span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-168" data-line-number="168"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-169" data-line-number="169"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
-<a class="sourceLine" id="cb23-170" data-line-number="170"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-171" data-line-number="171"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-172" data-line-number="172"><span class="co">#&gt; i Generating 4699 candidates</span></a>
-<a class="sourceLine" id="cb23-173" data-line-number="173"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-174" data-line-number="174"><span class="co">#&gt; i neighbors=38, weight_func=inv, long df=18, lat df=4</span></a>
-<a class="sourceLine" id="cb23-175" data-line-number="175"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-176" data-line-number="176"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-177" data-line-number="177"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1045 (+/-0.00303)</span></a>
-<a class="sourceLine" id="cb23-178" data-line-number="178"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-179" data-line-number="179"><span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-180" data-line-number="180"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-181" data-line-number="181"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
-<a class="sourceLine" id="cb23-182" data-line-number="182"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-183" data-line-number="183"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-184" data-line-number="184"><span class="co">#&gt; i Generating 4701 candidates</span></a>
-<a class="sourceLine" id="cb23-185" data-line-number="185"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-186" data-line-number="186"><span class="co">#&gt; i neighbors=20, weight_func=inv, long df=18, lat df=2</span></a>
-<a class="sourceLine" id="cb23-187" data-line-number="187"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-188" data-line-number="188"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-189" data-line-number="189"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1062 (+/-0.0031)</span></a>
-<a class="sourceLine" id="cb23-190" data-line-number="190"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-191" data-line-number="191"><span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-192" data-line-number="192"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-193" data-line-number="193"><span class="co">#&gt; i Current best:      rmse=0.09792 (@iter 12)</span></a>
-<a class="sourceLine" id="cb23-194" data-line-number="194"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-195" data-line-number="195"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-196" data-line-number="196"><span class="co">#&gt; i Generating 4711 candidates</span></a>
-<a class="sourceLine" id="cb23-197" data-line-number="197"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-198" data-line-number="198"><span class="co">#&gt; i neighbors=20, weight_func=inv, long df=14, lat df=13</span></a>
-<a class="sourceLine" id="cb23-199" data-line-number="199"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-200" data-line-number="200"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-201" data-line-number="201"><span class="co">#&gt; ♥ Newest results:    rmse=0.09703 (+/-0.00309)</span></a>
-<a class="sourceLine" id="cb23-202" data-line-number="202"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-203" data-line-number="203"><span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-204" data-line-number="204"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-205" data-line-number="205"><span class="co">#&gt; i Current best:      rmse=0.09703 (@iter 16)</span></a>
-<a class="sourceLine" id="cb23-206" data-line-number="206"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-207" data-line-number="207"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-208" data-line-number="208"><span class="co">#&gt; i Generating 4668 candidates</span></a>
-<a class="sourceLine" id="cb23-209" data-line-number="209"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-210" data-line-number="210"><span class="co">#&gt; i neighbors=17, weight_func=inv, long df=11, lat df=12</span></a>
-<a class="sourceLine" id="cb23-211" data-line-number="211"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-212" data-line-number="212"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-213" data-line-number="213"><span class="co">#&gt; ⓧ Newest results:    rmse=0.09743 (+/-0.00298)</span></a>
-<a class="sourceLine" id="cb23-214" data-line-number="214"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-215" data-line-number="215"><span class="co">#&gt; ── Iteration 18 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-216" data-line-number="216"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-217" data-line-number="217"><span class="co">#&gt; i Current best:      rmse=0.09703 (@iter 16)</span></a>
-<a class="sourceLine" id="cb23-218" data-line-number="218"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-219" data-line-number="219"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-220" data-line-number="220"><span class="co">#&gt; i Generating 4689 candidates</span></a>
-<a class="sourceLine" id="cb23-221" data-line-number="221"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-222" data-line-number="222"><span class="co">#&gt; i neighbors=15, weight_func=inv, long df=13, lat df=12</span></a>
-<a class="sourceLine" id="cb23-223" data-line-number="223"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-224" data-line-number="224"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-225" data-line-number="225"><span class="co">#&gt; ♥ Newest results:    rmse=0.09694 (+/-0.00294)</span></a>
-<a class="sourceLine" id="cb23-226" data-line-number="226"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-227" data-line-number="227"><span class="co">#&gt; ── Iteration 19 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-228" data-line-number="228"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-229" data-line-number="229"><span class="co">#&gt; i Current best:      rmse=0.09694 (@iter 18)</span></a>
-<a class="sourceLine" id="cb23-230" data-line-number="230"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-231" data-line-number="231"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-232" data-line-number="232"><span class="co">#&gt; i Generating 4696 candidates</span></a>
-<a class="sourceLine" id="cb23-233" data-line-number="233"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-234" data-line-number="234"><span class="co">#&gt; i neighbors=17, weight_func=inv, long df=14, lat df=12</span></a>
-<a class="sourceLine" id="cb23-235" data-line-number="235"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-236" data-line-number="236"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-237" data-line-number="237"><span class="co">#&gt; ♥ Newest results:    rmse=0.09669 (+/-0.003)</span></a>
-<a class="sourceLine" id="cb23-238" data-line-number="238"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-239" data-line-number="239"><span class="co">#&gt; ── Iteration 20 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb23-240" data-line-number="240"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb23-241" data-line-number="241"><span class="co">#&gt; i Current best:      rmse=0.09669 (@iter 19)</span></a>
-<a class="sourceLine" id="cb23-242" data-line-number="242"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-243" data-line-number="243"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb23-244" data-line-number="244"><span class="co">#&gt; i Generating 4707 candidates</span></a>
-<a class="sourceLine" id="cb23-245" data-line-number="245"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb23-246" data-line-number="246"><span class="co">#&gt; i neighbors=3, weight_func=gaussian, long df=11, lat df=7</span></a>
-<a class="sourceLine" id="cb23-247" data-line-number="247"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb23-248" data-line-number="248"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb23-249" data-line-number="249"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1011 (+/-0.00247)</span></a></code></pre></div>
+<a class="sourceLine" id="cb23-153" data-line-number="153"><span class="co">#&gt; ⓧ Newest results:    rmse=0.1046 (+/-0.00298)</span></a>
+<a class="sourceLine" id="cb23-154" data-line-number="154"><span class="co">#&gt; Error : Cannot write to fd (system error 9, Bad file descriptor) @client.c:149</span></a>
+<a class="sourceLine" id="cb23-155" data-line-number="155"><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></a></code></pre></div>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="../reference/plot_perf_vs_iter.html">plot_perf_vs_iter</a></span>(knn_search, <span class="dt">metric =</span> <span class="st">"rmse"</span>)</a></code></pre></div>
 <p><img src="getting_started_files/figure-html/bo-iter-1.png" width="768"></p>
@@ -581,27 +488,35 @@
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(knn_search) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb25-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(.metric <span class="op">==</span><span class="st"> "rmse"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb25-3" data-line-number="3"><span class="st">  </span><span class="kw">arrange</span>(mean)</a>
-<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="co">#&gt; # A tibble: 25 x 10</span></a>
+<a class="sourceLine" id="cb25-4" data-line-number="4"><span class="co">#&gt; # A tibble: 17 x 10</span></a>
 <a class="sourceLine" id="cb25-5" data-line-number="5"><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .iter .metric .estimator   mean</span></a>
 <a class="sourceLine" id="cb25-6" data-line-number="6"><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;           &lt;int&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="co">#&gt;  1        17 inv                14       12    19 rmse    standard   0.0967</span></a>
-<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="co">#&gt;  2        15 inv                13       12    18 rmse    standard   0.0969</span></a>
-<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="co">#&gt;  3        20 inv                14       13    16 rmse    standard   0.0970</span></a>
-<a class="sourceLine" id="cb25-10" data-line-number="10"><span class="co">#&gt;  4        17 inv                11       12    17 rmse    standard   0.0974</span></a>
-<a class="sourceLine" id="cb25-11" data-line-number="11"><span class="co">#&gt;  5        20 inv                18       15    12 rmse    standard   0.0979</span></a>
-<a class="sourceLine" id="cb25-12" data-line-number="12"><span class="co">#&gt;  6        24 inv                18       18     3 rmse    standard   0.0982</span></a>
-<a class="sourceLine" id="cb25-13" data-line-number="13"><span class="co">#&gt;  7        24 inv                17       18     7 rmse    standard   0.0983</span></a>
-<a class="sourceLine" id="cb25-14" data-line-number="14"><span class="co">#&gt;  8        18 inv                14       18     5 rmse    standard   0.0984</span></a>
-<a class="sourceLine" id="cb25-15" data-line-number="15"><span class="co">#&gt;  9        28 inv                16       10     0 rmse    standard   0.0987</span></a>
-<a class="sourceLine" id="cb25-16" data-line-number="16"><span class="co">#&gt; 10        28 inv                14       18    10 rmse    standard   0.0991</span></a>
-<a class="sourceLine" id="cb25-17" data-line-number="17"><span class="co">#&gt; # … with 15 more rows, and 2 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="co">#&gt;  1        12 inv                16       18     2 rmse    standard   0.0980</span></a>
+<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="co">#&gt;  2         6 gaussian           18       17     3 rmse    standard   0.0984</span></a>
+<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="co">#&gt;  3        28 inv                16       10     0 rmse    standard   0.0987</span></a>
+<a class="sourceLine" id="cb25-10" data-line-number="10"><span class="co">#&gt;  4         5 rectangular        18       10     1 rmse    standard   0.1000</span></a>
+<a class="sourceLine" id="cb25-11" data-line-number="11"><span class="co">#&gt;  5         4 inv                 5        2     4 rmse    standard   0.100 </span></a>
+<a class="sourceLine" id="cb25-12" data-line-number="12"><span class="co">#&gt;  6         5 gaussian            8       14     0 rmse    standard   0.101 </span></a>
+<a class="sourceLine" id="cb25-13" data-line-number="13"><span class="co">#&gt;  7        49 inv                11       13    11 rmse    standard   0.101 </span></a>
+<a class="sourceLine" id="cb25-14" data-line-number="14"><span class="co">#&gt;  8        50 inv                18       14     5 rmse    standard   0.102 </span></a>
+<a class="sourceLine" id="cb25-15" data-line-number="15"><span class="co">#&gt;  9        12 inv                15        2     9 rmse    standard   0.103 </span></a>
+<a class="sourceLine" id="cb25-16" data-line-number="16"><span class="co">#&gt; 10        42 inv                 2        8    12 rmse    standard   0.105 </span></a>
+<a class="sourceLine" id="cb25-17" data-line-number="17"><span class="co">#&gt; 11        36 gaussian            9        6     0 rmse    standard   0.105 </span></a>
+<a class="sourceLine" id="cb25-18" data-line-number="18"><span class="co">#&gt; 12         5 rectangular         2       18     6 rmse    standard   0.112 </span></a>
+<a class="sourceLine" id="cb25-19" data-line-number="19"><span class="co">#&gt; 13        18 rectangular        13        3     0 rmse    standard   0.114 </span></a>
+<a class="sourceLine" id="cb25-20" data-line-number="20"><span class="co">#&gt; 14        49 rectangular        18       16     7 rmse    standard   0.117 </span></a>
+<a class="sourceLine" id="cb25-21" data-line-number="21"><span class="co">#&gt; 15        49 rectangular         2        2    10 rmse    standard   0.121 </span></a>
+<a class="sourceLine" id="cb25-22" data-line-number="22"><span class="co">#&gt; 16        50 gaussian            2       16     8 rmse    standard   0.121 </span></a>
+<a class="sourceLine" id="cb25-23" data-line-number="23"><span class="co">#&gt; 17        47 rectangular         3       16     0 rmse    standard   0.127 </span></a>
+<a class="sourceLine" id="cb25-24" data-line-number="24"><span class="co">#&gt; # … with 2 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;</span></a></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe.</p>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p><code>tune</code> has default measures of performance that is uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the <code>perf</code> option.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>One of the tuning parameters (<code>weight_func</code>) is categorical and, by default, has 10 unique values. The model used to predict new test parameters is a Gaussian process model, and this can become slow to fit when the number of tuning parameters is large or when a categorical parameter generates many dummy variables. We’ve reduced the number of categories for this parameter to speed things up a bit.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>A simple R model formula could have been used here, such as <code>log10(Sale_Price) ~ Longitude + Latitude</code>. A recipe is not required.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p><code>tune</code> has default measures of performance that is uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the <code>perf</code> option.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>One of the tuning parameters (<code>weight_func</code>) is categorical and, by default, has 10 unique values. The model used to predict new test parameters is a Gaussian process model, and this can become slow to fit when the number of tuning parameters is large or when a categorical parameter generates many dummy variables. We’ve reduced the number of categories for this parameter to speed things up a bit.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
   </div>

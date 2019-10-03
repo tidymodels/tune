@@ -32,7 +32,7 @@ table(Ionosphere$V1)
 table(Ionosphere$V2)
 ```
 
-There's no point of putting `V2` into any model since is is a zero-variance predictor. `V1` is not but it _could_ be if the resampling process ends up sampling all of the same value. Is this an issue? I probably would be since the standard R formula infrastructure fails when this occurs:
+There's no point of putting `V2` into any model since is is a zero-variance predictor. `V1` is not but it _could_ be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when this there is only a single observed value:
 
 ```{r glm-fail, error=TRUE}
 glm(Class ~ ., data = Ionosphere, family = binomial)
@@ -75,7 +75,7 @@ iono_rec <-
 The only other required item for tuning is a resampling strategy as defined by an `rsample` object. Let's demonstrate using basic bootstrapping:
 
 ```{r rs}
-set.seed(443)
+set.seed(4943)
 iono_rs <- bootstraps(Ionosphere, times = 30)
 ```
 
@@ -87,7 +87,7 @@ An _optional_ step for model tuning is to specify what metrics should be compute
 roc_vals <- metric_set(roc_auc)
 ```
 
-If no grid or parameters is provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.
+If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.
 
 Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off. 
 
@@ -100,7 +100,7 @@ ctrl <- grid_control(verbose = FALSE)
 First, the formula interface will be used:
 
 ```{r grid}
-set.seed(325)
+set.seed(35)
 grid_form <- tune_grid(Class ~ ., model = svm_mod, rs = iono_rs, perf = roc_vals, control = ctrl)
 grid_form
 ```

@@ -12,7 +12,7 @@ If the question is related at all to a specific data analysis, please include a 
 
 Tips: 
 
- * Here is a good example issue: [#46](https://github.com/topepo/tune/issues/46)
+ * Here is a good example issue: [#46](https://github.com/tidymodels/tune/issues/46)
  
  * **Issues without a reprex will have a lower priority than the others.** 
 
