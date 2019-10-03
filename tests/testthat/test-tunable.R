@@ -19,17 +19,18 @@ test_that('recipe with no tunable parameters', {
 })
 
 test_that('recipe with tunable parameters', {
-  isomap_info <- tunable(isomap_rec)
-  check_tunable_tibble(isomap_info)
+  spline_info <- tunable(spline_rec)
+  check_tunable_tibble(spline_info)
   expect_equal(
-    isomap_info$component,
-    c('step_knnimpute', 'step_other', 'step_isomap', 'step_isomap'),
+    spline_info$component,
+    c('step_knnimpute', 'step_other', 'step_bs', 'step_bs'),
   )
-  expect_true(all(isomap_info$source == "recipe"))
-  nms <- c('neighbors', 'threshold', 'num_terms', 'neighbors')
-  expect_equal(isomap_info$name, nms)
-  expect_true(all(purrr::map_lgl(isomap_info$call_info, ~ .x$pkg == "dials")))
-  expect_equal(purrr::map_chr(isomap_info$call_info, ~ .x$fun), nms)
+  expect_true(all(spline_info$source == "recipe"))
+  nms <- c('neighbors', 'threshold', 'deg_free', 'degree')
+  expect_equal(spline_info$name, nms)
+  expect_true(all(purrr::map_lgl(spline_info$call_info, ~ .x$pkg == "dials")))
+  nms <- c('neighbors', 'threshold', 'deg_free', 'degree_int')
+  expect_equal(purrr::map_chr(spline_info$call_info, ~ .x$fun), nms)
 })
 
 # ------------------------------------------------------------------------------

@@ -19,17 +19,17 @@ test_that('recipe with no tunable parameters', {
 })
 
 test_that('recipe with tunable parameters', {
-  isomap_info <- tune_args(isomap_rec)
-  check_tune_args_tibble(isomap_info)
+  spline_info <- tune_args(spline_rec)
+  check_tune_args_tibble(spline_info)
   expect_equal(
-    isomap_info$component,
-    c('step_knnimpute', 'step_other', 'step_isomap', 'step_isomap'),
+    spline_info$component,
+    c('step_knnimpute', 'step_other', 'step_bs', 'step_bs'),
   )
-  expect_true(all(isomap_info$source == "recipe"))
-  nms <- c('neighbors', 'threshold', 'num_terms', 'neighbors')
-  expect_equal(isomap_info$name, nms)
-  ids <- c('imputation', 'threshold', 'num_terms', 'neighbors')
-  expect_equal(isomap_info$id, ids)
+  expect_true(all(spline_info$source == "recipe"))
+  nms <- c('neighbors', 'threshold', 'deg_free', 'degree')
+  expect_equal(spline_info$name, nms)
+  ids <- c('imputation', 'threshold', 'deg_free', 'degree')
+  expect_equal(spline_info$id, ids)
 })
 
 # ------------------------------------------------------------------------------

@@ -19,22 +19,22 @@ test_that('recipe with no tunable parameters', {
 })
 
 test_that('recipe with tunable parameters', {
-  isomap_info <- param_set(isomap_rec)
-  check_param_set_tibble(isomap_info)
+  spline_info <- param_set(spline_rec)
+  check_param_set_tibble(spline_info)
   expect_equal(
-    isomap_info$component,
-    c('step_knnimpute', 'step_other', 'step_isomap', 'step_isomap'),
+    spline_info$component,
+    c('step_knnimpute', 'step_other', 'step_bs', 'step_bs'),
   )
-  expect_true(all(isomap_info$source == "recipe"))
-  nms <- c('neighbors', 'threshold', 'num_terms', 'neighbors')
-  expect_equal(isomap_info$name, nms)
-  ids <- c('imputation', 'threshold', 'num_terms', 'neighbors')
-  expect_equal(isomap_info$id, ids)
+  expect_true(all(spline_info$source == "recipe"))
+  nms <- c('neighbors', 'threshold', 'deg_free', 'degree')
+  expect_equal(spline_info$name, nms)
+  ids <- c('imputation', 'threshold', 'deg_free', 'degree')
+  expect_equal(spline_info$id, ids)
 
-  expect_equal(isomap_info$object[[1]], dials::neighbors(c(1, 10)))
-  expect_equal(isomap_info$object[[2]], dials::threshold(c(0, 1/10)))
-  expect_equal(isomap_info$object[[3]], dials::num_terms(c(1, 4)))
-  expect_equal(isomap_info$object[[4]], dials::neighbors(c(1, 15)))
+  expect_equal(spline_info$object[[1]], dials::neighbors(c(1, 10)))
+  expect_equal(spline_info$object[[2]], dials::threshold(c(0, 1/10)))
+  expect_equal(spline_info$object[[3]], dials::deg_free(c(3, 15)))
+  expect_equal(spline_info$object[[4]], dials::degree_int(c(1, 2)))
 
 })
 

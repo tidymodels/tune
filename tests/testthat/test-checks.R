@@ -21,11 +21,11 @@ test_that('rsample objects', {
 test_that('grid objects', {
   grid_1 <- tibble(
     penalty = 1:10, mixture = 1:10, imputation = 1:10,
-    threshold = 1:10, num_terms = 1:10, neighbors = 1:10
+    threshold = 1:10, deg_free = 1:10, degree = 1:10
   )
 
   set_1 <- param_set(chi_wflow)
-  set_2 <- set_1 %>% update(num_terms = dials::num_terms(c(1, 3)))
+  set_2 <- set_1 %>% update(deg_free = dials::deg_free(c(1, 3)))
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
 

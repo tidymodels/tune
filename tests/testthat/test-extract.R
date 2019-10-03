@@ -114,7 +114,12 @@ test_that('tune model only', {
     NA
   )
 
-  expect_error(extract_2_2 <- dplyr::bind_rows(res_2_2$.extracts) %>% tidyr::unnest(), NA)
+  expect_error(
+    extract_2_2 <-
+      dplyr::bind_rows(res_2_2$.extracts) %>%
+      tidyr::unnest(cols = c(.extracts)),
+    NA
+  )
   expect_true(all(!extract_2_2$is_null_rec))
 
 })

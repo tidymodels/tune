@@ -7,7 +7,7 @@ data("Chicago", package = "dials")
 
 # ------------------------------------------------------------------------------
 
-isomap_rec <-
+spline_rec <-
   recipe(ridership ~ ., data = head(Chicago)) %>%
   step_date(date) %>%
   step_holiday(date) %>%
@@ -16,7 +16,7 @@ isomap_rec <-
   step_other(all_nominal(), threshold = tune()) %>%
   step_dummy(all_nominal()) %>%
   step_normalize(all_predictors()) %>%
-  step_isomap(all_predictors(), num_terms = tune(), neighbors = tune())
+  step_bs(all_predictors(), deg_free = tune(), degree = tune())
 
 bare_rec <-
   recipe(ridership ~ ., data = head(Chicago))
@@ -51,7 +51,7 @@ glmn <- linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")
 
 chi_wflow <-
   workflow() %>%
-  add_recipe(isomap_rec) %>%
+  add_recipe(spline_rec) %>%
   add_model(glmn)
 
 # ------------------------------------------------------------------------------

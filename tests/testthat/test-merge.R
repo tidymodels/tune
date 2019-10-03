@@ -7,19 +7,19 @@ source("../helper-objects.R")
 
 # ------------------------------------------------------------------------------
 
-isomap_grid <-
+spline_grid <-
   tibble::tribble(
-    ~imputation,          ~threshold, ~num_terms, ~neighbors,
-     8L,   0.196735380217433,        45L,         5L,
-    10L,   0.068447329569608,         4L,        10L,
-     4L,   0.984495810698718,        14L,         5L,
-     9L,   0.645629113074392,        18L,         9L,
-     3L,   0.297346580307931,        40L,         7L,
-     5L,   0.939461424015462,        16L,         9L,
-     8L,   0.913900346728042,        36L,         2L,
-     1L,   0.780177258886397,        33L,         8L,
-     7L,   0.730175697244704,         2L,         5L,
-     8L, 0.00493585434742272,        21L,         2L
+    ~imputation, ~threshold, ~deg_free, ~degree,
+    3L,      0.088,       14L,      1L,
+    6L,      0.058,        8L,      1L,
+    8L,      0.051,       14L,      1L,
+    9L,      0.007,       10L,      1L,
+    1L,      0.032,       15L,      2L,
+    8L,      0.018,        9L,      2L,
+    1L,      0.036,        5L,      1L,
+   10L,        0.1,       10L,      2L,
+    9L,      0.094,       12L,      1L,
+    4L,      0.025,       12L,      1L
   )
 
 bst_grid <- tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
@@ -29,22 +29,22 @@ bst_grid <- tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 test_that('recipe merges', {
 
   expect_error(
-    isomap_updated <- merge(isomap_rec, isomap_grid),
+    spline_updated <- merge(spline_rec, spline_grid),
     NA
   )
-  check_merged_tibble(isomap_updated)
-  for (i in 1:nrow(isomap_grid)) {
+  check_merged_tibble(spline_updated)
+  for (i in 1:nrow(spline_grid)) {
     expect_equal(
-      isomap_updated$x[[i]]$steps[[4]]$neighbors, isomap_grid$imputation[[i]]
+      spline_updated$x[[i]]$steps[[4]]$neighbors, spline_grid$imputation[[i]]
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[5]]$threshold, isomap_grid$threshold[[i]]
+      spline_updated$x[[i]]$steps[[5]]$threshold, spline_grid$threshold[[i]]
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$num_terms, isomap_grid$num_terms[[i]]
+      spline_updated$x[[i]]$steps[[8]]$deg_free, spline_grid$deg_free[[i]]
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$neighbors, isomap_grid$neighbors[[i]]
+      spline_updated$x[[i]]$steps[[8]]$degree, spline_grid$degree[[i]]
     )
   }
 
@@ -53,22 +53,22 @@ test_that('recipe merges', {
 test_that('partially recipe merge', {
 
   expect_error(
-    isomap_updated <- merge(isomap_rec, isomap_grid[, -1]),
+    spline_updated <- merge(spline_rec, spline_grid[, -1]),
     NA
   )
-  check_merged_tibble(isomap_updated, complete = FALSE)
-  for (i in 1:nrow(isomap_grid)) {
+  check_merged_tibble(spline_updated, complete = FALSE)
+  for (i in 1:nrow(spline_grid)) {
     expect_equal(
-      isomap_updated$x[[i]]$steps[[4]]$neighbors, tune("imputation")
+      spline_updated$x[[i]]$steps[[4]]$neighbors, tune("imputation")
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[5]]$threshold, isomap_grid$threshold[[i]]
+      spline_updated$x[[i]]$steps[[5]]$threshold, spline_grid$threshold[[i]]
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$num_terms, isomap_grid$num_terms[[i]]
+      spline_updated$x[[i]]$steps[[8]]$deg_free, spline_grid$deg_free[[i]]
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$neighbors, isomap_grid$neighbors[[i]]
+      spline_updated$x[[i]]$steps[[8]]$degree, spline_grid$degree[[i]]
     )
   }
 
@@ -77,22 +77,22 @@ test_that('partially recipe merge', {
 test_that('umerged recipe merge', {
 
   expect_error(
-    isomap_updated <- merge(isomap_rec, bst_grid),
+    spline_updated <- merge(spline_rec, bst_grid),
     NA
   )
-  check_merged_tibble(isomap_updated, complete = FALSE)
+  check_merged_tibble(spline_updated, complete = FALSE)
   for (i in 1:nrow(bst_grid)) {
     expect_equal(
-      isomap_updated$x[[i]]$steps[[4]]$neighbors, tune("imputation")
+      spline_updated$x[[i]]$steps[[4]]$neighbors, tune("imputation")
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[5]]$threshold, tune()
+      spline_updated$x[[i]]$steps[[5]]$threshold, tune()
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$num_terms, tune()
+      spline_updated$x[[i]]$steps[[8]]$deg_free, tune()
     )
     expect_equal(
-      isomap_updated$x[[i]]$steps[[8]]$neighbors, tune()
+      spline_updated$x[[i]]$steps[[8]]$degree, tune()
     )
   }
 
