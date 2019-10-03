@@ -1,5 +1,7 @@
-# R package
-# Test an R package
+variables:
+  R_LIBS_USER: '$(Agent.BuildDirectory)/R/library'
+  CRAN: 'https://cloud.r-project.org'
+  coverage: true
 
 resources:
   repositories:
@@ -9,4 +11,33 @@ resources:
       endpoint: topepo
 
 jobs:
-  - template: azure-tidyverse.yml@r-azure-pipelines
+  - job: 'Linux'
+    variables:
+      TZ: UTC
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    strategy:
+      matrix:
+        R-3.5:
+          containerImage: rstudio/r-base:3.5-xenial
+        R-3.6:
+          containerImage: rstudio/r-base:3.6-xenial
+    container: $[ variables['containerImage'] ]
+    steps:
+      - template: templates/r-setup-linux.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
+        parameters:
+          coverage: false
+
+  - job: 'macOS'
+    steps:
+      - template: templates/r-setup-macOS.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
+        parameters:
+          coverage: true
+
+  - job: 'Windows'
+    steps:
+      - template: templates/r-setup-windows.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
+
