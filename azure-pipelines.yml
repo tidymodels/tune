@@ -30,6 +30,8 @@ jobs:
           coverage: false
 
   - job: 'macOS'
+    pool:
+      vmImage: 'macOS-10.13'
     steps:
       - template: templates/r-setup-macOS.yml@r-azure-pipelines
       - template: templates/pkg-workflow.yml@r-azure-pipelines
@@ -37,7 +39,13 @@ jobs:
           coverage: true
 
   - job: 'Windows'
+    pool:
+      vmImage: 'vs2017-win2016'
     steps:
       - template: templates/r-setup-windows.yml@r-azure-pipelines
       - template: templates/pkg-workflow.yml@r-azure-pipelines
+        parameters:
+          args: "c('--no-manual', '--no-multiarch')"
+          coverage: false
+          cache: false
 
