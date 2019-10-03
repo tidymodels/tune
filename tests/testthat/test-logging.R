@@ -32,6 +32,8 @@ test_that('low-level messages', {
   expect_message(tune:::siren("bat", "go"), cli::symbol$pointer)
   expect_message(tune:::siren("bat", "danger"), "x")
   expect_message(tune:::siren("bat", "warning"), "!")
+
+  skip_on_os("windows")
   expect_message(tune:::siren("bat", "success"), "\u2713")
 })
 
@@ -39,10 +41,11 @@ test_that('tune_log', {
 
   expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"), "cube")
   expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"), "Fold01")
-  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"), "\u2713")
   expect_message(tune:::tune_log(ctrl_t, NULL, task = "cube", type = "go"), "(?!.*Fold)", perl = TRUE)
   expect_silent(tune:::tune_log(ctrl_f, NULL, task = "cube", type = "go"))
 
+  skip_on_os("windows")
+  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"), "\u2713")
 })
 
 test_that('log issues', {
@@ -114,7 +117,6 @@ test_that('catch and log issues', {
 test_that('logging iterations', {
 
   expect_message(tune:::log_best(ctrl_t, 10, sc_1), 'Iteration 10')
-  expect_message(tune:::log_best(ctrl_t, 10, sc_1), '─────────')
   expect_message(tune:::log_best(ctrl_t, 10, sc_1), '0.8=7 (@iter 2)', fixed = TRUE)
   expect_silent(tune:::log_best(ctrl_f, 10, sc_1))
 
@@ -142,10 +144,6 @@ test_that('current results', {
 
   expect_message(
     tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
-    "Newest results"
-  )
-  expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
     cli::symbol$heart
   )
   expect_message(
@@ -158,6 +156,12 @@ test_that('current results', {
   )
   expect_silent(tune:::log_progress(ctrl_f, tb_2, maximize = TRUE, objective = "a"))
 
+  skip_on_os("windows")
+
+  expect_message(
+    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
+    "Newest results"
+  )
 })
 
 
