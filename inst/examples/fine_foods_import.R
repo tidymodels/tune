@@ -52,18 +52,22 @@ prod_dist <-
   ungroup() %>%
   arrange(desc(n))
 
-# Take the 15 well characterized products for the training set (or more for larger
+# Take the 10 well characterized products for the training set (or more for larger
 # training set)
-set.seed(9565)
+set.seed(5)
 train_prods <-
   prod_dist %>%
-  dplyr::filter(n > 50) %>%
+  dplyr::filter(n > 125) %>%
   sample_n(10) %>%
   dplyr::select(product)
 
 training_data <-
   train_prods %>%
   inner_join(raw, by = "product")
+
+training_data %>%
+  group_by(product) %>%
+  summarise(n = length(product), rate = mean(score == "great"))
 
 testing_data <-
   raw %>%
