@@ -9,3 +9,4 @@
 ^vignettes
 ^\.github/ISSUE_TEMPLATE$
 ^azure-pipelines\.yml$
+^codecov\.yml$
