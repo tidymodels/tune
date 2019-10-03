@@ -143,10 +143,6 @@ test_that('logging search info', {
 test_that('current results', {
 
   expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
-    cli::symbol$heart
-  )
-  expect_message(
     tune:::log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a"),
     cli::symbol$circle_cross
   )
@@ -157,6 +153,11 @@ test_that('current results', {
   expect_silent(tune:::log_progress(ctrl_f, tb_2, maximize = TRUE, objective = "a"))
 
   skip_on_os("windows")
+
+  expect_message(
+    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
+    cli::symbol$heart
+  )
 
   expect_message(
     tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
