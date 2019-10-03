@@ -336,10 +336,11 @@ Let's look at a plot of these results (per resample):
 
 ```{r var-plot}
 ggplot(extracted, aes(x = penalty, y = num_vars)) + 
-  geom_line(aes(group = id, col = id), alpha = .1) + 
+  geom_line(aes(group = id, col = id), alpha = .5) + 
   ylab("Number of retained predictors") + 
   scale_x_log10()  + 
-  ggtitle(paste("mixture = ", params$mixture, "and", params$num_terms, "features"))
+  ggtitle(paste("mixture = ", params$mixture, "and", params$num_terms, "features")) + 
+  theme(legend.position = "none")
 ```
 
 These results might help guide the range of the `penalty` value if more optimization was conducted. 

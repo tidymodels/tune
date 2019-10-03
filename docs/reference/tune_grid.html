@@ -220,7 +220,8 @@ parameters), only three recipes are are trained. The alternative
 would be to re-train the same recipe multiple times for each model
 tuning parameter.</p></li>
 </ul>
-    <p>The <code>foreach</code> package is used here. To execute the resampling iterations in
+
+<p>The <code>foreach</code> package is used here. To execute the resampling iterations in
 parallel, register a parallel backend function. See the documentation for
 <code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach::foreach()</a></code> for examples.</p>
 <p>For the most part, warnings generated during training are shown as they occur
@@ -229,19 +230,24 @@ They are (usually) not aggregated until the end of processing.</p>
     <h2 class="hasAnchor" id="parameter-grids"><a class="anchor" href="#parameter-grids"></a>Parameter Grids</h2>
 
     
-    <p>If no tuning grid is provided, a semi-random grid (via
+
+
+<p>If no tuning grid is provided, a semi-random grid (via
 <code><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is created with 10 candidate parameter
 combinations.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     
-    <p>If no metric set is provided, one is created:</p><ul>
+
+
+<p>If no metric set is provided, one is created:</p><ul>
 <li><p>For regression models, the root mean squared error and coefficient
 of determination are computed.</p></li>
 <li><p>For classification, the log-likelihood and overall accuracy are
 computed.</p></li>
 </ul>
-    <p>Note that the metrics also determine what type of predictions are estimated
+
+<p>Note that the metrics also determine what type of predictions are estimated
 during tuning. For example, in a classification problem, of metrics are used
 that are all associated with hard class predictions, the classification
 probabilities are not created.</p>
@@ -254,7 +260,9 @@ parameter combination).</p>
     <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
 
     
-    <p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
+
+
+<p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
 called <code>.predictions</code> that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).</p>
 <p>The elements of the tibble are tibbles with columns for the tuning
@@ -268,7 +276,9 @@ convenience function <code><a href='collect_predictions.html'>collect_prediction
     <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
 
     
-    <p>The <code>extract</code> control option will result in an additional function to be
+
+
+<p>The <code>extract</code> control option will result in an additional function to be
 returned called <code>.extracts</code>. This is a list column that has tibbles
 containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
