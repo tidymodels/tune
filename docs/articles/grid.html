@@ -52,7 +52,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -63,7 +63,7 @@
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
-      <a href="../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="../articles/extras/svm_classification.html">Bayesian Optimization of Classification Model</a>
     </li>
     <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
@@ -79,7 +79,7 @@
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -88,32 +88,32 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Grid Search</h1>
-            
-      
-      
+
+
+
       <div class="hidden name"><code>grid.Rmd</code></div>
 
     </div>
 
-    
-    
+
+
 <p>To demonstrate model tuning, we’ll use the Ionosphere data in the <code>mlbench</code> package:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(mlbench)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(Ionosphere)</a></code></pre></div>
 <p>There are 43 predictors and a factor outcome. Two of the predictors are factors (<code>V1</code> and <code>V2</code>) and the rest are numerics that have been scaled to a range of -1 and 1. Note that the two factor predictors have sparse distributions:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(Ionosphere<span class="op">$</span>V1)</a></code></pre></div>
-<pre><code>## 
-##   0   1 
+<pre><code>##
+##   0   1
 ##  38 313</code></pre>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(Ionosphere<span class="op">$</span>V2)</a></code></pre></div>
-<pre><code>## 
-##   0 
+<pre><code>##
+##   0
 ## 351</code></pre>
 <p>There’s no point of putting <code>V2</code> into any model since is is a zero-variance predictor. <code>V1</code> is not but it <em>could</em> be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when this there is only a single observed value:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Ionosphere, <span class="dt">family =</span> binomial)</a></code></pre></div>
@@ -161,10 +161,10 @@
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">35</span>)</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">grid_form &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">model =</span> svm_mod, <span class="dt">rs =</span> iono_rs, <span class="dt">perf =</span> roc_vals, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">grid_form</a></code></pre></div>
-<pre><code>## # Bootstrap sampling 
+<pre><code>## # Bootstrap sampling
 ## # A tibble: 30 x 3
-##    splits            id          .metrics         
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
+##    splits            id          .metrics
+##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;
 ##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
 ##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
 ##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
@@ -189,7 +189,7 @@
 ##  5  1.87     3.53e- 7 roc_auc binary         0.906
 ##  6  0.00719  1.45e- 5 roc_auc binary         0.908
 ##  7  0.00114  8.41e- 2 roc_auc binary         0.985
-##  8  0.950    1.74e- 1 roc_auc binary         1    
+##  8  0.950    1.74e- 1 roc_auc binary         1
 ##  9  0.189    3.13e- 6 roc_auc binary         0.906
 ## 10  0.0364   4.96e- 9 roc_auc binary         0.909</code></pre>
 <p>To get the final resampling estimates, the <code>summarize</code> function can be used on the grid object:</p>
@@ -198,15 +198,15 @@
 <pre><code>## # A tibble: 10 x 7
 ##        cost rbf_sigma .metric .estimator  mean     n  std_err
 ##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
-##  1  0.00114  8.41e- 2 roc_auc binary     0.982    30 0.00204 
-##  2  0.00719  1.45e- 5 roc_auc binary     0.919    30 0.00402 
-##  3  0.00849  1.11e-10 roc_auc binary     0.890    30 0.00486 
-##  4  0.0364   4.96e- 9 roc_auc binary     0.919    30 0.00387 
-##  5  0.176    7.28e- 8 roc_auc binary     0.917    30 0.00407 
-##  6  0.189    3.13e- 6 roc_auc binary     0.918    30 0.00411 
+##  1  0.00114  8.41e- 2 roc_auc binary     0.982    30 0.00204
+##  2  0.00719  1.45e- 5 roc_auc binary     0.919    30 0.00402
+##  3  0.00849  1.11e-10 roc_auc binary     0.890    30 0.00486
+##  4  0.0364   4.96e- 9 roc_auc binary     0.919    30 0.00387
+##  5  0.176    7.28e- 8 roc_auc binary     0.917    30 0.00407
+##  6  0.189    3.13e- 6 roc_auc binary     0.918    30 0.00411
 ##  7  0.950    1.74e- 1 roc_auc binary     0.995    30 0.000883
-##  8  1.87     3.53e- 7 roc_auc binary     0.918    30 0.00411 
-##  9  5.51     2.10e- 3 roc_auc binary     0.980    30 0.00177 
+##  8  1.87     3.53e- 7 roc_auc binary     0.918    30 0.00411
+##  9  5.51     2.10e- 3 roc_auc binary     0.980    30 0.00177
 ## 10 14.9      3.93e- 4 roc_auc binary     0.959    30 0.00284</code></pre>
 <p>The best combination was:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">estimates <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -224,10 +224,10 @@
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">325</span>)</a>
 <a class="sourceLine" id="cb24-2" data-line-number="2">rec_form &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(iono_rec, <span class="dt">model =</span> svm_mod, <span class="dt">rs =</span> iono_rs, <span class="dt">perf =</span> roc_vals, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb24-3" data-line-number="3">rec_form</a></code></pre></div>
-<pre><code>## # Bootstrap sampling 
+<pre><code>## # Bootstrap sampling
 ## # A tibble: 30 x 3
-##    splits            id          .metrics         
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
+##    splits            id          .metrics
+##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;
 ##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
 ##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
 ##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
@@ -282,7 +282,7 @@
       </footer>
 </div>
 
-  
+
 
 
   </body>

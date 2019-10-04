@@ -89,7 +89,7 @@ recipe across one or more resamples of the data." />
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -100,7 +100,7 @@ recipe across one or more resamples of the data." />
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
-      <a href="../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="../articles/extras/svm_classification.html">Bayesian Optimization of Classification Model</a>
     </li>
     <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
@@ -116,14 +116,14 @@ recipe across one or more resamples of the data." />
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+
       </ul>
-      
+
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header>
 
@@ -131,7 +131,7 @@ recipe across one or more resamples of the data." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Model tuning via grid search</h1>
-    
+
     <div class="hidden name"><code>tune_grid.Rd</code></div>
     </div>
 
@@ -229,7 +229,7 @@ and are associated with a specific resample when <code>control(verbose = TRUE)</
 They are (usually) not aggregated until the end of processing.</p>
     <h2 class="hasAnchor" id="parameter-grids"><a class="anchor" href="#parameter-grids"></a>Parameter Grids</h2>
 
-    
+
 
 
 <p>If no tuning grid is provided, a semi-random grid (via
@@ -237,7 +237,7 @@ They are (usually) not aggregated until the end of processing.</p>
 combinations.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
-    
+
 
 
 <p>If no metric set is provided, one is created:</p><ul>
@@ -259,7 +259,7 @@ over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).</p>
     <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
 
-    
+
 
 
 <p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
@@ -275,7 +275,7 @@ columns that are returned are determined by the type of metric(s) requested.</p>
 convenience function <code><a href='collect_predictions.html'>collect_predictions()</a></code>.</p>
     <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
 
-    
+
 
 
 <p>The <code>extract</code> control option will result in an additional function to be
@@ -322,7 +322,7 @@ grid has a separate R object associated with it.</p>
       </footer>
    </div>
 
-  
+
 
 
   </body>

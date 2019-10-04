@@ -41,7 +41,7 @@ navbar:
     - text: Acquisition Functions
       href: articles/acquisition_functions.html
     - text: Bayesian Optimization of Classification Model
-      href: articles/extras/classification.html
+      href: articles/extras/svm_classification.html
     - text: Optimizations and Parallel Processing
       href: articles/extras/optimizations.html
     - text: Text Analysis Example

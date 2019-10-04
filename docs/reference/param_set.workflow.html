@@ -88,7 +88,7 @@ complex objects, such as recipes, model specifications, and workflows." />
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -99,7 +99,7 @@ complex objects, such as recipes, model specifications, and workflows." />
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
-      <a href="../articles/extras/classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="../articles/extras/svm_classification.html">Bayesian Optimization of Classification Model</a>
     </li>
     <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
@@ -115,14 +115,14 @@ complex objects, such as recipes, model specifications, and workflows." />
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+
       </ul>
-      
+
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header>
 
@@ -130,7 +130,7 @@ complex objects, such as recipes, model specifications, and workflows." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determination of parameter sets for other objects</h1>
-    
+
     <div class="hidden name"><code>param_set.workflow.Rd</code></div>
     </div>
 
@@ -173,7 +173,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_knnimpute.html'>step_knnimpute</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_pca.html'>step_pca</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>num_comp</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
-#&gt; 
+#&gt;
 #&gt;         id parameter type object class
 #&gt;  neighbors      neighbors    nparam[+]
 #&gt;   num_comp       num_comp    nparam[+]
@@ -184,7 +184,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"disp df"</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt df"</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
-#&gt; 
+#&gt;
 #&gt;       id parameter type object class
 #&gt;  disp df       deg_free    nparam[+]
 #&gt;    wt df       deg_free    nparam[+]
@@ -192,8 +192,8 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_normalize.html'>step_normalize</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
-#&gt; 
-#&gt; [1] id             parameter type object class  
+#&gt;
+#&gt; [1] id             parameter type object class
 #&gt; &lt;0 rows&gt; (or 0-length row.names)
 #&gt; </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
@@ -201,7 +201,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
-#&gt; 
+#&gt;
 #&gt;     id parameter type object class
 #&gt;  trees          trees    nparam[+]
 #&gt;  min_n          min_n    nparam[+]
@@ -209,7 +209,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
-#&gt; 
+#&gt;
 #&gt;     id parameter type object class
 #&gt;  trees          trees    nparam[+]
 #&gt;  min_n          min_n    nparam[+]
@@ -242,7 +242,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
       </footer>
    </div>
 
-  
+
 
 
   </body>
