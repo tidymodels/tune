@@ -92,6 +92,8 @@ binary_hash <- function(x) {
 The recipe is:
 
 ```{r text-rec}
+# uses the devel version of textrecipes
+# devtools::install_github("tidymodels/textrecipes")
 library(textrecipes)
 
 pre_proc <-
