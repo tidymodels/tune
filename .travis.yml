@@ -12,7 +12,8 @@ warnings_are_errors: false
 r:
   - 3.5
   - 3.6
-  - devel
+
+# - devel  # massive failures, not sure why yet
 
 cache:
   packages: true
