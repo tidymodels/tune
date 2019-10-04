@@ -1,3 +1,7 @@
+variables:
+  R_LIBS_USER: '$(Agent.BuildDirectory)/R/library'
+  CRAN: 'https://cloud.r-project.org'
+
 resources:
   repositories:
     - repository: r-azure-pipelines
