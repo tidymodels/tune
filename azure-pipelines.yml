@@ -1,17 +1,16 @@
-parameters:
-  R_LIBS_USER: '$(Agent.BuildDirectory)/R/library'
-  CRAN: 'https://cloud.r-project.org'
-  coverage: true
-  env: {}
+resources:
+  repositories:
+    - repository: r-azure-pipelines
+      type: github
+      name: r-lib/r-azure-pipelines
+      endpoint: tidymodels
 
 jobs:
   - job: 'Linux'
     variables:
       CRAN: 'https://demo.rstudiopm.com/all/__linux__/xenial/latest'
-      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
       TZ: UTC
       CI: true
-      ${{ insert }}: ${{ parameters.env }}
     pool:
       vmImage: 'Ubuntu-16.04'
     strategy:
@@ -32,24 +31,20 @@ jobs:
 
   - job: 'macOS'
     variables:
-      CRAN: ${{parameters.CRAN}}
-      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
+      TZ: UTC
       CI: true
-      ${{ insert }}: ${{ parameters.env }}
     pool:
       vmImage: 'macOS-10.13'
     steps:
       - template: templates/r-setup-macOS.yml
       - template: templates/pkg-workflow.yml
         parameters:
-          coverage: ${{parameters.coverage}}
+          coverage: true
 
   - job: 'Windows'
     variables:
-      CRAN: ${{parameters.CRAN}}
-      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
       CI: true
-      ${{ insert }}: ${{ parameters.env }}
+      TZ: UTC
     pool:
       vmImage: 'vs2017-win2016'
     steps:
