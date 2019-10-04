@@ -13,7 +13,11 @@ resources:
 jobs:
   - job: 'Linux'
     variables:
+      CRAN: 'https://demo.rstudiopm.com/all/__linux__/xenial/latest'
+      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
       TZ: UTC
+      CI: true
+      ${{ insert }}: ${{ parameters.env }}
     pool:
       vmImage: 'Ubuntu-16.04'
     strategy:
@@ -30,6 +34,11 @@ jobs:
           coverage: false
 
   - job: 'macOS'
+    variables:
+      CRAN: ${{parameters.CRAN}}
+      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
+      CI: true
+      ${{ insert }}: ${{ parameters.env }}
     pool:
       vmImage: 'macOS-10.13'
     steps:
@@ -39,6 +48,11 @@ jobs:
           coverage: true
 
   - job: 'Windows'
+    variables:
+      CRAN: ${{parameters.CRAN}}
+      R_LIBS_USER: ${{parameters.R_LIBS_USER}}
+      CI: true
+      ${{ insert }}: ${{ parameters.env }}
     pool:
       vmImage: 'vs2017-win2016'
     steps:
