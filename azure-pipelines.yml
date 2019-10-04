@@ -1,3 +1,7 @@
+variables:
+  R_LIBS_USER: '$(Agent.BuildDirectory)/R/library'
+  CRAN: 'https://cloud.r-project.org'
+
 resources:
   repositories:
     - repository: r-azure-pipelines
@@ -23,8 +27,8 @@ jobs:
           containerImage: rstudio/r-base:3.6-xenial
     container: $[ variables['containerImage'] ]
     steps:
-      - template: templates/r-setup-linux.yml
-      - template: templates/pkg-workflow.yml
+      - template: templates/r-setup-linux.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
         parameters:
           coverage: false
 
@@ -36,8 +40,8 @@ jobs:
     pool:
       vmImage: 'macOS-10.13'
     steps:
-      - template: templates/r-setup-macOS.yml
-      - template: templates/pkg-workflow.yml
+      - template: templates/r-setup-macOS.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
         parameters:
           coverage: true
 
@@ -48,8 +52,8 @@ jobs:
     pool:
       vmImage: 'vs2017-win2016'
     steps:
-      - template: templates/r-setup-windows.yml
-      - template: templates/pkg-workflow.yml
+      - template: templates/r-setup-windows.yml@r-azure-pipelines
+      - template: templates/pkg-workflow.yml@r-azure-pipelines
         parameters:
           args: "c('--no-manual', '--no-multiarch')"
           coverage: false
