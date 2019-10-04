@@ -1,9 +1,9 @@
 pandoc: 2.3.1
-pkgdown: 1.4.1.9000
-pkgdown_sha: d01672efa3baa80fd7ab238b7143080b0daf49a4
+pkgdown: 1.4.1
+pkgdown_sha: ~
 articles:
   acquisition_functions: acquisition_functions.html
-  Classification: extras/Classification.html
+  classification: extras/classification.html
   optimizations: extras/optimizations.html
   text_analysis: extras/text_analysis.html
   getting_started: getting_started.html
