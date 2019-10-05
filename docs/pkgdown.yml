@@ -3,8 +3,8 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   acquisition_functions: acquisition_functions.html
-  classification: extras/classification.html
   optimizations: extras/optimizations.html
+  svm_classification: extras/svm_classification.html
   text_analysis: extras/text_analysis.html
   getting_started: getting_started.html
   grid: grid.html
