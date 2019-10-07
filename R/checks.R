@@ -33,6 +33,11 @@ check_grid <- function(x, object) {
     x <- dials::grid_latin_hypercube(param_set(object), size = 10)
     x <- dplyr::distinct(x)
   }
+
+  if (!tibble::is_tibble(x)) {
+    x <- tibble::as_tibble(x)
+  }
+
   x
 }
 

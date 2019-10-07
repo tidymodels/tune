@@ -43,6 +43,10 @@ test_that('grid objects', {
   expect_error(grid_2 <- tune:::check_grid(NULL, wflow_1), NA)
   expect_equal(nrow(grid_2), 10)
   expect_true(inherits(grid_2, "data.frame"))
+
+  # For issue #56
+  grid_3 <- as.data.frame(grid_1)
+  expect_equal(tune:::check_grid(grid_3, chi_wflow), grid_1)
 })
 
 
