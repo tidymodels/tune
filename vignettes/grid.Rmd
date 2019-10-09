@@ -25,14 +25,14 @@ library(mlbench)
 data(Ionosphere)
 ```
 
-There are 43 predictors and a factor outcome. Two of the predictors are factors (`V1` and `V2`) and the rest are numerics that have been scaled to a range of -1 and 1. Note that the two factor predictors have sparse distributions:
+There are 43 predictors and a factor outcome. Two of the predictors are factors (`V1` and `V2`) and the rest are numerics that have been scaled to a range of -1 to 1. Note that the two factor predictors have sparse distributions:
 
 ```{r factor-pred}
 table(Ionosphere$V1)
 table(Ionosphere$V2)
 ```
 
-There's no point of putting `V2` into any model since is is a zero-variance predictor. `V1` is not but it _could_ be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when this there is only a single observed value:
+There's no point of putting `V2` into any model since is is a zero-variance predictor. `V1` is not but it _could_ be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when there is only a single observed value:
 
 ```{r glm-fail, error=TRUE}
 glm(Class ~ ., data = Ionosphere, family = binomial)
@@ -81,13 +81,13 @@ iono_rs <- bootstraps(Ionosphere, times = 30)
 
 ## Optional Inputs
 
-An _optional_ step for model tuning is to specify what metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likleihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a `yardstick` function can be used to create a metric set:
+An _optional_ step for model tuning is to specify which metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likelihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a `yardstick` function can be used to create a metric set:
 
 ```{r roc}
 roc_vals <- metric_set(roc_auc)
 ```
 
-If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.
+If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.
 
 Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off. 
 
@@ -105,7 +105,7 @@ grid_form <- tune_grid(Class ~ ., model = svm_mod, rs = iono_rs, perf = roc_vals
 grid_form
 ```
 
-The `.metrics` column contains tibbles of the performance metrics for each tuning parameter combinations:
+The `.metrics` column contains tibbles of the performance metrics for each tuning parameter combination:
 
 ```{r raw-metrics}
 grid_form %>% select(.metrics) %>% slice(1) %>% pull(1)

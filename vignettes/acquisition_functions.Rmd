@@ -30,7 +30,7 @@ There is usually a trade-off between two strategies:
 
 The acquisition functions themselves have quasi-tuning parameters that are usually trade-offs between exploitation and exploration. For example, if the performance measure being used should be maximized (i.e. accuracy, the area under the ROC curve, etc), then one acquisition function would be a lower confidence bound $L = \mu - C \times \sigma$. The multiplier $C$ would be used to penalize based on the predicted standard error ($\sigma$) of different parameter combinations. Note that the acquisition function is not the performance measure, but a function of what metric is used to evaluate the model. 
 
-One of the most common acquisition functions is the _expected improvement_. Based on basic probability theory, this can be computed relative to the current estimate of the optimal performance. Suppose that our performance metric should be maximized (e.g. accuracy, area under the ROC curve etc). For any tuning parameter combination $\theta$, we have the predicted mean and standard error of that metric (call those $\mu(\theta)$ and $\sigma(\theta)$). From previous data, the best (mean) performance value was $m_{opt}$). The expected improvement is determined using:
+One of the most common acquisition functions is the _expected improvement_. Based on basic probability theory, this can be computed relative to the current estimate of the optimal performance. Suppose that our performance metric should be maximized (e.g. accuracy, area under the ROC curve, etc). For any tuning parameter combination $\theta$, we have the predicted mean and standard error of that metric (call those $\mu(\theta)$ and $\sigma(\theta)$). From previous data, the best (mean) performance value was $m_{opt}$). The expected improvement is determined using:
 
 $$
 \begin{align}
@@ -50,7 +50,7 @@ Suppose a single parameter were being optimized and that parameter was represent
 knitr::include_graphics("figures/initial.svg", auto_pdf = FALSE)
 ```
 
-In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. $\mu(\theta)$) is shown on the top panel below along with approximate 95% credible intervals  $\mu(\theta) \pm 1.96 \sigma(\theta)$: 
+In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. $\mu(\theta)$) is shown on the top panel below, along with approximate 95% credible intervals  $\mu(\theta) \pm 1.96 \sigma(\theta)$: 
 
 ```{r iter-1, echo = FALSE}
 knitr::include_graphics("figures/iter_1.svg", auto_pdf = FALSE)
@@ -68,7 +68,7 @@ The results at iteration 20 were:
 knitr::include_graphics("figures/iter_20.svg", auto_pdf = FALSE)
 ```
 
-The points shown on the graph indicate that there is a region the the neighborhood of 0.01 that appears to produce the best results and that the expected improvement function has driven the optimization to focus on this region. 
+The points shown on the graph indicate that there is a region in the neighborhood of 0.01 that appears to produce the best results, and that the expected improvement function has driven the optimization to focus on this region. 
 
 When using expected improvement, the primary method for compromising between exploitation and exploration is the use of a "trade-off" value. This value is the amount of performance (in the original units) that can be sacrificed when computing the improvement. This has the effect of down-playing the contribution of the mean effect in the computations. For a trade-off value $\tau$, the equation above uses:
 
