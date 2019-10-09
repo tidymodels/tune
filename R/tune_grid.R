@@ -26,13 +26,13 @@
 #' \itemize{
 #'   \item In cases where a single model fit can be used to make predictions
 #'         for different parameter values in the grid, only one fit is used.
-#'         For example, for some boosted trees, of 100 iterations of boosting
+#'         For example, for some boosted trees, if 100 iterations of boosting
 #'         are requested, the model object for 100 iterations can be used to
 #'         make predictions on iterations less than 100 (if all other
 #'         parameters are equal).
 #'   \item When the model is being tuned in conjunction with pre-processing
-#;         and/or post-processing parameters, the minimum number of fits are
-#'.        used. For example, if the number of PCA components in a recipe step
+#'         and/or post-processing parameters, the minimum number of fits are
+#'         used. For example, if the number of PCA components in a recipe step
 #'         are being tuned over three values (along with model tuning
 #'         parameters), only three recipes are are trained. The alternative
 #'         would be to re-train the same recipe multiple times for each model
@@ -64,7 +64,7 @@
 #' }
 #'
 #' Note that the metrics also determine what type of predictions are estimated
-#' during tuning. For example, in a classification problem, of metrics are used
+#' during tuning. For example, in a classification problem, if metrics are used
 #' that are all associated with hard class predictions, the classification
 #' probabilities are not created.
 #'
@@ -83,11 +83,12 @@
 #'  parameter combination in the grid and each fold (which can be very large).
 #'
 #' The elements of the tibble are tibbles with columns for the tuning
-#'  parameters, the row number from the original data object (`.row`), the
-#'  outcome data (with the same name(s) of the original data), and any columns
-#'  created by the predictions. For example, for simple regression problems
-#'  generates a column called `.pred` and so on. As noted above, the prediction
-#'  columns that are returned are determined by the type of metric(s) requested.
+#' parameters, the row number from the original data object (`.row`), the
+#' outcome data (with the same name(s) of the original data), and any columns
+#' created by the predictions. For example, for simple regression problems, this
+#' function generates a column called `.pred` and so on. As noted above, the
+#' prediction columns that are returned are determined by the type of metric(s)
+#' requested.
 #'
 #' This list column can be `unnested` using `tidyr::unnest()` or using the
 #'  convenience function `collect_predictions()`.

@@ -1,11 +1,11 @@
 # nocov start
 #' Simple workflow functions
 #'
-#' These functions emulate funcitons and data structures of the upcoming workflows
-#' package. In the future, these api's may change and these functions will not
-#' be contained in the `tune` package.
+#' These functions emulate functions and data structures of the upcoming
+#' workflows package. In the future, these api's may change and these functions
+#' will not be contained in the `tune` package.
 #'
-#' @param object,x a workflow object.
+#' @param object,x A workflow object.
 #' @param model A parsnip model specificatoin.
 #' @param recipe A recipe object.
 #' @param formula A basic model formula.
