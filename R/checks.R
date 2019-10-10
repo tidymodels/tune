@@ -57,7 +57,8 @@ check_installs <- function(x) {
   } else {
     m_type <- class(x)[1]
     deps <- parsnip::get_dependency(m_type)
-    deps <- deps$pkg[[deps$engine == x$engine]]
+    deps <- deps$pkg[deps$engine == x$engine]
+    deps <- unlist(deps)
   }
 
   if (length(deps) > 0) {
