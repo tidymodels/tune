@@ -53,6 +53,7 @@ test_that('grid objects', {
 # ------------------------------------------------------------------------------
 
 test_that('workflow objects', {
+  skip_if_not_installed("xgboost")
   wflow_1 <-
     workflow() %>%
     add_model(glmn) %>%

@@ -41,6 +41,37 @@ check_grid <- function(x, object) {
   x
 }
 
+shhhh <- function(x) {
+  suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))
+}
+
+is_installed <- function(pkg) {
+  res <- try(shhhh(pkg), silent = TRUE)
+  res
+}
+
+check_installs <- function(x) {
+
+  if (x$engine == "unknown") {
+    rlang::abort("Please declare an engine for the model")
+  } else {
+    m_type <- class(x)[1]
+    deps <- parsnip::get_dependency(m_type)
+    deps <- deps$pkg[deps$engine == x$engine]
+    deps <- unlist(deps)
+  }
+
+  if (length(deps) > 0) {
+    is_inst <- purrr::map_lgl(deps, is_installed)
+    if (any(!is_inst)) {
+      stop("Some package installs are required: ",
+        paste0("'", deps[!is_inst], "'", collapse = ", "),
+        call. = FALSE
+      )
+    }
+  }
+}
+
 check_object <- function(x, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
     stop("The `object` argument should be a 'workflow' object.",
@@ -65,6 +96,9 @@ check_object <- function(x, check_dials = FALSE) {
            call. = FALSE)
     }
   }
+
+  mod <- get_wflow_model(x)
+  check_installs(mod)
 
   invisible(NULL)
 }
