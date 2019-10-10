@@ -12,29 +12,29 @@ Bayes_control(verbose = FALSE, no_improve = 10L, uncertain = Inf,
 \item{verbose}{A logical for logging results as they are generated. Despite
 this argument, warnings and errors are always shown.}
 
-\item{no_improve}{The integer cutoff for the number of iterations without better
-results.}
+\item{no_improve}{The integer cutoff for the number of iterations without
+better results.}
 
 \item{uncertain}{The number of iterations with no improvement before an
-uncertainty sample is created where a sample with high predicted variance is
-chosen. The iteration counter is reset after each uncertainty sample. For
-example, if \code{uncertain = 10}, this condition is triggered every 10 samples
-with no improvement.}
+uncertainty sample is created where a sample with high predicted variance
+is chosen. The iteration counter is reset after each uncertainty sample.
+For example, if \code{uncertain = 10}, this condition is triggered every 10
+samples with no improvement.}
 
 \item{seed}{An integer for controlling the random number stream.}
 
-\item{extract}{An optional function to collection any information from the
-model or other objects. See \code{grid_control()} for details. Note that if
-initial results were already generated using \code{tune_grid()}, care must be
-taken if the Bayesian search has a different extraction function.}
+\item{extract}{An optional function to collect any information from the model
+or other objects. See \code{grid_control()} for details. Note that if initial
+results were already generated using \code{tune_grid()}, care must be taken if
+the Bayesian search has a different extraction function.}
 
-\item{save_pred}{A logical to save the out-of-sample predictions from
-each resample and each parameter combination. See \code{grid_control()} for details.}
+\item{save_pred}{A logical to save the out-of-sample predictions from each
+resample and each parameter combination. See \code{grid_control()} for details.}
 
-\item{time_limit}{A number for the minimum number of \emph{minutes} (elapsed)
-that the function should execute. The elapsed time is evaluated at internal
-checkpoints and, if over time, the results at that time are returned (with a
-warning). This means that the \code{time_limit} is not an exact limit, but a
+\item{time_limit}{A number for the minimum number of \emph{minutes} (elapsed) that
+the function should execute. The elapsed time is evaluated at internal
+checkpoints and, if over time, the results at that time are returned (with
+a warning). This means that the \code{time_limit} is not an exact limit, but a
 minimum time limit.}
 
 \item{pkgs}{An optional character string of R package names that should be

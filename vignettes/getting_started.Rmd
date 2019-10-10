@@ -66,7 +66,7 @@ ames_rec <-
 
 The package can detect these values and optimize them. 
 
-However, based on the plot above, the potential _amount_ non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude.  The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.  
+However, based on the plot above, the potential _amount_ of non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude.  The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.  
 
 To accomplish this, individual `step_ns()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
 
@@ -128,11 +128,11 @@ df_vals <- seq(2, 18, by = 2)
 spline_grid <- expand.grid(`long df` = df_vals, `lat df` = df_vals)
 ```
 
-Note that a 2 degree of freedom model is a simple quadratic fit. 
+Note that a 2-degree-of-freedom model is a simple quadratic fit. 
 
 There are two other ingredients that are required before tuning. 
 
-First, is a model specification. Using `parsnip`, a basic linear model can be used:
+First is a model specification. Using `parsnip`, a basic linear model can be used:
 
 ```{r mod}
 lm_mod <- linear_reg() %>% set_engine("lm")
@@ -159,7 +159,7 @@ The object is similar to the `rsample` object but with one or more extra columns
 ames_res
 ```
 
-The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that is uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `perf` option.] for each parameter combination: 
+The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `perf` option.] for each parameter combination: 
 
 ```{r res-ex}
 ames_res$.metrics[[1]]
@@ -182,7 +182,7 @@ rmse_vals <-
 rmse_vals
 ```
 
-Smaller degrees of freedom values correspond to more linear functions but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
+Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
 
 ```{r rmse-tile}
 rmse_vals %>% 
@@ -211,13 +211,13 @@ ames_train %>%
   facet_wrap(~ predictor, scales = "free_x")
 ```
 
-Looking at these plots, the smaller degrees of freedom are clearly under-fitting. Visually, the more complex splines might indicate that there is overfitting but this would result in poor RMSE values when computed on the hold-out data. 
+Looking at these plots, the smaller degrees of freedom (red) are clearly under-fitting. Visually, the more complex splines (blue) might indicate that there is overfitting but this would result in poor RMSE values when computed on the hold-out data. 
 
 Based on these results, a new recipe would be created with the optimized values (using the entire training set) and this would be combined with a linear model created form the entire training set. 
 
 ## Model Optimization
 
-Instead of a linear regression, a nonlinear model might provide good performance. A K-nearest neighbor fit will also be optimized. For this example, the number of neighbors and the distance weighting function will be optimized:
+Instead of a linear regression, a nonlinear model might provide good performance. A K-nearest-neighbor fit will also be optimized. For this example, the number of neighbors and the distance weighting function will be optimized:
 
 ```{r knn}
 # requires the kknn package
@@ -274,4 +274,3 @@ summarize(knn_search) %>%
 ```
 
 With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe. 
-

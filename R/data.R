@@ -15,7 +15,7 @@
 #'
 #' There is a column for the product, a column for the text of the review, and
 #'  a factor column for a class variable. The outcome is whether the reviewer
-#'  game the product a 5-star rating or not.
+#'  gave the product a 5-star rating or not.
 #'
 #' @name small_fine_foods
 #' @aliases small_fine_foods training_data testing_data
@@ -30,4 +30,3 @@
 #' data(small_fine_foods)
 #' str(training_data)
 NULL
-

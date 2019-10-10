@@ -1,9 +1,10 @@
 #' A placeholder function for argument values that are to be tuned.
 #'
-#' [tune()] is used when a parameter will be specified at a later date.
+#' `tune()` is used when a parameter will be specified at a later date.
+#'
 #' @param id A single character value that can be used to differentiate
-#'  parameters that are used in multiple places but have the same name or if
-#'  the user wants a note associated with the parameter.
+#'   parameters that are used in multiple places but have the same name, or if
+#'   the user wants a note associated with the parameter.
 #' @return A call object that echos the user input.
 #' @examples
 #' tune()
@@ -25,4 +26,3 @@ tune <- function(id = "") {
   }
   res
 }
-

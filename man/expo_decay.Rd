@@ -25,7 +25,7 @@ over iterations. This can be used to dynamically set parameters for
 acquisition functions as iterations of Bayesian optimization proceed.
 }
 \details{
-Note that, when used with the acquisition functions in \code{tune()} a wrapper
+Note that, when used with the acquisition functions in \code{tune()}, a wrapper
 would be required since only the first argument would be evaluated during
 tuning.
 }

@@ -18,9 +18,10 @@ exploitation and exploration. Smaller values favor exploitation.}
 
 \item{eps}{A small constant to avoid division by zero.}
 
-\item{kappa}{A positive number (or function) that corresponds to the multiplier
-of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
-95 percent confidence intervals). Smaller values lean more towards exploitation.}
+\item{kappa}{A positive number (or function) that corresponds to the
+multiplier of the standard deviation in a confidence bound (e.g. 1.96 in
+normal-theory 95 percent confidence intervals). Smaller values lean more
+towards exploitation.}
 }
 \value{
 An object of class \code{prob_improve}, \code{exp_improve}, or \code{conf_bounds}
@@ -31,11 +32,12 @@ These functions can be used to score candidate tuning parameter combinations
 as a function of their predicted mean and variation.
 }
 \details{
-The acquisition functions often combine the mean and variance predictions
-from the Gaussian process model into an objective to be optimized.
+The acquisition functions often combine the mean and variance
+predictions from the Gaussian process model into an objective to be
+optimized.
 
-For this documentation, we assume that the metric in question is better
-when \emph{maximized} (e.g. accuracy, the coefficient of determination, etc).
+For this documentation, we assume that the metric in question is better when
+\emph{maximized} (e.g. accuracy, the coefficient of determination, etc).
 
 The expected improvement of a point \code{x} is based on the predicted mean and
 variation at that point as well as the current best value (denoted here as

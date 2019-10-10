@@ -19,7 +19,7 @@ add_formula(object, formula)
 \method{print}{workflow}(x, ...)
 }
 \arguments{
-\item{object, x}{a workflow object.}
+\item{object, x}{A workflow object.}
 
 \item{model}{A parsnip model specificatoin.}
 
@@ -33,7 +33,7 @@ add_formula(object, formula)
 A workflow object.
 }
 \description{
-These functions emulate funcitons and data structures of the upcoming workflows
-package. In the future, these api's may change and these functions will not
-be contained in the \code{tune} package.
+These functions emulate functions and data structures of the upcoming
+workflows package. In the future, these api's may change and these functions
+will not be contained in the \code{tune} package.
 }

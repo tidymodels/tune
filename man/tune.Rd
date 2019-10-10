@@ -8,14 +8,14 @@ tune(id = "")
 }
 \arguments{
 \item{id}{A single character value that can be used to differentiate
-parameters that are used in multiple places but have the same name or if
+parameters that are used in multiple places but have the same name, or if
 the user wants a note associated with the parameter.}
 }
 \value{
 A call object that echos the user input.
 }
 \description{
-\code{\link[=tune]{tune()}} is used when a parameter will be specified at a later date.
+\code{tune()} is used when a parameter will be specified at a later date.
 }
 \examples{
 tune()

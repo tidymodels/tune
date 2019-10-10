@@ -30,8 +30,8 @@ Control the grid search process
 \details{
 For \code{extract}, this function can be used to output the model object, the
 recipe (if used), or some components of either or both. When evaluated, the
-function's sole argument has a named list with elements \code{recipe} and
-\code{model}. If the formula method is used, the recipe element will be \code{NULL}.
+function's sole argument has a named list with elements \code{recipe} and \code{model}.
+If the formula method is used, the recipe element will be \code{NULL}.
 
 The results of the \code{extract} function are added to a list column in the
 output called \code{.extracts}. Each element of this list is a tibble with tuning
