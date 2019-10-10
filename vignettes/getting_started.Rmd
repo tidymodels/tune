@@ -220,9 +220,7 @@ Based on these results, a new recipe would be created with the optimized values 
 Instead of a linear regression, a nonlinear model might provide good performance. A K-nearest neighbor fit will also be optimized. For this example, the number of neighbors and the distance weighting function will be optimized:
 
 ```{r knn}
-# This example requires the kknn package.
-library(kknn)
-
+# requires the kknn package
 knn_mod <- 
   nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
   set_engine("kknn") %>% 
