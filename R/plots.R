@@ -8,7 +8,7 @@
 #'
 #' @export
 plot_perf_vs_iter <- function(x, metric = NULL, width = max(x$.iter)/75) {
-  x <- summarize(x)
+  x <- estimate(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
@@ -45,7 +45,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = max(x$.iter)/75) {
 
 plot_marginals <- function(x, metric = NULL) {
   # maybe add workflow to get transformations, bust up into modules
-  x <- summarize(x)
+  x <- estimate(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }

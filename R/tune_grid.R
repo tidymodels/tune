@@ -72,7 +72,7 @@
 #' called `.metrics`. This tibble contains a row for each metric and columns
 #' for the value, the estimator type, and so on.
 #'
-#' A `summarize()` method can be used for these objects to collapse the results
+#' An `estimate()` method can be used for these objects to collapse the results
 #' over the resampled (to obtain the final resampling estimates per tuning
 #' parameter combination).
 #'

@@ -136,7 +136,7 @@ search_res
 As with grid search, we can summarize the results over resamples:
 
 ```{r summarize-iters}
-estimates <- summarize(search_res) %>% arrange(.iter)
+estimates <- estimate(search_res) %>% arrange(.iter)
 estimates
 ```
 

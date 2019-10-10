@@ -143,7 +143,7 @@ tune_Bayes_workflow <-
     }
 
     unsummarized <- check_initial(initial, param_info, object, rs, perf, control)
-    mean_stats <- summarize(unsummarized)
+    mean_stats <- estimate(unsummarized)
 
     check_time(start_time, control$time_limit)
 
@@ -215,7 +215,7 @@ tune_Bayes_workflow <-
 
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
-        rs_estimate <- summarize(tmp_res)
+        rs_estimate <- estimate(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
         log_progress(control, x = mean_stats, maximize = maximize, objective = perf_name)
@@ -351,7 +351,7 @@ pick_candidate <- function(results, info, control) {
 update_score_card <- function(info, iter, results, control) {
   current_val <-
     results %>%
-    summarize() %>%
+    estimate() %>%
     dplyr::filter(.metric == info$perf) %>%
     dplyr::pull(mean)
 

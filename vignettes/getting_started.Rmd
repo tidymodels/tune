@@ -165,10 +165,10 @@ The `.metrics` column has all of the holdout performance estimates^[`tune` has d
 ames_res$.metrics[[1]]
 ```
 
-To get the average metric value for each parameter combination, `summarize()` can be put to use:
+To get the average metric value for each parameter combination, `estimate()` can be put to use:
 
 ```{r mean-res}
-estimates <- summarize(ames_res)
+estimates <- estimate(ames_res)
 estimates
 ```
 
@@ -268,7 +268,7 @@ plot_perf_vs_iter(knn_search, metric = "rmse")
 The best results here were:
 
 ```{r bo-best}
-summarize(knn_search) %>% 
+estimate(knn_search) %>% 
   dplyr::filter(.metric == "rmse") %>% 
   arrange(mean)
 ```
