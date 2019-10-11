@@ -80,7 +80,7 @@ ames_rec <-
   step_ns(Latitude,  deg_free = tune("lat df"))
 ```
 
-The `dials` package has a function called `param_set()` that can detect and collect the parameters that have been flagged for tuning:
+The function `dials::param_set()` that can detect and collect the parameters that have been flagged for tuning:
 
 ```{r p-set}
 param_set(ames_rec)
@@ -113,7 +113,15 @@ ames_param
 
 ## Grid Search
 
-Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. To make the grid, a data frame is needed with column names matching the "id" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
+Grid search uses a pre-defined set of candidate parameters and evaluates these using resampling. The basic ingredients are:
+
+ * A grid of candidate values to evaluate.
+ 
+ * One or more performance metrics for quantifying how well the model works.
+ 
+ * A resampling scheme that can be used to appropriately measure performance (which could be a simple validation set). 
+
+To make the grid, a data frame is needed with column names matching the "id" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
 
 ```{r sf-grid}
 spline_grid <- grid_max_entropy(ames_param, size = 10)
@@ -140,12 +148,14 @@ lm_mod <- linear_reg() %>% set_engine("lm")
 
 No tuning parameters here. 
 
-We also need a resampling specification. The  Ames data set are large enough to use simple 10-fold cross-validation:
+As mentioned above, a resampling specification is also needed. The  Ames data set are large enough to use simple 10-fold cross-validation:
 
 ```{r folds}
 set.seed(2453)
 cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 ```
+
+The root mean squared error will be used to measure performance (and this is the default for regression problems).
 
 Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `log10(Sale_Price) ~ Longitude + Latitude`. A recipe is not required.]:
 
@@ -250,7 +260,17 @@ knn_param <-
   )
 ```
 
-Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate. 
+Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.
+
+Although no grid is required, the process requires a few additional pieces of information:
+
+ * A description of the search space. At a minimum, the would consist of ranges for numeric values and a list of values for categorical tuning parameters. 
+
+ * An [acquisition function](https://tidymodels.github.io/tune/articles/acquisition_functions.html) that helps score potential tuning parameter values. 
+
+ * A model for analyzing and making predictions of the best tuning parameter values. A Gaussian Process model is typical and used here. 
+
+The code to conduct the search is: 
 
 ```{r bo, cache = TRUE}
 ctrl <- Bayes_control(verbose = TRUE)
