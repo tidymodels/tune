@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))

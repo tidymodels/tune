@@ -71,7 +71,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
         </div>
       </div>
     </div>
@@ -147,16 +147,16 @@ this argument, warnings and errors are always shown.</p></td>
     </tr>
     <tr>
       <th>no_improve</th>
-      <td><p>The integer cutoff for the number of iterations without better
-results.</p></td>
+      <td><p>The integer cutoff for the number of iterations without
+better results.</p></td>
     </tr>
     <tr>
       <th>uncertain</th>
       <td><p>The number of iterations with no improvement before an
-uncertainty sample is created where a sample with high predicted variance is
-chosen. The iteration counter is reset after each uncertainty sample. For
-example, if <code>uncertain = 10</code>, this condition is triggered every 10 samples
-with no improvement.</p></td>
+uncertainty sample is created where a sample with high predicted variance
+is chosen. The iteration counter is reset after each uncertainty sample.
+For example, if <code>uncertain = 10</code>, this condition is triggered every 10
+samples with no improvement.</p></td>
     </tr>
     <tr>
       <th>seed</th>
@@ -164,22 +164,22 @@ with no improvement.</p></td>
     </tr>
     <tr>
       <th>extract</th>
-      <td><p>An optional function to collection any information from the
-model or other objects. See <code><a href='grid_control.html'>grid_control()</a></code> for details. Note that if
-initial results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be
-taken if the Bayesian search has a different extraction function.</p></td>
+      <td><p>An optional function to collect any information from the model
+or other objects. See <code><a href='grid_control.html'>grid_control()</a></code> for details. Note that if initial
+results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be taken if
+the Bayesian search has a different extraction function.</p></td>
     </tr>
     <tr>
       <th>save_pred</th>
-      <td><p>A logical to save the out-of-sample predictions from
-each resample and each parameter combination. See <code><a href='grid_control.html'>grid_control()</a></code> for details.</p></td>
+      <td><p>A logical to save the out-of-sample predictions from each
+resample and each parameter combination. See <code><a href='grid_control.html'>grid_control()</a></code> for details.</p></td>
     </tr>
     <tr>
       <th>time_limit</th>
-      <td><p>A number for the minimum number of <em>minutes</em> (elapsed)
-that the function should execute. The elapsed time is evaluated at internal
-checkpoints and, if over time, the results at that time are returned (with a
-warning). This means that the <code>time_limit</code> is not an exact limit, but a
+      <td><p>A number for the minimum number of <em>minutes</em> (elapsed) that
+the function should execute. The elapsed time is evaluated at internal
+checkpoints and, if over time, the results at that time are returned (with
+a warning). This means that the <code>time_limit</code> is not an exact limit, but a
 minimum time limit.</p></td>
     </tr>
     <tr>

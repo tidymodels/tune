@@ -111,10 +111,10 @@ The `.metrics` column contains tibbles of the performance metrics for each tunin
 grid_form %>% select(.metrics) %>% slice(1) %>% pull(1)
 ```
 
-To get the final resampling estimates, the `summarize` function can be used on the grid object:
+To get the final resampling estimates, the `estimate` function can be used on the grid object:
 
 ```{r metric-estimates}
-estimates <- summarize(grid_form)
+estimates <- estimate(grid_form)
 estimates
 ```
 
@@ -140,7 +140,7 @@ rec_form
 The best setting here was:
 
 ```{r best-rec}
-summarize(rec_form) %>% 
+estimate(rec_form) %>% 
   arrange(desc(mean)) %>% 
   slice(1)
 ```

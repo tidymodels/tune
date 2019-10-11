@@ -190,7 +190,7 @@ This took a while to complete. What did the results look like? Let's get the res
 
 ```{r grid-roc}
 grid_roc <- 
-  summarize(five_star_glmnet) %>% 
+  estimate(five_star_glmnet) %>% 
   arrange(desc(mean))
 grid_roc
 ```
