@@ -71,7 +71,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
         </div>
       </div>
     </div>
@@ -171,8 +171,8 @@ loaded (by namespace) during parallel processing.</p></td>
 
     <p>For <code>extract</code>, this function can be used to output the model object, the
 recipe (if used), or some components of either or both. When evaluated, the
-function's sole argument has a named list with elements <code>recipe</code> and
-<code>model</code>. If the formula method is used, the recipe element will be <code>NULL</code>.</p>
+function's sole argument has a named list with elements <code>recipe</code> and <code>model</code>.
+If the formula method is used, the recipe element will be <code>NULL</code>.</p>
 <p>The results of the <code>extract</code> function are added to a list column in the
 output called <code>.extracts</code>. Each element of this list is a tibble with tuning
 parameter column and a list column (also called <code>.extracts</code>) that contains

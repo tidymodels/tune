@@ -72,7 +72,7 @@ as a function of their predicted mean and variation." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
         </div>
       </div>
     </div>
@@ -155,9 +155,10 @@ exploitation and exploration. Smaller values favor exploitation.</p></td>
     </tr>
     <tr>
       <th>kappa</th>
-      <td><p>A positive number (or function) that corresponds to the multiplier
-of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
-95 percent confidence intervals). Smaller values lean more towards exploitation.</p></td>
+      <td><p>A positive number (or function) that corresponds to the
+multiplier of the standard deviation in a confidence bound (e.g. 1.96 in
+normal-theory 95 percent confidence intervals). Smaller values lean more
+towards exploitation.</p></td>
     </tr>
     </table>
 
@@ -167,10 +168,11 @@ of the standard deviation in a confidence bounds (e.g. 1.96 in normal-theory
 along with an extra class of <code>acquisition_function</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The acquisition functions often combine the mean and variance predictions
-from the Gaussian process model into an objective to be optimized.</p>
-<p>For this documentation, we assume that the metric in question is better
-when <em>maximized</em> (e.g. accuracy, the coefficient of determination, etc).</p>
+    <p>The acquisition functions often combine the mean and variance
+predictions from the Gaussian process model into an objective to be
+optimized.</p>
+<p>For this documentation, we assume that the metric in question is better when
+<em>maximized</em> (e.g. accuracy, the coefficient of determination, etc).</p>
 <p>The expected improvement of a point <code>x</code> is based on the predicted mean and
 variation at that point as well as the current best value (denoted here as
 <code>x_b</code>). The vignette linked below contains the formulas for this acquisition

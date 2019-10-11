@@ -35,7 +35,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
         </div>
       </div>
     </div>
@@ -106,7 +106,7 @@
 <li><p><em>exploration</em> pushes the search towards unexplored regions.</p></li>
 </ul>
 <p>The acquisition functions themselves have quasi-tuning parameters that are usually trade-offs between exploitation and exploration. For example, if the performance measure being used should be maximized (i.e. accuracy, the area under the ROC curve, etc), then one acquisition function would be a lower confidence bound <span class="math inline">\(L = \mu - C \times \sigma\)</span>. The multiplier <span class="math inline">\(C\)</span> would be used to penalize based on the predicted standard error (<span class="math inline">\(\sigma\)</span>) of different parameter combinations. Note that the acquisition function is not the performance measure, but a function of what metric is used to evaluate the model.</p>
-<p>One of the most common acquisition functions is the <em>expected improvement</em>. Based on basic probability theory, this can be computed relative to the current estimate of the optimal performance. Suppose that our performance metric should be maximized (e.g. accuracy, area under the ROC curve etc). For any tuning parameter combination <span class="math inline">\(\theta\)</span>, we have the predicted mean and standard error of that metric (call those <span class="math inline">\(\mu(\theta)\)</span> and <span class="math inline">\(\sigma(\theta)\)</span>). From previous data, the best (mean) performance value was <span class="math inline">\(m_{opt}\)</span>). The expected improvement is determined using:</p>
+<p>One of the most common acquisition functions is the <em>expected improvement</em>. Based on basic probability theory, this can be computed relative to the current estimate of the optimal performance. Suppose that our performance metric should be maximized (e.g. accuracy, area under the ROC curve, etc). For any tuning parameter combination <span class="math inline">\(\theta\)</span>, we have the predicted mean and standard error of that metric (call those <span class="math inline">\(\mu(\theta)\)</span> and <span class="math inline">\(\sigma(\theta)\)</span>). From previous data, the best (mean) performance value was <span class="math inline">\(m_{opt}\)</span>). The expected improvement is determined using:</p>
 <p><span class="math display">\[
 \begin{align}
 EI(\theta; m_{opt}) &amp;= \delta(\theta) \Phi\left(\frac{\delta(\theta)}{\sigma(\theta)}\right) + \sigma(\theta) \phi\left(\frac{\delta(\theta)}{\sigma(\theta)}\right) \notag \\
@@ -118,14 +118,14 @@ EI(\theta; m_{opt}) &amp;= \delta(\theta) \Phi\left(\frac{\delta(\theta)}{\sigma
 <p>The value <span class="math inline">\(\delta(\theta)\)</span> measures how close we are (on average) to the current best performance value<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. When new candidate tuning parameters are needed, the space of <span class="math inline">\(\theta\)</span> is searched for the value that maximizes the expected improvement.</p>
 <p>Suppose a single parameter were being optimized and that parameter was represented using a log10 transformation. Using resampling, suppose the accuracy results for three points were evaluated:</p>
 <p><img src="figures/initial.svg"><!-- --></p>
-<p>In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel below along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
+<p>In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel below, along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
 <p><img src="figures/iter_1.svg"><!-- --></p>
 <p>Notice that the interval width is large in regions far from observed data points.</p>
 <p>The bottom panel shows the expected improvement across the range of candidate values. Of the observed points, the expected improvement near the middle point has the largest improvement. This is because the first term in the equation above (with the <span class="math inline">\(\delta(\theta)\)</span> coefficient) is very large while the second term (with the coefficient <span class="math inline">\(\sigma(\theta)\)</span> is virtually zero. This focus on the mean portion will keep the search mostly in the region of the best performance.</p>
 <p>Using these results, the parameter value with the largest improvement is then evaluated using cross-validation. The GP model is then updated and a new parameter is chosen and so on.</p>
 <p>The results at iteration 20 were:</p>
 <p><img src="figures/iter_20.svg"><!-- --></p>
-<p>The points shown on the graph indicate that there is a region the the neighborhood of 0.01 that appears to produce the best results and that the expected improvement function has driven the optimization to focus on this region.</p>
+<p>The points shown on the graph indicate that there is a region in the neighborhood of 0.01 that appears to produce the best results, and that the expected improvement function has driven the optimization to focus on this region.</p>
 <p>When using expected improvement, the primary method for compromising between exploitation and exploration is the use of a “trade-off” value. This value is the amount of performance (in the original units) that can be sacrificed when computing the improvement. This has the effect of down-playing the contribution of the mean effect in the computations. For a trade-off value <span class="math inline">\(\tau\)</span>, the equation above uses:</p>
 <p><span class="math display">\[
 \delta(\theta) = \mu(\theta) - m_{opt} - \tau

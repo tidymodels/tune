@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Quietly load package namespace — load_pkgs • tune</title>
+<title>Estimate performance values — estimate • tune</title>
 
 
 <!-- jquery -->
@@ -34,10 +34,8 @@
 
 
 
-<meta property="og:title" content="Quietly load package namespace — load_pkgs" />
-<meta property="og:description" content="For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently." />
+<meta property="og:title" content="Estimate performance values — estimate" />
+<meta property="og:description" content="Estimate performance values" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,31 +124,39 @@ environments differently." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Quietly load package namespace</h1>
+    <h1>Estimate performance values</h1>
     
-    <div class="hidden name"><code>load_pkgs.Rd</code></div>
+    <div class="hidden name"><code>estimate.tune_results.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently.</p>
+    <p>Estimate performance values</p>
     </div>
 
-    <pre class="usage"><span class='fu'>load_pkgs</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>estimate</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for tune_results</span>
+<span class='fu'>estimate</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A character vector of packages.</p></td>
+      <td><p>An object.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not currently used.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An invisible NULL.</p>
+    <p>A tibble with parameter values and summaries of their results. A
+column for the average (<code>mean</code>), the standard error of the mean (<code>std_err</code>),
+and the number of non-missing values (<code>n</code>). These are computed for each
+metric and estimator type.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -35,7 +35,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@
 <p>To demonstrate model tuning, we’ll use the Ionosphere data in the <code>mlbench</code> package:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(mlbench)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(Ionosphere)</a></code></pre></div>
-<p>There are 43 predictors and a factor outcome. Two of the predictors are factors (<code>V1</code> and <code>V2</code>) and the rest are numerics that have been scaled to a range of -1 and 1. Note that the two factor predictors have sparse distributions:</p>
+<p>There are 43 predictors and a factor outcome. Two of the predictors are factors (<code>V1</code> and <code>V2</code>) and the rest are numerics that have been scaled to a range of -1 to 1. Note that the two factor predictors have sparse distributions:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/table.html">table</a></span>(Ionosphere<span class="op">$</span>V1)</a></code></pre></div>
 <pre><code>## 
 ##   0   1 
@@ -110,7 +110,7 @@
 <pre><code>## 
 ##   0 
 ## 351</code></pre>
-<p>There’s no point of putting <code>V2</code> into any model since is is a zero-variance predictor. <code>V1</code> is not but it <em>could</em> be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when this there is only a single observed value:</p>
+<p>There’s no point of putting <code>V2</code> into any model since is is a zero-variance predictor. <code>V1</code> is not but it <em>could</em> be if the resampling process ends up sampling all of the same value. Is this an issue? It might be since the standard R formula infrastructure fails when there is only a single observed value:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Ionosphere, <span class="dt">family =</span> binomial)</a></code></pre></div>
 <pre><code>## Error in `contrasts&lt;-`(`*tmp*`, value = contr.funs[1 + isOF[nn]]): contrasts can be applied only to factors with 2 or more levels</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Surprisingly, this doesn't help: </span></a>
@@ -143,9 +143,9 @@
 <div id="optional-inputs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#optional-inputs" class="anchor"></a>Optional Inputs</h2>
-<p>An <em>optional</em> step for model tuning is to specify what metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likleihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a <code>yardstick</code> function can be used to create a metric set:</p>
+<p>An <em>optional</em> step for model tuning is to specify which metrics should be computed using the out-of-sample predictions. For classification, the default is to calculate the log-likelihood statistic and overall accuracy. Instead of the defaults, the area under the ROC curve will be used. To do this, a <code>yardstick</code> function can be used to create a metric set:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">roc_vals &lt;-<span class="st"> </span><span class="kw">metric_set</span>(roc_auc)</a></code></pre></div>
-<p>If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin Hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.</p>
+<p>If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.</p>
 <p>Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/grid_control.html">grid_control</a></span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
@@ -171,7 +171,7 @@
 ##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
 ## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
 ## # … with 20 more rows</code></pre>
-<p>The <code>.metrics</code> column contains tibbles of the performance metrics for each tuning parameter combinations:</p>
+<p>The <code>.metrics</code> column contains tibbles of the performance metrics for each tuning parameter combination:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">grid_form <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(.metrics) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [[1]]
 ## # A tibble: 10 x 5
@@ -187,8 +187,8 @@
 ##  8  0.950    1.74e- 1 roc_auc binary         1    
 ##  9  0.189    3.13e- 6 roc_auc binary         0.906
 ## 10  0.0364   4.96e- 9 roc_auc binary         0.909</code></pre>
-<p>To get the final resampling estimates, the <code>summarize</code> function can be used on the grid object:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">estimates &lt;-<span class="st"> </span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(grid_form)</a>
+<p>To get the final resampling estimates, the <code>estimate</code> function can be used on the grid object:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">estimates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/estimate.tune_results.html">estimate</a></span>(grid_form)</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">estimates</a></code></pre></div>
 <pre><code>## # A tibble: 10 x 7
 ##        cost rbf_sigma .metric .estimator  mean     n  std_err
@@ -235,7 +235,7 @@
 ## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The best setting here was:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(rec_form) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="../reference/estimate.tune_results.html">estimate</a></span>(rec_form) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb26-2" data-line-number="2"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb26-3" data-line-number="3"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 7
