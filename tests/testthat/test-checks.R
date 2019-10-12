@@ -24,7 +24,7 @@ test_that('grid objects', {
     threshold = 1:10, deg_free = 1:10, degree = 1:10
   )
 
-  set_1 <- param_set(chi_wflow)
+  set_1 <- dials::parameters(chi_wflow)
   set_2 <- set_1 %>% update(deg_free = dials::deg_free(c(1, 3)))
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
@@ -141,14 +141,14 @@ test_that('initial values', {
     add_model(glmn) %>%
     add_recipe(recipe(mpg ~ ., data = mtcars))
 
-  grid_1 <- tune:::check_initial(NULL, param_set(wflow_1), wflow_1,
+  grid_1 <- tune:::check_initial(NULL, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), 10)
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 3)))
 
-  grid_2 <- tune:::check_initial(2, param_set(wflow_1), wflow_1,
+  grid_2 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  Bayes_control())
   expect_true(is.data.frame(grid_2))

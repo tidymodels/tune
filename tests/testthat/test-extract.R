@@ -137,7 +137,7 @@ test_that('tune model and recipe', {
     add_model(glmn_mod)
   set.seed(35)
   grid_3 <-
-    param_set(wflow_3) %>%
+    dials::parameters(wflow_3) %>%
     update(num_comp = num_comp(c(2, 5))) %>%
     grid_latin_hypercube()
 

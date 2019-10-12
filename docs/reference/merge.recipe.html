@@ -226,7 +226,7 @@ names (or their annotations) in the object.</p></td>
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>254</span>)
 <span class='no'>xgb_grid</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/param_set.html'>param_set</a></span>(<span class='no'>xgb_mod</span>) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>(<span class='no'>xgb_mod</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/finalize.html'>finalize</a></span>(<span class='no'>iris</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>grid_max_entropy</a></span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 

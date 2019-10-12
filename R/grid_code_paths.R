@@ -46,11 +46,11 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   split <- rs$splits[[rs_iter]]
 
   model_param <-
-    param_set(object) %>%
+    dials::parameters(object) %>%
     dplyr::filter(source == "model_spec") %>%
     dplyr::pull(id)
   rec_param <-
-    param_set(object) %>%
+    dials::parameters(object) %>%
     dplyr::filter(source == "recipe") %>%
     dplyr::pull(id)
 

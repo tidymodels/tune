@@ -4,7 +4,7 @@
 #'  combinations based on previous results.
 #'
 #' @inheritParams tune_grid
-#' @param param_info A `dials::param_set()` object or `NULL`. If none is given,
+#' @param param_info A `dials::parameters()` object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments.
 #' @param perf A `yardstick::metric_set()` object containing information on how
 #' models will be evaluated for performance. The first metric in `perf` is the
@@ -139,7 +139,7 @@ tune_Bayes_workflow <-
     maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
 
     if (is.null(param_info)) {
-      param_info <- param_set(object)
+      param_info <- dials::parameters(object)
     }
 
     unsummarized <- check_initial(initial, param_info, object, rs, perf, control)

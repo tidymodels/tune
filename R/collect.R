@@ -45,7 +45,7 @@ collector <- function(x, coll_col = ".predictions", nest_by = "nothing", wflow =
       if (is.null(wflow)) {
         stop("Please supply the corresponding workflow object.", call. = FALSE)
       }
-      keep_cols <- param_set(wflow)$id
+      keep_cols <- dials::parameters(wflow)$id
       if (any(colnames(x) == ".iter")) {
         keep_cols <- c(keep_cols, ".iter")
       }

@@ -86,7 +86,7 @@ svm_wflow <-
 From this object, we can derive information about what parameters are slated to be tuned. A parameter set is derived: 
 
 ```{r pset}
-svm_set <- param_set(svm_wflow)
+svm_set <- parameters(svm_wflow)
 svm_set
 ```
 

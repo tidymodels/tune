@@ -241,7 +241,7 @@ Then we can extract and manipulate the corresponding parameter set:
 ```{r search-set}
 five_star_set <-
   five_star_wflow %>%
-  param_set() %>%
+  parameters() %>%
   update(num_terms = hash_range, penalty = penalty(c(-3, 0)))
 ```
 

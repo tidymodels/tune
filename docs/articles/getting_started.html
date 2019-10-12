@@ -140,8 +140,8 @@
 <a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">  </span><span class="kw">step_log</span>(Sale_Price, <span class="dt">base =</span> <span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw">step_ns</span>(Longitude, <span class="dt">deg_free =</span> <span class="kw"><a href="../reference/tune.html">tune</a></span>(<span class="st">"long df"</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw">step_ns</span>(Latitude,  <span class="dt">deg_free =</span> <span class="kw"><a href="../reference/tune.html">tune</a></span>(<span class="st">"lat df"</span>))</a></code></pre></div>
-<p>The function <code><a href="https://rdrr.io/pkg/dials/man/param_set.html">dials::param_set()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>(ames_rec)</a>
+<p>The function <code><a href="https://rdrr.io/pkg/dials/man/parameters.html">dials::parameters()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(ames_rec)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Collection of 2 parameters for tuning</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt;       id parameter type object class</span></a>
@@ -158,7 +158,7 @@
 <p>The parameter objects can be easily changed using the <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> function:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">ames_param &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span>ames_rec <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb8-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(</a>
 <a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="st">`</span><span class="dt">long df</span><span class="st">`</span> =<span class="st"> </span><span class="kw">spline_degree</span>(), </a>
 <a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="st">`</span><span class="dt">lat df</span><span class="st">`</span> =<span class="st"> </span><span class="kw">spline_degree</span>()</a>
@@ -321,7 +321,7 @@
 <p>From this, the parameter set can be used to modify the range and values of parameters being optimized<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">knn_param &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">  </span>knn_wflow <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/param_set.html">param_set</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-4" data-line-number="4"><span class="st">    </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(</a>
 <a class="sourceLine" id="cb22-5" data-line-number="5">    <span class="st">`</span><span class="dt">long df</span><span class="st">`</span> =<span class="st"> </span><span class="kw">spline_degree</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">18</span>)), </a>
 <a class="sourceLine" id="cb22-6" data-line-number="6">    <span class="st">`</span><span class="dt">lat df</span><span class="st">`</span> =<span class="st"> </span><span class="kw">spline_degree</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">18</span>)),</a>

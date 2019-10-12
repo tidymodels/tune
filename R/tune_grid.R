@@ -191,7 +191,7 @@ tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = g
 # ------------------------------------------------------------------------------
 
 quarterback <- function(x) {
-  y <- param_set(x)
+  y <- dials::parameters(x)
   sources <- unique(y$source)
   has_form <- names(x$pre) == "formula_processor"
   tune_rec <- any(sources == "recipe") & !has_form

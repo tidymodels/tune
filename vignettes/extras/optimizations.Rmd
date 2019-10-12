@@ -54,7 +54,7 @@ knn_mod <-
   set_mode("regression")
 
 grid <- 
-  param_set(num_terms(c(1, 9)), neighbors(), weight_func()) %>% 
+  parameters(num_terms(c(1, 9)), neighbors(), weight_func()) %>% 
   grid_regular(levels = c(5, 10, 7)) %>% 
   arrange(num_terms, neighbors, weight_func)
 grid 

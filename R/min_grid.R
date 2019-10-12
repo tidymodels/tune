@@ -76,7 +76,7 @@ get_submodel_info <- function(spec) {
     dplyr::filter(engine == spec$engine) %>%
     dplyr::select(name = parsnip, has_submodel) %>%
     dplyr::full_join(
-      param_set(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
+      dials::parameters(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
       by = "name"
     ) %>%
     dplyr::mutate(id = ifelse(is.na(id), name, id))
