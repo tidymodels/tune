@@ -55,6 +55,18 @@
 #'
 #' @section Performance Metrics:
 #'
+#' To use your own performance metrics, the `yardstick::metric_set()` function
+#'  can be used to pick what should be measured for each model. If multiple
+#'  metrics are desired, they can be bundled. For example, to estimate the area
+#'  under the ROC curve as well as the sensitivity and specificity (under the
+#'  typical probability cutoff of 0.50), the `perf` argument could be given:
+#'
+#' \preformatted{
+#'   perf = metric_set(roc_auc, sens, spec)
+#' }
+#'
+#' Each metric is calculated for each candidate model.
+#'
 #' If no metric set is provided, one is created:
 #' \itemize{
 #'   \item For regression models, the root mean squared error and coefficient
