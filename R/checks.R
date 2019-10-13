@@ -77,6 +77,12 @@ check_object <- function(x, check_dials = FALSE) {
     stop("The `object` argument should be a 'workflow' object.",
          call. = FALSE)
   }
+  if (length(x$pre) == 0) {
+    stop("A model formula or recipe are required.", call. = FALSE)
+  }
+  if (length(x$fit) == 0) {
+    stop("A parsnip model is required.", ll. = FALSE)
+  }
   if (check_dials) {
     y <- dials::parameters(x)
     params <- purrr::map_lgl(y$object, inherits, "param")

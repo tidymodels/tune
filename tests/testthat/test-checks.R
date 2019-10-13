@@ -71,6 +71,17 @@ test_that('workflow objects', {
   expect_error(tune:::check_object(x = wflow_2, TRUE),
                "arguments whose ranges are not finalized")
 
+  wflow_3 <-
+    workflow() %>%
+    add_model(glmn)
+  expect_error(tune:::check_object(wflow_3),
+               "A model formula or recipe are required.")
+
+  wflow_4 <-
+    workflow() %>%
+    add_recipe(bare_rec)
+  expect_error(tune:::check_object(wflow_4),
+               "A parsnip model is required.")
 })
 
 # ------------------------------------------------------------------------------
