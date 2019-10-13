@@ -25,7 +25,7 @@ two_class_wflow <-
   add_model(svm_model)
 
 two_class_set <-
-  param_set(two_class_wflow) %>%
+  parameters(two_class_wflow) %>%
   update(cost = cost(c(-10, 4)))
 
 set.seed(2494)
@@ -35,7 +35,7 @@ two_class_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only,
+res <- tune_grid(two_class_wflow, rs = data_folds, grid = two_class_grid, perf = class_only,
                  control = grid_control(save_pred = TRUE))
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
@@ -44,7 +44,7 @@ set.seed(365456)
 svm_search <-
   tune_Bayes(
     two_class_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = two_class_set,
     initial = res,
     perf = class_only,
@@ -72,7 +72,7 @@ two_class_grid <-
 
 class_only <- metric_set(accuracy)
 
-grid_res <- tune_grid(two_class_wflow, data_folds, two_class_grid, perf = class_only)
+grid_res <- tune_grid(two_class_wflow, rs = data_folds, two_class_grid, perf = class_only)
 
 ggplot(summarize(grid_res), aes(x = cost, y = mean)) +
   geom_point() +

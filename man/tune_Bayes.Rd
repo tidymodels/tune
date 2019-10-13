@@ -25,7 +25,7 @@ tune_Bayes(object, ...)
   initial = NULL, control = Bayes_control(), ...)
 }
 \arguments{
-\item{object}{A model workflow or recipe object.}
+\item{object}{A model workflow, R formula or recipe object.}
 
 \item{...}{Not currently used.}
 
@@ -36,7 +36,7 @@ workflow).}
 
 \item{iter}{The maximum number of search iterations.}
 
-\item{param_info}{A \code{dials::param_set()} object or \code{NULL}. If none is given,
+\item{param_info}{A \code{dials::parameters()} object or \code{NULL}. If none is given,
 a parameters set is derived from other arguments.}
 
 \item{perf}{A \code{yardstick::metric_set()} object containing information on how

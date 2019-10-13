@@ -28,7 +28,7 @@ cars_wflow <-
 
 cars_set <-
   cars_wflow %>%
-  param_set %>%
+  parameters %>%
   update(id = "^degree", degree_int(1:2)) %>%
   update(id = "^deg_free", deg_free(c(2, 10))) %>%
   update(id = "wt degree", degree_int(1:2)) %>%

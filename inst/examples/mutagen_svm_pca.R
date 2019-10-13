@@ -31,7 +31,7 @@ Mutagen_wflow <-
   add_model(svm_model)
 
 Mutagen_param <-
-  param_set(Mutagen_wflow) %>%
+  parameters(Mutagen_wflow) %>%
   update(num_comp = num_comp(c(1, 20)))
 
 set.seed(552)
@@ -41,7 +41,7 @@ Mutagen_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(Mutagen_wflow, data_folds, Mutagen_grid, perf = class_only,
+res <- tune_grid(Mutagen_wflow, rs = data_folds, grid = Mutagen_grid, perf = class_only,
                  control = grid_control(verbose = TRUE))
 
 
@@ -51,7 +51,7 @@ set.seed(3654)
 svm_search <-
   tune_Bayes(
     Mutagen_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = Mutagen_param,
     initial = res,
     perf = class_only,
@@ -63,7 +63,7 @@ set.seed(378)
 more_svm_search <-
   tune_Bayes(
     Mutagen_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = Mutagen_param,
     initial = svm_search,
     perf = class_only,

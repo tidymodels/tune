@@ -1,6 +1,6 @@
 #' Determination of parameter sets for other objects
 #'
-#' These methods extend the generic `dials::param_set()` to work with more
+#' These methods extend the generic `dials::parameters()` to work with more
 #' complex objects, such as recipes, model specifications, and workflows.
 #' @param x An object
 #' @param ... Not currently used.
@@ -12,7 +12,7 @@
 #' recipe(mpg ~ ., data = mtcars) %>%
 #'   step_knnimpute(all_predictors(), neighbors = tune()) %>%
 #'   step_pca(all_predictors(), num_comp = tune()) %>%
-#'   param_set()
+#'   dials::parameters()
 #'
 #'  # A peak under the hood
 #'  tibble::as_tibble(.Last.value)
@@ -20,33 +20,33 @@
 #' recipe(mpg ~ ., data = mtcars) %>%
 #'   step_ns(disp, deg_free = tune("disp df")) %>%
 #'   step_ns(wt, deg_free = tune("wt df")) %>%
-#'   param_set()
+#'   dials::parameters()
 #'
 #' recipe(mpg ~ ., data = mtcars) %>%
 #'   step_normalize(all_predictors()) %>%
-#'   param_set()
+#'   dials::parameters()
 #'
 #' library(parsnip)
 #'
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("xgboost") %>%
-#'   param_set()
+#'   dials::parameters()
 #'
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
-#'   param_set()
+#'   dials::parameters()
 #' @keywords internal
 #' @export
-param_set.workflow <- function(x, ...) {
-  param_data <- param_set(x$fit$model$model)
+parameters.workflow <- function(x, ...) {
+  param_data <- dials::parameters(x$fit$model$model)
   if (any(names(x$pre) == "recipe")) {
     param_data <-
       dplyr::bind_rows(
         param_data,
-        param_set(x$pre$recipe$recipe)
+        dials::parameters(x$pre$recipe$recipe)
       )
   }
-  dials::param_set_constr(
+  dials::parameters_constr(
     param_data$name,
     param_data$id,
     param_data$source,
@@ -57,8 +57,8 @@ param_set.workflow <- function(x, ...) {
 }
 
 #' @export
-#' @rdname param_set.workflow
-param_set.model_spec <- function(x, ...) {
+#' @rdname parameters.workflow
+parameters.model_spec <- function(x, ...) {
   all_args <- tunable(x)
   tuning_param <- tune_args(x)
 
@@ -70,7 +70,7 @@ param_set.model_spec <- function(x, ...) {
     ) %>%
     mutate(object = map(call_info, eval_call_info))
 
-  dials::param_set_constr(
+  dials::parameters_constr(
     res$name,
     res$id,
     res$source,
@@ -82,8 +82,8 @@ param_set.model_spec <- function(x, ...) {
 }
 
 #' @export
-#' @rdname param_set.workflow
-param_set.recipe <- function(x, ...) {
+#' @rdname parameters.workflow
+parameters.recipe <- function(x, ...) {
   all_args <- tunable(x)
   tuning_param <- tune_args(x)
   res <-
@@ -94,7 +94,7 @@ param_set.recipe <- function(x, ...) {
     ) %>%
     mutate(object = map(call_info, eval_call_info))
 
-  dials::param_set_constr(
+  dials::parameters_constr(
     res$name,
     res$id,
     res$source,

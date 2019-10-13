@@ -86,7 +86,7 @@ mt_spln_knn_grid <-
   tune_grid(
     mt_spln_knn,
     rs = folds,
-    grid = grid_regular(param_set(mt_spln_knn)),
+    grid = grid_regular(parameters(mt_spln_knn)),
     control = g_ctrl
   )
 
@@ -104,7 +104,7 @@ mt_spln_knn_grid_sep <-
     spline_rec,
     knn_mod,
     rs = folds,
-    grid = grid_regular(param_set(mt_spln_knn)),
+    grid = grid_regular(parameters(mt_spln_knn)),
     control = g_ctrl
   )
 

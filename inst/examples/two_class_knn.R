@@ -31,7 +31,7 @@ two_class_wflow <-
   add_model(knn_model)
 
 two_class_set <-
-  param_set(two_class_wflow) %>%
+  parameters(two_class_wflow) %>%
   update(id = "K", neighbors(c(1, 50))) %>%
   update(id = "exponent", dist_power(c(1/10, 2)))
 
@@ -72,7 +72,7 @@ set.seed(365)
 svm_search <-
   tune_Bayes(
     two_class_wflow,
-    data_folds,
+    rs = data_folds,
     param_info = two_class_set,
     initial = res,
     objective = conf_bound(kappa = decr_kappa),

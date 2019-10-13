@@ -36,7 +36,7 @@ estimate_perf <- function(dat, metric, object, other_names = NULL) {
   types <- unique(type_info$type)
 
   y_names <- outcome_names(object)
-  param_names <- param_set(object)$id
+  param_names <- dials::parameters(object)$id
 
   if (all(types == "numeric")) {
     res <- estimate_reg(dat, metric, param_names, y_names)

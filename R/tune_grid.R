@@ -4,7 +4,7 @@
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
-#' @param object A model workflow or recipe object.
+#' @param object A model workflow, R formula or recipe object.
 #' @param formula A traditional model formula.
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
@@ -54,6 +54,18 @@
 #' combinations.
 #'
 #' @section Performance Metrics:
+#'
+#' To use your own performance metrics, the `yardstick::metric_set()` function
+#'  can be used to pick what should be measured for each model. If multiple
+#'  metrics are desired, they can be bundled. For example, to estimate the area
+#'  under the ROC curve as well as the sensitivity and specificity (under the
+#'  typical probability cutoff of 0.50), the `perf` argument could be given:
+#'
+#' \preformatted{
+#'   perf = metric_set(roc_auc, sens, spec)
+#' }
+#'
+#' Each metric is calculated for each candidate model.
 #'
 #' If no metric set is provided, one is created:
 #' \itemize{
@@ -191,7 +203,7 @@ tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = g
 # ------------------------------------------------------------------------------
 
 quarterback <- function(x) {
-  y <- param_set(x)
+  y <- dials::parameters(x)
   sources <- unique(y$source)
   has_form <- names(x$pre) == "formula_processor"
   tune_rec <- any(sources == "recipe") & !has_form

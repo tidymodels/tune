@@ -38,7 +38,7 @@ ames_wflow <-
 
 set.seed(4567367)
 ames_set <-
-  param_set(ames_wflow) %>%
+  parameters(ames_wflow) %>%
   update(id = "threshold", threshold(c(0, .2))) %>%
   update(id = "num_terms", num_terms(c(2, 20)))
 

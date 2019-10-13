@@ -58,7 +58,7 @@
 #'
 #' set.seed(254)
 #' xgb_grid <-
-#'   param_set(xgb_mod) %>%
+#'   dials::parameters(xgb_mod) %>%
 #'   finalize(iris) %>%
 #'   grid_max_entropy(size = 3)
 #'
@@ -112,7 +112,7 @@ merger <- function(x, y, ...) {
   if (!is.data.frame(y)) {
     stop("The second argument should be a data frame.", call. = FALSE)
   }
-  pset <- param_set(x)
+  pset <- dials::parameters(x)
 
   if (nrow(pset) == 0) {
     res <- tibble::tibble(x = map(1:nrow(y), ~ x))

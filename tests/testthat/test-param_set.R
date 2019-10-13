@@ -7,19 +7,19 @@ source("../helper-objects.R")
 # ------------------------------------------------------------------------------
 
 test_that('recipe with no steps', {
-  bare_info <- param_set(bare_rec)
+  bare_info <- dials::parameters(bare_rec)
   check_param_set_tibble(bare_info)
   expect_equal(nrow(bare_info), 0)
 })
 
 test_that('recipe with no tunable parameters', {
-  rm_info <- param_set(rm_rec)
+  rm_info <- dials::parameters(rm_rec)
   check_param_set_tibble(rm_info)
   expect_equal(nrow(rm_info), 0)
 })
 
 test_that('recipe with tunable parameters', {
-  spline_info <- param_set(spline_rec)
+  spline_info <- dials::parameters(spline_rec)
   check_param_set_tibble(spline_info)
   expect_equal(
     spline_info$component,
@@ -42,14 +42,14 @@ test_that('recipe with tunable parameters', {
 
 test_that('model with no parameters', {
   skip_if_not_installed("parsnip")
-  lm_info <- param_set(lm_model)
+  lm_info <- dials::parameters(lm_model)
   check_param_set_tibble(lm_info)
   expect_equal(nrow(lm_info), 0)
 })
 
 test_that('model with main and engine parameters', {
   skip_if_not_installed("parsnip")
-  c5_info <- param_set(bst_model)
+  c5_info <- dials::parameters(bst_model)
   check_param_set_tibble(c5_info)
   expect_equal(nrow(c5_info), 2)
   expect_true(all(c5_info$source == "model_spec"))

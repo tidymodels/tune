@@ -53,7 +53,7 @@ text_wflow <-
 
 text_set <-
   text_wflow %>%
-  param_set() %>%
+  parameters() %>%
   update(mtry = mtry_long(c(0, 3))) %>%
   update(sample_size = sample_prop(0:1))
 

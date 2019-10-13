@@ -30,7 +30,7 @@ check_grid <- function(x, object) {
     }
   } else {
     check_object(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(param_set(object), size = 10)
+    x <- dials::grid_latin_hypercube(dials::parameters(object), size = 10)
     x <- dplyr::distinct(x)
   }
 
@@ -77,8 +77,14 @@ check_object <- function(x, check_dials = FALSE) {
     stop("The `object` argument should be a 'workflow' object.",
          call. = FALSE)
   }
+  if (length(x$pre) == 0) {
+    stop("A model formula or recipe are required.", call. = FALSE)
+  }
+  if (length(x$fit) == 0) {
+    stop("A parsnip model is required.", ll. = FALSE)
+  }
   if (check_dials) {
-    y <- param_set(x)
+    y <- dials::parameters(x)
     params <- purrr::map_lgl(y$object, inherits, "param")
     if (!all(params)) {
       stop("The workflow has arguments to be tuned that are missing some ",
