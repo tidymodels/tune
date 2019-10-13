@@ -25,7 +25,7 @@ tune_Bayes(object, ...)
   initial = NULL, control = Bayes_control(), ...)
 }
 \arguments{
-\item{object}{A model workflow or recipe object.}
+\item{object}{A model workflow, R formula or recipe object.}
 
 \item{...}{Not currently used.}
 

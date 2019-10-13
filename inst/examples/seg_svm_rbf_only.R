@@ -44,7 +44,7 @@ svm_wflow <-
 
 svm_set <-
   svm_wflow %>%
-  param_set() %>%
+  parameters() %>%
   update(num_comp = num_comp(c(1, 20)))
 
 grid <- tibble(cost = 10^(-2.75), num_comp = 15,

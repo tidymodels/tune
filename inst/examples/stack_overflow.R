@@ -62,7 +62,7 @@ summarize(glmn_search) %>%
 
 set.seed(4538)
 rf_grid <-
-  param_set(rf_mod) %>%
+  parameters(rf_mod) %>%
   update(mtry = mtry(c(1, 20))) %>%
   grid_latin_hypercube(size = 20)
 

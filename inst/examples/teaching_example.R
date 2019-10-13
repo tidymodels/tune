@@ -55,7 +55,7 @@ svm_wflow <-
 
 svm_set <-
   svm_wflow %>%
-  param_set() %>%
+  parameters() %>%
   update(num_comp = num_comp(c(1, 20)), rbf_sigma = rbf_sigma(c(-3, 0)))
 
 set.seed(354)

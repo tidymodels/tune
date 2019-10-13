@@ -41,7 +41,7 @@ ames_wflow <-
 
 set.seed(4567367)
 ames_set <-
-  param_set(ames_wflow) %>%
+  parameters(ames_wflow) %>%
   update(id = "Nhood_other", threshold(c(0, .09))) %>%
   update(id = "SubClass_other", threshold(c(0, .059))) %>%
   update(id = "num_comp", num_comp(c(1, 20)))

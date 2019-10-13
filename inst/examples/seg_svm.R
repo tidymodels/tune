@@ -42,7 +42,7 @@ svm_wflow <-
 
 svm_set <-
   svm_wflow %>%
-  param_set() %>%
+  parameters() %>%
   # In case you want to manually adjust the parameter specification
   update(num_comp = num_comp(c(1, 20)))
 

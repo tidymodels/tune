@@ -33,7 +33,7 @@ chi_wflow <-
   add_model(knn_model)
 
 chi_param <-
-  param_set(chi_wflow) %>%
+  parameters(chi_wflow) %>%
   update(id = "threshold", threshold(c(.8, .99)))
 
 chi_grid <-

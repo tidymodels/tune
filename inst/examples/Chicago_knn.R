@@ -37,13 +37,13 @@ chi_wflow <-
 set.seed(255)
 chi_grid <-
   chi_wflow %>%
-  param_set %>%
-  update(id = "neighbors", neighbors(c(1, 30))) %>%
-  update(id = "dist_power", dist_power(c(1/4, 2))) %>%
+  parameters %>%
+  update(neighbors = neighbors(c(1, 30))) %>%
+  update(dist_power = dist_power(c(1/4, 2))) %>%
   grid_regular(levels = c(30, 3, 3))
 
 
-reg_knn_grid <- tune_grid(chi_wflow, data_folds, chi_grid, control = grid_control(verbose = TRUE))
+reg_knn_grid <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
 
 summarize(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
@@ -65,7 +65,7 @@ summarize(reg_knn_grid) %>%
 
 chi_set <-
   chi_wflow %>%
-  param_set %>%
+  parameters %>%
   update(id = "neighbors", neighbors(c(1, 30))) %>%
   update(id = "dist_power", dist_power(c(1/10, 2)))
 
