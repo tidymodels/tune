@@ -43,5 +43,5 @@ RoxygenNote: 6.1.1
 Remotes:
     tidymodels/dials,
     tidymodels/recipes,    
-    tidymodels/parsnip
+    tidymodels/parsnip,
     r-lib/cli
