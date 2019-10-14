@@ -277,7 +277,7 @@ The results here are not bad but also not spectacular either. The issue is that 
 A plot of model performance versus the search iterations:
 
 ```{r iter-plot}
-plot_perf_vs_iter(five_star_search)
+autoplot(five_star_search, type = "performance")
 ```
 
 What would we do if we knew about the grid search results? In this case, we would restrict the range for the number of hash features to be larger (especially with more data). We might also restrict the penalty and mixture parameters to have a more restricted upper bound. 

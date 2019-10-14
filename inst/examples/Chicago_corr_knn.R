@@ -67,4 +67,4 @@ knn_search <-
     trace = TRUE
   )
 
-plot_perf_vs_iter(knn_search)
+autoplot(knn_search, type = "performance")
