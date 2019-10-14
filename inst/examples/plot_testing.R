@@ -117,9 +117,9 @@ grid_plot(spline_rec, knn_three_vars, sfd = FALSE, perf = one_perf)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- vfold_cv(two_class_dat)
-search_res <- tune_grid(spline_rec, model = knn_three_vars, rs = data_folds, iter = 20)
-
+data_folds <- vfold_cv(two_class_dat, v = 5)
+search_res <- tune_Bayes(spline_rec, model = knn_three_vars, rs = data_folds, iter = 10)
+search_res$splits <- lapply(search_res$splits, function(x) list())
 
 
 

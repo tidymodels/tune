@@ -1,6 +1,6 @@
 #' Plot search results
 #'
-#' @param x A tibble of results form `tune_grid()` or `tune_Bayes()`.
+#' @param object A tibble of results form `tune_grid()` or `tune_Bayes()`.
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #' 'of each predictor versus performance), `"parameters"` (each parameter versus
 #' search iteration), or `"performance"` (performance versus iteration). The
@@ -8,6 +8,7 @@
 #' @param metric A character vector or `NULL` for which outcome to plot.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "perfomance"`. A value of zero prevents them from being shown.
+#' @param ... Not currently used.
 #' @return A `ggplot2` object.
 #' @details The parameters are currently represented in their natural units.
 #'

@@ -8,6 +8,8 @@
   "parameters", "performance"), metric = NULL, width = NULL, ...)
 }
 \arguments{
+\item{object}{A tibble of results form \code{tune_grid()} or \code{tune_Bayes()}.}
+
 \item{type}{A single character value. Choices are \code{"marginals"} (for a plot
 'of each predictor versus performance), \code{"parameters"} (each parameter versus
 search iteration), or \code{"performance"} (performance versus iteration). The
@@ -18,7 +20,7 @@ latter two choices are only used for \code{tune_Bayes()}.}
 \item{width}{A number for the width of the confidence interval bars when
 \code{type = "perfomance"}. A value of zero prevents them from being shown.}
 
-\item{x}{A tibble of results form \code{tune_grid()} or \code{tune_Bayes()}.}
+\item{...}{Not currently used.}
 }
 \value{
 A \code{ggplot2} object.
