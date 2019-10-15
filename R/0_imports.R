@@ -28,6 +28,10 @@
 #' @export
 dials::parameters
 
+#' @importFrom ggplot2 autoplot
+#' @export
+ggplot2::autoplot
+
 # ------------------------------------------------------------------------------
 
 utils::globalVariables(
