@@ -43,7 +43,9 @@ argument \strong{should be named}.}
 \item{formula}{A traditional model formula.}
 }
 \value{
-A tibble of results.
+An updated version of \code{rs} with extra list columns for \code{.metrics} and
+\code{.notes} (optional columns are \code{.predictions} and \code{.extracts}). \code{.notes}
+contains warnings and errors that occur during execution.
 }
 \description{
 \code{tune_grid()} computes a set of perfomance metrics (e.g. accuracy or RMSE)

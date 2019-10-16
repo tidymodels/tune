@@ -50,30 +50,54 @@ test_that('tune_log', {
 
 test_that('log issues', {
 
+  note_1 <- "note 1"
   expect_message(
-    tune:::log_problems(ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
-    'Fold01: toledo: Error in log("a")', fixed = TRUE
+    expect_equal(
+      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
+      c("note 1", 'toledo: Error in log(\"a\"): non-numeric argument to mathematical function')
+    ),
+    "non-numeric argument to mathematical function"
   )
-  expect_silent(tune:::log_problems(ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
+
+  note_2 <- NULL
+  expect_silent(tune:::log_problems(note_2, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
+
+  note_3 <- NULL
   expect_message(
-    tune:::log_problems(ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
-    'Fold01: toledo: NaNs produced', fixed = TRUE
+    expect_equal(
+      tune:::log_problems(note_3, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
+      "toledo: NaNs produced"
+    ),
+    'Fold01: toledo: NaNs produced'
   )
+
+  note_4 <- NULL
   expect_message(
-    tune:::log_problems(ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
+    expect_equal(
+      tune:::log_problems(note_4, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
+      "toledo: NaNs produced"
+    ),
     '!', fixed = TRUE
   )
 
   expect_message(
-    tune:::log_problems(ctrl_f, NULL, "toledo", res_1, bad_only = FALSE),
+    expect_equal(
+      tune:::log_problems(note_4, ctrl_f, NULL, "toledo", res_1, bad_only = FALSE),
+      "toledo: Error in log(\"a\"): non-numeric argument to mathematical function"
+    ),
     "(?!.*Fold)", perl = TRUE
   )
+
   expect_message(
-    tune:::log_problems(ctrl_f, NULL, "toledo", res_3, bad_only = FALSE),
+    expect_equal(
+      tune:::log_problems(note_4, ctrl_f, NULL, "toledo", res_3, bad_only = FALSE),
+      "toledo: NaNs produced"
+    ),
     "(?!.*Fold)", perl = TRUE
   )
+
   expect_silent(
-    tune:::log_problems(ctrl_f, rs, "toledo", res_2, bad_only = FALSE)
+    tune:::log_problems(note_4, ctrl_f, rs, "toledo", res_2, bad_only = FALSE)
   )
 
 })
@@ -81,35 +105,37 @@ test_that('log issues', {
 
 test_that('catch and log issues', {
 
+  null <- NULL
+
   expect_message(
-    out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE),
+    out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
     'Fold01: toledo: Error in log("a")', fixed = TRUE
   )
   expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE))
+  expect_silent(out_2 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
   expect_true(out_2 == 0)
   expect_message(
-    out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE),
+    out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
     'Fold01: toledo: NaNs produced', fixed = TRUE
   )
   expect_true(is.nan(out_3))
   expect_message(
-    out_4 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE),
+    out_4 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
     '!', fixed = TRUE
   )
   expect_true(is.nan(out_4))
   expect_message(
-    out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE),
+    out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null),
     "(?!.*Fold)", perl = TRUE
   )
   expect_true(inherits(out_5, "try-error"))
   expect_message(
-    out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE),
+    out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null),
     "(?!.*Fold)", perl = TRUE
   )
   expect_true(is.nan(out_6))
   expect_silent(
-    out_7 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE)
+    out_7 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(out_7 == 0)
 })
