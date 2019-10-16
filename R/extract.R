@@ -19,9 +19,19 @@ pulley <- function(rs, res, col) {
     return(res)
   }
 
+  all_null <- all(map_lgl(res, is.null))
+
   id_cols <- grep("^id", names(rs), value = TRUE)
   rs <- dplyr::arrange(rs, !!!syms(id_cols))
   pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
+
+  if (nrow(pulled_vals)  == 0) {
+    res <-
+      rs %>%
+      mutate(col = map(splits, ~ NULL)) %>%
+      setNames(c(names(rs), col))
+    return(res)
+  }
 
   if (tidyr_new_interface()) {
     pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
@@ -79,9 +89,28 @@ pull_predictions <- function(rs, res, control) {
   rs
 }
 
+ensure_tibble <- function(x) {
+  if (is.null(x)) {
+    res <- tibble(.notes = character(0))
+  } else {
+    res <- tibble(.notes = x)
+  }
+  res
+}
+
+pull_notes <- function(rs, res, control) {
+  notes <- map(res, ~ purrr::pluck(.x, ".notes"))
+  notes <- map(notes, ensure_tibble)
+  rs$.notes <- notes
+  rs
+}
+
 # ------------------------------------------------------------------------------
 
 append_metrics <- function(collection, predictions, workflow, perf, split) {
+  if (inherits(predictions, "try-error")) {
+    return(collection)
+  }
   tmp_est <- estimate_perf(predictions, perf, workflow)
   tmp_est <- cbind(tmp_est, labels(split))
   dplyr::bind_rows(collection, tmp_est)
@@ -90,6 +119,9 @@ append_metrics <- function(collection, predictions, workflow, perf, split) {
 append_predictions <- function(collection, predictions, split, control) {
   if (!control$save_pred) {
     return(NULL)
+  }
+  if (inherits(predictions, "try-error")) {
+    return(collection)
   }
   predictions <- cbind(predictions, labels(split))
   dplyr::bind_rows(collection, predictions)

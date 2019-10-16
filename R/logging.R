@@ -49,7 +49,7 @@ tune_log <- function(control, split = NULL, task, type = "success") {
   NULL
 }
 
-log_problems <- function(control, split, loc, res, bad_only = FALSE) {
+log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose = TRUE
@@ -61,6 +61,7 @@ log_problems <- function(control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- paste(wrn_msg, collapse = ", ")
     wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
     wrn_msg <- paste0(loc, ": ", wrn_msg)
+    notes <- c(notes, wrn_msg)
     tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
@@ -68,19 +69,21 @@ log_problems <- function(control, split, loc, res, bad_only = FALSE) {
     err_msg <- gsub("\n$", "", err_msg)
     err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
     err_msg <- paste0(loc, ": ", err_msg)
+    notes <- c(notes, err_msg)
     tune_log(control2, split, err_msg, type = "danger")
   } else {
     if (!bad_only) {
       tune_log(control, split, loc, type = "success")
     }
   }
-  NULL
+  notes
 }
 
-catch_and_log <- function(.expr, ..., bad_only = FALSE) {
+catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tune_log(..., type = "info")
   tmp <- catcher(.expr)
-  log_problems(..., tmp, bad_only = bad_only)
+  new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
+  assign(".notes", new_notes, envir = parent.frame())
   tmp$res
 }
 

@@ -16,7 +16,9 @@
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
 #' @param ... Not currently used.
-#' @return A tibble of results.
+#' @return An updated version of `rs` with extra list columns for `.metrics` and
+#' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
+#' contains warnings and errors that occur during execution.
 #'
 #' @details
 #'
@@ -191,7 +193,7 @@ tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = g
   all_bad <- is_cataclysmic(rs)
   if (all_bad) {
     warning(
-      "All models failed in tune_grid().",
+      "All models failed in tune_grid(). See the `.notes` column.",
       call. = FALSE
       )
   }

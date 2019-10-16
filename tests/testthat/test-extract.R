@@ -159,7 +159,7 @@ test_that('tune model and recipe', {
     all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "glmnet"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "model_fit"))),
   )
 
 })
