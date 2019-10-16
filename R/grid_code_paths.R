@@ -335,6 +335,7 @@ iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
   perf_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  .notes <- NULL
 
   # ----------------------------------------------------------------------------
 
