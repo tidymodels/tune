@@ -11,10 +11,9 @@
 #'   \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for more details.)
 #' OR a user defined metric for performance during tuning.
 #' @param n_top number of top results/rows to return.
-#' @param sort either "asc" for ascending or "desc" for descending result sorting. e.g. `rmse` might require ascending whilst `rsq` might require desc sort.
 #' @param performance A logical value (TRUE/FALSE) to indicate if columns for the corresponding
 #' performance estimates should also be returned.
-#' @param maximize automate this later but will need an argument in the short term. Not currently in use.
+#' @param maximize Direction of "asc" for ascending or "desc" for descending scores. e.g. `rmse` might require ascending whilst `rsq` might require desc sort. Will be automated later.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model as well as the specified metric type.
 #' @examples
@@ -22,16 +21,13 @@
 #' grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
 #' select_best(grid_knn, metric = "rmse", n_top = 2)
 #' select_best(grid_knn, metric = "rmse")
-#' select_best(grid_knn, metric = "rsq", sort = "desc")
+#' select_best(grid_knn, metric = "rsq", maximize = "desc")
 #' }
 #' @export
-select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = TRUE, maximize = NULL) {
+select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize = "asc") {
   if (is.na(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for metric to get the best score/params...")
   }
-
-  metric <- tolower(metric)
-  sort <- tolower(sort)
 
   # get estimates/summarise
   summary_res <- estimate(x) %>% dplyr::filter(.metric %in% c(metric))
@@ -41,12 +37,12 @@ select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = T
   }
 
   if (performance == TRUE) {
-    if (sort == "asc" | sort == "ascending") {
+    if (maximize == "asc") {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
         dplyr::slice(1:n_top)
       return(res)
-    } else if (sort == "desc" | sort == "descending") {
+    } else if (maximize == "desc") {
       res <- summary_res %>%
         dplyr::arrange(desc(mean)) %>%
         dplyr::slice(1:n_top)
@@ -57,7 +53,7 @@ select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = T
   }
   # if performance cols are not required
   else {
-    if (sort == "asc" | sort == "ascending") {
+    if (maximize == "asc") {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
         dplyr::select(mean) %>%
@@ -65,7 +61,7 @@ select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = T
         dplyr::slice(1:n_top)
       return(res)
     }
-    else if (sort == "desc" | sort == "descending") {
+    else if (maximize == "desc") {
       res <- summary_res %>%
         dplyr::arrange(desc(mean)) %>%
         dplyr::select(mean) %>%
