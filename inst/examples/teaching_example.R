@@ -164,6 +164,9 @@ svg("~/tmp/initial.svg", height = 4)
 plot(p0)
 dev.off()
 
+initial_result <- acc_vals
+
+
 obj <- prob_improve(trade_off = 0)
 
 for (iter in 1:25) {

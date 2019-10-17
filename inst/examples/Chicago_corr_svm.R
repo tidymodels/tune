@@ -35,7 +35,7 @@ ggplot(cor_mat, aes(x = cor)) + geom_histogram(binwidth = .01, col = "white")
 
 chi_set <-
   parameters(chi_wflow) %>%
-  update(id = "threshold", threshold(c(.8, .99)))
+  update(threshold = threshold(c(.8, .99)))
 
 chi_grid <-
   chi_set %>%

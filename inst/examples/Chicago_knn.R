@@ -66,8 +66,8 @@ summarize(reg_knn_grid) %>%
 chi_set <-
   chi_wflow %>%
   parameters %>%
-  update(id = "neighbors", neighbors(c(1, 30))) %>%
-  update(id = "dist_power", dist_power(c(1/10, 2)))
+  update(neighbors = neighbors(c(1, 30))) %>%
+  update(dist_power  = dist_power(c(1/10, 2)))
 
 set.seed(255)
 smol_grid <-

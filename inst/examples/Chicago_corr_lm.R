@@ -32,7 +32,7 @@ chi_wflow <-
 
 chi_grid <-
   parameters(chi_wflow) %>%
-  update(id = "threshold", threshold(c(.8, .99))) %>%
+  update(threshold = threshold(c(.8, .99))) %>%
   grid_regular(levels = 10)
 
 
