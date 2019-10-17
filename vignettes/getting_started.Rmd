@@ -282,7 +282,7 @@ knn_search <- tune_Bayes(knn_wflow, rs = cv_splits, initial = 5, iter = 20,
 Visually, the performance gain was:
  
 ```{r bo-iter}
-plot_perf_vs_iter(knn_search, metric = "rmse")
+autoplot(knn_search, type = "performance", metric = "rmse")
 ```
 
 The best results here were:

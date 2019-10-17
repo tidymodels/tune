@@ -23,7 +23,9 @@ ames_rec <-
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = .1)  %>%
   step_dummy(all_nominal()) %>%
-  step_zv(all_predictors())
+  step_zv(all_predictors()) %>%
+  step_ns(Longitude, deg_free = tune("lon")) %>%
+  step_ns(Latitude, deg_free = tune("lat"))
 
 knn_model <-
   nearest_neighbor(
@@ -40,7 +42,8 @@ ames_wflow <-
 set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
-  update( "neighbors" = neighbors(c(1, 50)))
+  update(neighbors = neighbors(c(1, 50)))
+
 
 ames_grid <-
   ames_set %>%

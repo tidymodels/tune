@@ -152,5 +152,5 @@ estimates %>%
 A plot of the search can be created via:
 
 ```{r bo-plot}
-plot_perf_vs_iter(search_res)
+autoplot(search_res, type = "performance")
 ```

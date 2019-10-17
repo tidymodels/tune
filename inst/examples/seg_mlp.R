@@ -80,7 +80,7 @@ nn_search <- tune_Bayes(nn_wflow, rs = val_split,
                         objective = exp_improve(foo),
                         control = Bayes_control(verbose = TRUE))
 
-plot_perf_vs_iter(nn_search, "roc_auc")
+autoplot(nn_search, type = "performance", metric = "roc_auc")
 
 # ------------------------------------------------------------------------------
 
@@ -91,7 +91,8 @@ nn_search_2 <- tune_Bayes(nn_wflow, rs = val_split,
                            param_info = nn_set,
                            control = Bayes_control(verbose = TRUE))
 
-plot_perf_vs_iter(nn_search_2, "roc_auc")
+
+autoplot(nn_search_2, type = "performance", metric = "roc_auc")
 
 # ------------------------------------------------------------------------------
 

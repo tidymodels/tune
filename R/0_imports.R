@@ -28,6 +28,10 @@
 #' @export
 dials::parameters
 
+#' @importFrom ggplot2 autoplot
+#' @export
+ggplot2::autoplot
+
 # ------------------------------------------------------------------------------
 
 utils::globalVariables(
@@ -37,7 +41,7 @@ utils::globalVariables(
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
     "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
-    ".extracts", ".metrics", "value")
+    ".extracts", ".metrics", "value", ".notes")
   )
 
 # ------------------------------------------------------------------------------
@@ -46,3 +50,73 @@ tidyr_new_interface <- function() {
   packageVersion("tidyr") > "0.8.99"
 }
 
+# ------------------------------------------------------------------------------
+
+# nocov start
+s3_register <- function(generic, class, method = NULL) {
+  stopifnot(is.character(generic), length(generic) == 1)
+  stopifnot(is.character(class), length(class) == 1)
+
+  pieces <- strsplit(generic, "::")[[1]]
+  stopifnot(length(pieces) == 2)
+  package <- pieces[[1]]
+  generic <- pieces[[2]]
+
+  caller <- parent.frame()
+
+  get_method_env <- function() {
+    top <- topenv(caller)
+    if (isNamespace(top)) {
+      asNamespace(environmentName(top))
+    } else {
+      caller
+    }
+  }
+  get_method <- function(method, env) {
+    if (is.null(method)) {
+      get(paste0(generic, ".", class), envir = get_method_env())
+    } else {
+      method
+    }
+  }
+
+  method_fn <- get_method(method)
+  stopifnot(is.function(method_fn))
+
+  # Always register hook in case package is later unloaded & reloaded
+  setHook(
+    packageEvent(package, "onLoad"),
+    function(...) {
+      ns <- asNamespace(package)
+
+      # Refresh the method, it might have been updated by `devtools::load_all()`
+      method_fn <- get_method(method)
+
+      registerS3method(generic, class, method_fn, envir = ns)
+    }
+  )
+
+  # Avoid registration failures during loading (pkgload or regular)
+  if (!isNamespaceLoaded(package)) {
+    return(invisible())
+  }
+
+  envir <- asNamespace(package)
+
+  # Only register if generic can be accessed
+  if (exists(generic, envir)) {
+    registerS3method(generic, class, method_fn, envir = envir)
+  }
+
+  invisible()
+}
+
+# nocov end
+
+.onLoad <- function(libname, pkgname) {
+
+  # dynamically register autoplot
+  s3_register("ggplot2::autoplot", "tune_results")
+
+  invisible()
+}

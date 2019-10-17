@@ -159,6 +159,7 @@ tune_Bayes_workflow <-
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
+      .notes <- character(0)
       log_best(control, i, score_card)
 
       check_time(start_time, control$time_limit)
@@ -175,7 +176,8 @@ tune_Bayes_workflow <-
           ),
           control,
           NULL,
-          "Gaussian process model"
+          "Gaussian process model",
+          notes = .notes
         )
 
       check_time(start_time, control$time_limit)
@@ -225,6 +227,7 @@ tune_Bayes_workflow <-
         }
         score_card$last_impr <- score_card$last_impr + 1
       }
+
       if (score_card$last_impr + 1 > control$no_improve) {
         cli::cli_alert_warning(
           "No improvement for {control$no_improve} iterations; returning current results."

@@ -30,7 +30,7 @@ estimate.tune_results <- function(x, ...) {
   }
   x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
   all_col <- names(x)
-  excl_cols <- c(".metric", ".estimator", ".estimate", "splits",
+  excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
                  grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
   param_names <- all_col[!(all_col %in% excl_cols)]
   x %>%
