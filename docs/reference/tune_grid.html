@@ -159,7 +159,7 @@ recipe across one or more resamples of the data.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A model workflow or recipe object.</p></td>
+      <td><p>A model workflow, R formula or recipe object.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -237,6 +237,16 @@ combinations.</p>
     
 
 
+<p>To use your own performance metrics, the <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> function
+can be used to pick what should be measured for each model. If multiple
+metrics are desired, they can be bundled. For example, to estimate the area
+under the ROC curve as well as the sensitivity and specificity (under the
+typical probability cutoff of 0.50), the <code>perf</code> argument could be given:</p>
+<pre>
+  perf = metric_set(roc_auc, sens, spec)
+</pre>
+
+<p>Each metric is calculated for each candidate model.</p>
 <p>If no metric set is provided, one is created:</p><ul>
 <li><p>For regression models, the root mean squared error and coefficient
 of determination are computed.</p></li>

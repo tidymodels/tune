@@ -29,10 +29,10 @@ cars_wflow <-
 cars_set <-
   cars_wflow %>%
   parameters %>%
-  update(id = "^degree", degree_int(1:2)) %>%
-  update(id = "^deg_free", deg_free(c(2, 10))) %>%
-  update(id = "wt degree", degree_int(1:2)) %>%
-  update(id = "wt df$", deg_free(c(2, 10)))
+  update(degree = degree_int(1:2)) %>%
+  update(deg_free = deg_free(c(2, 10))) %>%
+  update(`wt degree` = degree_int(1:2)) %>%
+  update(`wt df` = deg_free(c(2, 10)))
 
 set.seed(255)
 cars_grid <-

@@ -74,7 +74,7 @@ svm_search <- tune_Bayes(svm_wflow, rs = folds,
                          param_info = svm_set,
                          control = Bayes_control(verbose = TRUE))
 
-plot_perf_vs_iter(svm_search, "kap")
+autoplot(svm_search, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
@@ -85,7 +85,7 @@ svm_search_2 <- tune_Bayes(svm_wflow, rs = folds,
                            param_info = svm_set,
                            control = Bayes_control(verbose = TRUE))
 
-plot_perf_vs_iter(svm_search_2, "kap")
+autoplot(svm_search_2, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
