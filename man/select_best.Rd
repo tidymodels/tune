@@ -4,8 +4,8 @@
 \alias{select_best}
 \title{Obtain the best score with parameters produced by tuning}
 \usage{
-select_best(x, metric = NA, n_top = 1, performance = TRUE,
-  maximize = NULL)
+select_best(x, metric = NA, n_top = 1, sort = "asc",
+  performance = TRUE, maximize = NULL)
 }
 \arguments{
 \item{x}{The results of \code{tune_grid()} or \code{tune_Bayes()}.}
@@ -15,9 +15,11 @@ model. e.g. for \code{mode = regression} the metrics could be \code{rmse, rsq, m
 and for \code{mode = classification} it could be: \code{accuracy, kap, recall, precision, sens, spec, roc_auc, pr_auc, average_precision}
 etc. (See
 \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for more details.)
-OR a user defined metric for performance.}
+OR a user defined metric for performance during tuning.}
 
-\item{n_top}{number of top results to return.}
+\item{n_top}{number of top results/rows to return.}
+
+\item{sort}{either "asc" for ascending or "desc" for descending result sorting. e.g. \code{rmse} might require ascending whilst \code{rsq} might require desc sort.}
 
 \item{performance}{A logical value (TRUE/FALSE) to indicate if columns for the corresponding
 performance estimates should also be returned.}
@@ -34,9 +36,9 @@ Get the best estimator that was chosen by the search, i.e. estimator which gave 
 }
 \examples{
 \dontrun{
-initial_grid_knn <- tune_grid(ames_wflow,rs = cv_splits,grid = grid, control = grid_control(verbose = TRUE))
-select_best(initial_grid_knn,metric = "rsq", n_top = 2)
-select_best(initial_grid_knn,metric = "rmse")
-select_best(initial_grid_knn,metric = "rmse", performance = FALSE)
+initial_grid_knn <- tune_grid(ames_wflow, rs = cv_splits, grid = grid, control = grid_control(verbose = TRUE))
+select_best(initial_grid_knn, metric = "rmse", n_top = 2)
+select_best(initial_grid_knn, metric = "rmse")
+select_best(initial_grid_knn, metric = "rsq", sort = "desc")
 }
 }

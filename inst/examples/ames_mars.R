@@ -39,8 +39,8 @@ ames_wflow <-
 set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
-  update(id = "threshold", threshold(c(0, .2))) %>%
-  update(id = "num_terms", num_terms(c(2, 20)))
+  update("threshold" = threshold(c(0,.2))) %>%
+  update("num_terms" = num_terms(c(2,20)))
 
 ames_grid <-
   ames_set %>%
@@ -48,14 +48,14 @@ ames_grid <-
 
 res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
 
-# summarize(res) %>%
+#  estimate(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
 #   geom_point(cex = 1) +
 #   geom_path() +
 #   facet_wrap(~ threshold)
 #
-# summarize(res) %>%
+#  estimate(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   arrange(mean) %>%
 #   slice(1)
