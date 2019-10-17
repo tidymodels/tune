@@ -13,4 +13,5 @@ testthat::test_that('select_best method' ,{
   expect_error(select_best(rcv_results))
   expect_error(select_best(rcv_results,metric = "random"))
   expect_error(select_best(rcv_results,metric = c("rmse","rsq")))
+  expect_error(select_best(rcv_results,metric = "rsq", sort = "some invalid value"))
 })

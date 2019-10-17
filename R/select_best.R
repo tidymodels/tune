@@ -19,10 +19,10 @@
 #' model as well as the specified metric type.
 #' @examples
 #' \dontrun{
-#' initial_grid_knn <- tune_grid(ames_wflow, rs = cv_splits, grid = grid, control = grid_control(verbose = TRUE))
-#' select_best(initial_grid_knn, metric = "rmse", n_top = 2)
-#' select_best(initial_grid_knn, metric = "rmse")
-#' select_best(initial_grid_knn, metric = "rsq", sort = "desc")
+#' grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
+#' select_best(grid_knn, metric = "rmse", n_top = 2)
+#' select_best(grid_knn, metric = "rmse")
+#' select_best(grid_knn, metric = "rsq", sort = "desc")
 #' }
 #' @export
 select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = TRUE, maximize = NULL) {
@@ -31,44 +31,50 @@ select_best <- function(x, metric = NA, n_top = 1, sort = "asc", performance = T
   }
 
   metric <- tolower(metric)
+  sort <- tolower(sort)
 
   # get estimates/summarise
-  summary_res <- tune:::estimate(x) %>% dplyr::filter(.metric %in% c(metric))
+  summary_res <- estimate(x) %>% dplyr::filter(.metric %in% c(metric))
 
   if (nrow(summary_res %>% dplyr::filter(.metric == metric)) == 0) {
     rlang::abort("No results are available. Please check trained performance metrics returned by the model tunning")
   }
 
   if (performance == TRUE) {
-    if (sort == "asc") {
+    if (sort == "asc" | sort == "ascending") {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
         dplyr::slice(1:n_top)
       return(res)
-    } else {
+    } else if (sort == "desc" | sort == "descending") {
       res <- summary_res %>%
         dplyr::arrange(desc(mean)) %>%
         dplyr::slice(1:n_top)
       return(res)
+    } else {
+      rlang::abort("Results sorting can be ascending or descing only")
     }
   }
   # if performance cols are not required
   else {
-    if (sort == "asc") {
+    if (sort == "asc" | sort == "ascending") {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
+        dplyr::select(mean) %>%
+        dplyr::rename(!!paste0("best_", metric) := mean) %>%
+        dplyr::slice(1:n_top)
+      return(res)
+    }
+    else if (sort == "desc" | sort == "descending") {
+      res <- summary_res %>%
+        dplyr::arrange(desc(mean)) %>%
         dplyr::select(mean) %>%
         dplyr::rename(!!paste0("best_", metric) := mean) %>%
         dplyr::slice(1:n_top)
       return(res)
     }
     else {
-      res <- summary_res %>%
-        dplyr::arrange(desc(mean)) %>%
-        dplyr::select(mean) %>%
-        dplyr::rename(!!paste0("best_", metric) := mean) %>%
-        dplyr::slice(1:n_top)
-      return(res)
+      rlang::abort("Results sorting can be ascending or descing only")
     }
   }
 }

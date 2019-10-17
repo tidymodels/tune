@@ -36,9 +36,9 @@ Get the best estimator that was chosen by the search, i.e. estimator which gave 
 }
 \examples{
 \dontrun{
-initial_grid_knn <- tune_grid(ames_wflow, rs = cv_splits, grid = grid, control = grid_control(verbose = TRUE))
-select_best(initial_grid_knn, metric = "rmse", n_top = 2)
-select_best(initial_grid_knn, metric = "rmse")
-select_best(initial_grid_knn, metric = "rsq", sort = "desc")
+grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
+select_best(grid_knn, metric = "rmse", n_top = 2)
+select_best(grid_knn, metric = "rmse")
+select_best(grid_knn, metric = "rsq", sort = "desc")
 }
 }
