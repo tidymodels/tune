@@ -42,9 +42,9 @@ ames_wflow <-
 set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
-  update(id = "Nhood_other", threshold(c(0, .09))) %>%
-  update(id = "SubClass_other", threshold(c(0, .059))) %>%
-  update(id = "num_comp", num_comp(c(1, 20)))
+  update(Nhood_other  = threshold(c(0, .09))) %>%
+  update(SubClass_other = threshold(c(0, .059))) %>%
+  update(num_comp = num_comp(c(1, 20)))
 
 set.seed(7520)
 ames_grid <-

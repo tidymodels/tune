@@ -32,8 +32,8 @@ two_class_wflow <-
 
 two_class_set <-
   parameters(two_class_wflow) %>%
-  update(id = "K", neighbors(c(1, 50))) %>%
-  update(id = "exponent", dist_power(c(1/10, 2)))
+  update(K = neighbors(c(1, 50))) %>%
+  update(exponent = dist_power(c(1/10, 2)))
 
 set.seed(2494)
 two_class_grid <-

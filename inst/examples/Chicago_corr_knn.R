@@ -34,7 +34,7 @@ chi_wflow <-
 
 chi_param <-
   parameters(chi_wflow) %>%
-  update(id = "threshold", threshold(c(.8, .99)))
+  update(threshold = threshold(c(.8, .99)))
 
 chi_grid <-
   chi_param %>%

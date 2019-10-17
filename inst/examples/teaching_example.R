@@ -65,10 +65,10 @@ grid <-
 
 grid_results <- tune_grid(svm_wflow, rs = folds, grid = grid,
                           control = grid_control(verbose = TRUE))
-summarize(grid_results)
+estimate(grid_results)
 
 ggplot(
-  summarize(grid_results) %>% filter(.metric == "accuracy"),
+  estimate(grid_results) %>% filter(.metric == "accuracy"),
   aes(x = rbf_sigma, y = mean)) +
   geom_path() +
   scale_x_log10()
@@ -80,7 +80,7 @@ sigma_set <-
   slice(2)
 
 acc_results <-
-  summarize(grid_results) %>%
+  estimate(grid_results) %>%
   filter(.metric == "accuracy") %>%
   arrange(rbf_sigma)
 
@@ -163,6 +163,9 @@ p0 <-
 svg("~/tmp/initial.svg", height = 4)
 plot(p0)
 dev.off()
+
+initial_result <- acc_vals
+
 
 obj <- prob_improve(trade_off = 0)
 
