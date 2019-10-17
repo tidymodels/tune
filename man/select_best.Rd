@@ -5,7 +5,7 @@
 \title{Obtain the best score with parameters produced by tuning}
 \usage{
 select_best(x, metric = NA, n_top = 1, performance = TRUE,
-  maximize = "asc")
+  maximize = TRUE)
 }
 \arguments{
 \item{x}{The results of \code{tune_grid()} or \code{tune_Bayes()}.}
@@ -22,7 +22,9 @@ OR a user defined metric for performance during tuning.}
 \item{performance}{A logical value (TRUE/FALSE) to indicate if columns for the corresponding
 performance estimates should also be returned.}
 
-\item{maximize}{Direction of "asc" for ascending or "desc" for descending scores. e.g. \code{rmse} might require ascending whilst \code{rsq} might require desc sort. Will be automated later.}
+\item{maximize}{A logical value (TRUE/FALSE). This Will be automated later by adding an attribute to the
+grid object that has a table that has the appropriate value of maximize for each performance metric
+that was requested. Once added, maximize argument will be removed.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
@@ -37,6 +39,6 @@ Get the best estimator that was chosen by the search, i.e. estimator which gave 
 grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
 select_best(grid_knn, metric = "rmse", n_top = 2)
 select_best(grid_knn, metric = "rmse")
-select_best(grid_knn, metric = "rsq", maximize = "desc")
+select_best(grid_knn, metric = "rsq", maximize = FALSE)
 }
 }

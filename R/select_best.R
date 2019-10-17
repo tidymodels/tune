@@ -13,7 +13,9 @@
 #' @param n_top number of top results/rows to return.
 #' @param performance A logical value (TRUE/FALSE) to indicate if columns for the corresponding
 #' performance estimates should also be returned.
-#' @param maximize Direction of "asc" for ascending or "desc" for descending scores. e.g. `rmse` might require ascending whilst `rsq` might require desc sort. Will be automated later.
+#' @param maximize A logical value (TRUE/FALSE). This Will be automated later by adding an attribute to the
+#' grid object that has a table that has the appropriate value of maximize for each performance metric
+#' that was requested. Once added, maximize argument will be removed.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model as well as the specified metric type.
 #' @examples
@@ -21,10 +23,10 @@
 #' grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
 #' select_best(grid_knn, metric = "rmse", n_top = 2)
 #' select_best(grid_knn, metric = "rmse")
-#' select_best(grid_knn, metric = "rsq", maximize = "desc")
+#' select_best(grid_knn, metric = "rsq", maximize = FALSE)
 #' }
 #' @export
-select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize = "asc") {
+select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize = TRUE) {
   if (is.na(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for metric to get the best score/params...")
   }
@@ -37,12 +39,12 @@ select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize 
   }
 
   if (performance == TRUE) {
-    if (maximize == "asc") {
+    if (maximize) {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
         dplyr::slice(1:n_top)
       return(res)
-    } else if (maximize == "desc") {
+    } else if (!(maximize)) {
       res <- summary_res %>%
         dplyr::arrange(desc(mean)) %>%
         dplyr::slice(1:n_top)
@@ -53,7 +55,7 @@ select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize 
   }
   # if performance cols are not required
   else {
-    if (maximize == "asc") {
+    if (maximize) {
       res <- summary_res %>%
         dplyr::arrange(mean) %>%
         dplyr::select(mean) %>%
@@ -61,7 +63,7 @@ select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize 
         dplyr::slice(1:n_top)
       return(res)
     }
-    else if (maximize == "desc") {
+    else if (!(maximize)) {
       res <- summary_res %>%
         dplyr::arrange(desc(mean)) %>%
         dplyr::select(mean) %>%
