@@ -35,22 +35,24 @@ load_namespace <- function(x) {
   if (length(x) == 0) {
     return(invisible(TRUE))
   }
+
+  x_full <- x[x %in% full_load]
+  x <- x[!(x %in% full_load)]
+
   loaded <- purrr::map_lgl(x, isNamespaceLoaded)
   x <- x[!loaded]
 
-  if (length(x) == 0) {
-    return(invisible(TRUE))
-  }
-  fine <- purrr::map_lgl(x, requireNamespace, quietly = TRUE)
-  if (any(!fine)) {
-    bad <- x[!fine]
-    msg <- paste0("'", bad, "'", collapse = ", ")
-    stop(paste("These packages could not be loaded:", msg), call. = FALSE)
+  if (length(x) > 0) {
+    did_load <- purrr::map_lgl(x, requireNamespace, quietly = TRUE)
+    if (any(!did_load)) {
+      bad <- x[!did_load]
+      msg <- paste0("'", bad, "'", collapse = ", ")
+      stop(paste("These packages could not be loaded:", msg), call. = FALSE)
+    }
   }
 
-  if (any(x %in% full_load)) {
-    pkgs <- x[x %in% full_load]
-    purrr::map(pkgs, attachNamespace)
+  if (length(x_full) > 0) {
+    purrr::map(x_full, ~ try(attachNamespace(.x), silent = TRUE))
   }
 
   invisible(TRUE)
