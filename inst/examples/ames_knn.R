@@ -44,6 +44,7 @@ ames_set <-
   parameters(ames_wflow) %>%
   update(neighbors = neighbors(c(1, 50)))
 
+
 ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 10)
