@@ -157,19 +157,19 @@
 <a class="sourceLine" id="cb16-2" data-line-number="2">grid_form &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">model =</span> svm_mod, <span class="dt">rs =</span> iono_rs, <span class="dt">perf =</span> roc_vals, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb16-3" data-line-number="3">grid_form</a></code></pre></div>
 <pre><code>## # Bootstrap sampling 
-## # A tibble: 30 x 3
-##    splits            id          .metrics         
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
-##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
-##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
-##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
-##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
-##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
-##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
-##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
-##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
-##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
-## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
+## # A tibble: 30 x 4
+##    splits            id          .metrics          .notes          
+##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
+##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The <code>.metrics</code> column contains tibbles of the performance metrics for each tuning parameter combination:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">grid_form <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(.metrics) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="dv">1</span>)</a></code></pre></div>
@@ -220,19 +220,19 @@
 <a class="sourceLine" id="cb24-2" data-line-number="2">rec_form &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(iono_rec, <span class="dt">model =</span> svm_mod, <span class="dt">rs =</span> iono_rs, <span class="dt">perf =</span> roc_vals, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb24-3" data-line-number="3">rec_form</a></code></pre></div>
 <pre><code>## # Bootstrap sampling 
-## # A tibble: 30 x 3
-##    splits            id          .metrics         
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;           
-##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt;
-##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt;
-##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt;
-##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt;
-##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt;
-##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt;
-##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt;
-##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt;
-##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt;
-## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt;
+## # A tibble: 30 x 4
+##    splits            id          .metrics          .notes          
+##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
+##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The best setting here was:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw"><a href="../reference/estimate.tune_results.html">estimate</a></span>(rec_form) <span class="op">%&gt;%</span><span class="st"> </span></a>

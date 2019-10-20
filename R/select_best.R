@@ -1,78 +1,66 @@
-#' Obtain the best score with parameters produced by tuning
+#' Obtain the numerically best parameters
 #'
-#' Get the best estimator that was chosen by the search, i.e. estimator which gave the highest performance score
-#' (or Parameter setting that gave the best results) on the assessment data.
+#' `select_best()` finds the tuning parameter combination with the best
+#'  performance values. `show_best()` displays the top sub-models and their
+#'  performance estimates.
 #'
 #' @param x The results of `tune_grid()` or `tune_Bayes()`.
-#' @param metric A character value. The metric depend on the results and the mode of the
-#' model. e.g. for `mode = regression` the metrics could be `rmse, rsq, mase` etc.
-#' and for `mode = classification` it could be: `accuracy, kap, recall, precision, sens, spec, roc_auc, pr_auc, average_precision`
-#' etc. (See
-#'   \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for more details.)
-#' OR a user defined metric for performance during tuning.
-#' @param n_top number of top results/rows to return.
-#' @param performance A logical value (TRUE/FALSE) to indicate if columns for the corresponding
-#' performance estimates should also be returned.
-#' @param maximize A logical value (TRUE/FALSE). This Will be automated later by adding an attribute to the
-#' grid object that has a table that has the appropriate value of maximize for each performance metric
-#' that was requested. Once added, maximize argument will be removed.
-#' @return A tibble. The column names depend on the results and the mode of the
-#' model as well as the specified metric type.
-#' @examples
-#' \dontrun{
-#' grid_knn <- tune_grid(wflow_obj, rs = cv_splits, control = grid_control(verbose = TRUE))
-#' select_best(grid_knn, metric = "rmse", n_top = 2)
-#' select_best(grid_knn, metric = "rmse")
-#' select_best(grid_knn, metric = "rsq", maximize = FALSE)
-#' }
+#' @param metric A character value for the metric that will be used to sort
+#'  the models. (See
+#'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
+#'  more details). Not required if a single metric exists in `x`.
+#' @param n_top An integer for the number of top results/rows to return.
+#' @param maximize A logical value (TRUE/FALSE).
+#' @return A tibble with columns for the parameters. `show_best()` also
+#'  includes columns for performance metrics.
 #' @export
-select_best <- function(x, metric = NA, n_top = 1, performance = TRUE, maximize = TRUE) {
-  if (is.na(metric) | length(metric) > 1) {
-    rlang::abort("Please specify a single character value for metric to get the best score/params...")
+show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
+  summary_res <- estimate(x)
+  metrics <- unique(summary_res$.metric)
+  if (length(metrics) == 1) {
+    metric <- metrics
+  }
+
+  if (rlang::is_missing(metric) | length(metric) > 1) {
+    rlang::abort("Please specify a single character value for `metric`.")
+  }
+  if (!is.logical(maximize) | length(maximize) > 1) {
+    rlang::abort("Please specify a single logical value for `maximize`.")
+  }
+
+  # trap some cases that we know about
+  to_min <- c("rmse", "mae", "mase", "mape")
+  if (maximize & metric %in% to_min) {
+    msg <- paste0("Did you mean to maximize ", metric, "?")
+    rlang::warn(msg)
   }
 
   # get estimates/summarise
-  summary_res <- estimate(x) %>% dplyr::filter(.metric %in% c(metric))
+  summary_res <- summary_res %>% dplyr::filter(.metric == metric)
 
-  if (nrow(summary_res %>% dplyr::filter(.metric == metric)) == 0) {
-    rlang::abort("No results are available. Please check trained performance metrics returned by the model tunning")
+  if (nrow(summary_res) == 0) {
+    rlang::abort("No results are available. Please check the value of `metric`.")
   }
 
-  if (performance == TRUE) {
-    if (maximize) {
-      res <- summary_res %>%
-        dplyr::arrange(mean) %>%
-        dplyr::slice(1:n_top)
-      return(res)
-    } else if (!(maximize)) {
-      res <- summary_res %>%
-        dplyr::arrange(desc(mean)) %>%
-        dplyr::slice(1:n_top)
-      return(res)
-    } else {
-      rlang::abort("Results sorting can be ascending or descing only")
-    }
+  if (maximize) {
+    summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
+  } else {
+    summary_res <- summary_res %>% dplyr::arrange(mean)
   }
-  # if performance cols are not required
-  else {
-    if (maximize) {
-      res <- summary_res %>%
-        dplyr::arrange(mean) %>%
-        dplyr::select(mean) %>%
-        dplyr::rename(!!paste0("best_", metric) := mean) %>%
-        dplyr::slice(1:n_top)
-      return(res)
-    }
-    else if (!(maximize)) {
-      res <- summary_res %>%
-        dplyr::arrange(desc(mean)) %>%
-        dplyr::select(mean) %>%
-        dplyr::rename(!!paste0("best_", metric) := mean) %>%
-        dplyr::slice(1:n_top)
-      return(res)
-    }
-    else {
-      rlang::abort("Results sorting can be ascending or descing only")
-    }
-  }
+  show_ind <- 1:min(nrow(summary_res), n_top)
+  summary_res %>% dplyr::slice(show_ind)
 }
+
+
+#' @export
+#' @rdname show_best
+select_best <- function(x, metric, maximize = TRUE) {
+  res <- show_best(x, metric = metric, maximize = maximize, n_top = 1)
+  res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
+  if (any(names(res) == ".iter")) {
+    res <- res %>% dplyr::select(-.iter)
+  }
+  res
+}
+
+

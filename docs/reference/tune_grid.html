@@ -197,7 +197,9 @@ argument <strong>should be named</strong>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble of results.</p>
+    <p>An updated version of <code>rs</code> with extra list columns for <code>.metrics</code> and
+<code>.notes</code> (optional columns are <code>.predictions</code> and <code>.extracts</code>). <code>.notes</code>
+contains warnings and errors that occur during execution.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Suppose there are <em>m</em> tuning parameter combinations. <code>tune_grid()</code> may not

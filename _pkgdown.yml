@@ -21,12 +21,17 @@ reference:
     - conf_bound
     - Bayes_control
     - grid_control
-    - summarise.tune_results
-    - plot_perf_vs_iter
+    - estimate
+    - estimate.tune_results
+    - autoplot.tune_results
+    - expo_decay
+    - show_best
+    - workflow
+    - collect_predictions
   - title: Low-Level Functions
     contents:
     - merge.recipe
-    - param_set.workflow
+    - parameters.workflow
     - tunable
     - tune_args
 
