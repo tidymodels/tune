@@ -492,7 +492,7 @@
 <a class="sourceLine" id="cb23-154" data-line-number="154"><span class="co">#&gt; Error : Cannot write to fd (system error 9, Bad file descriptor) @client.c:149</span></a>
 <a class="sourceLine" id="cb23-155" data-line-number="155"><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></a></code></pre></div>
 <p>Visually, the performance gain was:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">autoplot</span>(knn_search, <span class="dt">type =</span> <span class="st">"performance"</span>, <span class="dt">metric =</span> <span class="st">"rmse"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(knn_search, <span class="dt">type =</span> <span class="st">"performance"</span>, <span class="dt">metric =</span> <span class="st">"rmse"</span>)</a></code></pre></div>
 <p><img src="getting_started_files/figure-html/bo-iter-1.png" width="768"></p>
 <p>The best results here were:</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw"><a href="../reference/estimate.tune_results.html">estimate</a></span>(knn_search) <span class="op">%&gt;%</span><span class="st"> </span></a>
