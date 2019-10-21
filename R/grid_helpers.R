@@ -73,7 +73,7 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
             object = expr(model),
             new_data = expr(x_vals),
             type = type_iter,
-            !!!grid$.submodels[[1]]
+            !!!make_submod_arg(grid, model)
           )
         tmp_res <-
           eval_tidy(mp_call) %>%
@@ -81,6 +81,8 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
           unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
                 row.names = NULL) %>%
+          # go back to user-defined name
+          dplyr::rename(!!!make_rename_arg(grid, model)) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
           dplyr::bind_rows(tmp_res)
       }
@@ -102,6 +104,30 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
   res <- dplyr::full_join(res, outcome_dat, by = ".row")
   tibble::as_tibble(res)
 }
+
+make_submod_arg <- function(grid, model) {
+  # Assumes only one submodel parameter per model
+  real_name <-
+    parsnip::get_from_env(paste(class(model$spec)[1], "args", sep = "_")) %>%
+    dplyr::filter(has_submodel & engine == model$spec$engine) %>%
+    dplyr::pull(parsnip)
+  submods <- grid$.submodels[[1]]
+  names(submods) <- real_name
+  submods
+}
+
+make_rename_arg <- function(grid, model) {
+  # Assumes only one submodel parameter per model
+  real_name <-
+    parsnip::get_from_env(paste(class(model$spec)[1], "args", sep = "_")) %>%
+    dplyr::filter(has_submodel & engine == model$spec$engine) %>%
+    dplyr::pull(parsnip)
+  submods <- grid$.submodels[[1]]
+  res <- list(real_name)
+  names(res) <- names(submods)
+  res
+}
+
 
 # ------------------------------------------------------------------------------
 # Formula-oriented helpers

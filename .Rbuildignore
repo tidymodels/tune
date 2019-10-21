@@ -7,6 +7,6 @@
 ^docs$
 ^\.travis\.yml$
 ^vignettes
-^\.github/ISSUE_TEMPLATE$
+issue_template.md
 ^azure-pipelines\.yml$
 ^codecov\.yml$
