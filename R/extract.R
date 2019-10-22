@@ -138,7 +138,7 @@ append_extracts <- function(collection, rec, mod, param, split, ctrl) {
     mutate(
       .extracts = list(
         extract_details(
-          list(recipe = rec, model = mod),
+          list(recipe = rec, model = mod$fit),
           ctrl$extract
         )
       )
