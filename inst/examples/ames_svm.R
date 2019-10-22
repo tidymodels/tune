@@ -45,13 +45,13 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 3)
 
-initial_grid <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
+initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
 
 
 test <-
   tune_Bayes(
     ames_wflow,
-    rs = cv_splits,
+    resamples = cv_splits,
     param_info = ames_set,
     initial = initial_grid,
     perf = metric_set(rmse, rsq),

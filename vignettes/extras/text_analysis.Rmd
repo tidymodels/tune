@@ -182,7 +182,7 @@ roc_scores <- metric_set(roc_auc)
 
 set.seed(1559)
 five_star_glmnet <- 
-  tune_grid(pre_proc, lr_mod, rs = folds, grid = five_star_grid, 
+  tune_grid(pre_proc, lr_mod, resamples = folds, grid = five_star_grid, 
             perf = roc_scores, control = ctrl)
 ```
 
@@ -262,7 +262,7 @@ set.seed(12)
 five_star_search <-
   tune_Bayes(
     five_star_wflow, 
-    rs = folds,
+    resamples = folds,
     param_info = five_star_set,
     initial = 5,
     iter = 30,

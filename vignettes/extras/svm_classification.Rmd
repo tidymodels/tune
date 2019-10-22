@@ -115,7 +115,7 @@ set.seed(991)
 search_res <- 
   tune_Bayes(
     svm_wflow, 
-    rs = folds,
+    resamples = folds,
     # To use non-default parameter ranges
     param_info = svm_set,
     # Generate five at semi-random to start

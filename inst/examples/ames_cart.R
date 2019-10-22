@@ -44,7 +44,7 @@ num_leaves <- function(x) {
 
 
 set.seed(4567367)
-initial_grid <- tune_grid(ames_wflow, rs = cv_splits, control = grid_control(verbose = TRUE, extract = num_leaves))
+initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, control = grid_control(verbose = TRUE, extract = num_leaves))
 
 # ------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ set.seed(463)
 test <-
   tune_Bayes(
     ames_wflow,
-    rs = cv_splits,
+    resamples = cv_splits,
     initial = initial_grid,
     perf = metric_set(rmse),
     objective = exp_improve(foo),

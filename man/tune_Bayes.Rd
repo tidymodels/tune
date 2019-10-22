@@ -12,17 +12,18 @@ tune_Bayes(object, ...)
 
 \method{tune_Bayes}{default}(object, ...)
 
-\method{tune_Bayes}{recipe}(object, model, rs, iter = 10,
+\method{tune_Bayes}{recipe}(object, model, resamples, iter = 10,
   param_info = NULL, perf = NULL, objective = exp_improve(),
   initial = NULL, control = Bayes_control(), ...)
 
-\method{tune_Bayes}{formula}(formula, model, rs, iter = 10,
+\method{tune_Bayes}{formula}(formula, model, resamples, iter = 10,
   param_info = NULL, perf = NULL, objective = exp_improve(),
   initial = NULL, control = Bayes_control(), ...)
 
-\method{tune_Bayes}{workflow}(object, model = NULL, rs, iter = 10,
-  param_info = NULL, perf = NULL, objective = exp_improve(),
-  initial = NULL, control = Bayes_control(), ...)
+\method{tune_Bayes}{workflow}(object, model = NULL, resamples,
+  iter = 10, param_info = NULL, perf = NULL,
+  objective = exp_improve(), initial = NULL,
+  control = Bayes_control(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -32,7 +33,7 @@ tune_Bayes(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{rs}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
 
 \item{iter}{The maximum number of search iterations.}
 

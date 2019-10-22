@@ -42,7 +42,7 @@ two_class_grid <-
 
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, rs = data_folds, grid = two_class_grid,
+res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid,
                  perf = class_metrics, control = grid_control(verbose = TRUE))
 
 
@@ -72,7 +72,7 @@ set.seed(365)
 svm_search <-
   tune_Bayes(
     two_class_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = two_class_set,
     initial = res,
     objective = conf_bound(kappa = decr_kappa),

@@ -63,7 +63,7 @@ grid <-
   grid_max_entropy(svm_set, size = 150) %>%
   mutate(cost = 10^(-2.75), num_comp = 15)
 
-grid_results <- tune_grid(svm_wflow, rs = folds, grid = grid,
+grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
                           control = grid_control(verbose = TRUE))
 estimate(grid_results)
 

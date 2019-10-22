@@ -45,7 +45,7 @@ registerDoParallel(cl)
 glmn_grid <- expand.grid(penalty = 10^seq(-3, -1, length = 14),
                          mixture = (0:5)/5)
 
-glmn_search <- tune_grid(lr_rec, lr_mod, rs = so_boots,
+glmn_search <- tune_grid(lr_rec, lr_mod, resamples = so_boots,
                          grid = glmn_grid,
                          perf = metric_set(accuracy, roc_auc),
                          control = grid_control(verbose = TRUE))
@@ -67,7 +67,7 @@ rf_grid <-
   grid_latin_hypercube(size = 20)
 
 set.seed(1809)
-rf_search <- tune_grid(rf_rec, rf_mod, rs = so_boots,
+rf_search <- tune_grid(rf_rec, rf_mod, resamples = so_boots,
                        grid = rf_grid,
                        perf = metric_set(accuracy, roc_auc))
 

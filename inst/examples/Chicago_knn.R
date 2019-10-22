@@ -43,7 +43,7 @@ chi_grid <-
   grid_regular(levels = c(30, 3, 3))
 
 
-reg_knn_grid <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
+reg_knn_grid <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
 
 summarize(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
@@ -75,12 +75,12 @@ smol_grid <-
   grid_random(size = 5)
 
 
-smol_knn_grid <- tune_grid(chi_wflow, rs = data_folds, grid = smol_grid, control = grid_control(verbose = TRUE))
+smol_knn_grid <- tune_grid(chi_wflow, resamples = data_folds, grid = smol_grid, control = grid_control(verbose = TRUE))
 
 knn_search <-
   tune_Bayes(
     chi_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = chi_set,
     initial = smol_knn_grid,
     perf = metric_set(rmse, rsq),

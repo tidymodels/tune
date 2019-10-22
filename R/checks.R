@@ -1,6 +1,6 @@
 check_rset <- function(x) {
   if (!inherits(x, "rset")) {
-    stop("The `rs` argument should be an 'rset' object, such as the type ",
+    stop("The `resamples` argument should be an 'rset' object, such as the type ",
          "produced by `vfold_cv()` or other 'rsample' functions.",
          call. = FALSE)
   }
@@ -127,7 +127,7 @@ check_perf <- function(x, object) {
   x
 }
 
-check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
+check_initial <- function(x, pset, wflow, resamples, perf, ctrl) {
   if (is.null(x) || is.numeric(x)) {
     if (is.null(x)) {
       x <- 3
@@ -138,7 +138,7 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
-    x <- tune_grid(wflow, model = NULL, rs = rs, grid = x, perf = perf,
+    x <- tune_grid(wflow, model = NULL, resamples = resamples, grid = x, perf = perf,
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {

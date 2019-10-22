@@ -8,7 +8,7 @@
 #' @param formula A traditional model formula.
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
-#' @param rs An `rset()` object. This argument __should be named__.
+#' @param resamples An `rset()` object. This argument __should be named__.
 #' @param grid A data frame of tuning combinations or `NULL`. If used, this
 #' argument __should be named__.
 #' @param perf A `yardstick::metric_set()` or `NULL`. If used, this argument
@@ -16,7 +16,7 @@
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
 #' @param ... Not currently used.
-#' @return An updated version of `rs` with extra list columns for `.metrics` and
+#' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
 #' contains warnings and errors that occur during execution.
 #'
@@ -136,7 +136,7 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, rs, grid = NULL,
+tune_grid.recipe <- function(object, model, resamples, grid = NULL,
                              perf = NULL, control = grid_control(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
@@ -147,12 +147,12 @@ tune_grid.recipe <- function(object, model, rs, grid = NULL,
     add_recipe(object) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(wflow, resamples = resamples, grid = grid, perf = perf, control = control)
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, rs, grid = NULL,
+tune_grid.formula <- function(formula, model, resamples, grid = NULL,
                              perf = NULL, control = grid_control(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
@@ -163,34 +163,34 @@ tune_grid.formula <- function(formula, model, rs, grid = NULL,
     add_formula(formula) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(wflow, resamples = resamples, grid = grid, perf = perf, control = control)
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, model = NULL, rs, grid = NULL,
+tune_grid.workflow <- function(object, model = NULL, resamples, grid = NULL,
                              perf = NULL, control = grid_control(), ...) {
   if (!is.null(model)) {
     stop("When using a workflow, `model` should be NULL.", call. = FALSE)
   }
 
-  tune_grid_workflow(object, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(object, resamples = resamples, grid = grid, perf = perf, control = control)
 }
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
+tune_grid_workflow <- function(object, resamples, grid = NULL, perf = NULL, control = grid_control()) {
 
-  check_rset(rs)
+  check_rset(resamples)
   check_object(object)
   perf <- check_perf(perf, object)
   grid <- check_grid(grid, object)
 
   code_path <- quarterback(object)
 
-  rs <- rlang::eval_tidy(code_path)
+  resamples <- rlang::eval_tidy(code_path)
 
-  all_bad <- is_cataclysmic(rs)
+  all_bad <- is_cataclysmic(resamples)
   if (all_bad) {
     warning(
       "All models failed in tune_grid(). See the `.notes` column.",
@@ -198,8 +198,8 @@ tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = g
       )
   }
 
-  class(rs) <- c("tune_results", class(rs))
-  rs
+  class(resamples) <- c("tune_results", class(resamples))
+  resamples
 }
 
 # ------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ quarterback <- function(x) {
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 
-  args <- list(splits = expr(rs), grid = expr(grid),
+  args <- list(splits = expr(resamples), grid = expr(grid),
                wflow = expr(object), perf = expr(perf),
                ctrl = expr(control))
   dplyr::case_when(

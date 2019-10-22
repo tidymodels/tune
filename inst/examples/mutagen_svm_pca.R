@@ -41,7 +41,7 @@ Mutagen_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(Mutagen_wflow, rs = data_folds, grid = Mutagen_grid, perf = class_only,
+res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, perf = class_only,
                  control = grid_control(verbose = TRUE))
 
 
@@ -51,7 +51,7 @@ set.seed(3654)
 svm_search <-
   tune_Bayes(
     Mutagen_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = Mutagen_param,
     initial = res,
     perf = class_only,
@@ -63,7 +63,7 @@ set.seed(378)
 more_svm_search <-
   tune_Bayes(
     Mutagen_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = Mutagen_param,
     initial = svm_search,
     perf = class_only,

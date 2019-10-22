@@ -55,7 +55,7 @@ tune_Bayes.default <- function(object, ...) {
 #' @export
 #' @rdname tune_Bayes
 tune_Bayes.recipe <- function(object, model,
-                              rs,
+                              resamples,
                               iter = 10,
                               param_info = NULL,
                               perf = NULL,
@@ -72,7 +72,7 @@ tune_Bayes.recipe <- function(object, model,
     add_recipe(object) %>%
     add_model(model)
 
-  tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
+  tune_Bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
                       control = control, ...)
 }
@@ -80,7 +80,7 @@ tune_Bayes.recipe <- function(object, model,
 #' @export
 #' @rdname tune_Bayes
 tune_Bayes.formula <- function(formula, model,
-                               rs,
+                               resamples,
                                iter = 10,
                                param_info = NULL,
                                perf = NULL,
@@ -97,7 +97,7 @@ tune_Bayes.formula <- function(formula, model,
     add_formula(formula) %>%
     add_model(model)
 
-  tune_Bayes_workflow(wflow, rs = rs, iter = iter, param_info = param_info,
+  tune_Bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
                       control = control, ...)
 }
@@ -107,7 +107,7 @@ tune_Bayes.formula <- function(formula, model,
 tune_Bayes.workflow <-
   function(object,
            model = NULL,
-           rs,
+           resamples,
            iter = 10,
            param_info = NULL,
            perf = NULL,
@@ -120,18 +120,18 @@ tune_Bayes.workflow <-
     stop("When using a workflow, `model` should be NULL.", call. = FALSE)
   }
 
-  tune_Bayes_workflow(object, rs = rs, iter = iter, param_info = param_info,
+  tune_Bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
                       perf = perf, objective = objective, initial = initial,
                       control = control, ...)
 }
 
 tune_Bayes_workflow <-
-  function(object, rs, iter = 10, param_info = NULL, perf = NULL,
+  function(object, resamples, iter = 10, param_info = NULL, perf = NULL,
            objective = exp_improve(),
            initial = NULL, control = Bayes_control(), ...) {
     start_time <- proc.time()[3]
 
-    check_rset(rs)
+    check_rset(resamples)
     check_object(object, check_dials = is.null(param_info))
     perf <- check_perf(perf, object)
     perf_data <- perf_info(perf)
@@ -142,14 +142,14 @@ tune_Bayes_workflow <-
       param_info <- dials::parameters(object)
     }
 
-    unsummarized <- check_initial(initial, param_info, object, rs, perf, control)
+    unsummarized <- check_initial(initial, param_info, object, resamples, perf, control)
     mean_stats <- estimate(unsummarized)
 
     check_time(start_time, control$time_limit)
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      return(reup_rs(rs, unsummarized))
+      return(reup_rs(resamples, unsummarized))
     })
 
     score_card <- initial_info(mean_stats, perf_name, maximize)
@@ -209,7 +209,7 @@ tune_Bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, rs = rs, candidates = candidates, perf = perf, control = control)
+      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, perf = perf, control = control)
 
       check_time(start_time, control$time_limit)
 
@@ -237,7 +237,7 @@ tune_Bayes_workflow <-
       check_time(start_time, control$time_limit)
     }
 
-    unsummarized <- reup_rs(rs, unsummarized)
+    unsummarized <- reup_rs(resamples, unsummarized)
     on.exit()
     unsummarized
   }
@@ -422,7 +422,7 @@ initial_info <- function(stats, perf, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, rs, candidates, perf, control) {
+more_results <- function(object, resamples, candidates, perf, control) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -432,7 +432,7 @@ more_results <- function(object, rs, candidates, perf, control) {
     try(
       tune_grid(
         object,
-        rs = rs,
+        resamples = resamples,
         grid = candidates,
         perf = perf,
         control = grid_control(verbose = FALSE, extract = control$extract,
@@ -488,14 +488,14 @@ check_time <- function(origin, limit) {
 # base's setTimeLimit().
 
 # Make sure that rset object attributes are kept once joined
-reup_rs <- function(rs, res)  {
-  sort_cols <- grep("^id", names(rs), value = TRUE)
+reup_rs <- function(resamples, res)  {
+  sort_cols <- grep("^id", names(resamples), value = TRUE)
   if (any(names(res) == ".iter")) {
     sort_cols <- c(".iter", sort_cols)
   }
   res <- dplyr::arrange(res, !!!syms(sort_cols))
   att <- attributes(res)
-  rsample_att <- attributes(rs)
+  rsample_att <- attributes(resamples)
   for (i in names(rsample_att)) {
     if (!any(names(att) == i)) {
       attr(res, i) <- rsample_att[[i]]

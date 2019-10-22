@@ -49,7 +49,7 @@ svm_set <-
 set.seed(1558)
 grid <- grid_max_entropy(svm_set, size = 5)
 
-grid_results <- tune_grid(svm_wflow, rs = folds, grid = grid,
+grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
                           control = grid_control(verbose = TRUE))
 
 grid_results
@@ -67,7 +67,7 @@ registerDoMC(cores = 10)
 
 kappa_only <- metric_set(kap)
 
-svm_search <- tune_Bayes(svm_wflow, rs = folds,
+svm_search <- tune_Bayes(svm_wflow, resamples = folds,
                          initial = grid_results,
                          iter = 15,
                          perf = kappa_only,
@@ -78,7 +78,7 @@ autoplot(svm_search, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
-svm_search_2 <- tune_Bayes(svm_wflow, rs = folds,
+svm_search_2 <- tune_Bayes(svm_wflow, resamples = folds,
                            initial = svm_search,
                            iter = 15,
                            perf = kappa_only,

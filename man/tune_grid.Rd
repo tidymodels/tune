@@ -12,14 +12,14 @@ tune_grid(object, ...)
 
 \method{tune_grid}{default}(object, ...)
 
-\method{tune_grid}{recipe}(object, model, rs, grid = NULL, perf = NULL,
-  control = grid_control(), ...)
-
-\method{tune_grid}{formula}(formula, model, rs, grid = NULL,
+\method{tune_grid}{recipe}(object, model, resamples, grid = NULL,
   perf = NULL, control = grid_control(), ...)
 
-\method{tune_grid}{workflow}(object, model = NULL, rs, grid = NULL,
+\method{tune_grid}{formula}(formula, model, resamples, grid = NULL,
   perf = NULL, control = grid_control(), ...)
+
+\method{tune_grid}{workflow}(object, model = NULL, resamples,
+  grid = NULL, perf = NULL, control = grid_control(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -29,7 +29,7 @@ tune_grid(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{rs}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
 
 \item{grid}{A data frame of tuning combinations or \code{NULL}. If used, this
 argument \strong{should be named}.}
@@ -43,7 +43,7 @@ argument \strong{should be named}.}
 \item{formula}{A traditional model formula.}
 }
 \value{
-An updated version of \code{rs} with extra list columns for \code{.metrics} and
+An updated version of \code{resamples} with extra list columns for \code{.metrics} and
 \code{.notes} (optional columns are \code{.predictions} and \code{.extracts}). \code{.notes}
 contains warnings and errors that occur during execution.
 }

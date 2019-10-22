@@ -40,7 +40,7 @@ chi_grid <-
   chi_param %>%
   grid_latin_hypercube(size = 18)
 
-res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
+res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
 
 # summarize(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
@@ -58,7 +58,7 @@ set.seed(354)
 knn_search <-
   tune_Bayes(
     chi_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = chi_param,
     initial = res,
     perf = metric_set(rmse),

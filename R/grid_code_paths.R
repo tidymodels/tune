@@ -1,29 +1,29 @@
 
-tune_nothing <- function(rs, object, grid, perf, ctrl)  {
-  B <- nrow(rs)
+tune_nothing <- function(resamples, object, grid, perf, ctrl)  {
+  B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
-  lab_names <- names(labels(rs$splits[[1]]))
+  lab_names <- names(labels(resamples$splits[[1]]))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_no_tune(rs_iter, rs, object, perf, ctrl)
+    iter_no_tune(rs_iter, resamples, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results, ctrl)
-  rs <- pull_notes(rs, results, ctrl)
-  rs <- pull_extracts(rs, results, ctrl)
-  rs <- pull_predictions(rs, results, ctrl)
+  resamples <- pull_metrics(resamples, results, ctrl)
+  resamples <- pull_notes(resamples, results, ctrl)
+  resamples <- pull_extracts(resamples, results, ctrl)
+  resamples <- pull_predictions(resamples, results, ctrl)
 
-  rs
+  resamples
 }
 
-iter_no_tune <- function(rs_iter, rs, object, perf, ctrl) {
+iter_no_tune <- function(rs_iter, resamples, object, perf, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
-  split <- rs$splits[[rs_iter]]
+  split <- resamples$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -36,7 +36,7 @@ iter_no_tune <- function(rs_iter, rs, object, perf, ctrl) {
 }
 # ------------------------------------------------------------------------------
 
-iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
+iter_rec_and_mod <- function(rs_iter, resamples, grid, object, perf, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
@@ -46,7 +46,7 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   pred_vals <- NULL
   .notes <- NULL
 
-  split <- rs$splits[[rs_iter]]
+  split <- resamples$splits[[rs_iter]]
 
   model_param <-
     dials::parameters(object) %>%
@@ -133,33 +133,33 @@ iter_rec_and_mod <- function(rs_iter, rs, grid, object, perf, ctrl) {
   list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 }
 
-tune_rec_and_mod <- function(rs, grid, object, perf, ctrl) {
-  B <- nrow(rs)
+tune_rec_and_mod <- function(resamples, grid, object, perf, ctrl) {
+  B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
-  lab_names <- names(labels(rs$splits[[1]]))
+  lab_names <- names(labels(resamples$splits[[1]]))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec_and_mod(rs_iter, rs, grid, object, perf, ctrl)
+    iter_rec_and_mod(rs_iter, resamples, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results, ctrl)
-  rs <- pull_notes(rs, results, ctrl)
-  rs <- pull_extracts(rs, results, ctrl)
-  rs <- pull_predictions(rs, results, ctrl)
+  resamples <- pull_metrics(resamples, results, ctrl)
+  resamples <- pull_notes(resamples, results, ctrl)
+  resamples <- pull_extracts(resamples, results, ctrl)
+  resamples <- pull_predictions(resamples, results, ctrl)
 
-  rs
+  resamples
 }
 
 # ------------------------------------------------------------------------------
 
-iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
+iter_rec <- function(rs_iter, resamples, grid, object, perf, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
-  split <- rs$splits[[rs_iter]]
+  split <- resamples$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -209,48 +209,48 @@ iter_rec <- function(rs_iter, rs, grid, object, perf, ctrl) {
 
 }
 
-tune_rec <- function(rs, grid, object, perf, ctrl) {
-  B <- nrow(rs)
+tune_rec <- function(resamples, grid, object, perf, ctrl) {
+  B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec(rs_iter, rs, grid, object, perf, ctrl)
+    iter_rec(rs_iter, resamples, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results, ctrl)
-  rs <- pull_notes(rs, results, ctrl)
-  rs <- pull_extracts(rs, results, ctrl)
-  rs <- pull_predictions(rs, results, ctrl)
+  resamples <- pull_metrics(resamples, results, ctrl)
+  resamples <- pull_notes(resamples, results, ctrl)
+  resamples <- pull_extracts(resamples, results, ctrl)
+  resamples <- pull_predictions(resamples, results, ctrl)
 
-  rs
+  resamples
 }
 
 
 # ------------------------------------------------------------------------------
 
-tune_mod_with_recipe <- function(rs, grid, object, perf, ctrl) {
-  B <- nrow(rs)
+tune_mod_with_recipe <- function(resamples, grid, object, perf, ctrl) {
+  B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_recipe(rs_iter, rs, grid, object, perf, ctrl)
+    iter_mod_with_recipe(rs_iter, resamples, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results, ctrl)
-  rs <- pull_notes(rs, results, ctrl)
-  rs <- pull_extracts(rs, results, ctrl)
-  rs <- pull_predictions(rs, results, ctrl)
+  resamples <- pull_metrics(resamples, results, ctrl)
+  resamples <- pull_notes(resamples, results, ctrl)
+  resamples <- pull_extracts(resamples, results, ctrl)
+  resamples <- pull_predictions(resamples, results, ctrl)
 
-  rs
+  resamples
 }
 
-iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
+iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, perf, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
-  split <- rs$splits[[rs_iter]]
+  split <- resamples$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -310,28 +310,28 @@ iter_mod_with_recipe <- function(rs_iter, rs, grid, object, perf, ctrl) {
 # ------------------------------------------------------------------------------
 
 
-tune_mod_with_formula <- function(rs, grid, object, perf, ctrl) {
-  B <- nrow(rs)
+tune_mod_with_formula <- function(resamples, grid, object, perf, ctrl) {
+  B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_formula(rs_iter, rs, grid, object, perf, ctrl)
+    iter_mod_with_formula(rs_iter, resamples, grid, object, perf, ctrl)
 
-  rs <- pull_metrics(rs, results, ctrl)
-  rs <- pull_notes(rs, results, ctrl)
-  rs <- pull_extracts(rs, results, ctrl)
-  rs <- pull_predictions(rs, results, ctrl)
+  resamples <- pull_metrics(resamples, results, ctrl)
+  resamples <- pull_notes(resamples, results, ctrl)
+  resamples <- pull_extracts(resamples, results, ctrl)
+  resamples <- pull_predictions(resamples, results, ctrl)
 
-  rs
+  resamples
 }
 
-iter_mod_with_formula <- function(rs_iter, rs, grid, object, perf, ctrl) {
+iter_mod_with_formula <- function(rs_iter, resamples, grid, object, perf, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
-  split <- rs$splits[[rs_iter]]
+  split <- resamples$splits[[rs_iter]]
   perf_est <- NULL
   extracted <- NULL
   pred_vals <- NULL

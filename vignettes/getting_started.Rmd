@@ -160,7 +160,7 @@ The root mean squared error will be used to measure performance (and this is the
 Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `log10(Sale_Price) ~ Longitude + Latitude`. A recipe is not required.]:
 
 ```{r grid-search, cache = TRUE}
-ames_res <- tune_grid(ames_rec, model = lm_mod, rs = cv_splits, grid = spline_grid)
+ames_res <- tune_grid(ames_rec, model = lm_mod, resamples = cv_splits, grid = spline_grid)
 ```
 
 The object is similar to the `rsample` object but with one or more extra columns:
@@ -275,7 +275,7 @@ The code to conduct the search is:
 ```{r bo, cache = TRUE}
 ctrl <- Bayes_control(verbose = TRUE)
 set.seed(8154)
-knn_search <- tune_Bayes(knn_wflow, rs = cv_splits, initial = 5, iter = 20,
+knn_search <- tune_Bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 20,
                          param_info = knn_param, control = ctrl)
 ```
 

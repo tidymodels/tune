@@ -22,7 +22,7 @@ pima_wflow <-
 roc_vals <- metric_set(roc_auc)
 
 set.seed(3625)
-pima_res <- tune_grid(pima_wflow, rs = pima_rs, perf = roc_vals)
+pima_res <- tune_grid(pima_wflow, resamples = pima_rs, perf = roc_vals)
 
 # ------------------------------------------------------------------------------
 
