@@ -149,7 +149,13 @@ tune_grid.recipe <- function(object, model, resamples, grid = NULL,
     add_recipe(object) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, resamples = resamples, grid = grid, metrics = metrics, control = control)
+  tune_grid_workflow(
+    wflow,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 #' @export
@@ -165,44 +171,51 @@ tune_grid.formula <- function(formula, model, resamples, grid = NULL,
     add_formula(formula) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, resamples = resamples, grid = grid, metrics = metrics, control = control)
+  tune_grid_workflow(
+    wflow,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, model = NULL, resamples, grid = NULL,
+tune_grid.workflow <- function(object, resamples, grid = NULL,
                              metrics = NULL, control = ctrl_grid(), ...) {
-  if (!is.null(model)) {
-    stop("When using a workflow, `model` should be NULL.", call. = FALSE)
-  }
 
-  tune_grid_workflow(object, resamples = resamples, grid = grid, metrics = metrics, control = control)
+  tune_grid_workflow(
+    object,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(object, resamples, grid = NULL, metrics = NULL, control = ctrl_grid()) {
+tune_grid_workflow <-
+  function(object, resamples, grid = NULL, metrics = NULL, control = ctrl_grid()) {
+    check_rset(resamples)
+    check_object(object)
+    metrics <- check_metrics(metrics, object)
+    grid <- check_grid(grid, object)
 
-  check_rset(resamples)
-  check_object(object)
-  metrics <- check_metrics(metrics, object)
-  grid <- check_grid(grid, object)
+    code_path <- quarterback(object)
 
-  code_path <- quarterback(object)
+    resamples <- rlang::eval_tidy(code_path)
 
-  resamples <- rlang::eval_tidy(code_path)
+    all_bad <- is_cataclysmic(resamples)
+    if (all_bad) {
+      warning("All models failed in tune_grid(). See the `.notes` column.",
+              call. = FALSE)
+    }
 
-  all_bad <- is_cataclysmic(resamples)
-  if (all_bad) {
-    warning(
-      "All models failed in tune_grid(). See the `.notes` column.",
-      call. = FALSE
-      )
+    class(resamples) <- c("tune_results", class(resamples))
+    resamples
   }
-
-  class(resamples) <- c("tune_results", class(resamples))
-  resamples
-}
 
 # ------------------------------------------------------------------------------
 

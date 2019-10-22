@@ -151,10 +151,9 @@ combinations based on previous results.</p>
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>resamples</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(),
-  <span class='no'>...</span>)</pre>
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -248,7 +247,10 @@ resampled performance values once a new candidate set of values are estimated.</
 
 
 <p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, or a previous run of <code>tune_Bayes()</code> can be used
-in the <code>initial</code> argument.</p>
+in the <code>initial</code> argument. <code>initial</code> can also be a positive integer. In this
+case, a space-filling design will be used to populate a preliminary set of
+results. For good results, the number of initial values should be more than
+the number of parameters being optimized.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     

@@ -56,7 +56,10 @@
 #' @section Initial Values:
 #'
 #' The results of `tune_grid()`, or a previous run of `tune_Bayes()` can be used
-#' in the `initial` argument.
+#' in the `initial` argument. `initial` can also be a positive integer. In this
+#' case, a space-filling design will be used to populate a preliminary set of
+#' results. For good results, the number of initial values should be more than
+#' the number of parameters being optimized.
 #'
 #' @section Performance Metrics:
 #'
@@ -185,7 +188,6 @@ tune_Bayes.formula <- function(formula, model,
 #' @rdname tune_Bayes
 tune_Bayes.workflow <-
   function(object,
-           model = NULL,
            resamples,
            iter = 10,
            param_info = NULL,
@@ -194,10 +196,6 @@ tune_Bayes.workflow <-
            initial = NULL,
            control = ctrl_Bayes(),
            ...) {
-
-  if (!is.null(model)) {
-    stop("When using a workflow, `model` should be NULL.", call. = FALSE)
-  }
 
   tune_Bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
                       metrics = metrics, objective = objective, initial = initial,

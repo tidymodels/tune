@@ -20,10 +20,9 @@ tune_Bayes(object, ...)
   param_info = NULL, metrics = NULL, objective = exp_improve(),
   initial = NULL, control = ctrl_Bayes(), ...)
 
-\method{tune_Bayes}{workflow}(object, model = NULL, resamples,
-  iter = 10, param_info = NULL, metrics = NULL,
-  objective = exp_improve(), initial = NULL, control = ctrl_Bayes(),
-  ...)
+\method{tune_Bayes}{workflow}(object, resamples, iter = 10,
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
+  initial = NULL, control = ctrl_Bayes(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -98,7 +97,10 @@ resampled performance values once a new candidate set of values are estimated.
 
 
 The results of \code{tune_grid()}, or a previous run of \code{tune_Bayes()} can be used
-in the \code{initial} argument.
+in the \code{initial} argument. \code{initial} can also be a positive integer. In this
+case, a space-filling design will be used to populate a preliminary set of
+results. For good results, the number of initial values should be more than
+the number of parameters being optimized.
 }
 
 \section{Performance Metrics}{
