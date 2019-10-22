@@ -25,16 +25,16 @@
 #' the results of the function. If no extraction function is used, there is no
 #' `.extracts` column in the resulting object.
 #' @export
-grid_control <- function(verbose = FALSE, allow_par = TRUE,
+ctrl_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
                          pkgs = NULL) {
   # add options for  seeds per resample
 
-  val_class_and_single(verbose, "logical", "grid_control()")
-  val_class_and_single(allow_par, "logical", "grid_control()")
-  val_class_and_single(save_pred, "logical", "grid_control()")
-  val_class_or_null(pkgs, "character", "grid_control()")
-  val_class_or_null(extract, "function", "grid_control()")
+  val_class_and_single(verbose, "logical", "ctrl_grid()")
+  val_class_and_single(allow_par, "logical", "ctrl_grid()")
+  val_class_and_single(save_pred, "logical", "ctrl_grid()")
+  val_class_or_null(pkgs, "character", "ctrl_grid()")
+  val_class_or_null(extract, "function", "ctrl_grid()")
 
 
   list(verbose = verbose, allow_par = allow_par, extract = extract,
@@ -58,11 +58,11 @@ grid_control <- function(verbose = FALSE, allow_par = TRUE,
 #'   samples with no improvement.
 #' @param seed An integer for controlling the random number stream.
 #' @param extract An optional function to collect any information from the model
-#'   or other objects. See `grid_control()` for details. Note that if initial
+#'   or other objects. See `ctrl_grid()` for details. Note that if initial
 #'   results were already generated using `tune_grid()`, care must be taken if
 #'   the Bayesian search has a different extraction function.
 #' @param save_pred A logical to save the out-of-sample predictions from each
-#'   resample and each parameter combination. See `grid_control()` for details.
+#'   resample and each parameter combination. See `ctrl_grid()` for details.
 #' @param time_limit A number for the minimum number of _minutes_ (elapsed) that
 #'   the function should execute. The elapsed time is evaluated at internal
 #'   checkpoints and, if over time, the results at that time are returned (with
@@ -71,7 +71,7 @@ grid_control <- function(verbose = FALSE, allow_par = TRUE,
 #' @param pkgs An optional character string of R package names that should be
 #'   loaded (by namespace) during parallel processing.
 #' @export
-Bayes_control <-
+ctrl_Bayes <-
   function(verbose = FALSE,
            no_improve = 10L,
            uncertain = Inf,
@@ -82,14 +82,14 @@ Bayes_control <-
            pkgs = NULL) {
     # add options for seeds per resample
 
-    val_class_and_single(verbose, "logical", "Bayes_control()")
-    val_class_and_single(save_pred, "logical", "Bayes_control()")
-    val_class_and_single(no_improve, c("numeric", "integer"), "Bayes_control()")
-    val_class_and_single(uncertain, c("numeric", "integer"), "Bayes_control()")
-    val_class_and_single(seed, c("numeric", "integer"), "Bayes_control()")
-    val_class_or_null(extract, "function", "Bayes_control()")
-    val_class_and_single(time_limit, c("logical", "numeric"), "Bayes_control()")
-    val_class_or_null(pkgs, "character", "Bayes_control()")
+    val_class_and_single(verbose, "logical", "ctrl_Bayes()")
+    val_class_and_single(save_pred, "logical", "ctrl_Bayes()")
+    val_class_and_single(no_improve, c("numeric", "integer"), "ctrl_Bayes()")
+    val_class_and_single(uncertain, c("numeric", "integer"), "ctrl_Bayes()")
+    val_class_and_single(seed, c("numeric", "integer"), "ctrl_Bayes()")
+    val_class_or_null(extract, "function", "ctrl_Bayes()")
+    val_class_and_single(time_limit, c("logical", "numeric"), "ctrl_Bayes()")
+    val_class_or_null(pkgs, "character", "ctrl_Bayes()")
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_alert_warning(

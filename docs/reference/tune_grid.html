@@ -144,15 +144,15 @@ recipe across one or more resamples of the data.</p>
 
 <span class='co'># S3 method for recipe</span>
 <span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_grid.html'>ctrl_grid</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for formula</span>
 <span class='fu'>tune_grid</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_grid.html'>ctrl_grid</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
 <span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>resamples</span>,
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='grid_control.html'>grid_control</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_grid.html'>ctrl_grid</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -299,6 +299,11 @@ every model that is <em>fit</em> (as opposed to every model that is <em>evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='ctrl_grid.html'>ctrl_grid()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='estimate.tune_results.html'>estimate.tune_results()</a></code>,
+<code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>, <code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>,
+<code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -311,6 +316,7 @@ grid has a separate R object associated with it.</p>
       <li><a href="#performance-metrics">Performance Metrics</a></li>
       <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
       <li><a href="#extracting-information">Extracting information</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
   </div>

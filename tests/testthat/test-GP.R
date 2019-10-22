@@ -30,7 +30,7 @@ test_that('GP fit - svm', {
     tune:::fit_gp(estimate(svm_results),
                   svm_set,
                   "accuracy",
-                  Bayes_control(verbose = TRUE)
+                  ctrl_Bayes(verbose = TRUE)
     )
   expect_equal(class(svm_gp), "GP")
   expect_equal(
@@ -48,7 +48,7 @@ test_that('GP fit - knn', {
     tune:::fit_gp(estimate(knn_results),
                   knn_set,
                   "accuracy",
-                  Bayes_control()
+                  ctrl_Bayes()
     )
 
   knn_cols <- c(
@@ -66,7 +66,7 @@ test_that('GP fit - knn', {
 # ------------------------------------------------------------------------------
 
 test_that('GP scoring', {
-  ctrl <- Bayes_control()
+  ctrl <- ctrl_Bayes()
   curr <-
     estimate(svm_results) %>%
     filter(.metric == "accuracy") %>%

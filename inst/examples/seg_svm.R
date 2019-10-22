@@ -50,7 +50,7 @@ set.seed(1558)
 grid <- grid_max_entropy(svm_set, size = 5)
 
 grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
-                          control = grid_control(verbose = TRUE))
+                          control = ctrl_grid(verbose = TRUE))
 
 grid_results
 
@@ -72,7 +72,7 @@ svm_search <- tune_Bayes(svm_wflow, resamples = folds,
                          iter = 15,
                          metrics = kappa_only,
                          param_info = svm_set,
-                         control = Bayes_control(verbose = TRUE))
+                         control = ctrl_Bayes(verbose = TRUE))
 
 autoplot(svm_search, type = "performance", metric = "kap")
 
@@ -83,7 +83,7 @@ svm_search_2 <- tune_Bayes(svm_wflow, resamples = folds,
                            iter = 15,
                            metrics = kappa_only,
                            param_info = svm_set,
-                           control = Bayes_control(verbose = TRUE))
+                           control = ctrl_Bayes(verbose = TRUE))
 
 autoplot(svm_search_2, type = "performance", metric = "kap")
 

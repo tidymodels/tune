@@ -10,7 +10,7 @@
 #' tune()
 #' class(tune())
 #' tune("your name here")
-#'
+#' @seealso `tune_grid()`, `tune_Bayes()`
 #' @export
 tune <- function(id = "") {
   if (!is.character(id) || length(id) != 1) {

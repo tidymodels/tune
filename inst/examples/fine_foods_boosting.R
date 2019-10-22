@@ -64,7 +64,7 @@ folds <- group_vfold_cv(training_data, "product")
 grid <- grid_latin_hypercube(text_set, size = 3)
 
 res <- tune_grid(text_wflow, resamples = folds, grid = grid,
-          control = grid_control(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
+          control = ctrl_grid(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
 
 # ------------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ text_search <-
     param_info = text_set,
     objective = exp_improve(decr_trade_off),
     iter = 50,
-    control = Bayes_control(verbose = TRUE)
+    control = ctrl_Bayes(verbose = TRUE)
   )
 
 

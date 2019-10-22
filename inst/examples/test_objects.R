@@ -22,8 +22,8 @@ knn_mod <-
   set_engine("kknn")
 
 verb <- TRUE
-g_ctrl <- grid_control(verbose = verb, save_pred = TRUE)
-b_ctrl <- Bayes_control(verbose = verb, save_pred = TRUE)
+g_ctrl <- ctrl_grid(verbose = verb, save_pred = TRUE)
+b_ctrl <- ctrl_Bayes(verbose = verb, save_pred = TRUE)
 
 
 # ------------------------------------------------------------------------------

@@ -40,7 +40,7 @@ chi_grid <-
   chi_param %>%
   grid_latin_hypercube(size = 18)
 
-res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE))
+res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = ctrl_grid(verbose = TRUE))
 
 # summarize(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
@@ -63,7 +63,7 @@ knn_search <-
     initial = res,
     metrics = metric_set(rmse),
     iter = 20,
-    control = Bayes_control(verbose = TRUE, uncertain = 5),
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 5),
     trace = TRUE
   )
 

@@ -43,7 +43,7 @@ two_class_grid <-
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid,
-                 metrics = class_metrics, control = grid_control(verbose = TRUE))
+                 metrics = class_metrics, control = ctrl_grid(verbose = TRUE))
 
 
 # all_pred <-
@@ -78,7 +78,7 @@ svm_search <-
     objective = conf_bound(kappa = decr_kappa),
     metrics = class_metrics,
     iter = 30,
-    control = Bayes_control(verbose = TRUE, uncertain = 5)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 5)
   )
 
 ggplot(svm_search %>%  summarize() %>% filter(.metric == "roc_auc")) +

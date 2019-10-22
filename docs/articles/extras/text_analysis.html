@@ -219,7 +219,7 @@
 <a class="sourceLine" id="cb8-3" data-line-number="3">  <span class="kw">tibble</span>(<span class="dt">penalty =</span> x<span class="op">$</span>model<span class="op">$</span>lambda, <span class="dt">num_vars =</span> x<span class="op">$</span>model<span class="op">$</span>df)</a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">}</a>
 <a class="sourceLine" id="cb8-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/grid_control.html">grid_control</a></span>(<span class="dt">extract =</span> glmnet_vars)</a></code></pre></div>
+<a class="sourceLine" id="cb8-6" data-line-number="6">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/ctrl_grid.html">ctrl_grid</a></span>(<span class="dt">extract =</span> glmnet_vars)</a></code></pre></div>
 <p>Finally, let’s run the grid search:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">roc_scores &lt;-<span class="st"> </span><span class="kw">metric_set</span>(roc_auc)</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2"></a>
@@ -292,7 +292,7 @@
 <a class="sourceLine" id="cb16-8" data-line-number="8">    <span class="dt">iter =</span> <span class="dv">30</span>,</a>
 <a class="sourceLine" id="cb16-9" data-line-number="9">    <span class="dt">metrics =</span> roc_scores,</a>
 <a class="sourceLine" id="cb16-10" data-line-number="10">    <span class="dt">objective =</span> <span class="kw"><a href="../../reference/prob_improve.html">exp_improve</a></span>(trade_off_decay),</a>
-<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/Bayes_control.html">Bayes_control</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/ctrl_Bayes.html">ctrl_Bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb16-12" data-line-number="12">  )</a>
 <a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt; ❯  Generating a set of 5 initial parameter results</span></a>

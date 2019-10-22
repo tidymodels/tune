@@ -63,3 +63,6 @@ a function.
 \examples{
 prob_improve()
 }
+\seealso{
+\code{tune_Bayes()}, \code{expo_decay()}
+}

@@ -51,7 +51,7 @@ grid <- tibble(cost = 10^(-2.75), num_comp = 15,
                rbf_sigma = 10^seq(-8, 0, length = 100))
 
 grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
-                          control = grid_control(verbose = TRUE))
+                          control = ctrl_grid(verbose = TRUE))
 summarize(grid_results)
 
 ggplot(

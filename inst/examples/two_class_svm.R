@@ -36,7 +36,7 @@ two_class_grid <-
 class_only <- metric_set(accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid, metrics = class_only,
-                 control = grid_control(save_pred = TRUE))
+                 control = ctrl_grid(save_pred = TRUE))
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
@@ -49,7 +49,7 @@ svm_search <-
     initial = res,
     metrics = class_only,
     iter = 4,
-    control = Bayes_control(verbose = TRUE, save_pred = TRUE)
+    control = ctrl_Bayes(verbose = TRUE, save_pred = TRUE)
   )
 
 

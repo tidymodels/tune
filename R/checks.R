@@ -139,7 +139,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
     x <- tune_grid(wflow, model = NULL, resamples = resamples, grid = x, metrics = metrics,
-                   control = grid_control(extract = ctrl$extract,
+                   control = ctrl_grid(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")

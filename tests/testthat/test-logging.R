@@ -2,8 +2,8 @@ context("logging")
 
 # ------------------------------------------------------------------------------
 
-ctrl_t <- grid_control(verbose = TRUE)
-ctrl_f <- grid_control(verbose = FALSE)
+ctrl_t <- ctrl_grid(verbose = TRUE)
+ctrl_f <- ctrl_grid(verbose = FALSE)
 
 rs <- rsample::vfold_cv(mtcars)$splits[[1]]
 

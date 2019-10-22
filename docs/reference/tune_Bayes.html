@@ -143,18 +143,18 @@ combinations based on previous results.</p>
 <span class='co'># S3 method for recipe</span>
 <span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for formula</span>
 <span class='fu'>tune_Bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
 <span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>resamples</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(),
+  <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -202,7 +202,7 @@ an acquisition function object.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>A control object created by <code><a href='Bayes_control.html'>Bayes_control()</a></code></p></td>
+      <td><p>A control object created by <code><a href='ctrl_Bayes.html'>ctrl_Bayes()</a></code></p></td>
     </tr>
     <tr>
       <th>formula</th>
@@ -229,7 +229,92 @@ usually combine the predicted mean and variance of the GP to decide the best
 parameter combination to try next. For more information, see the
 documentation for <code><a href='prob_improve.html'>exp_improve()</a></code> and the corresponding package vignette.</p>
 <p>The best combination is evaluated using resampling and the process continues.</p>
-<p>TODO notes on when to use, pluses and minuses.</p>
+    <h2 class="hasAnchor" id="parallel-processing"><a class="anchor" href="#parallel-processing"></a>Parallel Processing</h2>
+
+    
+
+
+<p>The <code>foreach</code> package is used here. To execute the resampling iterations in
+parallel, register a parallel backend function. See the documentation for
+<code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach::foreach()</a></code> for examples.</p>
+<p>For the most part, warnings generated during training are shown as they occur
+and are associated with a specific resample when <code>control(verbose = TRUE)</code>.
+They are (usually) not aggregated until the end of processing.</p>
+<p>For Bayesian optimization, parallel processing is used to estimate the
+resampled performance values once a new candidate set of values are estimated.</p>
+    <h2 class="hasAnchor" id="initial-values"><a class="anchor" href="#initial-values"></a>Initial Values</h2>
+
+    
+
+
+<p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, or a previous run of <code>tune_Bayes()</code> can be used
+in the <code>initial</code> argument.</p>
+    <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
+
+    
+
+
+<p>To use your own performance metrics, the <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> function
+can be used to pick what should be measured for each model. If multiple
+metrics are desired, they can be bundled. For example, to estimate the area
+under the ROC curve as well as the sensitivity and specificity (under the
+typical probability cutoff of 0.50), the <code>metrics</code> argument could be given:</p>
+<pre>
+  metrics = metric_set(roc_auc, sens, spec)
+</pre>
+
+<p>Each metric is calculated for each candidate model.</p>
+<p>If no metric set is provided, one is created:</p><ul>
+<li><p>For regression models, the root mean squared error and coefficient
+of determination are computed.</p></li>
+<li><p>For classification, the log-likelihood and overall accuracy are
+computed.</p></li>
+</ul>
+
+<p>Note that the metrics also determine what type of predictions are estimated
+during tuning. For example, in a classification problem, if metrics are used
+that are all associated with hard class predictions, the classification
+probabilities are not created.</p>
+<p>The out-of-sample estimates of these metrics are contained in a list column
+called <code>.metrics</code>. This tibble contains a row for each metric and columns
+for the value, the estimator type, and so on.</p>
+<p>An <code><a href='estimate.tune_results.html'>estimate()</a></code> method can be used for these objects to collapse the results
+over the resampled (to obtain the final resampling estimates per tuning
+parameter combination).</p>
+    <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
+
+    
+
+
+<p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
+called <code>.predictions</code> that has the out-of-sample predictions for each
+parameter combination in the grid and each fold (which can be very large).</p>
+<p>The elements of the tibble are tibbles with columns for the tuning
+parameters, the row number from the original data object (<code>.row</code>), the
+outcome data (with the same name(s) of the original data), and any columns
+created by the predictions. For example, for simple regression problems, this
+function generates a column called <code>.pred</code> and so on. As noted above, the
+prediction columns that are returned are determined by the type of metric(s)
+requested.</p>
+<p>This list column can be <code>unnested</code> using <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code> or using the
+convenience function <code><a href='collect_predictions.html'>collect_predictions()</a></code>.</p>
+    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
+
+    
+
+
+<p>The <code>extract</code> control option will result in an additional function to be
+returned called <code>.extracts</code>. This is a list column that has tibbles
+containing the results of the user's function for each tuning parameter
+combination. This can enable returning each model and/or recipe object that
+is created during resampling. Note that this could result in a large return
+object, depending on what is returned.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='ctrl_Bayes.html'>ctrl_Bayes()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='estimate.tune_results.html'>estimate.tune_results()</a></code>,
+<code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>, <code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>,
+<code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code>, <code><a href='prob_improve.html'>prob_improve()</a></code>,
+<code><a href='prob_improve.html'>exp_improve()</a></code>, <code><a href='prob_improve.html'>conf_bound()</a></code></p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -238,6 +323,12 @@ documentation for <code><a href='prob_improve.html'>exp_improve()</a></code> and
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
+      <li><a href="#parallel-processing">Parallel Processing</a></li>
+      <li><a href="#initial-values">Initial Values</a></li>
+      <li><a href="#performance-metrics">Performance Metrics</a></li>
+      <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
+      <li><a href="#extracting-information">Extracting information</a></li>
+      <li><a href="#see-also">See also</a></li>
     </ul>
 
   </div>

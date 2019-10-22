@@ -49,7 +49,7 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 10)
 
-initial_grid <- tune_grid(ames_wflow, resamples = rs_splits, grid = ames_grid, control = grid_control(verbose = TRUE, save_pred = TRUE))
+initial_grid <- tune_grid(ames_wflow, resamples = rs_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE, save_pred = TRUE))
 
 # ------------------------------------------------------------------------------
 
@@ -61,5 +61,5 @@ test <-
     param_info = ames_set,
     initial = initial_grid,
     iter = 15,
-    control = Bayes_control(verbose = TRUE, uncertain = 3)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 3)
   )

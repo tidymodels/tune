@@ -21,5 +21,7 @@ A call object that echos the user input.
 tune()
 class(tune())
 tune("your name here")
-
+}
+\seealso{
+\code{tune_grid()}, \code{tune_Bayes()}
 }

@@ -15,6 +15,7 @@
 #' A single categorical tuning parameter is supported when other numeric
 #' parameters are also in the results. Any number of numeric tuning parameters
 #' can be used.
+#' @seealso `tune_grid()`, `tune_Bayes()`
 #' @export
 autoplot.tune_results <-
   function(object,

@@ -35,3 +35,6 @@ A single categorical tuning parameter is supported when other numeric
 parameters are also in the results. Any number of numeric tuning parameters
 can be used.
 }
+\seealso{
+\code{tune_grid()}, \code{tune_Bayes()}
+}

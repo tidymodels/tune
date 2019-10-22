@@ -336,7 +336,7 @@
 <li><p>A model for analyzing and making predictions of the best tuning parameter values. A Gaussian Process model is typical and used here.</p></li>
 </ul>
 <p>The code to conduct the search is:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Bayes_control.html">Bayes_control</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ctrl_Bayes.html">ctrl_Bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8154</span>)</a>
 <a class="sourceLine" id="cb23-3" data-line-number="3">knn_search &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_Bayes.html">tune_Bayes</a></span>(knn_wflow, <span class="dt">resamples =</span> cv_splits, <span class="dt">initial =</span> <span class="dv">5</span>, <span class="dt">iter =</span> <span class="dv">20</span>,</a>
 <a class="sourceLine" id="cb23-4" data-line-number="4">                         <span class="dt">param_info =</span> knn_param, <span class="dt">control =</span> ctrl)</a>

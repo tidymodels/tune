@@ -46,7 +46,7 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 5)
 
-res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = grid_control(verbose = TRUE))
+res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE))
 
 #  estimate(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
@@ -69,5 +69,5 @@ test <-
     initial = res,
     metrics = metric_set(rmse, rsq),
     iter = 15,
-    control = Bayes_control(verbose = TRUE, uncertain = 3)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 3)
   )

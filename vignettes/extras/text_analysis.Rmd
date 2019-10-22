@@ -172,7 +172,7 @@ glmnet_vars <- function(x) {
   tibble(penalty = x$model$lambda, num_vars = x$model$df)
 }
 
-ctrl <- grid_control(extract = glmnet_vars)
+ctrl <- ctrl_grid(extract = glmnet_vars)
 ```
 
 Finally, let's run the grid search:
@@ -268,7 +268,7 @@ five_star_search <-
     iter = 30,
     metrics = roc_scores,
     objective = exp_improve(trade_off_decay),
-    control = Bayes_control(verbose = TRUE)
+    control = ctrl_Bayes(verbose = TRUE)
   )
 ```
 

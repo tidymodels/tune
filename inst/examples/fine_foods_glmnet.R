@@ -64,7 +64,7 @@ glmnet_vars <- function(x) {
 cls <- metric_set(roc_auc)
 set.seed(1559)
 text_glmnet <- tune_grid(text_wflow, resamples = folds, grid = text_grid, metrics = cls,
-                         control = grid_control(verbose = TRUE, extract = glmnet_vars,
+                         control = ctrl_grid(verbose = TRUE, extract = glmnet_vars,
                                                 save_pred = TRUE))
 
 print(warnings())
@@ -115,7 +115,7 @@ search_res <-
     iter = 20,
     metrics = cls,
     objective = exp_improve(trade_decay),
-    control = Bayes_control(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
+    control = ctrl_Bayes(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
   )
 
 print(warnings())
