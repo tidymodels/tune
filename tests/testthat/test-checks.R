@@ -87,12 +87,12 @@ test_that('workflow objects', {
 # ------------------------------------------------------------------------------
 
 test_that('yardstick objects', {
-  perf_1 <- tune:::check_perf(NULL, chi_wflow)
-  perf_2 <- yardstick::metric_set(yardstick:::rmse)
-  expect_true(inherits(perf_1, "numeric_metric_set"))
-  expect_error(tune:::check_perf(yardstick::rmse, chi_wflow),
-               "The `perf` argument should be the results")
-  expect_true(inherits(tune:::check_perf(perf_2, chi_wflow), "numeric_metric_set"))
+  metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
+  metrics_2 <- yardstick::metric_set(yardstick:::rmse)
+  expect_true(inherits(metrics_1, "numeric_metric_set"))
+  expect_error(tune:::check_metrics(yardstick::rmse, chi_wflow),
+               "The `metrics` argument should be the results")
+  expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
 # ------------------------------------------------------------------------------

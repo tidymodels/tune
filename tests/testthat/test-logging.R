@@ -12,7 +12,7 @@ res_2 <- tune:::catcher(log(1))
 res_3 <- tune:::catcher(log(-1))
 
 sc_1 <- list(best_val = 7, best_iter = 2, last_impr = 3, uncertainty = 0,
-  overall_iter = 1, perf = .8, max = FALSE)
+  overall_iter = 1, metrics = .8, max = FALSE)
 
 tb_1 <- tibble::tibble(.mean = 1:3)
 

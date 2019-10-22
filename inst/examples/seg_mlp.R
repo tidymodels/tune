@@ -54,7 +54,7 @@ set.seed(1558)
 grid <- grid_max_entropy(nn_set, size = 5)
 
 grid_results <- tune_grid(nn_wflow, resamples = val_split, grid = grid,
-                          perf = roc_set,
+                          metrics = roc_set,
                           control = grid_control(verbose = TRUE, save_pred = TRUE))
 
 grid_results
@@ -75,7 +75,7 @@ foo <- function(i) {
 nn_search <- tune_Bayes(nn_wflow, resamples = val_split,
                         initial = grid_results,
                         iter = 20,
-                        perf = roc_set,
+                        metrics = roc_set,
                         param_info = nn_set,
                         objective = exp_improve(foo),
                         control = Bayes_control(verbose = TRUE))
@@ -87,7 +87,7 @@ autoplot(nn_search, type = "performance", metric = "roc_auc")
 nn_search_2 <- tune_Bayes(nn_wflow, resamples = val_split,
                            initial = nn_search,
                            iter = 15,
-                           perf = roc_set,
+                           metrics = roc_set,
                            param_info = nn_set,
                            control = Bayes_control(verbose = TRUE))
 

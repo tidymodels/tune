@@ -183,7 +183,7 @@ roc_scores <- metric_set(roc_auc)
 set.seed(1559)
 five_star_glmnet <- 
   tune_grid(pre_proc, lr_mod, resamples = folds, grid = five_star_grid, 
-            perf = roc_scores, control = ctrl)
+            metrics = roc_scores, control = ctrl)
 ```
 
 This took a while to complete. What did the results look like? Let's get the resampling estimates of the area under the ROC curve for each tuning parameter:
@@ -266,7 +266,7 @@ five_star_search <-
     param_info = five_star_set,
     initial = 5,
     iter = 30,
-    perf = roc_scores,
+    metrics = roc_scores,
     objective = exp_improve(trade_off_decay),
     control = Bayes_control(verbose = TRUE)
   )

@@ -1,5 +1,5 @@
 
-tune_nothing <- function(resamples, object, grid, perf, ctrl)  {
+tune_nothing <- function(resamples, object, grid, metrics, ctrl)  {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
@@ -8,7 +8,7 @@ tune_nothing <- function(resamples, object, grid, perf, ctrl)  {
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_no_tune(rs_iter, resamples, object, perf, ctrl)
+    iter_no_tune(rs_iter, resamples, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -18,30 +18,30 @@ tune_nothing <- function(resamples, object, grid, perf, ctrl)  {
   resamples
 }
 
-iter_no_tune <- function(rs_iter, resamples, object, perf, ctrl) {
+iter_no_tune <- function(rs_iter, resamples, object, metrics, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   split <- resamples$splits[[rs_iter]]
-  perf_est <- NULL
+  metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   .notes <- NULL
 
  # use fit.workflow and predict.workflow
 
-  # list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  # list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
 }
 # ------------------------------------------------------------------------------
 
-iter_rec_and_mod <- function(rs_iter, resamples, grid, object, perf, ctrl) {
+iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
-  perf_est <- NULL
+  metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   .notes <- NULL
@@ -113,7 +113,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, perf, ctrl) {
 
         tmp_pred <-
           catch_and_log(
-            predict_model_from_recipe(split, tmp_fit, tmp_rec, all_param, perf),
+            predict_model_from_recipe(split, tmp_fit, tmp_rec, all_param, metrics),
             ctrl,
             split,
             paste(mod_msg, "(predictions)"),
@@ -121,19 +121,19 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, perf, ctrl) {
             notes = .notes
           )
 
-        perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
+        metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
         pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
       }
-      extracted <- append_extracts(extracted, tmp_rec, tmp_fit, all_param, split, ctrl)
+      extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, all_param, split, ctrl)
     } # end model loop
 
   } # end recipe loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 }
 
-tune_rec_and_mod <- function(resamples, grid, object, perf, ctrl) {
+tune_rec_and_mod <- function(resamples, grid, object, metrics, ctrl) {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
@@ -142,7 +142,7 @@ tune_rec_and_mod <- function(resamples, grid, object, perf, ctrl) {
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec_and_mod(rs_iter, resamples, grid, object, perf, ctrl)
+    iter_rec_and_mod(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -154,13 +154,13 @@ tune_rec_and_mod <- function(resamples, grid, object, perf, ctrl) {
 
 # ------------------------------------------------------------------------------
 
-iter_rec <- function(rs_iter, resamples, grid, object, perf, ctrl) {
+iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   split <- resamples$splits[[rs_iter]]
-  perf_est <- NULL
+  metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   .notes <- NULL
@@ -189,7 +189,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, perf, ctrl) {
       pred_msg <- paste(mod_msg, "(predictions)")
       tmp_pred <-
         catch_and_log(
-          predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, perf),
+          predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, metrics),
           ctrl,
           split,
           pred_msg,
@@ -197,7 +197,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, perf, ctrl) {
           notes = .notes
         )
 
-      perf_est <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
     }
@@ -205,18 +205,18 @@ iter_rec <- function(rs_iter, resamples, grid, object, perf, ctrl) {
     extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, grid[param_iter, ], split, ctrl)
   } # recipe parameters
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
 }
 
-tune_rec <- function(resamples, grid, object, perf, ctrl) {
+tune_rec <- function(resamples, grid, object, metrics, ctrl) {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec(rs_iter, resamples, grid, object, perf, ctrl)
+    iter_rec(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -229,14 +229,14 @@ tune_rec <- function(resamples, grid, object, perf, ctrl) {
 
 # ------------------------------------------------------------------------------
 
-tune_mod_with_recipe <- function(resamples, grid, object, perf, ctrl) {
+tune_mod_with_recipe <- function(resamples, grid, object, metrics, ctrl) {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_recipe(rs_iter, resamples, grid, object, perf, ctrl)
+    iter_mod_with_recipe(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -246,12 +246,12 @@ tune_mod_with_recipe <- function(resamples, grid, object, perf, ctrl) {
   resamples
 }
 
-iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, perf, ctrl) {
+iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- resamples$splits[[rs_iter]]
-  perf_est <- NULL
+  metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   .notes <- NULL
@@ -287,7 +287,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, perf, ctrl) {
 
       tmp_pred <-
         catch_and_log(
-          predict_model_from_recipe(split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter,], perf),
+          predict_model_from_recipe(split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter,], metrics),
           ctrl,
           split,
           paste(mod_msg, "(predictions)"),
@@ -295,7 +295,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, perf, ctrl) {
           notes = .notes
         )
 
-      perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      metric_est  <- append_metrics(metric_est, tmp_pred, object, metrics, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
     }
@@ -303,21 +303,21 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, perf, ctrl) {
     extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, mod_grid_vals[mod_iter, ], split, ctrl)
   } # end model loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
 }
 
 # ------------------------------------------------------------------------------
 
 
-tune_mod_with_formula <- function(resamples, grid, object, perf, ctrl) {
+tune_mod_with_formula <- function(resamples, grid, object, metrics, ctrl) {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_formula(rs_iter, resamples, grid, object, perf, ctrl)
+    iter_mod_with_formula(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -327,12 +327,12 @@ tune_mod_with_formula <- function(resamples, grid, object, perf, ctrl) {
   resamples
 }
 
-iter_mod_with_formula <- function(rs_iter, resamples, grid, object, perf, ctrl) {
+iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   load_pkgs(object)
   load_namespace(ctrl$pkgs)
   fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- resamples$splits[[rs_iter]]
-  perf_est <- NULL
+  metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   .notes <- NULL
@@ -368,14 +368,14 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, perf, ctrl) 
 
       tmp_pred <-
         catch_and_log(
-          predict_model_from_terms(split, tmp_fit, tmp_trms, param_val, perf),
+          predict_model_from_terms(split, tmp_fit, tmp_trms, param_val, metrics),
           ctrl,
           split,
           mod_msg,
           notes = .notes
         )
 
-      perf_est  <- append_metrics(perf_est, tmp_pred, object, perf, split)
+      metric_est  <- append_metrics(metric_est, tmp_pred, object, metrics, split)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
 
     }
@@ -383,7 +383,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, perf, ctrl) 
     extracted <- append_extracts(extracted, NULL, tmp_fit$fit, param_val, split, ctrl)
   } # end model loop
 
-  list(.metrics = perf_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
 }
 

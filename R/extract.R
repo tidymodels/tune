@@ -107,11 +107,11 @@ pull_notes <- function(resamples, res, control) {
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, perf, split) {
+append_metrics <- function(collection, predictions, workflow, metrics, split) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
-  tmp_est <- estimate_perf(predictions, perf, workflow)
+  tmp_est <- estimate_metrics(predictions, metrics, workflow)
   tmp_est <- cbind(tmp_est, labels(split))
   dplyr::bind_rows(collection, tmp_est)
 }
@@ -138,7 +138,7 @@ append_extracts <- function(collection, rec, mod, param, split, ctrl) {
     mutate(
       .extracts = list(
         extract_details(
-          list(recipe = rec, model = mod$fit),
+          list(recipe = rec, model = mod),
           ctrl$extract
         )
       )

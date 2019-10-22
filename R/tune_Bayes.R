@@ -6,8 +6,8 @@
 #' @inheritParams tune_grid
 #' @param param_info A `dials::parameters()` object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments.
-#' @param perf A `yardstick::metric_set()` object containing information on how
-#' models will be evaluated for performance. The first metric in `perf` is the
+#' @param metrics A `yardstick::metric_set()` object containing information on how
+#' models will be evaluated for performance. The first metric in `metrics` is the
 #' one that will be optimized.
 #' @param iter The maximum number of search iterations.
 #' @param objective A character string for what metric should be optimized or
@@ -58,7 +58,7 @@ tune_Bayes.recipe <- function(object, model,
                               resamples,
                               iter = 10,
                               param_info = NULL,
-                              perf = NULL,
+                              metrics = NULL,
                               objective = exp_improve(),
                               initial = NULL,
                               control = Bayes_control(),
@@ -73,7 +73,7 @@ tune_Bayes.recipe <- function(object, model,
     add_model(model)
 
   tune_Bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
-                      perf = perf, objective = objective, initial = initial,
+                      metrics = metrics, objective = objective, initial = initial,
                       control = control, ...)
 }
 
@@ -83,7 +83,7 @@ tune_Bayes.formula <- function(formula, model,
                                resamples,
                                iter = 10,
                                param_info = NULL,
-                               perf = NULL,
+                               metrics = NULL,
                                objective = exp_improve(),
                                initial = NULL,
                                control = Bayes_control(),
@@ -98,7 +98,7 @@ tune_Bayes.formula <- function(formula, model,
     add_model(model)
 
   tune_Bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
-                      perf = perf, objective = objective, initial = initial,
+                      metrics = metrics, objective = objective, initial = initial,
                       control = control, ...)
 }
 
@@ -110,7 +110,7 @@ tune_Bayes.workflow <-
            resamples,
            iter = 10,
            param_info = NULL,
-           perf = NULL,
+           metrics = NULL,
            objective = exp_improve(),
            initial = NULL,
            control = Bayes_control(),
@@ -121,28 +121,28 @@ tune_Bayes.workflow <-
   }
 
   tune_Bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
-                      perf = perf, objective = objective, initial = initial,
+                      metrics = metrics, objective = objective, initial = initial,
                       control = control, ...)
 }
 
 tune_Bayes_workflow <-
-  function(object, resamples, iter = 10, param_info = NULL, perf = NULL,
+  function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
            initial = NULL, control = Bayes_control(), ...) {
     start_time <- proc.time()[3]
 
     check_rset(resamples)
     check_object(object, check_dials = is.null(param_info))
-    perf <- check_perf(perf, object)
-    perf_data <- perf_info(perf)
-    perf_name <- perf_data$.metric[1]
-    maximize <- perf_data$direction[perf_data$.metric == perf_name] == "maximize"
+    metrics <- check_metrics(metrics, object)
+    metrics_data <- metrics_info(metrics)
+    metrics_name <- metrics_data$.metric[1]
+    maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
 
     if (is.null(param_info)) {
       param_info <- dials::parameters(object)
     }
 
-    unsummarized <- check_initial(initial, param_info, object, resamples, perf, control)
+    unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
     mean_stats <- estimate(unsummarized)
 
     check_time(start_time, control$time_limit)
@@ -152,10 +152,10 @@ tune_Bayes_workflow <-
       return(reup_rs(resamples, unsummarized))
     })
 
-    score_card <- initial_info(mean_stats, perf_name, maximize)
+    score_card <- initial_info(mean_stats, metrics_name, maximize)
 
     if (control$verbose) {
-      message(paste("Optimizing", perf_name, "using", objective$label))
+      message(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
@@ -170,7 +170,7 @@ tune_Bayes_workflow <-
           fit_gp(
             mean_stats %>% dplyr::select(-.iter),
             pset = param_info,
-            metric = perf_name,
+            metric = metrics_name,
             control = control,
             ...
           ),
@@ -209,7 +209,7 @@ tune_Bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, perf = perf, control = control)
+      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control)
 
       check_time(start_time, control$time_limit)
 
@@ -220,7 +220,7 @@ tune_Bayes_workflow <-
         rs_estimate <- estimate(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
-        log_progress(control, x = mean_stats, maximize = maximize, objective = perf_name)
+        log_progress(control, x = mean_stats, maximize = maximize, objective = metrics_name)
       } else {
         if (all_bad) {
           tune_log(control, split = NULL, task = "All models failed", type = "danger")
@@ -355,7 +355,7 @@ update_score_card <- function(info, iter, results, control) {
   current_val <-
     results %>%
     estimate() %>%
-    dplyr::filter(.metric == info$perf) %>%
+    dplyr::filter(.metric == info$metrics) %>%
     dplyr::pull(mean)
 
   if (info$max) {
@@ -382,11 +382,11 @@ update_score_card <- function(info, iter, results, control) {
 # ------------------------------------------------------------------------------
 
 
-# save perf_name and maximize to simplify!!!!!!!!!!!!!!!
-initial_info <- function(stats, perf, maximize) {
+# save metrics_name and maximize to simplify!!!!!!!!!!!!!!!
+initial_info <- function(stats, metrics, maximize) {
   best_res <-
     stats %>%
-    dplyr::filter(.metric == perf) %>%
+    dplyr::filter(.metric == metrics) %>%
     dplyr::filter(!is.na(mean))
 
   if (maximize) {
@@ -413,7 +413,7 @@ initial_info <- function(stats, perf, maximize) {
     last_impr = last_impr,
     uncertainty = 0,
     overall_iter = overall_iter,
-    perf = perf,
+    metrics = metrics,
     max = maximize
   )
 }
@@ -422,7 +422,7 @@ initial_info <- function(stats, perf, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, perf, control) {
+more_results <- function(object, resamples, candidates, metrics, control) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -434,7 +434,7 @@ more_results <- function(object, resamples, candidates, perf, control) {
         object,
         resamples = resamples,
         grid = candidates,
-        perf = perf,
+        metrics = metrics,
         control = grid_control(verbose = FALSE, extract = control$extract,
                                save_pred = control$save_pred)
       ),

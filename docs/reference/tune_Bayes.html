@@ -72,7 +72,7 @@ combinations based on previous results." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9002</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
         </div>
       </div>
     </div>
@@ -141,19 +141,20 @@ combinations based on previous results.</p>
 <span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for recipe</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for formula</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
+<span class='fu'>tune_Bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>rs</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>perf</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
+<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>resamples</span>,
+  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(), <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='Bayes_control.html'>Bayes_control</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -172,7 +173,7 @@ combinations based on previous results.</p>
 workflow).</p></td>
     </tr>
     <tr>
-      <th>rs</th>
+      <th>resamples</th>
       <td><p>An <code>rset()</code> object. This argument <strong>should be named</strong>.</p></td>
     </tr>
     <tr>
@@ -185,9 +186,9 @@ workflow).</p></td>
 a parameters set is derived from other arguments.</p></td>
     </tr>
     <tr>
-      <th>perf</th>
+      <th>metrics</th>
       <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> object containing information on how
-models will be evaluated for performance. The first metric in <code>perf</code> is the
+models will be evaluated for performance. The first metric in <code>metrics</code> is the
 one that will be optimized.</p></td>
     </tr>
     <tr>

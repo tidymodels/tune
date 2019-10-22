@@ -122,7 +122,7 @@ search_res <-
     initial = 5,
     iter = 30,
     # How to measure performance
-    perf = metric_set(roc_auc),
+    metrics = metric_set(roc_auc),
     control = Bayes_control(no_improve = 20, verbose = TRUE)
   )
 ```

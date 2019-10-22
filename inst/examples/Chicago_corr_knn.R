@@ -61,7 +61,7 @@ knn_search <-
     resamples = data_folds,
     param_info = chi_param,
     initial = res,
-    perf = metric_set(rmse),
+    metrics = metric_set(rmse),
     iter = 20,
     control = Bayes_control(verbose = TRUE, uncertain = 5),
     trace = TRUE

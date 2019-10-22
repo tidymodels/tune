@@ -31,7 +31,7 @@ train_model_from_recipe <- function(object, recipe, grid, ...) {
   tmp_fit
 }
 
-predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
+predict_model_from_recipe <- function(split, model, recipe, grid, metrics, ...) {
   y_names <- outcome_names(recipe)
   new_vals <-
     recipes::bake(recipe,
@@ -42,7 +42,7 @@ predict_model_from_recipe <- function(split, model, recipe, grid, perf, ...) {
   orig_rows <- as.integer(split, data = "assessment")
 
   # Determine the type of prediction that is required
-  type_info <- perf_info(perf)
+  type_info <- metrics_info(metrics)
   types <- unique(type_info$type)
 
   # Split `grid` from the parameters used to fit the model and any poential
@@ -217,13 +217,13 @@ train_model_from_df <- function(object, dat, grid, ...) {
   tmp_fit
 }
 
-predict_model_from_terms <- function(split, model, trms, grid, perf, ...) {
+predict_model_from_terms <- function(split, model, trms, grid, metrics, ...) {
   dat <- exec_terms(split, trms)
 
   orig_rows <- as.integer(split, data = "assessment")
 
   # Determine the type of prediction that is required
-  type_info <- perf_info(perf)
+  type_info <- metrics_info(metrics)
   types <- unique(type_info$type)
 
   # Split `grid` from the parameters used to fit the model and any poential

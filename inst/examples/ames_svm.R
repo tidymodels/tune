@@ -54,7 +54,7 @@ test <-
     resamples = cv_splits,
     param_info = ames_set,
     initial = initial_grid,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 3,
     control = Bayes_control(verbose = TRUE)
   )

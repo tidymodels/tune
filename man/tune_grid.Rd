@@ -13,13 +13,13 @@ tune_grid(object, ...)
 \method{tune_grid}{default}(object, ...)
 
 \method{tune_grid}{recipe}(object, model, resamples, grid = NULL,
-  perf = NULL, control = grid_control(), ...)
+  metrics = NULL, control = grid_control(), ...)
 
 \method{tune_grid}{formula}(formula, model, resamples, grid = NULL,
-  perf = NULL, control = grid_control(), ...)
+  metrics = NULL, control = grid_control(), ...)
 
 \method{tune_grid}{workflow}(object, model = NULL, resamples,
-  grid = NULL, perf = NULL, control = grid_control(), ...)
+  grid = NULL, metrics = NULL, control = grid_control(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -34,7 +34,7 @@ workflow).}
 \item{grid}{A data frame of tuning combinations or \code{NULL}. If used, this
 argument \strong{should be named}.}
 
-\item{perf}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
+\item{metrics}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
 \strong{should be named}.}
 
 \item{control}{An object used to modify the tuning process. If used, this
@@ -48,7 +48,7 @@ An updated version of \code{resamples} with extra list columns for \code{.metric
 contains warnings and errors that occur during execution.
 }
 \description{
-\code{tune_grid()} computes a set of perfomance metrics (e.g. accuracy or RMSE)
+\code{tune_grid()} computes a set of metricsomance metrics (e.g. accuracy or RMSE)
 for a pre-defined set of tuning parameters that correspond to a model or
 recipe across one or more resamples of the data.
 }
@@ -95,10 +95,10 @@ To use your own performance metrics, the \code{yardstick::metric_set()} function
 can be used to pick what should be measured for each model. If multiple
 metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
-typical probability cutoff of 0.50), the \code{perf} argument could be given:
+typical probability cutoff of 0.50), the \code{metrics} argument could be given:
 
 \preformatted{
-  perf = metric_set(roc_auc, sens, spec)
+  metrics = metric_set(roc_auc, sens, spec)
 }
 
 Each metric is calculated for each candidate model.

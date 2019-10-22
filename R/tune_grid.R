@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#' `tune_grid()` computes a set of perfomance metrics (e.g. accuracy or RMSE)
+#' `tune_grid()` computes a set of metricsomance metrics (e.g. accuracy or RMSE)
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
@@ -11,7 +11,7 @@
 #' @param resamples An `rset()` object. This argument __should be named__.
 #' @param grid A data frame of tuning combinations or `NULL`. If used, this
 #' argument __should be named__.
-#' @param perf A `yardstick::metric_set()` or `NULL`. If used, this argument
+#' @param metrics A `yardstick::metric_set()` or `NULL`. If used, this argument
 #' __should be named__.
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
@@ -61,10 +61,10 @@
 #'  can be used to pick what should be measured for each model. If multiple
 #'  metrics are desired, they can be bundled. For example, to estimate the area
 #'  under the ROC curve as well as the sensitivity and specificity (under the
-#'  typical probability cutoff of 0.50), the `perf` argument could be given:
+#'  typical probability cutoff of 0.50), the `metrics` argument could be given:
 #'
 #' \preformatted{
-#'   perf = metric_set(roc_auc, sens, spec)
+#'   metrics = metric_set(roc_auc, sens, spec)
 #' }
 #'
 #' Each metric is calculated for each candidate model.
@@ -137,7 +137,7 @@ tune_grid.default <- function(object, ...) {
 #' @export
 #' @rdname tune_grid
 tune_grid.recipe <- function(object, model, resamples, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
+                             metrics = NULL, control = grid_control(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -147,13 +147,13 @@ tune_grid.recipe <- function(object, model, resamples, grid = NULL,
     add_recipe(object) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, resamples = resamples, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(wflow, resamples = resamples, grid = grid, metrics = metrics, control = control)
 }
 
 #' @export
 #' @rdname tune_grid
 tune_grid.formula <- function(formula, model, resamples, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
+                             metrics = NULL, control = grid_control(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -163,27 +163,27 @@ tune_grid.formula <- function(formula, model, resamples, grid = NULL,
     add_formula(formula) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, resamples = resamples, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(wflow, resamples = resamples, grid = grid, metrics = metrics, control = control)
 }
 
 #' @export
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, model = NULL, resamples, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
+                             metrics = NULL, control = grid_control(), ...) {
   if (!is.null(model)) {
     stop("When using a workflow, `model` should be NULL.", call. = FALSE)
   }
 
-  tune_grid_workflow(object, resamples = resamples, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(object, resamples = resamples, grid = grid, metrics = metrics, control = control)
 }
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(object, resamples, grid = NULL, perf = NULL, control = grid_control()) {
+tune_grid_workflow <- function(object, resamples, grid = NULL, metrics = NULL, control = grid_control()) {
 
   check_rset(resamples)
   check_object(object)
-  perf <- check_perf(perf, object)
+  metrics <- check_metrics(metrics, object)
   grid <- check_grid(grid, object)
 
   code_path <- quarterback(object)
@@ -212,7 +212,7 @@ quarterback <- function(x) {
   tune_model <- any(sources == "model_spec")
 
   args <- list(splits = expr(resamples), grid = expr(grid),
-               wflow = expr(object), perf = expr(perf),
+               wflow = expr(object), metrics = expr(metrics),
                ctrl = expr(control))
   dplyr::case_when(
      tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),

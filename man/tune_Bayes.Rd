@@ -13,15 +13,15 @@ tune_Bayes(object, ...)
 \method{tune_Bayes}{default}(object, ...)
 
 \method{tune_Bayes}{recipe}(object, model, resamples, iter = 10,
-  param_info = NULL, perf = NULL, objective = exp_improve(),
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
   initial = NULL, control = Bayes_control(), ...)
 
 \method{tune_Bayes}{formula}(formula, model, resamples, iter = 10,
-  param_info = NULL, perf = NULL, objective = exp_improve(),
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
   initial = NULL, control = Bayes_control(), ...)
 
 \method{tune_Bayes}{workflow}(object, model = NULL, resamples,
-  iter = 10, param_info = NULL, perf = NULL,
+  iter = 10, param_info = NULL, metrics = NULL,
   objective = exp_improve(), initial = NULL,
   control = Bayes_control(), ...)
 }
@@ -40,8 +40,8 @@ workflow).}
 \item{param_info}{A \code{dials::parameters()} object or \code{NULL}. If none is given,
 a parameters set is derived from other arguments.}
 
-\item{perf}{A \code{yardstick::metric_set()} object containing information on how
-models will be evaluated for performance. The first metric in \code{perf} is the
+\item{metrics}{A \code{yardstick::metric_set()} object containing information on how
+models will be evaluated for performance. The first metric in \code{metrics} is the
 one that will be optimized.}
 
 \item{objective}{A character string for what metric should be optimized or

@@ -81,7 +81,6 @@ test_that('tune model only', {
     tibble(penalty = x$model$lambda, df = x$model$df)
   }
 
-
   expect_error(
     res_2_1 <-
       workflow() %>%
@@ -159,7 +158,7 @@ test_that('tune model and recipe', {
     all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "model_fit"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "glmnet"))),
   )
 
 })

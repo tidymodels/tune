@@ -72,21 +72,21 @@ grid_plot <- function(rec, mod, sfd = TRUE, ...) {
 
 # One parameter
 grid_plot(spline_rec, knn_no_vars, sfd = TRUE)
-grid_plot(spline_rec, knn_no_vars, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, knn_no_vars, sfd = FALSE, metrics = one_perf)
 
 grid_plot(simple_rec, knn_K, sfd = TRUE)
-grid_plot(simple_rec, knn_K, sfd = FALSE, perf = one_perf)
+grid_plot(simple_rec, knn_K, sfd = FALSE, metrics = one_perf)
 
 # Two parameters
 grid_plot(simple_rec, svm_mod, sfd = TRUE)
-grid_plot(simple_rec, svm_mod, sfd = FALSE, perf = one_perf)
+grid_plot(simple_rec, svm_mod, sfd = FALSE, metrics = one_perf)
 
 grid_plot(spline_rec, knn_K, sfd = TRUE)
-grid_plot(spline_rec, knn_K, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, knn_K, sfd = FALSE, metrics = one_perf)
 
 # Three parameters
 grid_plot(spline_rec, svm_mod, sfd = TRUE)
-grid_plot(spline_rec, svm_mod, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, svm_mod, sfd = FALSE, metrics = one_perf)
 
 
 # ------------------------------------------------------------------------------
@@ -94,25 +94,25 @@ grid_plot(spline_rec, svm_mod, sfd = FALSE, perf = one_perf)
 
 # One parameter
 grid_plot(simple_rec, knn_weights, sfd = TRUE)
-grid_plot(simple_rec, knn_weights, sfd = FALSE, perf = one_perf)
+grid_plot(simple_rec, knn_weights, sfd = FALSE, metrics = one_perf)
 
 # ------------------------------------------------------------------------------
 # Mixed parameters (should currently fail)
 
 # Two parameters
 grid_plot(spline_rec, knn_weights, sfd = TRUE)
-grid_plot(spline_rec, knn_weights, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, knn_weights, sfd = FALSE, metrics = one_perf)
 
 # Three parameters
 grid_plot(simple_rec, knn_three_vars, sfd = TRUE)
-grid_plot(simple_rec, knn_three_vars, sfd = FALSE, perf = one_perf)
+grid_plot(simple_rec, knn_three_vars, sfd = FALSE, metrics = one_perf)
 
 grid_plot(spline_rec, knn_two_vars, sfd = TRUE)
-grid_plot(spline_rec, knn_two_vars, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, knn_two_vars, sfd = FALSE, metrics = one_perf)
 
 # Four parameters
 grid_plot(spline_rec, knn_three_vars, sfd = TRUE)
-grid_plot(spline_rec, knn_three_vars, sfd = FALSE, perf = one_perf)
+grid_plot(spline_rec, knn_three_vars, sfd = FALSE, metrics = one_perf)
 
 # ------------------------------------------------------------------------------
 

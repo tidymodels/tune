@@ -169,7 +169,7 @@ The object is similar to the `rsample` object but with one or more extra columns
 ames_res
 ```
 
-The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `perf` option.] for each parameter combination: 
+The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `metrics` option.] for each parameter combination: 
 
 ```{r res-ex}
 ames_res$.metrics[[1]]

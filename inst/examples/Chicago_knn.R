@@ -83,7 +83,7 @@ knn_search <-
     resamples = data_folds,
     param_info = chi_set,
     initial = smol_knn_grid,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 30,
     control = Bayes_control(verbose = TRUE, uncertain = 10)
   )

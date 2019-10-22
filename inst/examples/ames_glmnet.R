@@ -63,7 +63,7 @@ more_search_res <-
     resamples = cv_splits,
     # param_info = ames_set,
     initial = search_res,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 50,
     control = Bayes_control(verbose = TRUE, uncertain = 5)
   )

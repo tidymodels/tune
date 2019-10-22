@@ -71,7 +71,7 @@ svm_search <-
     rs = data_folds,
     param_info = chi_set,
     initial = res,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     objective = exp_improve(foo),
     iter = 50,
     control = Bayes_control(verbose = TRUE, uncertain = 3)
@@ -83,7 +83,7 @@ svm_search_2 <-
     rs = data_folds,
     param_info = chi_set,
     initial = svm_search,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 20,
     control = Bayes_control(verbose = TRUE)
   )

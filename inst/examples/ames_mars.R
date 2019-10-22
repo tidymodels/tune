@@ -67,7 +67,7 @@ test <-
     rs = cv_splits,
     param_info = ames_set,
     initial = res,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 15,
     control = Bayes_control(verbose = TRUE, uncertain = 3)
   )

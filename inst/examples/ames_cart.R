@@ -59,7 +59,7 @@ test <-
     ames_wflow,
     resamples = cv_splits,
     initial = initial_grid,
-    perf = metric_set(rmse),
+    metrics = metric_set(rmse),
     objective = exp_improve(foo),
     iter = 20,
     control = Bayes_control(verbose = TRUE, uncertain = 10, extract = num_leaves)

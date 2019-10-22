@@ -41,7 +41,7 @@ Mutagen_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, perf = class_only,
+res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, metrics = class_only,
                  control = grid_control(verbose = TRUE))
 
 
@@ -54,7 +54,7 @@ svm_search <-
     resamples = data_folds,
     param_info = Mutagen_param,
     initial = res,
-    perf = class_only,
+    metrics = class_only,
     iter = 5,
     control = Bayes_control(verbose = TRUE, uncertain = 5)
   )
@@ -66,7 +66,7 @@ more_svm_search <-
     resamples = data_folds,
     param_info = Mutagen_param,
     initial = svm_search,
-    perf = class_only,
+    metrics = class_only,
     iter = 10,
     control = Bayes_control(verbose = TRUE, uncertain = 5)
   )

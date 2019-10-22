@@ -109,11 +109,11 @@ check_object <- function(x, check_dials = FALSE) {
   invisible(NULL)
 }
 
-check_perf <- function(x, object) {
+check_metrics <- function(x, object) {
   if (!is.null(x)) {
     cls <- c("numeric_metric_set", "class_prob_metric_set")
     if (!inherits(x, cls)) {
-      stop("The `perf` argument should be the results of `yardstick::metric_set()`.",
+      stop("The `metrics` argument should be the results of `yardstick::metric_set()`.",
            call. = FALSE)
     }
   } else {
@@ -127,7 +127,7 @@ check_perf <- function(x, object) {
   x
 }
 
-check_initial <- function(x, pset, wflow, resamples, perf, ctrl) {
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
   if (is.null(x) || is.numeric(x)) {
     if (is.null(x)) {
       x <- 3
@@ -138,7 +138,7 @@ check_initial <- function(x, pset, wflow, resamples, perf, ctrl) {
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
-    x <- tune_grid(wflow, model = NULL, resamples = resamples, grid = x, perf = perf,
+    x <- tune_grid(wflow, model = NULL, resamples = resamples, grid = x, metrics = metrics,
                    control = grid_control(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
@@ -152,9 +152,9 @@ check_initial <- function(x, pset, wflow, resamples, perf, ctrl) {
   x
 }
 
-get_objective_name <- function(x, perf) {
+get_objective_name <- function(x, metrics) {
   if (is.null(x)) {
-    metric_data <- perf_info(perf)
+    metric_data <- metrics_info(metrics)
     x <- metric_data$.metric[1]
   } else {
     # check for a name or acquisition funciton

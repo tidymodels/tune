@@ -101,7 +101,7 @@ First, the formula interface will be used:
 
 ```{r grid}
 set.seed(35)
-grid_form <- tune_grid(Class ~ ., model = svm_mod, resamples = iono_rs, perf = roc_vals, control = ctrl)
+grid_form <- tune_grid(Class ~ ., model = svm_mod, resamples = iono_rs, metrics = roc_vals, control = ctrl)
 grid_form
 ```
 
@@ -133,7 +133,7 @@ The same syntax is used but a recipe is passed in the first argument:
 
 ```{r recipe}
 set.seed(325)
-rec_form <- tune_grid(iono_rec, model = svm_mod, resamples = iono_rs, perf = roc_vals, control = ctrl)
+rec_form <- tune_grid(iono_rec, model = svm_mod, resamples = iono_rs, metrics = roc_vals, control = ctrl)
 rec_form
 ```
 
