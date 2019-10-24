@@ -71,7 +71,7 @@ ctrl_grid <- function(verbose = FALSE, allow_par = TRUE,
 #' @param pkgs An optional character string of R package names that should be
 #'   loaded (by namespace) during parallel processing.
 #' @export
-ctrl_Bayes <-
+ctrl_bayes <-
   function(verbose = FALSE,
            no_improve = 10L,
            uncertain = Inf,
@@ -82,14 +82,14 @@ ctrl_Bayes <-
            pkgs = NULL) {
     # add options for seeds per resample
 
-    val_class_and_single(verbose, "logical", "ctrl_Bayes()")
-    val_class_and_single(save_pred, "logical", "ctrl_Bayes()")
-    val_class_and_single(no_improve, c("numeric", "integer"), "ctrl_Bayes()")
-    val_class_and_single(uncertain, c("numeric", "integer"), "ctrl_Bayes()")
-    val_class_and_single(seed, c("numeric", "integer"), "ctrl_Bayes()")
-    val_class_or_null(extract, "function", "ctrl_Bayes()")
-    val_class_and_single(time_limit, c("logical", "numeric"), "ctrl_Bayes()")
-    val_class_or_null(pkgs, "character", "ctrl_Bayes()")
+    val_class_and_single(verbose, "logical", "ctrl_bayes()")
+    val_class_and_single(save_pred, "logical", "ctrl_bayes()")
+    val_class_and_single(no_improve, c("numeric", "integer"), "ctrl_bayes()")
+    val_class_and_single(uncertain, c("numeric", "integer"), "ctrl_bayes()")
+    val_class_and_single(seed, c("numeric", "integer"), "ctrl_bayes()")
+    val_class_or_null(extract, "function", "ctrl_bayes()")
+    val_class_and_single(time_limit, c("logical", "numeric"), "ctrl_bayes()")
+    val_class_or_null(pkgs, "character", "ctrl_bayes()")
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_alert_warning(

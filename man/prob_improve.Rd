@@ -64,5 +64,5 @@ a function.
 prob_improve()
 }
 \seealso{
-\code{tune_Bayes()}, \code{expo_decay()}
+\code{tune_bayes()}, \code{expo_decay()}
 }

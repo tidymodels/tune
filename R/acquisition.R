@@ -41,7 +41,7 @@
 #' @return An object of class `prob_improve`, `exp_improve`, or `conf_bounds`
 #'   along with an extra class of `acquisition_function`.
 #'
-#' @seealso `tune_Bayes()`, `expo_decay()`
+#' @seealso `tune_bayes()`, `expo_decay()`
 #' @examples
 #' prob_improve()
 #' @export

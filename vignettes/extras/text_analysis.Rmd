@@ -260,7 +260,7 @@ Using these values, let's run the search:
 ```{r search, cache = TRUE}
 set.seed(12)
 five_star_search <-
-  tune_Bayes(
+  tune_bayes(
     five_star_wflow, 
     resamples = folds,
     param_info = five_star_set,
@@ -268,7 +268,7 @@ five_star_search <-
     iter = 30,
     metrics = roc_scores,
     objective = exp_improve(trade_off_decay),
-    control = ctrl_Bayes(verbose = TRUE)
+    control = ctrl_bayes(verbose = TRUE)
   )
 ```
 

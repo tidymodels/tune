@@ -4,7 +4,7 @@
 #'  performance values. `show_best()` displays the top sub-models and their
 #'  performance estimates.
 #'
-#' @param x The results of `tune_grid()` or `tune_Bayes()`.
+#' @param x The results of `tune_grid()` or `tune_bayes()`.
 #' @param metric A character value for the metric that will be used to sort
 #'  the models. (See
 #'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for

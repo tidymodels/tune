@@ -113,7 +113,7 @@ We'll use another acquisition function, _expected improvement_, that calculates 
 ```{r search, cache = TRUE}
 set.seed(991)
 search_res <- 
-  tune_Bayes(
+  tune_bayes(
     svm_wflow, 
     resamples = folds,
     # To use non-default parameter ranges
@@ -123,7 +123,7 @@ search_res <-
     iter = 30,
     # How to measure performance
     metrics = metric_set(roc_auc),
-    control = ctrl_Bayes(no_improve = 20, verbose = TRUE)
+    control = ctrl_bayes(no_improve = 20, verbose = TRUE)
   )
 ```
 

@@ -10,7 +10,7 @@ show_best(x, metric, n_top = 5, maximize = TRUE)
 select_best(x, metric, maximize = TRUE)
 }
 \arguments{
-\item{x}{The results of \code{tune_grid()} or \code{tune_Bayes()}.}
+\item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}.}
 
 \item{metric}{A character value for the metric that will be used to sort
 the models. (See

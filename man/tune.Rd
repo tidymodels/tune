@@ -23,5 +23,5 @@ class(tune())
 tune("your name here")
 }
 \seealso{
-\code{tune_grid()}, \code{tune_Bayes()}
+\code{tune_grid()}, \code{tune_bayes()}
 }

@@ -10,7 +10,7 @@ collect_predictions(x, nest_by = "nothing", wflow = NULL)
 collect_metrics(x, nest_by = "nothing", wflow = NULL)
 }
 \arguments{
-\item{x}{The results of \code{tune_grid()} or \code{tune_Bayes()}. For
+\item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}. For
 \code{collect_predictions()}, the control option \code{save_pred = TRUE} should have
 been used.}
 

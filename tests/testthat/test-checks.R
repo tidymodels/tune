@@ -118,29 +118,29 @@ test_that('grid control objects', {
 })
 
 test_that('Bayes control objects', {
-  expect_error(ctrl_Bayes(), NA)
-  expect_error(ctrl_Bayes(tomato = 1))
-  expect_error(ctrl_Bayes(verbose = 1), "Argument 'verbose' should be a single logical")
-  expect_error(ctrl_Bayes(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
-  expect_error(ctrl_Bayes(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
-  expect_error(ctrl_Bayes(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
-  expect_error(ctrl_Bayes(seed = FALSE), "Argument 'seed' should be a single numeric")
-  expect_error(ctrl_Bayes(save_pred = "no"), "Argument 'save_pred' should be a single logical")
-  expect_error(ctrl_Bayes(extract = Inf), "Argument 'extract' should be a function or NULL")
-  expect_error(ctrl_Bayes(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
-  expect_error(ctrl_Bayes(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
+  expect_error(ctrl_bayes(), NA)
+  expect_error(ctrl_bayes(tomato = 1))
+  expect_error(ctrl_bayes(verbose = 1), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_bayes(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_bayes(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
+  expect_error(ctrl_bayes(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
+  expect_error(ctrl_bayes(seed = FALSE), "Argument 'seed' should be a single numeric")
+  expect_error(ctrl_bayes(save_pred = "no"), "Argument 'save_pred' should be a single logical")
+  expect_error(ctrl_bayes(extract = Inf), "Argument 'extract' should be a function or NULL")
+  expect_error(ctrl_bayes(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+  expect_error(ctrl_bayes(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
 
-  expect_message(ctrl_Bayes(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
+  expect_message(ctrl_bayes(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
 
-  expect_error(ctrl_Bayes(verbose = TRUE), NA)
-  expect_error(ctrl_Bayes(no_improve = 2), NA)
-  expect_error(ctrl_Bayes(uncertain = 2), NA)
-  expect_error(ctrl_Bayes(save_pred = TRUE), NA)
-  expect_error(ctrl_Bayes(extract = NULL), NA)
-  expect_error(ctrl_Bayes(extract = I), NA)
-  expect_error(ctrl_Bayes(pkgs = NULL), NA)
-  expect_error(ctrl_Bayes(pkgs = letters), NA)
-  expect_error(ctrl_Bayes(time_limit = 2), NA)
+  expect_error(ctrl_bayes(verbose = TRUE), NA)
+  expect_error(ctrl_bayes(no_improve = 2), NA)
+  expect_error(ctrl_bayes(uncertain = 2), NA)
+  expect_error(ctrl_bayes(save_pred = TRUE), NA)
+  expect_error(ctrl_bayes(extract = NULL), NA)
+  expect_error(ctrl_bayes(extract = I), NA)
+  expect_error(ctrl_bayes(pkgs = NULL), NA)
+  expect_error(ctrl_bayes(pkgs = letters), NA)
+  expect_error(ctrl_bayes(time_limit = 2), NA)
 
 })
 
@@ -154,14 +154,14 @@ test_that('initial values', {
 
   grid_1 <- tune:::check_initial(NULL, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
-                                 ctrl_Bayes())
+                                 ctrl_bayes())
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), 10)
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 3)))
 
   grid_2 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
-                                 ctrl_Bayes())
+                                 ctrl_bayes())
   expect_true(is.data.frame(grid_2))
   expect_equal(nrow(grid_2), 10)
   expect_true(all(purrr::map_lgl(grid_2$.metrics, ~ nrow(.x) == 2)))

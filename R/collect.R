@@ -1,6 +1,6 @@
 #' Obtain and format results produced by tuning
 #'
-#' @param x The results of `tune_grid()` or `tune_Bayes()`. For
+#' @param x The results of `tune_grid()` or `tune_bayes()`. For
 #' `collect_predictions()`, the control option `save_pred = TRUE` should have
 #' been used.
 #' @param nest_by A character string to indicate which (if any) columns should
