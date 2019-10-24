@@ -46,7 +46,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
     width <- max(x$.iter)/75
   }
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
@@ -81,7 +81,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
 }
 
 plot_param_vs_iter <- function(x) {
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
   param_cols <- names(x)[!((names(x) %in% excl_cols))]
   is_num <- map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
@@ -102,7 +102,7 @@ plot_param_vs_iter <- function(x) {
 }
 
 plot_marginals <- function(x, metric = NULL) {
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }

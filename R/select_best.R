@@ -15,7 +15,7 @@
 #'  includes columns for performance metrics.
 #' @export
 show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
-  summary_res <- estimate(x)
+  summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
     metric <- metrics

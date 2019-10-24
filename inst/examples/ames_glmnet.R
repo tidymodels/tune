@@ -48,7 +48,7 @@ ames_glmnet <- tune_grid(ames_wflow, resamples = cv_splits, grid = grid_df, cont
 
 set.seed(9890)
 search_res <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     resamples = cv_splits,
     initial = ames_glmnet,
@@ -58,7 +58,7 @@ search_res <-
 
 
 more_search_res <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     resamples = cv_splits,
     # param_info = ames_set,

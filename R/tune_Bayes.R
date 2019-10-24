@@ -92,7 +92,7 @@
 #' called `.metrics`. This tibble contains a row for each metric and columns
 #' for the value, the estimator type, and so on.
 #'
-#' An `estimate()` method can be used for these objects to collapse the results
+#' `collect_metrics()` can be used for these objects to collapse the results
 #' over the resampled (to obtain the final resampling estimates per tuning
 #' parameter combination).
 #'
@@ -220,7 +220,7 @@ tune_bayes_workflow <-
     }
 
     unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
-    mean_stats <- estimate(unsummarized)
+    mean_stats <- estimate_tune_results(unsummarized)
 
     check_time(start_time, control$time_limit)
 
@@ -294,7 +294,7 @@ tune_bayes_workflow <-
 
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
-        rs_estimate <- estimate(tmp_res)
+        rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
         log_progress(control, x = mean_stats, maximize = maximize, objective = metrics_name)
@@ -431,7 +431,7 @@ pick_candidate <- function(results, info, control) {
 update_score_card <- function(info, iter, results, control) {
   current_val <-
     results %>%
-    estimate() %>%
+    estimate_tune_results() %>%
     dplyr::filter(.metric == info$metrics) %>%
     dplyr::pull(mean)
 

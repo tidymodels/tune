@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bayesian optimization of model parameters. — tune_Bayes • tune</title>
+<title>Bayesian optimization of model parameters. — tune_bayes • tune</title>
 
 
 <!-- jquery -->
@@ -34,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Bayesian optimization of model parameters. — tune_Bayes" />
-<meta property="og:description" content="tune_Bayes() uses models to generate new candidate tuning parameter
+<meta property="og:title" content="Bayesian optimization of model parameters. — tune_bayes" />
+<meta property="og:description" content="tune_bayes() uses models to generate new candidate tuning parameter
 combinations based on previous results." />
 <meta name="twitter:card" content="summary" />
 
@@ -127,33 +127,33 @@ combinations based on previous results." />
     <div class="page-header">
     <h1>Bayesian optimization of model parameters.</h1>
     
-    <div class="hidden name"><code>tune_Bayes.Rd</code></div>
+    <div class="hidden name"><code>tune_bayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>tune_Bayes()</code> uses models to generate new candidate tuning parameter
+    <p><code>tune_bayes()</code> uses models to generate new candidate tuning parameter
 combinations based on previous results.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+<span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for recipe</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+<span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_bayes.html'>ctrl_bayes</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for formula</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+<span class='fu'>tune_bayes</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_bayes.html'>ctrl_bayes</a></span>(), <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
-<span class='fu'>tune_Bayes</span>(<span class='no'>object</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+<span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>resamples</span>, <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_Bayes.html'>ctrl_Bayes</a></span>(), <span class='no'>...</span>)</pre>
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='ctrl_bayes.html'>ctrl_bayes</a></span>(), <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,7 +201,7 @@ an acquisition function object.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>A control object created by <code><a href='ctrl_Bayes.html'>ctrl_Bayes()</a></code></p></td>
+      <td><p>A control object created by <code><a href='ctrl_bayes.html'>ctrl_bayes()</a></code></p></td>
     </tr>
     <tr>
       <th>formula</th>
@@ -246,7 +246,7 @@ resampled performance values once a new candidate set of values are estimated.</
     
 
 
-<p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, or a previous run of <code>tune_Bayes()</code> can be used
+<p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, or a previous run of <code>tune_bayes()</code> can be used
 in the <code>initial</code> argument. <code>initial</code> can also be a positive integer. In this
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
@@ -280,7 +280,7 @@ probabilities are not created.</p>
 <p>The out-of-sample estimates of these metrics are contained in a list column
 called <code>.metrics</code>. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.</p>
-<p>An <code><a href='estimate.tune_results.html'>estimate()</a></code> method can be used for these objects to collapse the results
+<p><code><a href='collect_predictions.html'>collect_metrics()</a></code> can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).</p>
     <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
@@ -313,7 +313,7 @@ is created during resampling. Note that this could result in a large return
 object, depending on what is returned.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='ctrl_Bayes.html'>ctrl_Bayes()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='estimate.tune_results.html'>estimate.tune_results()</a></code>,
+    <div class='dont-index'><p><code><a href='ctrl_bayes.html'>ctrl_bayes()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code>estimate.tune_results()</code>,
 <code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>, <code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>,
 <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code>, <code><a href='prob_improve.html'>prob_improve()</a></code>,
 <code><a href='prob_improve.html'>exp_improve()</a></code>, <code><a href='prob_improve.html'>conf_bound()</a></code></p></div>

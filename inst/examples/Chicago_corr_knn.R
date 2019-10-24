@@ -56,7 +56,7 @@ summarize(res) %>%
 
 set.seed(354)
 knn_search <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     resamples = data_folds,
     param_info = chi_param,

@@ -55,7 +55,7 @@ foo <- function(i) {
 
 set.seed(463)
 test <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     resamples = cv_splits,
     initial = initial_grid,

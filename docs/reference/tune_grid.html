@@ -272,7 +272,7 @@ probabilities are not created.</p>
 <p>The out-of-sample estimates of these metrics are contained in a list column
 called <code>.metrics</code>. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.</p>
-<p>An <code><a href='estimate.tune_results.html'>estimate()</a></code> method can be used for these objects to collapse the results
+<p><code><a href='collect_predictions.html'>collect_metrics()</a></code> can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).</p>
     <h2 class="hasAnchor" id="obtaining-predictions"><a class="anchor" href="#obtaining-predictions"></a>Obtaining Predictions</h2>
@@ -310,7 +310,7 @@ sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='ctrl_grid.html'>ctrl_grid()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='estimate.tune_results.html'>estimate.tune_results()</a></code>,
+    <div class='dont-index'><p><code><a href='ctrl_grid.html'>ctrl_grid()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code>estimate.tune_results()</code>,
 <code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>, <code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>,
 <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 

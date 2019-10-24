@@ -72,7 +72,7 @@ foo <- function(i) {
 
 
 
-nn_search <- tune_Bayes(nn_wflow, resamples = val_split,
+nn_search <- tune_bayes(nn_wflow, resamples = val_split,
                         initial = grid_results,
                         iter = 20,
                         metrics = roc_set,
@@ -84,7 +84,7 @@ autoplot(nn_search, type = "performance", metric = "roc_auc")
 
 # ------------------------------------------------------------------------------
 
-nn_search_2 <- tune_Bayes(nn_wflow, resamples = val_split,
+nn_search_2 <- tune_bayes(nn_wflow, resamples = val_split,
                            initial = nn_search,
                            iter = 15,
                            metrics = roc_set,

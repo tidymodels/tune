@@ -42,7 +42,7 @@ summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 set.seed(365456)
 svm_search <-
-  tune_Bayes(
+  tune_bayes(
     two_class_wflow,
     resamples = data_folds,
     param_info = two_class_set,

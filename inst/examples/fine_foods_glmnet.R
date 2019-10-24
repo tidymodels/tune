@@ -108,7 +108,7 @@ trade_decay <- function(iter) {
 
 set.seed(8161)
 search_res <-
-  tune_Bayes(
+  tune_bayes(
     text_wflow,
     folds,
     initial = 5,

@@ -78,7 +78,7 @@ smol_grid <-
 smol_knn_grid <- tune_grid(chi_wflow, resamples = data_folds, grid = smol_grid, control = ctrl_grid(verbose = TRUE))
 
 knn_search <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     resamples = data_folds,
     param_info = chi_set,

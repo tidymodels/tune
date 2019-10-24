@@ -135,14 +135,15 @@
 
     <pre class="usage"><span class='fu'>collect_predictions</span>(<span class='no'>x</span>, <span class='kw'>nest_by</span> <span class='kw'>=</span> <span class='st'>"nothing"</span>, <span class='kw'>wflow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>collect_metrics</span>(<span class='no'>x</span>, <span class='kw'>nest_by</span> <span class='kw'>=</span> <span class='st'>"nothing"</span>, <span class='kw'>wflow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>collect_metrics</span>(<span class='no'>x</span>, <span class='kw'>nest_by</span> <span class='kw'>=</span> <span class='st'>"nothing"</span>, <span class='kw'>summarize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>wflow</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_Bayes.html'>tune_Bayes()</a></code>. For
+      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>. For
 <code>collect_predictions()</code>, the control option <code>save_pred = TRUE</code> should have
 been used.</p></td>
     </tr>
@@ -157,6 +158,12 @@ be in the resulting tibble and which should be nested. Values are <code>"nothing
       <th>wflow</th>
       <td><p>The workflow associated with the results (only required for
 <code>nest_by = "parameters"</code>).</p></td>
+    </tr>
+    <tr>
+      <th>summarize</th>
+      <td><p>A logical; should metrics be summarized over resamples
+(<code>TRUE</code>) or return the values for each individual resample. Only appropriate
+when <code>nest_by = "nothing"</code>.</p></td>
     </tr>
     </table>
 

@@ -61,7 +61,7 @@ decr_trade_off <- function(i) {
 }
 
 search_res <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     resamples = cv_splits,
     param_info = ames_set,

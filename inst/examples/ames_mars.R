@@ -48,21 +48,21 @@ ames_grid <-
 
 res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE))
 
-#  estimate(res) %>%
+#  collect_metrics(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   ggplot(aes(x = num_terms, y = mean, col = factor(prod_degree))) +
 #   geom_point(cex = 1) +
 #   geom_path() +
 #   facet_wrap(~ threshold)
 #
-#  estimate(res) %>%
+#  collect_metrics(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
 #   arrange(mean) %>%
 #   slice(1)
 #
 
 test <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     rs = cv_splits,
     param_info = ames_set,

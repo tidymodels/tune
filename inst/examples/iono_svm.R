@@ -29,7 +29,7 @@ iono_res_2 <- tune_grid(iono_rec, model = svm_mod, resamples = iono_rs, metrics 
 
 set.seed(8161)
 search_res <-
-  tune_Bayes(
+  tune_bayes(
     iono_rec,
     model = svm_mod,
     resamples = iono_rs,

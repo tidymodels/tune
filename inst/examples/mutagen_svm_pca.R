@@ -49,7 +49,7 @@ summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 set.seed(3654)
 svm_search <-
-  tune_Bayes(
+  tune_bayes(
     Mutagen_wflow,
     resamples = data_folds,
     param_info = Mutagen_param,
@@ -61,7 +61,7 @@ svm_search <-
 
 set.seed(378)
 more_svm_search <-
-  tune_Bayes(
+  tune_bayes(
     Mutagen_wflow,
     resamples = data_folds,
     param_info = Mutagen_param,

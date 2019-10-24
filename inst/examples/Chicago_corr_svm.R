@@ -66,7 +66,7 @@ foo <- function(i) {
 }
 
 svm_search <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     rs = data_folds,
     param_info = chi_set,
@@ -78,7 +78,7 @@ svm_search <-
   )
 
 svm_search_2 <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     rs = data_folds,
     param_info = chi_set,

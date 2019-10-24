@@ -43,7 +43,7 @@ cars_grid <-
 cars_res <- tune_grid(cars_wflow, resamples = data_folds, grid = cars_grid, control = ctrl_grid(verbose = TRUE, save_pred = TRUE))
 
 spline_search <-
-  tune_Bayes(
+  tune_bayes(
     cars_wflow,
     resamples = data_folds,
     param_info = cars_set,
@@ -53,7 +53,7 @@ spline_search <-
   )
 
 more_spline_search <-
-  tune_Bayes(
+  tune_bayes(
     cars_wflow,
     resamples = data_folds,
     param_info = cars_set,

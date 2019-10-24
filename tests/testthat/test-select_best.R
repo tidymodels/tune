@@ -61,7 +61,7 @@ testthat::test_that("select_best()", {
 testthat::test_that("show_best()", {
   rcv_rmse <-
     rcv_results %>%
-    estimate() %>%
+    collect_metrics() %>%
     dplyr::filter(.metric == "rmse") %>%
     dplyr::arrange(mean)
 

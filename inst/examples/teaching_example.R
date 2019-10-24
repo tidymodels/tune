@@ -65,10 +65,10 @@ grid <-
 
 grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
                           control = ctrl_grid(verbose = TRUE))
-estimate(grid_results)
+collect_metrics(grid_results)
 
 ggplot(
-  estimate(grid_results) %>% filter(.metric == "accuracy"),
+  collect_metrics(grid_results) %>% filter(.metric == "accuracy"),
   aes(x = rbf_sigma, y = mean)) +
   geom_path() +
   scale_x_log10()
@@ -80,8 +80,1075 @@ sigma_set <-
   slice(2)
 
 acc_results <-
-  estimate(grid_results) %>%
-  filter(.metric == "accuracy") %>%
+  ``` r
+library(tidymodels)
+#> Registered S3 method overwritten by 'xts':
+#>   method     from
+#>   as.zoo.xts zoo
+#> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ parsnip   0.0.3.9001
+#> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
+#> ✖ purrr::discard()  masks scales::discard()
+#> ✖ dplyr::filter()   masks stats::filter()
+#> ✖ dplyr::lag()      masks stats::lag()
+#> ✖ ggplot2::margin() masks dials::margin()
+#> ✖ dials::offset()   masks stats::offset()
+#> ✖ recipes::step()   masks stats::step()
+library(tune)
+library(AmesHousing)
+
+ames <- make_ames()
+
+set.seed(4595)
+initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
+
+initial_split
+#> <2199/731/2930>
+
+ames_train <- initial_split %>% training()
+ames_test <- initial_split %>% testing()
+
+set.seed(2453)
+
+cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
+
+set.seed(24533)
+
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_log(Sale_Price, base = 10) %>%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
+  step_other(Neighborhood, threshold = tune()) %>%
+  step_dummy(all_nominal()) %>%
+  step_zv(all_predictors())
+
+mars_mod <-
+  mars(
+    mode = "regression",
+    prod_degree = tune(),
+    prune_method = tune()
+  ) %>%
+  set_engine("earth")
+
+
+ames_wflow <- workflow() %>%
+  add_recipe(ames_rec) %>%
+  add_model(mars_mod)
+
+set.seed(123456)
+mars_set <- ames_wflow %>%
+  parameters() %>%
+  update(threshold = threshold(c(0, .2))) %>%
+  update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
+
+set.seed(987654)
+mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+
+set.seed(456321)
+initial_mars <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    grid = mars_grid,
+    control = ctrl_grid(verbose = TRUE)
+  )
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 1/5, model 1/1
+#> ✓ Fold01: recipe 1/5, model 1/1
+#> i Fold01: recipe 1/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 2/5, model 1/1
+#> ✓ Fold01: recipe 2/5, model 1/1
+#> i Fold01: recipe 2/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 3/5, model 1/1
+#> ✓ Fold01: recipe 3/5, model 1/1
+#> i Fold01: recipe 3/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 4/5, model 1/1
+#> ✓ Fold01: recipe 4/5, model 1/1
+#> i Fold01: recipe 4/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 5/5, model 1/1
+#> ✓ Fold01: recipe 5/5, model 1/1
+#> i Fold01: recipe 5/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 1/5, model 1/1
+#> ✓ Fold02: recipe 1/5, model 1/1
+#> i Fold02: recipe 1/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 2/5, model 1/1
+#> ✓ Fold02: recipe 2/5, model 1/1
+#> i Fold02: recipe 2/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 3/5, model 1/1
+#> ✓ Fold02: recipe 3/5, model 1/1
+#> i Fold02: recipe 3/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 4/5, model 1/1
+#> ✓ Fold02: recipe 4/5, model 1/1
+#> i Fold02: recipe 4/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 5/5, model 1/1
+#> ✓ Fold02: recipe 5/5, model 1/1
+#> i Fold02: recipe 5/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 1/5, model 1/1
+#> ✓ Fold03: recipe 1/5, model 1/1
+#> i Fold03: recipe 1/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 2/5, model 1/1
+#> ✓ Fold03: recipe 2/5, model 1/1
+#> i Fold03: recipe 2/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 3/5, model 1/1
+#> ✓ Fold03: recipe 3/5, model 1/1
+#> i Fold03: recipe 3/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 4/5, model 1/1
+#> ✓ Fold03: recipe 4/5, model 1/1
+#> i Fold03: recipe 4/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 5/5, model 1/1
+#> ✓ Fold03: recipe 5/5, model 1/1
+#> i Fold03: recipe 5/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 1/5, model 1/1
+#> ✓ Fold04: recipe 1/5, model 1/1
+#> i Fold04: recipe 1/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 2/5, model 1/1
+#> ✓ Fold04: recipe 2/5, model 1/1
+#> i Fold04: recipe 2/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 3/5, model 1/1
+#> ✓ Fold04: recipe 3/5, model 1/1
+#> i Fold04: recipe 3/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 4/5, model 1/1
+#> ✓ Fold04: recipe 4/5, model 1/1
+#> i Fold04: recipe 4/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 5/5, model 1/1
+#> ✓ Fold04: recipe 5/5, model 1/1
+#> i Fold04: recipe 5/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 1/5, model 1/1
+#> ✓ Fold05: recipe 1/5, model 1/1
+#> i Fold05: recipe 1/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 2/5, model 1/1
+#> ✓ Fold05: recipe 2/5, model 1/1
+#> i Fold05: recipe 2/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 3/5, model 1/1
+#> ✓ Fold05: recipe 3/5, model 1/1
+#> i Fold05: recipe 3/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 4/5, model 1/1
+#> ✓ Fold05: recipe 4/5, model 1/1
+#> i Fold05: recipe 4/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 5/5, model 1/1
+#> ✓ Fold05: recipe 5/5, model 1/1
+#> i Fold05: recipe 5/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 1/5, model 1/1
+#> ✓ Fold06: recipe 1/5, model 1/1
+#> i Fold06: recipe 1/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 2/5, model 1/1
+#> ✓ Fold06: recipe 2/5, model 1/1
+#> i Fold06: recipe 2/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 3/5, model 1/1
+#> ✓ Fold06: recipe 3/5, model 1/1
+#> i Fold06: recipe 3/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 4/5, model 1/1
+#> ✓ Fold06: recipe 4/5, model 1/1
+#> i Fold06: recipe 4/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 5/5, model 1/1
+#> ✓ Fold06: recipe 5/5, model 1/1
+#> i Fold06: recipe 5/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 1/5, model 1/1
+#> ✓ Fold07: recipe 1/5, model 1/1
+#> i Fold07: recipe 1/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 2/5, model 1/1
+#> ✓ Fold07: recipe 2/5, model 1/1
+#> i Fold07: recipe 2/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 3/5, model 1/1
+#> ✓ Fold07: recipe 3/5, model 1/1
+#> i Fold07: recipe 3/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 4/5, model 1/1
+#> ✓ Fold07: recipe 4/5, model 1/1
+#> i Fold07: recipe 4/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 5/5, model 1/1
+#> ✓ Fold07: recipe 5/5, model 1/1
+#> i Fold07: recipe 5/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 1/5, model 1/1
+#> ✓ Fold08: recipe 1/5, model 1/1
+#> i Fold08: recipe 1/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 2/5, model 1/1
+#> ✓ Fold08: recipe 2/5, model 1/1
+#> i Fold08: recipe 2/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 3/5, model 1/1
+#> ✓ Fold08: recipe 3/5, model 1/1
+#> i Fold08: recipe 3/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 4/5, model 1/1
+#> ✓ Fold08: recipe 4/5, model 1/1
+#> i Fold08: recipe 4/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 5/5, model 1/1
+#> ✓ Fold08: recipe 5/5, model 1/1
+#> i Fold08: recipe 5/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 1/5, model 1/1
+#> ✓ Fold09: recipe 1/5, model 1/1
+#> i Fold09: recipe 1/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 2/5, model 1/1
+#> ✓ Fold09: recipe 2/5, model 1/1
+#> i Fold09: recipe 2/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 3/5, model 1/1
+#> ✓ Fold09: recipe 3/5, model 1/1
+#> i Fold09: recipe 3/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 4/5, model 1/1
+#> ✓ Fold09: recipe 4/5, model 1/1
+#> i Fold09: recipe 4/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 5/5, model 1/1
+#> ✓ Fold09: recipe 5/5, model 1/1
+#> i Fold09: recipe 5/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 1/5, model 1/1
+#> ✓ Fold10: recipe 1/5, model 1/1
+#> i Fold10: recipe 1/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 2/5, model 1/1
+#> ✓ Fold10: recipe 2/5, model 1/1
+#> i Fold10: recipe 2/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 3/5, model 1/1
+#> ✓ Fold10: recipe 3/5, model 1/1
+#> i Fold10: recipe 3/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 4/5, model 1/1
+#> ✓ Fold10: recipe 4/5, model 1/1
+#> i Fold10: recipe 4/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 5/5, model 1/1
+#> ✓ Fold10: recipe 5/5, model 1/1
+#> i Fold10: recipe 5/5, model 1/1 (predictions)
+#> Warning in tune_rec_and_mod(resamples, grid, object, metrics, control):
+#> internal error -3 in R_decompress1
+#> Error in tune_rec_and_mod(resamples, grid, object, metrics, control): lazy-load database '/Library/Frameworks/R.framework/Versions/3.6/Resources/library/tune/R/tune.rdb' is corrupt
+
+``` r
+library(tidymodels)
+#> Registered S3 method overwritten by 'xts':
+#>   method     from
+#>   as.zoo.xts zoo
+#> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ parsnip   0.0.3.9001
+#> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
+#> ✖ purrr::discard()  masks scales::discard()
+#> ✖ dplyr::filter()   masks stats::filter()
+#> ✖ dplyr::lag()      masks stats::lag()
+#> ✖ ggplot2::margin() masks dials::margin()
+#> ✖ dials::offset()   masks stats::offset()
+#> ✖ recipes::step()   masks stats::step()
+library(tune)
+library(AmesHousing)
+
+ames <- make_ames()
+
+set.seed(4595)
+initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
+
+initial_split
+#> <2199/731/2930>
+
+ames_train <- initial_split %>% training()
+ames_test <- initial_split %>% testing()
+
+set.seed(2453)
+
+cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
+
+set.seed(24533)
+
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_log(Sale_Price, base = 10) %>%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
+  step_other(Neighborhood, threshold = tune()) %>%
+  step_dummy(all_nominal()) %>%
+  step_zv(all_predictors())
+
+mars_mod <-
+  mars(
+    mode = "regression",
+    prod_degree = tune(),
+    prune_method = tune()
+  ) %>%
+  set_engine("earth")
+
+
+ames_wflow <- workflow() %>%
+  add_recipe(ames_rec) %>%
+  add_model(mars_mod)
+
+set.seed(123456)
+mars_set <- ames_wflow %>%
+  parameters() %>%
+  update(threshold = threshold(c(0, .2))) %>%
+  update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
+
+set.seed(987654)
+mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+
+set.seed(456321)
+initial_mars <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    grid = mars_grid,
+    control = ctrl_grid(verbose = TRUE)
+  )
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 1/5, model 1/1
+#> ✓ Fold01: recipe 1/5, model 1/1
+#> i Fold01: recipe 1/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 2/5, model 1/1
+#> ✓ Fold01: recipe 2/5, model 1/1
+#> i Fold01: recipe 2/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 3/5, model 1/1
+#> ✓ Fold01: recipe 3/5, model 1/1
+#> i Fold01: recipe 3/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 4/5, model 1/1
+#> ✓ Fold01: recipe 4/5, model 1/1
+#> i Fold01: recipe 4/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 5/5, model 1/1
+#> ✓ Fold01: recipe 5/5, model 1/1
+#> i Fold01: recipe 5/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 1/5, model 1/1
+#> ✓ Fold02: recipe 1/5, model 1/1
+#> i Fold02: recipe 1/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 2/5, model 1/1
+#> ✓ Fold02: recipe 2/5, model 1/1
+#> i Fold02: recipe 2/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 3/5, model 1/1
+#> ✓ Fold02: recipe 3/5, model 1/1
+#> i Fold02: recipe 3/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 4/5, model 1/1
+#> ✓ Fold02: recipe 4/5, model 1/1
+#> i Fold02: recipe 4/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 5/5, model 1/1
+#> ✓ Fold02: recipe 5/5, model 1/1
+#> i Fold02: recipe 5/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 1/5, model 1/1
+#> ✓ Fold03: recipe 1/5, model 1/1
+#> i Fold03: recipe 1/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 2/5, model 1/1
+#> ✓ Fold03: recipe 2/5, model 1/1
+#> i Fold03: recipe 2/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 3/5, model 1/1
+#> ✓ Fold03: recipe 3/5, model 1/1
+#> i Fold03: recipe 3/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 4/5, model 1/1
+#> ✓ Fold03: recipe 4/5, model 1/1
+#> i Fold03: recipe 4/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 5/5, model 1/1
+#> ✓ Fold03: recipe 5/5, model 1/1
+#> i Fold03: recipe 5/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 1/5, model 1/1
+#> ✓ Fold04: recipe 1/5, model 1/1
+#> i Fold04: recipe 1/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 2/5, model 1/1
+#> ✓ Fold04: recipe 2/5, model 1/1
+#> i Fold04: recipe 2/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 3/5, model 1/1
+#> ✓ Fold04: recipe 3/5, model 1/1
+#> i Fold04: recipe 3/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 4/5, model 1/1
+#> ✓ Fold04: recipe 4/5, model 1/1
+#> i Fold04: recipe 4/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 5/5, model 1/1
+#> ✓ Fold04: recipe 5/5, model 1/1
+#> i Fold04: recipe 5/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 1/5, model 1/1
+#> ✓ Fold05: recipe 1/5, model 1/1
+#> i Fold05: recipe 1/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 2/5, model 1/1
+#> ✓ Fold05: recipe 2/5, model 1/1
+#> i Fold05: recipe 2/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 3/5, model 1/1
+#> ✓ Fold05: recipe 3/5, model 1/1
+#> i Fold05: recipe 3/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 4/5, model 1/1
+#> ✓ Fold05: recipe 4/5, model 1/1
+#> i Fold05: recipe 4/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 5/5, model 1/1
+#> ✓ Fold05: recipe 5/5, model 1/1
+#> i Fold05: recipe 5/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 1/5, model 1/1
+#> ✓ Fold06: recipe 1/5, model 1/1
+#> i Fold06: recipe 1/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 2/5, model 1/1
+#> ✓ Fold06: recipe 2/5, model 1/1
+#> i Fold06: recipe 2/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 3/5, model 1/1
+#> ✓ Fold06: recipe 3/5, model 1/1
+#> i Fold06: recipe 3/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 4/5, model 1/1
+#> ✓ Fold06: recipe 4/5, model 1/1
+#> i Fold06: recipe 4/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 5/5, model 1/1
+#> ✓ Fold06: recipe 5/5, model 1/1
+#> i Fold06: recipe 5/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 1/5, model 1/1
+#> ✓ Fold07: recipe 1/5, model 1/1
+#> i Fold07: recipe 1/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 2/5, model 1/1
+#> ✓ Fold07: recipe 2/5, model 1/1
+#> i Fold07: recipe 2/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 3/5, model 1/1
+#> ✓ Fold07: recipe 3/5, model 1/1
+#> i Fold07: recipe 3/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 4/5, model 1/1
+#> ✓ Fold07: recipe 4/5, model 1/1
+#> i Fold07: recipe 4/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 5/5, model 1/1
+#> ✓ Fold07: recipe 5/5, model 1/1
+#> i Fold07: recipe 5/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 1/5, model 1/1
+#> ✓ Fold08: recipe 1/5, model 1/1
+#> i Fold08: recipe 1/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 2/5, model 1/1
+#> ✓ Fold08: recipe 2/5, model 1/1
+#> i Fold08: recipe 2/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 3/5, model 1/1
+#> ✓ Fold08: recipe 3/5, model 1/1
+#> i Fold08: recipe 3/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 4/5, model 1/1
+#> ✓ Fold08: recipe 4/5, model 1/1
+#> i Fold08: recipe 4/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 5/5, model 1/1
+#> ✓ Fold08: recipe 5/5, model 1/1
+#> i Fold08: recipe 5/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 1/5, model 1/1
+#> ✓ Fold09: recipe 1/5, model 1/1
+#> i Fold09: recipe 1/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 2/5, model 1/1
+#> ✓ Fold09: recipe 2/5, model 1/1
+#> i Fold09: recipe 2/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 3/5, model 1/1
+#> ✓ Fold09: recipe 3/5, model 1/1
+#> i Fold09: recipe 3/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 4/5, model 1/1
+#> ✓ Fold09: recipe 4/5, model 1/1
+#> i Fold09: recipe 4/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 5/5, model 1/1
+#> ✓ Fold09: recipe 5/5, model 1/1
+#> i Fold09: recipe 5/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 1/5, model 1/1
+#> ✓ Fold10: recipe 1/5, model 1/1
+#> i Fold10: recipe 1/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 2/5, model 1/1
+#> ✓ Fold10: recipe 2/5, model 1/1
+#> i Fold10: recipe 2/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 3/5, model 1/1
+#> ✓ Fold10: recipe 3/5, model 1/1
+#> i Fold10: recipe 3/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 4/5, model 1/1
+#> ✓ Fold10: recipe 4/5, model 1/1
+#> i Fold10: recipe 4/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 5/5, model 1/1
+#> ✓ Fold10: recipe 5/5, model 1/1
+#> i Fold10: recipe 5/5, model 1/1 (predictions)
+#> Warning in tune_rec_and_mod(resamples, grid, object, metrics, control):
+#> internal error -3 in R_decompress1
+#> Error in tune_rec_and_mod(resamples, grid, object, metrics, control): lazy-load database '/Library/Frameworks/R.framework/Versions/3.6/Resources/library/tune/R/tune.rdb' is corrupt
+
+``` r
+library(tidymodels)
+#> Registered S3 method overwritten by 'xts':
+#>   method     from
+#>   as.zoo.xts zoo
+#> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ parsnip   0.0.3.9001
+#> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
+#> ✖ purrr::discard()  masks scales::discard()
+#> ✖ dplyr::filter()   masks stats::filter()
+#> ✖ dplyr::lag()      masks stats::lag()
+#> ✖ ggplot2::margin() masks dials::margin()
+#> ✖ dials::offset()   masks stats::offset()
+#> ✖ recipes::step()   masks stats::step()
+library(tune)
+library(AmesHousing)
+
+ames <- make_ames()
+
+set.seed(4595)
+initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
+
+initial_split
+#> <2199/731/2930>
+
+ames_train <- initial_split %>% training()
+ames_test <- initial_split %>% testing()
+
+set.seed(2453)
+
+cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
+
+set.seed(24533)
+
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_log(Sale_Price, base = 10) %>%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
+  step_other(Neighborhood, threshold = tune()) %>%
+  step_dummy(all_nominal()) %>%
+  step_zv(all_predictors())
+
+mars_mod <-
+  mars(
+    mode = "regression",
+    prod_degree = tune(),
+    prune_method = tune()
+  ) %>%
+  set_engine("earth")
+
+
+ames_wflow <- workflow() %>%
+  add_recipe(ames_rec) %>%
+  add_model(mars_mod)
+
+set.seed(123456)
+mars_set <- ames_wflow %>%
+  parameters() %>%
+  update(threshold = threshold(c(0, .2))) %>%
+  update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
+
+set.seed(987654)
+mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+
+set.seed(456321)
+initial_mars <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    grid = mars_grid,
+    control = ctrl_grid(verbose = TRUE)
+  )
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 1/5, model 1/1
+#> ✓ Fold01: recipe 1/5, model 1/1
+#> i Fold01: recipe 1/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 2/5, model 1/1
+#> ✓ Fold01: recipe 2/5, model 1/1
+#> i Fold01: recipe 2/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 3/5, model 1/1
+#> ✓ Fold01: recipe 3/5, model 1/1
+#> i Fold01: recipe 3/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 4/5, model 1/1
+#> ✓ Fold01: recipe 4/5, model 1/1
+#> i Fold01: recipe 4/5, model 1/1 (predictions)
+#> i Fold01: recipe
+#> ✓ Fold01: recipe
+#> i Fold01: recipe 5/5, model 1/1
+#> ✓ Fold01: recipe 5/5, model 1/1
+#> i Fold01: recipe 5/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 1/5, model 1/1
+#> ✓ Fold02: recipe 1/5, model 1/1
+#> i Fold02: recipe 1/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 2/5, model 1/1
+#> ✓ Fold02: recipe 2/5, model 1/1
+#> i Fold02: recipe 2/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 3/5, model 1/1
+#> ✓ Fold02: recipe 3/5, model 1/1
+#> i Fold02: recipe 3/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 4/5, model 1/1
+#> ✓ Fold02: recipe 4/5, model 1/1
+#> i Fold02: recipe 4/5, model 1/1 (predictions)
+#> i Fold02: recipe
+#> ✓ Fold02: recipe
+#> i Fold02: recipe 5/5, model 1/1
+#> ✓ Fold02: recipe 5/5, model 1/1
+#> i Fold02: recipe 5/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 1/5, model 1/1
+#> ✓ Fold03: recipe 1/5, model 1/1
+#> i Fold03: recipe 1/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 2/5, model 1/1
+#> ✓ Fold03: recipe 2/5, model 1/1
+#> i Fold03: recipe 2/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 3/5, model 1/1
+#> ✓ Fold03: recipe 3/5, model 1/1
+#> i Fold03: recipe 3/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 4/5, model 1/1
+#> ✓ Fold03: recipe 4/5, model 1/1
+#> i Fold03: recipe 4/5, model 1/1 (predictions)
+#> i Fold03: recipe
+#> ✓ Fold03: recipe
+#> i Fold03: recipe 5/5, model 1/1
+#> ✓ Fold03: recipe 5/5, model 1/1
+#> i Fold03: recipe 5/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 1/5, model 1/1
+#> ✓ Fold04: recipe 1/5, model 1/1
+#> i Fold04: recipe 1/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 2/5, model 1/1
+#> ✓ Fold04: recipe 2/5, model 1/1
+#> i Fold04: recipe 2/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 3/5, model 1/1
+#> ✓ Fold04: recipe 3/5, model 1/1
+#> i Fold04: recipe 3/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 4/5, model 1/1
+#> ✓ Fold04: recipe 4/5, model 1/1
+#> i Fold04: recipe 4/5, model 1/1 (predictions)
+#> i Fold04: recipe
+#> ✓ Fold04: recipe
+#> i Fold04: recipe 5/5, model 1/1
+#> ✓ Fold04: recipe 5/5, model 1/1
+#> i Fold04: recipe 5/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 1/5, model 1/1
+#> ✓ Fold05: recipe 1/5, model 1/1
+#> i Fold05: recipe 1/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 2/5, model 1/1
+#> ✓ Fold05: recipe 2/5, model 1/1
+#> i Fold05: recipe 2/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 3/5, model 1/1
+#> ✓ Fold05: recipe 3/5, model 1/1
+#> i Fold05: recipe 3/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 4/5, model 1/1
+#> ✓ Fold05: recipe 4/5, model 1/1
+#> i Fold05: recipe 4/5, model 1/1 (predictions)
+#> i Fold05: recipe
+#> ✓ Fold05: recipe
+#> i Fold05: recipe 5/5, model 1/1
+#> ✓ Fold05: recipe 5/5, model 1/1
+#> i Fold05: recipe 5/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 1/5, model 1/1
+#> ✓ Fold06: recipe 1/5, model 1/1
+#> i Fold06: recipe 1/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 2/5, model 1/1
+#> ✓ Fold06: recipe 2/5, model 1/1
+#> i Fold06: recipe 2/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 3/5, model 1/1
+#> ✓ Fold06: recipe 3/5, model 1/1
+#> i Fold06: recipe 3/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 4/5, model 1/1
+#> ✓ Fold06: recipe 4/5, model 1/1
+#> i Fold06: recipe 4/5, model 1/1 (predictions)
+#> i Fold06: recipe
+#> ✓ Fold06: recipe
+#> i Fold06: recipe 5/5, model 1/1
+#> ✓ Fold06: recipe 5/5, model 1/1
+#> i Fold06: recipe 5/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 1/5, model 1/1
+#> ✓ Fold07: recipe 1/5, model 1/1
+#> i Fold07: recipe 1/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 2/5, model 1/1
+#> ✓ Fold07: recipe 2/5, model 1/1
+#> i Fold07: recipe 2/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 3/5, model 1/1
+#> ✓ Fold07: recipe 3/5, model 1/1
+#> i Fold07: recipe 3/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 4/5, model 1/1
+#> ✓ Fold07: recipe 4/5, model 1/1
+#> i Fold07: recipe 4/5, model 1/1 (predictions)
+#> i Fold07: recipe
+#> ✓ Fold07: recipe
+#> i Fold07: recipe 5/5, model 1/1
+#> ✓ Fold07: recipe 5/5, model 1/1
+#> i Fold07: recipe 5/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 1/5, model 1/1
+#> ✓ Fold08: recipe 1/5, model 1/1
+#> i Fold08: recipe 1/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 2/5, model 1/1
+#> ✓ Fold08: recipe 2/5, model 1/1
+#> i Fold08: recipe 2/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 3/5, model 1/1
+#> ✓ Fold08: recipe 3/5, model 1/1
+#> i Fold08: recipe 3/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 4/5, model 1/1
+#> ✓ Fold08: recipe 4/5, model 1/1
+#> i Fold08: recipe 4/5, model 1/1 (predictions)
+#> i Fold08: recipe
+#> ✓ Fold08: recipe
+#> i Fold08: recipe 5/5, model 1/1
+#> ✓ Fold08: recipe 5/5, model 1/1
+#> i Fold08: recipe 5/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 1/5, model 1/1
+#> ✓ Fold09: recipe 1/5, model 1/1
+#> i Fold09: recipe 1/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 2/5, model 1/1
+#> ✓ Fold09: recipe 2/5, model 1/1
+#> i Fold09: recipe 2/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 3/5, model 1/1
+#> ✓ Fold09: recipe 3/5, model 1/1
+#> i Fold09: recipe 3/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 4/5, model 1/1
+#> ✓ Fold09: recipe 4/5, model 1/1
+#> i Fold09: recipe 4/5, model 1/1 (predictions)
+#> i Fold09: recipe
+#> ✓ Fold09: recipe
+#> i Fold09: recipe 5/5, model 1/1
+#> ✓ Fold09: recipe 5/5, model 1/1
+#> i Fold09: recipe 5/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 1/5, model 1/1
+#> ✓ Fold10: recipe 1/5, model 1/1
+#> i Fold10: recipe 1/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 2/5, model 1/1
+#> ✓ Fold10: recipe 2/5, model 1/1
+#> i Fold10: recipe 2/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 3/5, model 1/1
+#> ✓ Fold10: recipe 3/5, model 1/1
+#> i Fold10: recipe 3/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 4/5, model 1/1
+#> ✓ Fold10: recipe 4/5, model 1/1
+#> i Fold10: recipe 4/5, model 1/1 (predictions)
+#> i Fold10: recipe
+#> ✓ Fold10: recipe
+#> i Fold10: recipe 5/5, model 1/1
+#> ✓ Fold10: recipe 5/5, model 1/1
+#> i Fold10: recipe 5/5, model 1/1 (predictions)
+#> Warning in tune_rec_and_mod(resamples, grid, object, metrics, control):
+#> internal error -3 in R_decompress1
+#> Error in tune_rec_and_mod(resamples, grid, object, metrics, control): lazy-load database '/Library/Frameworks/R.framework/Versions/3.6/Resources/library/tune/R/tune.rdb' is corrupt
+
+``` r
+library(tidymodels)
+#> Registered S3 method overwritten by 'xts':
+#>   method     from
+#>   as.zoo.xts zoo
+#> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ parsnip   0.0.3.9001
+#> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
+#> ✖ purrr::discard()  masks scales::discard()
+#> ✖ dplyr::filter()   masks stats::filter()
+#> ✖ dplyr::lag()      masks stats::lag()
+#> ✖ ggplot2::margin() masks dials::margin()
+#> ✖ dials::offset()   masks stats::offset()
+#> ✖ recipes::step()   masks stats::step()
+library(tune)
+library(AmesHousing)
+
+ames <- make_ames()
+
+set.seed(4595)
+initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
+
+initial_split
+#> <2199/731/2930>
+
+ames_train <- initial_split %>% training()
+ames_test <- initial_split %>% testing()
+
+set.seed(2453)
+
+cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
+
+set.seed(24533)
+
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
+  step_log(Sale_Price, base = 10) %>%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
+  step_other(Neighborhood, threshold = tune()) %>%
+  step_dummy(all_nominal()) %>%
+  step_zv(all_predictors())
+
+mars_mod <-
+  mars(
+    mode = "regression",
+    prod_degree = tune(),
+    prune_method = tune()
+  ) %>%
+  set_engine("earth")
+
+
+ames_wflow <- workflow() %>%
+  add_recipe(ames_rec) %>%
+  add_model(mars_mod)
+
+set.seed(123456)
+mars_set <- ames_wflow %>%
+  parameters() %>%
+  update(threshold = threshold(c(0, .2))) %>%
+  update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
+
+set.seed(987654)
+mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+
+set.seed(456321)
+initial_mars <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    grid = mars_grid,
+    control = ctrl_grid(verbose = TRUE)
+  )
+
+collect_metrics(initial_mars) %>% 
+  filter(.metric == "rmse") %>%
   arrange(rbf_sigma)
 
 acc_vals_1 <-

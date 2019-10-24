@@ -49,7 +49,7 @@ initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, grid = ames_grid, c
 
 
 test <-
-  tune_Bayes(
+  tune_bayes(
     ames_wflow,
     resamples = cv_splits,
     param_info = ames_set,

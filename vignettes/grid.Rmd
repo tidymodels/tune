@@ -101,7 +101,14 @@ First, the formula interface will be used:
 
 ```{r grid}
 set.seed(35)
-grid_form <- tune_grid(Class ~ ., model = svm_mod, resamples = iono_rs, metrics = roc_vals, control = ctrl)
+grid_form <-
+  tune_grid(
+    Class ~ .,
+    model = svm_mod,
+    resamples = iono_rs,
+    metrics = roc_vals,
+    control = ctrl
+  )
 grid_form
 ```
 
@@ -111,19 +118,17 @@ The `.metrics` column contains tibbles of the performance metrics for each tunin
 grid_form %>% select(.metrics) %>% slice(1) %>% pull(1)
 ```
 
-To get the final resampling estimates, the `estimate` function can be used on the grid object:
+To get the final resampling estimates, the `collect_metrics()` function can be used on the grid object:
 
 ```{r metric-estimates}
-estimates <- estimate(grid_form)
+estimates <- collect_metrics(grid_form)
 estimates
 ```
 
 The best combination was:
 
 ```{r sorted-metrics}
-estimates %>% 
-  arrange(desc(mean)) %>% 
-  slice(1)
+show_best(grid_form)
 ```
 
 ## Executing the Grid Using a Recipe
@@ -133,15 +138,20 @@ The same syntax is used but a recipe is passed in the first argument:
 
 ```{r recipe}
 set.seed(325)
-rec_form <- tune_grid(iono_rec, model = svm_mod, resamples = iono_rs, metrics = roc_vals, control = ctrl)
+rec_form <-
+  tune_grid(
+    iono_rec,
+    model = svm_mod,
+    resamples = iono_rs,
+    metrics = roc_vals,
+    control = ctrl
+  )
 rec_form
 ```
 
 The best setting here was:
 
 ```{r best-rec}
-estimate(rec_form) %>% 
-  arrange(desc(mean)) %>% 
-  slice(1)
+show_best(rec_form)
 ```
 

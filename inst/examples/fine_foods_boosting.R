@@ -73,7 +73,7 @@ decr_trade_off <- function(i) {
 }
 
 text_search <-
-  tune_Bayes(
+  tune_bayes(
     text_wflow,
     resamples = folds,
     param_info = text_set,

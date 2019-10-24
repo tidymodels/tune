@@ -7,6 +7,9 @@
 #' be in the resulting tibble and which should be nested. Values are `"nothing"`
 #' (i.e. no nesting), `"resamples"` (nest the parameter values), and `"parameters"`
 #' (nest the resamples).
+#' @param summarize A logical; should metrics be summarized over resamples
+#' (`TRUE`) or return the values for each individual resample. Only appropriate
+#' when `nest_by = "nothing"`.
 #' @param wflow The workflow associated with the results (only required for
 #' `nest_by = "parameters"`).
 #' @return A tibble. The column names depend on the results and the mode of the
@@ -18,8 +21,17 @@ collect_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics <- function(x, nest_by = "nothing", wflow = NULL) {
-  collector(x, coll_col = ".metrics", nest_by, wflow)
+collect_metrics <- function(x, nest_by = "nothing", summarize = TRUE, wflow = NULL) {
+  if (summarize) {
+    if (nest_by != "nothing") {
+      rlang::abort("If `summarize = TRUE`, `nest_by` should be `'nothing'`.")
+    }
+    res <- estimate_tune_results(x)
+  } else {
+    res <- collector(x, coll_col = ".metrics", nest_by, wflow)
+
+  }
+  res
 }
 
 
@@ -60,5 +72,35 @@ collector <- function(x, coll_col = ".predictions", nest_by = "nothing", wflow =
     }
   }
   x
+}
+
+estimate_tune_results <- function(x, ...) {
+  all_bad <- is_cataclysmic(x)
+  if (all_bad) {
+    stop("All of the models failed.", call. = FALSE)
+  }
+
+  tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
+  x <- x[tibble_metrics, ]
+
+  if (any(names(x) == ".iter")) {
+    keep_cols <- c(".iter", ".metrics")
+  } else {
+    keep_cols <- ".metrics"
+  }
+  x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
+  all_col <- names(x)
+  excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
+                 grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
+  param_names <- all_col[!(all_col %in% excl_cols)]
+  x %>%
+    tibble::as_tibble() %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
+    dplyr::summarize(
+      mean = mean(.estimate, na.rm = TRUE),
+      n = sum(!is.na(.estimate)),
+      std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
+    ) %>%
+    ungroup()
 }
 
