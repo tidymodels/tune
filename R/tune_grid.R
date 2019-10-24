@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#' `tune_grid()` computes a set of metricsomance metrics (e.g. accuracy or RMSE)
+#' `tune_grid()` computes a set of performance metrics (e.g. accuracy or RMSE)
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
@@ -9,8 +9,11 @@
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
 #' @param resamples An `rset()` object. This argument __should be named__.
-#' @param grid A data frame of tuning combinations or `NULL`. If used, this
-#' argument __should be named__.
+#' @param grid A data frame of tuning combinations, an integer, or `NULL`. The
+#'  data frame should have columns for each parameter being tuned and rows for
+#'  tuning parameter candidates. An integer denotes the number of candidate
+#'  parameter sets to be created automatically. `NULL` produces a set of 10
+#'  candidates. If used, this argument __should be named__.
 #' @param metrics A `yardstick::metric_set()` or `NULL`. If used, this argument
 #' __should be named__.
 #' @param control An object used to modify the tuning process. If used, this
@@ -56,6 +59,13 @@
 #' If no tuning grid is provided, a semi-random grid (via
 #' `dials::grid_latin_hypercube()`) is created with 10 candidate parameter
 #' combinations.
+#'
+#' When provided, the grid should have column names for each parameter and
+#'  these should be named by the parameter name or `id`. For example, if a
+#'  parameter is marked for optimization using `penalty = tune()`, there should
+#'  be a column names `tune`. If the optional identifier is used, such as
+#'  `penalty = tune(id = 'lambda')`, then the corresponding column name should
+#'  be `lambda`.
 #'
 #' @section Performance Metrics:
 #'
@@ -123,7 +133,62 @@
 #' As noted above, in some cases, model predictions can be derived for
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
+#' @examples
+#' library(recipes)
+#' library(rsample)
+#' library(parsnip)
 #'
+#' # ------------------------------------------------------------------------------
+#'
+#' set.seed(6735)
+#' folds <- vfold_cv(mtcars, v = 5)
+#'
+#' # ------------------------------------------------------------------------------
+#'
+#' # tuning recipe parameters:
+#'
+#' spline_rec <-
+#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   step_ns(disp, deg_free = tune("disp")) %>%
+#'   step_ns(wt, deg_free = tune("wt"))
+#'
+#' lin_mod <-
+#'   linear_reg() %>%
+#'   set_engine("lm")
+#'
+#' # manually create a grid
+#' spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
+#'
+#' # Warnings will occur from making spline terms on the holdout data that are
+#' # extrapolations.
+#' spline_res <-
+#'   tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
+#' spline_res
+#'
+#' show_best(spline_res, metric = "rmse", maximize = FALSE)
+#'
+#' # ------------------------------------------------------------------------------
+#'
+#' # tune model parameters only (example requires the `kernlab` package)
+#'
+#' car_rec <-
+#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   step_normalize(all_predictors())
+#'
+#' svm_mod <-
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+#'   set_engine("kernlab") %>%
+#'   set_mode("regression")
+#'
+#' # Use a space-filling design with 7 points
+#' set.seed(3254)
+#' svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
+#' svm_res
+#'
+#' show_best(svm_res, metric = "rmse", maximize = FALSE)
+#'
+#' autoplot(svm_res, metric = "rmse") +
+#'   scale_x_log10()
 #' @export
 tune_grid <- function(object, ...) {
   UseMethod("tune_grid")

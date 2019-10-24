@@ -18,10 +18,11 @@ check_rset <- function(x) {
 
 check_grid <- function(x, object) {
   tune_param <- tune_args(object)
-  if (!is.null(x)) {
+
+  if (!is.null(x) && !is.numeric(x)) {
     if (!is.data.frame(x) & !inherits(x, "param_grid")) {
-      stop("The `grid` argument should be either a data frame or a 'param_grid' ",
-           "object", call. = FALSE)
+      stop("The `grid` argument should be either a data frame, a 'param_grid' ",
+           "object, or an integer.", call. = FALSE)
     }
     if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
       stop("Based on the workflow, the grid object should have columns: ",
@@ -29,9 +30,15 @@ check_grid <- function(x, object) {
            call. = FALSE)
     }
   } else {
-    check_object(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(dials::parameters(object), size = 10)
-    x <- dplyr::distinct(x)
+    if (is.null(x)) {
+      x <- 10
+    }
+    if (is.numeric(x)) {
+      x <- as.integer(x[1])
+      check_object(object, check_dials = TRUE)
+      x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
+      x <- dplyr::distinct(x)
+    }
   }
 
   if (!tibble::is_tibble(x)) {
