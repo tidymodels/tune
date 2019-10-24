@@ -17,5 +17,5 @@ compl <-
 
 
 test_that('estimate method', {
-  expect_equal(estimate(rcv_results), compl)
+  expect_equal(collect_metrics(rcv_results), compl)
 })

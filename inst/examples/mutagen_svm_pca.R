@@ -41,32 +41,32 @@ Mutagen_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(Mutagen_wflow, rs = data_folds, grid = Mutagen_grid, perf = class_only,
-                 control = grid_control(verbose = TRUE))
+res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, metrics = class_only,
+                 control = ctrl_grid(verbose = TRUE))
 
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
 set.seed(3654)
 svm_search <-
-  tune_Bayes(
+  tune_bayes(
     Mutagen_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = Mutagen_param,
     initial = res,
-    perf = class_only,
+    metrics = class_only,
     iter = 5,
-    control = Bayes_control(verbose = TRUE, uncertain = 5)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 5)
   )
 
 set.seed(378)
 more_svm_search <-
-  tune_Bayes(
+  tune_bayes(
     Mutagen_wflow,
-    rs = data_folds,
+    resamples = data_folds,
     param_info = Mutagen_param,
     initial = svm_search,
-    perf = class_only,
+    metrics = class_only,
     iter = 10,
-    control = Bayes_control(verbose = TRUE, uncertain = 5)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 5)
   )

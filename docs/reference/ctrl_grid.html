@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Quietly load package namespace — load_pkgs • tune</title>
+<title>Control the grid search process — ctrl_grid • tune</title>
 
 
 <!-- jquery -->
@@ -34,10 +34,8 @@
 
 
 
-<meta property="og:title" content="Quietly load package namespace — load_pkgs" />
-<meta property="og:description" content="For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently." />
+<meta property="og:title" content="Control the grid search process — ctrl_grid" />
+<meta property="og:description" content="Control the grid search process" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,38 +124,67 @@ environments differently." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Quietly load package namespace</h1>
+    <h1>Control the grid search process</h1>
     
-    <div class="hidden name"><code>load_pkgs.Rd</code></div>
+    <div class="hidden name"><code>ctrl_grid.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently.</p>
+    <p>Control the grid search process</p>
     </div>
 
-    <pre class="usage"><span class='fu'>load_pkgs</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>ctrl_grid</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A character vector of packages.</p></td>
+      <th>verbose</th>
+      <td><p>A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.</p></td>
+    </tr>
+    <tr>
+      <th>allow_par</th>
+      <td><p>A logical to allow parallel processing (if a parallel
+backend is registered).</p></td>
+    </tr>
+    <tr>
+      <th>extract</th>
+      <td><p>An optional function with at least one argument (or <code>NULL</code>)
+that can be used to retain arbitrary objects from the model fit object,
+recipe, or other elements of the workflow.</p></td>
+    </tr>
+    <tr>
+      <th>save_pred</th>
+      <td><p>A logical for whether the out-of-sample predictions should
+be saved for each model <em>evaluated</em>.</p></td>
+    </tr>
+    <tr>
+      <th>pkgs</th>
+      <td><p>An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>An invisible NULL.</p>
+    <p>For <code>extract</code>, this function can be used to output the model object, the
+recipe (if used), or some components of either or both. When evaluated, the
+function's sole argument has a named list with elements <code>recipe</code> and <code>model</code>.
+If the formula method is used, the recipe element will be <code>NULL</code>.</p>
+<p>The results of the <code>extract</code> function are added to a list column in the
+output called <code>.extracts</code>. Each element of this list is a tibble with tuning
+parameter column and a list column (also called <code>.extracts</code>) that contains
+the results of the function. If no extraction function is used, there is no
+<code>.extracts</code> column in the resulting object.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>

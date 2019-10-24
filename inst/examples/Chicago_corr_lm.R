@@ -40,11 +40,11 @@ ext <- function(x) {
   broom::glance(x$model)
 }
 
-res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid,
-                 control = grid_control(verbose = TRUE, extract = ext))
+res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid,
+                 control = ctrl_grid(verbose = TRUE, extract = ext))
 
-res_2 <- tune_grid(chi_rec, lm_model, rs = data_folds, grid = chi_grid,
-                   control = grid_control(verbose = TRUE, extract = ext))
+res_2 <- tune_grid(chi_rec, lm_model, resamples = data_folds, grid = chi_grid,
+                   control = ctrl_grid(verbose = TRUE, extract = ext))
 
 # unnest(unnest(res %>% select(id, .extracts), cols = .extracts), cols = .extract)
 

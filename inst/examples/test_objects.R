@@ -22,8 +22,8 @@ knn_mod <-
   set_engine("kknn")
 
 verb <- TRUE
-g_ctrl <- grid_control(verbose = verb, save_pred = TRUE)
-b_ctrl <- Bayes_control(verbose = verb, save_pred = TRUE)
+g_ctrl <- ctrl_grid(verbose = verb, save_pred = TRUE)
+b_ctrl <- ctrl_Bayes(verbose = verb, save_pred = TRUE)
 
 
 # ------------------------------------------------------------------------------
@@ -48,14 +48,14 @@ mt_knn <-
 set.seed(8825)
 mt_spln_lm_grid <-
   tune_grid(mt_spln_lm,
-            rs = folds,
+            resamples = folds,
             control = g_ctrl)
 
 set.seed(8825)
 mt_spln_lm_bo <-
-  tune_Bayes(
+  tune_bayes(
     mt_spln_lm,
-    rs = folds,
+    resamples = folds,
     iter = 3,
     control = b_ctrl
   )
@@ -65,16 +65,16 @@ mt_spln_lm_grid_sep <-
   tune_grid(
     spline_rec,
     lm_mod,
-    rs = folds,
+    resamples = folds,
     control = g_ctrl
   )
 
 set.seed(8825)
 mt_spln_lm_bo_sep <-
-  tune_Bayes(
+  tune_bayes(
     spline_rec,
     lm_mod,
-    rs = folds,
+    resamples = folds,
     iter = 3,
     control = b_ctrl
   )
@@ -85,15 +85,15 @@ set.seed(8825)
 mt_spln_knn_grid <-
   tune_grid(
     mt_spln_knn,
-    rs = folds,
+    resamples = folds,
     grid = grid_regular(parameters(mt_spln_knn)),
     control = g_ctrl
   )
 
 set.seed(8825)
 mt_spln_knn_bo <-
-  tune_Bayes(mt_spln_knn,
-             rs = folds,
+  tune_bayes(mt_spln_knn,
+             resamples = folds,
              iter = 3,
              control = b_ctrl)
 
@@ -103,52 +103,52 @@ mt_spln_knn_grid_sep <-
   tune_grid(
     spline_rec,
     knn_mod,
-    rs = folds,
+    resamples = folds,
     grid = grid_regular(parameters(mt_spln_knn)),
     control = g_ctrl
   )
 
 set.seed(8825)
 mt_spln_knn_bo_sep <-
-  tune_Bayes(spline_rec,
+  tune_bayes(spline_rec,
              knn_mod,
-             rs = folds,
+             resamples = folds,
              iter = 3,
              control = b_ctrl)
 
 # ------------------------------------------------------------------------------
 
 set.seed(8825)
-mt_knn_grid <- tune_grid(mt_knn, rs = folds, control = g_ctrl)
+mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
 
 set.seed(8825)
 mt_knn_bo <-
-  tune_Bayes(mt_knn,
-             rs = folds,
+  tune_bayes(mt_knn,
+             resamples = folds,
              iter = 3,
              control = b_ctrl)
 
 set.seed(8825)
 mt_knn_grid_sep <-
-  tune_grid(simple_rec, knn_mod, rs = folds, control = g_ctrl)
+  tune_grid(simple_rec, knn_mod, resamples = folds, control = g_ctrl)
 
 set.seed(8825)
 mt_knn_bo_sep <-
-  tune_Bayes(simple_rec,
+  tune_bayes(simple_rec,
              knn_mod,
-             rs = folds,
+             resamples = folds,
              iter = 3,
              control = b_ctrl)
 
 set.seed(8825)
 mt_knn_grid_form <-
-  tune_grid(form, knn_mod, rs = folds, control = g_ctrl)
+  tune_grid(form, knn_mod, resamples = folds, control = g_ctrl)
 
 set.seed(8825)
 mt_knn_bo_form <-
-  tune_Bayes(form,
+  tune_bayes(form,
              knn_mod,
-             rs = folds,
+             resamples = folds,
              iter = 3,
              control = b_ctrl)
 
@@ -158,7 +158,7 @@ options(warn = 2, error = traceback)
 set.seed(8825)
 mt_spln_lm_grid_fails <-
   tune_grid(mt_spln_lm,
-            rs = folds,
+            resamples = folds,
             control = g_ctrl)
 
 

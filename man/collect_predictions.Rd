@@ -7,10 +7,11 @@
 \usage{
 collect_predictions(x, nest_by = "nothing", wflow = NULL)
 
-collect_metrics(x, nest_by = "nothing", wflow = NULL)
+collect_metrics(x, nest_by = "nothing", summarize = TRUE,
+  wflow = NULL)
 }
 \arguments{
-\item{x}{The results of \code{tune_grid()} or \code{tune_Bayes()}. For
+\item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}. For
 \code{collect_predictions()}, the control option \code{save_pred = TRUE} should have
 been used.}
 
@@ -21,6 +22,10 @@ be in the resulting tibble and which should be nested. Values are \code{"nothing
 
 \item{wflow}{The workflow associated with the results (only required for
 \code{nest_by = "parameters"}).}
+
+\item{summarize}{A logical; should metrics be summarized over resamples
+(\code{TRUE}) or return the values for each individual resample. Only appropriate
+when \code{nest_by = "nothing"}.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the

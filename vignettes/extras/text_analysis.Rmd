@@ -172,7 +172,7 @@ glmnet_vars <- function(x) {
   tibble(penalty = x$model$lambda, num_vars = x$model$df)
 }
 
-ctrl <- grid_control(extract = glmnet_vars)
+ctrl <- ctrl_grid(extract = glmnet_vars)
 ```
 
 Finally, let's run the grid search:
@@ -182,15 +182,15 @@ roc_scores <- metric_set(roc_auc)
 
 set.seed(1559)
 five_star_glmnet <- 
-  tune_grid(pre_proc, lr_mod, rs = folds, grid = five_star_grid, 
-            perf = roc_scores, control = ctrl)
+  tune_grid(pre_proc, lr_mod, resamples = folds, grid = five_star_grid, 
+            metrics = roc_scores, control = ctrl)
 ```
 
 This took a while to complete. What did the results look like? Let's get the resampling estimates of the area under the ROC curve for each tuning parameter:
 
 ```{r grid-roc}
 grid_roc <- 
-  estimate(five_star_glmnet) %>% 
+  collect_metrics(five_star_glmnet) %>% 
   arrange(desc(mean))
 grid_roc
 ```
@@ -260,15 +260,15 @@ Using these values, let's run the search:
 ```{r search, cache = TRUE}
 set.seed(12)
 five_star_search <-
-  tune_Bayes(
+  tune_bayes(
     five_star_wflow, 
-    rs = folds,
+    resamples = folds,
     param_info = five_star_set,
     initial = 5,
     iter = 30,
-    perf = roc_scores,
+    metrics = roc_scores,
     objective = exp_improve(trade_off_decay),
-    control = Bayes_control(verbose = TRUE)
+    control = ctrl_bayes(verbose = TRUE)
   )
 ```
 

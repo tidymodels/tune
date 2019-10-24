@@ -1,10 +1,10 @@
 #' Plot search results
 #'
-#' @param object A tibble of results form `tune_grid()` or `tune_Bayes()`.
+#' @param object A tibble of results form `tune_grid()` or `tune_bayes()`.
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #' 'of each predictor versus performance), `"parameters"` (each parameter versus
 #' search iteration), or `"performance"` (performance versus iteration). The
-#' latter two choices are only used for `tune_Bayes()`.
+#' latter two choices are only used for `tune_bayes()`.
 #' @param metric A character vector or `NULL` for which outcome to plot.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "perfomance"`. A value of zero prevents them from being shown.
@@ -15,6 +15,7 @@
 #' A single categorical tuning parameter is supported when other numeric
 #' parameters are also in the results. Any number of numeric tuning parameters
 #' can be used.
+#' @seealso `tune_grid()`, `tune_bayes()`
 #' @export
 autoplot.tune_results <-
   function(object,
@@ -45,7 +46,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
     width <- max(x$.iter)/75
   }
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
@@ -80,7 +81,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
 }
 
 plot_param_vs_iter <- function(x) {
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
   param_cols <- names(x)[!((names(x) %in% excl_cols))]
   is_num <- map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
@@ -101,7 +102,7 @@ plot_param_vs_iter <- function(x) {
 }
 
 plot_marginals <- function(x, metric = NULL) {
-  x <- estimate(x)
+  x <- estimate_tune_results(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }

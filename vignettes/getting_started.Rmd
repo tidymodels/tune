@@ -160,7 +160,7 @@ The root mean squared error will be used to measure performance (and this is the
 Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `log10(Sale_Price) ~ Longitude + Latitude`. A recipe is not required.]:
 
 ```{r grid-search, cache = TRUE}
-ames_res <- tune_grid(ames_rec, model = lm_mod, rs = cv_splits, grid = spline_grid)
+ames_res <- tune_grid(ames_rec, model = lm_mod, resamples = cv_splits, grid = spline_grid)
 ```
 
 The object is similar to the `rsample` object but with one or more extra columns:
@@ -169,16 +169,16 @@ The object is similar to the `rsample` object but with one or more extra columns
 ames_res
 ```
 
-The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `perf` option.] for each parameter combination: 
+The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `metrics` option.] for each parameter combination: 
 
 ```{r res-ex}
 ames_res$.metrics[[1]]
 ```
 
-To get the average metric value for each parameter combination, `estimate()` can be put to use:
+To get the average metric value for each parameter combination, `collect_metrics()` can be put to use:
 
 ```{r mean-res}
-estimates <- estimate(ames_res)
+estimates <- collect_metrics(ames_res)
 estimates
 ```
 
@@ -273,9 +273,9 @@ Although no grid is required, the process requires a few additional pieces of in
 The code to conduct the search is: 
 
 ```{r bo, cache = TRUE}
-ctrl <- Bayes_control(verbose = TRUE)
+ctrl <- ctrl_bayes(verbose = TRUE)
 set.seed(8154)
-knn_search <- tune_Bayes(knn_wflow, rs = cv_splits, initial = 5, iter = 20,
+knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 20,
                          param_info = knn_param, control = ctrl)
 ```
 
@@ -288,7 +288,7 @@ autoplot(knn_search, type = "performance", metric = "rmse")
 The best results here were:
 
 ```{r bo-best}
-estimate(knn_search) %>% 
+collect_metrics(knn_search) %>% 
   dplyr::filter(.metric == "rmse") %>% 
   arrange(mean)
 ```

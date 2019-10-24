@@ -87,60 +87,60 @@ test_that('workflow objects', {
 # ------------------------------------------------------------------------------
 
 test_that('yardstick objects', {
-  perf_1 <- tune:::check_perf(NULL, chi_wflow)
-  perf_2 <- yardstick::metric_set(yardstick:::rmse)
-  expect_true(inherits(perf_1, "numeric_metric_set"))
-  expect_error(tune:::check_perf(yardstick::rmse, chi_wflow),
-               "The `perf` argument should be the results")
-  expect_true(inherits(tune:::check_perf(perf_2, chi_wflow), "numeric_metric_set"))
+  metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
+  metrics_2 <- yardstick::metric_set(yardstick:::rmse)
+  expect_true(inherits(metrics_1, "numeric_metric_set"))
+  expect_error(tune:::check_metrics(yardstick::rmse, chi_wflow),
+               "The `metrics` argument should be the results")
+  expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that('grid control objects', {
-  expect_error(grid_control(), NA)
-  expect_error(grid_control(tomato = 1))
-  expect_error(grid_control(verbose = 1), "Argument 'verbose' should be a single logical")
-  expect_error(grid_control(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
-  expect_error(grid_control(allow_par = 1), "Argument 'allow_par' should be a single logical")
-  expect_error(grid_control(save_pred = "no"), "Argument 'save_pred' should be a single logical")
-  expect_error(grid_control(extract = Inf), "Argument 'extract' should be a function or NULL")
-  expect_error(grid_control(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+  expect_error(ctrl_grid(), NA)
+  expect_error(ctrl_grid(tomato = 1))
+  expect_error(ctrl_grid(verbose = 1), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_grid(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_grid(allow_par = 1), "Argument 'allow_par' should be a single logical")
+  expect_error(ctrl_grid(save_pred = "no"), "Argument 'save_pred' should be a single logical")
+  expect_error(ctrl_grid(extract = Inf), "Argument 'extract' should be a function or NULL")
+  expect_error(ctrl_grid(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
 
-  expect_error(grid_control(verbose = TRUE), NA)
-  expect_error(grid_control(allow_par = FALSE), NA)
-  expect_error(grid_control(save_pred = TRUE), NA)
-  expect_error(grid_control(extract = NULL), NA)
-  expect_error(grid_control(extract = I), NA)
-  expect_error(grid_control(pkgs = NULL), NA)
-  expect_error(grid_control(pkgs = letters), NA)
+  expect_error(ctrl_grid(verbose = TRUE), NA)
+  expect_error(ctrl_grid(allow_par = FALSE), NA)
+  expect_error(ctrl_grid(save_pred = TRUE), NA)
+  expect_error(ctrl_grid(extract = NULL), NA)
+  expect_error(ctrl_grid(extract = I), NA)
+  expect_error(ctrl_grid(pkgs = NULL), NA)
+  expect_error(ctrl_grid(pkgs = letters), NA)
 
 })
 
 test_that('Bayes control objects', {
-  expect_error(Bayes_control(), NA)
-  expect_error(Bayes_control(tomato = 1))
-  expect_error(Bayes_control(verbose = 1), "Argument 'verbose' should be a single logical")
-  expect_error(Bayes_control(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
-  expect_error(Bayes_control(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
-  expect_error(Bayes_control(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
-  expect_error(Bayes_control(seed = FALSE), "Argument 'seed' should be a single numeric")
-  expect_error(Bayes_control(save_pred = "no"), "Argument 'save_pred' should be a single logical")
-  expect_error(Bayes_control(extract = Inf), "Argument 'extract' should be a function or NULL")
-  expect_error(Bayes_control(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
-  expect_error(Bayes_control(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
+  expect_error(ctrl_bayes(), NA)
+  expect_error(ctrl_bayes(tomato = 1))
+  expect_error(ctrl_bayes(verbose = 1), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_bayes(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
+  expect_error(ctrl_bayes(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
+  expect_error(ctrl_bayes(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
+  expect_error(ctrl_bayes(seed = FALSE), "Argument 'seed' should be a single numeric")
+  expect_error(ctrl_bayes(save_pred = "no"), "Argument 'save_pred' should be a single logical")
+  expect_error(ctrl_bayes(extract = Inf), "Argument 'extract' should be a function or NULL")
+  expect_error(ctrl_bayes(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+  expect_error(ctrl_bayes(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
 
-  expect_message(Bayes_control(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
+  expect_message(ctrl_bayes(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
 
-  expect_error(Bayes_control(verbose = TRUE), NA)
-  expect_error(Bayes_control(no_improve = 2), NA)
-  expect_error(Bayes_control(uncertain = 2), NA)
-  expect_error(Bayes_control(save_pred = TRUE), NA)
-  expect_error(Bayes_control(extract = NULL), NA)
-  expect_error(Bayes_control(extract = I), NA)
-  expect_error(Bayes_control(pkgs = NULL), NA)
-  expect_error(Bayes_control(pkgs = letters), NA)
-  expect_error(Bayes_control(time_limit = 2), NA)
+  expect_error(ctrl_bayes(verbose = TRUE), NA)
+  expect_error(ctrl_bayes(no_improve = 2), NA)
+  expect_error(ctrl_bayes(uncertain = 2), NA)
+  expect_error(ctrl_bayes(save_pred = TRUE), NA)
+  expect_error(ctrl_bayes(extract = NULL), NA)
+  expect_error(ctrl_bayes(extract = I), NA)
+  expect_error(ctrl_bayes(pkgs = NULL), NA)
+  expect_error(ctrl_bayes(pkgs = letters), NA)
+  expect_error(ctrl_bayes(time_limit = 2), NA)
 
 })
 
@@ -154,14 +154,14 @@ test_that('initial values', {
 
   grid_1 <- tune:::check_initial(NULL, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
-                                 Bayes_control())
+                                 ctrl_bayes())
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), 10)
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 3)))
 
   grid_2 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
-                                 Bayes_control())
+                                 ctrl_bayes())
   expect_true(is.data.frame(grid_2))
   expect_equal(nrow(grid_2), 10)
   expect_true(all(purrr::map_lgl(grid_2$.metrics, ~ nrow(.x) == 2)))

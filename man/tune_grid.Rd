@@ -12,14 +12,14 @@ tune_grid(object, ...)
 
 \method{tune_grid}{default}(object, ...)
 
-\method{tune_grid}{recipe}(object, model, rs, grid = NULL, perf = NULL,
-  control = grid_control(), ...)
+\method{tune_grid}{recipe}(object, model, resamples, grid = NULL,
+  metrics = NULL, control = ctrl_grid(), ...)
 
-\method{tune_grid}{formula}(formula, model, rs, grid = NULL,
-  perf = NULL, control = grid_control(), ...)
+\method{tune_grid}{formula}(formula, model, resamples, grid = NULL,
+  metrics = NULL, control = ctrl_grid(), ...)
 
-\method{tune_grid}{workflow}(object, model = NULL, rs, grid = NULL,
-  perf = NULL, control = grid_control(), ...)
+\method{tune_grid}{workflow}(object, resamples, grid = NULL,
+  metrics = NULL, control = ctrl_grid(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -29,12 +29,15 @@ tune_grid(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{rs}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
 
-\item{grid}{A data frame of tuning combinations or \code{NULL}. If used, this
-argument \strong{should be named}.}
+\item{grid}{A data frame of tuning combinations, an integer, or \code{NULL}. The
+data frame should have columns for each parameter being tuned and rows for
+tuning parameter candidates. An integer denotes the number of candidate
+parameter sets to be created automatically. \code{NULL} produces a set of 10
+candidates. If used, this argument \strong{should be named}.}
 
-\item{perf}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
+\item{metrics}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
 \strong{should be named}.}
 
 \item{control}{An object used to modify the tuning process. If used, this
@@ -43,12 +46,12 @@ argument \strong{should be named}.}
 \item{formula}{A traditional model formula.}
 }
 \value{
-An updated version of \code{rs} with extra list columns for \code{.metrics} and
+An updated version of \code{resamples} with extra list columns for \code{.metrics} and
 \code{.notes} (optional columns are \code{.predictions} and \code{.extracts}). \code{.notes}
 contains warnings and errors that occur during execution.
 }
 \description{
-\code{tune_grid()} computes a set of perfomance metrics (e.g. accuracy or RMSE)
+\code{tune_grid()} computes a set of performance metrics (e.g. accuracy or RMSE)
 for a pre-defined set of tuning parameters that correspond to a model or
 recipe across one or more resamples of the data.
 }
@@ -86,6 +89,13 @@ They are (usually) not aggregated until the end of processing.
 If no tuning grid is provided, a semi-random grid (via
 \code{dials::grid_latin_hypercube()}) is created with 10 candidate parameter
 combinations.
+
+When provided, the grid should have column names for each parameter and
+these should be named by the parameter name or \code{id}. For example, if a
+parameter is marked for optimization using \code{penalty = tune()}, there should
+be a column names \code{tune}. If the optional identifier is used, such as
+\code{penalty = tune(id = 'lambda')}, then the corresponding column name should
+be \code{lambda}.
 }
 
 \section{Performance Metrics}{
@@ -95,10 +105,10 @@ To use your own performance metrics, the \code{yardstick::metric_set()} function
 can be used to pick what should be measured for each model. If multiple
 metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
-typical probability cutoff of 0.50), the \code{perf} argument could be given:
+typical probability cutoff of 0.50), the \code{metrics} argument could be given:
 
 \preformatted{
-  perf = metric_set(roc_auc, sens, spec)
+  metrics = metric_set(roc_auc, sens, spec)
 }
 
 Each metric is calculated for each candidate model.
@@ -120,7 +130,7 @@ The out-of-sample estimates of these metrics are contained in a list column
 called \code{.metrics}. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.
 
-An \code{estimate()} method can be used for these objects to collapse the results
+\code{collect_metrics()} can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).
 }
@@ -161,3 +171,65 @@ sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.
 }
 
+\examples{
+library(recipes)
+library(rsample)
+library(parsnip)
+
+# ------------------------------------------------------------------------------
+
+set.seed(6735)
+folds <- vfold_cv(mtcars, v = 5)
+
+# ------------------------------------------------------------------------------
+
+# tuning recipe parameters:
+
+spline_rec <-
+  recipe(mpg ~ ., data = mtcars) \%>\%
+  step_ns(disp, deg_free = tune("disp")) \%>\%
+  step_ns(wt, deg_free = tune("wt"))
+
+lin_mod <-
+  linear_reg() \%>\%
+  set_engine("lm")
+
+# manually create a grid
+spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
+
+# Warnings will occur from making spline terms on the holdout data that are
+# extrapolations.
+spline_res <-
+  tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
+spline_res
+
+show_best(spline_res, metric = "rmse", maximize = FALSE)
+
+# ------------------------------------------------------------------------------
+
+# tune model parameters only (example requires the `kernlab` package)
+
+car_rec <-
+  recipe(mpg ~ ., data = mtcars) \%>\%
+  step_normalize(all_predictors())
+
+svm_mod <-
+  svm_rbf(cost = tune(), rbf_sigma = tune()) \%>\%
+  set_engine("kernlab") \%>\%
+  set_mode("regression")
+
+# Use a space-filling design with 7 points
+set.seed(3254)
+svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
+svm_res
+
+show_best(svm_res, metric = "rmse", maximize = FALSE)
+
+autoplot(svm_res, metric = "rmse") +
+  scale_x_log10()
+}
+\seealso{
+\code{ctrl_grid()}, \code{tune()}, \code{estimate.tune_results()},
+\code{autoplot.tune_results()}, \code{show_best()}, \code{select_best()},
+\code{collect_predictions()}, \code{collect_metrics()}
+}

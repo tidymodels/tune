@@ -46,7 +46,7 @@ ext <- function(x) {
   tibble(num_sv = x$model@nSV)
 }
 
-res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = grid_control(verbose = TRUE, save_pred = TRUE, extract = ext))
+res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = ctrl_grid(verbose = TRUE, save_pred = TRUE, extract = ext))
 
 
 summarize(res) %>%
@@ -66,24 +66,24 @@ foo <- function(i) {
 }
 
 svm_search <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     rs = data_folds,
     param_info = chi_set,
     initial = res,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     objective = exp_improve(foo),
     iter = 50,
-    control = Bayes_control(verbose = TRUE, uncertain = 3)
+    control = ctrl_Bayes(verbose = TRUE, uncertain = 3)
   )
 
 svm_search_2 <-
-  tune_Bayes(
+  tune_bayes(
     chi_wflow,
     rs = data_folds,
     param_info = chi_set,
     initial = svm_search,
-    perf = metric_set(rmse, rsq),
+    metrics = metric_set(rmse, rsq),
     iter = 20,
-    control = Bayes_control(verbose = TRUE)
+    control = ctrl_Bayes(verbose = TRUE)
   )

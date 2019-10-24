@@ -10,26 +10,26 @@ extract_details <- function(object, extractor) {
 
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
-pulley <- function(rs, res, col) {
+pulley <- function(resamples, res, col) {
   if (all(map_lgl(res, inherits, "simpleError"))) {
     res <-
-      rs %>%
+      resamples %>%
       mutate(col = map(splits, ~ NULL)) %>%
-      setNames(c(names(rs), col))
+      setNames(c(names(resamples), col))
     return(res)
   }
 
   all_null <- all(map_lgl(res, is.null))
 
-  id_cols <- grep("^id", names(rs), value = TRUE)
-  rs <- dplyr::arrange(rs, !!!syms(id_cols))
+  id_cols <- grep("^id", names(resamples), value = TRUE)
+  resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
   pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
 
   if (nrow(pulled_vals)  == 0) {
     res <-
-      rs %>%
+      resamples %>%
       mutate(col = map(splits, ~ NULL)) %>%
-      setNames(c(names(rs), col))
+      setNames(c(names(resamples), col))
     return(res)
   }
 
@@ -40,8 +40,8 @@ pulley <- function(rs, res, col) {
     pulled_vals <- tidyr::nest(pulled_vals, -starts_with("id"), .key = !!col)
   }
 
-  res <- full_join(rs, pulled_vals, by = id_cols)
-  res <- reup_rs(rs, res)
+  res <- full_join(resamples, pulled_vals, by = id_cols)
+  res <- reup_rs(resamples, res)
   res
 }
 
@@ -68,25 +68,25 @@ maybe_repair <- function(x) {
 }
 
 
-pull_metrics <- function(rs, res, control) {
-  out <- pulley(rs, res, ".metrics")
+pull_metrics <- function(resamples, res, control) {
+  out <- pulley(resamples, res, ".metrics")
   out$.metrics <- maybe_repair(out$.metrics)
   out
 }
 
-pull_extracts <- function(rs, res, control) {
+pull_extracts <- function(resamples, res, control) {
   if (!is.null(control$extract)) {
-    rs <- pulley(rs, res, ".extracts")
+    resamples <- pulley(resamples, res, ".extracts")
   }
-  rs
+  resamples
 }
 
-pull_predictions <- function(rs, res, control) {
+pull_predictions <- function(resamples, res, control) {
   if (control$save_pred) {
-    rs <- pulley(rs, res, ".predictions")
-    rs$.predictions <- maybe_repair(rs$.predictions)
+    resamples <- pulley(resamples, res, ".predictions")
+    resamples$.predictions <- maybe_repair(resamples$.predictions)
   }
-  rs
+  resamples
 }
 
 ensure_tibble <- function(x) {
@@ -98,20 +98,20 @@ ensure_tibble <- function(x) {
   res
 }
 
-pull_notes <- function(rs, res, control) {
+pull_notes <- function(resamples, res, control) {
   notes <- map(res, ~ purrr::pluck(.x, ".notes"))
   notes <- map(notes, ensure_tibble)
-  rs$.notes <- notes
-  rs
+  resamples$.notes <- notes
+  resamples
 }
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, perf, split) {
+append_metrics <- function(collection, predictions, workflow, metrics, split) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
-  tmp_est <- estimate_perf(predictions, perf, workflow)
+  tmp_est <- estimate_metrics(predictions, metrics, workflow)
   tmp_est <- cbind(tmp_est, labels(split))
   dplyr::bind_rows(collection, tmp_est)
 }

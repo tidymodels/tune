@@ -22,21 +22,21 @@ iono_rec <-
 roc_vals <- metric_set(roc_auc)
 
 # set.seed(3625)
-# iono_res_1 <- tune_grid(Class ~ . - V1 - V2, model = svm_mod, rs = iono_rs, perf = roc_vals)
+# iono_res_1 <- tune_grid(Class ~ . - V1 - V2, model = svm_mod, resamples = iono_rs, metrics = roc_vals)
 
 set.seed(3625)
-iono_res_2 <- tune_grid(iono_rec, model = svm_mod, rs = iono_rs, perf = roc_vals, control = grid_control(verbose = TRUE))
+iono_res_2 <- tune_grid(iono_rec, model = svm_mod, resamples = iono_rs, metrics = roc_vals, control = ctrl_grid(verbose = TRUE))
 
 set.seed(8161)
 search_res <-
-  tune_Bayes(
+  tune_bayes(
     iono_rec,
     model = svm_mod,
-    rs = iono_rs,
-    perf = roc_vals,
+    resamples = iono_rs,
+    metrics = roc_vals,
     initial = iono_res_2,
     iter = 15,
-    control = Bayes_control(verbose = TRUE)
+    control = ctrl_Bayes(verbose = TRUE)
   )
 
 

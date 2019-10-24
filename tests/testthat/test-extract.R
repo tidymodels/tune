@@ -41,7 +41,7 @@ test_that('tune recipe only', {
       workflow() %>%
       add_recipe(rec_tune_1) %>%
       add_model(lm_mod) %>%
-      tune_grid(rs = mt_folds, control = grid_control(extract = extr_1_1)),
+      tune_grid(resamples = mt_folds, control = ctrl_grid(extract = extr_1_1)),
     NA
   )
   expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
@@ -62,7 +62,7 @@ test_that('tune recipe only', {
       workflow() %>%
       add_recipe(rec_tune_1) %>%
       add_model(lm_mod) %>%
-      tune_grid(rs = mt_folds, control = grid_control(extract = extr_1_2)),
+      tune_grid(resamples = mt_folds, control = ctrl_grid(extract = extr_1_2)),
     NA
   )
 
@@ -81,13 +81,12 @@ test_that('tune model only', {
     tibble(penalty = x$model$lambda, df = x$model$df)
   }
 
-
   expect_error(
     res_2_1 <-
       workflow() %>%
       add_recipe(rec_no_tune_1) %>%
       add_model(glmn_mod) %>%
-      tune_grid(rs = mt_folds, control = grid_control(extract = extr_2_1)),
+      tune_grid(resamples = mt_folds, control = ctrl_grid(extract = extr_2_1)),
     NA
   )
   expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
@@ -110,7 +109,7 @@ test_that('tune model only', {
       workflow() %>%
       add_recipe(rec_tune_1) %>%
       add_model(lm_mod) %>%
-      tune_grid(rs = mt_folds, control = grid_control(extract = extr_2_2)),
+      tune_grid(resamples = mt_folds, control = ctrl_grid(extract = extr_2_2)),
     NA
   )
 
@@ -142,8 +141,8 @@ test_that('tune model and recipe', {
     grid_latin_hypercube()
 
   expect_error(
-    res_3_1 <- tune_grid(wflow_3, rs = mt_folds, grid = grid_3,
-                         control = grid_control(extract = extr_3_1)),
+    res_3_1 <- tune_grid(wflow_3, resamples = mt_folds, grid = grid_3,
+                         control = ctrl_grid(extract = extr_3_1)),
     NA
   )
   expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
@@ -159,7 +158,7 @@ test_that('tune model and recipe', {
     all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "model_fit"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "glmnet"))),
   )
 
 })

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Quietly load package namespace — load_pkgs • tune</title>
+<title>Control the Bayesian search process — ctrl_bayes • tune</title>
 
 
 <!-- jquery -->
@@ -34,10 +34,8 @@
 
 
 
-<meta property="og:title" content="Quietly load package namespace — load_pkgs" />
-<meta property="og:description" content="For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently." />
+<meta property="og:title" content="Control the Bayesian search process — ctrl_bayes" />
+<meta property="og:description" content="Control the Bayesian search process" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -126,38 +124,77 @@ environments differently." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Quietly load package namespace</h1>
+    <h1>Control the Bayesian search process</h1>
     
-    <div class="hidden name"><code>load_pkgs.Rd</code></div>
+    <div class="hidden name"><code>ctrl_bayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>For one or more packages, load the namespace. This is used during parallel
-processing since the different parallel backends handle the package
-environments differently.</p>
+    <p>Control the Bayesian search process</p>
     </div>
 
-    <pre class="usage"><span class='fu'>load_pkgs</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>ctrl_bayes</span>(<span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>no_improve</span> <span class='kw'>=</span> <span class='fl'>10L</span>, <span class='kw'>uncertain</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span>(<span class='fl'>10</span>^<span class='fl'>5</span>, <span class='fl'>1</span>), <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>time_limit</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>A character vector of packages.</p></td>
+      <th>verbose</th>
+      <td><p>A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.</p></td>
+    </tr>
+    <tr>
+      <th>no_improve</th>
+      <td><p>The integer cutoff for the number of iterations without
+better results.</p></td>
+    </tr>
+    <tr>
+      <th>uncertain</th>
+      <td><p>The number of iterations with no improvement before an
+uncertainty sample is created where a sample with high predicted variance
+is chosen. The iteration counter is reset after each uncertainty sample.
+For example, if <code>uncertain = 10</code>, this condition is triggered every 10
+samples with no improvement.</p></td>
+    </tr>
+    <tr>
+      <th>seed</th>
+      <td><p>An integer for controlling the random number stream.</p></td>
+    </tr>
+    <tr>
+      <th>extract</th>
+      <td><p>An optional function to collect any information from the model
+or other objects. See <code><a href='ctrl_grid.html'>ctrl_grid()</a></code> for details. Note that if initial
+results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be taken if
+the Bayesian search has a different extraction function.</p></td>
+    </tr>
+    <tr>
+      <th>save_pred</th>
+      <td><p>A logical to save the out-of-sample predictions from each
+resample and each parameter combination. See <code><a href='ctrl_grid.html'>ctrl_grid()</a></code> for details.</p></td>
+    </tr>
+    <tr>
+      <th>time_limit</th>
+      <td><p>A number for the minimum number of <em>minutes</em> (elapsed) that
+the function should execute. The elapsed time is evaluated at internal
+checkpoints and, if over time, the results at that time are returned (with
+a warning). This means that the <code>time_limit</code> is not an exact limit, but a
+minimum time limit.</p></td>
+    </tr>
+    <tr>
+      <th>pkgs</th>
+      <td><p>An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>An invisible NULL.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
     </ul>
 
   </div>

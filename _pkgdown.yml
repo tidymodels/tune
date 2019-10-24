@@ -19,8 +19,8 @@ reference:
     - tune_grid
     - tune_Bayes
     - conf_bound
-    - Bayes_control
-    - grid_control
+    - ctrl_Bayes
+    - ctrl_grid
     - estimate
     - estimate.tune_results
     - autoplot.tune_results

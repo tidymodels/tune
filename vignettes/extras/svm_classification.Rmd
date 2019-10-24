@@ -111,19 +111,19 @@ The variance predicted by the Bayesian model is mostly spatial variation; the va
 We'll use another acquisition function, _expected improvement_, that calculates the determines which candidates likely to to be helpful relative to the current best results. This is the default acquisition function.
 
 ```{r search, cache = TRUE}
-set.seed(991)
+set.seed(1291)
 search_res <- 
-  tune_Bayes(
+  tune_bayes(
     svm_wflow, 
-    rs = folds,
+    resamples = folds,
     # To use non-default parameter ranges
     param_info = svm_set,
     # Generate five at semi-random to start
-    initial = 5,
+    initial = 3,
     iter = 30,
-    # How to measure performance
-    perf = metric_set(roc_auc),
-    control = Bayes_control(no_improve = 20, verbose = TRUE)
+    # How to measure performance?
+    metrics = metric_set(roc_auc),
+    control = ctrl_bayes(no_improve = 20, verbose = TRUE)
   )
 ```
 
@@ -136,7 +136,7 @@ search_res
 As with grid search, we can summarize the results over resamples:
 
 ```{r summarize-iters}
-estimates <- estimate(search_res) %>% arrange(.iter)
+estimates <- collect_metrics(search_res) %>% arrange(.iter)
 estimates
 ```
 
@@ -144,9 +144,7 @@ estimates
 The best performance of the initial set of candidate values was `AUC = `r max(estimates$mean[estimates$.iter == 0])` `. The best results were achieved at iteration `r estimates$.iter[which.max(estimates$mean)]` with a corresponding AUC value of `r max(estimates$mean)`. The five best results were:
 
 ```{r best}
-estimates %>% 
-  arrange(desc(mean)) %>% 
-  slice(1:5)
+show_best(search_res)
 ```
 
 A plot of the search can be created via:

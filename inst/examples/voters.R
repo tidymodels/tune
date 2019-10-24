@@ -27,9 +27,9 @@ voter_folds <- vfold_cv(vote_train)
 glmn_grid <- expand.grid(penalty = 10^seq(-3, 0, length = 14),
                          mixture = (0:5)/5)
 
-glmn_search <- tune_grid(voters_rec, lr_mod, rs = voter_folds,
+glmn_search <- tune_grid(voters_rec, lr_mod, resamples = voter_folds,
                          grid = glmn_grid,
-                         perf = metric_set(accuracy, roc_auc))
+                         metrics = metric_set(accuracy, roc_auc))
 
 summarize(glmn_search) %>%
   filter(.metric == "accuracy") %>%
@@ -48,9 +48,9 @@ rf_grid <-
   grid_latin_hypercube(size = 20)
 
 set.seed(1354)
-rf_search <- tune_grid(voters_rec, rf_mod, rs = voter_folds,
+rf_search <- tune_grid(voters_rec, rf_mod, resamples = voter_folds,
                          grid = rf_grid,
-                         perf = metric_set(accuracy, roc_auc))
+                         metrics = metric_set(accuracy, roc_auc))
 
 summarize(rf_search) %>%
   filter(.metric == "accuracy") %>%

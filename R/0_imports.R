@@ -37,7 +37,7 @@ ggplot2::autoplot
 utils::globalVariables(
   c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
-    ".estimator", ".estimate", "perf", "n", "object", "splits", "grid", "rs",
+    ".estimator", ".estimate", "n", "object", "splits", "grid", "resamples",
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
     "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",

@@ -19,8 +19,8 @@ test_that('prediction types', {
 })
 
 test_that("metric information", {
-  set_1 <- tune:::perf_info(metric_set(accuracy, kap, roc_auc))
-  set_2 <- tune:::perf_info(metric_set(rmse, rsq))
+  set_1 <- tune:::metrics_info(metric_set(accuracy, kap, roc_auc))
+  set_2 <- tune:::metrics_info(metric_set(rmse, rsq))
   expect_equal(
     set_1,
     tibble::tibble(

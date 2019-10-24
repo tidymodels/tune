@@ -13,7 +13,7 @@ pred_type <- function(x) {
 }
 
 
-perf_info <- function(x) {
+metrics_info <- function(x) {
   metric_list <- rlang::env_get(environment(x), "fns")
   metric_dir <- map_chr(metric_list, attr, "direction")
   res <- tibble(
@@ -24,7 +24,7 @@ perf_info <- function(x) {
   res
 }
 
-estimate_perf <- function(dat, metric, object, other_names = NULL) {
+estimate_metrics <- function(dat, metric, object, other_names = NULL) {
   # other_names will take additional columns from the recipe (if any)
 
   if (inherits(dat, "try-error")) {
@@ -32,7 +32,7 @@ estimate_perf <- function(dat, metric, object, other_names = NULL) {
   }
 
   # Determine the type of prediction that is required
-  type_info <- perf_info(metric)
+  type_info <- metrics_info(metric)
   types <- unique(type_info$type)
 
   y_names <- outcome_names(object)

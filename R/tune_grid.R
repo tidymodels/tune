@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#' `tune_grid()` computes a set of perfomance metrics (e.g. accuracy or RMSE)
+#' `tune_grid()` computes a set of performance metrics (e.g. accuracy or RMSE)
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
@@ -8,18 +8,23 @@
 #' @param formula A traditional model formula.
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
-#' @param rs An `rset()` object. This argument __should be named__.
-#' @param grid A data frame of tuning combinations or `NULL`. If used, this
-#' argument __should be named__.
-#' @param perf A `yardstick::metric_set()` or `NULL`. If used, this argument
+#' @param resamples An `rset()` object. This argument __should be named__.
+#' @param grid A data frame of tuning combinations, an integer, or `NULL`. The
+#'  data frame should have columns for each parameter being tuned and rows for
+#'  tuning parameter candidates. An integer denotes the number of candidate
+#'  parameter sets to be created automatically. `NULL` produces a set of 10
+#'  candidates. If used, this argument __should be named__.
+#' @param metrics A `yardstick::metric_set()` or `NULL`. If used, this argument
 #' __should be named__.
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
 #' @param ... Not currently used.
-#' @return An updated version of `rs` with extra list columns for `.metrics` and
+#' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
 #' contains warnings and errors that occur during execution.
-#'
+#' @seealso `ctrl_grid()`, `tune()`, `estimate.tune_results()`,
+#' `autoplot.tune_results()`, `show_best()`, `select_best()`,
+#' `collect_predictions()`, `collect_metrics()`
 #' @details
 #'
 #' Suppose there are _m_ tuning parameter combinations. `tune_grid()` may not
@@ -55,16 +60,23 @@
 #' `dials::grid_latin_hypercube()`) is created with 10 candidate parameter
 #' combinations.
 #'
+#' When provided, the grid should have column names for each parameter and
+#'  these should be named by the parameter name or `id`. For example, if a
+#'  parameter is marked for optimization using `penalty = tune()`, there should
+#'  be a column names `tune`. If the optional identifier is used, such as
+#'  `penalty = tune(id = 'lambda')`, then the corresponding column name should
+#'  be `lambda`.
+#'
 #' @section Performance Metrics:
 #'
 #' To use your own performance metrics, the `yardstick::metric_set()` function
 #'  can be used to pick what should be measured for each model. If multiple
 #'  metrics are desired, they can be bundled. For example, to estimate the area
 #'  under the ROC curve as well as the sensitivity and specificity (under the
-#'  typical probability cutoff of 0.50), the `perf` argument could be given:
+#'  typical probability cutoff of 0.50), the `metrics` argument could be given:
 #'
 #' \preformatted{
-#'   perf = metric_set(roc_auc, sens, spec)
+#'   metrics = metric_set(roc_auc, sens, spec)
 #' }
 #'
 #' Each metric is calculated for each candidate model.
@@ -86,7 +98,7 @@
 #' called `.metrics`. This tibble contains a row for each metric and columns
 #' for the value, the estimator type, and so on.
 #'
-#' An `estimate()` method can be used for these objects to collapse the results
+#' `collect_metrics()` can be used for these objects to collapse the results
 #' over the resampled (to obtain the final resampling estimates per tuning
 #' parameter combination).
 #'
@@ -121,7 +133,62 @@
 #' As noted above, in some cases, model predictions can be derived for
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
+#' @examples
+#' library(recipes)
+#' library(rsample)
+#' library(parsnip)
 #'
+#' # ------------------------------------------------------------------------------
+#'
+#' set.seed(6735)
+#' folds <- vfold_cv(mtcars, v = 5)
+#'
+#' # ------------------------------------------------------------------------------
+#'
+#' # tuning recipe parameters:
+#'
+#' spline_rec <-
+#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   step_ns(disp, deg_free = tune("disp")) %>%
+#'   step_ns(wt, deg_free = tune("wt"))
+#'
+#' lin_mod <-
+#'   linear_reg() %>%
+#'   set_engine("lm")
+#'
+#' # manually create a grid
+#' spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
+#'
+#' # Warnings will occur from making spline terms on the holdout data that are
+#' # extrapolations.
+#' spline_res <-
+#'   tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
+#' spline_res
+#'
+#' show_best(spline_res, metric = "rmse", maximize = FALSE)
+#'
+#' # ------------------------------------------------------------------------------
+#'
+#' # tune model parameters only (example requires the `kernlab` package)
+#'
+#' car_rec <-
+#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   step_normalize(all_predictors())
+#'
+#' svm_mod <-
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+#'   set_engine("kernlab") %>%
+#'   set_mode("regression")
+#'
+#' # Use a space-filling design with 7 points
+#' set.seed(3254)
+#' svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
+#' svm_res
+#'
+#' show_best(svm_res, metric = "rmse", maximize = FALSE)
+#'
+#' autoplot(svm_res, metric = "rmse") +
+#'   scale_x_log10()
 #' @export
 tune_grid <- function(object, ...) {
   UseMethod("tune_grid")
@@ -136,8 +203,8 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, rs, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
+tune_grid.recipe <- function(object, model, resamples, grid = NULL,
+                             metrics = NULL, control = ctrl_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -147,13 +214,19 @@ tune_grid.recipe <- function(object, model, rs, grid = NULL,
     add_recipe(object) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(
+    wflow,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, rs, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
+tune_grid.formula <- function(formula, model, resamples, grid = NULL,
+                             metrics = NULL, control = ctrl_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -163,44 +236,51 @@ tune_grid.formula <- function(formula, model, rs, grid = NULL,
     add_formula(formula) %>%
     add_model(model)
 
-  tune_grid_workflow(wflow, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(
+    wflow,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, model = NULL, rs, grid = NULL,
-                             perf = NULL, control = grid_control(), ...) {
-  if (!is.null(model)) {
-    stop("When using a workflow, `model` should be NULL.", call. = FALSE)
-  }
+tune_grid.workflow <- function(object, resamples, grid = NULL,
+                             metrics = NULL, control = ctrl_grid(), ...) {
 
-  tune_grid_workflow(object, rs = rs, grid = grid, perf = perf, control = control)
+  tune_grid_workflow(
+    object,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    control = control
+  )
 }
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(object, rs, grid = NULL, perf = NULL, control = grid_control()) {
+tune_grid_workflow <-
+  function(object, resamples, grid = NULL, metrics = NULL, control = ctrl_grid()) {
+    check_rset(resamples)
+    check_object(object)
+    metrics <- check_metrics(metrics, object)
+    grid <- check_grid(grid, object)
 
-  check_rset(rs)
-  check_object(object)
-  perf <- check_perf(perf, object)
-  grid <- check_grid(grid, object)
+    code_path <- quarterback(object)
 
-  code_path <- quarterback(object)
+    resamples <- rlang::eval_tidy(code_path)
 
-  rs <- rlang::eval_tidy(code_path)
+    all_bad <- is_cataclysmic(resamples)
+    if (all_bad) {
+      warning("All models failed in tune_grid(). See the `.notes` column.",
+              call. = FALSE)
+    }
 
-  all_bad <- is_cataclysmic(rs)
-  if (all_bad) {
-    warning(
-      "All models failed in tune_grid(). See the `.notes` column.",
-      call. = FALSE
-      )
+    class(resamples) <- c("tune_results", class(resamples))
+    resamples
   }
-
-  class(rs) <- c("tune_results", class(rs))
-  rs
-}
 
 # ------------------------------------------------------------------------------
 
@@ -211,8 +291,8 @@ quarterback <- function(x) {
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 
-  args <- list(splits = expr(rs), grid = expr(grid),
-               wflow = expr(object), perf = expr(perf),
+  args <- list(splits = expr(resamples), grid = expr(grid),
+               wflow = expr(object), metrics = expr(metrics),
                ctrl = expr(control))
   dplyr::case_when(
      tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),

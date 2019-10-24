@@ -1,6 +1,6 @@
 check_rset <- function(x) {
   if (!inherits(x, "rset")) {
-    stop("The `rs` argument should be an 'rset' object, such as the type ",
+    stop("The `resamples` argument should be an 'rset' object, such as the type ",
          "produced by `vfold_cv()` or other 'rsample' functions.",
          call. = FALSE)
   }
@@ -18,10 +18,11 @@ check_rset <- function(x) {
 
 check_grid <- function(x, object) {
   tune_param <- tune_args(object)
-  if (!is.null(x)) {
+
+  if (!is.null(x) && !is.numeric(x)) {
     if (!is.data.frame(x) & !inherits(x, "param_grid")) {
-      stop("The `grid` argument should be either a data frame or a 'param_grid' ",
-           "object", call. = FALSE)
+      stop("The `grid` argument should be either a data frame, a 'param_grid' ",
+           "object, or an integer.", call. = FALSE)
     }
     if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
       stop("Based on the workflow, the grid object should have columns: ",
@@ -29,9 +30,15 @@ check_grid <- function(x, object) {
            call. = FALSE)
     }
   } else {
-    check_object(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(dials::parameters(object), size = 10)
-    x <- dplyr::distinct(x)
+    if (is.null(x)) {
+      x <- 10
+    }
+    if (is.numeric(x)) {
+      x <- as.integer(x[1])
+      check_object(object, check_dials = TRUE)
+      x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
+      x <- dplyr::distinct(x)
+    }
   }
 
   if (!tibble::is_tibble(x)) {
@@ -109,11 +116,11 @@ check_object <- function(x, check_dials = FALSE) {
   invisible(NULL)
 }
 
-check_perf <- function(x, object) {
+check_metrics <- function(x, object) {
   if (!is.null(x)) {
     cls <- c("numeric_metric_set", "class_prob_metric_set")
     if (!inherits(x, cls)) {
-      stop("The `perf` argument should be the results of `yardstick::metric_set()`.",
+      stop("The `metrics` argument should be the results of `yardstick::metric_set()`.",
            call. = FALSE)
     }
   } else {
@@ -127,7 +134,7 @@ check_perf <- function(x, object) {
   x
 }
 
-check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
   if (is.null(x) || is.numeric(x)) {
     if (is.null(x)) {
       x <- 3
@@ -138,8 +145,8 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
-    x <- tune_grid(wflow, model = NULL, rs = rs, grid = x, perf = perf,
-                   control = grid_control(extract = ctrl$extract,
+    x <- tune_grid(wflow, resamples = resamples, grid = x, metrics = metrics,
+                   control = ctrl_grid(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
@@ -152,9 +159,9 @@ check_initial <- function(x, pset, wflow, rs, perf, ctrl) {
   x
 }
 
-get_objective_name <- function(x, perf) {
+get_objective_name <- function(x, metrics) {
   if (is.null(x)) {
-    metric_data <- perf_info(perf)
+    metric_data <- metrics_info(metrics)
     x <- metric_data$.metric[1]
   } else {
     # check for a name or acquisition funciton

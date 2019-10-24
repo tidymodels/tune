@@ -99,7 +99,7 @@ log_best <- function(control, iter, info, digits = 4) {
   msg <-
     paste0(
       "Current best:\t\t",
-      info$perf,
+      info$metrics,
       "=",
       signif(info$best_val, digits = digits),
       " (@iter ",
