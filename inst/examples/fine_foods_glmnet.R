@@ -48,7 +48,7 @@ text_wflow <-
   add_model(lr_mod)
 
 set.seed(8935)
-folds <- group_vfold_cv(training_data, "product")
+folds <- vfold_cv(training_data)
 
 # ------------------------------------------------------------------------------
 

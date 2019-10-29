@@ -12,7 +12,7 @@ classes <- c("bad", "poor", "ok", "good", "great")
 
 raw <-
   read_delim(
-    "~/Downloads/finefoods.txt",
+    "finefoods.txt",
     delim = "\n",
     col_names = "text",
     col_types = cols(text = col_character())
@@ -52,30 +52,21 @@ prod_dist <-
   ungroup() %>%
   arrange(desc(n))
 
-# Take the 10 well characterized products for the training set (or more for larger
-# training set)
-set.seed(5)
-train_prods <-
-  prod_dist %>%
-  dplyr::filter(n > 125) %>%
-  sample_n(10) %>%
-  dplyr::select(product)
-
-training_data <-
-  train_prods %>%
-  inner_join(raw, by = "product")
-
-training_data %>%
-  group_by(product) %>%
-  summarise(n = length(product), rate = mean(score == "great"))
-
-testing_data <-
+sampled <-
   raw %>%
-  anti_join(train_prods %>% dplyr::select(product), by = "product") %>%
   group_by(product) %>%
   sample_n(1) %>%
   ungroup() %>%
-  sample_n(500)
+  sample_n(5000)
+
+
+training_data <-
+  sampled %>%
+  sample_n(4000)
+
+testing_data <-
+  sampled %>%
+  anti_join(training_data, by = c("product", "review", "score"))
 
 save(training_data, testing_data, file = "data/small_fine_foods.RData", version = 2, compress = "xz")
 

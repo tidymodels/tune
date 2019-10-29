@@ -59,7 +59,7 @@ text_set <-
 
 
 set.seed(8935)
-folds <- group_vfold_cv(training_data, "product")
+folds <- vfold_cv(training_data)
 
 grid <- grid_latin_hypercube(text_set, size = 3)
 
