@@ -1,0 +1,105 @@
+#' Splice final parameters into objects
+#'
+#' The `finalize_*` functions take a list or tibble or parameter values and
+#' update objects with those values.
+#'
+#' @param x A recipe, `parsnip` model specification, or workflow.
+#' @param parameters A list or 1-row tibble of parameter values.
+#' @return An updated version of `x`.
+#' @export
+finalize_model <- function(x, parameters) {
+  if (!inherits(x, "model_spec")) {
+    stop("`x` should be a parsnip model specification.")
+  }
+  check_final_param(parameters)
+  pset <- parameters(x)
+  if (tibble::is_tibble(parameters)) {
+    parameters <- as.list(parameters)
+  }
+
+  parameters <- parameters[names(parameters) %in% pset$id]
+
+  discordant <- dplyr::filter(pset, id != name & id %in% names(parameters))
+  if (nrow(discordant) > 0) {
+    for (i in 1:nrow(discordant)) {
+      names(parameters)[ names(parameters) == discordant$id[i] ] <-
+        discordant$name[i]
+    }
+  }
+  rlang::exec(update, object = x, !!!parameters)
+}
+
+#' @export
+#' @rdname finalize_model
+finalize_recipe <- function(x, parameters) {
+  if (!inherits(x, "recipe")) {
+    stop("`x` should be a recipe.")
+  }
+  check_final_param(parameters)
+  pset <-
+    dials::parameters(x) %>%
+    dplyr::filter(id %in% names(parameters) & source == "recipe")
+
+  if (tibble::is_tibble(parameters)) {
+    parameters <- as.list(parameters)
+  }
+
+  parameters <- parameters[names(parameters) %in% pset$id]
+  parameters <- parameters[pset$id]
+  pset <- split(pset, pset$component_id)
+  for (i in seq_along(pset)) {
+    x <- complete_steps(parameters[[i]], pset[[i]], x)
+  }
+  x
+}
+
+#' @export
+#' @rdname finalize_model
+finalize_workflow <- function(x, parameters) {
+  if (!inherits(x, "workflow")) {
+    stop("`x` should be a workflow")
+  }
+  check_final_param(parameters)
+
+  mod <- get_wflow_model(x)
+  mod <- finalize_model(mod, parameters)
+  x$fit$model$model <- mod
+
+  if (any(names(x$pre) == "recipe")) {
+    rec <- get_wflow_pre(x)
+    rec <- finalize_recipe(rec, parameters)
+    x$pre$recipe$recipe <- rec
+  }
+
+  x
+}
+
+# ------------------------------------------------------------------------------
+
+check_final_param <- function(x) {
+  if (!is.list(x) & !tibble::is_tibble(x)) {
+    rlang::abort("The parameter object should be a list or tibble")
+  }
+  if (tibble::is_tibble(x) && nrow(x) > 1) {
+    rlang::abort("The parameter tibble should have a single row.")
+  }
+  invisible(x)
+}
+
+complete_steps <- function(param, pset, object) {
+  # find the corresponding step in the recipe
+  step_ids <- purrr::map_chr(object$steps, ~ .x$id)
+  step_index <- which(pset$component_id == step_ids)
+  tmp <- object$steps[[step_index]]
+
+  list_para <- list(param)
+  names(param) <- pset$name
+
+  tmp <- rlang::exec(update, object = tmp, !!!param)
+  object$steps[[step_index]] <- tmp
+  object
+}
+
+
+
+
