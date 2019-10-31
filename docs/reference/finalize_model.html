@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determine the minimum set of model fits — min_grid • tune</title>
+<title>Splice final parameters into objects — finalize_model • tune</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -31,10 +31,9 @@
 
 
 
-<meta property="og:title" content="Determine the minimum set of model fits — min_grid" />
-<meta property="og:description" content="min_grid determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future." />
+<meta property="og:title" content="Splice final parameters into objects — finalize_model" />
+<meta property="og:description" content="The finalize_* functions take a list or tibble or parameter values and
+update objects with those values." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -135,68 +134,63 @@ internal use only and the API may change in the near future." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Determine the minimum set of model fits</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/min_grid.R'><code>R/min_grid.R</code></a></small>
-    <div class="hidden name"><code>min_grid.Rd</code></div>
+    <h1>Splice final parameters into objects</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/finalize.R'><code>R/finalize.R</code></a></small>
+    <div class="hidden name"><code>finalize_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>min_grid</code> determines exactly what models should be fit in order to
-evaluate the entire set of tuning parameter combinations. This is for
-internal use only and the API may change in the near future.</p>
+    <p>The <code>finalize_*</code> functions take a list or tibble or parameter values and
+update objects with those values.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>finalize_model</span>(<span class='no'>x</span>, <span class='no'>parameters</span>)
 
-<span class='co'># S3 method for model_spec</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
+<span class='fu'>finalize_recipe</span>(<span class='no'>x</span>, <span class='no'>parameters</span>)
 
-<span class='co'># S3 method for boost_tree</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for linear_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for logistic_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for mars</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for multinom_reg</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for nearest_neighbor</span>
-<span class='fu'>min_grid</span>(<span class='no'>x</span>, <span class='no'>grid</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>finalize_workflow</span>(<span class='no'>x</span>, <span class='no'>parameters</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A model specification.</p></td>
+      <td><p>A recipe, <code>parsnip</code> model specification, or workflow.</p></td>
     </tr>
     <tr>
-      <th>grid</th>
-      <td><p>A tibble with tuning parameter combinations.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <th>parameters</th>
+      <td><p>A list or 1-row tibble of parameter values.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble with the minimum tuning parameters to fit and an additional
-list column with the parameter combinations used for prediction.</p>
+    <p>An updated version of <code>x</code>.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
+
+<span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
+  <span class='fu'>nearest_neighbor</span>(
+    <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
+    <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"K"</span>),
+    <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(),
+    <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()
+  ) <span class='kw'>%&gt;%</span>
+  <span class='fu'>set_engine</span>(<span class='st'>"kknn"</span>)</div><div class='output co'>#&gt; <span class='error'>Error in nearest_neighbor(mode = "regression", neighbors = tune("K"),     weight_func = tune(), dist_power = tune()): could not find function "nearest_neighbor"</span></div><div class='input'>
+<span class='no'>lowest_rmse</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;       K weight_func dist_power   lon   lat
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span>    33 triweight        0.511    11     5</div><div class='input'>
+<span class='no'>knn_model</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'knn_model' not found</span></div><div class='input'><span class='fu'>finalize_model</span>(<span class='no'>knn_model</span>, <span class='no'>lowest_rmse</span>)</div><div class='output co'>#&gt; <span class='error'>Error in finalize_model(knn_model, lowest_rmse): object 'knn_model' not found</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

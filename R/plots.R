@@ -16,6 +16,24 @@
 #' parameters are also in the results. Any number of numeric tuning parameters
 #' can be used.
 #' @seealso `tune_grid()`, `tune_bayes()`
+#' @examples
+#' # For grid search:
+#' data("example_ames_knn")
+#'
+#' # Plot the tuning parameter values versus performance
+#' autoplot(ames_grid_search, metric = "rmse")
+#'
+#'
+#' # For iterative search:
+#' # Plot the tuning parameter values versus performance
+#' autoplot(ames_iter_search, metric = "rmse", type = "marginals")
+#'
+#' # Plot tuning parameters versus iterations
+#' autoplot(ames_iter_search, metric = "rmse", type = "parameters")
+#'
+#' # Plot performance over iterations
+#' autoplot(ames_iter_search, metric = "rmse", type = "performance")
+#'
 #' @export
 autoplot.tune_results <-
   function(object,

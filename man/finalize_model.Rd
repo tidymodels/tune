@@ -24,3 +24,21 @@ An updated version of \code{x}.
 The \verb{finalize_*} functions take a list or tibble or parameter values and
 update objects with those values.
 }
+\examples{
+data("example_ames_knn")
+
+knn_model <-
+  nearest_neighbor(
+    mode = "regression",
+    neighbors = tune("K"),
+    weight_func = tune(),
+    dist_power = tune()
+  ) \%>\%
+  set_engine("kknn")
+
+lowest_rmse <- select_best(ames_grid_search, metric = "rmse", maximize = FALSE)
+lowest_rmse
+
+knn_model
+finalize_model(knn_model, lowest_rmse)
+}

@@ -33,3 +33,12 @@ model.
 \description{
 Obtain and format results produced by tuning
 }
+\examples{
+data("example_ames_knn")
+
+# Summarized over resamples
+collect_metrics(ames_grid_search)
+
+# Per-resample values
+collect_metrics(ames_grid_search, summarize = FALSE)
+}
