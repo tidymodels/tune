@@ -74,7 +74,12 @@
 <li>
   <a href="../../news/index.html">News</a>
 </li>
-        
+        <li>
+  <a href="https://github.com/tidymodels/tune">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -91,7 +96,7 @@
       <h1>Text Analysis Example</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/extras/text_analysis.Rmd"><code>vignettes/extras/text_analysis.Rmd</code></a></small>
       <div class="hidden name"><code>text_analysis.Rmd</code></div>
 
     </div>
@@ -103,27 +108,27 @@
 <blockquote>
 <p>“This dataset consists of reviews of fine foods from amazon. The data span a period of more than 10 years, including all ~500,000 reviews up to October 2012. Reviews include product and user information, ratings, and a plaintext review.”</p>
 </blockquote>
-<p>A small subset of the data are contained here and are split into a training and test set. The training set sampled 10 products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.</p>
+<p>A small subset of the data are contained here and are split into a training and test set. The training set sampled 4000 products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.</p>
 <p>There is a column for the product, a column for the text of the review, and a factor column for a class variable. The outcome is whether the reviewer game the product a five-star rating or not.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"small_fine_foods"</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">training_data</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; # A tibble: 2,137 x 3</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; # A tibble: 4,000 x 3</span></a>
 <a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt;    product    review                                                  score</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;                                                   &lt;fct&gt;</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;  1 B005HGAV8I I ordered the 35 pack and received two of each flavor,… other</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;  2 B005HGAV8I I ordered the 35 pack.  Maybe I just got lucky but I h… great</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;  3 B005HGAV8I "I received the Crazy Cups Flavored Coffee Sampler (pa… great</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;  4 B005HGAV8I The price isn't too bad, but I guess my expectations w… other</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;  5 B005HGAV8I The selection was OK, but not great, as it seemed that… other</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt;  6 B005HGAV8I I enjoyed trying all the various flavors.  This was an… great</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;  7 B005HGAV8I this is a good deal in terms of variety although there… other</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt;  8 B005HGAV8I This is a really great assortment of K-Cups.  I have e… great</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt;  9 B005HGAV8I "This item really shouldn't be listed as a gift pack, … other</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; 10 B005HGAV8I I don't know if I got lucky with mine, or if it's beca… great</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; # … with 2,127 more rows</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;  1 B000J0LSBG this stuff is  not stuffing  its  not good at all  sav… other</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;  2 B000EYLDYE I absolutely LOVE this dried fruit.  LOVE IT.  Wheneve… great</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;  3 B0026LIO9A GREAT DEAL, CONVENIENT TOO.  Much cheaper than WalMart… great</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;  4 B00473P8SK Great flavor, we go through a ton of this sauce! I dis… great</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;  5 B001SAWTNM This is excellent salsa/hot sauce, but you can get it … great</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt;  6 B000FAG90U Again, this is the best dogfood out there.  One sugges… great</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;  7 B006BXTCEK "The box I received was filled with teas, hot chocolat… other</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt;  8 B002GWH5OY This is delicious coffee which compares favorably with… great</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt;  9 B003R0MFYY "Don't let these little tiny cans fool you.  They pack… great</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; 10 B001EO5ZXI One of the nicest, smoothest cup of chai I've made. Ni… great</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; # … with 3,990 more rows</span></a></code></pre></div>
 <p>The idea is to process the text data into features and use these features to predict whether the review was five-star or not.</p>
 <div id="recipe-and-model-specifications" class="section level2">
 <h2 class="hasAnchor">
@@ -284,7 +289,7 @@
 <p>Using these values, let’s run the search:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">12</span>)</a>
 <a class="sourceLine" id="cb16-2" data-line-number="2">five_star_search &lt;-</a>
-<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../../reference/tune_bayes.html">tune_bayes</a></span>(</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/tune/man/tune_bayes.html">tune_bayes</a></span>(</a>
 <a class="sourceLine" id="cb16-4" data-line-number="4">    five_star_wflow, </a>
 <a class="sourceLine" id="cb16-5" data-line-number="5">    <span class="dt">resamples =</span> folds,</a>
 <a class="sourceLine" id="cb16-6" data-line-number="6">    <span class="dt">param_info =</span> five_star_set,</a>
@@ -292,7 +297,7 @@
 <a class="sourceLine" id="cb16-8" data-line-number="8">    <span class="dt">iter =</span> <span class="dv">30</span>,</a>
 <a class="sourceLine" id="cb16-9" data-line-number="9">    <span class="dt">metrics =</span> roc_scores,</a>
 <a class="sourceLine" id="cb16-10" data-line-number="10">    <span class="dt">objective =</span> <span class="kw"><a href="../../reference/prob_improve.html">exp_improve</a></span>(trade_off_decay),</a>
-<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/ctrl_bayes.html">ctrl_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="https://rdrr.io/pkg/tune/man/ctrl_bayes.html">ctrl_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb16-12" data-line-number="12">  )</a>
 <a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt; ❯  Generating a set of 5 initial parameter results</span></a>

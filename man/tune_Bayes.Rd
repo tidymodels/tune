@@ -12,43 +12,17 @@ tune_bayes(object, ...)
 
 \method{tune_bayes}{default}(object, ...)
 
-\method{tune_bayes}{recipe}(
-  object,
-  model,
-  resamples,
-  iter = 10,
-  param_info = NULL,
-  metrics = NULL,
-  objective = exp_improve(),
-  initial = NULL,
-  control = ctrl_bayes(),
-  ...
-)
+\method{tune_bayes}{recipe}(object, model, resamples, iter = 10,
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
+  initial = NULL, control = ctrl_bayes(), ...)
 
-\method{tune_bayes}{formula}(
-  formula,
-  model,
-  resamples,
-  iter = 10,
-  param_info = NULL,
-  metrics = NULL,
-  objective = exp_improve(),
-  initial = NULL,
-  control = ctrl_bayes(),
-  ...
-)
+\method{tune_bayes}{formula}(formula, model, resamples, iter = 10,
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
+  initial = NULL, control = ctrl_bayes(), ...)
 
-\method{tune_bayes}{workflow}(
-  object,
-  resamples,
-  iter = 10,
-  param_info = NULL,
-  metrics = NULL,
-  objective = exp_improve(),
-  initial = NULL,
-  control = ctrl_bayes(),
-  ...
-)
+\method{tune_bayes}{workflow}(object, resamples, iter = 10,
+  param_info = NULL, metrics = NULL, objective = exp_improve(),
+  initial = NULL, control = ctrl_bayes(), ...)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}

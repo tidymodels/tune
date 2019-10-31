@@ -10,6 +10,7 @@
 #' @examples
 #' data("example_ames_knn")
 #'
+#' library(parsnip)
 #' knn_model <-
 #'   nearest_neighbor(
 #'     mode = "regression",

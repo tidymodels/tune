@@ -13,7 +13,7 @@
 \item{x}{A recipe or model specification object.}
 
 \item{y}{A data frame or a parameter grid resulting from one of the
-\verb{grid_*} functions. The column names should correspond to the parameter
+\code{grid_*} functions. The column names should correspond to the parameter
 names (or their annotations) in the object.}
 
 \item{...}{Not used but required for S3 completeness.}

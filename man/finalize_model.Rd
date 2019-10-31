@@ -21,12 +21,13 @@ finalize_workflow(x, parameters)
 An updated version of \code{x}.
 }
 \description{
-The \verb{finalize_*} functions take a list or tibble or parameter values and
+The \code{finalize_*} functions take a list or tibble or parameter values and
 update objects with those values.
 }
 \examples{
 data("example_ames_knn")
 
+library(parsnip)
 knn_model <-
   nearest_neighbor(
     mode = "regression",

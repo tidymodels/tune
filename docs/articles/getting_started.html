@@ -74,7 +74,12 @@
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+        <li>
+  <a href="https://github.com/tidymodels/tune">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -91,7 +96,7 @@
       <h1>Getting Started with tune</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/getting_started.Rmd"><code>vignettes/getting_started.Rmd</code></a></small>
       <div class="hidden name"><code>getting_started.Rmd</code></div>
 
     </div>
@@ -336,9 +341,9 @@
 <li><p>A model for analyzing and making predictions of the best tuning parameter values. A Gaussian Process model is typical and used here.</p></li>
 </ul>
 <p>The code to conduct the search is:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ctrl_bayes.html">ctrl_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tune/man/ctrl_bayes.html">ctrl_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb23-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8154</span>)</a>
-<a class="sourceLine" id="cb23-3" data-line-number="3">knn_search &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_bayes.html">tune_bayes</a></span>(knn_wflow, <span class="dt">resamples =</span> cv_splits, <span class="dt">initial =</span> <span class="dv">5</span>, <span class="dt">iter =</span> <span class="dv">20</span>,</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3">knn_search &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/tune/man/tune_bayes.html">tune_bayes</a></span>(knn_wflow, <span class="dt">resamples =</span> cv_splits, <span class="dt">initial =</span> <span class="dv">5</span>, <span class="dt">iter =</span> <span class="dv">20</span>,</a>
 <a class="sourceLine" id="cb23-4" data-line-number="4">                         <span class="dt">param_info =</span> knn_param, <span class="dt">control =</span> ctrl)</a>
 <a class="sourceLine" id="cb23-5" data-line-number="5"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb23-6" data-line-number="6"><span class="co">#&gt; ❯  Generating a set of 5 initial parameter results</span></a>

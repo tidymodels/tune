@@ -4,13 +4,8 @@
 \alias{ctrl_grid}
 \title{Control the grid search process}
 \usage{
-ctrl_grid(
-  verbose = FALSE,
-  allow_par = TRUE,
-  extract = NULL,
-  save_pred = FALSE,
-  pkgs = NULL
-)
+ctrl_grid(verbose = FALSE, allow_par = TRUE, extract = NULL,
+  save_pred = FALSE, pkgs = NULL)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite

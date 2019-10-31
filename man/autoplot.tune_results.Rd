@@ -4,13 +4,8 @@
 \alias{autoplot.tune_results}
 \title{Plot search results}
 \usage{
-\method{autoplot}{tune_results}(
-  object,
-  type = c("marginals", "parameters", "performance"),
-  metric = NULL,
-  width = NULL,
-  ...
-)
+\method{autoplot}{tune_results}(object, type = c("marginals",
+  "parameters", "performance"), metric = NULL, width = NULL, ...)
 }
 \arguments{
 \item{object}{A tibble of results form \code{tune_grid()} or \code{tune_bayes()}.}

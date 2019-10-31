@@ -10,5 +10,3 @@
 issue_template.md
 ^azure-pipelines\.yml$
 ^codecov\.yml$
-^\.github/workflows/R\.yaml$
-inst/examples/finefoods.txt
