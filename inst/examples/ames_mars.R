@@ -46,7 +46,7 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 5)
 
-res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE))
+res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = control_grid(verbose = TRUE))
 
 #  collect_metrics(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%

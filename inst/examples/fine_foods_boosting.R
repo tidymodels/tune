@@ -64,7 +64,7 @@ folds <- vfold_cv(training_data)
 grid <- grid_latin_hypercube(text_set, size = 3)
 
 res <- tune_grid(text_wflow, resamples = folds, grid = grid,
-          control = ctrl_grid(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
+          control = control_grid(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
 
 # ------------------------------------------------------------------------------
 

@@ -64,7 +64,7 @@ glmnet_vars <- function(x) {
 cls <- metric_set(roc_auc)
 set.seed(1559)
 text_glmnet <- tune_grid(text_wflow, resamples = folds, grid = text_grid, metrics = cls,
-                         control = ctrl_grid(verbose = TRUE, extract = glmnet_vars,
+                         control = control_grid(verbose = TRUE, extract = glmnet_vars,
                                                 save_pred = TRUE))
 
 print(warnings())

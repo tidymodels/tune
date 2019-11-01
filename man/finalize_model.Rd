@@ -21,7 +21,7 @@ finalize_workflow(x, parameters)
 An updated version of \code{x}.
 }
 \description{
-The \code{finalize_*} functions take a list or tibble or parameter values and
+The \verb{finalize_*} functions take a list or tibble or parameter values and
 update objects with those values.
 }
 \examples{

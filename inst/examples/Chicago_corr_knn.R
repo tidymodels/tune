@@ -40,7 +40,7 @@ chi_grid <-
   chi_param %>%
   grid_latin_hypercube(size = 18)
 
-res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = ctrl_grid(verbose = TRUE))
+res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE))
 
 # summarize(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%

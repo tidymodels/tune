@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot search results — autoplot.tune_results • tune</title>
+<title>Control the Bayesian search process — control_bayes • tune</title>
 
 
 <!-- jquery -->
@@ -34,8 +34,8 @@
 
 
 
-<meta property="og:title" content="Plot search results — autoplot.tune_results" />
-<meta property="og:description" content="Plot search results" />
+<meta property="og:title" content="Control the Bayesian search process — control_bayes" />
+<meta property="og:description" content="Control the Bayesian search process" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -129,90 +129,84 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot search results</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
-    <div class="hidden name"><code>autoplot.tune_results.Rd</code></div>
+    <h1>Control the Bayesian search process</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/control.R'><code>R/control.R</code></a></small>
+    <div class="hidden name"><code>control_bayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot search results</p>
+    <p>Control the Bayesian search process</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for tune_results</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"marginals"</span>, <span class='st'>"parameters"</span>, <span class='st'>"performance"</span>),
-  <span class='kw'>metric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
+    <pre class="usage"><span class='fu'>control_bayes</span>(
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>no_improve</span> <span class='kw'>=</span> <span class='fl'>10L</span>,
+  <span class='kw'>uncertain</span> <span class='kw'>=</span> <span class='fl'>Inf</span>,
+  <span class='kw'>seed</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample.int</a></span>(<span class='fl'>10</span>^<span class='fl'>5</span>, <span class='fl'>1</span>),
+  <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>time_limit</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
+  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A tibble of results form <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <th>verbose</th>
+      <td><p>A logical for logging results as they are generated. Despite
+this argument, warnings and errors are always shown.</p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p>A single character value. Choices are <code>"marginals"</code> (for a plot
-'of each predictor versus performance), <code>"parameters"</code> (each parameter versus
-search iteration), or <code>"performance"</code> (performance versus iteration). The
-latter two choices are only used for <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <th>no_improve</th>
+      <td><p>The integer cutoff for the number of iterations without
+better results.</p></td>
     </tr>
     <tr>
-      <th>metric</th>
-      <td><p>A character vector or <code>NULL</code> for which outcome to plot.</p></td>
+      <th>uncertain</th>
+      <td><p>The number of iterations with no improvement before an
+uncertainty sample is created where a sample with high predicted variance
+is chosen. The iteration counter is reset after each uncertainty sample.
+For example, if <code>uncertain = 10</code>, this condition is triggered every 10
+samples with no improvement.</p></td>
     </tr>
     <tr>
-      <th>width</th>
-      <td><p>A number for the width of the confidence interval bars when
-<code>type = "perfomance"</code>. A value of zero prevents them from being shown.</p></td>
+      <th>seed</th>
+      <td><p>An integer for controlling the random number stream.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <th>extract</th>
+      <td><p>An optional function to collect any information from the model
+or other objects. See <code><a href='control_grid.html'>control_grid()</a></code> for details. Note that if initial
+results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be taken if
+the Bayesian search has a different extraction function.</p></td>
+    </tr>
+    <tr>
+      <th>save_pred</th>
+      <td><p>A logical to save the out-of-sample predictions from each
+resample and each parameter combination. See <code><a href='control_grid.html'>control_grid()</a></code> for details.</p></td>
+    </tr>
+    <tr>
+      <th>time_limit</th>
+      <td><p>A number for the minimum number of <em>minutes</em> (elapsed) that
+the function should execute. The elapsed time is evaluated at internal
+checkpoints and, if over time, the results at that time are returned (with
+a warning). This means that the <code>time_limit</code> is not an exact limit, but a
+minimum time limit.</p></td>
+    </tr>
+    <tr>
+      <th>pkgs</th>
+      <td><p>An optional character string of R package names that should be
+loaded (by namespace) during parallel processing.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>ggplot2</code> object.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The parameters are currently represented in their natural units.</p>
-<p>A single categorical tuning parameter is supported when other numeric
-parameters are also in the results. Any number of numeric tuning parameters
-can be used.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code></p></div>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># For grid search:</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
-
-<span class='co'># Plot the tuning parameter values versus performance</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)</div><div class='img'><img src='autoplot.tune_results-1.png' alt='' width='768' height='552' /></div><div class='input'>
-
-<span class='co'># For iterative search:</span>
-<span class='co'># Plot the tuning parameter values versus performance</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"marginals"</span>)</div><div class='img'><img src='autoplot.tune_results-2.png' alt='' width='768' height='552' /></div><div class='input'>
-<span class='co'># Plot tuning parameters versus iterations</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"parameters"</span>)</div><div class='img'><img src='autoplot.tune_results-3.png' alt='' width='768' height='552' /></div><div class='input'>
-<span class='co'># Plot performance over iterations</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"performance"</span>)</div><div class='img'><img src='autoplot.tune_results-4.png' alt='' width='768' height='552' /></div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#see-also">See also</a></li>
-      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

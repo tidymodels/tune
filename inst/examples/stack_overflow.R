@@ -48,7 +48,7 @@ glmn_grid <- expand.grid(penalty = 10^seq(-3, -1, length = 14),
 glmn_search <- tune_grid(lr_rec, lr_mod, resamples = so_boots,
                          grid = glmn_grid,
                          metrics = metric_set(accuracy, roc_auc),
-                         control = ctrl_grid(verbose = TRUE))
+                         control = control_grid(verbose = TRUE))
 
 summarize(glmn_search) %>%
   filter(.metric == "accuracy") %>%

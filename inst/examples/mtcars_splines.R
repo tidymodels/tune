@@ -40,7 +40,7 @@ cars_grid <-
   grid_regular(levels = c(3, 2, 3, 2))
 
 
-cars_res <- tune_grid(cars_wflow, resamples = data_folds, grid = cars_grid, control = ctrl_grid(verbose = TRUE, save_pred = TRUE))
+cars_res <- tune_grid(cars_wflow, resamples = data_folds, grid = cars_grid, control = control_grid(verbose = TRUE, save_pred = TRUE))
 
 spline_search <-
   tune_bayes(
