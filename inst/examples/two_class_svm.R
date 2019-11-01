@@ -36,7 +36,7 @@ two_class_grid <-
 class_only <- metric_set(accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid, metrics = class_only,
-                 control = ctrl_grid(save_pred = TRUE))
+                 control = control_grid(save_pred = TRUE))
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 

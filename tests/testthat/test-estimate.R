@@ -1,4 +1,4 @@
-context("`estimate` methods")
+context("`collect_metrics` methods")
 
 # ------------------------------------------------------------------------------
 

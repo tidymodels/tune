@@ -17,17 +17,17 @@ reference:
     contents:
     - tune
     - tune_grid
-    - tune_Bayes
+    - tune_bayes
     - conf_bound
-    - ctrl_Bayes
-    - ctrl_grid
-    - estimate
-    - estimate.tune_results
+    - control_bayes
+    - control_grid
     - autoplot.tune_results
     - expo_decay
-    - show_best
     - workflow
-    - collect_predictions
+    - starts_with("collect")
+    - show_best
+    - select_best
+    - starts_with("finalize")
   - title: Low-Level Functions
     contents:
     - merge.recipe

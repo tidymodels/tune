@@ -74,7 +74,12 @@
 <li>
   <a href="../../news/index.html">News</a>
 </li>
-        
+        <li>
+  <a href="https://github.com/tidymodels/tune">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -91,7 +96,7 @@
       <h1>Text Analysis Example</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/extras/text_analysis.Rmd"><code>vignettes/extras/text_analysis.Rmd</code></a></small>
       <div class="hidden name"><code>text_analysis.Rmd</code></div>
 
     </div>
@@ -103,27 +108,27 @@
 <blockquote>
 <p>“This dataset consists of reviews of fine foods from amazon. The data span a period of more than 10 years, including all ~500,000 reviews up to October 2012. Reviews include product and user information, ratings, and a plaintext review.”</p>
 </blockquote>
-<p>A small subset of the data are contained here and are split into a training and test set. The training set sampled 10 products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.</p>
+<p>A small subset of the data are contained here; we sampled a single review from 5,000 random products and 80% of these data were used as the training set. The remaining 1,000 were used as the test set.</p>
 <p>There is a column for the product, a column for the text of the review, and a factor column for a class variable. The outcome is whether the reviewer game the product a five-star rating or not.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"small_fine_foods"</span>)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">training_data</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; # A tibble: 2,137 x 3</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co">#&gt; # A tibble: 4,000 x 3</span></a>
 <a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt;    product    review                                                  score</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;                                                   &lt;fct&gt;</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;  1 B005HGAV8I I ordered the 35 pack and received two of each flavor,… other</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;  2 B005HGAV8I I ordered the 35 pack.  Maybe I just got lucky but I h… great</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;  3 B005HGAV8I "I received the Crazy Cups Flavored Coffee Sampler (pa… great</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;  4 B005HGAV8I The price isn't too bad, but I guess my expectations w… other</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;  5 B005HGAV8I The selection was OK, but not great, as it seemed that… other</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt;  6 B005HGAV8I I enjoyed trying all the various flavors.  This was an… great</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;  7 B005HGAV8I this is a good deal in terms of variety although there… other</span></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt;  8 B005HGAV8I This is a really great assortment of K-Cups.  I have e… great</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt;  9 B005HGAV8I "This item really shouldn't be listed as a gift pack, … other</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; 10 B005HGAV8I I don't know if I got lucky with mine, or if it's beca… great</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; # … with 2,127 more rows</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;  1 B000J0LSBG this stuff is  not stuffing  its  not good at all  sav… other</span></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt;  2 B000EYLDYE I absolutely LOVE this dried fruit.  LOVE IT.  Wheneve… great</span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt;  3 B0026LIO9A GREAT DEAL, CONVENIENT TOO.  Much cheaper than WalMart… great</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#&gt;  4 B00473P8SK Great flavor, we go through a ton of this sauce! I dis… great</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#&gt;  5 B001SAWTNM This is excellent salsa/hot sauce, but you can get it … great</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#&gt;  6 B000FAG90U Again, this is the best dogfood out there.  One sugges… great</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#&gt;  7 B006BXTCEK "The box I received was filled with teas, hot chocolat… other</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co">#&gt;  8 B002GWH5OY This is delicious coffee which compares favorably with… great</span></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt;  9 B003R0MFYY "Don't let these little tiny cans fool you.  They pack… great</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; 10 B001EO5ZXI One of the nicest, smoothest cup of chai I've made. Ni… great</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; # … with 3,990 more rows</span></a></code></pre></div>
 <p>The idea is to process the text data into features and use these features to predict whether the review was five-star or not.</p>
 <div id="recipe-and-model-specifications" class="section level2">
 <h2 class="hasAnchor">
@@ -194,23 +199,19 @@
 <div id="resampling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#resampling" class="anchor"></a>Resampling</h2>
-<p>To resample these data, recall that</p>
-<blockquote>
-<p>“The training set sampled 10 products and retained all of their individual reviews.”</p>
-</blockquote>
-<p>The rate of five-star reviews varies between products. To account for this, grouped-V-fold cross-validation is used. Here, 10 resamples are created that leaves out all of the rows corresponding to a each of the produce IDs. The assessment set for each resample is the held-out product. To do this, the <code>rsample</code> package can be used:</p>
+<p>There are enough data here such that 10-fold resampling would hold out 400 reviews at a time to estimate performance. Performance estimates using this many observations have sufficiently low noise to measure and tune models.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8935</span>)</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">folds &lt;-<span class="st"> </span><span class="kw">group_vfold_cv</span>(training_data, <span class="st">"product"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb6-2" data-line-number="2">folds &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(training_data)</a></code></pre></div>
 </div>
 <div id="grid-search" class="section level2">
 <h2 class="hasAnchor">
 <a href="#grid-search" class="anchor"></a>Grid Search</h2>
-<p>A regular grid is used. For <code>glmnet</code> models, evaluating penalty values is fairly cheap due to the use of the “submodel-trick”. The grid will use 20 penalty values, 5 mixture values, and 6 values for the number of hash features.</p>
+<p>A regular grid is used. For <code>glmnet</code> models, evaluating penalty values is fairly cheap due to the use of the “submodel-trick”. The grid will use 20 penalty values, 5 mixture values, and 3 values for the number of hash features.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">five_star_grid &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span>(</a>
 <a class="sourceLine" id="cb7-3" data-line-number="3">    <span class="dt">penalty =</span> <span class="dv">10</span><span class="op">^</span><span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">0</span>, <span class="dt">length =</span> <span class="dv">20</span>),</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">    <span class="dt">mixture =</span> <span class="kw"><a href="https://rdrr.io/r/base/seq.html">seq</a></span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">length =</span> <span class="dv">5</span>),</a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">    <span class="dt">num_terms =</span> <span class="dv">2</span><span class="op">^</span>(<span class="dv">8</span><span class="op">:</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">    <span class="dt">num_terms =</span> <span class="dv">2</span><span class="op">^</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">12</span>)</a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">  )</a></code></pre></div>
 <p>Note that, for each resample, the text processing recipe is only prepped 6 times. This increases the computational efficiency of the analysis by avoiding redundant work.</p>
 <p>For illustration, we will save information on the number of predictors by penalty value for each <code>glmnet</code> model. This might help use understand how many features were used across the penalty values. An extraction function is used to do this:</p>
@@ -219,7 +220,7 @@
 <a class="sourceLine" id="cb8-3" data-line-number="3">  <span class="kw">tibble</span>(<span class="dt">penalty =</span> x<span class="op">$</span>model<span class="op">$</span>lambda, <span class="dt">num_vars =</span> x<span class="op">$</span>model<span class="op">$</span>df)</a>
 <a class="sourceLine" id="cb8-4" data-line-number="4">}</a>
 <a class="sourceLine" id="cb8-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/ctrl_grid.html">ctrl_grid</a></span>(<span class="dt">extract =</span> glmnet_vars)</a></code></pre></div>
+<a class="sourceLine" id="cb8-6" data-line-number="6">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/control_grid.html">control_grid</a></span>(<span class="dt">extract =</span> glmnet_vars)</a></code></pre></div>
 <p>Finally, let’s run the grid search:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">roc_scores &lt;-<span class="st"> </span><span class="kw">metric_set</span>(roc_auc)</a>
 <a class="sourceLine" id="cb9-2" data-line-number="2"></a>
@@ -235,16 +236,16 @@
 <a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; # A tibble: 300 x 8</span></a>
 <a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;    penalty mixture num_terms .metric .estimator  mean     n std_err</span></a>
 <a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;  1  0.0546    0.25      1024 roc_auc binary     0.745    10  0.0153</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;  2  0.0264    0.5       1024 roc_auc binary     0.743    10  0.0157</span></a>
-<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;  3  0.0379    0.25      1024 roc_auc binary     0.742    10  0.0138</span></a>
-<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt;  4  0.0183    0.75      1024 roc_auc binary     0.742    10  0.0158</span></a>
-<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt;  5  0.0127    1         1024 roc_auc binary     0.740    10  0.0158</span></a>
-<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt;  6  0.0785    0.25      1024 roc_auc binary     0.739    10  0.0157</span></a>
-<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt;  7  0.0379    0.5       1024 roc_auc binary     0.739    10  0.0159</span></a>
-<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt;  8  0.0183    1         1024 roc_auc binary     0.736    10  0.0161</span></a>
-<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt;  9  0.0183    0.5       1024 roc_auc binary     0.736    10  0.0140</span></a>
-<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="co">#&gt; 10  0.0264    0.75      1024 roc_auc binary     0.735    10  0.0159</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00795</span></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00791</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805</span></a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810</span></a>
+<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803</span></a>
+<a class="sourceLine" id="cb10-16" data-line-number="16"><span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00813</span></a>
+<a class="sourceLine" id="cb10-17" data-line-number="17"><span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808</span></a>
 <a class="sourceLine" id="cb10-18" data-line-number="18"><span class="co">#&gt; # … with 290 more rows</span></a></code></pre></div>
 <p>The best results had a fairly high penalty value and focused on the ridge penalty (i.e. no feature selection via the lasso’s L1 penalty). The best solutions also used the largest number of hashing features.</p>
 <p>What was the relationship between performance and the tuning parameters?</p>
@@ -256,7 +257,7 @@
 <a class="sourceLine" id="cb11-6" data-line-number="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">"top"</span>)</a></code></pre></div>
 <p><img src="text_analysis_files/figure-html/grid-plot-1.png" width="768"></p>
 <p>There is definitely an effect due to the number of features used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. The profiles with mixture values greater than zero had steep drop-offs in performance. What’s that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p>It’s clear from the panels at least 256 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.</p>
+<p>It’s clear from the panels at least 4096 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.</p>
 <p>We’ll come back to the extracted <code>glmnet</code> components at the end of this example.</p>
 </div>
 <div id="directed-search" class="section level2">
@@ -265,7 +266,7 @@
 <p>What if we had started with Bayesian optimization? Would a good set of conditions have been found more efficiently?</p>
 <p>Let’s pretend that we haven’t seen the grid search results. We’ll initialize the Gaussian process model with five tuning parameter combinations chosen with a space-filling design.</p>
 <p>It might be good to use a custom <code>dials</code> object for the number of hash terms. The default object, <code>num_terms()</code>, uses a linear range and tries to set the upper bound of the parameter using the data. Instead, let’s create a parameter set, change the scale to be log2, and define the same range as was used in grid search.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">hash_range &lt;-<span class="st"> </span><span class="kw">num_terms</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">8</span>, <span class="dv">10</span>), <span class="dt">trans =</span> <span class="kw">log2_trans</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">hash_range &lt;-<span class="st"> </span><span class="kw">num_terms</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">8</span>, <span class="dv">12</span>), <span class="dt">trans =</span> <span class="kw">log2_trans</span>())</a></code></pre></div>
 <p>To use this, we have to merge the recipe and <code>parsnip</code> model object into a workflow:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">five_star_wflow &lt;-</a>
 <a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../../reference/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span></a>
@@ -292,7 +293,7 @@
 <a class="sourceLine" id="cb16-8" data-line-number="8">    <span class="dt">iter =</span> <span class="dv">30</span>,</a>
 <a class="sourceLine" id="cb16-9" data-line-number="9">    <span class="dt">metrics =</span> roc_scores,</a>
 <a class="sourceLine" id="cb16-10" data-line-number="10">    <span class="dt">objective =</span> <span class="kw"><a href="../../reference/prob_improve.html">exp_improve</a></span>(trade_off_decay),</a>
-<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/ctrl_bayes.html">ctrl_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb16-11" data-line-number="11">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/control_bayes.html">control_bayes</a></span>(<span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb16-12" data-line-number="12">  )</a>
 <a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt; ❯  Generating a set of 5 initial parameter results</span></a>
@@ -300,281 +301,229 @@
 <a class="sourceLine" id="cb16-16" data-line-number="16"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#&gt; Optimizing roc_auc using the expected improvement with variable trade-off values.</span></a>
 <a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co">#&gt; ── Iteration 1 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-19" data-line-number="19"><span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-20" data-line-number="20"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#&gt; i Current best:      roc_auc=0.6963 (@iter 0)</span></a>
+<a class="sourceLine" id="cb16-21" data-line-number="21"><span class="co">#&gt; i Current best:      roc_auc=0.754 (@iter 0)</span></a>
 <a class="sourceLine" id="cb16-22" data-line-number="22"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-23" data-line-number="23"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-24" data-line-number="24"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-25" data-line-number="25"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-26" data-line-number="26"><span class="co">#&gt; i Trade-off value: 0.01</span></a>
-<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co">#&gt; i penalty=0.001, mixture=0.62, num_terms=258</span></a>
+<a class="sourceLine" id="cb16-27" data-line-number="27"><span class="co">#&gt; i penalty=0.992, mixture=0.717, num_terms=298</span></a>
 <a class="sourceLine" id="cb16-28" data-line-number="28"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-29" data-line-number="29"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-30" data-line-number="30"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6722 (+/-0.0176)</span></a>
+<a class="sourceLine" id="cb16-30" data-line-number="30"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
 <a class="sourceLine" id="cb16-31" data-line-number="31"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-32" data-line-number="32"><span class="co">#&gt; ── Iteration 2 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-32" data-line-number="32"><span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-33" data-line-number="33"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-34" data-line-number="34"><span class="co">#&gt; i Current best:      roc_auc=0.6963 (@iter 0)</span></a>
+<a class="sourceLine" id="cb16-34" data-line-number="34"><span class="co">#&gt; i Current best:      roc_auc=0.754 (@iter 0)</span></a>
 <a class="sourceLine" id="cb16-35" data-line-number="35"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-36" data-line-number="36"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-37" data-line-number="37"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-38" data-line-number="38"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-39" data-line-number="39"><span class="co">#&gt; i Trade-off value: 0.007788</span></a>
-<a class="sourceLine" id="cb16-40" data-line-number="40"><span class="co">#&gt; i penalty=0.00107, mixture=0.0428, num_terms=1023</span></a>
+<a class="sourceLine" id="cb16-40" data-line-number="40"><span class="co">#&gt; i penalty=0.00276, mixture=0.0453, num_terms=257</span></a>
 <a class="sourceLine" id="cb16-41" data-line-number="41"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-42" data-line-number="42"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-43" data-line-number="43"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6369 (+/-0.0165)</span></a>
+<a class="sourceLine" id="cb16-43" data-line-number="43"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7454 (+/-0.00815)</span></a>
 <a class="sourceLine" id="cb16-44" data-line-number="44"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-45" data-line-number="45"><span class="co">#&gt; ── Iteration 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-45" data-line-number="45"><span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-46" data-line-number="46"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-47" data-line-number="47"><span class="co">#&gt; i Current best:      roc_auc=0.6963 (@iter 0)</span></a>
+<a class="sourceLine" id="cb16-47" data-line-number="47"><span class="co">#&gt; i Current best:      roc_auc=0.754 (@iter 0)</span></a>
 <a class="sourceLine" id="cb16-48" data-line-number="48"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-49" data-line-number="49"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-50" data-line-number="50"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-51" data-line-number="51"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-52" data-line-number="52"><span class="co">#&gt; i Trade-off value: 0.006065</span></a>
-<a class="sourceLine" id="cb16-53" data-line-number="53"><span class="co">#&gt; i penalty=0.963, mixture=0.33, num_terms=352</span></a>
+<a class="sourceLine" id="cb16-53" data-line-number="53"><span class="co">#&gt; i penalty=0.00697, mixture=0.137, num_terms=4090</span></a>
 <a class="sourceLine" id="cb16-54" data-line-number="54"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-55" data-line-number="55"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-56" data-line-number="56"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
+<a class="sourceLine" id="cb16-56" data-line-number="56"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.7903 (+/-0.0049)</span></a>
 <a class="sourceLine" id="cb16-57" data-line-number="57"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-58" data-line-number="58"><span class="co">#&gt; ── Iteration 4 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-58" data-line-number="58"><span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-59" data-line-number="59"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-60" data-line-number="60"><span class="co">#&gt; i Current best:      roc_auc=0.6963 (@iter 0)</span></a>
+<a class="sourceLine" id="cb16-60" data-line-number="60"><span class="co">#&gt; i Current best:      roc_auc=0.7903 (@iter 3)</span></a>
 <a class="sourceLine" id="cb16-61" data-line-number="61"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-62" data-line-number="62"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-63" data-line-number="63"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-64" data-line-number="64"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-65" data-line-number="65"><span class="co">#&gt; i Trade-off value: 0.004724</span></a>
-<a class="sourceLine" id="cb16-66" data-line-number="66"><span class="co">#&gt; i penalty=0.00824, mixture=0.976, num_terms=263</span></a>
+<a class="sourceLine" id="cb16-66" data-line-number="66"><span class="co">#&gt; i penalty=0.00325, mixture=1, num_terms=2939</span></a>
 <a class="sourceLine" id="cb16-67" data-line-number="67"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-68" data-line-number="68"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-69" data-line-number="69"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.7027 (+/-0.0106)</span></a>
+<a class="sourceLine" id="cb16-69" data-line-number="69"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.8015 (+/-0.00618)</span></a>
 <a class="sourceLine" id="cb16-70" data-line-number="70"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-71" data-line-number="71"><span class="co">#&gt; ── Iteration 5 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-71" data-line-number="71"><span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-72" data-line-number="72"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-73" data-line-number="73"><span class="co">#&gt; i Current best:      roc_auc=0.7027 (@iter 4)</span></a>
+<a class="sourceLine" id="cb16-73" data-line-number="73"><span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span></a>
 <a class="sourceLine" id="cb16-74" data-line-number="74"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-75" data-line-number="75"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-76" data-line-number="76"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-77" data-line-number="77"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-78" data-line-number="78"><span class="co">#&gt; i Trade-off value: 0.003679</span></a>
-<a class="sourceLine" id="cb16-79" data-line-number="79"><span class="co">#&gt; i penalty=0.0132, mixture=0.72, num_terms=1023</span></a>
+<a class="sourceLine" id="cb16-79" data-line-number="79"><span class="co">#&gt; i penalty=0.269, mixture=0.649, num_terms=258</span></a>
 <a class="sourceLine" id="cb16-80" data-line-number="80"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-81" data-line-number="81"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-82" data-line-number="82"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.7183 (+/-0.0181)</span></a>
+<a class="sourceLine" id="cb16-82" data-line-number="82"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
 <a class="sourceLine" id="cb16-83" data-line-number="83"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-84" data-line-number="84"><span class="co">#&gt; ── Iteration 6 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-84" data-line-number="84"><span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-85" data-line-number="85"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-86" data-line-number="86"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-86" data-line-number="86"><span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span></a>
 <a class="sourceLine" id="cb16-87" data-line-number="87"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-88" data-line-number="88"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-89" data-line-number="89"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-90" data-line-number="90"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-91" data-line-number="91"><span class="co">#&gt; i Trade-off value: 0.002865</span></a>
-<a class="sourceLine" id="cb16-92" data-line-number="92"><span class="co">#&gt; i penalty=0.0711, mixture=0.00991, num_terms=856</span></a>
+<a class="sourceLine" id="cb16-92" data-line-number="92"><span class="co">#&gt; i penalty=0.0317, mixture=0.107, num_terms=4091</span></a>
 <a class="sourceLine" id="cb16-93" data-line-number="93"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-94" data-line-number="94"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-95" data-line-number="95"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7133 (+/-0.0158)</span></a>
+<a class="sourceLine" id="cb16-95" data-line-number="95"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.808 (+/-0.00542)</span></a>
 <a class="sourceLine" id="cb16-96" data-line-number="96"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-97" data-line-number="97"><span class="co">#&gt; ── Iteration 7 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-97" data-line-number="97"><span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-98" data-line-number="98"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-99" data-line-number="99"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-99" data-line-number="99"><span class="co">#&gt; i Current best:      roc_auc=0.808 (@iter 6)</span></a>
 <a class="sourceLine" id="cb16-100" data-line-number="100"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-101" data-line-number="101"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-102" data-line-number="102"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-103" data-line-number="103"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-104" data-line-number="104"><span class="co">#&gt; i Trade-off value: 0.002231</span></a>
-<a class="sourceLine" id="cb16-105" data-line-number="105"><span class="co">#&gt; i penalty=0.0325, mixture=0.0176, num_terms=475</span></a>
+<a class="sourceLine" id="cb16-105" data-line-number="105"><span class="co">#&gt; i penalty=0.0218, mixture=0.67, num_terms=4089</span></a>
 <a class="sourceLine" id="cb16-106" data-line-number="106"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-107" data-line-number="107"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-108" data-line-number="108"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6799 (+/-0.019)</span></a>
+<a class="sourceLine" id="cb16-108" data-line-number="108"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.8139 (+/-0.01)</span></a>
 <a class="sourceLine" id="cb16-109" data-line-number="109"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-110" data-line-number="110"><span class="co">#&gt; ── Iteration 8 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-110" data-line-number="110"><span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-111" data-line-number="111"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-112" data-line-number="112"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-112" data-line-number="112"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-113" data-line-number="113"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-114" data-line-number="114"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-115" data-line-number="115"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-116" data-line-number="116"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-117" data-line-number="117"><span class="co">#&gt; i Trade-off value: 0.001738</span></a>
-<a class="sourceLine" id="cb16-118" data-line-number="118"><span class="co">#&gt; i penalty=0.916, mixture=0.995, num_terms=758</span></a>
+<a class="sourceLine" id="cb16-118" data-line-number="118"><span class="co">#&gt; i penalty=0.00102, mixture=0.732, num_terms=3892</span></a>
 <a class="sourceLine" id="cb16-119" data-line-number="119"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-120" data-line-number="120"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-121" data-line-number="121"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
+<a class="sourceLine" id="cb16-121" data-line-number="121"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7613 (+/-0.00644)</span></a>
 <a class="sourceLine" id="cb16-122" data-line-number="122"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-123" data-line-number="123"><span class="co">#&gt; ── Iteration 9 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-123" data-line-number="123"><span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-124" data-line-number="124"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-125" data-line-number="125"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-125" data-line-number="125"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-126" data-line-number="126"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-127" data-line-number="127"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-128" data-line-number="128"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-129" data-line-number="129"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-130" data-line-number="130"><span class="co">#&gt; i Trade-off value: 0.001353</span></a>
-<a class="sourceLine" id="cb16-131" data-line-number="131"><span class="co">#&gt; i penalty=0.00369, mixture=0.0567, num_terms=1017</span></a>
+<a class="sourceLine" id="cb16-131" data-line-number="131"><span class="co">#&gt; i penalty=0.001, mixture=0.904, num_terms=296</span></a>
 <a class="sourceLine" id="cb16-132" data-line-number="132"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-133" data-line-number="133"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-134" data-line-number="134"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6789 (+/-0.0142)</span></a>
+<a class="sourceLine" id="cb16-134" data-line-number="134"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7489 (+/-0.00825)</span></a>
 <a class="sourceLine" id="cb16-135" data-line-number="135"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-136" data-line-number="136"><span class="co">#&gt; ── Iteration 10 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-136" data-line-number="136"><span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-137" data-line-number="137"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-138" data-line-number="138"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-138" data-line-number="138"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-139" data-line-number="139"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-140" data-line-number="140"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-141" data-line-number="141"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-142" data-line-number="142"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-143" data-line-number="143"><span class="co">#&gt; i Trade-off value: 0.001054</span></a>
-<a class="sourceLine" id="cb16-144" data-line-number="144"><span class="co">#&gt; i penalty=0.289, mixture=0.857, num_terms=256</span></a>
+<a class="sourceLine" id="cb16-144" data-line-number="144"><span class="co">#&gt; i penalty=0.988, mixture=0.0456, num_terms=3987</span></a>
 <a class="sourceLine" id="cb16-145" data-line-number="145"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-146" data-line-number="146"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-147" data-line-number="147"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
+<a class="sourceLine" id="cb16-147" data-line-number="147"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7491 (+/-0.00877)</span></a>
 <a class="sourceLine" id="cb16-148" data-line-number="148"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-149" data-line-number="149"><span class="co">#&gt; ── Iteration 11 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-149" data-line-number="149"><span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-150" data-line-number="150"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-151" data-line-number="151"><span class="co">#&gt; i Current best:      roc_auc=0.7183 (@iter 5)</span></a>
+<a class="sourceLine" id="cb16-151" data-line-number="151"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-152" data-line-number="152"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-153" data-line-number="153"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-154" data-line-number="154"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-155" data-line-number="155"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-156" data-line-number="156"><span class="co">#&gt; i Trade-off value: 0.0008208</span></a>
-<a class="sourceLine" id="cb16-157" data-line-number="157"><span class="co">#&gt; i penalty=0.957, mixture=0.00581, num_terms=349</span></a>
+<a class="sourceLine" id="cb16-157" data-line-number="157"><span class="co">#&gt; i penalty=0.00936, mixture=0.766, num_terms=3995</span></a>
 <a class="sourceLine" id="cb16-158" data-line-number="158"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-159" data-line-number="159"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-160" data-line-number="160"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.7239 (+/-0.0177)</span></a>
+<a class="sourceLine" id="cb16-160" data-line-number="160"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8129 (+/-0.00562)</span></a>
 <a class="sourceLine" id="cb16-161" data-line-number="161"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-162" data-line-number="162"><span class="co">#&gt; ── Iteration 12 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-162" data-line-number="162"><span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-163" data-line-number="163"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-164" data-line-number="164"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-164" data-line-number="164"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-165" data-line-number="165"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-166" data-line-number="166"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-167" data-line-number="167"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-168" data-line-number="168"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-169" data-line-number="169"><span class="co">#&gt; i Trade-off value: 0.0006393</span></a>
-<a class="sourceLine" id="cb16-170" data-line-number="170"><span class="co">#&gt; i penalty=0.00112, mixture=0.996, num_terms=443</span></a>
+<a class="sourceLine" id="cb16-170" data-line-number="170"><span class="co">#&gt; i penalty=0.143, mixture=0.0116, num_terms=266</span></a>
 <a class="sourceLine" id="cb16-171" data-line-number="171"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-172" data-line-number="172"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-173" data-line-number="173"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6727 (+/-0.0147)</span></a>
+<a class="sourceLine" id="cb16-173" data-line-number="173"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7534 (+/-0.00773)</span></a>
 <a class="sourceLine" id="cb16-174" data-line-number="174"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-175" data-line-number="175"><span class="co">#&gt; ── Iteration 13 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-175" data-line-number="175"><span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-176" data-line-number="176"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-177" data-line-number="177"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-177" data-line-number="177"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-178" data-line-number="178"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-179" data-line-number="179"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-180" data-line-number="180"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-181" data-line-number="181"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-182" data-line-number="182"><span class="co">#&gt; i Trade-off value: 0.0004979</span></a>
-<a class="sourceLine" id="cb16-183" data-line-number="183"><span class="co">#&gt; i penalty=0.263, mixture=0.00202, num_terms=346</span></a>
+<a class="sourceLine" id="cb16-183" data-line-number="183"><span class="co">#&gt; i penalty=0.853, mixture=0.996, num_terms=4072</span></a>
 <a class="sourceLine" id="cb16-184" data-line-number="184"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-185" data-line-number="185"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-186" data-line-number="186"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7076 (+/-0.0124)</span></a>
+<a class="sourceLine" id="cb16-186" data-line-number="186"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
 <a class="sourceLine" id="cb16-187" data-line-number="187"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-188" data-line-number="188"><span class="co">#&gt; ── Iteration 14 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-188" data-line-number="188"><span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-189" data-line-number="189"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-190" data-line-number="190"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-190" data-line-number="190"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-191" data-line-number="191"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-192" data-line-number="192"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-193" data-line-number="193"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-194" data-line-number="194"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-195" data-line-number="195"><span class="co">#&gt; i Trade-off value: 0.0003877</span></a>
-<a class="sourceLine" id="cb16-196" data-line-number="196"><span class="co">#&gt; i penalty=0.979, mixture=0.707, num_terms=310</span></a>
+<a class="sourceLine" id="cb16-196" data-line-number="196"><span class="co">#&gt; i penalty=0.00102, mixture=0.064, num_terms=3935</span></a>
 <a class="sourceLine" id="cb16-197" data-line-number="197"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-198" data-line-number="198"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-199" data-line-number="199"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
+<a class="sourceLine" id="cb16-199" data-line-number="199"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7587 (+/-0.00992)</span></a>
 <a class="sourceLine" id="cb16-200" data-line-number="200"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-201" data-line-number="201"><span class="co">#&gt; ── Iteration 15 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-201" data-line-number="201"><span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-202" data-line-number="202"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-203" data-line-number="203"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-203" data-line-number="203"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-204" data-line-number="204"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-205" data-line-number="205"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-206" data-line-number="206"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-207" data-line-number="207"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-208" data-line-number="208"><span class="co">#&gt; i Trade-off value: 0.000302</span></a>
-<a class="sourceLine" id="cb16-209" data-line-number="209"><span class="co">#&gt; i penalty=0.0521, mixture=0.395, num_terms=511</span></a>
+<a class="sourceLine" id="cb16-209" data-line-number="209"><span class="co">#&gt; i penalty=0.996, mixture=0.0884, num_terms=276</span></a>
 <a class="sourceLine" id="cb16-210" data-line-number="210"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-211" data-line-number="211"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-212" data-line-number="212"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6897 (+/-0.0168)</span></a>
+<a class="sourceLine" id="cb16-212" data-line-number="212"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
 <a class="sourceLine" id="cb16-213" data-line-number="213"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-214" data-line-number="214"><span class="co">#&gt; ── Iteration 16 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-214" data-line-number="214"><span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-215" data-line-number="215"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-216" data-line-number="216"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-216" data-line-number="216"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-217" data-line-number="217"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-218" data-line-number="218"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-219" data-line-number="219"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-220" data-line-number="220"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-221" data-line-number="221"><span class="co">#&gt; i Trade-off value: 0.0002352</span></a>
-<a class="sourceLine" id="cb16-222" data-line-number="222"><span class="co">#&gt; i penalty=0.00104, mixture=0.32, num_terms=303</span></a>
+<a class="sourceLine" id="cb16-222" data-line-number="222"><span class="co">#&gt; i penalty=0.0578, mixture=1, num_terms=3728</span></a>
 <a class="sourceLine" id="cb16-223" data-line-number="223"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-224" data-line-number="224"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-225" data-line-number="225"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6813 (+/-0.0161)</span></a>
+<a class="sourceLine" id="cb16-225" data-line-number="225"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7166 (+/-0.01)</span></a>
 <a class="sourceLine" id="cb16-226" data-line-number="226"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-227" data-line-number="227"><span class="co">#&gt; ── Iteration 17 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
+<a class="sourceLine" id="cb16-227" data-line-number="227"><span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
 <a class="sourceLine" id="cb16-228" data-line-number="228"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-229" data-line-number="229"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
+<a class="sourceLine" id="cb16-229" data-line-number="229"><span class="co">#&gt; i Current best:      roc_auc=0.8139 (@iter 7)</span></a>
 <a class="sourceLine" id="cb16-230" data-line-number="230"><span class="co">#&gt; i Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-231" data-line-number="231"><span class="co">#&gt; ✓ Gaussian process model</span></a>
 <a class="sourceLine" id="cb16-232" data-line-number="232"><span class="co">#&gt; i Generating 5000 candidates</span></a>
 <a class="sourceLine" id="cb16-233" data-line-number="233"><span class="co">#&gt; i Predicted candidates</span></a>
 <a class="sourceLine" id="cb16-234" data-line-number="234"><span class="co">#&gt; i Trade-off value: 0.0001832</span></a>
-<a class="sourceLine" id="cb16-235" data-line-number="235"><span class="co">#&gt; i penalty=0.12, mixture=0.999, num_terms=276</span></a>
+<a class="sourceLine" id="cb16-235" data-line-number="235"><span class="co">#&gt; i penalty=0.00913, mixture=0.962, num_terms=294</span></a>
 <a class="sourceLine" id="cb16-236" data-line-number="236"><span class="co">#&gt; i Estimating performance</span></a>
 <a class="sourceLine" id="cb16-237" data-line-number="237"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-238" data-line-number="238"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span></a>
-<a class="sourceLine" id="cb16-239" data-line-number="239"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-240" data-line-number="240"><span class="co">#&gt; ── Iteration 18 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb16-241" data-line-number="241"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-242" data-line-number="242"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
-<a class="sourceLine" id="cb16-243" data-line-number="243"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-244" data-line-number="244"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-245" data-line-number="245"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb16-246" data-line-number="246"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb16-247" data-line-number="247"><span class="co">#&gt; i Trade-off value: 0.0001426</span></a>
-<a class="sourceLine" id="cb16-248" data-line-number="248"><span class="co">#&gt; i penalty=0.023, mixture=0.847, num_terms=451</span></a>
-<a class="sourceLine" id="cb16-249" data-line-number="249"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb16-250" data-line-number="250"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-251" data-line-number="251"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7016 (+/-0.0197)</span></a>
-<a class="sourceLine" id="cb16-252" data-line-number="252"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-253" data-line-number="253"><span class="co">#&gt; ── Iteration 19 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb16-254" data-line-number="254"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-255" data-line-number="255"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
-<a class="sourceLine" id="cb16-256" data-line-number="256"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-257" data-line-number="257"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-258" data-line-number="258"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb16-259" data-line-number="259"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb16-260" data-line-number="260"><span class="co">#&gt; i Trade-off value: 0.0001111</span></a>
-<a class="sourceLine" id="cb16-261" data-line-number="261"><span class="co">#&gt; i penalty=0.0212, mixture=0.606, num_terms=259</span></a>
-<a class="sourceLine" id="cb16-262" data-line-number="262"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb16-263" data-line-number="263"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-264" data-line-number="264"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7007 (+/-0.0149)</span></a>
-<a class="sourceLine" id="cb16-265" data-line-number="265"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-266" data-line-number="266"><span class="co">#&gt; ── Iteration 20 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb16-267" data-line-number="267"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-268" data-line-number="268"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
-<a class="sourceLine" id="cb16-269" data-line-number="269"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-270" data-line-number="270"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-271" data-line-number="271"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb16-272" data-line-number="272"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb16-273" data-line-number="273"><span class="co">#&gt; i Trade-off value: 8.652e-05</span></a>
-<a class="sourceLine" id="cb16-274" data-line-number="274"><span class="co">#&gt; i penalty=0.00615, mixture=0.598, num_terms=771</span></a>
-<a class="sourceLine" id="cb16-275" data-line-number="275"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb16-276" data-line-number="276"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-277" data-line-number="277"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7179 (+/-0.00984)</span></a>
-<a class="sourceLine" id="cb16-278" data-line-number="278"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-279" data-line-number="279"><span class="co">#&gt; ── Iteration 21 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb16-280" data-line-number="280"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb16-281" data-line-number="281"><span class="co">#&gt; i Current best:      roc_auc=0.7239 (@iter 11)</span></a>
-<a class="sourceLine" id="cb16-282" data-line-number="282"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-283" data-line-number="283"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb16-284" data-line-number="284"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb16-285" data-line-number="285"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb16-286" data-line-number="286"><span class="co">#&gt; i Trade-off value: 6.738e-05</span></a>
-<a class="sourceLine" id="cb16-287" data-line-number="287"><span class="co">#&gt; i penalty=0.166, mixture=0.329, num_terms=426</span></a>
-<a class="sourceLine" id="cb16-288" data-line-number="288"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb16-289" data-line-number="289"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb16-290" data-line-number="290"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.6492 (+/-0.0205)</span></a>
-<a class="sourceLine" id="cb16-291" data-line-number="291"><span class="co">#&gt; Error : Cannot write to fd (system error 9, Bad file descriptor) @client.c:149</span></a>
-<a class="sourceLine" id="cb16-292" data-line-number="292"><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></a></code></pre></div>
-<p>The results here are not bad but also not spectacular either. The issue is that so many settings are sub-optimal, as shown in the figure above. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> where good performance can be achieved. Using more iterations would probably result in the search finding better results.</p>
+<a class="sourceLine" id="cb16-238" data-line-number="238"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7454 (+/-0.0117)</span></a>
+<a class="sourceLine" id="cb16-239" data-line-number="239"><span class="co">#&gt; Error : Cannot write to fd (system error 9, Bad file descriptor) @client.c:149</span></a>
+<a class="sourceLine" id="cb16-240" data-line-number="240"><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></a></code></pre></div>
+<p>The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> where good performance can be achieved. Using more iterations would probably result in the search finding better results.</p>
 <p>A plot of model performance versus the search iterations:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(five_star_search, <span class="dt">type =</span> <span class="st">"performance"</span>)</a></code></pre></div>
 <p><img src="text_analysis_files/figure-html/iter-plot-1.png" width="768"></p>
@@ -583,37 +532,33 @@
 <div id="extracted-results" class="section level2">
 <h2 class="hasAnchor">
 <a href="#extracted-results" class="anchor"></a>Extracted Results</h2>
-<p>Jumping back to the grid search results, let’s examine the results of our <code>extract</code> function. For each <em>fitted model</em>, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let’s look at these results for the best model that had a mixture value greater than zero:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">params &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="st">  </span>grid_roc <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(mixture <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-5" data-line-number="5"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(penalty, mixture, num_terms)</a>
-<a class="sourceLine" id="cb18-6" data-line-number="6">params</a>
-<a class="sourceLine" id="cb18-7" data-line-number="7"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
-<a class="sourceLine" id="cb18-8" data-line-number="8"><span class="co">#&gt;   penalty mixture num_terms</span></a>
-<a class="sourceLine" id="cb18-9" data-line-number="9"><span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb18-10" data-line-number="10"><span class="co">#&gt; 1  0.0546    0.25      1024</span></a></code></pre></div>
+<p>Jumping back to the grid search results, let’s examine the results of our <code>extract</code> function. For each <em>fitted model</em>, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let’s look at these results for the best model:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">params &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/show_best.html">select_best</a></span>(five_star_glmnet)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">params</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="co">#&gt; # A tibble: 1 x 3</span></a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="co">#&gt;   penalty mixture num_terms</span></a>
+<a class="sourceLine" id="cb18-5" data-line-number="5"><span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb18-6" data-line-number="6"><span class="co">#&gt; 1  0.0379    0.25      4096</span></a></code></pre></div>
 <p>Recall that we saved the <code>glmnet</code> results in a tibble. The column <code>five_star_glmnet$.extracts</code> is a list of tibbles. As an example, the first element of the list is:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">five_star_glmnet<span class="op">$</span>.extracts[[<span class="dv">1</span>]]</a>
 <a class="sourceLine" id="cb19-2" data-line-number="2"><span class="co">#&gt; # A tibble: 15 x 4</span></a>
 <a class="sourceLine" id="cb19-3" data-line-number="3"><span class="co">#&gt;    num_terms penalty mixture .extracts         </span></a>
 <a class="sourceLine" id="cb19-4" data-line-number="4"><span class="co">#&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span></a>
 <a class="sourceLine" id="cb19-5" data-line-number="5"><span class="co">#&gt;  1       256       1    0    &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="co">#&gt;  2       256       1    0.25 &lt;tibble [86 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="co">#&gt;  3       256       1    0.5  &lt;tibble [81 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="co">#&gt;  4       256       1    0.75 &lt;tibble [80 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="co">#&gt;  5       256       1    1    &lt;tibble [79 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="co">#&gt;  6       512       1    0    &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-11" data-line-number="11"><span class="co">#&gt;  7       512       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-12" data-line-number="12"><span class="co">#&gt;  8       512       1    0.5  &lt;tibble [99 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-13" data-line-number="13"><span class="co">#&gt;  9       512       1    0.75 &lt;tibble [95 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-14" data-line-number="14"><span class="co">#&gt; 10       512       1    1    &lt;tibble [92 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb19-15" data-line-number="15"><span class="co">#&gt; 11      1024       1    0    &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-16" data-line-number="16"><span class="co">#&gt; 12      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-17" data-line-number="17"><span class="co">#&gt; 13      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-18" data-line-number="18"><span class="co">#&gt; 14      1024       1    0.75 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb19-19" data-line-number="19"><span class="co">#&gt; 15      1024       1    1    &lt;tibble [100 × 2]&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb19-6" data-line-number="6"><span class="co">#&gt;  2       256       1    0.25 &lt;tibble [89 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-7" data-line-number="7"><span class="co">#&gt;  3       256       1    0.5  &lt;tibble [82 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-8" data-line-number="8"><span class="co">#&gt;  4       256       1    0.75 &lt;tibble [79 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-9" data-line-number="9"><span class="co">#&gt;  5       256       1    1    &lt;tibble [76 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-10" data-line-number="10"><span class="co">#&gt;  6      1024       1    0    &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-11" data-line-number="11"><span class="co">#&gt;  7      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-12" data-line-number="12"><span class="co">#&gt;  8      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-13" data-line-number="13"><span class="co">#&gt;  9      1024       1    0.75 &lt;tibble [99 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-14" data-line-number="14"><span class="co">#&gt; 10      1024       1    1    &lt;tibble [95 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb19-15" data-line-number="15"><span class="co">#&gt; 11      4096       1    0    &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-16" data-line-number="16"><span class="co">#&gt; 12      4096       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-17" data-line-number="17"><span class="co">#&gt; 13      4096       1    0.5  &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-18" data-line-number="18"><span class="co">#&gt; 14      4096       1    0.75 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb19-19" data-line-number="19"><span class="co">#&gt; 15      4096       1    1    &lt;tibble [100 × 2]&gt;</span></a></code></pre></div>
 <p>More nested tibbles! Let’s unnest <code>five_star_glmnet$.extracts</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">extracted &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="st">  </span>five_star_glmnet <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -621,18 +566,18 @@
 <a class="sourceLine" id="cb20-4" data-line-number="4"><span class="st">  </span><span class="kw">unnest</span>(<span class="dt">cols =</span> .extracts)</a>
 <a class="sourceLine" id="cb20-5" data-line-number="5">extracted</a>
 <a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co">#&gt; # A tibble: 150 x 5</span></a>
-<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt;    id         num_terms penalty mixture .extracts         </span></a>
-<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span></a>
-<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt;  1 Resample01       256       1    0    &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt;  2 Resample01       256       1    0.25 &lt;tibble [86 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-11" data-line-number="11"><span class="co">#&gt;  3 Resample01       256       1    0.5  &lt;tibble [81 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-12" data-line-number="12"><span class="co">#&gt;  4 Resample01       256       1    0.75 &lt;tibble [80 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-13" data-line-number="13"><span class="co">#&gt;  5 Resample01       256       1    1    &lt;tibble [79 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-14" data-line-number="14"><span class="co">#&gt;  6 Resample01       512       1    0    &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb20-15" data-line-number="15"><span class="co">#&gt;  7 Resample01       512       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb20-16" data-line-number="16"><span class="co">#&gt;  8 Resample01       512       1    0.5  &lt;tibble [99 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-17" data-line-number="17"><span class="co">#&gt;  9 Resample01       512       1    0.75 &lt;tibble [95 × 2]&gt; </span></a>
-<a class="sourceLine" id="cb20-18" data-line-number="18"><span class="co">#&gt; 10 Resample01       512       1    1    &lt;tibble [92 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7"><span class="co">#&gt;    id     num_terms penalty mixture .extracts         </span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8"><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span></a>
+<a class="sourceLine" id="cb20-9" data-line-number="9"><span class="co">#&gt;  1 Fold01       256       1    0    &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb20-10" data-line-number="10"><span class="co">#&gt;  2 Fold01       256       1    0.25 &lt;tibble [89 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-11" data-line-number="11"><span class="co">#&gt;  3 Fold01       256       1    0.5  &lt;tibble [82 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-12" data-line-number="12"><span class="co">#&gt;  4 Fold01       256       1    0.75 &lt;tibble [79 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-13" data-line-number="13"><span class="co">#&gt;  5 Fold01       256       1    1    &lt;tibble [76 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-14" data-line-number="14"><span class="co">#&gt;  6 Fold01      1024       1    0    &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb20-15" data-line-number="15"><span class="co">#&gt;  7 Fold01      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb20-16" data-line-number="16"><span class="co">#&gt;  8 Fold01      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb20-17" data-line-number="17"><span class="co">#&gt;  9 Fold01      1024       1    0.75 &lt;tibble [99 × 2]&gt; </span></a>
+<a class="sourceLine" id="cb20-18" data-line-number="18"><span class="co">#&gt; 10 Fold01      1024       1    1    &lt;tibble [95 × 2]&gt; </span></a>
 <a class="sourceLine" id="cb20-19" data-line-number="19"><span class="co">#&gt; # … with 140 more rows</span></a></code></pre></div>
 <p>One thing to realize here is that <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> <a href="optimizations.html">may not fit all of the models</a> that are evaluated. In this case, for each value of <code>mixture</code> and <code>num_terms</code>, the model is fit overall <em>all</em> penalty values<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. To select the best parameter set, we can exclude the <code>penalty</code> column in <code>extracted</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">extracted &lt;-<span class="st"> </span></a>
@@ -643,36 +588,36 @@
 <a class="sourceLine" id="cb21-6" data-line-number="6"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="op">-</span>penalty)</a>
 <a class="sourceLine" id="cb21-7" data-line-number="7">extracted</a>
 <a class="sourceLine" id="cb21-8" data-line-number="8"><span class="co">#&gt; # A tibble: 10 x 4</span></a>
-<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#&gt;    id         num_terms mixture .extracts         </span></a>
-<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span></a>
-<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;  1 Resample01      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt;  2 Resample02      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-13" data-line-number="13"><span class="co">#&gt;  3 Resample03      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="co">#&gt;  4 Resample04      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-15" data-line-number="15"><span class="co">#&gt;  5 Resample05      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-16" data-line-number="16"><span class="co">#&gt;  6 Resample06      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-17" data-line-number="17"><span class="co">#&gt;  7 Resample07      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="co">#&gt;  8 Resample08      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-19" data-line-number="19"><span class="co">#&gt;  9 Resample09      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a>
-<a class="sourceLine" id="cb21-20" data-line-number="20"><span class="co">#&gt; 10 Resample10      1024    0.25 &lt;tibble [100 × 2]&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="co">#&gt;    id     num_terms mixture .extracts         </span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#&gt;  1 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12"><span class="co">#&gt;  2 Fold02      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-13" data-line-number="13"><span class="co">#&gt;  3 Fold03      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="co">#&gt;  4 Fold04      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-15" data-line-number="15"><span class="co">#&gt;  5 Fold05      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-16" data-line-number="16"><span class="co">#&gt;  6 Fold06      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-17" data-line-number="17"><span class="co">#&gt;  7 Fold07      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="co">#&gt;  8 Fold08      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-19" data-line-number="19"><span class="co">#&gt;  9 Fold09      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a>
+<a class="sourceLine" id="cb21-20" data-line-number="20"><span class="co">#&gt; 10 Fold10      4096    0.25 &lt;tibble [100 × 2]&gt;</span></a></code></pre></div>
 <p>Now we can get at the results that we want using another <code>unnest</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">extracted &lt;-<span class="st"> </span></a>
 <a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">  </span>extracted <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">  </span><span class="kw">unnest</span>(<span class="dt">col =</span> .extracts) <span class="co"># &lt;- these contain a `penalty` column</span></a>
 <a class="sourceLine" id="cb22-4" data-line-number="4">extracted</a>
 <a class="sourceLine" id="cb22-5" data-line-number="5"><span class="co">#&gt; # A tibble: 1,000 x 5</span></a>
-<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#&gt;    id         num_terms mixture penalty num_vars</span></a>
-<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt;  1 Resample01      1024    0.25   0.419        0</span></a>
-<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt;  2 Resample01      1024    0.25   0.382        2</span></a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt;  3 Resample01      1024    0.25   0.348        3</span></a>
-<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt;  4 Resample01      1024    0.25   0.317        6</span></a>
-<a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt;  5 Resample01      1024    0.25   0.289        7</span></a>
-<a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt;  6 Resample01      1024    0.25   0.263        7</span></a>
-<a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt;  7 Resample01      1024    0.25   0.240       15</span></a>
-<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt;  8 Resample01      1024    0.25   0.219       17</span></a>
-<a class="sourceLine" id="cb22-16" data-line-number="16"><span class="co">#&gt;  9 Resample01      1024    0.25   0.199       23</span></a>
-<a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; 10 Resample01      1024    0.25   0.181       28</span></a>
+<a class="sourceLine" id="cb22-6" data-line-number="6"><span class="co">#&gt;    id     num_terms mixture penalty num_vars</span></a>
+<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co">#&gt;  1 Fold01      4096    0.25   0.360        0</span></a>
+<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="co">#&gt;  2 Fold01      4096    0.25   0.344        1</span></a>
+<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt;  3 Fold01      4096    0.25   0.328        2</span></a>
+<a class="sourceLine" id="cb22-11" data-line-number="11"><span class="co">#&gt;  4 Fold01      4096    0.25   0.313        2</span></a>
+<a class="sourceLine" id="cb22-12" data-line-number="12"><span class="co">#&gt;  5 Fold01      4096    0.25   0.299        3</span></a>
+<a class="sourceLine" id="cb22-13" data-line-number="13"><span class="co">#&gt;  6 Fold01      4096    0.25   0.286        3</span></a>
+<a class="sourceLine" id="cb22-14" data-line-number="14"><span class="co">#&gt;  7 Fold01      4096    0.25   0.273        4</span></a>
+<a class="sourceLine" id="cb22-15" data-line-number="15"><span class="co">#&gt;  8 Fold01      4096    0.25   0.260        5</span></a>
+<a class="sourceLine" id="cb22-16" data-line-number="16"><span class="co">#&gt;  9 Fold01      4096    0.25   0.248        7</span></a>
+<a class="sourceLine" id="cb22-17" data-line-number="17"><span class="co">#&gt; 10 Fold01      4096    0.25   0.237        7</span></a>
 <a class="sourceLine" id="cb22-18" data-line-number="18"><span class="co">#&gt; # … with 990 more rows</span></a></code></pre></div>
 <p>Let’s look at a plot of these results (per resample):</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">ggplot</span>(extracted, <span class="kw">aes</span>(<span class="dt">x =</span> penalty, <span class="dt">y =</span> num_vars)) <span class="op">+</span><span class="st"> </span></a>
@@ -687,7 +632,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>This is a small sample of the overall data set. When more data are used, a larger feature set is optimal. With this small sample, there may not be many more tokens than 256 to include in the hash features.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>This is a small sample of the overall data set. When more data are used, a larger feature set is optimal.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>See the last section below for more details.<a href="#fnref2" class="footnote-back">↩</a></p></li>
 <li id="fn3"><p>See the vignette on <a href="../acquisition_functions.html">acquisition functions</a> for more details.<a href="#fnref3" class="footnote-back">↩</a></p></li>
 <li id="fn4"><p>Sorry, pun intended.<a href="#fnref4" class="footnote-back">↩</a></p></li>

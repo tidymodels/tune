@@ -6,14 +6,13 @@ library(AmesHousing)
 
 ames <- make_ames()
 
-# Make sure that you get the same random numbers
 set.seed(4595)
 data_split <- initial_split(ames, strata = "Sale_Price")
 
 ames_train <- training(data_split)
 
 set.seed(2453)
-rs_splits <- bootstraps(ames_train, times = 20)
+rs_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 
 # ------------------------------------------------------------------------------
 
@@ -29,37 +28,45 @@ ames_rec <-
 
 knn_model <-
   nearest_neighbor(
-    mode = "regression", neighbors = tune(), weight_func = tune(), dist_power = tune()) %>%
+    mode = "regression",
+    neighbors = tune("K"),
+    weight_func = tune(),
+    dist_power = tune()
+  ) %>%
   set_engine("kknn")
-
 
 ames_wflow <-
   workflow() %>%
   add_recipe(ames_rec) %>%
   add_model(knn_model)
 
-
-set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
-  update(neighbors = neighbors(c(1, 50)))
+  update(K = neighbors(c(1, 50)))
 
-
+set.seed(7014)
 ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 10)
 
-initial_grid <- tune_grid(ames_wflow, resamples = rs_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE, save_pred = TRUE))
+ames_grid_search <-
+  tune_grid(
+    ames_wflow,
+    resamples = rs_splits,
+    grid = ames_grid
+  )
 
-# ------------------------------------------------------------------------------
-
-
-test <-
+set.seed(2082)
+ames_iter_search <-
   tune_bayes(
     ames_wflow,
-    resamples = resamples_splits,
+    resamples = rs_splits,
     param_info = ames_set,
-    initial = initial_grid,
-    iter = 15,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 3)
+    initial = ames_grid_search,
+    iter = 15
   )
+
+
+save(ames_wflow, ames_grid_search, ames_iter_search,
+     file = "~/github/tune/data/example_ames_knn.RData",
+     version = 2, compress = "xz")

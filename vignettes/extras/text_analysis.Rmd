@@ -34,7 +34,7 @@ The data are from Amazon:
 
 > "This dataset consists of reviews of fine foods from amazon. The data span a period of more than 10 years, including all ~500,000 reviews up to October 2012. Reviews include product and user information, ratings, and a plaintext review."
 
-A small subset of the data are contained here and are split into a training and test set. The training set sampled `r num_prod` products and retained all of their individual reviews. Since the reviews within these products are correlated, we recommend resampling the data using a leave-one-product-out approach. The test set sampled 500 products that were not included in the training set and selected a single review at random for each.
+A small subset of the data are contained here; we sampled a single review from 5,000 random products and 80% of these data were used as the training set. The remaining 1,000 were used as the test set.   
 
 There is a column for the product, a column for the text of the review, and a factor column for a class variable. The outcome is whether the reviewer game the product a five-star rating or not.
 
@@ -138,27 +138,23 @@ Three tuning parameters should be trained for this data analysis.
 
 ## Resampling
 
-To resample these data, recall that 
-
-> "The training set sampled 10 products and retained all of their individual reviews."
-
-The rate of five-star reviews varies between products. To account for this, grouped-V-fold cross-validation is used. Here, 10 resamples are created that leaves out all of the rows corresponding to a each of the produce IDs. The assessment set for each resample is the held-out product. To do this, the `rsample` package can be used:
+There are enough data here such that 10-fold resampling would hold out 400 reviews at a time to estimate performance. Performance estimates using this many observations have sufficiently low noise to measure and tune models.  
 
 ```{r folds}
 set.seed(8935)
-folds <- group_vfold_cv(training_data, "product")
+folds <- vfold_cv(training_data)
 ```
 
 ## Grid Search
 
-A regular grid is used. For `glmnet` models, evaluating penalty values is fairly cheap due to the use of the "submodel-trick". The grid will use 20 penalty values, 5 mixture values, and 6 values for the number of hash features.  
+A regular grid is used. For `glmnet` models, evaluating penalty values is fairly cheap due to the use of the "submodel-trick". The grid will use 20 penalty values, 5 mixture values, and 3 values for the number of hash features.  
 
 ```{r grid}
 five_star_grid <- 
   expand.grid(
     penalty = 10^seq(-3, 0, length = 20),
     mixture = seq(0, 1, length = 5),
-    num_terms = 2^(8:10)
+    num_terms = 2^c(8, 10, 12)
   )
 ```
 
@@ -172,7 +168,7 @@ glmnet_vars <- function(x) {
   tibble(penalty = x$model$lambda, num_vars = x$model$df)
 }
 
-ctrl <- ctrl_grid(extract = glmnet_vars)
+ctrl <- control_grid(extract = glmnet_vars)
 ```
 
 Finally, let's run the grid search:
@@ -208,9 +204,9 @@ ggplot(grid_roc, aes(x = penalty, y = mean, col = factor(mixture), group = facto
   theme(legend.position = "top")
 ```
 
-There is definitely an effect due to the number of features used^[This is a small sample of the overall data set. When more data are used, a larger feature set is optimal. With this small sample, there may not be many more tokens than 256 to include in the hash features.]. The profiles with mixture values greater than zero had steep drop-offs in performance. What's that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model^[See the last section below for more details.].  
+There is definitely an effect due to the number of features used^[This is a small sample of the overall data set. When more data are used, a larger feature set is optimal.]. The profiles with mixture values greater than zero had steep drop-offs in performance. What's that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model^[See the last section below for more details.].  
 
-It's clear from the panels at least 256 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.  
+It's clear from the panels at least 4096 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.  
 
 We'll come back to the extracted `glmnet` components at the end of this example. 
 
@@ -224,7 +220,7 @@ Let's pretend that we haven't seen the grid search results. We'll initialize the
 It might be good to use a custom `dials` object for the number of hash terms. The default object, `num_terms()`, uses a linear range and tries to set the upper bound of the parameter using the data. Instead, let's create a parameter set, change the scale to be log2, and define the same range as was used in grid search. 
 
 ```{r hash-range}
-hash_range <- num_terms(c(8, 10), trans = log2_trans())
+hash_range <- num_terms(c(8, 12), trans = log2_trans())
 ```
 
 To use this, we have to merge the recipe and `parsnip` model object into a workflow:
@@ -268,11 +264,11 @@ five_star_search <-
     iter = 30,
     metrics = roc_scores,
     objective = exp_improve(trade_off_decay),
-    control = ctrl_bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )
 ```
 
-The results here are not bad but also not spectacular either. The issue is that so many settings are sub-optimal, as shown in the figure above. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge^[Sorry, pun intended.] where good performance can be achieved. Using more iterations would probably result in the search finding better results. 
+The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge^[Sorry, pun intended.] where good performance can be achieved. Using more iterations would probably result in the search finding better results. 
 
 A plot of model performance versus the search iterations:
 
@@ -285,14 +281,10 @@ What would we do if we knew about the grid search results? In this case, we woul
 
 ## Extracted Results
 
-Jumping back to the grid search results, let's examine the results of our `extract` function. For each _fitted model_, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let's look at these results for the best model that had a mixture value greater than zero:
+Jumping back to the grid search results, let's examine the results of our `extract` function. For each _fitted model_, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let's look at these results for the best model:
 
 ```{r best-res}
-params <- 
-  grid_roc %>% 
-  dplyr::filter(mixture > 0) %>% 
-  slice(1) %>% 
-  dplyr::select(penalty, mixture, num_terms)
+params <- select_best(five_star_glmnet)
 params
 ```
 

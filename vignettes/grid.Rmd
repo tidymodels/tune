@@ -92,7 +92,7 @@ If no grid or parameters are provided, a set of 10 are created using a space-fil
 Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off. 
 
 ```{r ctrl}
-ctrl <- ctrl_grid(verbose = FALSE)
+ctrl <- control_grid(verbose = FALSE)
 ```
 
 ## Executing the Grid Using a Formula

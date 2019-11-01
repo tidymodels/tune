@@ -30,3 +30,10 @@ includes columns for performance metrics.
 performance values. \code{show_best()} displays the top sub-models and their
 performance estimates.
 }
+\examples{
+data("example_ames_knn")
+
+show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
+
+select_best(ames_iter_search, metric = "rsq")
+}

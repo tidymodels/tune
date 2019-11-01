@@ -42,7 +42,7 @@ Mutagen_grid <-
 class_only <- metric_set(accuracy, kap, mcc)
 
 res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, metrics = class_only,
-                 control = ctrl_grid(verbose = TRUE))
+                 control = control_grid(verbose = TRUE))
 
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))

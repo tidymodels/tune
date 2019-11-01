@@ -74,7 +74,12 @@
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+        <li>
+  <a href="https://github.com/tidymodels/tune">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -91,7 +96,7 @@
       <h1>Grid Search</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/grid.Rmd"><code>vignettes/grid.Rmd</code></a></small>
       <div class="hidden name"><code>grid.Rmd</code></div>
 
     </div>
@@ -147,7 +152,7 @@
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">roc_vals &lt;-<span class="st"> </span><span class="kw">metric_set</span>(roc_auc)</a></code></pre></div>
 <p>If no grid or parameters are provided, a set of 10 are created using a space-filling design (via a Latin hypercube). A grid can be given in a data frame where the parameters are in columns and parameter combinations are in rows. Here, the default will be used.</p>
 <p>Also, a control object can be passed that specifies different aspects of the search. Here, the verbose option is turned off.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ctrl_grid.html">ctrl_grid</a></span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">ctrl &lt;-<span class="st"> </span><span class="kw"><a href="../reference/control_grid.html">control_grid</a></span>(<span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
 </div>
 <div id="executing-the-grid-using-a-formula" class="section level2">
 <h2 class="hasAnchor">

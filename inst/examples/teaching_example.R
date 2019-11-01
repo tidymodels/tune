@@ -64,7 +64,7 @@ grid <-
   mutate(cost = 10^(-2.75), num_comp = 15)
 
 grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
-                          control = ctrl_grid(verbose = TRUE))
+                          control = control_grid(verbose = TRUE))
 collect_metrics(grid_results)
 
 ggplot(
@@ -154,7 +154,7 @@ initial_mars <-
     ames_wflow,
     resamples = cv_splits,
     grid = mars_grid,
-    control = ctrl_grid(verbose = TRUE)
+    control = control_grid(verbose = TRUE)
   )
 #> i Fold01: recipe
 #> ✓ Fold01: recipe
@@ -484,7 +484,7 @@ initial_mars <-
     ames_wflow,
     resamples = cv_splits,
     grid = mars_grid,
-    control = ctrl_grid(verbose = TRUE)
+    control = control_grid(verbose = TRUE)
   )
 #> i Fold01: recipe
 #> ✓ Fold01: recipe
@@ -814,7 +814,7 @@ initial_mars <-
     ames_wflow,
     resamples = cv_splits,
     grid = mars_grid,
-    control = ctrl_grid(verbose = TRUE)
+    control = control_grid(verbose = TRUE)
   )
 #> i Fold01: recipe
 #> ✓ Fold01: recipe
@@ -1144,7 +1144,7 @@ initial_mars <-
     ames_wflow,
     resamples = cv_splits,
     grid = mars_grid,
-    control = ctrl_grid(verbose = TRUE)
+    control = control_grid(verbose = TRUE)
   )
 
 collect_metrics(initial_mars) %>% 

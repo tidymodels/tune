@@ -12,17 +12,43 @@ tune_bayes(object, ...)
 
 \method{tune_bayes}{default}(object, ...)
 
-\method{tune_bayes}{recipe}(object, model, resamples, iter = 10,
-  param_info = NULL, metrics = NULL, objective = exp_improve(),
-  initial = NULL, control = ctrl_bayes(), ...)
+\method{tune_bayes}{recipe}(
+  object,
+  model,
+  resamples,
+  iter = 10,
+  param_info = NULL,
+  metrics = NULL,
+  objective = exp_improve(),
+  initial = NULL,
+  control = control_bayes(),
+  ...
+)
 
-\method{tune_bayes}{formula}(formula, model, resamples, iter = 10,
-  param_info = NULL, metrics = NULL, objective = exp_improve(),
-  initial = NULL, control = ctrl_bayes(), ...)
+\method{tune_bayes}{formula}(
+  formula,
+  model,
+  resamples,
+  iter = 10,
+  param_info = NULL,
+  metrics = NULL,
+  objective = exp_improve(),
+  initial = NULL,
+  control = control_bayes(),
+  ...
+)
 
-\method{tune_bayes}{workflow}(object, resamples, iter = 10,
-  param_info = NULL, metrics = NULL, objective = exp_improve(),
-  initial = NULL, control = ctrl_bayes(), ...)
+\method{tune_bayes}{workflow}(
+  object,
+  resamples,
+  iter = 10,
+  param_info = NULL,
+  metrics = NULL,
+  objective = exp_improve(),
+  initial = NULL,
+  control = control_bayes(),
+  ...
+)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -48,7 +74,7 @@ an acquisition function object.}
 
 \item{initial}{An initial set of results in a tidy format.}
 
-\item{control}{A control object created by \code{ctrl_bayes()}}
+\item{control}{A control object created by \code{control_bayes()}}
 
 \item{formula}{A traditional model formula.}
 }
@@ -171,7 +197,7 @@ object, depending on what is returned.
 }
 
 \seealso{
-\code{ctrl_bayes()}, \code{tune()}, \code{estimate.tune_results()},
+\code{control_bayes()}, \code{tune()}, \code{estimate.tune_results()},
 \code{autoplot.tune_results()}, \code{show_best()}, \code{select_best()},
 \code{collect_predictions()}, \code{collect_metrics()}, \code{prob_improve()},
 \code{exp_improve()}, \code{conf_bound()}

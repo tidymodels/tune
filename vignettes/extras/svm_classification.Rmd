@@ -123,7 +123,7 @@ search_res <-
     iter = 30,
     # How to measure performance?
     metrics = metric_set(roc_auc),
-    control = ctrl_bayes(no_improve = 20, verbose = TRUE)
+    control = control_bayes(no_improve = 20, verbose = TRUE)
   )
 ```
 

@@ -4,8 +4,13 @@
 \alias{autoplot.tune_results}
 \title{Plot search results}
 \usage{
-\method{autoplot}{tune_results}(object, type = c("marginals",
-  "parameters", "performance"), metric = NULL, width = NULL, ...)
+\method{autoplot}{tune_results}(
+  object,
+  type = c("marginals", "parameters", "performance"),
+  metric = NULL,
+  width = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{A tibble of results form \code{tune_grid()} or \code{tune_bayes()}.}
@@ -34,6 +39,25 @@ The parameters are currently represented in their natural units.
 A single categorical tuning parameter is supported when other numeric
 parameters are also in the results. Any number of numeric tuning parameters
 can be used.
+}
+\examples{
+# For grid search:
+data("example_ames_knn")
+
+# Plot the tuning parameter values versus performance
+autoplot(ames_grid_search, metric = "rmse")
+
+
+# For iterative search:
+# Plot the tuning parameter values versus performance
+autoplot(ames_iter_search, metric = "rmse", type = "marginals")
+
+# Plot tuning parameters versus iterations
+autoplot(ames_iter_search, metric = "rmse", type = "parameters")
+
+# Plot performance over iterations
+autoplot(ames_iter_search, metric = "rmse", type = "performance")
+
 }
 \seealso{
 \code{tune_grid()}, \code{tune_bayes()}

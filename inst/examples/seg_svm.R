@@ -50,7 +50,7 @@ set.seed(1558)
 grid <- grid_max_entropy(svm_set, size = 5)
 
 grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
-                          control = ctrl_grid(verbose = TRUE))
+                          control = control_grid(verbose = TRUE))
 
 grid_results
 

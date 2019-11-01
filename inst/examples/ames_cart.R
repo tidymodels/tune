@@ -44,7 +44,7 @@ num_leaves <- function(x) {
 
 
 set.seed(4567367)
-initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, control = ctrl_grid(verbose = TRUE, extract = num_leaves))
+initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, control = control_grid(verbose = TRUE, extract = num_leaves))
 
 # ------------------------------------------------------------------------------
 

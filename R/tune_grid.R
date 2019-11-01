@@ -22,7 +22,7 @@
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
 #' contains warnings and errors that occur during execution.
-#' @seealso `ctrl_grid()`, `tune()`, `estimate.tune_results()`,
+#' @seealso `control_grid()`, `tune()`, `estimate.tune_results()`,
 #' `autoplot.tune_results()`, `show_best()`, `select_best()`,
 #' `collect_predictions()`, `collect_metrics()`
 #' @details
@@ -204,7 +204,7 @@ tune_grid.default <- function(object, ...) {
 #' @export
 #' @rdname tune_grid
 tune_grid.recipe <- function(object, model, resamples, grid = NULL,
-                             metrics = NULL, control = ctrl_grid(), ...) {
+                             metrics = NULL, control = control_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -226,7 +226,7 @@ tune_grid.recipe <- function(object, model, resamples, grid = NULL,
 #' @export
 #' @rdname tune_grid
 tune_grid.formula <- function(formula, model, resamples, grid = NULL,
-                             metrics = NULL, control = ctrl_grid(), ...) {
+                             metrics = NULL, control = control_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -248,7 +248,7 @@ tune_grid.formula <- function(formula, model, resamples, grid = NULL,
 #' @export
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, grid = NULL,
-                             metrics = NULL, control = ctrl_grid(), ...) {
+                             metrics = NULL, control = control_grid(), ...) {
 
   tune_grid_workflow(
     object,
@@ -262,7 +262,7 @@ tune_grid.workflow <- function(object, resamples, grid = NULL,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <-
-  function(object, resamples, grid = NULL, metrics = NULL, control = ctrl_grid()) {
+  function(object, resamples, grid = NULL, metrics = NULL, control = control_grid()) {
     check_rset(resamples)
     check_object(object)
     metrics <- check_metrics(metrics, object)

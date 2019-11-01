@@ -12,14 +12,34 @@ tune_grid(object, ...)
 
 \method{tune_grid}{default}(object, ...)
 
-\method{tune_grid}{recipe}(object, model, resamples, grid = NULL,
-  metrics = NULL, control = ctrl_grid(), ...)
+\method{tune_grid}{recipe}(
+  object,
+  model,
+  resamples,
+  grid = NULL,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 
-\method{tune_grid}{formula}(formula, model, resamples, grid = NULL,
-  metrics = NULL, control = ctrl_grid(), ...)
+\method{tune_grid}{formula}(
+  formula,
+  model,
+  resamples,
+  grid = NULL,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 
-\method{tune_grid}{workflow}(object, resamples, grid = NULL,
-  metrics = NULL, control = ctrl_grid(), ...)
+\method{tune_grid}{workflow}(
+  object,
+  resamples,
+  grid = NULL,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
@@ -229,7 +249,7 @@ autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
 }
 \seealso{
-\code{ctrl_grid()}, \code{tune()}, \code{estimate.tune_results()},
+\code{control_grid()}, \code{tune()}, \code{estimate.tune_results()},
 \code{autoplot.tune_results()}, \code{show_best()}, \code{select_best()},
 \code{collect_predictions()}, \code{collect_metrics()}
 }

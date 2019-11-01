@@ -9,6 +9,7 @@ Description: The ability to tune models is important. tune contains functions an
     finding reasonable values of hyper-parameters in models, pre-processing
     methods, and post-processing steps. 
 License: GPL-2 
+URL: https://github.com/tidymodels/tune
 Depends:
     ggplot2,
     R (>= 2.10),
@@ -39,7 +40,7 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 6.1.99.9001
 Remotes:
     tidymodels/dials,
     tidymodels/recipes,    

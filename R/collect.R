@@ -14,6 +14,14 @@
 #' `nest_by = "parameters"`).
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
+#' @examples
+#' data("example_ames_knn")
+#'
+#' # Summarized over resamples
+#' collect_metrics(ames_grid_search)
+#'
+#' # Per-resample values
+#' collect_metrics(ames_grid_search, summarize = FALSE)
 #' @export
 collect_predictions <- function(x, nest_by = "nothing", wflow = NULL) {
   collector(x, coll_col = ".predictions", nest_by, wflow)

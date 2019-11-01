@@ -74,7 +74,12 @@
 <li>
   <a href="../news/index.html">News</a>
 </li>
-        
+        <li>
+  <a href="https://github.com/tidymodels/tune">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -91,7 +96,7 @@
       <h1>Acquisition Functions</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/acquisition_functions.Rmd"><code>vignettes/acquisition_functions.Rmd</code></a></small>
       <div class="hidden name"><code>acquisition_functions.Rmd</code></div>
 
     </div>
@@ -135,7 +140,7 @@ EI(\theta; m_{opt}) &amp;= \delta(\theta) \Phi\left(\frac{\delta(\theta)}{\sigma
 <p>There are two main strategies for <em>dynamic trade-offs</em> during the optimization:</p>
 <ul>
 <li><p>Use a function to specify the parameter(s) for the acquisition functions. For expected improvement, this can be done using <code><a href="../reference/prob_improve.html">exp_improve(trade_off = foo())</a></code>. <code>foo()</code> should be a function whose first parameter is the current iteration number. When <code>tune</code> invokes this function, only the first argument is used. A good strategy might be to set <code>trade_off</code> to some non-zero value at the start of the search and incrementally approach zero after a reasonable period.</p></li>
-<li><p><code><a href="../reference/ctrl_bayes.html">ctrl_bayes()</a></code> has an option for doing an additional <em>uncertainty sample</em> when no improvements have been found. This is a technique from the active learning literature where new data points are sampled that most help the model. In this case, the candidate points are scored only on variance and a candidate is chosen from a set of the <em>most</em> variable design points. This may find a location in the parameter space to help the optimization make improvements.</p></li>
+<li><p><code><a href="../reference/control_bayes.html">control_bayes()</a></code> has an option for doing an additional <em>uncertainty sample</em> when no improvements have been found. This is a technique from the active learning literature where new data points are sampled that most help the model. In this case, the candidate points are scored only on variance and a candidate is chosen from a set of the <em>most</em> variable design points. This may find a location in the parameter space to help the optimization make improvements.</p></li>
 </ul>
 <div class="footnotes">
 <hr>

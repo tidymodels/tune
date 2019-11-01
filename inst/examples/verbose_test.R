@@ -45,5 +45,5 @@ ames_grid <-
   ames_set %>%
   grid_max_entropy(size = 3)
 
-initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, grid = ames_grid, control = ctrl_grid(verbose = TRUE))
+initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, grid = ames_grid, control = control_grid(verbose = TRUE))
 

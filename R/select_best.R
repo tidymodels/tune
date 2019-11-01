@@ -13,6 +13,12 @@
 #' @param maximize A logical value (TRUE/FALSE).
 #' @return A tibble with columns for the parameters. `show_best()` also
 #'  includes columns for performance metrics.
+#' @examples
+#' data("example_ames_knn")
+#'
+#' show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
+#'
+#' select_best(ames_iter_search, metric = "rsq")
 #' @export
 show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
   summary_res <- estimate_tune_results(x)
