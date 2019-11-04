@@ -171,7 +171,6 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   model <- linear_reg(mode = "regression", penalty = tune()) %>%
     set_engine("glmnet")
 
-  # NA values not allowed in recipe
   cars_grid <- tibble(penalty = c(0.01, 0.02))
 
   cars_res <- tune_grid(
