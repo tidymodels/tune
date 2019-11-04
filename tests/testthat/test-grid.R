@@ -112,5 +112,50 @@ test_that('tune model and recipe (multi-predict)', {
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
 })
 
+# ------------------------------------------------------------------------------
 
+test_that("tune recipe only - failure in recipe is caught elegantly", {
+  set.seed(7898)
+  data_folds <- vfold_cv(mtcars, v = 2)
 
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_bs(disp, deg_free = tune())
+
+  model <- linear_reg(mode = "regression") %>%
+    set_engine("lm")
+
+  # NA values not allowed in recipe
+  cars_grid <- tibble(deg_free = c(3, NA_real_, 4))
+
+  # ask for predictions and extractions
+  control <- control_grid(
+    save_pred = TRUE,
+    extract = function(x) 1L
+  )
+
+  cars_res <- tune_grid(
+    rec,
+    model = model,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control
+  )
+
+  notes <- cars_res$.notes
+  note <- notes[[1]]$.notes
+
+  extract <- cars_res$.extracts[[1]]
+
+  predictions <- cars_res$.predictions[[1]]
+  used_deg_free <- sort(unique(predictions$deg_free))
+
+  expect_length(notes, 2L)
+  expect_match(note, "recipe")
+  expect_match(note, "Error")
+
+  # failing rows are not in the output
+  expect_equal(nrow(extract), 2L)
+  expect_equal(extract$deg_free, c(3, 4))
+
+  expect_equal(used_deg_free, c(3, 4))
+})

@@ -178,6 +178,11 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
     tmp_rec <- catch_and_log(train_recipe(split, object, param_vals), ctrl, split, rec_msg, notes = .notes)
 
+    # check for recipe failure
+    if (inherits(tmp_rec, "try-error")) {
+      next
+    }
+
     tmp_fit <-
       catch_and_log(
         train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl),
