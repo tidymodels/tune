@@ -367,6 +367,19 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
   # ----------------------------------------------------------------------------
 
   tmp_df <- catch_and_log(exec_formula(split, object), ctrl, split, "formula", notes = .notes)
+
+  # check for formula failure
+  if (inherits(tmp_df, "try-error")) {
+    out <- list(
+      .metrics = metric_est,
+      .extracts = extracted,
+      .predictions = pred_vals,
+      .notes = .notes
+    )
+
+    return(out)
+  }
+
   tmp_trms <- tmp_df$terms
   tmp_df <- tmp_df[c("x", "y")]
 
