@@ -76,7 +76,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       rec_grid %>%
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
+
     tmp_rec <- catch_and_log(train_recipe(split, object, rec_grid_vals), ctrl, split, rec_msg, notes = .notes)
+
+    if (inherits(tmp_rec, "try-error")) {
+      next
+    }
 
     # All model tune parameters associated with the current recipe parameters
     mod_grid_vals <-
