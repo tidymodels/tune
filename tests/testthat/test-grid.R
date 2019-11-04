@@ -173,12 +173,15 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   cars_grid <- tibble(penalty = c(0.01, 0.02))
 
-  cars_res <- tune_grid(
-    rec,
-    model = model,
-    resamples = data_folds,
-    grid = cars_grid,
-    control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+  expect_warning(
+    cars_res <- tune_grid(
+      rec,
+      model = model,
+      resamples = data_folds,
+      grid = cars_grid,
+      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+    ),
+    "All models failed"
   )
 
   notes <- cars_res$.notes
@@ -206,12 +209,15 @@ test_that("tune model only - failure in formula is caught elegantly", {
   cars_grid <- tibble(penalty = 0.01)
 
   # these terms don't exist!
-  cars_res <- tune_grid(
-    y ~ z,
-    model = model,
-    resamples = data_folds,
-    grid = cars_grid,
-    control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+  expect_warning(
+    cars_res <- tune_grid(
+      y ~ z,
+      model = model,
+      resamples = data_folds,
+      grid = cars_grid,
+      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+    ),
+    "All models failed"
   )
 
   notes <- cars_res$.notes
