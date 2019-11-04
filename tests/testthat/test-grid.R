@@ -159,3 +159,40 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 
   expect_equal(used_deg_free, c(3, 4))
 })
+
+test_that("tune model only - failure in recipe is caught elegantly", {
+  set.seed(7898)
+  data_folds <- vfold_cv(mtcars, v = 2)
+
+  # NA values not allowed in recipe
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_bs(disp, deg_free = NA_real_)
+
+  model <- linear_reg(mode = "regression", penalty = tune()) %>%
+    set_engine("glmnet")
+
+  # NA values not allowed in recipe
+  cars_grid <- tibble(penalty = c(0.01, 0.02))
+
+  cars_res <- tune_grid(
+    rec,
+    model = model,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+  )
+
+  notes <- cars_res$.notes
+  note <- notes[[1]]$.notes
+
+  extracts <- cars_res$.extracts
+  predictions <- cars_res$.predictions
+
+  expect_length(notes, 2L)
+  expect_match(note, "recipe")
+  expect_match(note, "Error")
+
+  # recipe failed - no models run
+  expect_equal(extracts, list(NULL, NULL))
+  expect_equal(predictions, list(NULL, NULL))
+})

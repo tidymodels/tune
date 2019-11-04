@@ -278,6 +278,18 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
                   "recipe",
                   notes = .notes)
 
+  # check for recipe failure
+  if (inherits(tmp_rec, "try-error")) {
+    out <- list(
+      .metrics = metric_est,
+      .extracts = extracted,
+      .predictions = pred_vals,
+      .notes = .notes
+    )
+
+    return(out)
+  }
+
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
   mod_grid_vals <- get_wflow_model(object) %>% min_grid(grid)
