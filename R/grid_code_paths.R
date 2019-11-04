@@ -6,9 +6,11 @@ tune_nothing <- function(resamples, object, grid, metrics, ctrl)  {
 
   lab_names <- names(labels(resamples$splits[[1]]))
 
+  safely_iter_no_tune <- super_safely_iterate(iter_no_tune)
+
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_no_tune(rs_iter, resamples, object, metrics, ctrl)
+    safely_iter_no_tune(rs_iter, resamples, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -140,9 +142,11 @@ tune_rec_and_mod <- function(resamples, grid, object, metrics, ctrl) {
 
   lab_names <- names(labels(resamples$splits[[1]]))
 
+  safely_iter_rec_and_mod <- super_safely_iterate(iter_rec_and_mod)
+
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec_and_mod(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_rec_and_mod(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -214,9 +218,11 @@ tune_rec <- function(resamples, grid, object, metrics, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
+  safely_iter_rec <- super_safely_iterate(iter_rec)
+
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_rec(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_rec(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -234,9 +240,11 @@ tune_mod_with_recipe <- function(resamples, grid, object, metrics, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
+  safely_iter_mod_with_recipe <- super_safely_iterate(iter_mod_with_recipe)
+
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_recipe(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_mod_with_recipe(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -315,9 +323,11 @@ tune_mod_with_formula <- function(resamples, grid, object, metrics, ctrl) {
 
   `%op%` <- get_operator(ctrl$allow_par, object)
 
+  safely_iter_mod_with_formula <- super_safely_iterate(iter_mod_with_formula)
+
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_mod_with_formula(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_mod_with_formula(rs_iter, resamples, grid, object, metrics, ctrl)
 
   resamples <- pull_metrics(resamples, results, ctrl)
   resamples <- pull_notes(resamples, results, ctrl)
@@ -385,5 +395,87 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
+}
+
+# ----------------------------------------------------------------------------
+
+super_safely_iterate <- function(fn) {
+  purrr::partial(.f = super_safely_iterate_impl, fn = fn)
+}
+
+super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, object, metrics, ctrl) {
+  safely_iterate <- super_safely(fn)
+
+  result <- safely_iterate(rs_iter, resamples, grid, object, metrics, ctrl)
+
+  error <- result$error
+  warnings <- result$warnings
+  result <- result$result
+
+  # No problems
+  if (is.null(error) && length(warnings) == 0L) {
+    return(result)
+  }
+
+  # No errors, but we might have warning notes
+  if (is.null(error)) {
+    res <- result
+    notes <- result$.notes
+  } else {
+    res <- error
+    notes <- NULL
+  }
+
+  problems <- list(res = res, signals = warnings)
+
+  split <- resamples$splits[[rs_iter]]
+
+  notes <- log_problems(notes, ctrl, split, "internal", problems)
+
+  # Need an output template
+  if (!is.null(error)) {
+    result <- list(
+      .metrics = NULL,
+      .extracts = NULL,
+      .predictions = NULL,
+      .notes = NULL
+    )
+  }
+
+  # Update with new notes
+  result[[".notes"]] <- notes
+
+  result
+}
+
+# Capture any errors, and all warnings
+# If a warning is caught, we store it for later and invoke a restart
+# If an error is caught, we immediately exit
+# All other messages are still passed through
+super_safely <- function(fn) {
+  warnings <- list()
+
+  # Construct a try()-error to be compatible with `log_problems()`
+  handle_error <- function(e) {
+    e <- structure(e$message, class = "try-error", condition = e)
+    list(result = NULL, error = e, warnings = warnings)
+  }
+
+  handle_warning <- function(w) {
+    warnings <<- c(warnings, list(w))
+    rlang::cnd_muffle(w)
+  }
+
+  safe_fn <- function(...) {
+    withCallingHandlers(
+      expr = tryCatch(
+        expr = list(result = fn(...), error = NULL, warnings = warnings),
+        error = handle_error
+      ),
+      warning = handle_warning
+    )
+  }
+
+  safe_fn
 }
 
