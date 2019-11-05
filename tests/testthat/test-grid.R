@@ -150,8 +150,6 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   used_deg_free <- sort(unique(predictions$deg_free))
 
   expect_length(notes, 2L)
-  expect_match(note, "recipe")
-  expect_match(note, "Error")
 
   # failing rows are not in the output
   expect_equal(nrow(extract), 2L)
@@ -191,8 +189,6 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   predictions <- cars_res$.predictions
 
   expect_length(notes, 2L)
-  expect_match(note, "recipe")
-  expect_match(note, "Error")
 
   # recipe failed - no models run
   expect_equal(extracts, list(NULL, NULL))
@@ -227,8 +223,6 @@ test_that("tune model only - failure in formula is caught elegantly", {
   predictions <- cars_res$.predictions
 
   expect_length(notes, 2L)
-  expect_match(note, "formula")
-  expect_match(note, "Error")
 
   # formula failed - no models run
   expect_equal(extracts, list(NULL, NULL))
@@ -263,8 +257,6 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   prediction <- cars_res$.predictions[[1]]
 
   expect_length(notes, 2L)
-  expect_match(note, "recipe")
-  expect_match(note, "Error")
 
   # recipe failed half of the time, only 1 model passed
   expect_equal(nrow(extract), 1L)
