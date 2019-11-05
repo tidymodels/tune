@@ -79,7 +79,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
     tmp_rec <- catch_and_log(train_recipe(split, object, rec_grid_vals), ctrl, split, rec_msg, notes = .notes)
 
-    if (inherits(tmp_rec, "try-error")) {
+    if (is_failure(tmp_rec)) {
       next
     }
 
@@ -114,7 +114,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
         )
 
       # check for parsnip level and model level failure
-      if (inherits(tmp_fit, "try-error") || inherits(tmp_fit$fit, "try-error")) {
+      if (is_failure(tmp_fit) || is_failure(tmp_fit$fit)) {
         next
       }
 
@@ -133,7 +133,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
         )
 
       # check for prediction level failure
-      if (inherits(tmp_pred, "try-error")) {
+      if (is_failure(tmp_pred)) {
         next
       }
 
@@ -190,7 +190,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
     tmp_rec <- catch_and_log(train_recipe(split, object, param_vals), ctrl, split, rec_msg, notes = .notes)
 
     # check for recipe failure
-    if (inherits(tmp_rec, "try-error")) {
+    if (is_failure(tmp_rec)) {
       next
     }
 
@@ -204,7 +204,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       )
 
     # check for parsnip level and model level failure
-    if (inherits(tmp_fit, "try-error") || inherits(tmp_fit$fit, "try-error")) {
+    if (is_failure(tmp_fit) || is_failure(tmp_fit$fit)) {
       next
     }
 
@@ -223,7 +223,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       )
 
     # check for prediction level failure
-    if (inherits(tmp_pred, "try-error")) {
+    if (is_failure(tmp_pred)) {
       next
     }
 
@@ -296,7 +296,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
                   notes = .notes)
 
   # check for recipe failure
-  if (inherits(tmp_rec, "try-error")) {
+  if (is_failure(tmp_rec)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -325,7 +325,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
       )
 
     # check for parsnip level and model level failure
-    if (inherits(tmp_fit, "try-error") || inherits(tmp_fit$fit, "try-error")) {
+    if (is_failure(tmp_fit) || is_failure(tmp_fit$fit)) {
       next
     }
 
@@ -342,7 +342,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
       )
 
     # check for prediction level failure
-    if (inherits(tmp_pred, "try-error")) {
+    if (is_failure(tmp_pred)) {
       next
     }
 
@@ -391,7 +391,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
   tmp_df <- catch_and_log(exec_formula(split, object), ctrl, split, "formula", notes = .notes)
 
   # check for formula failure
-  if (inherits(tmp_df, "try-error")) {
+  if (is_failure(tmp_df)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -424,7 +424,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
       )
 
     # check for parsnip level and model level failure
-    if (inherits(tmp_fit, "try-error") || inherits(tmp_fit$fit, "try-error")) {
+    if (is_failure(tmp_fit) || is_failure(tmp_fit$fit)) {
       next
     }
 
@@ -442,7 +442,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
       )
 
     # check for prediction level failure
-    if (inherits(tmp_pred, "try-error")) {
+    if (is_failure(tmp_pred)) {
       next
     }
 
@@ -536,3 +536,8 @@ super_safely <- function(fn) {
   safe_fn
 }
 
+# ----------------------------------------------------------------------------
+
+is_failure <- function(x) {
+  inherits(x, "try-error")
+}
