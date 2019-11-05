@@ -203,26 +203,32 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
         notes = .notes
       )
 
-
-    # check for failure
-    if (!inherits(tmp_fit$fit, "try-error")) {
-      pred_msg <- paste(mod_msg, "(predictions)")
-      tmp_pred <-
-        catch_and_log(
-          predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, metrics),
-          ctrl,
-          split,
-          pred_msg,
-          bad_only = TRUE,
-          notes = .notes
-        )
-
-      metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
-      pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
-
+    # check for parsnip level and model level failure
+    if (inherits(tmp_fit, "try-error") || inherits(tmp_fit$fit, "try-error")) {
+      next
     }
 
     extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, grid[param_iter, ], split, ctrl)
+
+    pred_msg <- paste(mod_msg, "(predictions)")
+
+    tmp_pred <-
+      catch_and_log(
+        predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, metrics),
+        ctrl,
+        split,
+        pred_msg,
+        bad_only = TRUE,
+        notes = .notes
+      )
+
+    # check for prediction level failure
+    if (inherits(tmp_pred, "try-error")) {
+      next
+    }
+
+    metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
   } # recipe parameters
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
