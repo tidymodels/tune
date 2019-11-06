@@ -15,6 +15,9 @@ train_recipe <- function(split, object, grid) {
 }
 
 train_model_from_recipe <- function(object, recipe, grid, ...) {
+  if (runif(1) < .1) {
+    stop("STOP!")
+  }
   tmp_fit <- get_wflow_model(object)
   if (!is.null(grid)) {
     tmp_fit <- merge(tmp_fit, grid)$x[[1]]

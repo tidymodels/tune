@@ -56,6 +56,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
   wrn <- res$signals
   if (length(wrn) > 0) {
+    system("say oops")
     wrn_msg <- map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
@@ -65,6 +66,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
+    system("say no!")
     err_msg <- as.character(attr(res$res,"condition"))
     err_msg <- gsub("\n$", "", err_msg)
     err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
@@ -74,6 +76,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   } else {
     if (!bad_only) {
       tune_log(control, split, loc, type = "success")
+      system("say yay")
     }
   }
   notes
