@@ -291,15 +291,21 @@ quarterback <- function(x) {
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 
-  args <- list(splits = expr(resamples), grid = expr(grid),
-               wflow = expr(object), metrics = expr(metrics),
-               ctrl = expr(control))
+  args <- list(
+    splits = expr(resamples),
+    grid = expr(grid),
+    wflow = expr(object),
+    metrics = expr(metrics),
+    ctrl = expr(control)
+  )
+
   dplyr::case_when(
      tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
      tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
      has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
     !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
-     TRUE ~ rlang::call2("tune_nothing")
+     has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
+     TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
   )
 }
 

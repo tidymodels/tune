@@ -17,6 +17,18 @@ check_rset <- function(x) {
 
 
 check_grid <- function(x, object) {
+  parameters <- dials::parameters(object)
+
+  if (nrow(parameters) == 0L) {
+    msg <- paste0(
+      "The workflow has no tuning parameters, ",
+      "performance will be evaluated using the resamples with no tuning. ",
+      "Did you want `resample()`?"
+    )
+    rlang::warn(msg)
+    return(x)
+  }
+
   if (is.null(x)) {
     x <- 10
   }
@@ -24,7 +36,7 @@ check_grid <- function(x, object) {
   if (is.numeric(x)) {
     x <- as.integer(x[1])
     check_object(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
+    x <- dials::grid_latin_hypercube(parameters, size = x)
     x <- dplyr::distinct(x)
     return(x)
   }

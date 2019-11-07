@@ -1,39 +1,11 @@
-
-tune_nothing <- function(resamples, object, grid, metrics, ctrl)  {
-  B <- nrow(resamples)
-
-  `%op%` <- get_operator(ctrl$allow_par, object)
-
-  lab_names <- names(labels(resamples$splits[[1]]))
-
-  results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_no_tune(rs_iter, resamples, object, metrics, ctrl)
-
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
-
-  resamples
+tune_nothing_with_recipe <- function(resamples, grid, object, metrics, ctrl)  {
+  resample_with_recipe(resamples, object, metrics, ctrl)
 }
 
-iter_no_tune <- function(rs_iter, resamples, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
-
-  split <- resamples$splits[[rs_iter]]
-  metric_est <- NULL
-  extracted <- NULL
-  pred_vals <- NULL
-  .notes <- NULL
-
- # use fit.workflow and predict.workflow
-
-  # list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
-
+tune_nothing_with_formula <- function(resamples, grid, object, metrics, ctrl)  {
+  resample_with_formula(resamples, object, metrics, ctrl)
 }
+
 # ------------------------------------------------------------------------------
 
 iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
