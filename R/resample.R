@@ -1,6 +1,6 @@
 #' Fit multiple models via resampling
 #'
-#' `resample()` computes a set of performance metrics across one or more
+#' `fit_resamples()` computes a set of performance metrics across one or more
 #' resamples. It does not perform any tuning (see [tune_grid()] and
 #' [tune_bayes()] for that), and is instead used for fitting a single
 #' model+recipe or model+formula combination across many resamples.
@@ -41,21 +41,21 @@
 #'
 #' control <- control_grid(save_pred = TRUE)
 #'
-#' spline_res <- resample(spline_rec, lin_mod, folds, control = control)
+#' spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
 #'
 #' spline_res
 #'
 #' show_best(spline_res, metric = "rmse", maximize = FALSE)
 #'
 #' @export
-resample <- function(object, ...) {
-  UseMethod("resample")
+fit_resamples <- function(object, ...) {
+  UseMethod("fit_resamples")
 }
 
 #' @export
-resample.default <- function(object, ...) {
+fit_resamples.default <- function(object, ...) {
   msg <- paste0(
-    "The first argument to `resample()` should be either a ",
+    "The first argument to `fit_resamples()` should be either a ",
     "formula, recipe, or workflow."
   )
   rlang::abort(msg)
@@ -63,14 +63,14 @@ resample.default <- function(object, ...) {
 
 # TODO - `control_resample()`? It would be the same as `control_grid()`?
 
-#' @rdname resample
+#' @rdname fit_resamples
 #' @export
-resample.recipe <- function(object,
-                            model,
-                            resamples,
-                            ...,
-                            metrics = NULL,
-                            control = control_grid()) {
+fit_resamples.recipe <- function(object,
+                                 model,
+                                 resamples,
+                                 ...,
+                                 metrics = NULL,
+                                 control = control_grid()) {
 
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
@@ -83,14 +83,14 @@ resample.recipe <- function(object,
   resample_workflow(workflow, resamples, metrics, control)
 }
 
-#' @rdname resample
+#' @rdname fit_resamples
 #' @export
-resample.formula <- function(formula,
-                             model,
-                             resamples,
-                             ...,
-                             metrics = NULL,
-                             control = control_grid()) {
+fit_resamples.formula <- function(formula,
+                                  model,
+                                  resamples,
+                                  ...,
+                                  metrics = NULL,
+                                  control = control_grid()) {
 
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
@@ -103,13 +103,13 @@ resample.formula <- function(formula,
   resample_workflow(workflow, resamples, metrics, control)
 }
 
-#' @rdname resample
+#' @rdname fit_resamples
 #' @export
-resample.workflow <- function(object,
-                              resamples,
-                              ...,
-                              metrics = NULL,
-                              control = control_grid()) {
+fit_resamples.workflow <- function(object,
+                                   resamples,
+                                   ...,
+                                   metrics = NULL,
+                                   control = control_grid()) {
 
   resample_workflow(object, resamples, metrics, control)
 }
@@ -131,7 +131,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   if (is_cataclysmic(resamples)) {
     rlang::warn(
-      "All models failed in `resample()`. See the `.notes` column."
+      "All models failed in `fit_resamples()`. See the `.notes` column."
     )
   }
 
