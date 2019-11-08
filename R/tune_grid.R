@@ -292,11 +292,11 @@ quarterback <- function(x) {
   tune_model <- any(sources == "model_spec")
 
   args <- list(
-    splits = expr(resamples),
+    resamples = expr(resamples),
     grid = expr(grid),
-    wflow = expr(object),
+    workflow = expr(object),
     metrics = expr(metrics),
-    ctrl = expr(control)
+    control = expr(control)
   )
 
   dplyr::case_when(
