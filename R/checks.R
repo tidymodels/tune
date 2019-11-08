@@ -21,7 +21,7 @@ check_grid <- function(x, object) {
 
   if (nrow(parameters) == 0L) {
     msg <- paste0(
-      "The workflow has no tuning parameters, ",
+      "No tuning parameters have been detected, ",
       "performance will be evaluated using the resamples with no tuning. ",
       "Did you want `resample()`?"
     )
