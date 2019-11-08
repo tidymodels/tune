@@ -152,8 +152,10 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 
   lab_names <- names(labels(resamples$splits[[1]]))
 
+  safely_iter_resample_with_recipe <- super_safely_iterate(iter_resample_with_recipe)
+
   results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_resample_with_recipe(rs_iter, resamples, workflow, metrics, control)
+    safely_iter_resample_with_recipe(rs_iter, resamples, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -255,8 +257,10 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 
   lab_names <- names(labels(resamples$splits[[1]]))
 
+  safely_iter_resample_with_formula <- super_safely_iterate(iter_resample_with_formula)
+
   results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    iter_resample_with_formula(rs_iter, resamples, workflow, metrics, control)
+    safely_iter_resample_with_formula(rs_iter, resamples, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
