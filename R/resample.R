@@ -20,6 +20,8 @@
 #'
 #' @param formula A formula specifying the terms of the model.
 #'
+#' @param ... Currently unused.
+#'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting information

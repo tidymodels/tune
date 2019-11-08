@@ -38,6 +38,8 @@ fit_resamples(object, ...)
 \arguments{
 \item{object}{A workflow, formula, or recipe.}
 
+\item{...}{Currently unused.}
+
 \item{model}{A \code{parsnip} model specification.}
 
 \item{resamples}{A resample \code{rset} created from an \code{rsample} function such
