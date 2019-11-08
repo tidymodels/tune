@@ -15,7 +15,7 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_grid()
+  control = control_resamples()
 )
 
 \method{fit_resamples}{formula}(
@@ -24,10 +24,16 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_grid()
+  control = control_resamples()
 )
 
-\method{fit_resamples}{workflow}(object, resamples, ..., metrics = NULL, control = control_grid())
+\method{fit_resamples}{workflow}(
+  object,
+  resamples,
+  ...,
+  metrics = NULL,
+  control = control_resamples()
+)
 }
 \arguments{
 \item{object}{A workflow, formula, or recipe.}
@@ -40,7 +46,7 @@ as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{A \code{control_grid()} object used to fine tune the resampling
+\item{control}{A \code{control_resamples()} object used to fine tune the resampling
 process.}
 
 \item{formula}{A formula specifying the terms of the model.}
@@ -139,7 +145,7 @@ spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
 lin_mod <- linear_reg() \%>\%
   set_engine("lm")
 
-control <- control_grid(save_pred = TRUE)
+control <- control_resamples(save_pred = TRUE)
 
 spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
 

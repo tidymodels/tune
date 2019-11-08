@@ -24,6 +24,9 @@
 #' parameter column and a list column (also called `.extracts`) that contains
 #' the results of the function. If no extraction function is used, there is no
 #' `.extracts` column in the resulting object.
+#'
+#' `control_resamples()` is an alias for `control_grid()` and is meant to be
+#' used with [fit_resamples()].
 #' @export
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
@@ -41,7 +44,9 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
        save_pred = save_pred, pkgs = pkgs)
 }
 
-
+#' @rdname control_grid
+#' @export
+control_resamples <- control_grid
 
 # ------------------------------------------------------------------------------
 

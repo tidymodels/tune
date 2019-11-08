@@ -15,7 +15,7 @@
 #' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
 #'   set of metrics.
 #'
-#' @param control A `control_grid()` object used to fine tune the resampling
+#' @param control A `control_resamples()` object used to fine tune the resampling
 #'   process.
 #'
 #' @param formula A formula specifying the terms of the model.
@@ -39,7 +39,7 @@
 #' lin_mod <- linear_reg() %>%
 #'   set_engine("lm")
 #'
-#' control <- control_grid(save_pred = TRUE)
+#' control <- control_resamples(save_pred = TRUE)
 #'
 #' spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
 #'
@@ -61,8 +61,6 @@ fit_resamples.default <- function(object, ...) {
   rlang::abort(msg)
 }
 
-# TODO - `control_resample()`? It would be the same as `control_grid()`?
-
 #' @rdname fit_resamples
 #' @export
 fit_resamples.recipe <- function(object,
@@ -70,7 +68,7 @@ fit_resamples.recipe <- function(object,
                                  resamples,
                                  ...,
                                  metrics = NULL,
-                                 control = control_grid()) {
+                                 control = control_resamples()) {
 
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
@@ -90,7 +88,7 @@ fit_resamples.formula <- function(formula,
                                   resamples,
                                   ...,
                                   metrics = NULL,
-                                  control = control_grid()) {
+                                  control = control_resamples()) {
 
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
@@ -109,7 +107,7 @@ fit_resamples.workflow <- function(object,
                                    resamples,
                                    ...,
                                    metrics = NULL,
-                                   control = control_grid()) {
+                                   control = control_resamples()) {
 
   resample_workflow(object, resamples, metrics, control)
 }
