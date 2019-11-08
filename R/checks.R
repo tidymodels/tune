@@ -17,28 +17,46 @@ check_rset <- function(x) {
 
 
 check_grid <- function(x, object) {
+  parameters <- dials::parameters(object)
+
+  if (nrow(parameters) == 0L) {
+    msg <- paste0(
+      "No tuning parameters have been detected, ",
+      "performance will be evaluated using the resamples with no tuning. ",
+      "Did you want `fit_resamples()`?"
+    )
+    rlang::warn(msg)
+    return(x)
+  }
+
+  if (is.null(x)) {
+    x <- 10
+  }
+
+  if (is.numeric(x)) {
+    x <- as.integer(x[1])
+    check_object(object, check_dials = TRUE)
+    x <- dials::grid_latin_hypercube(parameters, size = x)
+    x <- dplyr::distinct(x)
+    return(x)
+  }
+
+  if (!is.data.frame(x) & !inherits(x, "param_grid")) {
+    msg <- paste0(
+      "The `grid` argument should be either a data frame, a 'param_grid' ",
+      "object, or an integer."
+    )
+    rlang::abort(msg)
+  }
+
   tune_param <- tune_args(object)
 
-  if (!is.null(x) && !is.numeric(x)) {
-    if (!is.data.frame(x) & !inherits(x, "param_grid")) {
-      stop("The `grid` argument should be either a data frame, a 'param_grid' ",
-           "object, or an integer.", call. = FALSE)
-    }
-    if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
-      stop("Based on the workflow, the grid object should have columns: ",
-           paste0("'", tune_param$id, "'", collapse = ", "),
-           call. = FALSE)
-    }
-  } else {
-    if (is.null(x)) {
-      x <- 10
-    }
-    if (is.numeric(x)) {
-      x <- as.integer(x[1])
-      check_object(object, check_dials = TRUE)
-      x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
-      x <- dplyr::distinct(x)
-    }
+  if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
+    msg <- paste0(
+      "Based on the workflow, the grid object should have columns: ",
+      paste0("'", tune_param$id, "'", collapse = ", ")
+    )
+    rlang::abort(msg)
   }
 
   if (!tibble::is_tibble(x)) {
