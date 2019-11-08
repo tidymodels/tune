@@ -74,9 +74,9 @@ fit_resamples.recipe <- function(object,
     rlang::abort("`model` should be a parsnip model specification object.")
   }
 
-  workflow <- workflow() %>%
-    add_recipe(object) %>%
-    add_model(model)
+  workflow <- workflow()
+  workflow <- add_recipe(workflow, object)
+  workflow <- add_model(workflow, model)
 
   resample_workflow(workflow, resamples, metrics, control)
 }
@@ -94,9 +94,9 @@ fit_resamples.formula <- function(formula,
     rlang::abort("`model` should be a parsnip model specification object.")
   }
 
-  workflow <- workflow() %>%
-    add_formula(formula) %>%
-    add_model(model)
+  workflow <- workflow()
+  workflow <- add_formula(workflow, formula)
+  workflow <- add_model(workflow, model)
 
   resample_workflow(workflow, resamples, metrics, control)
 }
@@ -389,9 +389,8 @@ predict_model_from_recipe_no_grid <- function(split, model, recipe, metrics) {
   }
 
   # Add outcome data
-  outcome_dat <- new_vals %>%
-    dplyr::select(dplyr::one_of(y_names)) %>%
-    dplyr::mutate(.row = orig_rows)
+  outcome_dat <- dplyr::select(new_vals, dplyr::one_of(y_names))
+  outcome_dat <- dplyr::mutate(outcome_dat, .row = orig_rows)
 
   res <- dplyr::full_join(res, outcome_dat, by = ".row")
 
@@ -423,8 +422,7 @@ predict_model_from_terms_no_grid <- function(split, model, terms, metrics) {
   }
 
   # Add outcome data
-  outcome_dat <- data$y %>%
-    dplyr::mutate(.row = orig_rows)
+  outcome_dat <- dplyr::mutate(data$y, .row = orig_rows)
 
   res <- dplyr::full_join(res, outcome_dat, by = ".row")
 
