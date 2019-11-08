@@ -16,9 +16,10 @@ check_rset <- function(x) {
 }
 
 
+grid_msg <- "`grid` should be a positive integer or a data frame."
+
 check_grid <- function(x, object) {
   parameters <- dials::parameters(object)
-
   if (nrow(parameters) == 0L) {
     msg <- paste0(
       "No tuning parameters have been detected, ",
@@ -30,33 +31,35 @@ check_grid <- function(x, object) {
   }
 
   if (is.null(x)) {
-    x <- 10
+    rlang::abort(grid_msg)
   }
 
-  if (is.numeric(x)) {
+  if (!is.numeric(x)) {
+    if (!is.data.frame(x)) {
+      rlang::abort(grid_msg)
+    }
+
+    tune_param <- tune_args(object)
+    param_nms <- sort(tune_param$id)
+    # when called from `tune_bayes()`
+    param_nms <- param_nms[param_nms != ".iter"]
+    x_nms <- sort(names(x))
+    if (!isTRUE(all.equal(param_nms, x_nms))) {
+      rlang::abort(
+        paste(
+          "The grid object should have columns:",
+          paste0("'", param_nms, "'", collapse = ", ")
+        )
+      )
+    }
+  } else {
     x <- as.integer(x[1])
+    if (x < 1) {
+      rlang::abort(grid_msg)
+    }
     check_object(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(parameters, size = x)
+    x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
     x <- dplyr::distinct(x)
-    return(x)
-  }
-
-  if (!is.data.frame(x) & !inherits(x, "param_grid")) {
-    msg <- paste0(
-      "The `grid` argument should be either a data frame, a 'param_grid' ",
-      "object, or an integer."
-    )
-    rlang::abort(msg)
-  }
-
-  tune_param <- tune_args(object)
-
-  if (!isTRUE(all.equal(sort(names(x)), sort(tune_param$id)))) {
-    msg <- paste0(
-      "Based on the workflow, the grid object should have columns: ",
-      paste0("'", tune_param$id, "'", collapse = ", ")
-    )
-    rlang::abort(msg)
   }
 
   if (!tibble::is_tibble(x)) {
@@ -152,11 +155,13 @@ check_metrics <- function(x, object) {
   x
 }
 
+bayes_msg <- "`initial` should be a positive integer or the results of `tune_grid()`"
+
 check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
-  if (is.null(x) || is.numeric(x)) {
-    if (is.null(x)) {
-      x <- 3
-    }
+  if (is.null(x)) {
+    rlang::abort(bayes_msg)
+  }
+  if (is.numeric(x)) {
     x <- create_initial_set(pset, n = x)
     if (ctrl$verbose) {
       message()
@@ -169,6 +174,10 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
       message()
+    }
+  } else {
+    if (!inherits(x, "tune_results")) {
+      rlang::abort(bayes_msg)
     }
   }
   if (!any(names(x) == ".iter")) {

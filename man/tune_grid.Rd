@@ -16,7 +16,7 @@ tune_grid(object, ...)
   object,
   model,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -26,7 +26,7 @@ tune_grid(object, ...)
   formula,
   model,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -35,7 +35,7 @@ tune_grid(object, ...)
 \method{tune_grid}{workflow}(
   object,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -51,11 +51,11 @@ workflow).}
 
 \item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
 
-\item{grid}{A data frame of tuning combinations, an integer, or \code{NULL}. The
+\item{grid}{A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
-parameter sets to be created automatically. \code{NULL} produces a set of 10
-candidates. If used, this argument \strong{should be named}.}
+parameter sets to be created automatically. If used, this argument
+\strong{should be named}.}
 
 \item{metrics}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
 \strong{should be named}.}

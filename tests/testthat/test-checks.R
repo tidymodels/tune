@@ -30,18 +30,18 @@ test_that('grid objects', {
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
 
   expect_error(tune:::check_grid(grid_1[, -1], chi_wflow),
-               "the grid object should have columns")
+               "The grid object should have columns:")
 
   expect_error(tune:::check_grid(chi_wflow, chi_wflow),
-               "The `grid` argument should")
+               "`grid` should be a positive integer or a data frame")
 
   wflow_1 <-
     workflow() %>%
     add_model(glmn) %>%
     add_recipe(bare_rec)
 
-  expect_error(grid_2 <- tune:::check_grid(NULL, wflow_1), NA)
-  expect_equal(nrow(grid_2), 10)
+  expect_error(grid_2 <- tune:::check_grid(6, wflow_1), NA)
+  expect_equal(nrow(grid_2), 6)
   expect_true(inherits(grid_2, "data.frame"))
 
   # For issue #56
@@ -152,20 +152,28 @@ test_that('initial values', {
     add_model(glmn) %>%
     add_recipe(recipe(mpg ~ ., data = mtcars))
 
-  grid_1 <- tune:::check_initial(NULL, dials::parameters(wflow_1), wflow_1,
+  grid_1 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  control_bayes())
   expect_true(is.data.frame(grid_1))
-  expect_equal(nrow(grid_1), 10)
-  expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 3)))
+  expect_equal(nrow(grid_1), nrow(mtfolds))
+  expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
 
-  grid_2 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
+  grid_2 <- tune:::check_initial(grid_1,
+                                 dials::parameters(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  control_bayes())
   expect_true(is.data.frame(grid_2))
-  expect_equal(nrow(grid_2), 10)
+  expect_equal(nrow(grid_2), nrow(mtfolds))
   expect_true(all(purrr::map_lgl(grid_2$.metrics, ~ nrow(.x) == 2)))
 
+  expect_error(
+    tune:::check_initial(collect_metrics(grid_1),
+                         dials::parameters(wflow_1), wflow_1,
+                         mtfolds, yardstick::metric_set(yardstick::rsq),
+                         control_bayes()),
+    "`initial` should be a positive integer or"
+  )
 })
 
 # ------------------------------------------------------------------------------
