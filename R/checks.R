@@ -19,8 +19,16 @@ check_rset <- function(x) {
 grid_msg <- "`grid` should be a positive integer or a data frame."
 
 check_grid <- function(x, object) {
-  tune_param <- tune_args(object)
-
+  parameters <- dials::parameters(object)
+  if (nrow(parameters) == 0L) {
+    msg <- paste0(
+      "No tuning parameters have been detected, ",
+      "performance will be evaluated using the resamples with no tuning. ",
+      "Did you want `fit_resamples()`?"
+    )
+    rlang::warn(msg)
+    return(x)
+  }
 
   if (is.null(x)) {
     rlang::abort(grid_msg)
@@ -30,6 +38,8 @@ check_grid <- function(x, object) {
     if (!is.data.frame(x)) {
       rlang::abort(grid_msg)
     }
+
+    tune_param <- tune_args(object)
     param_nms <- sort(tune_param$id)
     # when called from `tune_bayes()`
     param_nms <- param_nms[param_nms != ".iter"]

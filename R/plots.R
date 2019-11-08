@@ -59,6 +59,10 @@ autoplot.tune_results <-
     p
   }
 
+#' @export
+autoplot.resample_results <- function(object, ...) {
+  rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
+}
 
 plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
