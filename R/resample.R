@@ -389,10 +389,10 @@ predict_model_from_recipe_no_grid <- function(split, model, recipe, metrics) {
   }
 
   # Add outcome data
-  outcome_dat <- dplyr::select(new_vals, dplyr::one_of(y_names))
-  outcome_dat <- dplyr::mutate(outcome_dat, .row = orig_rows)
+  outcome_data <- dplyr::select(new_vals, dplyr::one_of(y_names))
+  outcome_data <- dplyr::mutate(outcome_data, .row = orig_rows)
 
-  res <- dplyr::full_join(res, outcome_dat, by = ".row")
+  res <- dplyr::full_join(res, outcome_data, by = ".row")
 
   tibble::as_tibble(res)
 }
@@ -422,9 +422,9 @@ predict_model_from_terms_no_grid <- function(split, model, terms, metrics) {
   }
 
   # Add outcome data
-  outcome_dat <- dplyr::mutate(data$y, .row = orig_rows)
+  outcome_data <- dplyr::mutate(data$y, .row = orig_rows)
 
-  res <- dplyr::full_join(res, outcome_dat, by = ".row")
+  res <- dplyr::full_join(res, outcome_data, by = ".row")
 
   tibble::as_tibble(res)
 }
