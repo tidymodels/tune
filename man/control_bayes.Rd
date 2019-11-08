@@ -4,9 +4,16 @@
 \alias{control_bayes}
 \title{Control the Bayesian search process}
 \usage{
-control_bayes(verbose = FALSE, no_improve = 10L, uncertain = Inf,
-  seed = sample.int(10^5, 1), extract = NULL, save_pred = FALSE,
-  time_limit = NA, pkgs = NULL)
+control_bayes(
+  verbose = FALSE,
+  no_improve = 10L,
+  uncertain = Inf,
+  seed = sample.int(10^5, 1),
+  extract = NULL,
+  save_pred = FALSE,
+  time_limit = NA,
+  pkgs = NULL
+)
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite

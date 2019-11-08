@@ -12,14 +12,34 @@ tune_grid(object, ...)
 
 \method{tune_grid}{default}(object, ...)
 
-\method{tune_grid}{recipe}(object, model, resamples, grid = 10,
-  metrics = NULL, control = control_grid(), ...)
+\method{tune_grid}{recipe}(
+  object,
+  model,
+  resamples,
+  grid = 10,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 
-\method{tune_grid}{formula}(formula, model, resamples, grid = 10,
-  metrics = NULL, control = control_grid(), ...)
+\method{tune_grid}{formula}(
+  formula,
+  model,
+  resamples,
+  grid = 10,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 
-\method{tune_grid}{workflow}(object, resamples, grid = 10,
-  metrics = NULL, control = control_grid(), ...)
+\method{tune_grid}{workflow}(
+  object,
+  resamples,
+  grid = 10,
+  metrics = NULL,
+  control = control_grid(),
+  ...
+)
 }
 \arguments{
 \item{object}{A model workflow, R formula or recipe object.}
