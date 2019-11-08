@@ -430,10 +430,10 @@ super_safely_iterate <- function(fn) {
   purrr::partial(.f = super_safely_iterate_impl, fn = fn)
 }
 
-super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, object, metrics, ctrl) {
+super_safely_iterate_impl <- function(fn, ...) {
   safely_iterate <- super_safely(fn)
 
-  result <- safely_iterate(rs_iter, resamples, grid, object, metrics, ctrl)
+  result <- safely_iterate(...)
 
   error <- result$error
   warnings <- result$warnings
