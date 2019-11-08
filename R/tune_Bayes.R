@@ -580,6 +580,6 @@ reup_rs <- function(resamples, res)  {
     }
   }
 
-  class(res) <- c("tune_results", class(res))
+  class(res) <- unique(c("tune_results", class(res)))
   res
 }

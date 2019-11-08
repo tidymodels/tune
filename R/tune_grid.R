@@ -278,7 +278,7 @@ tune_grid_workflow <-
               call. = FALSE)
     }
 
-    class(resamples) <- c("tune_results", class(resamples))
+    class(resamples) <- unique(c("tune_results", class(resamples)))
     resamples
   }
 

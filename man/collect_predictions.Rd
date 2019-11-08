@@ -7,7 +7,8 @@
 \usage{
 collect_predictions(x, nest_by = "nothing", wflow = NULL)
 
-collect_metrics(x, nest_by = "nothing", summarize = TRUE, wflow = NULL)
+collect_metrics(x, nest_by = "nothing", summarize = TRUE,
+  wflow = NULL)
 }
 \arguments{
 \item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}. For
