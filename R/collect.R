@@ -19,6 +19,8 @@
 #' # ---------------------------------------------------------------------------
 #'
 #' library(parsnip)
+#' library(rsample)
+#'
 #' lm_mod <-linear_reg() %>% set_engine("lm")
 #' set.seed(93599150)
 #' car_folds <- vfold_cv(mtcars)
