@@ -48,13 +48,13 @@ as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{A \code{control_resamples()} object used to fine tune the resampling
+\item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
 process.}
 
 \item{formula}{A formula specifying the terms of the model.}
 }
 \description{
-\code{fit_resamples()} computes a set of performance metrics across one or more
+\code{\link[=fit_resamples]{fit_resamples()}} computes a set of performance metrics across one or more
 resamples. It does not perform any tuning (see \code{\link[=tune_grid]{tune_grid()}} and
 \code{\link[=tune_bayes]{tune_bayes()}} for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples.
@@ -62,7 +62,7 @@ model+recipe or model+formula combination across many resamples.
 \section{Performance Metrics}{
 
 
-To use your own performance metrics, the \code{yardstick::metric_set()} function
+To use your own performance metrics, the \code{\link[yardstick:metric_set]{yardstick::metric_set()}} function
 can be used to pick what should be measured for each model. If multiple
 metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
@@ -91,7 +91,7 @@ The out-of-sample estimates of these metrics are contained in a list column
 called \code{.metrics}. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.
 
-\code{collect_metrics()} can be used for these objects to collapse the results
+\code{\link[=collect_metrics]{collect_metrics()}} can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).
 }
@@ -111,8 +111,8 @@ function generates a column called \code{.pred} and so on. As noted above, the
 prediction columns that are returned are determined by the type of metric(s)
 requested.
 
-This list column can be \code{unnested} using \code{tidyr::unnest()} or using the
-convenience function \code{collect_predictions()}.
+This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::unnest()}} or using the
+convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
 \section{Extracting information}{
@@ -155,4 +155,7 @@ spline_res
 
 show_best(spline_res, metric = "rmse", maximize = FALSE)
 
+}
+\seealso{
+\code{\link[=control_resamples]{control_resamples()}}, \code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_metrics]{collect_metrics()}}
 }

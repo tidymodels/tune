@@ -53,6 +53,6 @@ parameter column and a list column (also called \code{.extracts}) that contains
 the results of the function. If no extraction function is used, there is no
 \code{.extracts} column in the resulting object.
 
-\code{control_resamples()} is an alias for \code{control_grid()} and is meant to be
+\code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
 used with \code{\link[=fit_resamples]{fit_resamples()}}.
 }

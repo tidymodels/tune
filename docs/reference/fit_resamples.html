@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bayesian optimization of model parameters. — tune_bayes • tune</title>
+<title>Fit multiple models via resampling — fit_resamples • tune</title>
 
 
 <!-- jquery -->
@@ -34,9 +34,11 @@
 
 
 
-<meta property="og:title" content="Bayesian optimization of model parameters. — tune_bayes" />
-<meta property="og:description" content="tune_bayes() uses models to generate new candidate tuning parameter
-combinations based on previous results." />
+<meta property="og:title" content="Fit multiple models via resampling — fit_resamples" />
+<meta property="og:description" content="fit_resamples() computes a set of performance metrics across one or more
+resamples. It does not perform any tuning (see tune_grid() and
+tune_bayes() for that), and is instead used for fitting a single
+model+recipe or model+formula combination across many resamples." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -130,60 +132,47 @@ combinations based on previous results." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Bayesian optimization of model parameters.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/tune_Bayes.R'><code>R/tune_Bayes.R</code></a></small>
-    <div class="hidden name"><code>tune_bayes.Rd</code></div>
+    <h1>Fit multiple models via resampling</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/resample.R'><code>R/resample.R</code></a></small>
+    <div class="hidden name"><code>fit_resamples.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>tune_bayes()</code> uses models to generate new candidate tuning parameter
-combinations based on previous results.</p>
+    <p><code>fit_resamples()</code> computes a set of performance metrics across one or more
+resamples. It does not perform any tuning (see <code><a href='tune_grid.html'>tune_grid()</a></code> and
+<code><a href='tune_bayes.html'>tune_bayes()</a></code> for that), and is instead used for fitting a single
+model+recipe or model+formula combination across many resamples.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>fit_resamples</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for recipe</span>
-<span class='fu'>tune_bayes</span>(
+<span class='fu'>fit_resamples</span>(
   <span class='no'>object</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>()
 )
 
 <span class='co'># S3 method for formula</span>
-<span class='fu'>tune_bayes</span>(
+<span class='fu'>fit_resamples</span>(
   <span class='no'>formula</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>()
 )
 
 <span class='co'># S3 method for workflow</span>
-<span class='fu'>tune_bayes</span>(
+<span class='fu'>fit_resamples</span>(
   <span class='no'>object</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='no'>...</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -191,99 +180,37 @@ combinations based on previous results.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A model workflow, R formula or recipe object.</p></td>
+      <td><p>A workflow, formula, or recipe.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <td><p>Currently unused.</p></td>
     </tr>
     <tr>
       <th>model</th>
-      <td><p>A <code>parsnip</code> model specification (or <code>NULL</code> when <code>object</code> is a
-workflow).</p></td>
+      <td><p>A <code>parsnip</code> model specification.</p></td>
     </tr>
     <tr>
       <th>resamples</th>
-      <td><p>An <code>rset()</code> object. This argument <strong>should be named</strong>.</p></td>
-    </tr>
-    <tr>
-      <th>iter</th>
-      <td><p>The maximum number of search iterations.</p></td>
-    </tr>
-    <tr>
-      <th>param_info</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
-a parameters set is derived from other arguments.</p></td>
+      <td><p>A resample <code>rset</code> created from an <code>rsample</code> function such
+as <code><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>rsample::vfold_cv()</a></code>.</p></td>
     </tr>
     <tr>
       <th>metrics</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code> object containing information on how
-models will be evaluated for performance. The first metric in <code>metrics</code> is the
-one that will be optimized.</p></td>
-    </tr>
-    <tr>
-      <th>objective</th>
-      <td><p>A character string for what metric should be optimized or
-an acquisition function object.</p></td>
-    </tr>
-    <tr>
-      <th>initial</th>
-      <td><p>An initial set of results in a tidy format (as would result
-from <code><a href='tune_grid.html'>tune_grid()</a></code>) or a positive integer. It is suggested that the number of
-initial results be greater than the number of parameters being optimized.</p></td>
+      <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code>, or <code>NULL</code> to compute a standard
+set of metrics.</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>A control object created by <code><a href='control_bayes.html'>control_bayes()</a></code></p></td>
+      <td><p>A <code><a href='control_grid.html'>control_resamples()</a></code> object used to fine tune the resampling
+process.</p></td>
     </tr>
     <tr>
       <th>formula</th>
-      <td><p>A traditional model formula.</p></td>
+      <td><p>A formula specifying the terms of the model.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A tibble of results that mirror those generated by <code><a href='tune_grid.html'>tune_grid()</a></code>.
-However, these results contain an <code>.iter</code> column and replicate the <code>rset</code>
-object multiple times over iterations (at limited additional memory costs).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The optimization starts with a set of initial results, such as those
-generated by <code><a href='tune_grid.html'>tune_grid()</a></code>. If none exist, the function will create several
-combinations and obtain their performance estimates.</p>
-<p>Using one of the performance estimates as the <em>model outcome</em>, a Gaussian
-process (GP) model is created where the previous tuning parameter combinations
-are used as the predictors.</p>
-<p>A large grid of potential hyperparameter combinations is predicted using
-the model and scored using an <em>acquisition function</em>. These functions
-usually combine the predicted mean and variance of the GP to decide the best
-parameter combination to try next. For more information, see the
-documentation for <code><a href='prob_improve.html'>exp_improve()</a></code> and the corresponding package vignette.</p>
-<p>The best combination is evaluated using resampling and the process continues.</p>
-    <h2 class="hasAnchor" id="parallel-processing"><a class="anchor" href="#parallel-processing"></a>Parallel Processing</h2>
-
-    
-
-
-<p>The <code>foreach</code> package is used here. To execute the resampling iterations in
-parallel, register a parallel backend function. See the documentation for
-<code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach::foreach()</a></code> for examples.</p>
-<p>For the most part, warnings generated during training are shown as they occur
-and are associated with a specific resample when <code>control(verbose = TRUE)</code>.
-They are (usually) not aggregated until the end of processing.</p>
-<p>For Bayesian optimization, parallel processing is used to estimate the
-resampled performance values once a new candidate set of values are estimated.</p>
-    <h2 class="hasAnchor" id="initial-values"><a class="anchor" href="#initial-values"></a>Initial Values</h2>
-
-    
-
-
-<p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, or a previous run of <code>tune_bayes()</code> can be used
-in the <code>initial</code> argument. <code>initial</code> can also be a positive integer. In this
-case, a space-filling design will be used to populate a preliminary set of
-results. For good results, the number of initial values should be more than
-the number of parameters being optimized.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     
@@ -344,26 +271,57 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.</p>
+<p>Note that the function given to the <code>extract</code> argument is evaluated on
+every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
+As noted above, in some cases, model predictions can be derived for
+sub-models so that, in these cases, not every row in the tuning parameter
+grid has a separate R object associated with it.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='control_bayes.html'>control_bayes()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>,
-<code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>, <code><a href='collect_predictions.html'>collect_predictions()</a></code>,
-<code><a href='collect_predictions.html'>collect_metrics()</a></code>, <code><a href='prob_improve.html'>prob_improve()</a></code>, <code><a href='prob_improve.html'>exp_improve()</a></code>, <code><a href='prob_improve.html'>conf_bound()</a></code>,
-<code><a href='fit_resamples.html'>fit_resamples()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='control_grid.html'>control_resamples()</a></code>, <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>6735</span>)
+<span class='no'>folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+
+<span class='no'>spline_rec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>)
+
+<span class='no'>lin_mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+
+<span class='no'>control</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>(<span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='no'>spline_res</span> <span class='kw'>&lt;-</span> <span class='fu'>fit_resamples</span>(<span class='no'>spline_rec</span>, <span class='no'>lin_mod</span>, <span class='no'>folds</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>control</span>)
+
+<span class='no'>spline_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
+#&gt; <span style='color: #555555;'># A tibble: 5 x 5</span><span>
+#&gt;   splits         id    .metrics         .notes           .predictions    
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [6 × 3]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>4</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [6 × 3]&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>5</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [6 × 3]&gt;</span><span></div><div class='input'>
+<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>spline_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 1 x 5</span><span>
+#&gt;   .metric .estimator  mean     n std_err
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard    3.11     5   0.168</div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#parallel-processing">Parallel Processing</a></li>
-      <li><a href="#initial-values">Initial Values</a></li>
       <li><a href="#performance-metrics">Performance Metrics</a></li>
       <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
       <li><a href="#extracting-information">Extracting information</a></li>
       <li><a href="#see-also">See also</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

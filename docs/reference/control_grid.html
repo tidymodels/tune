@@ -144,6 +144,14 @@
   <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)
+
+<span class='fu'>control_resamples</span>(
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -188,6 +196,8 @@ output called <code>.extracts</code>. Each element of this list is a tibble with
 parameter column and a list column (also called <code>.extracts</code>) that contains
 the results of the function. If no extraction function is used, there is no
 <code>.extracts</code> column in the resulting object.</p>
+<p><code>control_resamples()</code> is an alias for <code>control_grid()</code> and is meant to be
+used with <code><a href='fit_resamples.html'>fit_resamples()</a></code>.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

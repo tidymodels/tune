@@ -33,7 +33,7 @@ contains \emph{any} tunable value (\code{tune}), the \code{id} for the parameter
 and the information on where the parameter was located (\code{source}).
 }
 \description{
-\code{tune_args()} takes a model specification or a recipe and returns a tibble
+\code{\link[=tune_args]{tune_args()}} takes a model specification or a recipe and returns a tibble
 of information on all possible tunable arguments and whether or not they
 are actually tunable.
 }
@@ -41,7 +41,7 @@ are actually tunable.
 The \code{source} column is determined differently depending on whether a \code{model_spec}
 or a \code{recipe} is used (with additional detail on the type).
 
-The \code{id} field has any identifier that was passed to \code{tune()} (e.g.
+The \code{id} field has any identifier that was passed to \code{\link[=tune]{tune()}} (e.g.
 \code{tune("some note")}). If not additional detail was used in that function,
 the \code{id} field reverts to the name of the parameters.
 }

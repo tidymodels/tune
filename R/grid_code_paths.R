@@ -433,7 +433,7 @@ super_safely_iterate <- function(fn) {
 super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, workflow, metrics, control) {
   safely_iterate <- super_safely(fn)
 
-  # Differentiate `fit_resamples()` from `tune_grid()`
+  # Differentiate [fit_resamples()] from [tune_grid()]
   if (is.null(grid)) {
     result <- safely_iterate(rs_iter, resamples, workflow, metrics, control)
   } else {

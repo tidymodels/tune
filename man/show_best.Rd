@@ -10,7 +10,7 @@ show_best(x, metric, n_top = 5, maximize = TRUE)
 select_best(x, metric, maximize = TRUE)
 }
 \arguments{
-\item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}.}
+\item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
 
 \item{metric}{A character value for the metric that will be used to sort
 the models. (See
@@ -22,12 +22,12 @@ more details). Not required if a single metric exists in \code{x}.}
 \item{maximize}{A logical value (TRUE/FALSE).}
 }
 \value{
-A tibble with columns for the parameters. \code{show_best()} also
+A tibble with columns for the parameters. \code{\link[=show_best]{show_best()}} also
 includes columns for performance metrics.
 }
 \description{
-\code{select_best()} finds the tuning parameter combination with the best
-performance values. \code{show_best()} displays the top sub-models and their
+\code{\link[=select_best]{select_best()}} finds the tuning parameter combination with the best
+performance values. \code{\link[=show_best]{show_best()}} displays the top sub-models and their
 performance estimates.
 }
 \examples{

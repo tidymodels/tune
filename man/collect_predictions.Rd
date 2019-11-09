@@ -10,8 +10,8 @@ collect_predictions(x, nest_by = "nothing", wflow = NULL)
 collect_metrics(x, nest_by = "nothing", summarize = TRUE, wflow = NULL)
 }
 \arguments{
-\item{x}{The results of \code{tune_grid()} or \code{tune_bayes()}. For
-\code{collect_predictions()}, the control option \code{save_pred = TRUE} should have
+\item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}. For
+\code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have
 been used.}
 
 \item{nest_by}{A character string to indicate which (if any) columns should

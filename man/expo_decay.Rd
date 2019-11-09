@@ -20,12 +20,12 @@ sign of the slope controls the direction of decay.}
 A single numeric value.
 }
 \description{
-\code{expo_decay()} can be used to increase or decrease a function exponentially
+\code{\link[=expo_decay]{expo_decay()}} can be used to increase or decrease a function exponentially
 over iterations. This can be used to dynamically set parameters for
 acquisition functions as iterations of Bayesian optimization proceed.
 }
 \details{
-Note that, when used with the acquisition functions in \code{tune()}, a wrapper
+Note that, when used with the acquisition functions in \code{\link[=tune]{tune()}}, a wrapper
 would be required since only the first argument would be evaluated during
 tuning.
 }

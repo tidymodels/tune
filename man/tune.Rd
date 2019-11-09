@@ -15,7 +15,7 @@ the user wants a note associated with the parameter.}
 A call object that echos the user input.
 }
 \description{
-\code{tune()} is used when a parameter will be specified at a later date.
+\code{\link[=tune]{tune()}} is used when a parameter will be specified at a later date.
 }
 \examples{
 tune()
@@ -23,5 +23,5 @@ class(tune())
 tune("your name here")
 }
 \seealso{
-\code{tune_grid()}, \code{tune_bayes()}
+\code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}
 }

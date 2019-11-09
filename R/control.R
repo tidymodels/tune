@@ -25,7 +25,7 @@
 #' the results of the function. If no extraction function is used, there is no
 #' `.extracts` column in the resulting object.
 #'
-#' `control_resamples()` is an alias for `control_grid()` and is meant to be
+#' [control_resamples()] is an alias for [control_grid()] and is meant to be
 #' used with [fit_resamples()].
 #' @export
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
@@ -63,11 +63,11 @@ control_resamples <- control_grid
 #'   samples with no improvement.
 #' @param seed An integer for controlling the random number stream.
 #' @param extract An optional function to collect any information from the model
-#'   or other objects. See `control_grid()` for details. Note that if initial
-#'   results were already generated using `tune_grid()`, care must be taken if
+#'   or other objects. See [control_grid()] for details. Note that if initial
+#'   results were already generated using [tune_grid()], care must be taken if
 #'   the Bayesian search has a different extraction function.
 #' @param save_pred A logical to save the out-of-sample predictions from each
-#'   resample and each parameter combination. See `control_grid()` for details.
+#'   resample and each parameter combination. See [control_grid()] for details.
 #' @param time_limit A number for the minimum number of _minutes_ (elapsed) that
 #'   the function should execute. The elapsed time is evaluated at internal
 #'   checkpoints and, if over time, the results at that time are returned (with

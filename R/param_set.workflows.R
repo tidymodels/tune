@@ -1,6 +1,6 @@
 #' Determination of parameter sets for other objects
 #'
-#' These methods extend the generic `dials::parameters()` to work with more
+#' These methods extend the generic [dials::parameters()] to work with more
 #' complex objects, such as recipes, model specifications, and workflows.
 #' @param x An object
 #' @param ... Not currently used.

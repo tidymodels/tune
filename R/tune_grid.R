@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#' `tune_grid()` computes a set of performance metrics (e.g. accuracy or RMSE)
+#' [tune_grid()] computes a set of performance metrics (e.g. accuracy or RMSE)
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
@@ -14,7 +14,7 @@
 #'  tuning parameter candidates. An integer denotes the number of candidate
 #'  parameter sets to be created automatically. If used, this argument
 #'  __should be named__.
-#' @param metrics A `yardstick::metric_set()` or `NULL`. If used, this argument
+#' @param metrics A [yardstick::metric_set()] or `NULL`. If used, this argument
 #' __should be named__.
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
@@ -22,12 +22,12 @@
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
 #' contains warnings and errors that occur during execution.
-#' @seealso `control_grid()`, `tune()`, `estimate.tune_results()`,
-#' `autoplot.tune_results()`, `show_best()`, `select_best()`,
-#' `collect_predictions()`, `collect_metrics()`
+#' @seealso [control_grid()], [tune()], [fit_resamples()],
+#' [autoplot.tune_results()], [show_best()], [select_best()],
+#' [collect_predictions()], [collect_metrics()]
 #' @details
 #'
-#' Suppose there are _m_ tuning parameter combinations. `tune_grid()` may not
+#' Suppose there are _m_ tuning parameter combinations. [tune_grid()] may not
 #' require all _m_ model/recipe fits across each resample. For example:
 #'
 #' \itemize{
@@ -48,7 +48,7 @@
 #'
 #' The `foreach` package is used here. To execute the resampling iterations in
 #' parallel, register a parallel backend function. See the documentation for
-#' `foreach::foreach()` for examples.
+#' [foreach::foreach()] for examples.
 #'
 #' For the most part, warnings generated during training are shown as they occur
 #' and are associated with a specific resample when `control(verbose = TRUE)`.
@@ -57,7 +57,7 @@
 #' @section Parameter Grids:
 #'
 #' If no tuning grid is provided, a semi-random grid (via
-#' `dials::grid_latin_hypercube()`) is created with 10 candidate parameter
+#' [dials::grid_latin_hypercube()]) is created with 10 candidate parameter
 #' combinations.
 #'
 #' When provided, the grid should have column names for each parameter and
@@ -69,7 +69,7 @@
 #'
 #' @section Performance Metrics:
 #'
-#' To use your own performance metrics, the `yardstick::metric_set()` function
+#' To use your own performance metrics, the [yardstick::metric_set()] function
 #'  can be used to pick what should be measured for each model. If multiple
 #'  metrics are desired, they can be bundled. For example, to estimate the area
 #'  under the ROC curve as well as the sensitivity and specificity (under the
@@ -98,7 +98,7 @@
 #' called `.metrics`. This tibble contains a row for each metric and columns
 #' for the value, the estimator type, and so on.
 #'
-#' `collect_metrics()` can be used for these objects to collapse the results
+#' [collect_metrics()] can be used for these objects to collapse the results
 #' over the resampled (to obtain the final resampling estimates per tuning
 #' parameter combination).
 #'
@@ -116,8 +116,8 @@
 #' prediction columns that are returned are determined by the type of metric(s)
 #' requested.
 #'
-#' This list column can be `unnested` using `tidyr::unnest()` or using the
-#'  convenience function `collect_predictions()`.
+#' This list column can be `unnested` using [tidyr::unnest()] or using the
+#'  convenience function [collect_predictions()].
 #'
 #' @section Extracting information:
 #'

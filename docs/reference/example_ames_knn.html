@@ -223,6 +223,12 @@ ames_iter_search &lt;-
   )
 </pre>
 
+<p><strong>important note</strong>: Since the <code>rsample</code> split columns contain a reference
+to the same data, saving them to disk can results in large object sizes when
+the object is later used. In essance, R replaces all of those references with
+the actual data. For this reason, we saved zero-row tibbles in their place.
+This doesn't affect how we use these objects in examples but be advised that
+using some <code>rsample</code> functions on them will cause issues.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>ames_grid_search</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 10 x 4</span><span>

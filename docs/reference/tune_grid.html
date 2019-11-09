@@ -152,7 +152,7 @@ recipe across one or more resamples of the data.</p>
   <span class='no'>object</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>(),
   <span class='no'>...</span>
@@ -163,7 +163,7 @@ recipe across one or more resamples of the data.</p>
   <span class='no'>formula</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>(),
   <span class='no'>...</span>
@@ -173,7 +173,7 @@ recipe across one or more resamples of the data.</p>
 <span class='fu'>tune_grid</span>(
   <span class='no'>object</span>,
   <span class='no'>resamples</span>,
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>(),
   <span class='no'>...</span>
@@ -201,11 +201,11 @@ workflow).</p></td>
     </tr>
     <tr>
       <th>grid</th>
-      <td><p>A data frame of tuning combinations, an integer, or <code>NULL</code>. The
+      <td><p>A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
-parameter sets to be created automatically. <code>NULL</code> produces a set of 10
-candidates. If used, this argument <strong>should be named</strong>.</p></td>
+parameter sets to be created automatically. If used, this argument
+<strong>should be named</strong>.</p></td>
     </tr>
     <tr>
       <th>metrics</th>
@@ -335,13 +335,14 @@ sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='control_grid.html'>control_grid()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code>estimate.tune_results()</code>,
+    <div class='dont-index'><p><code><a href='control_grid.html'>control_grid()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='fit_resamples.html'>fit_resamples()</a></code>,
 <code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>, <code><a href='show_best.html'>show_best()</a></code>, <code><a href='show_best.html'>select_best()</a></code>,
 <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
 <span class='co'># ------------------------------------------------------------------------------</span>
 

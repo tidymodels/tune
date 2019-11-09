@@ -1,6 +1,6 @@
 #' Fit multiple models via resampling
 #'
-#' `fit_resamples()` computes a set of performance metrics across one or more
+#' [fit_resamples()] computes a set of performance metrics across one or more
 #' resamples. It does not perform any tuning (see [tune_grid()] and
 #' [tune_bayes()] for that), and is instead used for fitting a single
 #' model+recipe or model+formula combination across many resamples.
@@ -15,7 +15,7 @@
 #' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
 #'   set of metrics.
 #'
-#' @param control A `control_resamples()` object used to fine tune the resampling
+#' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
 #'
 #' @param formula A formula specifying the terms of the model.
@@ -25,7 +25,7 @@
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting information
-#'
+#' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examples
 #' library(recipes)
 #' library(rsample)
@@ -57,7 +57,7 @@ fit_resamples <- function(object, ...) {
 #' @export
 fit_resamples.default <- function(object, ...) {
   msg <- paste0(
-    "The first argument to `fit_resamples()` should be either a ",
+    "The first argument to [fit_resamples()] should be either a ",
     "formula, recipe, or workflow."
   )
   rlang::abort(msg)
@@ -131,7 +131,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   if (is_cataclysmic(resamples)) {
     rlang::warn(
-      "All models failed in `fit_resamples()`. See the `.notes` column."
+      "All models failed in [fit_resamples()]. See the `.notes` column."
     )
   }
 

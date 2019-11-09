@@ -1,6 +1,6 @@
 #' Find recommended methods for generating parameter values
 #'
-#' `tunable()` determines which parameters in an object _can_ be tuned along
+#' [tunable()] determines which parameters in an object _can_ be tuned along
 #' with information about the parameters.
 #' @param x An object, such as a recipe, recipe step, or `parsnip` model
 #' specification.

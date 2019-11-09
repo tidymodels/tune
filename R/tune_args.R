@@ -1,13 +1,13 @@
 #' Determine arguments tagged for tuning
 #'
-#' `tune_args()` takes a model specification or a recipe and returns a tibble
+#' [tune_args()] takes a model specification or a recipe and returns a tibble
 #'  of information on all possible tunable arguments and whether or not they
 #'  are actually tunable.
 #'
 #' The `source` column is determined differently depending on whether a `model_spec`
 #'  or a `recipe` is used (with additional detail on the type).
 #'
-#' The `id` field has any identifier that was passed to `tune()` (e.g.
+#' The `id` field has any identifier that was passed to [tune()] (e.g.
 #'  `tune("some note")`). If not additional detail was used in that function,
 #'  the `id` field reverts to the name of the parameters.
 #'
@@ -180,7 +180,7 @@ tune_tbl <- function(name = character(),
   complete_id <- id[!is.na(id)]
   dups <- duplicated(complete_id)
   if (any(dups)) {
-    stop("There are duplicate `id` values listed in `tune()`: ",
+    stop("There are duplicate `id` values listed in [tune()]: ",
          paste0("'", unique(complete_id[dups]), "'", collapse = ", "),
          ".", sep = "", call. = FALSE)
   }
@@ -222,7 +222,7 @@ tune_id <- function(x) {
       }
     }
 
-    # `tune()` will always return a call object
+    # [tune()] will always return a call object
     if (is.call(x)) {
       if (rlang::call_name(x) == "tune") {
         # If an id was specified:

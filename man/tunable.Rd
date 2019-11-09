@@ -61,7 +61,7 @@ about the location of the parameter (e.g. "step_normalize" or recipes or
 argument was a main parameter or one associated with the engine.
 }
 \description{
-\code{tunable()} determines which parameters in an object \emph{can} be tuned along
+\code{\link[=tunable]{tunable()}} determines which parameters in an object \emph{can} be tuned along
 with information about the parameters.
 }
 \details{

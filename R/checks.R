@@ -24,7 +24,7 @@ check_grid <- function(x, object) {
     msg <- paste0(
       "No tuning parameters have been detected, ",
       "performance will be evaluated using the resamples with no tuning. ",
-      "Did you want `fit_resamples()`?"
+      "Did you want [fit_resamples()]?"
     )
     rlang::warn(msg)
     return(x)
@@ -41,7 +41,7 @@ check_grid <- function(x, object) {
 
     tune_param <- tune_args(object)
     param_nms <- sort(tune_param$id)
-    # when called from `tune_bayes()`
+    # when called from [tune_bayes()]
     param_nms <- param_nms[param_nms != ".iter"]
     x_nms <- sort(names(x))
     if (!isTRUE(all.equal(param_nms, x_nms))) {
@@ -141,7 +141,7 @@ check_metrics <- function(x, object) {
   if (!is.null(x)) {
     cls <- c("numeric_metric_set", "class_prob_metric_set")
     if (!inherits(x, cls)) {
-      stop("The `metrics` argument should be the results of `yardstick::metric_set()`.",
+      stop("The `metrics` argument should be the results of [yardstick::metric_set()].",
            call. = FALSE)
     }
   } else {
@@ -155,7 +155,7 @@ check_metrics <- function(x, object) {
   x
 }
 
-bayes_msg <- "`initial` should be a positive integer or the results of `tune_grid()`"
+bayes_msg <- "`initial` should be a positive integer or the results of [tune_grid()]"
 
 check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
   if (is.null(x)) {
