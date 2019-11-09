@@ -5,26 +5,17 @@
 \alias{collect_metrics}
 \title{Obtain and format results produced by tuning}
 \usage{
-collect_predictions(x, nest_by = "nothing", wflow = NULL)
+collect_predictions(x)
 
-collect_metrics(x, nest_by = "nothing", summarize = TRUE, wflow = NULL)
+collect_metrics(x, summarize = TRUE)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}. For
 \code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have
 been used.}
 
-\item{nest_by}{A character string to indicate which (if any) columns should
-be in the resulting tibble and which should be nested. Values are \code{"nothing"}
-(i.e. no nesting), \code{"resamples"} (nest the parameter values), and \code{"parameters"}
-(nest the resamples).}
-
-\item{wflow}{The workflow associated with the results (only required for
-\code{nest_by = "parameters"}).}
-
 \item{summarize}{A logical; should metrics be summarized over resamples
-(\code{TRUE}) or return the values for each individual resample. Only appropriate
-when \code{nest_by = "nothing"}.}
+(\code{TRUE}) or return the values for each individual resample.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
