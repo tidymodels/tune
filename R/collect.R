@@ -15,6 +15,16 @@
 #'
 #' # Per-resample values
 #' collect_metrics(ames_grid_search, summarize = FALSE)
+#'
+#' # ---------------------------------------------------------------------------
+#'
+#' lm_mod <-linear_reg() %>% set_engine("lm")
+#' set.seed(93599150)
+#' car_folds <- vfold_cv(mtcars)
+#' ctrl <- control_resamples(save_pred = TRUE)
+#'
+#' resampled <- fit_resamples(mpg ~ ., lm_mod, resamples = car_folds, control = ctrl)
+#' collect_predictions(resampled)
 #' @export
 collect_predictions <- function(x) {
   collector(x, coll_col = ".predictions")
