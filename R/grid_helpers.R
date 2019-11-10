@@ -134,8 +134,10 @@ make_rename_arg <- function(grid, model) {
 
 # process the formula to get terms (and data)
 exec_formula <- function(split, object) {
+  dat <- rsample::analysis(split)
+  dat <- as.data.frame(dat)
   f <- object$pre$formula_processor$formula_processor
-  mf <- model.frame(f, data = as.data.frame(split$data), na.action = "na.pass")
+  mf <- model.frame(f, data = dat, na.action = "na.pass")
   trms <- attr(mf, "terms")
   attr(trms, ".Environment") <- rlang::base_env()
   attr(mf, "terms") <- NULL
@@ -143,7 +145,7 @@ exec_formula <- function(split, object) {
   y_cols <- mf_outcome_cols(trms)
   y_dat <- mf[, y_cols, drop = FALSE]
 
-  x_dat <- model.matrix(trms, as.data.frame(split$data), na.action = "na.pass")
+  x_dat <- model.matrix(trms, dat, na.action = "na.pass")
   x_dat <- no_int(x_dat)
   list(terms = trms, x = x_dat, y = y_dat)
 }
