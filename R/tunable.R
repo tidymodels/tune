@@ -165,7 +165,7 @@ tunable.step_texthash <- function(x, ...) {
     name = c("signed", "num_terms"),
     call_info = list(
       list(pkg = "dials", fun = "signed_hash"),
-      list(pkg = "dials", fun = "num_hash")
+      list(pkg = "dials", fun = "num_hash", range = c(8, 12))
     ),
     source = "recipe",
     component = "step_texthash",
