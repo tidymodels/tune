@@ -46,7 +46,7 @@ ext <- function(x) {
   tibble(num_sv = x$model@nSV)
 }
 
-res <- tune_grid(chi_wflow, rs = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE, save_pred = TRUE, extract = ext))
+res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE, save_pred = TRUE, extract = ext))
 
 
 summarize(res) %>%

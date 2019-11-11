@@ -63,7 +63,7 @@ grid_plot <- function(rec, mod, sfd = TRUE, ...) {
   note <- paste0(p_num, " quant, ", p_cat, " qual, ",
                  ifelse(sfd, "space filling", "regular grid"))
 
-  res <- tune_grid(wflow, rs = data_folds, grid = grid, ...)
+  res <- tune_grid(wflow, resamples = data_folds, grid = grid, ...)
   plot_marginals(res) + ggtitle(note)
 }
 
@@ -118,7 +118,7 @@ grid_plot(spline_rec, knn_three_vars, sfd = FALSE, metrics = one_perf)
 
 set.seed(7898)
 data_folds <- vfold_cv(two_class_dat, v = 5)
-search_res <- tune_bayes(spline_rec, model = knn_three_vars, rs = data_folds, iter = 10)
+search_res <- tune_bayes(spline_rec, model = knn_three_vars, resamples = data_folds, iter = 10)
 search_res$splits <- lapply(search_res$splits, function(x) list())
 
 
