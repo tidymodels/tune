@@ -95,6 +95,27 @@ test_that('yardstick objects', {
   expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
+test_that('metrics must match the parsnip engine', {
+  metric_set1 <- yardstick::metric_set(yardstick::accuracy)
+  metric_set2 <- yardstick::metric_set(yardstick::rmse)
+
+  mod1 <- parsnip::rand_forest(mode = "regression")
+  mod2 <- parsnip::rand_forest(mode = "classification")
+
+  workflow1 <- add_model(workflow(), mod1)
+  workflow2 <- add_model(workflow(), mod2)
+
+  expect_error(
+    tune:::check_metrics(metric_set1, workflow1),
+    "The parsnip model has `mode = 'regression'`"
+  )
+
+  expect_error(
+    tune:::check_metrics(metric_set2, workflow2),
+    "The parsnip model has `mode = 'classification'`"
+  )
+})
+
 # ------------------------------------------------------------------------------
 
 test_that('grid control objects', {
