@@ -150,9 +150,9 @@ check_metrics <- function(x, object) {
         x <- yardstick::metric_set(accuracy, kap)
       },
       unknown = {
-        abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
+        rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
       },
-      abort("Unknown `mode` for parsnip model.")
+      rlang::abort("Unknown `mode` for parsnip model.")
     )
 
     return(x)
