@@ -34,7 +34,7 @@ test_that('low-level messages', {
   expect_message(tune:::siren("bat", "warning"), "!")
 
   skip_on_os("windows")
-  expect_message(tune:::siren("bat", "success"), tune_symbol$success)
+  expect_message(tune:::siren("bat", "success"), tune::tune_symbol$success)
 })
 
 test_that('tune_log', {
@@ -45,7 +45,7 @@ test_that('tune_log', {
   expect_silent(tune:::tune_log(ctrl_f, NULL, task = "cube", type = "go"))
 
   skip_on_os("windows")
-  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"), tune_symbol$success)
+  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"), tune::tune_symbol$success)
 })
 
 test_that('log issues', {
