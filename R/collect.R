@@ -30,7 +30,21 @@
 #' collect_predictions(resampled)
 #' @export
 collect_predictions <- function(x) {
-  collector(x, coll_col = ".predictions")
+  names <- colnames(x)
+  coll_col <- ".predictions"
+
+  has_coll_col <- coll_col %in% names
+
+  if (!has_coll_col) {
+    msg <- paste0(
+      "The `.predictions` column does not exist. ",
+      "Refit with the control argument `save_pred = TRUE` to save predictions."
+    )
+
+    rlang::abort(msg)
+  }
+
+  collector(x, coll_col = coll_col)
 }
 
 #' @export
