@@ -138,18 +138,47 @@ check_object <- function(x, check_dials = FALSE) {
 }
 
 check_metrics <- function(x, object) {
-  if (!is.null(x)) {
-    cls <- c("numeric_metric_set", "class_prob_metric_set")
-    if (!inherits(x, cls)) {
-      stop("The `metrics` argument should be the results of [yardstick::metric_set()].",
-           call. = FALSE)
-    }
-  } else {
-    if (get_wflow_model(object)$mode == "regression") {
-      x <- yardstick::metric_set(rmse, rsq)
-    } else {
-      x <- yardstick::metric_set(accuracy, kap)
-    }
+  mode <- get_wflow_model(object)$mode
+
+  if (is.null(x)) {
+    switch(
+      mode,
+      regression = {
+        x <- yardstick::metric_set(rmse, rsq)
+      },
+      classification = {
+        x <- yardstick::metric_set(accuracy, kap)
+      },
+      unknown = {
+        rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
+      },
+      rlang::abort("Unknown `mode` for parsnip model.")
+    )
+
+    return(x)
+  }
+
+  is_numeric_metric_set <- inherits(x, "numeric_metric_set")
+  is_class_prob_metric_set <- inherits(x, "class_prob_metric_set")
+
+  if (!is_numeric_metric_set && !is_class_prob_metric_set) {
+    rlang::abort("The `metrics` argument should be the results of [yardstick::metric_set()].")
+  }
+
+  if (mode == "regression" && is_class_prob_metric_set) {
+    msg <- paste0(
+      "The parsnip model has `mode = 'regression'`, ",
+      "but `metrics` is a metric set for class / probability metrics."
+    )
+    rlang::abort(msg)
+  }
+
+  if (mode == "classification" && is_numeric_metric_set) {
+    msg <- paste0(
+      "The parsnip model has `mode = 'classification'`, ",
+      "but `metrics` is a metric set for regression metrics."
+    )
+    rlang::abort(msg)
   }
 
   x
