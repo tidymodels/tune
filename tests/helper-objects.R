@@ -47,6 +47,11 @@ weird_annotation <-
 
 glmn <- linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")
 
+svm_mod <-
+  svm_rbf(cost = tune()) %>%
+  set_engine("kernlab") %>%
+  set_mode("regression")
+
 # ------------------------------------------------------------------------------
 
 chi_wflow <-

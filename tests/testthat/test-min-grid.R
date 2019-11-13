@@ -175,6 +175,9 @@ test_that('boosted tree grid reduction - C5.0', {
 
 
 test_that('linear regression grid reduction - glmnet', {
+  # glmnet depends on >= 3.6.0 so we only test locally
+  skip_if_not_installed("glmnet")
+
   mod <- linear_reg() %>% set_engine("glmnet")
 
   # A typical grid
@@ -263,6 +266,9 @@ test_that('linear regression grid reduction - glmnet', {
 # ------------------------------------------------------------------------------
 
 test_that('logistic regression grid reduction - glmnet', {
+  # glmnet depends on >= 3.6.0 so we only test locally
+  skip_if_not_installed("glmnet")
+
   mod <- logistic_reg() %>% set_engine("glmnet")
 
   # A typical grid
@@ -446,6 +452,9 @@ test_that('MARS grid reduction - earth', {
 # ------------------------------------------------------------------------------
 
 test_that('multinomial regression grid reduction - glmnet', {
+  # glmnet depends on >= 3.6.0 so we only test locally
+  skip_if_not_installed("glmnet")
+
   mod <- multinom_reg() %>% set_engine("glmnet")
 
   # A typical grid

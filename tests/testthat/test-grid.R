@@ -8,7 +8,6 @@ library(recipes)
 library(dials)
 library(rsample)
 library(kernlab)
-library(glmnet)
 
 source("../helper-objects.R")
 
@@ -65,7 +64,7 @@ test_that('tune model only (with recipe)', {
 
 test_that('tune model only (with recipe, multi-predict)', {
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(glmn)
+  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
@@ -99,9 +98,9 @@ test_that('tune model and recipe', {
 
 test_that('tune model and recipe (multi-predict)', {
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(glmn)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
-  grid <- grid_regular(pset, levels = c(3, 3, 2))
+  grid <- grid_regular(pset, levels = c(3, 2))
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
   expect_equal(res$id, folds$id)
@@ -166,15 +165,12 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   rec <- recipe(mpg ~ ., data = mtcars) %>%
     step_bs(disp, deg_free = NA_real_)
 
-  model <- linear_reg(mode = "regression", penalty = tune()) %>%
-    set_engine("glmnet")
-
-  cars_grid <- tibble(penalty = c(0.01, 0.02))
+  cars_grid <- tibble(cost = c(0.01, 0.02))
 
   expect_warning(
     cars_res <- tune_grid(
       rec,
-      model = model,
+      model = svm_mod,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -199,16 +195,13 @@ test_that("tune model only - failure in formula is caught elegantly", {
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
-  model <- linear_reg(mode = "regression", penalty = tune()) %>%
-    set_engine("glmnet")
-
-  cars_grid <- tibble(penalty = 0.01)
+  cars_grid <- tibble(cost = 0.01)
 
   # these terms don't exist!
   expect_warning(
     cars_res <- tune_grid(
       y ~ z,
-      model = model,
+      model = svm_mod,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -236,15 +229,13 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   rec <- recipe(mpg ~ ., data = mtcars) %>%
     step_bs(disp, deg_free = tune())
 
-  model <- linear_reg(mode = "regression", penalty = tune()) %>%
-    set_engine("glmnet")
 
   # NA values not allowed in recipe
-  cars_grid <- tibble(deg_free = c(NA_real_, 10L), penalty = 0.01)
+  cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
   cars_res <- tune_grid(
     rec,
-    model = model,
+    model = svm_mod,
     resamples = data_folds,
     grid = cars_grid,
     control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -261,10 +252,10 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   # recipe failed half of the time, only 1 model passed
   expect_equal(nrow(extract), 1L)
   expect_equal(extract$deg_free, 10L)
-  expect_equal(extract$penalty, 0.01)
+  expect_equal(extract$cost, 0.01)
 
   expect_equal(
-    unique(prediction[, c("deg_free", "penalty")]),
-    tibble(deg_free = 10, penalty = 0.01)
+    unique(prediction[, c("deg_free", "cost")]),
+    tibble(deg_free = 10, cost = 0.01)
   )
 })
