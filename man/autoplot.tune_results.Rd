@@ -13,12 +13,12 @@
 )
 }
 \arguments{
-\item{object}{A tibble of results form \code{tune_grid()} or \code{tune_bayes()}.}
+\item{object}{A tibble of results form \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
 
 \item{type}{A single character value. Choices are \code{"marginals"} (for a plot
 'of each predictor versus performance), \code{"parameters"} (each parameter versus
 search iteration), or \code{"performance"} (performance versus iteration). The
-latter two choices are only used for \code{tune_bayes()}.}
+latter two choices are only used for \code{\link[=tune_bayes]{tune_bayes()}}.}
 
 \item{metric}{A character vector or \code{NULL} for which outcome to plot.}
 
@@ -60,5 +60,5 @@ autoplot(ames_iter_search, metric = "rmse", type = "performance")
 
 }
 \seealso{
-\code{tune_grid()}, \code{tune_bayes()}
+\code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}
 }

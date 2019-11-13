@@ -31,12 +31,12 @@ samples with no improvement.}
 \item{seed}{An integer for controlling the random number stream.}
 
 \item{extract}{An optional function to collect any information from the model
-or other objects. See \code{control_grid()} for details. Note that if initial
-results were already generated using \code{tune_grid()}, care must be taken if
+or other objects. See \code{\link[=control_grid]{control_grid()}} for details. Note that if initial
+results were already generated using \code{\link[=tune_grid]{tune_grid()}}, care must be taken if
 the Bayesian search has a different extraction function.}
 
 \item{save_pred}{A logical to save the out-of-sample predictions from each
-resample and each parameter combination. See \code{control_grid()} for details.}
+resample and each parameter combination. See \code{\link[=control_grid]{control_grid()}} for details.}
 
 \item{time_limit}{A number for the minimum number of \emph{minutes} (elapsed) that
 the function should execute. The elapsed time is evaluated at internal

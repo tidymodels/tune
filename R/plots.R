@@ -1,10 +1,10 @@
 #' Plot search results
 #'
-#' @param object A tibble of results form `tune_grid()` or `tune_bayes()`.
+#' @param object A tibble of results form [tune_grid()] or [tune_bayes()].
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #' 'of each predictor versus performance), `"parameters"` (each parameter versus
 #' search iteration), or `"performance"` (performance versus iteration). The
-#' latter two choices are only used for `tune_bayes()`.
+#' latter two choices are only used for [tune_bayes()].
 #' @param metric A character vector or `NULL` for which outcome to plot.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "perfomance"`. A value of zero prevents them from being shown.
@@ -15,7 +15,7 @@
 #' A single categorical tuning parameter is supported when other numeric
 #' parameters are also in the results. Any number of numeric tuning parameters
 #' can be used.
-#' @seealso `tune_grid()`, `tune_bayes()`
+#' @seealso [tune_grid()], [tune_bayes()]
 #' @examples
 #' # For grid search:
 #' data("example_ames_knn")
@@ -59,6 +59,10 @@ autoplot.tune_results <-
     p
   }
 
+#' @export
+autoplot.resample_results <- function(object, ...) {
+  rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
+}
 
 plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {

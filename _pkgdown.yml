@@ -15,12 +15,10 @@ figures:
 reference:
   - title: User-Facing Functions
     contents:
-    - tune
-    - tune_grid
-    - tune_bayes
+    - starts_with("tune")
+    - fit_resamples
     - conf_bound
-    - control_bayes
-    - control_grid
+    - starts_with("control")
     - autoplot.tune_results
     - expo_decay
     - workflow

@@ -1,47 +1,17 @@
-
-tune_nothing <- function(resamples, object, grid, metrics, ctrl)  {
-  B <- nrow(resamples)
-
-  `%op%` <- get_operator(ctrl$allow_par, object)
-
-  lab_names <- names(labels(resamples$splits[[1]]))
-
-  safely_iter_no_tune <- super_safely_iterate(iter_no_tune)
-
-  results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    safely_iter_no_tune(rs_iter, resamples, object, metrics, ctrl)
-
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
-
-  resamples
+tune_nothing_with_recipe <- function(resamples, grid, workflow, metrics, control)  {
+  resample_with_recipe(resamples, workflow, metrics, control)
 }
 
-iter_no_tune <- function(rs_iter, resamples, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
-
-  split <- resamples$splits[[rs_iter]]
-  metric_est <- NULL
-  extracted <- NULL
-  pred_vals <- NULL
-  .notes <- NULL
-
- # use fit.workflow and predict.workflow
-
-  # list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
-
+tune_nothing_with_formula <- function(resamples, grid, workflow, metrics, control)  {
+  resample_with_formula(resamples, workflow, metrics, control)
 }
+
 # ------------------------------------------------------------------------------
 
-iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, control) {
+  load_pkgs(workflow)
+  load_namespace(control$pkgs)
+  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   metric_est <- NULL
   extracted <- NULL
@@ -51,11 +21,11 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   split <- resamples$splits[[rs_iter]]
 
   model_param <-
-    dials::parameters(object) %>%
+    dials::parameters(workflow) %>%
     dplyr::filter(source == "model_spec") %>%
     dplyr::pull(id)
   rec_param <-
-    dials::parameters(object) %>%
+    dials::parameters(workflow) %>%
     dplyr::filter(source == "recipe") %>%
     dplyr::pull(id)
 
@@ -77,7 +47,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
 
-    tmp_rec <- catch_and_log(train_recipe(split, object, rec_grid_vals), ctrl, split, rec_msg, notes = .notes)
+    tmp_rec <- catch_and_log(train_recipe(split, workflow, rec_grid_vals), control, split, rec_msg, notes = .notes)
 
     if (is_failure(tmp_rec)) {
       next
@@ -92,7 +62,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
-    mod_grid_vals <- get_wflow_model(object) %>% min_grid(mod_grid_vals)
+    mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(mod_grid_vals)
 
     # ------------------------------------------------------------------------
 
@@ -106,8 +76,8 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
       tmp_fit <-
         catch_and_log(
-          train_model_from_recipe(object, tmp_rec, fixed_param, control = fit_ctrl),
-          ctrl,
+          train_model_from_recipe(workflow, tmp_rec, fixed_param, control = fit_control),
+          control,
           split,
           mod_msg,
           notes = .notes
@@ -120,12 +90,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
       all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
-      extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, all_param, split, ctrl)
+      extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, all_param, split, control)
 
       tmp_pred <-
         catch_and_log(
           predict_model_from_recipe(split, tmp_fit, tmp_rec, all_param, metrics),
-          ctrl,
+          control,
           split,
           paste(mod_msg, "(predictions)"),
           bad_only = TRUE,
@@ -137,8 +107,8 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
         next
       }
 
-      metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
-      pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
+      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
     } # end model loop
 
   } # end recipe loop
@@ -146,10 +116,10 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 }
 
-tune_rec_and_mod <- function(resamples, grid, object, metrics, ctrl) {
+tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
   B <- nrow(resamples)
 
-  `%op%` <- get_operator(ctrl$allow_par, object)
+  `%op%` <- get_operator(control$allow_par, workflow)
 
   lab_names <- names(labels(resamples$splits[[1]]))
 
@@ -157,22 +127,22 @@ tune_rec_and_mod <- function(resamples, grid, object, metrics, ctrl) {
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    safely_iter_rec_and_mod(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_rec_and_mod(rs_iter, resamples, grid, workflow, metrics, control)
 
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
 
   resamples
 }
 
 # ------------------------------------------------------------------------------
 
-iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
+  load_pkgs(workflow)
+  load_namespace(control$pkgs)
+  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
 
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
@@ -187,7 +157,7 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
 
-    tmp_rec <- catch_and_log(train_recipe(split, object, param_vals), ctrl, split, rec_msg, notes = .notes)
+    tmp_rec <- catch_and_log(train_recipe(split, workflow, param_vals), control, split, rec_msg, notes = .notes)
 
     # check for recipe failure
     if (is_failure(tmp_rec)) {
@@ -196,8 +166,8 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
 
     tmp_fit <-
       catch_and_log(
-        train_model_from_recipe(object, tmp_rec, NULL, control = fit_ctrl),
-        ctrl,
+        train_model_from_recipe(workflow, tmp_rec, NULL, control = fit_control),
+        control,
         split,
         mod_msg,
         notes = .notes
@@ -208,14 +178,14 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       next
     }
 
-    extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, grid[param_iter, ], split, ctrl)
+    extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, grid[param_iter, ], split, control)
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
     tmp_pred <-
       catch_and_log(
         predict_model_from_recipe(split, tmp_fit, tmp_rec, param_vals, metrics),
-        ctrl,
+        control,
         split,
         pred_msg,
         bad_only = TRUE,
@@ -227,29 +197,29 @@ iter_rec <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
       next
     }
 
-    metric_est <- append_metrics(metric_est, tmp_pred, object, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
+    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
   } # recipe parameters
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 
 }
 
-tune_rec <- function(resamples, grid, object, metrics, ctrl) {
+tune_rec <- function(resamples, grid, workflow, metrics, control) {
   B <- nrow(resamples)
 
-  `%op%` <- get_operator(ctrl$allow_par, object)
+  `%op%` <- get_operator(control$allow_par, workflow)
 
   safely_iter_rec <- super_safely_iterate(iter_rec)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    safely_iter_rec(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_rec(rs_iter, resamples, grid, workflow, metrics, control)
 
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
 
   resamples
 }
@@ -257,29 +227,29 @@ tune_rec <- function(resamples, grid, object, metrics, ctrl) {
 
 # ------------------------------------------------------------------------------
 
-tune_mod_with_recipe <- function(resamples, grid, object, metrics, ctrl) {
+tune_mod_with_recipe <- function(resamples, grid, workflow, metrics, control) {
   B <- nrow(resamples)
 
-  `%op%` <- get_operator(ctrl$allow_par, object)
+  `%op%` <- get_operator(control$allow_par, workflow)
 
   safely_iter_mod_with_recipe <- super_safely_iterate(iter_mod_with_recipe)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    safely_iter_mod_with_recipe(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_mod_with_recipe(rs_iter, resamples, grid, workflow, metrics, control)
 
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
 
   resamples
 }
 
-iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
+  load_pkgs(workflow)
+  load_namespace(control$pkgs)
+  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
   extracted <- NULL
@@ -289,8 +259,8 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
   # ----------------------------------------------------------------------------
 
   tmp_rec <-
-    catch_and_log(train_recipe(split, object, NULL),
-                  ctrl,
+    catch_and_log(train_recipe(split, workflow, NULL),
+                  control,
                   split,
                   "recipe",
                   notes = .notes)
@@ -309,7 +279,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- get_wflow_model(object) %>% min_grid(grid)
+  mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   for (mod_iter in 1:num_mod) {
@@ -317,8 +287,8 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
 
     tmp_fit <-
       catch_and_log(
-        train_model_from_recipe(object, tmp_rec, mod_grid_vals[mod_iter,], control = fit_ctrl),
-        ctrl,
+        train_model_from_recipe(workflow, tmp_rec, mod_grid_vals[mod_iter,], control = fit_control),
+        control,
         split,
         mod_msg,
         notes = .notes
@@ -329,12 +299,12 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
       next
     }
 
-    extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, mod_grid_vals[mod_iter, ], split, ctrl)
+    extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, mod_grid_vals[mod_iter, ], split, control)
 
     tmp_pred <-
       catch_and_log(
         predict_model_from_recipe(split, tmp_fit, tmp_rec, mod_grid_vals[mod_iter,], metrics),
-        ctrl,
+        control,
         split,
         paste(mod_msg, "(predictions)"),
         bad_only = TRUE,
@@ -346,8 +316,8 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, object, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
+    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -357,29 +327,29 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, object, metrics, ctrl
 # ------------------------------------------------------------------------------
 
 
-tune_mod_with_formula <- function(resamples, grid, object, metrics, ctrl) {
+tune_mod_with_formula <- function(resamples, grid, workflow, metrics, control) {
   B <- nrow(resamples)
 
-  `%op%` <- get_operator(ctrl$allow_par, object)
+  `%op%` <- get_operator(control$allow_par, workflow)
 
   safely_iter_mod_with_formula <- super_safely_iterate(iter_mod_with_formula)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
-    safely_iter_mod_with_formula(rs_iter, resamples, grid, object, metrics, ctrl)
+    safely_iter_mod_with_formula(rs_iter, resamples, grid, workflow, metrics, control)
 
-  resamples <- pull_metrics(resamples, results, ctrl)
-  resamples <- pull_notes(resamples, results, ctrl)
-  resamples <- pull_extracts(resamples, results, ctrl)
-  resamples <- pull_predictions(resamples, results, ctrl)
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
 
   resamples
 }
 
-iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctrl) {
-  load_pkgs(object)
-  load_namespace(ctrl$pkgs)
-  fit_ctrl <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, control) {
+  load_pkgs(workflow)
+  load_namespace(control$pkgs)
+  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
   extracted <- NULL
@@ -388,7 +358,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
 
   # ----------------------------------------------------------------------------
 
-  tmp_df <- catch_and_log(exec_formula(split, object), ctrl, split, "formula", notes = .notes)
+  tmp_df <- catch_and_log(exec_formula(split, workflow), control, split, "formula", notes = .notes)
 
   # check for formula failure
   if (is_failure(tmp_df)) {
@@ -407,7 +377,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- get_wflow_model(object) %>% min_grid(grid)
+  mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   for (mod_iter in 1:num_mod) {
@@ -416,8 +386,8 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
 
     tmp_fit <-
       catch_and_log(
-        train_model_from_df(object, tmp_df, param_val, control = fit_ctrl),
-        ctrl,
+        train_model_from_df(workflow, tmp_df, param_val, control = fit_control),
+        control,
         split,
         mod_msg,
         notes = .notes
@@ -428,14 +398,14 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
       next
     }
 
-    extracted <- append_extracts(extracted, NULL, tmp_fit$fit, param_val, split, ctrl)
+    extracted <- append_extracts(extracted, NULL, tmp_fit$fit, param_val, split, control)
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
     tmp_pred <-
       catch_and_log(
         predict_model_from_terms(split, tmp_fit, tmp_trms, param_val, metrics),
-        ctrl,
+        control,
         split,
         mod_msg,
         notes = .notes
@@ -446,8 +416,8 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, object, metrics, ctr
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, object, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, ctrl)
+    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -460,10 +430,15 @@ super_safely_iterate <- function(fn) {
   purrr::partial(.f = super_safely_iterate_impl, fn = fn)
 }
 
-super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, object, metrics, ctrl) {
+super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, workflow, metrics, control) {
   safely_iterate <- super_safely(fn)
 
-  result <- safely_iterate(rs_iter, resamples, grid, object, metrics, ctrl)
+  # Differentiate [fit_resamples()] from [tune_grid()]
+  if (is.null(grid)) {
+    result <- safely_iterate(rs_iter, resamples, workflow, metrics, control)
+  } else {
+    result <- safely_iterate(rs_iter, resamples, grid, workflow, metrics, control)
+  }
 
   error <- result$error
   warnings <- result$warnings
@@ -487,7 +462,7 @@ super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, object, metr
 
   split <- resamples$splits[[rs_iter]]
 
-  notes <- log_problems(notes, ctrl, split, "internal", problems)
+  notes <- log_problems(notes, control, split, "internal", problems)
 
   # Need an output template
   if (!is.null(error)) {

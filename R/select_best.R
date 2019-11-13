@@ -1,17 +1,17 @@
 #' Obtain the numerically best parameters
 #'
-#' `select_best()` finds the tuning parameter combination with the best
-#'  performance values. `show_best()` displays the top sub-models and their
+#' [select_best()] finds the tuning parameter combination with the best
+#'  performance values. [show_best()] displays the top sub-models and their
 #'  performance estimates.
 #'
-#' @param x The results of `tune_grid()` or `tune_bayes()`.
+#' @param x The results of [tune_grid()] or [tune_bayes()].
 #' @param metric A character value for the metric that will be used to sort
 #'  the models. (See
 #'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
 #'  more details). Not required if a single metric exists in `x`.
 #' @param n_top An integer for the number of top results/rows to return.
 #' @param maximize A logical value (TRUE/FALSE).
-#' @return A tibble with columns for the parameters. `show_best()` also
+#' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
 #' @examples
 #' data("example_ames_knn")

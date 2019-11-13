@@ -1,6 +1,6 @@
 #' Find recommended methods for generating parameter values
 #'
-#' `tunable()` determines which parameters in an object _can_ be tuned along
+#' [tunable()] determines which parameters in an object _can_ be tuned along
 #' with information about the parameters.
 #' @param x An object, such as a recipe, recipe step, or `parsnip` model
 #' specification.
@@ -165,7 +165,7 @@ tunable.step_texthash <- function(x, ...) {
     name = c("signed", "num_terms"),
     call_info = list(
       list(pkg = "dials", fun = "signed_hash"),
-      list(pkg = "dials", fun = "num_hash")
+      list(pkg = "dials", fun = "num_hash", range = c(8, 12))
     ),
     source = "recipe",
     component = "step_texthash",

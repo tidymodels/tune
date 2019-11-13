@@ -1,6 +1,6 @@
 #' A placeholder function for argument values that are to be tuned.
 #'
-#' `tune()` is used when a parameter will be specified at a later date.
+#' [tune()] is used when a parameter will be specified at a later date.
 #'
 #' @param id A single character value that can be used to differentiate
 #'   parameters that are used in multiple places but have the same name, or if
@@ -10,7 +10,7 @@
 #' tune()
 #' class(tune())
 #' tune("your name here")
-#' @seealso `tune_grid()`, `tune_bayes()`
+#' @seealso [tune_grid()], [tune_bayes()]
 #' @export
 tune <- function(id = "") {
   if (!is.character(id) || length(id) != 1) {

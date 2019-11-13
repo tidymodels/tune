@@ -16,7 +16,7 @@ tune_grid(object, ...)
   object,
   model,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -26,7 +26,7 @@ tune_grid(object, ...)
   formula,
   model,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -35,7 +35,7 @@ tune_grid(object, ...)
 \method{tune_grid}{workflow}(
   object,
   resamples,
-  grid = NULL,
+  grid = 10,
   metrics = NULL,
   control = control_grid(),
   ...
@@ -51,13 +51,13 @@ workflow).}
 
 \item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
 
-\item{grid}{A data frame of tuning combinations, an integer, or \code{NULL}. The
+\item{grid}{A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
-parameter sets to be created automatically. \code{NULL} produces a set of 10
-candidates. If used, this argument \strong{should be named}.}
+parameter sets to be created automatically. If used, this argument
+\strong{should be named}.}
 
-\item{metrics}{A \code{yardstick::metric_set()} or \code{NULL}. If used, this argument
+\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}. If used, this argument
 \strong{should be named}.}
 
 \item{control}{An object used to modify the tuning process. If used, this
@@ -71,12 +71,12 @@ An updated version of \code{resamples} with extra list columns for \code{.metric
 contains warnings and errors that occur during execution.
 }
 \description{
-\code{tune_grid()} computes a set of performance metrics (e.g. accuracy or RMSE)
+\code{\link[=tune_grid]{tune_grid()}} computes a set of performance metrics (e.g. accuracy or RMSE)
 for a pre-defined set of tuning parameters that correspond to a model or
 recipe across one or more resamples of the data.
 }
 \details{
-Suppose there are \emph{m} tuning parameter combinations. \code{tune_grid()} may not
+Suppose there are \emph{m} tuning parameter combinations. \code{\link[=tune_grid]{tune_grid()}} may not
 require all \emph{m} model/recipe fits across each resample. For example:
 
 \itemize{
@@ -97,7 +97,7 @@ tuning parameter.
 
 The \code{foreach} package is used here. To execute the resampling iterations in
 parallel, register a parallel backend function. See the documentation for
-\code{foreach::foreach()} for examples.
+\code{\link[foreach:foreach]{foreach::foreach()}} for examples.
 
 For the most part, warnings generated during training are shown as they occur
 and are associated with a specific resample when \code{control(verbose = TRUE)}.
@@ -107,7 +107,7 @@ They are (usually) not aggregated until the end of processing.
 
 
 If no tuning grid is provided, a semi-random grid (via
-\code{dials::grid_latin_hypercube()}) is created with 10 candidate parameter
+\code{\link[dials:grid_latin_hypercube]{dials::grid_latin_hypercube()}}) is created with 10 candidate parameter
 combinations.
 
 When provided, the grid should have column names for each parameter and
@@ -121,7 +121,7 @@ be \code{lambda}.
 \section{Performance Metrics}{
 
 
-To use your own performance metrics, the \code{yardstick::metric_set()} function
+To use your own performance metrics, the \code{\link[yardstick:metric_set]{yardstick::metric_set()}} function
 can be used to pick what should be measured for each model. If multiple
 metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
@@ -150,7 +150,7 @@ The out-of-sample estimates of these metrics are contained in a list column
 called \code{.metrics}. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.
 
-\code{collect_metrics()} can be used for these objects to collapse the results
+\code{\link[=collect_metrics]{collect_metrics()}} can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).
 }
@@ -170,8 +170,8 @@ function generates a column called \code{.pred} and so on. As noted above, the
 prediction columns that are returned are determined by the type of metric(s)
 requested.
 
-This list column can be \code{unnested} using \code{tidyr::unnest()} or using the
-convenience function \code{collect_predictions()}.
+This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::unnest()}} or using the
+convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
 \section{Extracting information}{
@@ -249,7 +249,7 @@ autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
 }
 \seealso{
-\code{control_grid()}, \code{tune()}, \code{estimate.tune_results()},
-\code{autoplot.tune_results()}, \code{show_best()}, \code{select_best()},
-\code{collect_predictions()}, \code{collect_metrics()}
+\code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},
+\code{\link[=autoplot.tune_results]{autoplot.tune_results()}}, \code{\link[=show_best]{show_best()}}, \code{\link[=select_best]{select_best()}},
+\code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_metrics]{collect_metrics()}}
 }

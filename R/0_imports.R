@@ -89,7 +89,7 @@ s3_register <- function(generic, class, method = NULL) {
     function(...) {
       ns <- asNamespace(package)
 
-      # Refresh the method, it might have been updated by `devtools::load_all()`
+      # Refresh the method, it might have been updated by [devtools::load_all()]
       method_fn <- get_method(method)
 
       registerS3method(generic, class, method_fn, envir = ns)

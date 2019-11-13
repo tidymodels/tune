@@ -18,17 +18,17 @@
 #' give more weight to the variation. This has the effect of searching for new
 #' parameter combinations that are in areas that have yet to be sampled.
 #'
-#' Note that for `exp_improve()` and `prob_improve()`, the `trade_off` value is
+#' Note that for [exp_improve()] and [prob_improve()], the `trade_off` value is
 #' in the units of the outcome. The functions are parameterized so that the
 #' `trade_off` value should always be non-negative.
 #'
 #' The confidence bound function does not take into account the current best
 #' results in the data.
 #'
-#' If a function is passed to  `exp_improve()` or `prob_improve()`, the function
+#' If a function is passed to  [exp_improve()] or [prob_improve()], the function
 #' can have multiple arguments but only the first (the current iteration number)
 #' is given to the function. In other words, the function argument should have
-#' defaults for all but the first argument. See `expo_decay()` as an example of
+#' defaults for all but the first argument. See [expo_decay()] as an example of
 #' a function.
 #'
 #' @param trade_off A number or function that describes the trade-off between
@@ -41,7 +41,7 @@
 #' @return An object of class `prob_improve`, `exp_improve`, or `conf_bounds`
 #'   along with an extra class of `acquisition_function`.
 #'
-#' @seealso `tune_bayes()`, `expo_decay()`
+#' @seealso [tune_bayes()], [expo_decay()]
 #' @examples
 #' prob_improve()
 #' @export

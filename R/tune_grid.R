@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#' `tune_grid()` computes a set of performance metrics (e.g. accuracy or RMSE)
+#' [tune_grid()] computes a set of performance metrics (e.g. accuracy or RMSE)
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
@@ -9,12 +9,12 @@
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
 #' @param resamples An `rset()` object. This argument __should be named__.
-#' @param grid A data frame of tuning combinations, an integer, or `NULL`. The
+#' @param grid A data frame of tuning combinations or a positive integer. The
 #'  data frame should have columns for each parameter being tuned and rows for
 #'  tuning parameter candidates. An integer denotes the number of candidate
-#'  parameter sets to be created automatically. `NULL` produces a set of 10
-#'  candidates. If used, this argument __should be named__.
-#' @param metrics A `yardstick::metric_set()` or `NULL`. If used, this argument
+#'  parameter sets to be created automatically. If used, this argument
+#'  __should be named__.
+#' @param metrics A [yardstick::metric_set()] or `NULL`. If used, this argument
 #' __should be named__.
 #' @param control An object used to modify the tuning process. If used, this
 #' argument __should be named__.
@@ -22,12 +22,12 @@
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
 #' contains warnings and errors that occur during execution.
-#' @seealso `control_grid()`, `tune()`, `estimate.tune_results()`,
-#' `autoplot.tune_results()`, `show_best()`, `select_best()`,
-#' `collect_predictions()`, `collect_metrics()`
+#' @seealso [control_grid()], [tune()], [fit_resamples()],
+#' [autoplot.tune_results()], [show_best()], [select_best()],
+#' [collect_predictions()], [collect_metrics()]
 #' @details
 #'
-#' Suppose there are _m_ tuning parameter combinations. `tune_grid()` may not
+#' Suppose there are _m_ tuning parameter combinations. [tune_grid()] may not
 #' require all _m_ model/recipe fits across each resample. For example:
 #'
 #' \itemize{
@@ -48,7 +48,7 @@
 #'
 #' The `foreach` package is used here. To execute the resampling iterations in
 #' parallel, register a parallel backend function. See the documentation for
-#' `foreach::foreach()` for examples.
+#' [foreach::foreach()] for examples.
 #'
 #' For the most part, warnings generated during training are shown as they occur
 #' and are associated with a specific resample when `control(verbose = TRUE)`.
@@ -57,7 +57,7 @@
 #' @section Parameter Grids:
 #'
 #' If no tuning grid is provided, a semi-random grid (via
-#' `dials::grid_latin_hypercube()`) is created with 10 candidate parameter
+#' [dials::grid_latin_hypercube()]) is created with 10 candidate parameter
 #' combinations.
 #'
 #' When provided, the grid should have column names for each parameter and
@@ -69,7 +69,7 @@
 #'
 #' @section Performance Metrics:
 #'
-#' To use your own performance metrics, the `yardstick::metric_set()` function
+#' To use your own performance metrics, the [yardstick::metric_set()] function
 #'  can be used to pick what should be measured for each model. If multiple
 #'  metrics are desired, they can be bundled. For example, to estimate the area
 #'  under the ROC curve as well as the sensitivity and specificity (under the
@@ -98,7 +98,7 @@
 #' called `.metrics`. This tibble contains a row for each metric and columns
 #' for the value, the estimator type, and so on.
 #'
-#' `collect_metrics()` can be used for these objects to collapse the results
+#' [collect_metrics()] can be used for these objects to collapse the results
 #' over the resampled (to obtain the final resampling estimates per tuning
 #' parameter combination).
 #'
@@ -116,8 +116,8 @@
 #' prediction columns that are returned are determined by the type of metric(s)
 #' requested.
 #'
-#' This list column can be `unnested` using `tidyr::unnest()` or using the
-#'  convenience function `collect_predictions()`.
+#' This list column can be `unnested` using [tidyr::unnest()] or using the
+#'  convenience function [collect_predictions()].
 #'
 #' @section Extracting information:
 #'
@@ -203,7 +203,7 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, resamples, grid = NULL,
+tune_grid.recipe <- function(object, model, resamples, grid = 10,
                              metrics = NULL, control = control_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
@@ -225,7 +225,7 @@ tune_grid.recipe <- function(object, model, resamples, grid = NULL,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, resamples, grid = NULL,
+tune_grid.formula <- function(formula, model, resamples, grid = 10,
                              metrics = NULL, control = control_grid(), ...) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
@@ -247,7 +247,7 @@ tune_grid.formula <- function(formula, model, resamples, grid = NULL,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, grid = NULL,
+tune_grid.workflow <- function(object, resamples, grid = 10,
                              metrics = NULL, control = control_grid(), ...) {
 
   tune_grid_workflow(
@@ -262,7 +262,7 @@ tune_grid.workflow <- function(object, resamples, grid = NULL,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <-
-  function(object, resamples, grid = NULL, metrics = NULL, control = control_grid()) {
+  function(object, resamples, grid = 10, metrics = NULL, control = control_grid()) {
     check_rset(resamples)
     check_object(object)
     metrics <- check_metrics(metrics, object)
@@ -278,7 +278,7 @@ tune_grid_workflow <-
               call. = FALSE)
     }
 
-    class(resamples) <- c("tune_results", class(resamples))
+    class(resamples) <- unique(c("tune_results", class(resamples)))
     resamples
   }
 
@@ -291,15 +291,21 @@ quarterback <- function(x) {
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 
-  args <- list(splits = expr(resamples), grid = expr(grid),
-               wflow = expr(object), metrics = expr(metrics),
-               ctrl = expr(control))
+  args <- list(
+    resamples = expr(resamples),
+    grid = expr(grid),
+    workflow = expr(object),
+    metrics = expr(metrics),
+    control = expr(control)
+  )
+
   dplyr::case_when(
      tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
      tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
      has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
     !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
-     TRUE ~ rlang::call2("tune_nothing")
+     has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
+     TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
   )
 }
 

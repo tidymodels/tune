@@ -7,7 +7,7 @@ library(tidyr)
 library(recipes)
 library(dials)
 library(rsample)
-library(glmnet)
+library(parsnip)
 
 source("../helper-objects.R")
 
@@ -23,9 +23,6 @@ rec_no_tune_1 <-
   step_normalize(all_predictors())
 
 lm_mod <- linear_reg() %>% set_engine("lm")
-glmn_mod <-
-  linear_reg(mixture = tune(), penalty = tune()) %>%
-  set_engine("glmnet", nlambda = 5)
 
 set.seed(363)
 mt_folds <- vfold_cv(mtcars, v = 5)
@@ -78,25 +75,30 @@ test_that('tune recipe only', {
 
 test_that('tune model only', {
   extr_2_1 <- function(x) {
-    tibble(penalty = x$model$lambda, df = x$model$df)
+    tibble(index = x$model@alphaindex[[1]], estimate = x$model@coef[[1]])
   }
 
   expect_error(
     res_2_1 <-
       workflow() %>%
       add_recipe(rec_no_tune_1) %>%
-      add_model(glmn_mod) %>%
-      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_2_1)),
+      add_model(svm_mod) %>%
+      tune_grid(
+        resamples = mt_folds,
+        grid = 2,
+        control = control_grid(extract = extr_2_1
+        )
+      ),
     NA
   )
   expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
 
-  expect_true(all(names(extract_2_1) == c("penalty", "mixture", ".extracts")))
+  expect_true(all(names(extract_2_1) == c("cost", ".extracts")))
   expect_true(
     all(purrr:::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_2_1$.extracts, ~ all(names(.x) == c("penalty", "df")))),
+    all(purrr:::map_lgl(extract_2_1$.extracts, ~ all(names(.x) == c("index", "estimate")))),
   )
 
   extr_2_2 <- function(x) {
@@ -109,7 +111,11 @@ test_that('tune model only', {
       workflow() %>%
       add_recipe(rec_tune_1) %>%
       add_model(lm_mod) %>%
-      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_2_2)),
+      tune_grid(
+        resamples = mt_folds,
+        grid = 2,
+        control = control_grid(extract = extr_2_2)
+      ),
     NA
   )
 
@@ -133,12 +139,12 @@ test_that('tune model and recipe', {
   wflow_3 <-
     workflow() %>%
     add_recipe(rec_tune_1) %>%
-    add_model(glmn_mod)
+    add_model(svm_mod)
   set.seed(35)
   grid_3 <-
     dials::parameters(wflow_3) %>%
     update(num_comp = num_comp(c(2, 5))) %>%
-    grid_latin_hypercube()
+    grid_latin_hypercube(size = 4)
 
   expect_error(
     res_3_1 <- tune_grid(wflow_3, resamples = mt_folds, grid = grid_3,
@@ -147,7 +153,7 @@ test_that('tune model and recipe', {
   )
   expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "penalty", "mixture", ".extracts")))
+  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts")))
   expect_true(
     all(purrr:::map_lgl(extract_3_1$.extracts, ~ is.list(.x))),
   )
@@ -158,7 +164,7 @@ test_that('tune model and recipe', {
     all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
   )
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "glmnet"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "ksvm"))),
   )
 
 })

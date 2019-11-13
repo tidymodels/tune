@@ -21,7 +21,7 @@
 A parameter set object
 }
 \description{
-These methods extend the generic \code{dials::parameters()} to work with more
+These methods extend the generic \code{\link[dials:parameters]{dials::parameters()}} to work with more
 complex objects, such as recipes, model specifications, and workflows.
 }
 \examples{

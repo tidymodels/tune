@@ -15,7 +15,7 @@ siren <- function(x, type = "info") {
     type == "warning" ~ crayon::yellow("!"),
     type == "go" ~ crayon::black(cli::symbol$pointer ),
     type == "danger" ~ crayon::red("x"),
-    type == "success" ~ crayon::green("\u2713"),
+    type == "success" ~ crayon::green(tune_symbol$success),
     TRUE ~ crayon::blue("i")
   )
   msg <- dplyr::case_when(

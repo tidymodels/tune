@@ -2,9 +2,18 @@
 % Please edit documentation in R/control.R
 \name{control_grid}
 \alias{control_grid}
+\alias{control_resamples}
 \title{Control the grid search process}
 \usage{
 control_grid(
+  verbose = FALSE,
+  allow_par = TRUE,
+  extract = NULL,
+  save_pred = FALSE,
+  pkgs = NULL
+)
+
+control_resamples(
   verbose = FALSE,
   allow_par = TRUE,
   extract = NULL,
@@ -43,4 +52,7 @@ output called \code{.extracts}. Each element of this list is a tibble with tunin
 parameter column and a list column (also called \code{.extracts}) that contains
 the results of the function. If no extraction function is used, there is no
 \code{.extracts} column in the resulting object.
+
+\code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
+used with \code{\link[=fit_resamples]{fit_resamples()}}.
 }

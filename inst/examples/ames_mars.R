@@ -40,13 +40,19 @@ set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
   update(threshold = threshold(c(0, .2))) %>%
-  update(num_terms = num_terms(c(2, 20)))
+  update(num_terms = num_terms(c(1, 20)))
 
 ames_grid <-
   ames_set %>%
-  grid_max_entropy(size = 5)
+  grid_max_entropy(size = 10)
 
-res <- tune_grid(ames_wflow, rs = cv_splits, grid = ames_grid, control = control_grid(verbose = TRUE))
+res <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    grid = ames_grid,
+    control = control_grid(verbose = TRUE)
+  )
 
 #  collect_metrics(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
