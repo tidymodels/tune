@@ -29,9 +29,6 @@ test_that('grid objects', {
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
 
-  expect_error(tune:::check_grid(grid_1[, -1], chi_wflow),
-               "The grid object should have columns:")
-
   expect_error(tune:::check_grid(chi_wflow, chi_wflow),
                "`grid` should be a positive integer or a data frame")
 
@@ -49,6 +46,49 @@ test_that('grid objects', {
   expect_equal(tune:::check_grid(grid_3, chi_wflow), grid_1)
 })
 
+test_that("Unknown `grid` columns are caught", {
+  data <- data.frame(x = 1:2, y = 1:2)
+
+  rec <- recipes::recipe(y ~ x, data = data)
+  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_pca(rec, x, num_comp = tune())
+
+  model <- parsnip::linear_reg()
+  model <- parsnip::set_engine(model, "lm")
+
+  workflow <- workflow()
+  workflow <- add_recipe(workflow, rec)
+  workflow <- add_model(workflow, model)
+
+  grid <- tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
+
+  expect_error(
+    tune:::check_grid(grid, workflow),
+    "have not been marked for tuning by `tune[(][)]`: 'other1', 'other2'"
+  )
+})
+
+test_that("Missing required `grid` columns are caught", {
+  data <- data.frame(x = 1:2, y = 1:2)
+
+  rec <- recipes::recipe(y ~ x, data = data)
+  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_pca(rec, x, num_comp = tune())
+
+  model <- parsnip::linear_reg()
+  model <- parsnip::set_engine(model, "lm")
+
+  workflow <- workflow()
+  workflow <- add_recipe(workflow, rec)
+  workflow <- add_model(workflow, model)
+
+  grid <- tibble(num_comp = 0.01)
+
+  expect_error(
+    tune:::check_grid(grid, workflow),
+    "have been marked for tuning by `tune[(][)]`: 'deg_free'"
+  )
+})
 
 # ------------------------------------------------------------------------------
 

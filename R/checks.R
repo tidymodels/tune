@@ -39,18 +39,39 @@ check_grid <- function(x, object) {
       rlang::abort(grid_msg)
     }
 
-    tune_param <- tune_args(object)
-    param_nms <- sort(tune_param$id)
+    tune_tbl <- tune_args(object)
+    tune_params <- tune_tbl$id
+
     # when called from [tune_bayes()]
-    param_nms <- param_nms[param_nms != ".iter"]
-    x_nms <- sort(names(x))
-    if (!isTRUE(all.equal(param_nms, x_nms))) {
-      rlang::abort(
-        paste(
-          "The grid object should have columns:",
-          paste0("'", param_nms, "'", collapse = ", ")
-        )
+    tune_params <- tune_params[tune_params != ".iter"]
+
+    grid_params <- names(x)
+
+    extra_grid_params <- setdiff(grid_params, tune_params)
+    extra_tune_params <- setdiff(tune_params, grid_params)
+
+    if (length(extra_grid_params) != 0L) {
+      extra_grid_params <- glue::single_quote(extra_grid_params)
+      extra_grid_params <- glue::glue_collapse(extra_grid_params, sep = ", ")
+
+      msg <- glue::glue(
+        "The provided `grid` has the following parameter columns that have ",
+        "not been marked for tuning by `tune()`: {extra_grid_params}."
       )
+
+      rlang::abort(msg)
+    }
+
+    if (length(extra_tune_params) != 0L) {
+      extra_tune_params <- glue::single_quote(extra_tune_params)
+      extra_tune_params <- glue::glue_collapse(extra_tune_params, sep = ", ")
+
+      msg <- glue::glue(
+        "The provided `grid` is missing the following parameter columns that ",
+        "have been marked for tuning by `tune()`: {extra_tune_params}."
+      )
+
+      rlang::abort(msg)
     }
   } else {
     x <- as.integer(x[1])
