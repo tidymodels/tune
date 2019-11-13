@@ -37,7 +37,7 @@ test_that('grid objects', {
 
   wflow_1 <-
     workflow() %>%
-    add_model(glmn) %>%
+    add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
   expect_error(grid_2 <- tune:::check_grid(6, wflow_1), NA)
@@ -56,10 +56,9 @@ test_that('workflow objects', {
   skip_if_not_installed("xgboost")
   wflow_1 <-
     workflow() %>%
-    add_model(glmn) %>%
+    add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_null(tune:::check_object(x = chi_wflow))
   expect_null(tune:::check_object(x = wflow_1))
 
   wflow_2 <-
@@ -168,9 +167,14 @@ test_that('Bayes control objects', {
 # ------------------------------------------------------------------------------
 
 test_that('initial values', {
+  svm_mod <-
+    svm_rbf(cost = tune()) %>%
+    set_engine("kernlab") %>%
+    set_mode("regression")
+
   wflow_1 <-
     workflow() %>%
-    add_model(glmn) %>%
+    add_model(svm_mod) %>%
     add_recipe(recipe(mpg ~ ., data = mtcars))
 
   grid_1 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
