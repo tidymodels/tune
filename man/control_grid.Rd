@@ -23,7 +23,10 @@ control_resamples(
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
-this argument, warnings and errors are always shown.}
+this argument, warnings and errors are always shown. If using a dark IDE
+theme, some logging messages might be hard to see. If this is the case,
+try setting the \code{tune.dark} option with \code{options(tune.dark = TRUE)} to
+print lighter colors.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}
