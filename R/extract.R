@@ -127,23 +127,34 @@ append_predictions <- function(collection, predictions, split, control) {
   dplyr::bind_rows(collection, predictions)
 }
 
-append_extracts <- function(collection, rec, mod, param, split, ctrl) {
+append_extracts <- function(collection, workflow, param, split, ctrl) {
   if (any(names(param) == ".submodels")) {
     param <- param %>% dplyr::select(-.submodels)
   }
 
-  tmp_extr <-
+  parsnip_fit <- get_wflow_fit(workflow)
+  model <- parsnip_fit$fit
+
+  if ("recipe" %in% names(workflow$pre$actions)) {
+    mold <- get_wflow_mold(workflow)
+    recipe <- mold$blueprint$recipe
+  } else {
+    recipe <- NULL
+  }
+
+  extracts <-
     param %>%
     dplyr::bind_cols(labels(split)) %>%
     mutate(
       .extracts = list(
         extract_details(
-          list(recipe = rec, model = mod),
+          list(recipe = recipe, model = model),
           ctrl$extract
         )
       )
     )
-  dplyr::bind_rows(collection, tmp_extr)
+
+  dplyr::bind_rows(collection, extracts)
 }
 
 

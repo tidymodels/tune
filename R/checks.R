@@ -78,7 +78,7 @@ check_grid <- function(x, object) {
     if (x < 1) {
       rlang::abort(grid_msg)
     }
-    check_object(object, check_dials = TRUE)
+    check_workflow(object, check_dials = TRUE)
     x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
     x <- dplyr::distinct(x)
   }
@@ -121,34 +121,47 @@ check_installs <- function(x) {
   }
 }
 
-check_object <- function(x, check_dials = FALSE) {
+check_workflow <- function(x, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
-    stop("The `object` argument should be a 'workflow' object.",
-         call. = FALSE)
+    rlang::abort("The `object` argument should be a 'workflow' object.")
   }
-  if (length(x$pre) == 0) {
-    stop("A model formula or recipe are required.", call. = FALSE)
+
+  has_preprocessor <- any(c("recipe", "formula") %in% names(x$pre$actions))
+
+  if (!has_preprocessor) {
+    rlang::abort("A model formula or recipe are required.")
   }
-  if (length(x$fit) == 0) {
-    stop("A parsnip model is required.", ll. = FALSE)
+
+  has_model <- "model" %in% names(x$fit$actions)
+
+  if (!has_model) {
+    rlang::abort("A parsnip model is required.")
   }
+
   if (check_dials) {
     y <- dials::parameters(x)
+
     params <- purrr::map_lgl(y$object, inherits, "param")
+
     if (!all(params)) {
-      stop("The workflow has arguments to be tuned that are missing some ",
-           "parameter objects: ", paste0("'", y$id, "'", collapse = ", "),
-           call. = FALSE)
+      rlang::abort(paste0(
+        "The workflow has arguments to be tuned that are missing some ",
+        "parameter objects: ",
+        paste0("'", y$id, "'", collapse = ", ")
+      ))
     }
+
     quant_param <- purrr::map_lgl(y$object, inherits, "quant_param")
     quant_name <- y$id[quant_param]
     compl <- map_lgl(y$object[quant_param],
                      ~ !dials::is_unknown(.x$range$lower) &
                        !dials::is_unknown(.x$range$upper))
+
     if (any(!compl)) {
-      stop("The workflow has arguments whose ranges are not finalized: ",
-           paste0("'", quant_name[!compl], "'", collapse = ", "),
-           call. = FALSE)
+      rlang::abort(paste0(
+        "The workflow has arguments whose ranges are not finalized: ",
+        paste0("'", quant_name[!compl], "'", collapse = ", ")
+      ))
     }
   }
 

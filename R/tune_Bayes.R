@@ -211,7 +211,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    check_object(object, check_dials = is.null(param_info))
+    check_workflow(object, check_dials = is.null(param_info))
     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]

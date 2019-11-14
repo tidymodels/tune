@@ -264,7 +264,7 @@ tune_grid.workflow <- function(object, resamples, grid = 10,
 tune_grid_workflow <-
   function(object, resamples, grid = 10, metrics = NULL, control = control_grid()) {
     check_rset(resamples)
-    check_object(object)
+    check_workflow(object)
     metrics <- check_metrics(metrics, object)
     grid <- check_grid(grid, object)
 

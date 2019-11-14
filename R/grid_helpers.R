@@ -1,34 +1,29 @@
 # recipe-oriented helpers
 
-train_recipe <- function(split, object, grid) {
-  tmp_rec <- object$pre$recipe$recipe
+train_recipe <- function(split, workflow, grid) {
+  rec <- get_wflow_recipe(workflow)
+
   if (!is.null(grid)) {
-    tmp_rec <- merge(tmp_rec, grid)$x[[1]]
+    rec <- merge(rec, grid)$x[[1]]
   }
-  tmp_rec <-
-    recipes::prep(
-      tmp_rec,
-      training = rsample::analysis(split),
-      fresh = TRUE
-    )
-  tmp_rec
+
+  workflow <- set_wflow_recipe(workflow, rec)
+
+  training <- rsample::analysis(split)
+
+  .fit_pre(workflow, training)
 }
 
-train_model_from_recipe <- function(object, recipe, grid, ...) {
-  tmp_fit <- get_wflow_model(object)
+train_model_from_recipe <- function(workflow, grid, control) {
+  spec <- get_wflow_model(workflow)
+
   if (!is.null(grid)) {
-    tmp_fit <- merge(tmp_fit, grid)$x[[1]]
+    spec <- merge(spec, grid)$x[[1]]
   }
 
-  tmp_fit <-
-    parsnip::fit_xy(
-      tmp_fit,
-      x = recipes::juice(recipe, recipes::all_predictors()),
-      y = recipes::juice(recipe, recipes::all_outcomes()) %>% dplyr::pull(1),
-      ...
-    )
+  workflow <- set_wflow_model(workflow, spec)
 
-  tmp_fit
+  .fit_model(workflow, control)
 }
 
 predict_model_from_recipe <- function(split, model, recipe, grid, metrics, ...) {
@@ -132,23 +127,28 @@ make_rename_arg <- function(grid, model) {
 # ------------------------------------------------------------------------------
 # Formula-oriented helpers
 
-# process the formula to get terms (and data)
-exec_formula <- function(split, object) {
-  dat <- rsample::analysis(split)
-  dat <- as.data.frame(dat)
-  f <- object$pre$formula_processor$formula_processor
-  mf <- model.frame(f, data = dat, na.action = "na.pass")
-  trms <- attr(mf, "terms")
-  attr(trms, ".Environment") <- rlang::base_env()
-  attr(mf, "terms") <- NULL
-
-  y_cols <- mf_outcome_cols(trms)
-  y_dat <- mf[, y_cols, drop = FALSE]
-
-  x_dat <- model.matrix(trms, dat, na.action = "na.pass")
-  x_dat <- no_int(x_dat)
-  list(terms = trms, x = x_dat, y = y_dat)
+train_formula <- function(split, workflow) {
+  training <- rsample::analysis(split)
+  .fit_pre(workflow, training)
 }
+
+# TODO - remove me?
+# exec_formula <- function(split, workflow) {
+#   dat <- rsample::analysis(split)
+#   dat <- as.data.frame(dat)
+#   f <- get_wflow_form(workflow)
+#   mf <- model.frame(f, data = dat, na.action = "na.pass")
+#   trms <- attr(mf, "terms")
+#   attr(trms, ".Environment") <- rlang::base_env()
+#   attr(mf, "terms") <- NULL
+#
+#   y_cols <- mf_outcome_cols(trms)
+#   y_dat <- mf[, y_cols, drop = FALSE]
+#
+#   x_dat <- model.matrix(trms, dat, na.action = "na.pass")
+#   x_dat <- no_int(x_dat)
+#   list(terms = trms, x = x_dat, y = y_dat)
+# }
 
 # execute the terms on the assessment set
 exec_terms <- function(split, trms) {
@@ -198,25 +198,16 @@ mf_outcome_cols <- function(x) {
 }
 
 
-train_model_from_df <- function(object, dat, grid, ...) {
-  tmp_fit <- get_wflow_model(object)
+train_model_from_mold <- function(workflow, grid, control) {
+  spec <- get_wflow_model(workflow)
+
   if (!is.null(grid)) {
-    tmp_fit <- merge(tmp_fit, grid)$x[[1]]
+    spec <- merge(spec, grid)$x[[1]]
   }
 
-  if (ncol(dat$y)) {
-    dat$y <- dat$y[[1]]
-  }
+  workflow <- set_wflow_model(workflow, spec)
 
-  tmp_fit <-
-    parsnip::fit_xy(
-      tmp_fit,
-      x = dat$x,
-      y = dat$y,
-      ...
-    )
-
-  tmp_fit
+  .fit_model(workflow, control)
 }
 
 predict_model_from_terms <- function(split, model, trms, grid, metrics, ...) {
@@ -287,16 +278,34 @@ predict_model_from_terms <- function(split, model, trms, grid, metrics, ...) {
 
 # ------------------------------------------------------------------------------
 
-get_wflow_model <- function(object) {
-  object$fit$model$model
+get_wflow_mold <- function(workflow) {
+  workflow$pre$mold
 }
 
-get_wflow_pre <- function(object) {
-  object$pre$recipe$recipe
+get_wflow_fit <- function(workflow) {
+  workflow$fit$fit
 }
 
-get_wflow_form <- function(object) {
-  object$pre$formula_processor$formula_processor
+set_wflow_model <- function(workflow, spec) {
+  workflow$fit$actions$model$spec <- spec
+  workflow
+}
+
+set_wflow_recipe <- function(workflow, recipe) {
+  workflow$pre$actions$recipe$recipe <- recipe
+  workflow
+}
+
+get_wflow_model <- function(workflow) {
+  workflow$fit$actions$model$spec
+}
+
+get_wflow_recipe <- function(workflow) {
+  workflow$pre$actions$recipe$recipe
+}
+
+get_wflow_form <- function(workflow) {
+  workflow$pre$actions$formula$formula
 }
 
 # get_wflow_post
