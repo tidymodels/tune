@@ -3,28 +3,42 @@
 
 siren <- function(x, type = "info") {
   types <- c("warning", "go", "danger", "success", "info")
+
   if (!any(type == types)) {
-    rlang::abort(
-      paste("`type` should be one of: ",
-            paste0("'", types, "'", collapse = ", ")
-      )
+    msg <- paste(
+      "`type` should be one of: ",
+      paste0("'", types, "'", collapse = ", ")
     )
+
+    rlang::abort(msg)
   }
+
   msg <- glue::glue(x)
+
   symb <- dplyr::case_when(
-    type == "warning" ~ crayon::yellow("!"),
-    type == "go" ~ crayon::black(cli::symbol$pointer ),
-    type == "danger" ~ crayon::red("x"),
-    type == "success" ~ crayon::green(tune_symbol$success),
-    TRUE ~ crayon::blue("i")
+    type == "warning" ~ tune_color$symbol$warning("!"),
+    type == "go" ~ tune_color$symbol$go(cli::symbol$pointer),
+    type == "danger" ~ tune_color$symbol$danger("x"),
+    type == "success" ~ tune_color$symbol$success(tune_symbol$success),
+    type == "info" ~ tune_color$symbol$info("i")
   )
+
+  if (is.na(symb)) {
+    rlang::abort("Internal error: Unknown `type`")
+  }
+
   msg <- dplyr::case_when(
-    type == "warning" ~ crayon::yellow(msg),
-    type == "go" ~  crayon::black(msg),
-    type == "danger" ~ crayon::red(msg),
-    type == "success" ~  crayon::black(msg),
-    TRUE ~  crayon::black(msg)
+    type == "warning" ~ tune_color$message$warning(msg),
+    type == "go" ~  tune_color$message$go(msg),
+    type == "danger" ~ tune_color$message$danger(msg),
+    type == "success" ~  tune_color$message$success(msg),
+    type == "info" ~ tune_color$message$info(msg)
   )
+
+  if (is.na(msg)) {
+    rlang::abort("Internal error: Unknown `type`")
+  }
+
   message(paste(symb, msg))
 }
 

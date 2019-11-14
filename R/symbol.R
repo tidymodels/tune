@@ -14,6 +14,44 @@ tune_symbol_ascii <- list(
 
 # ------------------------------------------------------------------------------
 
+# For use in setting the `tune_color` active binding in `.onLoad()`
+
+tune_color_dark <- list(
+  symbol = list(
+    "warning" = crayon::yellow,
+    "go" = crayon::white,
+    "danger" = crayon::red,
+    "success" = crayon::green,
+    "info" = crayon::blue
+  ),
+  message = list(
+    "warning" = crayon::yellow,
+    "go" = crayon::white,
+    "danger" = crayon::red,
+    "success" = crayon::white,
+    "info" = crayon::white
+  )
+)
+
+tune_color_light <- list(
+  symbol = list(
+    "warning" = crayon::yellow,
+    "go" = crayon::black,
+    "danger" = crayon::red,
+    "success" = crayon::green,
+    "info" = crayon::blue
+  ),
+  message = list(
+    "warning" = crayon::yellow,
+    "go" = crayon::black,
+    "danger" = crayon::red,
+    "success" = crayon::black,
+    "info" = crayon::black
+  )
+)
+
+# ------------------------------------------------------------------------------
+
 # cli:::is_latex_output()
 is_latex_output <- function () {
   if (!("knitr" %in% loadedNamespaces())) {

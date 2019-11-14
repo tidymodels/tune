@@ -27,4 +27,22 @@
     },
     ns
   )
+
+  makeActiveBinding(
+    "tune_color",
+    function() {
+      opt <- getOption("tune.dark",  NULL)
+
+      if (!is.null(opt)) {
+        if (isTRUE(opt)) {
+          return(tune_color_dark)
+        } else {
+          return(tune_color_light)
+        }
+      }
+
+      tune_color_light
+    },
+    ns
+  )
 }
