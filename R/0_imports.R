@@ -23,6 +23,12 @@
 #' @importFrom foreach foreach getDoParName
 
 # ------------------------------------------------------------------------------
+# Only a small number of functions in workflows.
+# It is worth just importing everything.
+
+#' @import workflows
+
+# ------------------------------------------------------------------------------
 
 #' @importFrom dials parameters
 #' @export
