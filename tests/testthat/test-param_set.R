@@ -2,7 +2,7 @@ context("parameter sets from complex objects")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 

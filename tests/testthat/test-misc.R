@@ -2,7 +2,7 @@ context("misc functions")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ test_that('exponential decay', {
 
 test_that('correct size of formula method', {
   splits <- rsample::vfold_cv(mtcars)
-  form <- list(pre = list(formula_processor = list(formula_processor = mpg ~ .)))
+  form <- list(pre = list(actions = list(formula = list(formula = mpg ~ .))))
   res <- tune:::exec_formula(splits$splits[[1]], form)
   expect_equivalent(nrow(res$x), dim(splits$splits[[1]])[1])
   expect_equivalent(nrow(res$y), dim(splits$splits[[1]])[1])

@@ -2,13 +2,13 @@ context("`select_best()` and `show_best()`")
 
 # ------------------------------------------------------------------------------
 
-load("rcv_results.RData")
+load(test_path("rcv_results.RData"))
 library(tibble)
 
 # ------------------------------------------------------------------------------
 
 
-testthat::test_that("select_best()", {
+test_that("select_best()", {
   expect_true(
     is_tibble(select_best(rcv_results, metric = "rmse", maximize = FALSE))
     )
@@ -58,7 +58,7 @@ testthat::test_that("select_best()", {
 })
 
 
-testthat::test_that("show_best()", {
+test_that("show_best()", {
   rcv_rmse <-
     rcv_results %>%
     collect_metrics() %>%

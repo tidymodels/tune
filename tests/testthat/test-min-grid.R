@@ -4,7 +4,7 @@ context("grid search")
 
 library(dplyr)
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
