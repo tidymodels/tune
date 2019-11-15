@@ -30,8 +30,8 @@ Imports:
     GPfit,
     foreach,
     parsnip (>= 0.0.3.9000),
-    workflows,
-    hardhat
+    workflows (>= 0.0.0.9001),
+    hardhat (>= 0.0.0.9001)
 Suggests: 
     testthat,
     knitr,
@@ -47,4 +47,5 @@ Remotes:
     tidymodels/recipes,    
     tidymodels/parsnip,
     tidymodels/hardhat,
+    DavisVaughan/workflows,
     r-lib/cli
