@@ -121,7 +121,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
 
-  has_formula <- has_workflow_formula(workflow)
+  has_formula <- has_wflow_formula(workflow)
 
   if (has_formula) {
     resamples <- resample_with_formula(resamples, workflow, metrics, control)
@@ -139,10 +139,6 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   class(resamples) <- c("resample_results", class(resamples))
 
   resamples
-}
-
-has_workflow_formula <- function(x) {
-  names(x$pre$actions) == "formula"
 }
 
 # ------------------------------------------------------------------------------
@@ -196,7 +192,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     notes = .notes
   )
 
-  if (inherits(workflow, "try-error")) {
+  if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -215,7 +211,8 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     notes = .notes
   )
 
-  if (inherits(workflow, "try-error")) {
+  # check for parsnip level and model level failure
+  if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -242,7 +239,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     notes = .notes
   )
 
-  if (inherits(predictions, "try-error")) {
+  if (is_failure(predictions)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -310,7 +307,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     notes = .notes
   )
 
-  if (inherits(workflow, "try-error")) {
+  if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -329,7 +326,8 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     notes = .notes
   )
 
-  if (inherits(workflow, "try-error")) {
+  # check for parsnip level and model level failure
+  if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -356,7 +354,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     notes = .notes
   )
 
-  if (inherits(predictions, "try-error")) {
+  if (is_failure(predictions)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,

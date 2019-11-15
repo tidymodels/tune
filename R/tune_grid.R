@@ -287,7 +287,7 @@ tune_grid_workflow <-
 quarterback <- function(x) {
   y <- dials::parameters(x)
   sources <- unique(y$source)
-  has_form <- names(x$pre) == "formula_processor"
+  has_form <- has_wflow_formula(x)
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 

@@ -26,21 +26,21 @@ train_model_from_recipe <- function(workflow, grid, control) {
   .fit_model(workflow, control)
 }
 
-predict_model_from_recipe <- function(split, model, recipe, grid, metrics, ...) {
-  y_names <- outcome_names(recipe)
-  new_vals <-
-    recipes::bake(recipe,
-                  rsample::assessment(split),
-                  all_predictors(),
-                  all_outcomes())
-  x_vals <- new_vals %>% dplyr::select(-one_of(y_names))
+predict_model <- function(split, workflow, grid, metrics) {
+  model <- get_wflow_fit(workflow)
+
+  forged <- forge_from_workflow(split, workflow)
+
+  x_vals <- forged$predictors
+  y_vals <- forged$outcomes
+
   orig_rows <- as.integer(split, data = "assessment")
 
   # Determine the type of prediction that is required
   type_info <- metrics_info(metrics)
   types <- unique(type_info$type)
 
-  # Split `grid` from the parameters used to fit the model and any poential
+  # Split `grid` from the parameters used to fit the model and any potential
   # sub-model parameters
   submod_col <- names(grid) == ".submodels"
   fixed_param <- grid[, !submod_col]
@@ -82,21 +82,20 @@ predict_model_from_recipe <- function(split, model, recipe, grid, metrics, ...) 
           dplyr::bind_rows(tmp_res)
       }
     }
+
     if (!is.null(res)) {
       res <- dplyr::full_join(res, tmp_res, by = merge_vars)
     } else {
       res <- tmp_res
     }
+
     rm(tmp_res)
   } # end type loop
 
   # Add outcome data
-  outcome_dat <-
-    new_vals %>%
-    dplyr::select(dplyr::one_of(y_names)) %>%
-    dplyr::mutate(.row = orig_rows)
+  y_vals <- dplyr::mutate(y_vals, .row = orig_rows)
+  res <- dplyr::full_join(res, y_vals, by = ".row")
 
-  res <- dplyr::full_join(res, outcome_dat, by = ".row")
   tibble::as_tibble(res)
 }
 
@@ -133,23 +132,24 @@ train_formula <- function(split, workflow) {
 }
 
 # TODO - remove me?
-# exec_formula <- function(split, workflow) {
-#   dat <- rsample::analysis(split)
-#   dat <- as.data.frame(dat)
-#   f <- get_wflow_form(workflow)
-#   mf <- model.frame(f, data = dat, na.action = "na.pass")
-#   trms <- attr(mf, "terms")
-#   attr(trms, ".Environment") <- rlang::base_env()
-#   attr(mf, "terms") <- NULL
-#
-#   y_cols <- mf_outcome_cols(trms)
-#   y_dat <- mf[, y_cols, drop = FALSE]
-#
-#   x_dat <- model.matrix(trms, dat, na.action = "na.pass")
-#   x_dat <- no_int(x_dat)
-#   list(terms = trms, x = x_dat, y = y_dat)
-# }
+exec_formula <- function(split, workflow) {
+  dat <- rsample::analysis(split)
+  dat <- as.data.frame(dat)
+  f <- get_wflow_form(workflow)
+  mf <- model.frame(f, data = dat, na.action = "na.pass")
+  trms <- attr(mf, "terms")
+  attr(trms, ".Environment") <- rlang::base_env()
+  attr(mf, "terms") <- NULL
 
+  y_cols <- mf_outcome_cols(trms)
+  y_dat <- mf[, y_cols, drop = FALSE]
+
+  x_dat <- model.matrix(trms, dat, na.action = "na.pass")
+  x_dat <- no_int(x_dat)
+  list(terms = trms, x = x_dat, y = y_dat)
+}
+
+# TODO - Remove me?
 # execute the terms on the assessment set
 exec_terms <- function(split, trms) {
   dat <- rsample::assessment(split)
@@ -210,73 +210,15 @@ train_model_from_mold <- function(workflow, grid, control) {
   .fit_model(workflow, control)
 }
 
-predict_model_from_terms <- function(split, model, trms, grid, metrics, ...) {
-  dat <- exec_terms(split, trms)
+# ------------------------------------------------------------------------------
 
-  orig_rows <- as.integer(split, data = "assessment")
-
-  # Determine the type of prediction that is required
-  type_info <- metrics_info(metrics)
-  types <- unique(type_info$type)
-
-  # Split `grid` from the parameters used to fit the model and any poential
-  # sub-model parameters
-  submod_col <- names(grid) == ".submodels"
-  fixed_param <- grid[, !submod_col]
-
-  res <- NULL
-  merge_vars <- c(".row", names(fixed_param))
-
-  for (type_iter in types) {
-    # Regular predictions
-    tmp_res <-
-      predict(model, dat$x, type = type_iter) %>%
-      mutate(.row = orig_rows) %>%
-      cbind(fixed_param, row.names = NULL)
-
-    if (any(submod_col)) {
-      submod_length <- map_int(grid$.submodels[[1]], length)
-      has_submodels <- any(submod_length > 0)
-
-      if (has_submodels) {
-        submod_param <- names(grid$.submodels[[1]])
-        mp_call <-
-          call2(
-            "multi_predict",
-            .ns = "parsnip",
-            object = expr(model),
-            new_data = expr(dat$x),
-            type = type_iter,
-            !!!grid$.submodels[[1]]
-          )
-        tmp_res <-
-          eval_tidy(mp_call) %>%
-          mutate(.row = orig_rows) %>%
-          unnest(cols = dplyr::starts_with(".pred")) %>%
-          cbind(fixed_param %>% dplyr::select(-one_of(submod_param)),
-                row.names = NULL) %>%
-          dplyr::select(dplyr::one_of(names(tmp_res))) %>%
-          dplyr::bind_rows(tmp_res)
-      }
-    }
-    if (!is.null(res)) {
-      res <- dplyr::full_join(res, tmp_res, by = merge_vars)
-    } else {
-      res <- tmp_res
-    }
-    rm(tmp_res)
-  } # end type loop
-
-  # Add outcome data
-  outcome_dat <-
-    dat$y %>%
-    dplyr::mutate(.row = orig_rows)
-
-  res <- dplyr::full_join(res, outcome_dat, by = ".row")
-  tibble::as_tibble(res)
+has_wflow_recipe <- function(workflow) {
+  any(names(workflow$pre$actions) == "recipe")
 }
 
-# ------------------------------------------------------------------------------
+has_wflow_formula <- function(workflow) {
+  any(names(workflow$pre$actions) == "formula")
+}
 
 get_wflow_mold <- function(workflow) {
   workflow$pre$mold
