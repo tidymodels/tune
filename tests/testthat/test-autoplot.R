@@ -3,9 +3,9 @@ context("autoplot")
 # ------------------------------------------------------------------------------
 
 library(rlang)
-load("knn_results.RData")
-load("svm_results.RData")
-load("bayes_example.RData")
+load(test_path("knn_results.RData"))
+load(test_path("svm_results.RData"))
+load(test_path("bayes_example.RData"))
 
 # ------------------------------------------------------------------------------
 

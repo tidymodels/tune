@@ -4,7 +4,7 @@ context("acquisition functions")
 
 library(rlang)
 library(dplyr)
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 test_res <- tibble(.mean = 1:10,  .sd = c((1:9)/10, NA_real_))
 

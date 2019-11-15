@@ -2,8 +2,8 @@ context("object checking")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
-load("svm_results.RData")
+source(test_path("../helper-objects.R"))
+load(test_path("svm_results.RData"))
 
 # ------------------------------------------------------------------------------
 
