@@ -126,13 +126,13 @@ check_workflow <- function(x, check_dials = FALSE) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
 
-  has_preprocessor <- any(c("recipe", "formula") %in% names(x$pre$actions))
+  has_preprocessor <- has_wflow_formula(x) || has_wflow_recipe(x)
 
   if (!has_preprocessor) {
     rlang::abort("A model formula or recipe are required.")
   }
 
-  has_model <- "model" %in% names(x$fit$actions)
+  has_model <- has_wflow_model(x)
 
   if (!has_model) {
     rlang::abort("A parsnip model is required.")

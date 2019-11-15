@@ -169,6 +169,10 @@ has_wflow_formula <- function(workflow) {
   any(names(workflow$pre$actions) == "formula")
 }
 
+has_wflow_model <- function(workflow) {
+  any(names(workflow$fit$actions) == "model")
+}
+
 get_wflow_mold <- function(workflow) {
   workflow$pre$mold
 }
