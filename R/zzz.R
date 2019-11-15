@@ -1,3 +1,5 @@
+# nocov start
+
 .onLoad <- function(libname, pkgname) {
   ns <- rlang::ns_env("tune")
 
@@ -46,3 +48,5 @@
     ns
   )
 }
+
+# nocov end
