@@ -40,7 +40,11 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
   # --------------------------------------------------------------------------
 
   num_rec <- nrow(rec_grid)
+  original_workflow <- workflow
+
   for (rec_iter in 1:num_rec) {
+    workflow <- original_workflow
+
     rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
 
     # Current recipe parameters only
@@ -75,7 +79,11 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
     # ------------------------------------------------------------------------
 
     num_mod <- nrow(mod_grid_vals)
+    original_prepped_workflow <- workflow
+
     for (mod_iter in 1:num_mod) {
+      workflow <- original_prepped_workflow
+
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
       fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
@@ -161,8 +169,11 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   .notes <- NULL
 
   num_rec <- nrow(grid)
+  original_workflow <- workflow
 
   for (param_iter in 1:num_rec) {
+    workflow <- original_workflow
+
     param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
@@ -308,7 +319,11 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
   mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
+  original_workflow <- workflow
+
   for (mod_iter in 1:num_mod) {
+    workflow <- original_workflow
+
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
     workflow <- catch_and_log(
@@ -416,7 +431,11 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
   mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
+  original_workflow <- workflow
+
   for (mod_iter in 1:num_mod) {
+    workflow <- original_workflow
+
     param_val <- mod_grid_vals[mod_iter, ]
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
@@ -456,7 +475,6 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
-
 }
 
 # ----------------------------------------------------------------------------
