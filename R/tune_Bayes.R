@@ -138,15 +138,16 @@ tune_bayes.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_bayes
-tune_bayes.recipe <- function(object, model,
+tune_bayes.recipe <- function(object,
+                              model,
                               resamples,
+                              ...,
                               iter = 10,
                               param_info = NULL,
                               metrics = NULL,
                               objective = exp_improve(),
                               initial = 5,
-                              control = control_bayes(),
-                              ...) {
+                              control = control_bayes()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -163,15 +164,16 @@ tune_bayes.recipe <- function(object, model,
 
 #' @export
 #' @rdname tune_bayes
-tune_bayes.formula <- function(formula, model,
+tune_bayes.formula <- function(formula,
+                               model,
                                resamples,
+                               ...,
                                iter = 10,
                                param_info = NULL,
                                metrics = NULL,
                                objective = exp_improve(),
                                initial = 5,
-                               control = control_bayes(),
-                               ...) {
+                               control = control_bayes()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -191,13 +193,13 @@ tune_bayes.formula <- function(formula, model,
 tune_bayes.workflow <-
   function(object,
            resamples,
+           ...,
            iter = 10,
            param_info = NULL,
            metrics = NULL,
            objective = exp_improve(),
            initial = 5,
-           control = control_bayes(),
-           ...) {
+           control = control_bayes()) {
 
   tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
                       metrics = metrics, objective = objective, initial = initial,
