@@ -16,29 +16,29 @@ tune_grid(object, ...)
   object,
   model,
   resamples,
+  ...,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 
 \method{tune_grid}{formula}(
   formula,
   model,
   resamples,
+  ...,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 
 \method{tune_grid}{workflow}(
   object,
   resamples,
+  ...,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 }
 \arguments{
@@ -49,19 +49,16 @@ tune_grid(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object.}
 
 \item{grid}{A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
-parameter sets to be created automatically. If used, this argument
-\strong{should be named}.}
+parameter sets to be created automatically.}
 
-\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}. If used, this argument
-\strong{should be named}.}
+\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}.}
 
-\item{control}{An object used to modify the tuning process. If used, this
-argument \strong{should be named}.}
+\item{control}{An object used to modify the tuning process.}
 
 \item{formula}{A traditional model formula.}
 }
