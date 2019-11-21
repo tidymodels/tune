@@ -3,7 +3,7 @@ context("merge grid values into objects")
 # ------------------------------------------------------------------------------
 
 library(rlang)
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 

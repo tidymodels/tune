@@ -237,14 +237,16 @@ tunable.recipe <- function(x, ...) {
 #' @export
 #' @rdname tunable
 tunable.workflow <- function(x, ...) {
-  param_data <- tunable(x$fit$model$model)
-  if (any(names(x$pre) == "recipe")) {
-    param_data <-
-      dplyr::bind_rows(
-        param_data,
-        tunable(x$pre$recipe$recipe)
-      )
+  model <- get_wflow_model(x)
+  param_data <- tunable(model)
+
+  if (has_wflow_recipe(x)) {
+    recipe <- get_wflow_recipe(x)
+    recipe_param_data <- tunable(recipe)
+
+    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
   }
+
   param_data
 }
 

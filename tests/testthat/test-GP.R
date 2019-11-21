@@ -4,9 +4,9 @@ context("GP model and helpers")
 
 library(dplyr)
 library(tidyr)
-source("../helper-objects.R")
-load("svm_results.RData")
-load("knn_results.RData")
+source(test_path("../helper-objects.R"))
+load(test_path("svm_results.RData"))
+load(test_path("knn_results.RData"))
 
 # ------------------------------------------------------------------------------
 

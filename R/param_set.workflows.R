@@ -38,14 +38,16 @@
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {
-  param_data <- dials::parameters(x$fit$model$model)
-  if (any(names(x$pre) == "recipe")) {
-    param_data <-
-      dplyr::bind_rows(
-        param_data,
-        dials::parameters(x$pre$recipe$recipe)
-      )
+  model <- get_wflow_model(x)
+  param_data <- dials::parameters(model)
+
+  if (has_wflow_recipe(x)) {
+    recipe <- get_wflow_recipe(x)
+    recipe_param_data <- dials::parameters(recipe)
+
+    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
   }
+
   dials::parameters_constr(
     param_data$name,
     param_data$id,

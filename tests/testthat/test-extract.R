@@ -9,7 +9,7 @@ library(dials)
 library(rsample)
 library(parsnip)
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 

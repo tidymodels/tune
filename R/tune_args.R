@@ -154,14 +154,16 @@ tune_args.step <- function(object, full = FALSE, ...) {
 #' @export
 #' @rdname tune_args
 tune_args.workflow <- function(object, ...) {
-  param_data <- object %>% get_wflow_model() %>% tune_args()
-  if (any(names(object$pre) == "recipe")) {
-    param_data <-
-      dplyr::bind_rows(
-        param_data,
-        tune_args(object$pre$recipe$recipe)
-      )
+  model <- get_wflow_model(object)
+
+  param_data <- tune_args(model)
+
+  if (has_wflow_recipe(object)) {
+    recipe <- get_wflow_recipe(object)
+    recipe_param_data <- tune_args(recipe)
+    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
   }
+
   param_data
 }
 

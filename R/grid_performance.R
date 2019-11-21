@@ -24,7 +24,7 @@ metrics_info <- function(x) {
   res
 }
 
-estimate_metrics <- function(dat, metric, object, other_names = NULL) {
+estimate_metrics <- function(dat, metric, workflow, other_names = NULL) {
   # other_names will take additional columns from the recipe (if any)
 
   if (inherits(dat, "try-error")) {
@@ -35,8 +35,8 @@ estimate_metrics <- function(dat, metric, object, other_names = NULL) {
   type_info <- metrics_info(metric)
   types <- unique(type_info$type)
 
-  y_names <- outcome_names(object)
-  param_names <- dials::parameters(object)$id
+  y_names <- outcome_names(workflow)
+  param_names <- dials::parameters(workflow)$id
 
   if (all(types == "numeric")) {
     res <- estimate_reg(dat, metric, param_names, y_names)

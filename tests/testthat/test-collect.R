@@ -2,10 +2,10 @@ context("collect")
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   result <- fit_resamples(mpg ~ ., lin_mod, folds)
 

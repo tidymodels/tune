@@ -4,8 +4,8 @@ context("`collect_metrics` methods")
 
 library(dplyr)
 library(tidyr)
-source("../helper-objects.R")
-load("rcv_results.RData")
+source(test_path("../helper-objects.R"))
+load(test_path("rcv_results.RData"))
 
 # ------------------------------------------------------------------------------
 
