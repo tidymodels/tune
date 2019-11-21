@@ -69,7 +69,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   control2$verbose = TRUE
 
   wrn <- res$signals
-  if (length(wrn) > 0) {
+  if (length(wrn) > 0 | runif(1) < .1) {
     wrn_msg <- map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
@@ -77,18 +77,21 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- paste0(loc, ": ", wrn_msg)
     notes <- c(notes, wrn_msg)
     tune_log(control2, split, wrn_msg, type = "warning")
+    bad_news()
   }
-  if (inherits(res$res, "try-error")) {
+  if (inherits(res$res, "try-error")| runif(1) < .1) {
     err_msg <- as.character(attr(res$res,"condition"))
     err_msg <- gsub("\n$", "", err_msg)
     err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
     err_msg <- paste0(loc, ": ", err_msg)
     notes <- c(notes, err_msg)
     tune_log(control2, split, err_msg, type = "danger")
+    bad_news()
   } else {
     if (!bad_only) {
       tune_log(control, split, loc, type = "success")
     }
+    good_news()
   }
   notes
 }
@@ -199,3 +202,23 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   }
   invisible(NULL)
 }
+
+who <- c("Tessa", "Moira", "Alex")
+
+good_news <- function() {
+  msg <- c("excellent!", "awesome!", "noice!")
+  msg <- base::sample(msg, 1)
+  cmd <- paste("say", msg)
+  cmd <- paste(cmd, "-v", sample(who, 1))
+  system(cmd)
+}
+
+
+bad_news <- function() {
+  msg <- c("shit", "bad, very bad", "NO", "damn it")
+  msg <- base::sample(msg, 1)
+  cmd <- paste("say", msg)
+  cmd <- paste(cmd, "-v", sample(who, 1))
+  system(cmd)
+}
+
