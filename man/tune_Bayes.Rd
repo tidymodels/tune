@@ -16,38 +16,38 @@ tune_bayes(object, ...)
   object,
   model,
   resamples,
+  ...,
   iter = 10,
   param_info = NULL,
   metrics = NULL,
   objective = exp_improve(),
   initial = 5,
-  control = control_bayes(),
-  ...
+  control = control_bayes()
 )
 
 \method{tune_bayes}{formula}(
   formula,
   model,
   resamples,
+  ...,
   iter = 10,
   param_info = NULL,
   metrics = NULL,
   objective = exp_improve(),
   initial = 5,
-  control = control_bayes(),
-  ...
+  control = control_bayes()
 )
 
 \method{tune_bayes}{workflow}(
   object,
   resamples,
+  ...,
   iter = 10,
   param_info = NULL,
   metrics = NULL,
   objective = exp_improve(),
   initial = 5,
-  control = control_bayes(),
-  ...
+  control = control_bayes()
 )
 }
 \arguments{
@@ -58,7 +58,7 @@ tune_bayes(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object.}
 
 \item{iter}{The maximum number of search iterations.}
 

@@ -8,16 +8,13 @@
 #' @param formula A traditional model formula.
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
-#' @param resamples An `rset()` object. This argument __should be named__.
+#' @param resamples An `rset()` object.
 #' @param grid A data frame of tuning combinations or a positive integer. The
 #'  data frame should have columns for each parameter being tuned and rows for
 #'  tuning parameter candidates. An integer denotes the number of candidate
-#'  parameter sets to be created automatically. If used, this argument
-#'  __should be named__.
-#' @param metrics A [yardstick::metric_set()] or `NULL`. If used, this argument
-#' __should be named__.
-#' @param control An object used to modify the tuning process. If used, this
-#' argument __should be named__.
+#'  parameter sets to be created automatically.
+#' @param metrics A [yardstick::metric_set()] or `NULL`.
+#' @param control An object used to modify the tuning process.
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
@@ -203,8 +200,8 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.recipe <- function(object, model, resamples, ..., grid = 10,
+                             metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -225,8 +222,8 @@ tune_grid.recipe <- function(object, model, resamples, grid = 10,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.formula <- function(formula, model, resamples, ..., grid = 10,
+                              metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -247,8 +244,8 @@ tune_grid.formula <- function(formula, model, resamples, grid = 10,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.workflow <- function(object, resamples, ..., grid = 10,
+                               metrics = NULL, control = control_grid()) {
 
   tune_grid_workflow(
     object,
