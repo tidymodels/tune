@@ -43,7 +43,7 @@ train_model_from_recipe <- function(workflow, grid, control) {
 }
 
 predict_model <- function(split, workflow, grid, metrics) {
-  model <- get_wflow_fit(workflow)
+  model <- workflows::pull_workflow_fit(workflow)
 
   forged <- forge_from_workflow(split, workflow)
 
@@ -171,14 +171,6 @@ has_preprocessor_formula <- function(workflow) {
 
 has_spec <- function(workflow) {
   "model" %in% names(workflow$fit$actions)
-}
-
-get_wflow_mold <- function(workflow) {
-  workflow$pre$mold
-}
-
-get_wflow_fit <- function(workflow) {
-  workflow$fit$fit
 }
 
 set_wflow_model <- function(workflow, spec) {

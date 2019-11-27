@@ -375,7 +375,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
 # `resamples()` prediction
 
 predict_model_no_grid <- function(split, workflow, metrics) {
-  model <- get_wflow_fit(workflow)
+  model <- workflows::pull_workflow_fit(workflow)
 
   forged <- forge_from_workflow(split, workflow)
 
