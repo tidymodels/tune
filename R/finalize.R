@@ -84,7 +84,7 @@ finalize_workflow <- function(x, parameters) {
   x <- set_workflow_spec(x, mod)
 
   if (has_preprocessor_recipe(x)) {
-    rec <- get_wflow_recipe(x)
+    rec <- workflows::pull_workflow_preprocessor(x)
     rec <- finalize_recipe(rec, parameters)
     x <- set_workflow_recipe(x, rec)
   }

@@ -1,7 +1,7 @@
 # recipe-oriented helpers
 
 train_recipe <- function(split, workflow, grid) {
-  original_recipe <- get_wflow_recipe(workflow)
+  original_recipe <- workflows::pull_workflow_preprocessor(workflow)
 
   if (!is.null(grid)) {
     updated_recipe <- merge(original_recipe, grid)$x[[1]]
@@ -181,10 +181,6 @@ set_workflow_spec <- function(workflow, spec) {
 set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
-}
-
-get_wflow_recipe <- function(workflow) {
-  workflow$pre$actions$recipe$recipe
 }
 
 get_wflow_form <- function(workflow) {

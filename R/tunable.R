@@ -241,7 +241,7 @@ tunable.workflow <- function(x, ...) {
   param_data <- tunable(model)
 
   if (has_preprocessor_recipe(x)) {
-    recipe <- get_wflow_recipe(x)
+    recipe <- workflows::pull_workflow_preprocessor(x)
     recipe_param_data <- tunable(recipe)
 
     param_data <- dplyr::bind_rows(param_data, recipe_param_data)

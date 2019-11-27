@@ -159,7 +159,7 @@ tune_args.workflow <- function(object, ...) {
   param_data <- tune_args(model)
 
   if (has_preprocessor_recipe(object)) {
-    recipe <- get_wflow_recipe(object)
+    recipe <- workflows::pull_workflow_preprocessor(object)
     recipe_param_data <- tune_args(recipe)
     param_data <- dplyr::bind_rows(param_data, recipe_param_data)
   }
