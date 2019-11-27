@@ -39,13 +39,6 @@ outcome_names.recipe <- function(x, ...) {
 #' @export
 #' @rdname outcome_names
 outcome_names.workflow <- function(x, ...) {
-  if (has_preprocessor_formula(x)) {
-    return(outcome_names(get_wflow_form(x)))
-  }
-
-  if (has_preprocessor_recipe(x)) {
-    return(outcome_names(workflows::pull_workflow_preprocessor(x)))
-  }
-
-  rlang::abort("The workflow must have a formula or recipe preprocessor.")
+  preprocessor <- workflows::pull_workflow_preprocessor(x)
+  outcome_names(preprocessor)
 }

@@ -182,12 +182,3 @@ set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }
-
-get_wflow_form <- function(workflow) {
-  workflow$pre$actions$formula$formula
-}
-
-# get_wflow_post
-
-
-
