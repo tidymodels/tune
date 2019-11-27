@@ -240,7 +240,7 @@ tunable.workflow <- function(x, ...) {
   model <- get_wflow_model(x)
   param_data <- tunable(model)
 
-  if (has_wflow_recipe(x)) {
+  if (has_preprocessor_recipe(x)) {
     recipe <- get_wflow_recipe(x)
     recipe_param_data <- tunable(recipe)
 

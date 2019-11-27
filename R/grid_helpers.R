@@ -161,12 +161,12 @@ train_model_from_mold <- function(workflow, grid, control) {
 
 # ------------------------------------------------------------------------------
 
-has_wflow_recipe <- function(workflow) {
-  any(names(workflow$pre$actions) == "recipe")
+has_preprocessor_recipe <- function(workflow) {
+  "recipe" %in% names(workflow$pre$actions)
 }
 
-has_wflow_formula <- function(workflow) {
-  any(names(workflow$pre$actions) == "formula")
+has_preprocessor_formula <- function(x) {
+  "formula" %in% names(x$pre$actions)
 }
 
 has_wflow_model <- function(workflow) {

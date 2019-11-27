@@ -126,7 +126,7 @@ check_workflow <- function(x, check_dials = FALSE) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
 
-  has_preprocessor <- has_wflow_formula(x) || has_wflow_recipe(x)
+  has_preprocessor <- has_preprocessor_formula(x) || has_preprocessor_recipe(x)
 
   if (!has_preprocessor) {
     rlang::abort("A model formula or recipe are required.")

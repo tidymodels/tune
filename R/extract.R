@@ -135,7 +135,7 @@ append_extracts <- function(collection, workflow, param, split, ctrl) {
   parsnip_fit <- get_wflow_fit(workflow)
   model <- parsnip_fit$fit
 
-  if (has_wflow_recipe(workflow)) {
+  if (has_preprocessor_recipe(workflow)) {
     mold <- get_wflow_mold(workflow)
     recipe <- mold$blueprint$recipe
   } else {

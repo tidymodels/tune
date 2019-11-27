@@ -121,7 +121,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
 
-  has_formula <- has_wflow_formula(workflow)
+  has_formula <- has_preprocessor_formula(workflow)
 
   if (has_formula) {
     resamples <- resample_with_formula(resamples, workflow, metrics, control)

@@ -39,11 +39,11 @@ outcome_names.recipe <- function(x, ...) {
 #' @export
 #' @rdname outcome_names
 outcome_names.workflow <- function(x, ...) {
-  if (has_wflow_formula(x)) {
+  if (has_preprocessor_formula(x)) {
     return(outcome_names(get_wflow_form(x)))
   }
 
-  if (has_wflow_recipe(x)) {
+  if (has_preprocessor_recipe(x)) {
     return(outcome_names(get_wflow_recipe(x)))
   }
 
