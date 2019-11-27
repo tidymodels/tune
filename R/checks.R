@@ -132,9 +132,9 @@ check_workflow <- function(x, check_dials = FALSE) {
     rlang::abort("A model formula or recipe are required.")
   }
 
-  has_model <- has_wflow_model(x)
+  has_spec <- has_spec(x)
 
-  if (!has_model) {
+  if (!has_spec) {
     rlang::abort("A parsnip model is required.")
   }
 

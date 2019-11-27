@@ -169,8 +169,8 @@ has_preprocessor_formula <- function(workflow) {
   "formula" %in% names(workflow$pre$actions)
 }
 
-has_wflow_model <- function(workflow) {
-  any(names(workflow$fit$actions) == "model")
+has_spec <- function(workflow) {
+  "model" %in% names(workflow$fit$actions)
 }
 
 get_wflow_mold <- function(workflow) {
