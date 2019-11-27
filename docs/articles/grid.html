@@ -171,60 +171,47 @@
 <pre><code>## # Bootstrap sampling 
 ## # A tibble: 30 x 4
 ##    splits            id          .metrics          .notes          
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
-##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
-## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
+##    &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
+##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  4 &lt;split [351/141]&gt; Bootstrap04 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  5 &lt;split [351/131]&gt; Bootstrap05 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  6 &lt;split [351/131]&gt; Bootstrap06 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  7 &lt;split [351/127]&gt; Bootstrap07 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  8 &lt;split [351/123]&gt; Bootstrap08 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+##  9 &lt;split [351/131]&gt; Bootstrap09 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
+## 10 &lt;split [351/117]&gt; Bootstrap10 &lt;tibble [10 × 3]&gt; &lt;tibble [0 × 1]&gt;
 ## # … with 20 more rows</code></pre>
 <p>The <code>.metrics</code> column contains tibbles of the performance metrics for each tuning parameter combination:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">grid_form <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(.metrics) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">pull</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## [[1]]
-## # A tibble: 10 x 5
-##        cost rbf_sigma .metric .estimator .estimate
-##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-##  1  0.00849  1.11e-10 roc_auc binary         0.872
-##  2  0.176    7.28e- 8 roc_auc binary         0.907
-##  3 14.9      3.93e- 4 roc_auc binary         0.942
-##  4  5.51     2.10e- 3 roc_auc binary         0.966
-##  5  1.87     3.53e- 7 roc_auc binary         0.906
-##  6  0.00719  1.45e- 5 roc_auc binary         0.908
-##  7  0.00114  8.41e- 2 roc_auc binary         0.985
-##  8  0.950    1.74e- 1 roc_auc binary         1    
-##  9  0.189    3.13e- 6 roc_auc binary         0.906
-## 10  0.0364   4.96e- 9 roc_auc binary         0.909</code></pre>
+## # A tibble: 10 x 3
+##    .metric .estimator .estimate
+##    &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+##  1 roc_auc binary         0.890
+##  2 roc_auc binary         0.903
+##  3 roc_auc binary         0.913
+##  4 roc_auc binary         0.937
+##  5 roc_auc binary         0.909
+##  6 roc_auc binary         0.905
+##  7 roc_auc binary         0.968
+##  8 roc_auc binary         0.984
+##  9 roc_auc binary         0.905
+## 10 roc_auc binary         0.908</code></pre>
 <p>To get the final resampling estimates, the <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> function can be used on the grid object:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">estimates &lt;-<span class="st"> </span><span class="kw"><a href="../reference/collect_predictions.html">collect_metrics</a></span>(grid_form)</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">estimates</a></code></pre></div>
-<pre><code>## # A tibble: 10 x 7
-##        cost rbf_sigma .metric .estimator  mean     n  std_err
-##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
-##  1  0.00114  8.41e- 2 roc_auc binary     0.982    30 0.00204 
-##  2  0.00719  1.45e- 5 roc_auc binary     0.919    30 0.00402 
-##  3  0.00849  1.11e-10 roc_auc binary     0.890    30 0.00486 
-##  4  0.0364   4.96e- 9 roc_auc binary     0.919    30 0.00387 
-##  5  0.176    7.28e- 8 roc_auc binary     0.917    30 0.00407 
-##  6  0.189    3.13e- 6 roc_auc binary     0.918    30 0.00411 
-##  7  0.950    1.74e- 1 roc_auc binary     0.995    30 0.000883
-##  8  1.87     3.53e- 7 roc_auc binary     0.918    30 0.00411 
-##  9  5.51     2.10e- 3 roc_auc binary     0.980    30 0.00177 
-## 10 14.9      3.93e- 4 roc_auc binary     0.959    30 0.00284</code></pre>
+<pre><code>## # A tibble: 1 x 5
+##   .metric .estimator  mean     n std_err
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 roc_auc binary     0.929   300 0.00223</code></pre>
 <p>The best combination was:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1"><span class="kw"><a href="../reference/show_best.html">show_best</a></span>(grid_form)</a></code></pre></div>
-<pre><code>## # A tibble: 5 x 7
-##       cost     rbf_sigma .metric .estimator  mean     n  std_err
-##      &lt;dbl&gt;         &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;    &lt;dbl&gt;
-## 1  0.950   0.174         roc_auc binary     0.995    30 0.000883
-## 2  0.00114 0.0841        roc_auc binary     0.982    30 0.00204 
-## 3  5.51    0.00210       roc_auc binary     0.980    30 0.00177 
-## 4 14.9     0.000393      roc_auc binary     0.959    30 0.00284 
-## 5  0.0364  0.00000000496 roc_auc binary     0.919    30 0.00387</code></pre>
+<pre><code>## # A tibble: 1 x 5
+##   .metric .estimator  mean     n std_err
+##   &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
+## 1 roc_auc binary     0.929   300 0.00223</code></pre>
 </div>
 <div id="executing-the-grid-using-a-recipe" class="section level2">
 <h2 class="hasAnchor">
@@ -243,7 +230,7 @@
 <pre><code>## # Bootstrap sampling 
 ## # A tibble: 30 x 4
 ##    splits            id          .metrics          .notes          
-##  * &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
+##    &lt;list&gt;            &lt;chr&gt;       &lt;list&gt;            &lt;list&gt;          
 ##  1 &lt;split [351/120]&gt; Bootstrap01 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
 ##  2 &lt;split [351/130]&gt; Bootstrap02 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;
 ##  3 &lt;split [351/137]&gt; Bootstrap03 &lt;tibble [10 × 5]&gt; &lt;tibble [0 × 1]&gt;

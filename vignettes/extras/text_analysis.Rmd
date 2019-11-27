@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 options(digits = 3)
 library(tidymodels)
 library(tune)
+library(workflows)
 library(textrecipes)
 library(textfeatures)
 library(doMC)
@@ -226,6 +227,7 @@ hash_range <- num_terms(c(8, 12), trans = log2_trans())
 To use this, we have to merge the recipe and `parsnip` model object into a workflow:
 
 ```{r wflow}
+library(workflows)
 five_star_wflow <-
   workflow() %>%
   add_recipe(pre_proc) %>%
