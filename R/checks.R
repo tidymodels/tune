@@ -126,15 +126,15 @@ check_workflow <- function(x, check_dials = FALSE) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
 
-  has_preprocessor <- has_wflow_formula(x) || has_wflow_recipe(x)
+  has_preprocessor <- has_preprocessor_formula(x) || has_preprocessor_recipe(x)
 
   if (!has_preprocessor) {
     rlang::abort("A model formula or recipe are required.")
   }
 
-  has_model <- has_wflow_model(x)
+  has_spec <- has_spec(x)
 
-  if (!has_model) {
+  if (!has_spec) {
     rlang::abort("A parsnip model is required.")
   }
 
@@ -165,14 +165,14 @@ check_workflow <- function(x, check_dials = FALSE) {
     }
   }
 
-  mod <- get_wflow_model(x)
+  mod <- workflows::pull_workflow_spec(x)
   check_installs(mod)
 
   invisible(NULL)
 }
 
 check_metrics <- function(x, object) {
-  mode <- get_wflow_model(object)$mode
+  mode <- workflows::pull_workflow_spec(object)$mode
 
   if (is.null(x)) {
     switch(

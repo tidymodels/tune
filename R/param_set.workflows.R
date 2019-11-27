@@ -38,11 +38,11 @@
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {
-  model <- get_wflow_model(x)
+  model <- workflows::pull_workflow_spec(x)
   param_data <- dials::parameters(model)
 
-  if (has_wflow_recipe(x)) {
-    recipe <- get_wflow_recipe(x)
+  if (has_preprocessor_recipe(x)) {
+    recipe <- workflows::pull_workflow_preprocessor(x)
     recipe_param_data <- dials::parameters(recipe)
 
     param_data <- dplyr::bind_rows(param_data, recipe_param_data)

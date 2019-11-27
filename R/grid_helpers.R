@@ -1,7 +1,7 @@
 # recipe-oriented helpers
 
 train_recipe <- function(split, workflow, grid) {
-  original_recipe <- get_wflow_recipe(workflow)
+  original_recipe <- workflows::pull_workflow_preprocessor(workflow)
 
   if (!is.null(grid)) {
     updated_recipe <- merge(original_recipe, grid)$x[[1]]
@@ -9,7 +9,7 @@ train_recipe <- function(split, workflow, grid) {
     updated_recipe <- original_recipe
   }
 
-  workflow <- set_wflow_recipe(workflow, updated_recipe)
+  workflow <- set_workflow_recipe(workflow, updated_recipe)
 
   training <- rsample::analysis(split)
 
@@ -17,13 +17,13 @@ train_recipe <- function(split, workflow, grid) {
 
   # Always reset to the original recipe so `parameters()` can be used on this
   # object. The prepped updated recipe is stored in the mold.
-  workflow <- set_wflow_recipe(workflow, original_recipe)
+  workflow <- set_workflow_recipe(workflow, original_recipe)
 
   workflow
 }
 
 train_model_from_recipe <- function(workflow, grid, control) {
-  original_spec <- get_wflow_model(workflow)
+  original_spec <- workflows::pull_workflow_spec(workflow)
 
   if (!is.null(grid)) {
     updated_spec <- merge(original_spec, grid)$x[[1]]
@@ -31,19 +31,19 @@ train_model_from_recipe <- function(workflow, grid, control) {
     updated_spec <- original_spec
   }
 
-  workflow <- set_wflow_model(workflow, updated_spec)
+  workflow <- set_workflow_spec(workflow, updated_spec)
 
   workflow <- .fit_model(workflow, control)
 
   # Always reset to the original spec so `parameters()` can be used on this
   # object. The fit model is stored in `workflow$fit$fit`
-  workflow <- set_wflow_model(workflow, original_spec)
+  workflow <- set_workflow_spec(workflow, original_spec)
 
   workflow
 }
 
 predict_model <- function(split, workflow, grid, metrics) {
-  model <- get_wflow_fit(workflow)
+  model <- workflows::pull_workflow_fit(workflow)
 
   forged <- forge_from_workflow(split, workflow)
 
@@ -148,62 +148,37 @@ train_formula <- function(split, workflow) {
 }
 
 train_model_from_mold <- function(workflow, grid, control) {
-  spec <- get_wflow_model(workflow)
+  spec <- workflows::pull_workflow_spec(workflow)
 
   if (!is.null(grid)) {
     spec <- merge(spec, grid)$x[[1]]
   }
 
-  workflow <- set_wflow_model(workflow, spec)
+  workflow <- set_workflow_spec(workflow, spec)
 
   .fit_model(workflow, control)
 }
 
 # ------------------------------------------------------------------------------
 
-has_wflow_recipe <- function(workflow) {
-  any(names(workflow$pre$actions) == "recipe")
+has_preprocessor_recipe <- function(workflow) {
+  "recipe" %in% names(workflow$pre$actions)
 }
 
-has_wflow_formula <- function(workflow) {
-  any(names(workflow$pre$actions) == "formula")
+has_preprocessor_formula <- function(workflow) {
+  "formula" %in% names(workflow$pre$actions)
 }
 
-has_wflow_model <- function(workflow) {
-  any(names(workflow$fit$actions) == "model")
+has_spec <- function(workflow) {
+  "model" %in% names(workflow$fit$actions)
 }
 
-get_wflow_mold <- function(workflow) {
-  workflow$pre$mold
-}
-
-get_wflow_fit <- function(workflow) {
-  workflow$fit$fit
-}
-
-set_wflow_model <- function(workflow, spec) {
+set_workflow_spec <- function(workflow, spec) {
   workflow$fit$actions$model$spec <- spec
   workflow
 }
 
-set_wflow_recipe <- function(workflow, recipe) {
+set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }
-
-get_wflow_model <- function(workflow) {
-  workflow$fit$actions$model$spec
-}
-
-get_wflow_recipe <- function(workflow) {
-  workflow$pre$actions$recipe$recipe
-}
-
-get_wflow_form <- function(workflow) {
-  workflow$pre$actions$formula$formula
-}
-
-# get_wflow_post
-
-
-

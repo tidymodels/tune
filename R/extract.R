@@ -132,12 +132,11 @@ append_extracts <- function(collection, workflow, param, split, ctrl) {
     param <- param %>% dplyr::select(-.submodels)
   }
 
-  parsnip_fit <- get_wflow_fit(workflow)
+  parsnip_fit <- workflows::pull_workflow_fit(workflow)
   model <- parsnip_fit$fit
 
-  if (has_wflow_recipe(workflow)) {
-    mold <- get_wflow_mold(workflow)
-    recipe <- mold$blueprint$recipe
+  if (has_preprocessor_recipe(workflow)) {
+    recipe <- workflows::pull_workflow_prepped_recipe(workflow)
   } else {
     recipe <- NULL
   }

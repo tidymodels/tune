@@ -4,7 +4,7 @@
 # object should be a workflow
 get_operator <- function(allow = TRUE, object) {
   is_par <- foreach::getDoParWorkers() > 1
-  pkgs <- object %>% get_wflow_model() %>% mod_pkgs()
+  pkgs <- object %>% workflows::pull_workflow_spec() %>% mod_pkgs()
   blacklist <- c("keras", "rJava")
   if (is_par & allow && any(pkgs %in% blacklist)) {
     pkgs <- pkgs[pkgs %in% blacklist]

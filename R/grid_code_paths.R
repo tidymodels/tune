@@ -74,7 +74,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
-    mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(mod_grid_vals)
+    mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(mod_grid_vals)
 
     # ------------------------------------------------------------------------
 
@@ -316,7 +316,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
+  mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   original_workflow <- workflow
@@ -428,7 +428,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
 
   # Determine the _minimal_ number of models to fit in order to get
   # predictions on all models.
-  mod_grid_vals <- get_wflow_model(workflow) %>% min_grid(grid)
+  mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
   original_workflow <- workflow
