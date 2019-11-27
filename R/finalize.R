@@ -79,7 +79,7 @@ finalize_workflow <- function(x, parameters) {
   }
   check_final_param(parameters)
 
-  mod <- get_wflow_model(x)
+  mod <- workflows::pull_workflow_spec(x)
   mod <- finalize_model(mod, parameters)
   x <- set_workflow_spec(x, mod)
 

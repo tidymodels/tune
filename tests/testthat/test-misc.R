@@ -7,7 +7,7 @@ source(test_path("../helper-objects.R"))
 # ------------------------------------------------------------------------------
 
 test_that('model package lookup', {
-  mod_obj <- tune:::get_wflow_model(chi_wflow)
+  mod_obj <- workflows::pull_workflow_spec(chi_wflow)
   expect_equal(tune:::mod_pkgs(mod_obj), "glmnet")
 })
 

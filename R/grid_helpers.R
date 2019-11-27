@@ -23,7 +23,7 @@ train_recipe <- function(split, workflow, grid) {
 }
 
 train_model_from_recipe <- function(workflow, grid, control) {
-  original_spec <- get_wflow_model(workflow)
+  original_spec <- workflows::pull_workflow_spec(workflow)
 
   if (!is.null(grid)) {
     updated_spec <- merge(original_spec, grid)$x[[1]]
@@ -148,7 +148,7 @@ train_formula <- function(split, workflow) {
 }
 
 train_model_from_mold <- function(workflow, grid, control) {
-  spec <- get_wflow_model(workflow)
+  spec <- workflows::pull_workflow_spec(workflow)
 
   if (!is.null(grid)) {
     spec <- merge(spec, grid)$x[[1]]
@@ -181,10 +181,6 @@ set_workflow_spec <- function(workflow, spec) {
 set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
-}
-
-get_wflow_model <- function(workflow) {
-  workflow$fit$actions$model$spec
 }
 
 get_wflow_recipe <- function(workflow) {

@@ -38,7 +38,7 @@
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {
-  model <- get_wflow_model(x)
+  model <- workflows::pull_workflow_spec(x)
   param_data <- dials::parameters(model)
 
   if (has_preprocessor_recipe(x)) {

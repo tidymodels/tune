@@ -165,14 +165,14 @@ check_workflow <- function(x, check_dials = FALSE) {
     }
   }
 
-  mod <- get_wflow_model(x)
+  mod <- workflows::pull_workflow_spec(x)
   check_installs(mod)
 
   invisible(NULL)
 }
 
 check_metrics <- function(x, object) {
-  mode <- get_wflow_model(object)$mode
+  mode <- workflows::pull_workflow_spec(object)$mode
 
   if (is.null(x)) {
     switch(

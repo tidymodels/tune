@@ -237,7 +237,7 @@ tunable.recipe <- function(x, ...) {
 #' @export
 #' @rdname tunable
 tunable.workflow <- function(x, ...) {
-  model <- get_wflow_model(x)
+  model <- workflows::pull_workflow_spec(x)
   param_data <- tunable(model)
 
   if (has_preprocessor_recipe(x)) {
