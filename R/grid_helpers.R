@@ -9,7 +9,7 @@ train_recipe <- function(split, workflow, grid) {
     updated_recipe <- original_recipe
   }
 
-  workflow <- set_wflow_recipe(workflow, updated_recipe)
+  workflow <- set_workflow_recipe(workflow, updated_recipe)
 
   training <- rsample::analysis(split)
 
@@ -17,7 +17,7 @@ train_recipe <- function(split, workflow, grid) {
 
   # Always reset to the original recipe so `parameters()` can be used on this
   # object. The prepped updated recipe is stored in the mold.
-  workflow <- set_wflow_recipe(workflow, original_recipe)
+  workflow <- set_workflow_recipe(workflow, original_recipe)
 
   workflow
 }
@@ -31,13 +31,13 @@ train_model_from_recipe <- function(workflow, grid, control) {
     updated_spec <- original_spec
   }
 
-  workflow <- set_wflow_model(workflow, updated_spec)
+  workflow <- set_workflow_spec(workflow, updated_spec)
 
   workflow <- .fit_model(workflow, control)
 
   # Always reset to the original spec so `parameters()` can be used on this
   # object. The fit model is stored in `workflow$fit$fit`
-  workflow <- set_wflow_model(workflow, original_spec)
+  workflow <- set_workflow_spec(workflow, original_spec)
 
   workflow
 }
@@ -154,7 +154,7 @@ train_model_from_mold <- function(workflow, grid, control) {
     spec <- merge(spec, grid)$x[[1]]
   }
 
-  workflow <- set_wflow_model(workflow, spec)
+  workflow <- set_workflow_spec(workflow, spec)
 
   .fit_model(workflow, control)
 }
@@ -173,12 +173,12 @@ has_spec <- function(workflow) {
   "model" %in% names(workflow$fit$actions)
 }
 
-set_wflow_model <- function(workflow, spec) {
+set_workflow_spec <- function(workflow, spec) {
   workflow$fit$actions$model$spec <- spec
   workflow
 }
 
-set_wflow_recipe <- function(workflow, recipe) {
+set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }

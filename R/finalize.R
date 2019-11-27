@@ -81,12 +81,12 @@ finalize_workflow <- function(x, parameters) {
 
   mod <- get_wflow_model(x)
   mod <- finalize_model(mod, parameters)
-  x <- set_wflow_model(x, mod)
+  x <- set_workflow_spec(x, mod)
 
   if (has_preprocessor_recipe(x)) {
     rec <- get_wflow_recipe(x)
     rec <- finalize_recipe(rec, parameters)
-    x <- set_wflow_recipe(x, rec)
+    x <- set_workflow_recipe(x, rec)
   }
 
   x
