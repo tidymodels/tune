@@ -30,7 +30,7 @@ Imports:
     GPfit,
     foreach,
     parsnip (>= 0.0.3.9000),
-    workflows (>= 0.0.0.9001),
+    workflows (>= 0.0.0.9002),
     hardhat (>= 0.0.0.9001)
 Suggests: 
     testthat,
