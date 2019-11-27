@@ -115,14 +115,7 @@
 #' This list column can be `unnested` using [tidyr::unnest()] or using the
 #'  convenience function [collect_predictions()].
 #'
-#' @section Extracting information:
-#'
-#' The `extract` control option will result in an additional function to be
-#'  returned called `.extracts`. This is a list column that has tibbles
-#'  containing the results of the user's function for each tuning parameter
-#'  combination. This can enable returning each model and/or recipe object that
-#'  is created during resampling. Note that this could result in a large return
-#'  object, depending on what is returned.
+#' @inheritSection tune_grid Extracting Information
 #'
 #' @export
 tune_bayes <- function(object, ...) {

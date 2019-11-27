@@ -24,7 +24,7 @@
 #'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
-#' @inheritSection tune_grid Extracting information
+#' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examples
 #' library(recipes)
