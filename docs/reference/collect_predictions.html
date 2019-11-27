@@ -205,7 +205,31 @@ model.</p>
 #&gt; </span><span style='color: #555555;'> 8</span><span> Fold01     4 biweight         0.311     9     6 rsq     standard      0.779 
 #&gt; </span><span style='color: #555555;'> 9</span><span> Fold01     3 gaussian         1.86     10    15 rmse    standard      0.095</span><span style='text-decoration: underline;'>1</span><span>
 #&gt; </span><span style='color: #555555;'>10</span><span> Fold01     3 gaussian         1.86     10    15 rsq     standard      0.743 
-#&gt; </span><span style='color: #555555;'># … with 190 more rows</span><span></div></span></pre>
+#&gt; </span><span style='color: #555555;'># … with 190 more rows</span><span></div><div class='input'>
+<span class='co'># ---------------------------------------------------------------------------</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'>
+<span class='no'>lm_mod</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>93599150</span>)
+<span class='no'>car_folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>)
+<span class='no'>ctrl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>(<span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='no'>resampled</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_resamples.html'>fit_resamples</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='no'>lm_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>car_folds</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
+<span class='fu'>collect_predictions</span>(<span class='no'>resampled</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 32 x 4</span><span>
+#&gt;    id     .pred  .row   mpg
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Fold01  30.8    19  30.4
+#&gt; </span><span style='color: #555555;'> 2</span><span> Fold01  25.6    21  21.5
+#&gt; </span><span style='color: #555555;'> 3</span><span> Fold01  17.4    30  19.7
+#&gt; </span><span style='color: #555555;'> 4</span><span> Fold01  10.1    31  15  
+#&gt; </span><span style='color: #555555;'> 5</span><span> Fold02  22.5     2  21  
+#&gt; </span><span style='color: #555555;'> 6</span><span> Fold02  13.5    12  16.4
+#&gt; </span><span style='color: #555555;'> 7</span><span> Fold02  16.2    25  19.2
+#&gt; </span><span style='color: #555555;'> 8</span><span> Fold02  28.5    26  27.3
+#&gt; </span><span style='color: #555555;'> 9</span><span> Fold03  20.9    11  17.8
+#&gt; </span><span style='color: #555555;'>10</span><span> Fold03  27.0    28  30.4
+#&gt; </span><span style='color: #555555;'># … with 22 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

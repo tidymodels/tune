@@ -187,7 +187,7 @@ This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::u
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
-\section{Extracting information}{
+\section{Extracting Information}{
 
 
 The \code{extract} control option will result in an additional function to be
@@ -196,6 +196,24 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.
+
+The control function contains an option (\code{extract}) that can be used to
+retain any model or recipe that was created within the resamples. This
+argument should be a function with a single argument. The values of the
+argument that is given to the function in each resample is a named list with
+elements \code{"model"} and \code{"recipe"}. The latter will be NULL when a formula is
+used.
+
+As an example, if there is interest in getting each model back, one could use:
+\preformatted{
+  extract = function (x) x$model
+}
+
+Note that the function given to the \code{extract} argument is evaluated on
+every model that is \emph{fit} (as opposed to every model that is \emph{evaluated}).
+As noted above, in some cases, model predictions can be derived for
+sub-models so that, in these cases, not every row in the tuning parameter
+grid has a separate R object associated with it.
 }
 
 \seealso{

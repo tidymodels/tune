@@ -116,7 +116,7 @@
 #' This list column can be `unnested` using [tidyr::unnest()] or using the
 #'  convenience function [collect_predictions()].
 #'
-#' @section Extracting information:
+#' @section Extracting Information:
 #'
 #' The `extract` control option will result in an additional function to be
 #'  returned called `.extracts`. This is a list column that has tibbles
@@ -124,6 +124,18 @@
 #'  combination. This can enable returning each model and/or recipe object that
 #'  is created during resampling. Note that this could result in a large return
 #'  object, depending on what is returned.
+#'
+#' The control function contains an option (`extract`) that can be used to
+#'  retain any model or recipe that was created within the resamples. This
+#'  argument should be a function with a single argument. The values of the
+#'  argument that is given to the function in each resample is a named list with
+#'  elements `"model"` and `"recipe"`. The latter will be NULL when a formula is
+#'  used.
+#'
+#' As an example, if there is interest in getting each model back, one could use:
+#' \preformatted{
+#'   extract = function (x) x$model
+#' }
 #'
 #' Note that the function given to the `extract` argument is evaluated on
 #'  every model that is _fit_ (as opposed to every model that is _evaluated_).

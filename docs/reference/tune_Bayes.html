@@ -150,13 +150,13 @@ combinations based on previous results.</p>
   <span class='no'>object</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
+  <span class='no'>...</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>()
 )
 
 <span class='co'># S3 method for formula</span>
@@ -164,26 +164,26 @@ combinations based on previous results.</p>
   <span class='no'>formula</span>,
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
+  <span class='no'>...</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>()
 )
 
 <span class='co'># S3 method for workflow</span>
 <span class='fu'>tune_bayes</span>(
   <span class='no'>object</span>,
   <span class='no'>resamples</span>,
+  <span class='no'>...</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
   <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>(),
-  <span class='no'>...</span>
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>()
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -204,7 +204,7 @@ workflow).</p></td>
     </tr>
     <tr>
       <th>resamples</th>
-      <td><p>An <code>rset()</code> object. This argument <strong>should be named</strong>.</p></td>
+      <td><p>An <code>rset()</code> object.</p></td>
     </tr>
     <tr>
       <th>iter</th>
@@ -333,7 +333,7 @@ prediction columns that are returned are determined by the type of metric(s)
 requested.</p>
 <p>This list column can be <code>unnested</code> using <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code> or using the
 convenience function <code><a href='collect_predictions.html'>collect_predictions()</a></code>.</p>
-    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
+    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting Information</h2>
 
     
 
@@ -344,6 +344,21 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.</p>
+<p>The control function contains an option (<code>extract</code>) that can be used to
+retain any model or recipe that was created within the resamples. This
+argument should be a function with a single argument. The values of the
+argument that is given to the function in each resample is a named list with
+elements <code>"model"</code> and <code>"recipe"</code>. The latter will be NULL when a formula is
+used.</p>
+<p>As an example, if there is interest in getting each model back, one could use:</p><pre>
+  extract = function (x) x$model
+</pre>
+
+<p>Note that the function given to the <code>extract</code> argument is evaluated on
+every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
+As noted above, in some cases, model predictions can be derived for
+sub-models so that, in these cases, not every row in the tuning parameter
+grid has a separate R object associated with it.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='control_bayes.html'>control_bayes()</a></code>, <code><a href='tune.html'>tune()</a></code>, <code><a href='autoplot.tune_results.html'>autoplot.tune_results()</a></code>,
@@ -362,7 +377,7 @@ object, depending on what is returned.</p>
       <li><a href="#initial-values">Initial Values</a></li>
       <li><a href="#performance-metrics">Performance Metrics</a></li>
       <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
-      <li><a href="#extracting-information">Extracting information</a></li>
+      <li><a href="#extracting-information">Extracting Information</a></li>
       <li><a href="#see-also">See also</a></li>
     </ul>
 
