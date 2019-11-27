@@ -47,5 +47,5 @@ Remotes:
     tidymodels/recipes,    
     tidymodels/parsnip,
     tidymodels/hardhat,
-    DavisVaughan/workflows,
+    tidymodels/workflows,
     r-lib/cli
