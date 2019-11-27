@@ -165,8 +165,8 @@ has_preprocessor_recipe <- function(workflow) {
   "recipe" %in% names(workflow$pre$actions)
 }
 
-has_preprocessor_formula <- function(x) {
-  "formula" %in% names(x$pre$actions)
+has_preprocessor_formula <- function(workflow) {
+  "formula" %in% names(workflow$pre$actions)
 }
 
 has_wflow_model <- function(workflow) {
