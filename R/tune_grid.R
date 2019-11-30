@@ -275,6 +275,7 @@ tune_grid_workflow <-
     check_rset(resamples)
     check_workflow(object)
     metrics <- check_metrics(metrics, object)
+    pset <- check_parameters(object, data = resamples$splits[[1]]$data)
     grid <- check_grid(grid, object)
 
     code_path <- quarterback(object)
