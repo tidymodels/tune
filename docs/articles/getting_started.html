@@ -334,6 +334,7 @@
 <a class="sourceLine" id="cb22-7" data-line-number="7">    <span class="dt">neighbors =</span> <span class="kw">neighbors</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">3</span>, <span class="dv">50</span>)),</a>
 <a class="sourceLine" id="cb22-8" data-line-number="8">    <span class="dt">weight_func =</span> <span class="kw">weight_func</span>(<span class="dt">values =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"rectangular"</span>, <span class="st">"inv"</span>, <span class="st">"gaussian"</span>, <span class="st">"triangular"</span>))</a>
 <a class="sourceLine" id="cb22-9" data-line-number="9">  )</a></code></pre></div>
+<p>This parameter collection can be passed to the grid functions via the <code>param_info</code> arguments.</p>
 <p>Instead of using grid search, an iterative method called <a href="http://krasserm.github.io/2018/03/21/bayesian-optimization/">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
 <p>Although no grid is required, the process requires a few additional pieces of information:</p>
 <ul>
@@ -537,7 +538,7 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">

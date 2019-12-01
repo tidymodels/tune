@@ -138,7 +138,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">svm_mod &lt;-</a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">svm_rbf</span>(<span class="dt">mode =</span> <span class="st">"classification"</span>, <span class="dt">cost =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>(), <span class="dt">rbf_sigma =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kernlab"</span>)</a></code></pre></div>
-<p>These two objects will be combined into a single object via the <code><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow()</a></code> function and this object will be used to fuel the optimization process.</p>
+<p>These two objects will be combined into a single object via the <code><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow()</a></code> function from the <code>workflows</code> package and this object will be used to fuel the optimization process.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(workflows) </a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">svm_wflow &lt;-</a>
@@ -597,7 +597,7 @@
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">

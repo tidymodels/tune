@@ -153,6 +153,7 @@ recipe across one or more resamples of the data.</p>
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
   <span class='no'>...</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>()
@@ -164,6 +165,7 @@ recipe across one or more resamples of the data.</p>
   <span class='no'>model</span>,
   <span class='no'>resamples</span>,
   <span class='no'>...</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>()
@@ -174,6 +176,7 @@ recipe across one or more resamples of the data.</p>
   <span class='no'>object</span>,
   <span class='no'>resamples</span>,
   <span class='no'>...</span>,
+  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
   <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>()
@@ -198,6 +201,12 @@ workflow).</p></td>
     <tr>
       <th>resamples</th>
       <td><p>An <code>rset()</code> object.</p></td>
+    </tr>
+    <tr>
+      <th>param_info</th>
+      <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
+a parameters set is derived from other arguments. Passing this argument can
+be useful when parameter ranges need to be customized.</p></td>
     </tr>
     <tr>
       <th>grid</th>
@@ -265,6 +274,14 @@ parameter is marked for optimization using <code>penalty = tune()</code>, there 
 be a column names <code>tune</code>. If the optional identifier is used, such as
 <code>penalty = tune(id = 'lambda')</code>, then the corresponding column name should
 be <code>lambda</code>.</p>
+<p>In some cases, the tuning parameter values depend on the dimensions of the
+data. For example, <code>mtry</code> in random forest models depends on the number of
+predictors. In this case, the default tuning parameter object requires an
+upper range. <code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent
+parameters. Otherwise, a parameter set can be created (via
+<code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> and the <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to
+change the values. This updated parameter set can be passed to the function
+via the <code>param_info</code> argument.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     
@@ -429,7 +446,7 @@ grid has a separate R object associated with it.</p>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>svm_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>) +
   <span class='fu'>scale_x_log10</span>()</div><div class='img'><img src='tune_grid-1.png' alt='' width='768' height='552' /></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
