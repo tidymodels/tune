@@ -213,7 +213,8 @@ workflow).</p></td>
     <tr>
       <th>param_info</th>
       <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
-a parameters set is derived from other arguments.</p></td>
+a parameters set is derived from other arguments. Passing this argument can
+be useful when parameter ranges need to be customized.</p></td>
     </tr>
     <tr>
       <th>metrics</th>
@@ -284,6 +285,19 @@ in the <code>initial</code> argument. <code>initial</code> can also be a positiv
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
 the number of parameters being optimized.</p>
+    <h2 class="hasAnchor" id="parameter-ranges-and-values"><a class="anchor" href="#parameter-ranges-and-values"></a>Parameter Ranges and Values</h2>
+
+    
+
+
+<p>In some cases, the tuning parameter values depend on the dimensions of the
+data. For example, <code>mtry</code> in random forest models depends on the number of
+predictors. In this case, the default tuning parameter object requires an
+upper range. <code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent
+parameters. Otherwise, a parameter set can be created (via
+<code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> and the <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to
+change the ranges or values. This updated parameter set can be passed to
+the function via the <code>param_info</code> argument.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     
@@ -367,7 +381,7 @@ grid has a separate R object associated with it.</p>
 <code><a href='fit_resamples.html'>fit_resamples()</a></code></p></div>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
@@ -375,6 +389,7 @@ grid has a separate R object associated with it.</p>
       <li><a href="#details">Details</a></li>
       <li><a href="#parallel-processing">Parallel Processing</a></li>
       <li><a href="#initial-values">Initial Values</a></li>
+      <li><a href="#parameter-ranges-and-values">Parameter Ranges and Values</a></li>
       <li><a href="#performance-metrics">Performance Metrics</a></li>
       <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
       <li><a href="#extracting-information">Extracting Information</a></li>

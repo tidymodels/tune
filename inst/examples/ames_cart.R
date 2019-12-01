@@ -1,6 +1,7 @@
 library(tidymodels)
 library(tune)
 library(AmesHousing)
+library(workflows)
 
 # ------------------------------------------------------------------------------
 
@@ -43,8 +44,18 @@ num_leaves <- function(x) {
 }
 
 
+prm <-
+  parameters(ames_wflow) %>%
+  update(min_n = min_n(c(3, 10)))
+
 set.seed(4567367)
-initial_grid <- tune_grid(ames_wflow, resamples = cv_splits, control = control_grid(verbose = TRUE, extract = num_leaves))
+initial_grid <-
+  tune_grid(
+    ames_wflow,
+    resamples = cv_splits,
+    param_info = prm,
+    control = control_grid(verbose = TRUE, extract = num_leaves)
+  )
 
 # ------------------------------------------------------------------------------
 
@@ -61,6 +72,7 @@ test <-
     initial = initial_grid,
     metrics = metric_set(rmse),
     objective = exp_improve(foo),
+    param_info = prm,
     iter = 20,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 10, extract = num_leaves)
+    control = control_bayes(verbose = TRUE, uncertain = 10, extract = num_leaves)
   )

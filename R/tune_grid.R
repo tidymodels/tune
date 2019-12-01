@@ -9,6 +9,9 @@
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
 #' @param resamples An `rset()` object.
+#' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
+#' a parameters set is derived from other arguments. Passing this argument can
+#' be useful when parameter ranges need to be customized.
 #' @param grid A data frame of tuning combinations or a positive integer. The
 #'  data frame should have columns for each parameter being tuned and rows for
 #'  tuning parameter candidates. An integer denotes the number of candidate
@@ -63,6 +66,15 @@
 #'  be a column names `tune`. If the optional identifier is used, such as
 #'  `penalty = tune(id = 'lambda')`, then the corresponding column name should
 #'  be `lambda`.
+#'
+#' In some cases, the tuning parameter values depend on the dimensions of the
+#'  data. For example, `mtry` in random forest models depends on the number of
+#'  predictors. In this case, the default tuning parameter object requires an
+#'  upper range. [dials::finalize()] can be used to derive the data-dependent
+#'  parameters. Otherwise, a parameter set can be created (via
+#'  [dials::parameters()] and the `dials` `update()` function can be used to
+#'  change the values. This updated parameter set can be passed to the function
+#'  via the `param_info` argument.
 #'
 #' @section Performance Metrics:
 #'
@@ -212,8 +224,8 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, resamples, ..., grid = 10,
-                             metrics = NULL, control = control_grid()) {
+tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
+                             grid = 10, metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -228,14 +240,15 @@ tune_grid.recipe <- function(object, model, resamples, ..., grid = 10,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, resamples, ..., grid = 10,
-                              metrics = NULL, control = control_grid()) {
+tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
+                              grid = 10, metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -250,20 +263,22 @@ tune_grid.formula <- function(formula, model, resamples, ..., grid = 10,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, ..., grid = 10,
-                               metrics = NULL, control = control_grid()) {
+tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
+                               grid = 10, metrics = NULL, control = control_grid()) {
 
   tune_grid_workflow(
     object,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
@@ -271,11 +286,13 @@ tune_grid.workflow <- function(object, resamples, ..., grid = 10,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <-
-  function(object, resamples, grid = 10, metrics = NULL, control = control_grid()) {
+  function(object, resamples, grid = 10, metrics = NULL, pset = NULL,
+           control = control_grid()) {
     check_rset(resamples)
-    check_workflow(object)
     metrics <- check_metrics(metrics, object)
-    grid <- check_grid(grid, object)
+    pset <- check_parameters(object, pset = pset, data = resamples$splits[[1]]$data)
+    check_workflow(object, pset = pset)
+    grid <- check_grid(grid, object, pset)
 
     code_path <- quarterback(object)
 

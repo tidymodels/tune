@@ -18,9 +18,12 @@ check_rset <- function(x) {
 
 grid_msg <- "`grid` should be a positive integer or a data frame."
 
-check_grid <- function(x, object) {
-  parameters <- dials::parameters(object)
-  if (nrow(parameters) == 0L) {
+check_grid <- function(x, object, pset = NULL) {
+  if (is.null(pset)) {
+    pset <- dials::parameters(object)
+  }
+
+  if (nrow(pset) == 0L) {
     msg <- paste0(
       "No tuning parameters have been detected, ",
       "performance will be evaluated using the resamples with no tuning. ",
@@ -78,8 +81,9 @@ check_grid <- function(x, object) {
     if (x < 1) {
       rlang::abort(grid_msg)
     }
-    check_workflow(object, check_dials = TRUE)
-    x <- dials::grid_latin_hypercube(dials::parameters(object), size = x)
+    check_workflow(object, pset = pset, check_dials = TRUE)
+
+    x <- dials::grid_latin_hypercube(pset, size = x)
     x <- dplyr::distinct(x)
   }
 
@@ -89,6 +93,41 @@ check_grid <- function(x, object) {
 
   x
 }
+
+check_parameters <- function(object, pset = NULL, data) {
+  if (is.null(pset)) {
+    pset <- parameters(object)
+  }
+  unk <- purrr::map_lgl(pset$object, dials::has_unknowns)
+  if (!any(unk)) {
+    return(pset)
+  }
+  tune_param <- tune_args(object)
+  tune_recipe <- tune_param$id[tune_param$source == "recipe"]
+  tune_recipe <- length(tune_recipe) > 0
+  if (tune_recipe) {
+    rlang::abort(
+      paste(
+        "Some tuning parameters require finalization but there are recipe",
+        "parameters that require tuning. Please use `parameters()` to",
+        "finalize the parameter ranges."
+      )
+    )
+  }
+  msg <- "Creating pre-processing data to finalize unknown parameter"
+  unk_names <- pset$id[unk]
+  if (length(unk_names) == 1) {
+    msg <- paste0(msg, ": ", unk_names)
+  } else {
+    msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
+  }
+
+  tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
+  x <- workflows::.fit_pre(object, data)$pre$mold$predictors
+  pset$object <- purrr::map(pset$object, dials::finalize, x = x)
+  pset
+}
+
 
 shhhh <- function(x) {
   suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))
@@ -121,7 +160,7 @@ check_installs <- function(x) {
   }
 }
 
-check_workflow <- function(x, check_dials = FALSE) {
+check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
@@ -139,21 +178,23 @@ check_workflow <- function(x, check_dials = FALSE) {
   }
 
   if (check_dials) {
-    y <- dials::parameters(x)
+    if (is.null(pset)) {
+      pset <- dials::parameters(x)
+    }
 
-    params <- purrr::map_lgl(y$object, inherits, "param")
+    params <- purrr::map_lgl(pset$object, inherits, "param")
 
     if (!all(params)) {
       rlang::abort(paste0(
         "The workflow has arguments to be tuned that are missing some ",
         "parameter objects: ",
-        paste0("'", y$id, "'", collapse = ", ")
+        paste0("'", pset$id, "'", collapse = ", ")
       ))
     }
 
-    quant_param <- purrr::map_lgl(y$object, inherits, "quant_param")
-    quant_name <- y$id[quant_param]
-    compl <- map_lgl(y$object[quant_param],
+    quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
+    quant_name <- pset$id[quant_param]
+    compl <- map_lgl(pset$object[quant_param],
                      ~ !dials::is_unknown(.x$range$lower) &
                        !dials::is_unknown(.x$range$upper))
 

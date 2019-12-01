@@ -262,6 +262,8 @@ knn_param <-
   )
 ```
 
+This parameter collection can be passed to the grid functions via the `param_info` arguments. 
+
 Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.
 
 Although no grid is required, the process requires a few additional pieces of information:
