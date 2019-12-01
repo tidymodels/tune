@@ -32,3 +32,32 @@ test_that('exponential decay', {
     expo_decay(10, start_val = 0, limit_val = 50, slope = 1), (1 - exp(-9)) * 50
   )
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('in-line formulas on outcome', {
+  # see issues 121
+  w1 <-
+    workflow() %>%
+    add_formula(log(mpg) ~ .) %>%
+    add_model(linear_reg() %>% set_engine("lm"))
+
+  expect_error(
+    f1 <- fit_resamples(w1, resamples = vfold_cv(mtcars)),
+    regex = NA
+  )
+  expect_true(inherits(f1, "resample_results"))
+
+  w2 <-
+    workflow() %>%
+    add_recipe(recipe(mpg ~ ., data = mtcars) %>% step_log(mpg)) %>%
+    add_model(linear_reg() %>% set_engine("lm"))
+
+  expect_error(
+    f2 <- fit_resamples(w2, resamples = vfold_cv(mtcars)),
+    regex = NA
+  )
+  expect_true(inherits(f2, "resample_results"))
+
+})
+
