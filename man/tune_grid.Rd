@@ -263,6 +263,7 @@ svm_mod <-
   set_engine("kernlab") \%>\%
   set_mode("regression")
 
+\dontrun{
 # Use a space-filling design with 7 points
 set.seed(3254)
 svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
@@ -272,6 +273,7 @@ show_best(svm_res, metric = "rmse", maximize = FALSE)
 
 autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
+}
 }
 \seealso{
 \code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},
