@@ -75,7 +75,7 @@ svm_mod <-
   set_engine("kernlab")
 ```
 
-These two objects will be combined into a single object via the `workflow()` function and this object will be used to fuel the optimization process. 
+These two objects will be combined into a single object via the `workflow()` function from the `workflows` package and this object will be used to fuel the optimization process. 
 
 ```{r workflow}
 library(workflows) 

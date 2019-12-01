@@ -81,7 +81,7 @@ check_grid <- function(x, object, pset = NULL) {
     if (x < 1) {
       rlang::abort(grid_msg)
     }
-    check_workflow(object, check_dials = TRUE)
+    check_workflow(object, pset = pset, check_dials = TRUE)
 
     x <- dials::grid_latin_hypercube(pset, size = x)
     x <- dplyr::distinct(x)
@@ -160,7 +160,7 @@ check_installs <- function(x) {
   }
 }
 
-check_workflow <- function(x, check_dials = FALSE) {
+check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
@@ -178,21 +178,23 @@ check_workflow <- function(x, check_dials = FALSE) {
   }
 
   if (check_dials) {
-    y <- dials::parameters(x)
+    if (is.null(pset)) {
+      pset <- dials::parameters(x)
+    }
 
-    params <- purrr::map_lgl(y$object, inherits, "param")
+    params <- purrr::map_lgl(pset$object, inherits, "param")
 
     if (!all(params)) {
       rlang::abort(paste0(
         "The workflow has arguments to be tuned that are missing some ",
         "parameter objects: ",
-        paste0("'", y$id, "'", collapse = ", ")
+        paste0("'", pset$id, "'", collapse = ", ")
       ))
     }
 
-    quant_param <- purrr::map_lgl(y$object, inherits, "quant_param")
-    quant_name <- y$id[quant_param]
-    compl <- map_lgl(y$object[quant_param],
+    quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
+    quant_name <- pset$id[quant_param]
+    compl <- map_lgl(pset$object[quant_param],
                      ~ !dials::is_unknown(.x$range$lower) &
                        !dials::is_unknown(.x$range$upper))
 

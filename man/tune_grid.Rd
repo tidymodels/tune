@@ -17,6 +17,7 @@ tune_grid(object, ...)
   model,
   resamples,
   ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
   control = control_grid()
@@ -27,6 +28,7 @@ tune_grid(object, ...)
   model,
   resamples,
   ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
   control = control_grid()
@@ -36,6 +38,7 @@ tune_grid(object, ...)
   object,
   resamples,
   ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
   control = control_grid()
@@ -50,6 +53,10 @@ tune_grid(object, ...)
 workflow).}
 
 \item{resamples}{An \code{rset()} object.}
+
+\item{param_info}{A \code{\link[dials:parameters]{dials::parameters()}} object or \code{NULL}. If none is given,
+a parameters set is derived from other arguments. Passing this argument can
+be useful when parameter ranges need to be customized.}
 
 \item{grid}{A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
@@ -113,6 +120,15 @@ parameter is marked for optimization using \code{penalty = tune()}, there should
 be a column names \code{tune}. If the optional identifier is used, such as
 \code{penalty = tune(id = 'lambda')}, then the corresponding column name should
 be \code{lambda}.
+
+In some cases, the tuning parameter values depend on the dimensions of the
+data. For example, \code{mtry} in random forest models depends on the number of
+predictors. In this case, the default tuning parameter object requires an
+upper range. \code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent
+parameters. Otherwise, a parameter set can be created (via
+\code{\link[dials:parameters]{dials::parameters()}} and the \code{dials} \code{update()} function can be used to
+change the values. This updated parameter set can be passed to the function
+via the \code{param_info} argument.
 }
 
 \section{Performance Metrics}{

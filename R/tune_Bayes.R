@@ -4,8 +4,6 @@
 #'  combinations based on previous results.
 #'
 #' @inheritParams tune_grid
-#' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
-#' a parameters set is derived from other arguments.
 #' @param metrics A [yardstick::metric_set()] object containing information on how
 #' models will be evaluated for performance. The first metric in `metrics` is the
 #' one that will be optimized.
@@ -62,6 +60,17 @@
 #' case, a space-filling design will be used to populate a preliminary set of
 #' results. For good results, the number of initial values should be more than
 #' the number of parameters being optimized.
+#'
+#' @section Parameter Ranges and Values:
+#'
+#' In some cases, the tuning parameter values depend on the dimensions of the
+#'  data. For example, `mtry` in random forest models depends on the number of
+#'  predictors. In this case, the default tuning parameter object requires an
+#'  upper range. [dials::finalize()] can be used to derive the data-dependent
+#'  parameters. Otherwise, a parameter set can be created (via
+#'  [dials::parameters()] and the `dials` `update()` function can be used to
+#'  change the ranges or values. This updated parameter set can be passed to
+#'  the function via the `param_info` argument.
 #'
 #' @section Performance Metrics:
 #'
@@ -206,8 +215,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    check_workflow(object, check_dials = is.null(param_info))
-    metrics <- check_metrics(metrics, object)
+     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
@@ -215,6 +223,7 @@ tune_bayes_workflow <-
     if (is.null(param_info)) {
       param_info <- dials::parameters(object)
     }
+    check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
     unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
     mean_stats <- estimate_tune_results(unsummarized)

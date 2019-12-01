@@ -63,7 +63,8 @@ workflow).}
 \item{iter}{The maximum number of search iterations.}
 
 \item{param_info}{A \code{\link[dials:parameters]{dials::parameters()}} object or \code{NULL}. If none is given,
-a parameters set is derived from other arguments.}
+a parameters set is derived from other arguments. Passing this argument can
+be useful when parameter ranges need to be customized.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} object containing information on how
 models will be evaluated for performance. The first metric in \code{metrics} is the
@@ -129,6 +130,19 @@ in the \code{initial} argument. \code{initial} can also be a positive integer. I
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
 the number of parameters being optimized.
+}
+
+\section{Parameter Ranges and Values}{
+
+
+In some cases, the tuning parameter values depend on the dimensions of the
+data. For example, \code{mtry} in random forest models depends on the number of
+predictors. In this case, the default tuning parameter object requires an
+upper range. \code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent
+parameters. Otherwise, a parameter set can be created (via
+\code{\link[dials:parameters]{dials::parameters()}} and the \code{dials} \code{update()} function can be used to
+change the ranges or values. This updated parameter set can be passed to
+the function via the \code{param_info} argument.
 }
 
 \section{Performance Metrics}{

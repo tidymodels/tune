@@ -107,7 +107,7 @@ test_that('workflow objects', {
     add_recipe(bare_rec)
 
   expect_null(tune:::check_workflow(x = wflow_2))
-  expect_error(tune:::check_workflow(x = wflow_2, TRUE),
+  expect_error(tune:::check_workflow(x = wflow_2, check_dials = TRUE),
                "arguments whose ranges are not finalized")
 
   wflow_3 <-
@@ -348,5 +348,16 @@ test_that('check parameter finalization', {
     regex = NA
   )
   expect_true(inherits(p4_b, "parameters"))
+
+  w5 <-
+    workflow() %>%
+    add_recipe(rec_tune) %>%
+    add_model(lm1)
+
+  expect_error(
+    p5 <- tune:::check_parameters(w5, data = mtcars),
+    regex = NA
+  )
+  expect_true(inherits(p5, "parameters"))
 })
 
