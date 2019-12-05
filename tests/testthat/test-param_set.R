@@ -33,7 +33,7 @@ test_that('recipe with tunable parameters', {
 
   expect_equal(spline_info$object[[1]], dials::neighbors(c(1, 10)))
   expect_equal(spline_info$object[[2]], dials::threshold(c(0, 1/10)))
-  expect_equal(spline_info$object[[3]], dials::deg_free(c(3, 15)))
+  expect_equal(spline_info$object[[3]], dials::spline_degree(c(1, 15)))
   expect_equal(spline_info$object[[4]], dials::degree_int(c(1, 2)))
 
 })
