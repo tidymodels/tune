@@ -111,7 +111,8 @@ last_fit_workflow <- function(object, split, metrics) {
       control = ctrl
     )
   res$id[[1]] <- "train/test split"
-  # post-process .extracts
+  res$.workflow <- res$.extracts[[1]][[1]]
+  res$.extracts <- NULL
   res
 }
 
