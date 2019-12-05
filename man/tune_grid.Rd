@@ -199,14 +199,15 @@ object, depending on what is returned.
 
 The control function contains an option (\code{extract}) that can be used to
 retain any model or recipe that was created within the resamples. This
-argument should be a function with a single argument. The values of the
-argument that is given to the function in each resample is a named list with
-elements \code{"model"} and \code{"recipe"}. The latter will be NULL when a formula is
-used.
+argument should be a function with a single argument. The value of the
+argument that is given to the function in each resample is a workflow
+object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). There are two
+helper functions that can be used to easily pull out the recipe (if any)
+and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_model]{extract_model()}}.
 
 As an example, if there is interest in getting each model back, one could use:
 \preformatted{
-  extract = function (x) x$model
+  extract = function (x) extract_model(x)
 }
 
 Note that the function given to the \code{extract} argument is evaluated on

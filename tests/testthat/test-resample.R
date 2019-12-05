@@ -49,7 +49,7 @@ test_that("can use `fit_resamples()` with a recipe", {
 
   result <- fit_resamples(rec, lin_mod, folds, control = control)
 
-  prepped_rec <- result$.extracts[[1]]$.extracts[[1]]$recipe
+  prepped_rec <- extract_recipe(result$.extracts[[1]][[1]][[1]])
 
   expect_true(prepped_rec$steps[[1]]$trained)
   expect_true(prepped_rec$steps[[2]]$trained)
