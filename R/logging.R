@@ -105,6 +105,26 @@ catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tmp$res
 }
 
+catch_and_log_fit <- function(expr, ..., notes) {
+  tune_log(..., type = "info")
+
+  result <- catcher(expr)
+  fit <- result$res$fit$fit$fit
+
+  # Log underlying fit failures that parsnip caught and exit
+  if (is_failure(fit)) {
+    result_fit <- list(res = fit, signals = list())
+
+    new_notes <- log_problems(notes, ..., result_fit)
+    assign(".notes", new_notes, envir = parent.frame())
+    return(result$res)
+  }
+
+  new_notes <- log_problems(notes, ..., result)
+  assign(".notes", new_notes, envir = parent.frame())
+  result$res
+}
+
 log_best <- function(control, iter, info, digits = 4) {
   if (!control$verbose) {
     return(invisible(NULL))

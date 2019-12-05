@@ -91,7 +91,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
       submd_param <- submd_param$.submodels[[1]]
 
       workflow <-
-        catch_and_log(
+        catch_and_log_fit(
           train_model(workflow, fixed_param, control = control_workflow),
           control,
           split,
@@ -191,7 +191,7 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
-    workflow <- catch_and_log(
+    workflow <- catch_and_log_fit(
       train_model(workflow, NULL, control = control_workflow),
       control,
       split,
@@ -326,7 +326,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
 
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-    workflow <- catch_and_log(
+    workflow <- catch_and_log_fit(
       train_model(workflow, mod_grid_vals[mod_iter,], control_workflow),
       control,
       split,
@@ -439,7 +439,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     param_val <- mod_grid_vals[mod_iter, ]
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
 
-    workflow <- catch_and_log(
+    workflow <- catch_and_log_fit(
       train_model(workflow, param_val, control = control_workflow),
       control,
       split,
