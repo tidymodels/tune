@@ -15,6 +15,11 @@
 \alias{tunable.step_tokenize}
 \alias{tunable.recipe}
 \alias{tunable.workflow}
+\alias{tunable.linear_reg}
+\alias{tunable.logistic_reg}
+\alias{tunable.multinomial_reg}
+\alias{tunable.boost_tree}
+\alias{tunable.nearest_neighbor}
 \title{Find recommended methods for generating parameter values}
 \format{An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 0 rows and 5 columns.}
 \usage{
@@ -43,6 +48,16 @@ no_param
 \method{tunable}{recipe}(x, ...)
 
 \method{tunable}{workflow}(x, ...)
+
+\method{tunable}{linear_reg}(x, ...)
+
+\method{tunable}{logistic_reg}(x, ...)
+
+\method{tunable}{multinomial_reg}(x, ...)
+
+\method{tunable}{boost_tree}(x, ...)
+
+\method{tunable}{nearest_neighbor}(x, ...)
 }
 \arguments{
 \item{x}{An object, such as a recipe, recipe step, or \code{parsnip} model

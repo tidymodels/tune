@@ -60,7 +60,7 @@ test_that('model with main and engine parameters', {
   ids <- c("funky name \n", "rules")
   expect_equal(c5_info$id, ids)
 
-  expect_equal(c5_info$object[[1]], dials::trees())
+  expect_equal(c5_info$object[[1]], dials::trees(c(1, 100)))
   expect_equal(c5_info$object[[2]], NA)
 })
 
