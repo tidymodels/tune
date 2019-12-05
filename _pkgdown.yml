@@ -17,6 +17,7 @@ reference:
     contents:
     - starts_with("tune")
     - fit_resamples
+    - last_fit
     - conf_bound
     - starts_with("control")
     - autoplot.tune_results
