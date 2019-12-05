@@ -33,7 +33,7 @@
   makeActiveBinding(
     "tune_color",
     function() {
-      opt <- getOption("tune.dark",  NULL)
+      opt <- getOption("tidymodels.dark",  NULL)
 
       if (!is.null(opt)) {
         if (isTRUE(opt)) {
