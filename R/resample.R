@@ -204,7 +204,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   }
 
   workflow <- catch_and_log(
-    train_model_from_recipe(workflow, NULL, control = control_workflow),
+    train_model(workflow, NULL, control = control_workflow),
     control,
     split,
     "model",
@@ -319,7 +319,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   }
 
   workflow <- catch_and_log(
-    train_model_from_mold(workflow, NULL, control = control_workflow),
+    train_model(workflow, NULL, control = control_workflow),
     control,
     split,
     "model",

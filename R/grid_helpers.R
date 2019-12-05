@@ -22,7 +22,7 @@ train_recipe <- function(split, workflow, grid) {
   workflow
 }
 
-train_model_from_recipe <- function(workflow, grid, control) {
+train_model <- function(workflow, grid, control) {
   original_spec <- workflows::pull_workflow_spec(workflow)
 
   if (!is.null(grid)) {
@@ -145,18 +145,6 @@ make_rename_arg <- function(grid, model) {
 train_formula <- function(split, workflow) {
   training <- rsample::analysis(split)
   .fit_pre(workflow, training)
-}
-
-train_model_from_mold <- function(workflow, grid, control) {
-  spec <- workflows::pull_workflow_spec(workflow)
-
-  if (!is.null(grid)) {
-    spec <- merge(spec, grid)$x[[1]]
-  }
-
-  workflow <- set_workflow_spec(workflow, spec)
-
-  .fit_model(workflow, control)
 }
 
 # ------------------------------------------------------------------------------
