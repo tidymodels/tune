@@ -3,11 +3,17 @@
 \name{show_best}
 \alias{show_best}
 \alias{select_best}
-\title{Obtain the numerically best parameters}
+\alias{select_by_pct_loss}
+\alias{select_by_one_std_err}
+\title{Investigate best tuning parameters}
 \usage{
 show_best(x, metric, n_top = 5, maximize = TRUE)
 
 select_best(x, metric, maximize = TRUE)
+
+select_by_pct_loss(x, ..., metric, maximize = TRUE, limit = 2)
+
+select_by_one_std_err(x, ..., metric, maximize = TRUE)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
@@ -20,15 +26,36 @@ more details). Not required if a single metric exists in \code{x}.}
 \item{n_top}{An integer for the number of top results/rows to return.}
 
 \item{maximize}{A logical value (TRUE/FALSE).}
+
+\item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
+argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
+the models from \emph{most simple to most complex}. See the examples below. At
+least one term is required for these two functions.}
+
+\item{limit}{The limit of loss of performance that is acceptable (in percent
+units). See details below.}
 }
 \value{
 A tibble with columns for the parameters. \code{\link[=show_best]{show_best()}} also
 includes columns for performance metrics.
 }
 \description{
+\code{\link[=show_best]{show_best()}} displays the top sub-models and their performance estimates.
+}
+\details{
 \code{\link[=select_best]{select_best()}} finds the tuning parameter combination with the best
-performance values. \code{\link[=show_best]{show_best()}} displays the top sub-models and their
-performance estimates.
+performance values.
+
+\code{\link[=select_by_one_std_err]{select_by_one_std_err()}} uses the "one-standard error rule" (Breiman _el
+at, 1984) that selects the most simple model that is within one standard
+error of the numerically optimal results.
+
+\code{\link[=select_by_pct_loss]{select_by_pct_loss()}} selects the most simple model whose loss of
+performance is within some acceptable limit.
+
+For percent loss, suppose the best model has an RMSE of 0.75 and a simpler
+model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100},
+or 25 percent. Note that loss will always be non-negative.
 }
 \examples{
 data("example_ames_knn")
@@ -36,4 +63,20 @@ data("example_ames_knn")
 show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
 
 select_best(ames_iter_search, metric = "rsq")
+
+# To find the least complex model within one std error of the numerically
+# optimal model, the number of nearest neighbors are sorted from the largest
+# number of neighbors (the least complex class boundary) to the smallest
+# (corresponding to the most complex model).
+
+select_by_one_std_err(ames_grid_search, metric = "rmse",
+                      maximize = FALSE, desc(K))
+
+# Now find the least complex model that has no more than a 5\% loss of RMSE:
+select_by_pct_loss(ames_grid_search, metric = "rmse",
+                   maximize = FALSE, limit = 5, desc(K))
+}
+\references{
+Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
+\emph{Classification and Regression Trees.} Monterey, CA: Wadsworth.
 }

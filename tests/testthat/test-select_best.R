@@ -3,6 +3,7 @@ context("`select_best()` and `show_best()`")
 # ------------------------------------------------------------------------------
 
 load(test_path("rcv_results.RData"))
+load(test_path("knn_results.RData"))
 library(tibble)
 
 # ------------------------------------------------------------------------------
@@ -78,3 +79,90 @@ test_that("show_best()", {
     rcv_rmse %>% names()
   )
 })
+
+test_that("one-std error rule", {
+  expect_true(
+    is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
+  )
+  expect_warning(
+    expect_true(
+      is_tibble(select_by_one_std_err(rcv_results, metric = "rmse", deg_free))
+    ),
+    "Did you mean to maximize rmse?"
+  )
+
+  expect_equal(
+    select_by_one_std_err(rcv_results, metric = "rmse", maximize = FALSE, deg_free, `wt degree`)$mean,
+    2.94252798698909
+  )
+  expect_equal(
+    select_by_one_std_err(knn_results, metric = "accuracy", K)$K,
+    25L
+  )
+
+  expect_error(
+    select_by_one_std_err(rcv_results, metric = "random", deg_free),
+    "Please check the value of `metric`"
+  )
+  expect_error(
+    select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free),
+    "Please specify a single character"
+  )
+  expect_error(
+    select_by_one_std_err(rcv_results, deg_free),
+    'argument "metric" is missing, with no default'
+  )
+  expect_error(
+    select_by_one_std_err(rcv_results, metric = "rsq", maximize = "yes", deg_free),
+    "Please specify a single logical value for `maximize`"
+  )
+  expect_error(
+    select_by_one_std_err(rcv_results, metric = "random"),
+    "Please choose at least one tuning parameter to sort"
+  )
+})
+
+
+test_that("percent loss", {
+  expect_true(
+    is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
+  )
+  expect_warning(
+    expect_true(
+      is_tibble(select_by_pct_loss(rcv_results, metric = "rmse", deg_free))
+    ),
+    "Did you mean to maximize rmse?"
+  )
+
+  expect_equal(
+    select_by_pct_loss(rcv_results, metric = "rmse", maximize = FALSE, deg_free, `wt degree`)$mean,
+    2.94252798698909
+  )
+  expect_equal(
+    select_by_pct_loss(knn_results, metric = "accuracy", K)$K,
+    12L
+  )
+
+  expect_error(
+    select_by_pct_loss(rcv_results, metric = "random", deg_free),
+    "Please check the value of `metric`"
+  )
+  expect_error(
+    select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free),
+    "Please specify a single character"
+  )
+  expect_error(
+    select_by_pct_loss(rcv_results, deg_free),
+    'argument "metric" is missing, with no default'
+  )
+  expect_error(
+    select_by_pct_loss(rcv_results, metric = "rsq", maximize = "yes", deg_free),
+    "Please specify a single logical value for `maximize`"
+  )
+  expect_error(
+    select_by_pct_loss(rcv_results, metric = "random"),
+    "Please choose at least one tuning parameter to sort"
+  )
+})
+
+
