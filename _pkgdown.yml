@@ -24,7 +24,8 @@ reference:
     - expo_decay
     - starts_with("collect")
     - show_best
-    - select_best
+    - starts_with("select_")
+    - starts_with("extract_")
     - starts_with("finalize")
   - title: Low-Level Functions
     contents:

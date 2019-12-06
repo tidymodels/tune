@@ -360,12 +360,13 @@ is created during resampling. Note that this could result in a large return
 object, depending on what is returned.</p>
 <p>The control function contains an option (<code>extract</code>) that can be used to
 retain any model or recipe that was created within the resamples. This
-argument should be a function with a single argument. The values of the
-argument that is given to the function in each resample is a named list with
-elements <code>"model"</code> and <code>"recipe"</code>. The latter will be NULL when a formula is
-used.</p>
+argument should be a function with a single argument. The value of the
+argument that is given to the function in each resample is a workflow
+object (see <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code> for more information). There are two
+helper functions that can be used to easily pull out the recipe (if any)
+and/or the model: <code><a href='extract_recipe.html'>extract_recipe()</a></code> and <code><a href='extract_recipe.html'>extract_model()</a></code>.</p>
 <p>As an example, if there is interest in getting each model back, one could use:</p><pre>
-  extract = function (x) x$model
+  extract = function (x) extract_model(x)
 </pre>
 
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
