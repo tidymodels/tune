@@ -71,7 +71,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
         </div>
       </div>
     </div>
@@ -160,7 +160,10 @@
     <tr>
       <th>verbose</th>
       <td><p>A logical for logging results as they are generated. Despite
-this argument, warnings and errors are always shown.</p></td>
+this argument, warnings and errors are always shown. If using a dark IDE
+theme, some logging messages might be hard to see. If this is the case,
+try setting the <code>tidymodels.dark</code> option with
+<code><a href='https://rdrr.io/r/base/options.html'>options(tidymodels.dark = TRUE)</a></code> to print lighter colors.</p></td>
     </tr>
     <tr>
       <th>allow_par</th>
@@ -200,7 +203,7 @@ the results of the function. If no extraction function is used, there is no
 used with <code><a href='fit_resamples.html'>fit_resamples()</a></code>.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

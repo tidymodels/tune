@@ -17,7 +17,7 @@ check_predictions <- function(split, pred, tune_df) {
   TRUE
 }
 
-load("test_objects.RData")
+load(test_path("test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 

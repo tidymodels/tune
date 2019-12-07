@@ -9,7 +9,7 @@ library(dials)
 library(rsample)
 library(parsnip)
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ mt_folds <- vfold_cv(mtcars, v = 5)
 
 test_that('tune recipe only', {
   extr_1_1 <- function(x) {
-    tidy(x$recipe, number = 2)
+    extract_recipe(x) %>% tidy(number = 2)
   }
   expect_error(
     res_1_1 <-
@@ -75,7 +75,8 @@ test_that('tune recipe only', {
 
 test_that('tune model only', {
   extr_2_1 <- function(x) {
-    tibble(index = x$model@alphaindex[[1]], estimate = x$model@coef[[1]])
+    mod <- extract_model(x)
+    tibble(index = mod@alphaindex[[1]], estimate = mod@coef[[1]])
   }
 
   expect_error(
@@ -102,7 +103,7 @@ test_that('tune model only', {
   )
 
   extr_2_2 <- function(x) {
-    tibble(is_null_rec = is.null(x$recipe))
+    tibble(is_null_rec = is.null(extract_recipe(x)))
   }
 
   # should not fail:
@@ -155,16 +156,7 @@ test_that('tune model and recipe', {
 
   expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts")))
   expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ is.list(.x))),
-  )
-  expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ all(names(.x) == c("recipe", "model")))),
-  )
-  expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$recipe, "recipe"))),
-  )
-  expect_true(
-    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x$model, "ksvm"))),
+    all(purrr:::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
 
 })

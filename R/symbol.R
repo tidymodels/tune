@@ -1,3 +1,5 @@
+# nocov start
+
 # For use in setting the `tune_symbol` active binding in `.onLoad()`
 
 tune_symbol_utf8 <- list(
@@ -65,3 +67,5 @@ is_latex_output <- function () {
 is_windows <- function () {
   .Platform$OS.type == "windows"
 }
+
+# nocov end

@@ -73,18 +73,22 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
-    wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
     wrn_msg <- paste0(loc, ": ", wrn_msg)
+
     notes <- c(notes, wrn_msg)
+
+    wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
     tune_log(control2, split, wrn_msg, type = "warning")
     bad_news()
   }
   if (inherits(res$res, "try-error")| runif(1) < .1) {
     err_msg <- as.character(attr(res$res,"condition"))
     err_msg <- gsub("\n$", "", err_msg)
-    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
     err_msg <- paste0(loc, ": ", err_msg)
+
     notes <- c(notes, err_msg)
+
+    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
     tune_log(control2, split, err_msg, type = "danger")
     bad_news()
   } else {
@@ -102,6 +106,26 @@ catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
   assign(".notes", new_notes, envir = parent.frame())
   tmp$res
+}
+
+catch_and_log_fit <- function(expr, ..., notes) {
+  tune_log(..., type = "info")
+
+  result <- catcher(expr)
+  fit <- result$res$fit$fit$fit
+
+  # Log underlying fit failures that parsnip caught and exit
+  if (is_failure(fit)) {
+    result_fit <- list(res = fit, signals = list())
+
+    new_notes <- log_problems(notes, ..., result_fit)
+    assign(".notes", new_notes, envir = parent.frame())
+    return(result$res)
+  }
+
+  new_notes <- log_problems(notes, ..., result)
+  assign(".notes", new_notes, envir = parent.frame())
+  result$res
 }
 
 log_best <- function(control, iter, info, digits = 4) {

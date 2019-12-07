@@ -1,5 +1,5 @@
 test_that("Light mode / default `tune_color`s work", {
-  old <- options(tune.dark = NULL)
+  old <- options(tidymodels.dark = NULL)
   on.exit(options(old))
 
   expect_equal(
@@ -14,7 +14,7 @@ test_that("Light mode / default `tune_color`s work", {
 })
 
 test_that("Dark mode `tune_color`s work", {
-  old <- options(tune.dark = TRUE)
+  old <- options(tidymodels.dark = TRUE)
   on.exit(options(old))
 
   expect_equal(
@@ -28,8 +28,8 @@ test_that("Dark mode `tune_color`s work", {
   )
 })
 
-test_that("`tune_color` falls back to light mode with back `tune.dark` option", {
-  old <- options(tune.dark = "oh no")
+test_that("`tune_color` falls back to light mode with back `tidymodels.dark` option", {
+  old <- options(tidymodels.dark = "oh no")
   on.exit(options(old))
 
   expect_equal(

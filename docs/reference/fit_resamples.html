@@ -74,7 +74,7 @@ model+recipe or model+formula combination across many resamples." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
         </div>
       </div>
     </div>
@@ -260,7 +260,7 @@ prediction columns that are returned are determined by the type of metric(s)
 requested.</p>
 <p>This list column can be <code>unnested</code> using <code><a href='https://tidyr.tidyverse.org/reference/nest.html'>tidyr::unnest()</a></code> or using the
 convenience function <code><a href='collect_predictions.html'>collect_predictions()</a></code>.</p>
-    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting information</h2>
+    <h2 class="hasAnchor" id="extracting-information"><a class="anchor" href="#extracting-information"></a>Extracting Information</h2>
 
     
 
@@ -271,6 +271,17 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.</p>
+<p>The control function contains an option (<code>extract</code>) that can be used to
+retain any model or recipe that was created within the resamples. This
+argument should be a function with a single argument. The value of the
+argument that is given to the function in each resample is a workflow
+object (see <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code> for more information). There are two
+helper functions that can be used to easily pull out the recipe (if any)
+and/or the model: <code><a href='extract_recipe.html'>extract_recipe()</a></code> and <code><a href='extract_recipe.html'>extract_model()</a></code>.</p>
+<p>As an example, if there is interest in getting each model back, one could use:</p><pre>
+  extract = function (x) extract_model(x)
+</pre>
+
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
 every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
 As noted above, in some cases, model predictions can be derived for
@@ -282,7 +293,8 @@ grid has a separate R object associated with it.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>6735</span>)
 <span class='no'>folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>5</span>)
@@ -301,7 +313,7 @@ grid has a separate R object associated with it.</p>
 <span class='no'>spline_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
 #&gt; <span style='color: #555555;'># A tibble: 5 x 5</span><span>
 #&gt;   splits         id    .metrics         .notes           .predictions    
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [6 × 3]&gt;</span><span>
@@ -313,13 +325,13 @@ grid has a separate R object associated with it.</p>
 #&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard    3.11     5   0.168</div><div class='input'>
 </div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#performance-metrics">Performance Metrics</a></li>
       <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
-      <li><a href="#extracting-information">Extracting information</a></li>
+      <li><a href="#extracting-information">Extracting Information</a></li>
       <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>

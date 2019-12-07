@@ -5,7 +5,7 @@ context("object extraction")
 library(dplyr)
 library(yardstick)
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 

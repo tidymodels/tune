@@ -2,7 +2,7 @@ context("parameter sets from complex objects")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ test_that('recipe with tunable parameters', {
 
   expect_equal(spline_info$object[[1]], dials::neighbors(c(1, 10)))
   expect_equal(spline_info$object[[2]], dials::threshold(c(0, 1/10)))
-  expect_equal(spline_info$object[[3]], dials::deg_free(c(3, 15)))
+  expect_equal(spline_info$object[[3]], dials::spline_degree(c(1, 15)))
   expect_equal(spline_info$object[[4]], dials::degree_int(c(1, 2)))
 
 })
@@ -60,7 +60,7 @@ test_that('model with main and engine parameters', {
   ids <- c("funky name \n", "rules")
   expect_equal(c5_info$id, ids)
 
-  expect_equal(c5_info$object[[1]], dials::trees())
+  expect_equal(c5_info$object[[1]], dials::trees(c(1, 100)))
   expect_equal(c5_info$object[[2]], NA)
 })
 

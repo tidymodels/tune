@@ -9,7 +9,7 @@ library(dials)
 library(rsample)
 library(kernlab)
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
@@ -70,6 +70,10 @@ test_that('tune model only (with recipe, multi-predict)', {
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
   expect_equal(res$id, folds$id)
+  expect_equal(
+    colnames(res$.metrics[[1]]),
+    c("cost", ".metric", ".estimator", ".estimate")
+  )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), nrow(grid) * 2)
   expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
@@ -87,6 +91,10 @@ test_that('tune model and recipe', {
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
   expect_equal(res$id, folds$id)
+  expect_equal(
+    colnames(res$.metrics[[1]]),
+    c("cost", "num_comp", ".metric", ".estimator", ".estimate")
+  )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), nrow(grid) * 2)
   expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))

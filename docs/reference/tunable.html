@@ -72,7 +72,7 @@ with information about the parameters." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9003</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
         </div>
       </div>
     </div>
@@ -175,6 +175,21 @@ with information about the parameters.</p>
 <span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for workflow</span>
+<span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for linear_reg</span>
+<span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for logistic_reg</span>
+<span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for multinomial_reg</span>
+<span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for boost_tree</span>
+<span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for nearest_neighbor</span>
 <span class='fu'>tunable</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -250,12 +265,12 @@ method, a <code>NULL</code> is returned.</p>
   <span class='fu'>tunable</span>()</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 4 x 5</span><span>
 #&gt;   name        call_info        source     component  component_id
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #555555;'>1</span><span> trees       </span><span style='color: #555555;'>&lt;named list [2]&gt;</span><span> model_spec boost_tree main        
+#&gt; </span><span style='color: #555555;'>1</span><span> trees       </span><span style='color: #555555;'>&lt;named list [3]&gt;</span><span> model_spec boost_tree main        
 #&gt; </span><span style='color: #555555;'>2</span><span> min_n       </span><span style='color: #555555;'>&lt;named list [2]&gt;</span><span> model_spec boost_tree main        
 #&gt; </span><span style='color: #555555;'>3</span><span> sample_size </span><span style='color: #555555;'>&lt;named list [2]&gt;</span><span> model_spec boost_tree main        
 #&gt; </span><span style='color: #555555;'>4</span><span> rules       </span><span style='color: #555555;'>&lt;NULL&gt;</span><span>           model_spec boost_tree engine      </div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

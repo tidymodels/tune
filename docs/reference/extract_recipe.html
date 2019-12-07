@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • tune</title>
+<title>Convenience functions to extract model or recipe — extract_recipe • tune</title>
 
 
 <!-- jquery -->
@@ -34,7 +34,11 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Convenience functions to extract model or recipe — extract_recipe" />
+<meta property="og:description" content="When extracting the fitted results, the workflow is easily accessible. If
+there is only interest in the recipe or model, these functions can be used
+as shortcuts" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -53,7 +57,7 @@
   </head>
 
   <body>
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -127,38 +131,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/tidymodels/tune/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+    <h1>Convenience functions to extract model or recipe</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/extract.R'><code>R/extract.R</code></a></small>
+    <div class="hidden name"><code>extract_recipe.Rd</code></div>
     </div>
 
-    <div id="tune-0-0-0-9002" class="section level1">
-<h1 class="page-header">
-<a href="#tune-0-0-0-9002" class="anchor"></a>tune 0.0.0.9002</h1>
-<ul>
-<li><p>The <code>...</code> arguments of <code><a href="../reference/tune_grid.html">tune_grid()</a></code> and <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> have been moved forward to force optional arguments to be named.</p></li>
-<li><p>New <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> for fitting a set of resamples that don’t require any tuning.</p></li>
-<li><p>Changed <code>summarise.tune_results()</code> back to <code>estimate.tune_results()</code></p></li>
-</ul>
-</div>
-    <div id="tune-0-0-0-9000" class="section level1">
-<h1 class="page-header">
-<a href="#tune-0-0-0-9000" class="anchor"></a>tune 0.0.0.9000</h1>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>When extracting the fitted results, the workflow is easily accessible. If
+there is only interest in the recipe or model, these functions can be used
+as shortcuts</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>extract_recipe</span>(<span class='no'>x</span>)
+
+<span class='fu'>extract_model</span>(<span class='no'>x</span>)</pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>A fitted workflow object.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A fitted model or recipe. If a formula is used instead of a recipe,
+<code>extract_recipe()</code> returns <code>NULL</code>.</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#tune-0-0-0-9002">0.0.0.9002</a></li>
-        <li><a href="#tune-0-0-0-9000">0.0.0.9000</a></li>
-      </ul>
-    </div>
-  </div>
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
+    </ul>
 
+  </div>
 </div>
 
 

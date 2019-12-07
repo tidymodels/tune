@@ -1,6 +1,7 @@
 library(tidymodels)
 library(tune)
 library(AmesHousing)
+library(workflows)
 
 # ------------------------------------------------------------------------------
 

@@ -127,23 +127,44 @@ append_predictions <- function(collection, predictions, split, control) {
   dplyr::bind_rows(collection, predictions)
 }
 
-append_extracts <- function(collection, rec, mod, param, split, ctrl) {
+append_extracts <- function(collection, workflow, param, split, ctrl) {
   if (any(names(param) == ".submodels")) {
     param <- param %>% dplyr::select(-.submodels)
   }
 
-  tmp_extr <-
+  extracts <-
     param %>%
     dplyr::bind_cols(labels(split)) %>%
     mutate(
       .extracts = list(
-        extract_details(
-          list(recipe = rec, model = mod),
-          ctrl$extract
-        )
+        extract_details(workflow, ctrl$extract)
       )
     )
-  dplyr::bind_rows(collection, tmp_extr)
+
+  dplyr::bind_rows(collection, extracts)
 }
 
+#' Convenience functions to extract model or recipe
+#'
+#' When extracting the fitted results, the workflow is easily accessible. If
+#' there is only interest in the recipe or model, these functions can be used
+#' as shortcuts
+#' @param x A fitted workflow object.
+#' @return A fitted model or recipe. If a formula is used instead of a recipe,
+#' `extract_recipe()` returns `NULL`.
+#' @export
+extract_recipe <- function(x) {
+  if (has_preprocessor_recipe(x)) {
+    recipe <- workflows::pull_workflow_prepped_recipe(x)
+  } else {
+    recipe <- NULL
+  }
+  recipe
+}
 
+#' @export
+#' @rdname extract_recipe
+extract_model <- function(x) {
+  parsnip_fit <- workflows::pull_workflow_fit(x)
+  model <- parsnip_fit$fit
+}

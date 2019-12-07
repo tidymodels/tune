@@ -2,7 +2,7 @@ context("tunable parameter info")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ test_that('recipe with tunable parameters', {
   nms <- c('neighbors', 'threshold', 'deg_free', 'degree')
   expect_equal(spline_info$name, nms)
   expect_true(all(purrr::map_lgl(spline_info$call_info, ~ .x$pkg == "dials")))
-  nms <- c('neighbors', 'threshold', 'deg_free', 'degree_int')
+  nms <- c('neighbors', 'threshold', 'spline_degree', 'degree_int')
   expect_equal(purrr::map_chr(spline_info$call_info, ~ .x$fun), nms)
 })
 

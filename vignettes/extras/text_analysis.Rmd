@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 options(digits = 3)
 library(tidymodels)
 library(tune)
+library(workflows)
 library(textrecipes)
 library(textfeatures)
 library(doMC)
@@ -164,8 +165,10 @@ For illustration, we will save information on the number of predictors by penalt
 
 ```{r extract}
 glmnet_vars <- function(x) {
+  # `x` will be a workflow object
+  mod <- extract_model(x)
   # `df` is the number of model terms for each penalty value
-  tibble(penalty = x$model$lambda, num_vars = x$model$df)
+  tibble(penalty = mod$lambda, num_vars = mod$df)
 }
 
 ctrl <- control_grid(extract = glmnet_vars)
@@ -226,6 +229,7 @@ hash_range <- num_terms(c(8, 12), trans = log2_trans())
 To use this, we have to merge the recipe and `parsnip` model object into a workflow:
 
 ```{r wflow}
+library(workflows)
 five_star_wflow <-
   workflow() %>%
   add_recipe(pre_proc) %>%

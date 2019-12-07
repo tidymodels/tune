@@ -2,8 +2,8 @@ context("object checking")
 
 # ------------------------------------------------------------------------------
 
-source("../helper-objects.R")
-load("svm_results.RData")
+source(test_path("../helper-objects.R"))
+load(test_path("svm_results.RData"))
 
 # ------------------------------------------------------------------------------
 
@@ -99,27 +99,27 @@ test_that('workflow objects', {
     add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_null(tune:::check_object(x = wflow_1))
+  expect_null(tune:::check_workflow(x = wflow_1))
 
   wflow_2 <-
     workflow() %>%
     add_model(boost_tree(mtry = tune()) %>% set_engine("xgboost")) %>%
     add_recipe(bare_rec)
 
-  expect_null(tune:::check_object(x = wflow_2))
-  expect_error(tune:::check_object(x = wflow_2, TRUE),
+  expect_null(tune:::check_workflow(x = wflow_2))
+  expect_error(tune:::check_workflow(x = wflow_2, check_dials = TRUE),
                "arguments whose ranges are not finalized")
 
   wflow_3 <-
     workflow() %>%
     add_model(glmn)
-  expect_error(tune:::check_object(wflow_3),
+  expect_error(tune:::check_workflow(wflow_3),
                "A model formula or recipe are required.")
 
   wflow_4 <-
     workflow() %>%
     add_recipe(bare_rec)
-  expect_error(tune:::check_object(wflow_4),
+  expect_error(tune:::check_workflow(wflow_4),
                "A parsnip model is required.")
 })
 
@@ -270,4 +270,94 @@ test_that('validation helpers', {
   expect_false(tune:::check_class_and_single(NA, "character"))
 })
 
+# ------------------------------------------------------------------------------
+
+test_that('check parameter finalization', {
+  rec <-
+    recipe(mpg ~ ., data = mtcars) %>%
+    step_ns(disp, deg_free = 3)
+  rec_tune <- rec %>% step_pca(all_predictors(), num_comp = tune())
+  f <- mpg ~ .
+  rf1 <-
+    rand_forest(mtry = tune(), min_n  = tune()) %>%
+    set_engine("ranger") %>%
+    set_mode("regression")
+  lm1 <-
+    linear_reg(penalty = tune()) %>%
+    set_engine("glmnet")
+
+  w1 <-
+    workflow() %>%
+    add_formula(f) %>%
+    add_model(rf1)
+
+  expect_message(
+    expect_error(
+      p1 <- tune:::check_parameters(w1, data = mtcars),
+      regex = NA
+    ),
+    "finalize unknown parameter: mtry"
+  )
+  expect_false(any(dials::has_unknowns(p1$object)))
+
+  w2 <-
+    workflow() %>%
+    add_recipe(rec) %>%
+    add_model(rf1)
+
+  expect_message(
+    expect_error(
+      p2 <- tune:::check_parameters(w2, data = mtcars),
+      regex = NA
+    ),
+    "finalize unknown parameter: mtry"
+  )
+  expect_false(any(dials::has_unknowns(p2$object)))
+
+  w3 <-
+    workflow() %>%
+    add_recipe(rec) %>%
+    add_model(rf1)
+  p3 <- parameters(w3)
+
+  expect_message(
+    expect_error(
+      p3_a <- tune:::check_parameters(w3, data = mtcars),
+      regex = NA
+    ),
+    "finalize unknown parameter: mtry"
+  )
+  expect_false(any(dials::has_unknowns(p3_a$object)))
+
+  w4 <-
+    workflow() %>%
+    add_recipe(rec_tune) %>%
+    add_model(rf1)
+
+  expect_error(
+    tune:::check_parameters(w4, data = mtcars),
+    regex = "to finalize the parameter ranges"
+  )
+
+  p4_a <-
+    parameters(w4) %>%
+    update(mtry = dials::mtry(c(1, 10)))
+
+  expect_error(
+    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars),
+    regex = NA
+  )
+  expect_true(inherits(p4_b, "parameters"))
+
+  w5 <-
+    workflow() %>%
+    add_recipe(rec_tune) %>%
+    add_model(lm1)
+
+  expect_error(
+    p5 <- tune:::check_parameters(w5, data = mtcars),
+    regex = NA
+  )
+  expect_true(inherits(p5, "parameters"))
+})
 

@@ -4,8 +4,6 @@
 #'  combinations based on previous results.
 #'
 #' @inheritParams tune_grid
-#' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
-#' a parameters set is derived from other arguments.
 #' @param metrics A [yardstick::metric_set()] object containing information on how
 #' models will be evaluated for performance. The first metric in `metrics` is the
 #' one that will be optimized.
@@ -63,6 +61,17 @@
 #' results. For good results, the number of initial values should be more than
 #' the number of parameters being optimized.
 #'
+#' @section Parameter Ranges and Values:
+#'
+#' In some cases, the tuning parameter values depend on the dimensions of the
+#'  data. For example, `mtry` in random forest models depends on the number of
+#'  predictors. In this case, the default tuning parameter object requires an
+#'  upper range. [dials::finalize()] can be used to derive the data-dependent
+#'  parameters. Otherwise, a parameter set can be created (via
+#'  [dials::parameters()] and the `dials` `update()` function can be used to
+#'  change the ranges or values. This updated parameter set can be passed to
+#'  the function via the `param_info` argument.
+#'
 #' @section Performance Metrics:
 #'
 #' To use your own performance metrics, the [yardstick::metric_set()] function
@@ -115,14 +124,7 @@
 #' This list column can be `unnested` using [tidyr::unnest()] or using the
 #'  convenience function [collect_predictions()].
 #'
-#' @section Extracting information:
-#'
-#' The `extract` control option will result in an additional function to be
-#'  returned called `.extracts`. This is a list column that has tibbles
-#'  containing the results of the user's function for each tuning parameter
-#'  combination. This can enable returning each model and/or recipe object that
-#'  is created during resampling. Note that this could result in a large return
-#'  object, depending on what is returned.
+#' @inheritSection tune_grid Extracting Information
 #'
 #' @export
 tune_bayes <- function(object, ...) {
@@ -138,15 +140,16 @@ tune_bayes.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_bayes
-tune_bayes.recipe <- function(object, model,
+tune_bayes.recipe <- function(object,
+                              model,
                               resamples,
+                              ...,
                               iter = 10,
                               param_info = NULL,
                               metrics = NULL,
                               objective = exp_improve(),
                               initial = 5,
-                              control = control_bayes(),
-                              ...) {
+                              control = control_bayes()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -163,15 +166,16 @@ tune_bayes.recipe <- function(object, model,
 
 #' @export
 #' @rdname tune_bayes
-tune_bayes.formula <- function(formula, model,
+tune_bayes.formula <- function(formula,
+                               model,
                                resamples,
+                               ...,
                                iter = 10,
                                param_info = NULL,
                                metrics = NULL,
                                objective = exp_improve(),
                                initial = 5,
-                               control = control_bayes(),
-                               ...) {
+                               control = control_bayes()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -191,13 +195,13 @@ tune_bayes.formula <- function(formula, model,
 tune_bayes.workflow <-
   function(object,
            resamples,
+           ...,
            iter = 10,
            param_info = NULL,
            metrics = NULL,
            objective = exp_improve(),
            initial = 5,
-           control = control_bayes(),
-           ...) {
+           control = control_bayes()) {
 
   tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
                       metrics = metrics, objective = objective, initial = initial,
@@ -211,8 +215,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    check_object(object, check_dials = is.null(param_info))
-    metrics <- check_metrics(metrics, object)
+     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
@@ -220,6 +223,7 @@ tune_bayes_workflow <-
     if (is.null(param_info)) {
       param_info <- dials::parameters(object)
     }
+    check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
     unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
     mean_stats <- estimate_tune_results(unsummarized)

@@ -1,3 +1,5 @@
+# nocov start
+
 .onLoad <- function(libname, pkgname) {
   ns <- rlang::ns_env("tune")
 
@@ -31,7 +33,7 @@
   makeActiveBinding(
     "tune_color",
     function() {
-      opt <- getOption("tune.dark",  NULL)
+      opt <- getOption("tidymodels.dark",  NULL)
 
       if (!is.null(opt)) {
         if (isTRUE(opt)) {
@@ -46,3 +48,5 @@
     ns
   )
 }
+
+# nocov end

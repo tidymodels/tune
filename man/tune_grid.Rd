@@ -16,29 +16,32 @@ tune_grid(object, ...)
   object,
   model,
   resamples,
+  ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 
 \method{tune_grid}{formula}(
   formula,
   model,
   resamples,
+  ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 
 \method{tune_grid}{workflow}(
   object,
   resamples,
+  ...,
+  param_info = NULL,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  ...
+  control = control_grid()
 )
 }
 \arguments{
@@ -49,19 +52,20 @@ tune_grid(object, ...)
 \item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
 workflow).}
 
-\item{resamples}{An \code{rset()} object. This argument \strong{should be named}.}
+\item{resamples}{An \code{rset()} object.}
+
+\item{param_info}{A \code{\link[dials:parameters]{dials::parameters()}} object or \code{NULL}. If none is given,
+a parameters set is derived from other arguments. Passing this argument can
+be useful when parameter ranges need to be customized.}
 
 \item{grid}{A data frame of tuning combinations or a positive integer. The
 data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
-parameter sets to be created automatically. If used, this argument
-\strong{should be named}.}
+parameter sets to be created automatically.}
 
-\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}. If used, this argument
-\strong{should be named}.}
+\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}.}
 
-\item{control}{An object used to modify the tuning process. If used, this
-argument \strong{should be named}.}
+\item{control}{An object used to modify the tuning process.}
 
 \item{formula}{A traditional model formula.}
 }
@@ -116,6 +120,15 @@ parameter is marked for optimization using \code{penalty = tune()}, there should
 be a column names \code{tune}. If the optional identifier is used, such as
 \code{penalty = tune(id = 'lambda')}, then the corresponding column name should
 be \code{lambda}.
+
+In some cases, the tuning parameter values depend on the dimensions of the
+data. For example, \code{mtry} in random forest models depends on the number of
+predictors. In this case, the default tuning parameter object requires an
+upper range. \code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent
+parameters. Otherwise, a parameter set can be created (via
+\code{\link[dials:parameters]{dials::parameters()}} and the \code{dials} \code{update()} function can be used to
+change the values. This updated parameter set can be passed to the function
+via the \code{param_info} argument.
 }
 
 \section{Performance Metrics}{
@@ -174,7 +187,7 @@ This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::u
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
-\section{Extracting information}{
+\section{Extracting Information}{
 
 
 The \code{extract} control option will result in an additional function to be
@@ -183,6 +196,19 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.
+
+The control function contains an option (\code{extract}) that can be used to
+retain any model or recipe that was created within the resamples. This
+argument should be a function with a single argument. The value of the
+argument that is given to the function in each resample is a workflow
+object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). There are two
+helper functions that can be used to easily pull out the recipe (if any)
+and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_model]{extract_model()}}.
+
+As an example, if there is interest in getting each model back, one could use:
+\preformatted{
+  extract = function (x) extract_model(x)
+}
 
 Note that the function given to the \code{extract} argument is evaluated on
 every model that is \emph{fit} (as opposed to every model that is \emph{evaluated}).
@@ -238,6 +264,7 @@ svm_mod <-
   set_engine("kernlab") \%>\%
   set_mode("regression")
 
+\dontrun{
 # Use a space-filling design with 7 points
 set.seed(3254)
 svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
@@ -247,6 +274,7 @@ show_best(svm_res, metric = "rmse", maximize = FALSE)
 
 autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
+}
 }
 \seealso{
 \code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},

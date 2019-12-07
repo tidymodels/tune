@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 options(digits = 3)
 library(tidymodels)
 library(tune)
+library(workflows)
 theme_set(theme_bw())
 ```
 
@@ -240,6 +241,7 @@ knn_mod <-
 The easiest approach to optimize the pre-processing and model parameters is to bundle these objects into a _workflow_:
 
 ```{r knn-wflow}
+library(workflows)
 knn_wflow <- 
   workflow() %>% 
   add_model(knn_mod) %>% 
@@ -259,6 +261,8 @@ knn_param <-
     weight_func = weight_func(values = c("rectangular", "inv", "gaussian", "triangular"))
   )
 ```
+
+This parameter collection can be passed to the grid functions via the `param_info` arguments. 
 
 Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.
 

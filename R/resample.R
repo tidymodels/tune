@@ -24,7 +24,7 @@
 #'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
-#' @inheritSection tune_grid Extracting information
+#' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examples
 #' library(recipes)
@@ -118,10 +118,10 @@ fit_resamples.workflow <- function(object,
 
 resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
-  check_object(workflow)
+  check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
 
-  has_formula <- has_workflow_formula(workflow)
+  has_formula <- has_preprocessor_formula(workflow)
 
   if (has_formula) {
     resamples <- resample_with_formula(resamples, workflow, metrics, control)
@@ -139,10 +139,6 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   class(resamples) <- c("resample_results", class(resamples))
 
   resamples
-}
-
-has_workflow_formula <- function(x) {
-  names(x$pre) == "formula_processor"
 }
 
 # ------------------------------------------------------------------------------
@@ -175,11 +171,12 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
   resamples
 }
 
-# TODO - use fit.workflow and predict.workflow
 iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
-  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+
+  control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
+  control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
@@ -187,7 +184,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   pred_vals <- NULL
   .notes <- NULL
 
-  tmp_rec <- catch_and_log(
+  workflow <- catch_and_log(
     train_recipe(split, workflow, NULL),
     control,
     split,
@@ -195,7 +192,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     notes = .notes
   )
 
-  if (inherits(tmp_rec, "try-error")) {
+  if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -206,15 +203,16 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     return(out)
   }
 
-  tmp_fit <- catch_and_log(
-    train_model_from_recipe(workflow, tmp_rec, NULL, control = fit_control),
+  workflow <- catch_and_log_fit(
+    train_model(workflow, NULL, control = control_workflow),
     control,
     split,
     "model",
     notes = .notes
   )
 
-  if (inherits(tmp_fit, "try-error")) {
+  # check for parsnip level and model level failure
+  if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -230,10 +228,10 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   split_label_tbl <- labels(split)
   dummy_param_tbl <- tibble(.rows = nrow(split_label_tbl))
 
-  extracted <- append_extracts(extracted, tmp_rec, tmp_fit$fit, dummy_param_tbl, split, control)
+  extracted <- append_extracts(extracted, workflow, dummy_param_tbl, split, control)
 
-  tmp_pred <- catch_and_log(
-    predict_model_from_recipe_no_grid(split, tmp_fit, tmp_rec, metrics),
+  predictions <- catch_and_log(
+    predict_model_no_grid(split, workflow, metrics),
     control,
     split,
     "model (predictions)",
@@ -241,7 +239,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     notes = .notes
   )
 
-  if (inherits(tmp_pred, "try-error")) {
+  if (is_failure(predictions)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -252,8 +250,8 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-  pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 }
@@ -288,11 +286,12 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
   resamples
 }
 
-# TODO - use fit.workflow and predict.workflow
 iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
-  fit_control <- parsnip::fit_control(verbosity = 0, catch = TRUE)
+
+  control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
+  control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
@@ -300,15 +299,15 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   pred_vals <- NULL
   .notes <- NULL
 
-  tmp_df <- catch_and_log(
-    exec_formula(split, workflow),
+  workflow <- catch_and_log(
+    train_formula(split, workflow),
     control,
     split,
     "formula",
     notes = .notes
   )
 
-  if (inherits(tmp_df, "try-error")) {
+  if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -319,18 +318,16 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     return(out)
   }
 
-  tmp_terms <- tmp_df$terms
-  tmp_df <- tmp_df[c("x", "y")]
-
-  tmp_fit <- catch_and_log(
-    train_model_from_df(workflow, tmp_df, NULL, control = fit_control),
+  workflow <- catch_and_log_fit(
+    train_model(workflow, NULL, control = control_workflow),
     control,
     split,
     "model",
     notes = .notes
   )
 
-  if (inherits(tmp_fit, "try-error")) {
+  # check for parsnip level and model level failure
+  if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -346,10 +343,10 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   split_label_tbl <- labels(split)
   dummy_param_tbl <- tibble(.rows = nrow(split_label_tbl))
 
-  extracted <- append_extracts(extracted, NULL, tmp_fit$fit, dummy_param_tbl, split, control)
+  extracted <- append_extracts(extracted, workflow, dummy_param_tbl, split, control)
 
-  tmp_pred <- catch_and_log(
-    predict_model_from_terms_no_grid(split, tmp_fit, tmp_terms, metrics),
+  predictions <- catch_and_log(
+    predict_model_no_grid(split, workflow, metrics),
     control,
     split,
     "model (predictions)",
@@ -357,7 +354,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     notes = .notes
   )
 
-  if (inherits(tmp_pred, "try-error")) {
+  if (is_failure(predictions)) {
     out <- list(
       .metrics = metric_est,
       .extracts = extracted,
@@ -368,8 +365,8 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-  pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
 }
@@ -377,17 +374,13 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
 # ------------------------------------------------------------------------------
 # `resamples()` prediction
 
-predict_model_from_recipe_no_grid <- function(split, model, recipe, metrics) {
-  y_names <- outcome_names(recipe)
+predict_model_no_grid <- function(split, workflow, metrics) {
+  model <- workflows::pull_workflow_fit(workflow)
 
-  new_vals <- recipes::bake(
-    recipe,
-    rsample::assessment(split),
-    all_predictors(),
-    all_outcomes()
-  )
+  forged <- forge_from_workflow(split, workflow)
 
-  x_vals <- dplyr::select(new_vals, -one_of(y_names))
+  x_vals <- forged$predictors
+  y_vals <- forged$outcomes
 
   orig_rows <- as.integer(split, data = "assessment")
 
@@ -411,42 +404,17 @@ predict_model_from_recipe_no_grid <- function(split, model, recipe, metrics) {
   }
 
   # Add outcome data
-  outcome_data <- dplyr::select(new_vals, dplyr::one_of(y_names))
-  outcome_data <- dplyr::mutate(outcome_data, .row = orig_rows)
-
-  res <- dplyr::full_join(res, outcome_data, by = ".row")
+  y_vals <- dplyr::mutate(y_vals, .row = orig_rows)
+  res <- dplyr::full_join(res, y_vals, by = ".row")
 
   tibble::as_tibble(res)
 }
 
-predict_model_from_terms_no_grid <- function(split, model, terms, metrics) {
-  data <- exec_terms(split, terms)
+forge_from_workflow <- function(split, workflow) {
+  new_data <- rsample::assessment(split)
 
-  orig_rows <- as.integer(split, data = "assessment")
+  blueprint <- workflow$pre$mold$blueprint
+  forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
-  # Determine the type of prediction that is required
-  type_info <- metrics_info(metrics)
-  types <- unique(type_info$type)
-
-  res <- NULL
-
-  for (type_iter in types) {
-    tmp_res <- predict(model, data$x, type = type_iter) %>%
-      mutate(.row = orig_rows)
-
-    if (!is.null(res)) {
-      res <- dplyr::full_join(res, tmp_res, by = ".row")
-    } else {
-      res <- tmp_res
-    }
-
-    rm(tmp_res)
-  }
-
-  # Add outcome data
-  outcome_data <- dplyr::mutate(data$y, .row = orig_rows)
-
-  res <- dplyr::full_join(res, outcome_data, by = ".row")
-
-  tibble::as_tibble(res)
+  forged
 }

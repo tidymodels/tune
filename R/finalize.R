@@ -79,14 +79,14 @@ finalize_workflow <- function(x, parameters) {
   }
   check_final_param(parameters)
 
-  mod <- get_wflow_model(x)
+  mod <- workflows::pull_workflow_spec(x)
   mod <- finalize_model(mod, parameters)
-  x$fit$model$model <- mod
+  x <- set_workflow_spec(x, mod)
 
-  if (any(names(x$pre) == "recipe")) {
-    rec <- get_wflow_pre(x)
+  if (has_preprocessor_recipe(x)) {
+    rec <- workflows::pull_workflow_preprocessor(x)
     rec <- finalize_recipe(rec, parameters)
-    x$pre$recipe$recipe <- rec
+    x <- set_workflow_recipe(x, rec)
   }
 
   x

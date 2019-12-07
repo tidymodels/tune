@@ -8,16 +8,16 @@
 #' @param formula A traditional model formula.
 #' @param model A `parsnip` model specification (or `NULL` when `object` is a
 #' workflow).
-#' @param resamples An `rset()` object. This argument __should be named__.
+#' @param resamples An `rset()` object.
+#' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
+#' a parameters set is derived from other arguments. Passing this argument can
+#' be useful when parameter ranges need to be customized.
 #' @param grid A data frame of tuning combinations or a positive integer. The
 #'  data frame should have columns for each parameter being tuned and rows for
 #'  tuning parameter candidates. An integer denotes the number of candidate
-#'  parameter sets to be created automatically. If used, this argument
-#'  __should be named__.
-#' @param metrics A [yardstick::metric_set()] or `NULL`. If used, this argument
-#' __should be named__.
-#' @param control An object used to modify the tuning process. If used, this
-#' argument __should be named__.
+#'  parameter sets to be created automatically.
+#' @param metrics A [yardstick::metric_set()] or `NULL`.
+#' @param control An object used to modify the tuning process.
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
@@ -66,6 +66,15 @@
 #'  be a column names `tune`. If the optional identifier is used, such as
 #'  `penalty = tune(id = 'lambda')`, then the corresponding column name should
 #'  be `lambda`.
+#'
+#' In some cases, the tuning parameter values depend on the dimensions of the
+#'  data. For example, `mtry` in random forest models depends on the number of
+#'  predictors. In this case, the default tuning parameter object requires an
+#'  upper range. [dials::finalize()] can be used to derive the data-dependent
+#'  parameters. Otherwise, a parameter set can be created (via
+#'  [dials::parameters()] and the `dials` `update()` function can be used to
+#'  change the values. This updated parameter set can be passed to the function
+#'  via the `param_info` argument.
 #'
 #' @section Performance Metrics:
 #'
@@ -119,7 +128,7 @@
 #' This list column can be `unnested` using [tidyr::unnest()] or using the
 #'  convenience function [collect_predictions()].
 #'
-#' @section Extracting information:
+#' @section Extracting Information:
 #'
 #' The `extract` control option will result in an additional function to be
 #'  returned called `.extracts`. This is a list column that has tibbles
@@ -127,6 +136,19 @@
 #'  combination. This can enable returning each model and/or recipe object that
 #'  is created during resampling. Note that this could result in a large return
 #'  object, depending on what is returned.
+#'
+#' The control function contains an option (`extract`) that can be used to
+#'  retain any model or recipe that was created within the resamples. This
+#'  argument should be a function with a single argument. The value of the
+#'  argument that is given to the function in each resample is a workflow
+#'  object (see [workflows::workflow()] for more information). There are two
+#'  helper functions that can be used to easily pull out the recipe (if any)
+#'  and/or the model: [extract_recipe()] and [extract_model()].
+#'
+#' As an example, if there is interest in getting each model back, one could use:
+#' \preformatted{
+#'   extract = function (x) extract_model(x)
+#' }
 #'
 #' Note that the function given to the `extract` argument is evaluated on
 #'  every model that is _fit_ (as opposed to every model that is _evaluated_).
@@ -180,6 +202,7 @@
 #'   set_engine("kernlab") %>%
 #'   set_mode("regression")
 #'
+#' \dontrun{
 #' # Use a space-filling design with 7 points
 #' set.seed(3254)
 #' svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
@@ -189,6 +212,7 @@
 #'
 #' autoplot(svm_res, metric = "rmse") +
 #'   scale_x_log10()
+#' }
 #' @export
 tune_grid <- function(object, ...) {
   UseMethod("tune_grid")
@@ -203,8 +227,8 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
+                             grid = 10, metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -219,14 +243,15 @@ tune_grid.recipe <- function(object, model, resamples, grid = 10,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.formula <- function(formula, model, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
+                              grid = 10, metrics = NULL, control = control_grid()) {
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -241,20 +266,22 @@ tune_grid.formula <- function(formula, model, resamples, grid = 10,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, grid = 10,
-                             metrics = NULL, control = control_grid(), ...) {
+tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
+                               grid = 10, metrics = NULL, control = control_grid()) {
 
   tune_grid_workflow(
     object,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    pset = param_info,
     control = control
   )
 }
@@ -262,11 +289,13 @@ tune_grid.workflow <- function(object, resamples, grid = 10,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <-
-  function(object, resamples, grid = 10, metrics = NULL, control = control_grid()) {
+  function(object, resamples, grid = 10, metrics = NULL, pset = NULL,
+           control = control_grid()) {
     check_rset(resamples)
-    check_object(object)
     metrics <- check_metrics(metrics, object)
-    grid <- check_grid(grid, object)
+    pset <- check_parameters(object, pset = pset, data = resamples$splits[[1]]$data)
+    check_workflow(object, pset = pset)
+    grid <- check_grid(grid, object, pset)
 
     code_path <- quarterback(object)
 
@@ -287,7 +316,7 @@ tune_grid_workflow <-
 quarterback <- function(x) {
   y <- dials::parameters(x)
   sources <- unique(y$source)
-  has_form <- names(x$pre) == "formula_processor"
+  has_form <- has_preprocessor_formula(x)
   tune_rec <- any(sources == "recipe") & !has_form
   tune_model <- any(sources == "model_spec")
 

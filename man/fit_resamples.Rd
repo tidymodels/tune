@@ -115,7 +115,7 @@ This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::u
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
-\section{Extracting information}{
+\section{Extracting Information}{
 
 
 The \code{extract} control option will result in an additional function to be
@@ -124,6 +124,19 @@ containing the results of the user's function for each tuning parameter
 combination. This can enable returning each model and/or recipe object that
 is created during resampling. Note that this could result in a large return
 object, depending on what is returned.
+
+The control function contains an option (\code{extract}) that can be used to
+retain any model or recipe that was created within the resamples. This
+argument should be a function with a single argument. The value of the
+argument that is given to the function in each resample is a workflow
+object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). There are two
+helper functions that can be used to easily pull out the recipe (if any)
+and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_model]{extract_model()}}.
+
+As an example, if there is interest in getting each model back, one could use:
+\preformatted{
+  extract = function (x) extract_model(x)
+}
 
 Note that the function given to the \code{extract} argument is evaluated on
 every model that is \emph{fit} (as opposed to every model that is \emph{evaluated}).

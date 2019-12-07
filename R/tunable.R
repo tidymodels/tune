@@ -237,15 +237,84 @@ tunable.recipe <- function(x, ...) {
 #' @export
 #' @rdname tunable
 tunable.workflow <- function(x, ...) {
-  param_data <- tunable(x$fit$model$model)
-  if (any(names(x$pre) == "recipe")) {
-    param_data <-
-      dplyr::bind_rows(
-        param_data,
-        tunable(x$pre$recipe$recipe)
-      )
+  model <- workflows::pull_workflow_spec(x)
+  param_data <- tunable(model)
+
+  if (has_preprocessor_recipe(x)) {
+    recipe <- workflows::pull_workflow_preprocessor(x)
+    recipe_param_data <- tunable(recipe)
+
+    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
   }
+
   param_data
 }
 
+
+# ------------------------------------------------------------------------------
+
+
+#' @rdname tunable
+#' @export
+tunable.linear_reg <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "glmnet") {
+    res$call_info[res$name == "mixture"] <-
+     list(list(pkg = "dials", fun = "mixture", range = c(0.05, 1.00)))
+  }
+  res
+}
+
+
+#' @rdname tunable
+#' @export
+tunable.logistic_reg <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "glmnet") {
+    res$call_info[res$name == "mixture"] <-
+      list(list(pkg = "dials", fun = "mixture", range = c(0.05, 1.00)))
+  }
+  res
+}
+
+
+#' @rdname tunable
+#' @export
+tunable.multinomial_reg <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "glmnet") {
+    res$call_info[res$name == "mixture"] <-
+      list(list(pkg = "dials", fun = "mixture", range = c(0.05, 1.00)))
+  }
+  res
+}
+
+
+#' @rdname tunable
+#' @export
+tunable.boost_tree <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "xgboost") {
+    res$call_info[res$name == "sample_size"] <-
+      list(list(pkg = "dials", fun = "sample_prop"))
+  } else {
+    if (x$engine == "C5.0") {
+      res$call_info[res$name == "trees"] <-
+        list(list(pkg = "dials", fun = "trees", range = c(1, 100)))
+    }
+  }
+  res
+}
+
+
+#' @rdname tunable
+#' @export
+tunable.nearest_neighbor <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "kknn") {
+    res$call_info[res$name == "dist_power"] <-
+      list(list(pkg = "dials", fun = "dist_power", range = c(0.0, 1.5)))
+  }
+  res
+}
 
