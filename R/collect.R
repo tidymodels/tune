@@ -4,7 +4,8 @@
 #' [collect_predictions()], the control option `save_pred = TRUE` should have
 #' been used.
 #' @param summarize A logical; should metrics be summarized over resamples
-#' (`TRUE`) or return the values for each individual resample.
+#' (`TRUE`) or return the values for each individual resample. Note that, if `x`
+#' is created by [last_fit()], `summarize` has not effect.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
 #' @examples
@@ -50,6 +51,11 @@ collect_predictions <- function(x) {
 #' @export
 #' @rdname collect_predictions
 collect_metrics <- function(x, summarize = TRUE) {
+
+  if (inherits(x, "last_fit")) {
+    return(x$.metrics[[1]])
+  }
+
   if (summarize) {
     res <- estimate_tune_results(x)
   } else {

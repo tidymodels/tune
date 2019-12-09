@@ -38,3 +38,10 @@ test_that("split_to_rset", {
   expect_true(is.list(res$.predictions))
   expect_true(inherits(res$.predictions[[1]], "tbl_df"))
 })
+
+test_that("collect metrics of last fit", {
+  res <- last_fit(f, linear_reg() %>% set_engine("lm"), split)
+  met <- collect_metrics(res)
+  expect_true(inherits(met, "tbl_df"))
+  expect_equal(names(met), c(".metric", ".estimator", ".estimate"))
+})

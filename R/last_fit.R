@@ -113,6 +113,8 @@ last_fit_workflow <- function(object, split, metrics) {
   res$id[[1]] <- "train/test split"
   res$.workflow <- res$.extracts[[1]][[1]]
   res$.extracts <- NULL
+  class(res) <- c("last_fit", class(res))
+  class(res) <- unique(class(res))
   res
 }
 
