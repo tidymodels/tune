@@ -230,19 +230,21 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
 who <- c("Tessa", "Moira", "Alex")
 
 good_news <- function() {
+  Sys.sleep(rpois(1, 2))
   msg <- c("excellent!", "awesome!", "noice!")
   msg <- base::sample(msg, 1)
   cmd <- paste("say", msg)
   cmd <- paste(cmd, "-v", sample(who, 1))
-  system(cmd)
+  system(cmd, wait = FALSE)
 }
 
 
 bad_news <- function() {
+  Sys.sleep(rpois(1, 2))
   msg <- c("shit", "bad, very bad", "NO", "damn it")
   msg <- base::sample(msg, 1)
   cmd <- paste("say", msg)
   cmd <- paste(cmd, "-v", sample(who, 1))
-  system(cmd)
+  system(cmd, wait = FALSE)
 }
 
