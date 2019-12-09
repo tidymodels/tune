@@ -15,7 +15,8 @@ collect_metrics(x, summarize = TRUE)
 been used.}
 
 \item{summarize}{A logical; should metrics be summarized over resamples
-(\code{TRUE}) or return the values for each individual resample.}
+(\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
+is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has not effect.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
