@@ -17,7 +17,7 @@
 #'  the models. (See
 #'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
 #'  more details). Not required if a single metric exists in `x`.
-#' @param n_top An integer for the number of top results/rows to return.
+#' @param n An integer for the number of top results/rows to return.
 #' @param maximize A logical value (TRUE/FALSE).
 #' @param limit The limit of loss of performance that is acceptable (in percent
 #' units). See details below.
@@ -53,7 +53,7 @@
 #' select_by_pct_loss(ames_grid_search, metric = "rmse",
 #'                    maximize = FALSE, limit = 5, desc(K))
 #' @export
-show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
+show_best <- function(x, metric, n = 5, maximize = TRUE) {
   summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
@@ -74,7 +74,7 @@ show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
   } else {
     summary_res <- summary_res %>% dplyr::arrange(mean)
   }
-  show_ind <- 1:min(nrow(summary_res), n_top)
+  show_ind <- 1:min(nrow(summary_res), n)
   summary_res %>% dplyr::slice(show_ind)
 }
 
@@ -82,7 +82,7 @@ show_best <- function(x, metric, n_top = 5, maximize = TRUE) {
 #' @export
 #' @rdname show_best
 select_best <- function(x, metric, maximize = TRUE) {
-  res <- show_best(x, metric = metric, maximize = maximize, n_top = 1)
+  res <- show_best(x, metric = metric, maximize = maximize, n = 1)
   res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
   if (any(names(res) == ".iter")) {
     res <- res %>% dplyr::select(-.iter)

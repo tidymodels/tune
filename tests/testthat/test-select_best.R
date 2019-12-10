@@ -67,15 +67,15 @@ test_that("show_best()", {
     dplyr::arrange(mean)
 
   expect_equal(
-    show_best(rcv_results, metric = "rmse", n_top = 1, maximize = FALSE),
+    show_best(rcv_results, metric = "rmse", n = 1, maximize = FALSE),
     rcv_rmse %>% slice(1)
   )
   expect_equal(
-    show_best(rcv_results, metric = "rmse", n_top = nrow(rcv_rmse) + 1, maximize = FALSE),
+    show_best(rcv_results, metric = "rmse", n = nrow(rcv_rmse) + 1, maximize = FALSE),
     rcv_rmse
   )
   expect_equal(
-    show_best(rcv_results, metric = "rmse", n_top = 1, maximize = FALSE) %>% names(),
+    show_best(rcv_results, metric = "rmse", n = 1, maximize = FALSE) %>% names(),
     rcv_rmse %>% names()
   )
 })

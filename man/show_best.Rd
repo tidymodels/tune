@@ -7,7 +7,7 @@
 \alias{select_by_one_std_err}
 \title{Investigate best tuning parameters}
 \usage{
-show_best(x, metric, n_top = 5, maximize = TRUE)
+show_best(x, metric, n = 5, maximize = TRUE)
 
 select_best(x, metric, maximize = TRUE)
 
@@ -23,7 +23,7 @@ the models. (See
 \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
 more details). Not required if a single metric exists in \code{x}.}
 
-\item{n_top}{An integer for the number of top results/rows to return.}
+\item{n}{An integer for the number of top results/rows to return.}
 
 \item{maximize}{A logical value (TRUE/FALSE).}
 
