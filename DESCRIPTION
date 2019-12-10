@@ -22,7 +22,7 @@ Imports:
     dials (>= 0.0.4),
     utils,
     glue,
-    cli (>= 2.0.0), 
+    cli (>= 1.9.9.9000), 
     crayon,
     yardstick,
     rsample,
@@ -46,4 +46,5 @@ Remotes:
     tidymodels/recipes,    
     tidymodels/parsnip,
     tidymodels/hardhat,
-    tidymodels/workflows
+    tidymodels/workflows,
+    r-lib/cli
