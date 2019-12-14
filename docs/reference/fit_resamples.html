@@ -8,6 +8,13 @@
 
 <title>Fit multiple models via resampling — fit_resamples • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -39,6 +46,7 @@
 resamples. It does not perform any tuning (see tune_grid() and
 tune_bayes() for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -53,7 +61,15 @@ model+recipe or model+formula combination across many resamples." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-115082821-1');
+</script>
 
   </head>
 
@@ -140,7 +156,7 @@ model+recipe or model+formula combination across many resamples." />
     <div class="ref-description">
     <p><code>fit_resamples()</code> computes a set of performance metrics across one or more
 resamples. It does not perform any tuning (see <code><a href='tune_grid.html'>tune_grid()</a></code> and
-<code><a href='tune_bayes.html'>tune_bayes()</a></code> for that), and is instead used for fitting a single
+<code>tune_bayes()</code> for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples.</p>
     </div>
 
@@ -313,7 +329,7 @@ grid has a separate R object associated with it.</p>
 <span class='no'>spline_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
 #&gt; <span style='color: #555555;'># A tibble: 5 x 5</span><span>
 #&gt;   splits         id    .metrics         .notes           .predictions    
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [7 × 3]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [2 × 3]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [6 × 3]&gt;</span><span>
@@ -325,7 +341,7 @@ grid has a separate R object associated with it.</p>
 #&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard    3.11     5   0.168</div><div class='input'>
 </div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

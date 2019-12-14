@@ -8,6 +8,13 @@
 
 <title>Fit the best model to the training set — last_fit • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -38,6 +45,7 @@
 <meta property="og:description" content="last_fit() emulates the process where, after determining the best model,
 a final model is fit on the entire training set and is evaluated on the
 test set." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -52,7 +60,15 @@ test set." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-115082821-1');
+</script>
 
   </head>
 
@@ -209,7 +225,7 @@ set of metrics.</p></td>
 <span class='no'>spline_res</span></div><div class='output co'>#&gt; # # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
 #&gt; <span style='color: #555555;'># A tibble: 1 x 6</span><span>
 #&gt;   splits       id            .metrics      .notes       .predictions   .workflow
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #555555;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #555555;'>&lt;tibble [0 </span><span>… </span><span style='color: #555555;'>&lt;tibble [8 × </span><span>… </span><span style='color: #555555;'>&lt;workflo</span><span>…</div><div class='input'>
 <span class='co'># test set results</span>
 <span class='no'>spline_res</span>$<span class='no'>.metrics</span><span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 3</span><span>
@@ -218,7 +234,7 @@ set of metrics.</p></td>
 #&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard       5.74 
 #&gt; </span><span style='color: #555555;'>2</span><span> rsq     standard       0.503</div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

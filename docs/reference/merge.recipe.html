@@ -8,6 +8,13 @@
 
 <title>Merge parameter grid values into objects — merge.recipe • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -37,6 +44,7 @@
 <meta property="og:title" content="Merge parameter grid values into objects — merge.recipe" />
 <meta property="og:description" content="merge() can be used to easily update any of the arguments in a
 parsnip model or recipe." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -51,7 +59,15 @@ parsnip model or recipe." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-115082821-1');
+</script>
 
   </head>
 
@@ -219,7 +235,9 @@ names (or their annotations) in the object.</p></td>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dials</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: scales</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘scales’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:purrr’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    discard</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>    discard</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:recipes’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    yj_trans</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘dials’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:ggplot2’:</span>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    margin</span></div><div class='input'>
@@ -240,7 +258,7 @@ names (or their annotations) in the object.</p></td>
 #&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;spec[?]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;spec[?]&gt;</span><span></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

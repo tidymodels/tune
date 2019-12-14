@@ -8,6 +8,13 @@
 
 <title>Investigate best tuning parameters — show_best • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -36,6 +43,7 @@
 
 <meta property="og:title" content="Investigate best tuning parameters — show_best" />
 <meta property="og:description" content="show_best() displays the top sub-models and their performance estimates." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -50,7 +58,15 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-115082821-1');
+</script>
 
   </head>
 
@@ -138,7 +154,7 @@
     <p><code>show_best()</code> displays the top sub-models and their performance estimates.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>show_best</span>(<span class='no'>x</span>, <span class='no'>metric</span>, <span class='kw'>n_top</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+    <pre class="usage"><span class='fu'>show_best</span>(<span class='no'>x</span>, <span class='no'>metric</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>select_best</span>(<span class='no'>x</span>, <span class='no'>metric</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
@@ -151,7 +167,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code>tune_bayes()</code>.</p></td>
     </tr>
     <tr>
       <th>metric</th>
@@ -161,7 +177,7 @@ the models. (See
 more details). Not required if a single metric exists in <code>x</code>.</p></td>
     </tr>
     <tr>
-      <th>n_top</th>
+      <th>n</th>
       <td><p>An integer for the number of top results/rows to return.</p></td>
     </tr>
     <tr>
@@ -238,7 +254,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 #&gt; </span><span style='color: #555555;'>1</span><span>    33 triweight        0.511    11     5 rmse    standard   0.072</span><span style='text-decoration: underline;'>6</span><span>    10
 #&gt; </span><span style='color: #555555;'># … with 3 more variables: std_err </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, .best </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span style='color: #555555;'>, .loss </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
