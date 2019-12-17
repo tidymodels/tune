@@ -115,7 +115,7 @@ merger <- function(x, y, ...) {
   pset <- dials::parameters(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
     return(res)
   }
   grid_name <- colnames(y)
@@ -131,13 +131,13 @@ merger <- function(x, y, ...) {
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- tibble::tibble(x = map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
     return(res)
   }
 
   y %>%
     dplyr::mutate(
-      ..object = map(1:nrow(y), ~ updater(y[.x,], x, pset, step_ids, grid_name))
+      ..object = purrr::map(1:nrow(y), ~ updater(y[.x,], x, pset, step_ids, grid_name))
     ) %>%
     dplyr::select(x = ..object)
 }

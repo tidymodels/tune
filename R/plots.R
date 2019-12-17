@@ -106,7 +106,7 @@ plot_param_vs_iter <- function(x) {
   x <- estimate_tune_results(x)
   excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
   param_cols <- names(x)[!((names(x) %in% excl_cols))]
-  is_num <- map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
   num_param_cols <- param_cols[is_num]
   x <-
     x %>%

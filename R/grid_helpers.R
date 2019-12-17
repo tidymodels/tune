@@ -72,7 +72,7 @@ predict_model <- function(split, workflow, grid, metrics) {
       cbind(fixed_param, row.names = NULL)
 
     if (any(submod_col)) {
-      submod_length <- map_int(grid$.submodels[[1]], length)
+      submod_length <- purrr::map_int(grid$.submodels[[1]], length)
       has_submodels <- any(submod_length > 0)
 
       if (has_submodels) {

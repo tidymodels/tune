@@ -15,7 +15,7 @@ pred_type <- function(x) {
 
 metrics_info <- function(x) {
   metric_list <- rlang::env_get(environment(x), "fns")
-  metric_dir <- map_chr(metric_list, attr, "direction")
+  metric_dir <- purrr::map_chr(metric_list, attr, "direction")
   res <- tibble(
     .metric = names(metric_dir),
     direction = unname(metric_dir),

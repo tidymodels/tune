@@ -70,7 +70,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
   wrn <- res$signals
   if (length(wrn) > 0) {
-    wrn_msg <- map_chr(wrn, ~ .x$message)
+    wrn_msg <- purrr::map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
     wrn_msg <- paste0(loc, ": ", wrn_msg)
