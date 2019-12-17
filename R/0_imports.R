@@ -1,7 +1,6 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with
-#' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int map2_dfc
 #' @importFrom tibble tibble lst
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=

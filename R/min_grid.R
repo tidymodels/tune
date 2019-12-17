@@ -58,7 +58,7 @@ min_grid.model_spec <- function(x, grid, ...) {
 # Template for model results that do no have the sub-model feature
 blank_submodels <- function(grid) {
   grid %>%
-    dplyr::mutate(.submodels = map(1:nrow(grid), ~ list())) %>%
+    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), ~ list())) %>%
     dplyr::mutate_if(is.factor, as.character)
 }
 

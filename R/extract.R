@@ -11,15 +11,15 @@ extract_details <- function(object, extractor) {
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
 pulley <- function(resamples, res, col) {
-  if (all(map_lgl(res, inherits, "simpleError"))) {
+  if (all(purrr::map_lgl(res, inherits, "simpleError"))) {
     res <-
       resamples %>%
-      mutate(col = map(splits, ~ NULL)) %>%
+      mutate(col = purrr::map(splits, ~ NULL)) %>%
       setNames(c(names(resamples), col))
     return(res)
   }
 
-  all_null <- all(map_lgl(res, is.null))
+  all_null <- all(purrr::map_lgl(res, is.null))
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
@@ -28,7 +28,7 @@ pulley <- function(resamples, res, col) {
   if (nrow(pulled_vals)  == 0) {
     res <-
       resamples %>%
-      mutate(col = map(splits, ~ NULL)) %>%
+      mutate(col = purrr::map(splits, ~ NULL)) %>%
       setNames(c(names(resamples), col))
     return(res)
   }
@@ -46,8 +46,8 @@ pulley <- function(resamples, res, col) {
 }
 
 maybe_repair <- function(x) {
-  not_null <- !map_lgl(x, is.null)
-  is_tibb <- map_lgl(x, tibble::is_tibble)
+  not_null <- !purrr::map_lgl(x, is.null)
+  is_tibb <- purrr::map_lgl(x, tibble::is_tibble)
   ok <- not_null & is_tibb
   if (!any(ok)) {
     return(x)
@@ -63,7 +63,7 @@ maybe_repair <- function(x) {
     x
   }
 
-  x <- map(x, insert_val, y = template)
+  x <- purrr::map(x, insert_val, y = template)
   x
 }
 
@@ -99,8 +99,8 @@ ensure_tibble <- function(x) {
 }
 
 pull_notes <- function(resamples, res, control) {
-  notes <- map(res, ~ purrr::pluck(.x, ".notes"))
-  notes <- map(notes, ensure_tibble)
+  notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
+  notes <- purrr::map(notes, ensure_tibble)
   resamples$.notes <- notes
   resamples
 }
