@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.org/tidymodels/tune.svg?branch=master)](https://travis-ci.org/tidymodels/tune)
-[![R build status](https://github.com/tidymodels/tune/workflows/R/badge.svg)](https://github.com/tidymodels/tune/actions?workflow=R)
+[![R build status](https://github.com/tidymodels/tune/workflows/R/badge.svg)](https://github.com/tidymodels/tune/actions?workflow=R-full)
 [![Codecov test coverage](https://codecov.io/gh/tidymodels/tune/branch/master/graph/badge.svg)](https://codecov.io/gh/tidymodels/tune?branch=master)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
