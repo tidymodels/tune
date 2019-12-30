@@ -249,9 +249,10 @@ spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 spline_res <-
   tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
 spline_res
-}
+
 
 show_best(spline_res, metric = "rmse", maximize = FALSE)
+}
 
 # ------------------------------------------------------------------------------
 
