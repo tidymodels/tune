@@ -2,13 +2,6 @@ context("grid search")
 
 # ------------------------------------------------------------------------------
 
-library(dplyr)
-library(tidyr)
-library(recipes)
-library(dials)
-library(rsample)
-library(kernlab)
-
 source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
@@ -265,5 +258,15 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   expect_equal(
     unique(prediction[, c("deg_free", "cost")]),
     tibble(deg_free = 10, cost = 0.01)
+  )
+})
+
+
+test_that("ellipses with tune_grid", {
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  folds <- vfold_cv(mtcars)
+  expect_warning(
+    tune_grid(wflow, resamples = folds, grid = 3, something = "wrong"),
+    "The `...` are not used in this function but one or more objects"
   )
 })

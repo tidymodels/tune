@@ -4,6 +4,12 @@ library(recipes)
 library(parsnip)
 library(rsample)
 library(workflows)
+library(dplyr)
+library(tidyr)
+library(kernlab)
+library(dials)
+library(yardstick)
+
 data("Chicago", package = "dials")
 
 # ------------------------------------------------------------------------------

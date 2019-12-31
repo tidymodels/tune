@@ -1,8 +1,6 @@
 context("extracting predictions")
 
-library(purrr)
-library(tibble)
-library(rsample)
+source(test_path("../helper-objects.R"))
 
 check_predictions <- function(split, pred, tune_df) {
   assess <- rsample::assessment(split)

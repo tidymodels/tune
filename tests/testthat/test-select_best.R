@@ -4,18 +4,18 @@ context("`select_best()` and `show_best()`")
 
 load(test_path("rcv_results.RData"))
 load(test_path("knn_results.RData"))
-library(tibble)
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 
 
 test_that("select_best()", {
   expect_true(
-    is_tibble(select_best(rcv_results, metric = "rmse", maximize = FALSE))
+    tibble::is_tibble(select_best(rcv_results, metric = "rmse", maximize = FALSE))
     )
   expect_warning(
     expect_true(
-      is_tibble(select_best(rcv_results, metric = "rmse"))
+      tibble::is_tibble(select_best(rcv_results, metric = "rmse"))
     ),
     "Did you mean to maximize rmse?"
   )
@@ -82,11 +82,11 @@ test_that("show_best()", {
 
 test_that("one-std error rule", {
   expect_true(
-    is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
+    tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
   )
   expect_warning(
     expect_true(
-      is_tibble(select_by_one_std_err(rcv_results, metric = "rmse", deg_free))
+      tibble::is_tibble(select_by_one_std_err(rcv_results, metric = "rmse", deg_free))
     ),
     "Did you mean to maximize rmse?"
   )
@@ -125,11 +125,11 @@ test_that("one-std error rule", {
 
 test_that("percent loss", {
   expect_true(
-    is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
+    tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
   )
   expect_warning(
     expect_true(
-      is_tibble(select_by_pct_loss(rcv_results, metric = "rmse", deg_free))
+      tibble::is_tibble(select_by_pct_loss(rcv_results, metric = "rmse", deg_free))
     ),
     "Did you mean to maximize rmse?"
   )

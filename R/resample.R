@@ -72,6 +72,8 @@ fit_resamples.recipe <- function(object,
                                  metrics = NULL,
                                  control = control_resamples()) {
 
+  empty_ellipses(...)
+
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
   }
@@ -92,6 +94,8 @@ fit_resamples.formula <- function(formula,
                                   metrics = NULL,
                                   control = control_resamples()) {
 
+  empty_ellipses(...)
+
   if (is_missing(model) || !inherits(model, "model_spec")) {
     rlang::abort("`model` should be a parsnip model specification object.")
   }
@@ -110,6 +114,8 @@ fit_resamples.workflow <- function(object,
                                    ...,
                                    metrics = NULL,
                                    control = control_resamples()) {
+
+  empty_ellipses(...)
 
   resample_workflow(object, resamples, metrics, control)
 }
