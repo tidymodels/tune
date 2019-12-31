@@ -90,7 +90,7 @@ model+recipe or model+formula combination across many resamples." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@ model+recipe or model+formula combination across many resamples." />
     <div class="ref-description">
     <p><code>fit_resamples()</code> computes a set of performance metrics across one or more
 resamples. It does not perform any tuning (see <code><a href='tune_grid.html'>tune_grid()</a></code> and
-<code>tune_bayes()</code> for that), and is instead used for fitting a single
+<code><a href='tune_bayes.html'>tune_bayes()</a></code> for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples.</p>
     </div>
 
@@ -245,8 +245,8 @@ typical probability cutoff of 0.50), the <code>metrics</code> argument could be 
 <p>If no metric set is provided, one is created:</p><ul>
 <li><p>For regression models, the root mean squared error and coefficient
 of determination are computed.</p></li>
-<li><p>For classification, the log-likelihood and overall accuracy are
-computed.</p></li>
+<li><p>For classification, the area under the ROC curve and overall accuracy
+are computed.</p></li>
 </ul>
 
 <p>Note that the metrics also determine what type of predictions are estimated
@@ -308,8 +308,10 @@ grid has a separate R object associated with it.</p>
     <div class='dont-index'><p><code><a href='control_grid.html'>control_resamples()</a></code>, <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘recipes’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    step</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>6735</span>)

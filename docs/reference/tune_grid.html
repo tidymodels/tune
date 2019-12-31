@@ -89,7 +89,7 @@ recipe across one or more resamples of the data." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
         </div>
       </div>
     </div>
@@ -316,8 +316,8 @@ typical probability cutoff of 0.50), the <code>metrics</code> argument could be 
 <p>If no metric set is provided, one is created:</p><ul>
 <li><p>For regression models, the root mean squared error and coefficient
 of determination are computed.</p></li>
-<li><p>For classification, the log-likelihood and overall accuracy are
-computed.</p></li>
+<li><p>For classification, the area under the ROC curve and overall accuracy
+are computed.</p></li>
 </ul>
 
 <p>Note that the metrics also determine what type of predictions are estimated
@@ -406,27 +406,17 @@ grid has a separate R object associated with it.</p>
 <span class='co'># manually create a grid</span>
 <span class='no'>spline_grid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(<span class='kw'>disp</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>, <span class='kw'>wt</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>)
 
+<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
 <span class='co'># Warnings will occur from making spline terms on the holdout data that are</span>
 <span class='co'># extrapolations.</span>
 <span class='no'>spline_res</span> <span class='kw'>&lt;-</span>
   <span class='fu'>tune_grid</span>(<span class='no'>spline_rec</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>lin_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='no'>spline_grid</span>)
-<span class='no'>spline_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
-#&gt; <span style='color: #555555;'># A tibble: 5 x 4</span><span>
-#&gt;   splits         id    .metrics          .notes          
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
-#&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>4</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>5</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'>
-<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>spline_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 5 x 7</span><span>
-#&gt;    disp    wt .metric .estimator  mean     n std_err
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     3     2 rmse    standard    2.54     5   0.207
-#&gt; </span><span style='color: #555555;'>2</span><span>     3     3 rmse    standard    2.64     5   0.234
-#&gt; </span><span style='color: #555555;'>3</span><span>     4     3 rmse    standard    2.82     5   0.456
-#&gt; </span><span style='color: #555555;'>4</span><span>     4     2 rmse    standard    2.93     5   0.489
-#&gt; </span><span style='color: #555555;'>5</span><span>     4     4 rmse    standard    3.01     5   0.475</div><div class='input'>
+<span class='no'>spline_res</span>
+
+
+<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>spline_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+}
+
 <span class='co'># ------------------------------------------------------------------------------</span>
 
 <span class='co'># tune model parameters only (example requires the `kernlab` package)</span>
@@ -450,7 +440,7 @@ grid has a separate R object associated with it.</p>
 
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>svm_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>) +
   <span class='fu'>scale_x_log10</span>()
-}</div></span></pre>
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

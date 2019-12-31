@@ -12,3 +12,4 @@ issue_template.md
 ^codecov\.yml$
 ^.github$
 _cache$
+^\.github/workflows/R-CMD-check\.yaml$
