@@ -70,7 +70,7 @@ parameters.model_spec <- function(x, ...) {
       all_args,
       by = c("name", "source", "component")
     ) %>%
-    mutate(object = map(call_info, eval_call_info))
+    mutate(object = purrr::map(call_info, eval_call_info))
 
   dials::parameters_constr(
     res$name,
@@ -94,7 +94,7 @@ parameters.recipe <- function(x, ...) {
       all_args,
       by = c("name", "source", "component", "component_id")
     ) %>%
-    mutate(object = map(call_info, eval_call_info))
+    mutate(object = purrr::map(call_info, eval_call_info))
 
   dials::parameters_constr(
     res$name,

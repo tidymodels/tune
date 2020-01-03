@@ -50,7 +50,8 @@ grid_plot <- function(rec, mod, sfd = TRUE, ...) {
   data_folds <- vfold_cv(two_class_dat, v = 3)
   wflow <- workflow() %>% add_model(mod) %>% add_recipe(rec)
   pset <- parameters(wflow)
-  is_quant <- pset %>% pull(object) %>% map_lgl(inherits, "quant_param")
+  is_quant <- purrr::map_lgl(pull(pset, object), inherits, "quant_param")
+
   p <- nrow(pset)
   p_num <- sum( is_quant)
   p_cat <- sum(!is_quant)

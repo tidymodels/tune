@@ -181,13 +181,16 @@
 #' # manually create a grid
 #' spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 #'
+#' \dontrun{
 #' # Warnings will occur from making spline terms on the holdout data that are
 #' # extrapolations.
 #' spline_res <-
 #'   tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
 #' spline_res
 #'
+#'
 #' show_best(spline_res, metric = "rmse", maximize = FALSE)
+#' }
 #'
 #' # ------------------------------------------------------------------------------
 #'

@@ -194,7 +194,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
     quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
     quant_name <- pset$id[quant_param]
-    compl <- map_lgl(pset$object[quant_param],
+    compl <- purrr::map_lgl(pset$object[quant_param],
                      ~ !dials::is_unknown(.x$range$lower) &
                        !dials::is_unknown(.x$range$upper))
 
