@@ -1,8 +1,8 @@
-#' Fit the best model to the training set
+#' Fit the final best model to the training set and evaluate the test set
 #'
 #' [last_fit()] emulates the process where, after determining the best model,
-#' a final model is fit on the entire training set and is evaluated on the
-#' test set.
+#' the final fit on the entire training set is needed and is then evaluated on
+#' the test set.
 #'
 #' @param object A workflow, formula, or recipe. No tuning parameters are allowed.
 #'
@@ -16,7 +16,15 @@
 #' @param formula A formula specifying the terms of the model.
 #'
 #' @param ... Currently unused.
+#'
+#' @details
+#' This function is intended to be used after fitting a _variety of models_
+#'  and the final tuning parameters (if any) have been finalized. The next step
+#'  would be to fit using the entire training set and verify performance using
+#'  the test data.
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
+#' However, a list column called `.workflow` is also attached with the fitted
+#' model (and recipe, if any) that used the training set.
 #' @examples
 #' library(recipes)
 #' library(rsample)
@@ -24,10 +32,6 @@
 #'
 #' set.seed(6735)
 #' tr_te_split <- initial_split(mtcars)
-#'
-#' # After fitting a _variety of models_, you've settled on a linear model that
-#' # uses spline functions for a single variable. The next step is to fit the
-#' # model on the entire training set and verify performance using the test data.
 #'
 #' spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
 #'   step_ns(disp)
@@ -40,6 +44,16 @@
 #'
 #' # test set results
 #' spline_res$.metrics[[1]]
+#'
+#' # or use a workflow
+#'
+#' library(workflows)
+#' spline_wfl <-
+#'  workflow() %>%
+#'  add_recipe(spline_rec) %>%
+#'  add_model(lin_mod)
+#'
+#' last_fit(spline_wfl, split = tr_te_split)
 #' @export
 last_fit <- function(object, ...) {
   UseMethod("last_fit")

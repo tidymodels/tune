@@ -29,7 +29,7 @@ Imports:
     tidyr,
     GPfit,
     foreach,
-    parsnip (>= 0.0.4.9000),
+    parsnip (>= 0.0.4),
     workflows (>= 0.1.0),
     hardhat (>= 0.1.0)
 Suggests: 
@@ -44,5 +44,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2.9000
 Language: en-US
-Remotes:
-    tidymodels/parsnip

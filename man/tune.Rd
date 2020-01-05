@@ -21,6 +21,16 @@ A call object that echos the user input.
 tune()
 class(tune())
 tune("your name here")
+
+# How `tune()` is used in practice:
+
+library(parsnip)
+nearest_neighbor(
+  mode = "regression",
+  neighbors = tune("K"),
+  weight_func = tune(),
+  dist_power = tune()
+)
 }
 \seealso{
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}

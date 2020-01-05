@@ -3,7 +3,7 @@
 \name{control_grid}
 \alias{control_grid}
 \alias{control_resamples}
-\title{Control the grid search process}
+\title{Control aspects of the grid search process}
 \usage{
 control_grid(
   verbose = FALSE,
@@ -42,19 +42,27 @@ be saved for each model \emph{evaluated}.}
 loaded (by namespace) during parallel processing.}
 }
 \description{
-Control the grid search process
+Control aspects of the grid search process
 }
 \details{
 For \code{extract}, this function can be used to output the model object, the
 recipe (if used), or some components of either or both. When evaluated, the
-function's sole argument has a named list with elements \code{recipe} and \code{model}.
-If the formula method is used, the recipe element will be \code{NULL}.
+function's sole argument has a fitted workflow If the formula method is used,
+the recipe element will be \code{NULL}.
 
 The results of the \code{extract} function are added to a list column in the
 output called \code{.extracts}. Each element of this list is a tibble with tuning
 parameter column and a list column (also called \code{.extracts}) that contains
 the results of the function. If no extraction function is used, there is no
-\code{.extracts} column in the resulting object.
+\code{.extracts} column in the resulting object. See \code{\link[=tune_bayes]{tune_bayes()}} for more
+specific details.
+
+Note that for \code{\link[=collect_predictions]{collect_predictions()}}, it is possible that each row of the
+original data point might be represented multiple times per tuning
+parameter. For example, if the bootstrap or repeated cross-validation are
+used, there will be multiple rows since the sample data point has been
+evaluated multiple times. This may cause issues when merging the predictions
+with the original data.
 
 \code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
 used with \code{\link[=fit_resamples]{fit_resamples()}}.

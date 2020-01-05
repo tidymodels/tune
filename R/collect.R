@@ -1,13 +1,26 @@
-#' Obtain and format results produced by tuning
+#' Obtain and format results produced by tuning functions
 #'
-#' @param x The results of [tune_grid()] or [tune_bayes()]. For
-#' [collect_predictions()], the control option `save_pred = TRUE` should have
-#' been used.
+#' @param x The results of [tune_grid()], [tune_bayes()], [fit_resamples()],
+#'  or [last_fit()]. For [collect_predictions()], the control option `save_pred
+#'  = TRUE` should have been used.
 #' @param summarize A logical; should metrics be summarized over resamples
 #' (`TRUE`) or return the values for each individual resample. Note that, if `x`
 #' is created by [last_fit()], `summarize` has not effect.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
+#'
+#' For [collect_metrics()] and [collect_predictions()], there are columns for
+#' each tuning parameter (using the `id` from [tune()], if any).
+#'
+#' For [collect_predictions()], there are additional columns for the resampling
+#' identifier(s), columns for the predicted values (e.g., `.pred`,
+#' `.pred_class`, etc.), and a column for the outcome(s) using the original
+#' column name(s) in the data.
+#'
+#' [collect_metrics()] also has columns `.metric`, and `.estimator`.  When the
+#' results are summarized, there are columns for `mean`, `n`, and `std_err`.
+#' When not summarized, the additional columns for the resampling identifier(s)
+#' and `.estimate`.
 #' @examples
 #' data("example_ames_knn")
 #'
