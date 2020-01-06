@@ -24,13 +24,7 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-115082821-1');
-</script>
+<![endif]-->
 </head>
 <body>
     <div class="container template-article">
@@ -103,7 +97,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="optimizations_files/jquery-1.11.3/jquery.min.js"></script><script src="optimizations_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Optimizations and Parallel Processing</h1>
@@ -122,18 +116,18 @@
 <a href="#sub-model-speed-ups" class="anchor"></a>Sub-model speed-ups</h2>
 <p>For some types of models, such as boosted models or regularized models, the number of models that are actually <em>fit</em> can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This “sub-model trick” can greatly speed up the training time for many models (e.g. see <a href="https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost">this example</a> in the <code>caret</code> documentation).</p>
 <p>In order to know what models allow this, the <code>parsnip</code> package contains a <code>multi_predict()</code> function that enables this feature. Printing the S3 methods for it lists the possible models:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/utils/methods.html">methods</a></span>(<span class="st">"multi_predict"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/utils/methods.html">methods</a></span>(<span class="st">"multi_predict"</span>)</span></code></pre></div>
 <pre><code>## [1] multi_predict._C5.0*        multi_predict._earth*      
 ## [3] multi_predict._elnet*       multi_predict._lognet*     
 ## [5] multi_predict._multnet*     multi_predict._train.kknn* 
 ## [7] multi_predict._xgb.Booster* multi_predict.default*     
 ## see '?methods' for accessing help and source code</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># For xgboost, `trees` are cheep to evaluate: </span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">parsnip<span class="op">:::</span>multi_predict._xgb.Booster <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/formals.html">formals</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># For xgboost, `trees` are cheep to evaluate: </span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>parsnip<span class="op">:::</span>multi_predict._xgb.Booster <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/formals.html">formals</a></span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>()</span></code></pre></div>
 <pre><code>## [1] "object"   "new_data" "type"     "trees"    "..."</code></pre>
 <p>The same feature does not exist for recipes though.</p>
 </div>
@@ -142,22 +136,22 @@
 <a href="#expensive-pre-processing" class="anchor"></a>Expensive pre-processing</h2>
 <p>When tuning a recipe and a model, it makes sense to avoid <em>recreating</em> the recipe for each model.</p>
 <p>For example, suppose that <a href="https://en.wikipedia.org/wiki/Isomap">Isomap multi-dimensional scaling</a> is used to pre-process the data prior to tuning a K-nearest neighbor regression:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(Chicago)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">iso_rec &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="st">  </span><span class="kw">recipe</span>(ridership <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Chicago) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw">step_dummy</span>(<span class="kw">all_nominal</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw">step_isomap</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_terms =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>())</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">knn_mod &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="st">  </span><span class="kw">nearest_neighbor</span>(<span class="dt">neighbors =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>(), <span class="dt">weight_func =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kknn"</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="st">  </span><span class="kw">set_mode</span>(<span class="st">"regression"</span>)</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">grid &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(<span class="kw">num_terms</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>)), <span class="kw">neighbors</span>(), <span class="kw">weight_func</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="st">  </span><span class="kw">grid_regular</span>(<span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">7</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="st">  </span><span class="kw">arrange</span>(num_terms, neighbors, weight_func)</a>
-<a class="sourceLine" id="cb5-16" data-line-number="16">grid </a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(Chicago)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>iso_rec &lt;-<span class="st"> </span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="st">  </span><span class="kw">recipe</span>(ridership <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> Chicago) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="st">  </span><span class="kw">step_dummy</span>(<span class="kw">all_nominal</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="st">  </span><span class="kw">step_isomap</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_terms =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>())</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a>knn_mod &lt;-<span class="st"> </span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="st">  </span><span class="kw">nearest_neighbor</span>(<span class="dt">neighbors =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>(), <span class="dt">weight_func =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kknn"</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="st">  </span><span class="kw">set_mode</span>(<span class="st">"regression"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11"></a></span>
+<span id="cb5-12"><a href="#cb5-12"></a>grid &lt;-<span class="st"> </span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(<span class="kw">num_terms</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">9</span>)), <span class="kw">neighbors</span>(), <span class="kw">weight_func</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="st">  </span><span class="kw">grid_regular</span>(<span class="dt">levels =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">7</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="st">  </span><span class="kw">arrange</span>(num_terms, neighbors, weight_func)</span>
+<span id="cb5-16"><a href="#cb5-16"></a>grid </span></code></pre></div>
 <pre><code>## # A tibble: 350 x 3
 ##    num_terms neighbors weight_func 
 ##  *     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
@@ -206,42 +200,42 @@
 <p><code>tune</code> allows users, when possible, to use multiple cores or separate machines fit models. Currently, the package parallelizes the <em>resampling</em> loop of grid search<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
 <p>The <code>foreach</code> package is used to facilitate parallel computations. <code>foreach</code> can use a variety of technologies to share the computations and the choice of technology is determined by which <em>parallel backend</em> package is chosen (aka the <code>do{technology}</code> packages). For example, the <code>doMC</code> package uses the forking mechanism on *unix systems to split the computations across multiple cores. As of this writing, the backend packages are <code>doFuture</code>, <code>doMC</code>, <code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>, <code>doRNG</code>, <code>doSNOW</code>, and <code>doAzureParallel</code> (GitHub only). Of these, <code>doFuture</code> and <code>doParallel</code> are probably the most comprehensive and best supported.</p>
 <p>Registering a parallel backend is also somewhat dependent of the package. For <code>doParallel</code>, one could use:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">all_cores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>(<span class="dt">logical =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(doParallel)</a>
-<a class="sourceLine" id="cb9-4" data-line-number="4">cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(all_cores)</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="kw"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span>(cl)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>all_cores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>(<span class="dt">logical =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(doParallel)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>cl &lt;-<span class="st"> </span><span class="kw">makePSOCKcluster</span>(all_cores)</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="kw"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span>(cl)</span></code></pre></div>
 <p>Other options exist in <code>doParallel</code>.</p>
 <p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html">declare the method</a>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">all_cores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>(<span class="dt">logical =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(doFuture)</a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw">registerDoFuture</span>()</a>
-<a class="sourceLine" id="cb10-5" data-line-number="5">cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(all_cores)</a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="kw">plan</span>(cluster, <span class="dt">workers =</span> cl)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>all_cores &lt;-<span class="st"> </span>parallel<span class="op">::</span><span class="kw"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span>(<span class="dt">logical =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(doFuture)</span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="kw"><a href="https://rdrr.io/pkg/doFuture/man/registerDoFuture.html">registerDoFuture</a></span>()</span>
+<span id="cb10-5"><a href="#cb10-5"></a>cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(all_cores)</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="kw">plan</span>(cluster, <span class="dt">workers =</span> cl)</span></code></pre></div>
 <p>One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking <em>tends</em> to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the <code>pkg</code> option in <code><a href="../../reference/control_grid.html">control_grid()</a></code>.</p>
 <p>Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">num_pcs &lt;-<span class="st"> </span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">  </span><span class="co"># Bad since num_pcs might not be found by a worker process</span></a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> num_pcs)</a>
-<a class="sourceLine" id="cb11-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="st">  </span><span class="co"># Good since the value is injected into the object</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> <span class="op">!!</span>num_pcs)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>num_pcs &lt;-<span class="st"> </span><span class="dv">3</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="st">  </span><span class="co"># Bad since num_pcs might not be found by a worker process</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> num_pcs)</span>
+<span id="cb11-6"><a href="#cb11-6"></a></span>
+<span id="cb11-7"><a href="#cb11-7"></a><span class="kw">recipe</span>(Species <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> iris) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb11-8"><a href="#cb11-8"></a><span class="st">  </span><span class="co"># Good since the value is injected into the object</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> <span class="op">!!</span>num_pcs)</span></code></pre></div>
 <p>This issue is likely to occur if <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">dplyr::one_of()</a></code> is used as a sector.</p>
 <p>Also note that almost all of the logging provided by <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel. Again, this is dependent on the backend package and technology being used.</p>
 </div>
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>There will be more options in the future to control this since the current implementation doesn’t help for cases when many models are fit over a single resample of the data (such as a validation set).<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>There will be more options in the future to control this since the current implementation doesn’t help for cases when many models are fit over a single resample of the data (such as a validation set).<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">

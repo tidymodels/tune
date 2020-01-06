@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Obtain and format results produced by tuning — collect_predictions • tune</title>
+<title>Obtain and format results produced by tuning functions — collect_predictions • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Obtain and format results produced by tuning — collect_predictions" />
-<meta property="og:description" content="Obtain and format results produced by tuning" />
+<meta property="og:title" content="Obtain and format results produced by tuning functions — collect_predictions" />
+<meta property="og:description" content="Obtain and format results produced by tuning functions" />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -58,15 +58,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -145,13 +137,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Obtain and format results produced by tuning</h1>
+    <h1>Obtain and format results produced by tuning functions</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/collect.R'><code>R/collect.R</code></a></small>
     <div class="hidden name"><code>collect_predictions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Obtain and format results produced by tuning</p>
+    <p>Obtain and format results produced by tuning functions</p>
     </div>
 
     <pre class="usage"><span class='fu'>collect_predictions</span>(<span class='no'>x</span>)
@@ -163,9 +155,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>. For
-<code>collect_predictions()</code>, the control option <code>save_pred = TRUE</code> should have
-been used.</p></td>
+      <td><p>The results of <code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code>, <code><a href='fit_resamples.html'>fit_resamples()</a></code>,
+or <code><a href='last_fit.html'>last_fit()</a></code>. For <code>collect_predictions()</code>, the control option <code>save_pred = TRUE</code> should have been used.</p></td>
     </tr>
     <tr>
       <th>summarize</th>
@@ -179,6 +170,16 @@ is created by <code><a href='last_fit.html'>last_fit()</a></code>, <code>summari
 
     <p>A tibble. The column names depend on the results and the mode of the
 model.</p>
+<p>For <code>collect_metrics()</code> and <code>collect_predictions()</code>, there are columns for
+each tuning parameter (using the <code>id</code> from <code><a href='tune.html'>tune()</a></code>, if any).</p>
+<p>For <code>collect_predictions()</code>, there are additional columns for the resampling
+identifier(s), columns for the predicted values (e.g., <code>.pred</code>,
+<code>.pred_class</code>, etc.), and a column for the outcome(s) using the original
+column name(s) in the data.</p>
+<p><code>collect_metrics()</code> also has columns <code>.metric</code>, and <code>.estimator</code>.  When the
+results are summarized, there are columns for <code>mean</code>, <code>n</code>, and <code>std_err</code>.
+When not summarized, the additional columns for the resampling identifier(s)
+and <code>.estimate</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
@@ -248,7 +249,7 @@ model.</p>
 #&gt; </span><span style='color: #555555;'>10</span><span> Fold03  27.0    28  30.4
 #&gt; </span><span style='color: #555555;'># … with 22 more rows</span><span></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

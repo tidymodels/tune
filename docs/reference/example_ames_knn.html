@@ -58,15 +58,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -169,8 +161,7 @@
 housing data. A K-nearest neighbors model was used with a small
 predictor set that included natural spline transformations of
 the <code>Longitude</code> and <code>Latitude</code> predictors. The code used to
-generate these examples was:</p><pre>
-library(tidymodels)
+generate these examples was:</p><pre>library(tidymodels)
 library(tune)
 library(AmesHousing)
 
@@ -189,13 +180,13 @@ rs_splits &lt;- vfold_cv(ames_train, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec &lt;-
-  recipe(Sale_Price ~ ., data = ames_train) <!-- %&gt;% -->
-  step_log(Sale_Price, base = 10) <!-- %&gt;% -->
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) <!-- %&gt;% -->
-  step_other(Neighborhood, threshold = .1)  <!-- %&gt;% -->
-  step_dummy(all_nominal()) <!-- %&gt;% -->
-  step_zv(all_predictors()) <!-- %&gt;% -->
-  step_ns(Longitude, deg_free = tune("lon")) <!-- %&gt;% -->
+  recipe(Sale_Price ~ ., data = ames_train) %&gt;%
+  step_log(Sale_Price, base = 10) %&gt;%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %&gt;%
+  step_other(Neighborhood, threshold = .1)  %&gt;%
+  step_dummy(all_nominal()) %&gt;%
+  step_zv(all_predictors()) %&gt;%
+  step_ns(Longitude, deg_free = tune("lon")) %&gt;%
   step_ns(Latitude, deg_free = tune("lat"))
 
 knn_model &lt;-
@@ -204,21 +195,21 @@ knn_model &lt;-
     neighbors = tune("K"),
     weight_func = tune(),
     dist_power = tune()
-  ) <!-- %&gt;% -->
+  ) %&gt;%
   set_engine("kknn")
 
 ames_wflow &lt;-
-  workflow() <!-- %&gt;% -->
-  add_recipe(ames_rec) <!-- %&gt;% -->
+  workflow() %&gt;%
+  add_recipe(ames_rec) %&gt;%
   add_model(knn_model)
 
 ames_set &lt;-
-  parameters(ames_wflow) <!-- %&gt;% -->
+  parameters(ames_wflow) %&gt;%
   update(K = neighbors(c(1, 50)))
 
 set.seed(7014)
 ames_grid &lt;-
-  ames_set <!-- %&gt;% -->
+  ames_set %&gt;%
   grid_max_entropy(size = 10)
 
 ames_grid_search &lt;-
@@ -276,7 +267,7 @@ using some <code>rsample</code> functions on them will cause issues.</p>
 #&gt; </span><span style='color: #555555;'>10</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold10 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
 #&gt; </span><span style='color: #555555;'># … with 100 more rows</span><span></div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#value">Value</a></li>

@@ -24,13 +24,7 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-115082821-1');
-</script>
+<![endif]-->
 </head>
 <body>
     <div class="container template-article">
@@ -103,7 +97,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="acquisition_functions_files/jquery-1.11.3/jquery.min.js"></script><script src="acquisition_functions_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Acquisition Functions</h1>
@@ -136,7 +130,7 @@ EI(\theta; m_{opt}) &amp;= \delta(\theta) \Phi\left(\frac{\delta(\theta)}{\sigma
 <p>The value <span class="math inline">\(\delta(\theta)\)</span> measures how close we are (on average) to the current best performance value<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. When new candidate tuning parameters are needed, the space of <span class="math inline">\(\theta\)</span> is searched for the value that maximizes the expected improvement.</p>
 <p>Suppose a single parameter were being optimized and that parameter was represented using a log10 transformation. Using resampling, suppose the accuracy results for three points were evaluated:</p>
 <p><img src="figures/initial.svg"><!-- --></p>
-<p>In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel below, along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
+<p>In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel below, along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
 <p><img src="figures/iter_1.svg"><!-- --></p>
 <p>Notice that the interval width is large in regions far from observed data points.</p>
 <p>The bottom panel shows the expected improvement across the range of candidate values. Of the observed points, the expected improvement near the middle point has the largest improvement. This is because the first term in the equation above (with the <span class="math inline">\(\delta(\theta)\)</span> coefficient) is very large while the second term (with the coefficient <span class="math inline">\(\sigma(\theta)\)</span> is virtually zero. This focus on the mean portion will keep the search mostly in the region of the best performance.</p>
@@ -158,12 +152,12 @@ EI(\theta; m_{opt}) &amp;= \delta(\theta) \Phi\left(\frac{\delta(\theta)}{\sigma
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>This equation treats <span class="math inline">\(m_{opt}\)</span> as if it has no variation and no correlation to <span class="math inline">\(\mu(\theta)\)</span>. Neither of those are true so consider this a “first order approximation” instead of a highly accurate estimate.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>This equation treats <span class="math inline">\(m_{opt}\)</span> as if it has no variation and no correlation to <span class="math inline">\(\mu(\theta)\)</span>. Neither of those are true so consider this a “first order approximation” instead of a highly accurate estimate.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
       </div>
 

@@ -58,15 +58,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -175,9 +167,24 @@ the user wants a note associated with the parameter.</p></td>
     <div class='dont-index'><p><code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>tune</span>()</div><div class='output co'>#&gt; tune()</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='fu'>tune</span>())</div><div class='output co'>#&gt; [1] "call"</div><div class='input'><span class='fu'>tune</span>(<span class='st'>"your name here"</span>)</div><div class='output co'>#&gt; tune("your name here")</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>tune</span>()</div><div class='output co'>#&gt; tune()</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='fu'>tune</span>())</div><div class='output co'>#&gt; [1] "call"</div><div class='input'><span class='fu'>tune</span>(<span class='st'>"your name here"</span>)</div><div class='output co'>#&gt; tune("your name here")</div><div class='input'>
+<span class='co'># How `tune()` is used in practice:</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/nearest_neighbor.html'>nearest_neighbor</a></span>(
+  <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
+  <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'>tune</span>(<span class='st'>"K"</span>),
+  <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'>tune</span>(),
+  <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'>tune</span>()
+)</div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (regression)
+#&gt; 
+#&gt; Main Arguments:
+#&gt;   neighbors = tune("K")
+#&gt;   weight_func = tune()
+#&gt;   dist_power = tune()
+#&gt; </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

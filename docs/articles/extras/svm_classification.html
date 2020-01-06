@@ -24,13 +24,7 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-115082821-1');
-</script>
+<![endif]-->
 </head>
 <body>
     <div class="container template-article">
@@ -103,7 +97,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="svm_classification_files/jquery-1.11.3/jquery.min.js"></script><script src="svm_classification_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Classification Example</h1>
@@ -118,57 +112,57 @@
     
 <p>The cell segmentation data from <a href="http://www.biomedcentral.com/1471-2105/8/340">Hill, LaPan, Li and Haney (2007)</a> will be used to demonstrate tuning for a classification model. For these data, the predictors are aspects of cells (like size, shape, etc.). These cells are measured using image analysis and manual curation of the cells are used to determine if the boundaries of the cells were adequately captured. The outcome is either poorly segmented (<code>PS</code>) or well segmented (<code>WS</code>). The point of the analysis is to predict whether <em>future</em> cells were properly delineated. The predictors tend to be highly correlated.</p>
 <p>After first loading the data set, we remove indicators for the cell identifier, the original author’s training/test allocation, and two predictors that are scientifically unimportant. A new training/test split is created and a scheme for 10-fold cross-validation is also created.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(kernlab)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co"># Load data</span></a>
-<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">segmentationData &lt;-</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="st">  </span>segmentationData <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Case, <span class="op">-</span>Cell, <span class="op">-</span><span class="kw">contains</span>(<span class="st">"Centroid"</span>))</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8567</span>)</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13">tr_te_split &lt;-<span class="st"> </span><span class="kw">initial_split</span>(segmentationData)</a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">seg_train &lt;-<span class="st"> </span><span class="kw">training</span>(tr_te_split)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">seg_test  &lt;-<span class="st">  </span><span class="kw">testing</span>(tr_te_split)</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">5121</span>)</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">folds &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(seg_train, <span class="dt">repeats =</span> <span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tidymodels)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tune)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(kernlab)</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Load data</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/connections.html">url</a></span>(<span class="st">"http://bit.ly/seg-data"</span>))</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>segmentationData &lt;-</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="st">  </span>segmentationData <span class="op">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>Case, <span class="op">-</span>Cell, <span class="op">-</span><span class="kw">contains</span>(<span class="st">"Centroid"</span>))</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">8567</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>tr_te_split &lt;-<span class="st"> </span><span class="kw">initial_split</span>(segmentationData)</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a>seg_train &lt;-<span class="st"> </span><span class="kw">training</span>(tr_te_split)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>seg_test  &lt;-<span class="st">  </span><span class="kw">testing</span>(tr_te_split)</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">5121</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>folds &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(seg_train, <span class="dt">repeats =</span> <span class="dv">2</span>)</span></code></pre></div>
 <div id="defining-the-tuning-scheme" class="section level2">
 <h2 class="hasAnchor">
 <a href="#defining-the-tuning-scheme" class="anchor"></a>Defining the tuning scheme</h2>
 <p>Since the predictors are highly correlated, we can used a recipe to convert the original predictors to principal component scores. There is also slight class imbalance in these data; about 64% of the data are poorly segmented. To mitigate this, the data will be down-sampled at the end of the pre-processing such that the number of poorly and well segmented cells occur with equal frequency. A recipe will be used to process the data. However, the number of principal components will need to be tuned so that we have enough (but not too many) representations of the data.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">seg_pre_proc &lt;-</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="st">  </span><span class="kw">recipe</span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> seg_train) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="st">  </span><span class="kw">step_YeoJohnson</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="st">  </span><span class="kw">step_normalize</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="st">  </span><span class="kw">step_downsample</span>(Class)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>seg_pre_proc &lt;-</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="st">  </span><span class="kw">recipe</span>(Class <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> seg_train) <span class="op">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="st">  </span><span class="kw">step_YeoJohnson</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="st">  </span><span class="kw">step_normalize</span>(<span class="kw">all_predictors</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="st">  </span><span class="kw">step_pca</span>(<span class="kw">all_predictors</span>(), <span class="dt">num_comp =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="st">  </span><span class="kw">step_downsample</span>(Class)</span></code></pre></div>
 <p>Like the original analysis, a support vector machine will be used to model the data. A radial basis function (RBF) kernel will be used and its main parameter (<span class="math inline">\(\sigma\)</span>) will be tuned. Additionally, the main SVM parameter, the cost value, also needs optimization.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">svm_mod &lt;-</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span><span class="kw">svm_rbf</span>(<span class="dt">mode =</span> <span class="st">"classification"</span>, <span class="dt">cost =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>(), <span class="dt">rbf_sigma =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kernlab"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>svm_mod &lt;-</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="st">  </span><span class="kw">svm_rbf</span>(<span class="dt">mode =</span> <span class="st">"classification"</span>, <span class="dt">cost =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>(), <span class="dt">rbf_sigma =</span> <span class="kw"><a href="../../reference/tune.html">tune</a></span>()) <span class="op">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="st">  </span><span class="kw">set_engine</span>(<span class="st">"kernlab"</span>)</span></code></pre></div>
 <p>These two objects will be combined into a single object via the <code><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow()</a></code> function from the <code>workflows</code> package and this object will be used to fuel the optimization process.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(workflows) </a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">svm_wflow &lt;-</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(seg_pre_proc)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(workflows) </span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a>svm_wflow &lt;-</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="op">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(svm_mod) <span class="op">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(seg_pre_proc)</span></code></pre></div>
 <p>From this object, we can derive information about what parameters are slated to be tuned. A parameter set is derived:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(svm_wflow)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">svm_set</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Collection of 3 parameters for tuning</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt;         id parameter type object class</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt;       cost           cost    nparam[+]</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt;  rbf_sigma      rbf_sigma    nparam[+]</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt;   num_comp       num_comp    nparam[+]</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>svm_set &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(svm_wflow)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>svm_set</span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; Collection of 3 parameters for tuning</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#&gt;         id parameter type object class</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#&gt;       cost           cost    nparam[+]</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#&gt;  rbf_sigma      rbf_sigma    nparam[+]</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#&gt;   num_comp       num_comp    nparam[+]</span></span></code></pre></div>
 <p>The note about finalization occurs because the potential range for the number of principal components is determined by the number of predictors. For that reason, the parameter cannot be automatically initialized. A member of the parameter set can be modified using the <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> function. Let’s constrain the search to one to twenty components:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="dt">num_comp =</span> <span class="kw">num_comp</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>svm_set &lt;-<span class="st"> </span>svm_set <span class="op">%&gt;%</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="dt">num_comp =</span> <span class="kw">num_comp</span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">1</span>, <span class="dv">20</span>)))</span></code></pre></div>
 </div>
 <div id="sequential-tuning" class="section level2">
 <h2 class="hasAnchor">
@@ -181,436 +175,436 @@
 </ul>
 <p>The variance predicted by the Bayesian model is mostly spatial variation; the value will be large for candidate values that are not close to values that have already been evaluated. If the standard error multiplier is high, the search process will be more likely to avoid areas without candidate values in the vicinity.</p>
 <p>We’ll use another acquisition function, <em>expected improvement</em>, that calculates the determines which candidates likely to to be helpful relative to the current best results. This is the default acquisition function.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1291</span>)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">search_res &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../../reference/tune_bayes.html">tune_bayes</a></span>(</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">    svm_wflow, </a>
-<a class="sourceLine" id="cb7-5" data-line-number="5">    <span class="dt">resamples =</span> folds,</a>
-<a class="sourceLine" id="cb7-6" data-line-number="6">    <span class="co"># To use non-default parameter ranges</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7">    <span class="dt">param_info =</span> svm_set,</a>
-<a class="sourceLine" id="cb7-8" data-line-number="8">    <span class="co"># Generate five at semi-random to start</span></a>
-<a class="sourceLine" id="cb7-9" data-line-number="9">    <span class="dt">initial =</span> <span class="dv">3</span>,</a>
-<a class="sourceLine" id="cb7-10" data-line-number="10">    <span class="dt">iter =</span> <span class="dv">30</span>,</a>
-<a class="sourceLine" id="cb7-11" data-line-number="11">    <span class="co"># How to measure performance?</span></a>
-<a class="sourceLine" id="cb7-12" data-line-number="12">    <span class="dt">metrics =</span> <span class="kw">metric_set</span>(roc_auc),</a>
-<a class="sourceLine" id="cb7-13" data-line-number="13">    <span class="dt">control =</span> <span class="kw"><a href="../../reference/control_bayes.html">control_bayes</a></span>(<span class="dt">no_improve =</span> <span class="dv">20</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb7-14" data-line-number="14">  )</a>
-<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; &gt;  Generating a set of 3 initial parameter results</span></a>
-<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; ✓ Initialization complete</span></a>
-<a class="sourceLine" id="cb7-18" data-line-number="18"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; Optimizing roc_auc using the expected improvement</span></a>
-<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-21" data-line-number="21"><span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-22" data-line-number="22"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-23" data-line-number="23"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-24" data-line-number="24"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-25" data-line-number="25"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-26" data-line-number="26"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-27" data-line-number="27"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-28" data-line-number="28"><span class="co">#&gt; i cost=0.00382, rbf_sigma=5.23e-06, num_comp=3</span></a>
-<a class="sourceLine" id="cb7-29" data-line-number="29"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-30" data-line-number="30"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-31" data-line-number="31"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8521 (+/-0.00759)</span></a>
-<a class="sourceLine" id="cb7-32" data-line-number="32"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-33" data-line-number="33"><span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-34" data-line-number="34"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-35" data-line-number="35"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-36" data-line-number="36"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-37" data-line-number="37"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-38" data-line-number="38"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-39" data-line-number="39"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-40" data-line-number="40"><span class="co">#&gt; i cost=30.3, rbf_sigma=1.2e-10, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-41" data-line-number="41"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-42" data-line-number="42"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-43" data-line-number="43"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></a>
-<a class="sourceLine" id="cb7-44" data-line-number="44"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-45" data-line-number="45"><span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-46" data-line-number="46"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-47" data-line-number="47"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-48" data-line-number="48"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-49" data-line-number="49"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-50" data-line-number="50"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-51" data-line-number="51"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-52" data-line-number="52"><span class="co">#&gt; i cost=0.021, rbf_sigma=0.996, num_comp=3</span></a>
-<a class="sourceLine" id="cb7-53" data-line-number="53"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-54" data-line-number="54"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-55" data-line-number="55"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8562 (+/-0.00732)</span></a>
-<a class="sourceLine" id="cb7-56" data-line-number="56"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-57" data-line-number="57"><span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-58" data-line-number="58"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-59" data-line-number="59"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-60" data-line-number="60"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-61" data-line-number="61"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-62" data-line-number="62"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-63" data-line-number="63"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-64" data-line-number="64"><span class="co">#&gt; i cost=0.00168, rbf_sigma=1.67e-10, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-65" data-line-number="65"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-66" data-line-number="66"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-67" data-line-number="67"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7917 (+/-0.034)</span></a>
-<a class="sourceLine" id="cb7-68" data-line-number="68"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-69" data-line-number="69"><span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-70" data-line-number="70"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-71" data-line-number="71"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-72" data-line-number="72"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-73" data-line-number="73"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-74" data-line-number="74"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-75" data-line-number="75"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-76" data-line-number="76"><span class="co">#&gt; i cost=0.001, rbf_sigma=1.27e-09, num_comp=8</span></a>
-<a class="sourceLine" id="cb7-77" data-line-number="77"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-78" data-line-number="78"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-79" data-line-number="79"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7922 (+/-0.0341)</span></a>
-<a class="sourceLine" id="cb7-80" data-line-number="80"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-81" data-line-number="81"><span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-82" data-line-number="82"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-83" data-line-number="83"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-84" data-line-number="84"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-85" data-line-number="85"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-86" data-line-number="86"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-87" data-line-number="87"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-88" data-line-number="88"><span class="co">#&gt; i cost=0.35, rbf_sigma=2.28e-06, num_comp=3</span></a>
-<a class="sourceLine" id="cb7-89" data-line-number="89"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-90" data-line-number="90"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-91" data-line-number="91"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8521 (+/-0.00759)</span></a>
-<a class="sourceLine" id="cb7-92" data-line-number="92"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-93" data-line-number="93"><span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-94" data-line-number="94"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-95" data-line-number="95"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-96" data-line-number="96"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-97" data-line-number="97"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-98" data-line-number="98"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-99" data-line-number="99"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-100" data-line-number="100"><span class="co">#&gt; i cost=1.08, rbf_sigma=0.917, num_comp=19</span></a>
-<a class="sourceLine" id="cb7-101" data-line-number="101"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-102" data-line-number="102"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-103" data-line-number="103"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7479 (+/-0.0117)</span></a>
-<a class="sourceLine" id="cb7-104" data-line-number="104"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-105" data-line-number="105"><span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-106" data-line-number="106"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-107" data-line-number="107"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-108" data-line-number="108"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-109" data-line-number="109"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-110" data-line-number="110"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-111" data-line-number="111"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-112" data-line-number="112"><span class="co">#&gt; i cost=0.151, rbf_sigma=0.000304, num_comp=4</span></a>
-<a class="sourceLine" id="cb7-113" data-line-number="113"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-114" data-line-number="114"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-115" data-line-number="115"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.854 (+/-0.0075)</span></a>
-<a class="sourceLine" id="cb7-116" data-line-number="116"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-117" data-line-number="117"><span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-118" data-line-number="118"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-119" data-line-number="119"><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></a>
-<a class="sourceLine" id="cb7-120" data-line-number="120"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-121" data-line-number="121"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-122" data-line-number="122"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-123" data-line-number="123"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-124" data-line-number="124"><span class="co">#&gt; i cost=0.00103, rbf_sigma=0.533, num_comp=8</span></a>
-<a class="sourceLine" id="cb7-125" data-line-number="125"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-126" data-line-number="126"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-127" data-line-number="127"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.867 (+/-0.00835)</span></a>
-<a class="sourceLine" id="cb7-128" data-line-number="128"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-129" data-line-number="129"><span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-130" data-line-number="130"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-131" data-line-number="131"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-132" data-line-number="132"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-133" data-line-number="133"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-134" data-line-number="134"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-135" data-line-number="135"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-136" data-line-number="136"><span class="co">#&gt; i cost=2.81, rbf_sigma=1.01e-10, num_comp=18</span></a>
-<a class="sourceLine" id="cb7-137" data-line-number="137"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-138" data-line-number="138"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-139" data-line-number="139"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8609 (+/-0.00739)</span></a>
-<a class="sourceLine" id="cb7-140" data-line-number="140"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-141" data-line-number="141"><span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-142" data-line-number="142"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-143" data-line-number="143"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-144" data-line-number="144"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-145" data-line-number="145"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-146" data-line-number="146"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-147" data-line-number="147"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-148" data-line-number="148"><span class="co">#&gt; i cost=31.1, rbf_sigma=1.22e-06, num_comp=12</span></a>
-<a class="sourceLine" id="cb7-149" data-line-number="149"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-150" data-line-number="150"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-151" data-line-number="151"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8624 (+/-0.00742)</span></a>
-<a class="sourceLine" id="cb7-152" data-line-number="152"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-153" data-line-number="153"><span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-154" data-line-number="154"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-155" data-line-number="155"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-156" data-line-number="156"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-157" data-line-number="157"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-158" data-line-number="158"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-159" data-line-number="159"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-160" data-line-number="160"><span class="co">#&gt; i cost=29.9, rbf_sigma=0.878, num_comp=9</span></a>
-<a class="sourceLine" id="cb7-161" data-line-number="161"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-162" data-line-number="162"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-163" data-line-number="163"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8342 (+/-0.00723)</span></a>
-<a class="sourceLine" id="cb7-164" data-line-number="164"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-165" data-line-number="165"><span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-166" data-line-number="166"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-167" data-line-number="167"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-168" data-line-number="168"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-169" data-line-number="169"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-170" data-line-number="170"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-171" data-line-number="171"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-172" data-line-number="172"><span class="co">#&gt; i cost=10.9, rbf_sigma=1.18e-08, num_comp=14</span></a>
-<a class="sourceLine" id="cb7-173" data-line-number="173"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-174" data-line-number="174"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-175" data-line-number="175"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.862 (+/-0.00728)</span></a>
-<a class="sourceLine" id="cb7-176" data-line-number="176"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-177" data-line-number="177"><span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-178" data-line-number="178"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-179" data-line-number="179"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-180" data-line-number="180"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-181" data-line-number="181"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-182" data-line-number="182"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-183" data-line-number="183"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-184" data-line-number="184"><span class="co">#&gt; i cost=31.5, rbf_sigma=4.99e-09, num_comp=2</span></a>
-<a class="sourceLine" id="cb7-185" data-line-number="185"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-186" data-line-number="186"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-187" data-line-number="187"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7926 (+/-0.0108)</span></a>
-<a class="sourceLine" id="cb7-188" data-line-number="188"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-189" data-line-number="189"><span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-190" data-line-number="190"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-191" data-line-number="191"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-192" data-line-number="192"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-193" data-line-number="193"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-194" data-line-number="194"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-195" data-line-number="195"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-196" data-line-number="196"><span class="co">#&gt; i cost=0.0226, rbf_sigma=1.21e-10, num_comp=2</span></a>
-<a class="sourceLine" id="cb7-197" data-line-number="197"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-198" data-line-number="198"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-199" data-line-number="199"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7358 (+/-0.0288)</span></a>
-<a class="sourceLine" id="cb7-200" data-line-number="200"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-201" data-line-number="201"><span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-202" data-line-number="202"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-203" data-line-number="203"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-204" data-line-number="204"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-205" data-line-number="205"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-206" data-line-number="206"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-207" data-line-number="207"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-208" data-line-number="208"><span class="co">#&gt; i cost=0.00334, rbf_sigma=0.000403, num_comp=12</span></a>
-<a class="sourceLine" id="cb7-209" data-line-number="209"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-210" data-line-number="210"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-211" data-line-number="211"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8627 (+/-0.00744)</span></a>
-<a class="sourceLine" id="cb7-212" data-line-number="212"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-213" data-line-number="213"><span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-214" data-line-number="214"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-215" data-line-number="215"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-216" data-line-number="216"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-217" data-line-number="217"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-218" data-line-number="218"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-219" data-line-number="219"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-220" data-line-number="220"><span class="co">#&gt; i cost=0.00343, rbf_sigma=2.71e-06, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-221" data-line-number="221"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-222" data-line-number="222"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-223" data-line-number="223"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></a>
-<a class="sourceLine" id="cb7-224" data-line-number="224"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-225" data-line-number="225"><span class="co">#&gt; ── Iteration 18 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-226" data-line-number="226"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-227" data-line-number="227"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-228" data-line-number="228"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-229" data-line-number="229"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-230" data-line-number="230"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-231" data-line-number="231"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-232" data-line-number="232"><span class="co">#&gt; i cost=24.6, rbf_sigma=0.000327, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-233" data-line-number="233"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-234" data-line-number="234"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-235" data-line-number="235"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8648 (+/-0.0073)</span></a>
-<a class="sourceLine" id="cb7-236" data-line-number="236"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-237" data-line-number="237"><span class="co">#&gt; ── Iteration 19 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-238" data-line-number="238"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-239" data-line-number="239"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-240" data-line-number="240"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-241" data-line-number="241"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-242" data-line-number="242"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-243" data-line-number="243"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-244" data-line-number="244"><span class="co">#&gt; i cost=0.237, rbf_sigma=5.91e-05, num_comp=17</span></a>
-<a class="sourceLine" id="cb7-245" data-line-number="245"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-246" data-line-number="246"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-247" data-line-number="247"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8599 (+/-0.00741)</span></a>
-<a class="sourceLine" id="cb7-248" data-line-number="248"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-249" data-line-number="249"><span class="co">#&gt; ── Iteration 20 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-250" data-line-number="250"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-251" data-line-number="251"><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></a>
-<a class="sourceLine" id="cb7-252" data-line-number="252"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-253" data-line-number="253"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-254" data-line-number="254"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-255" data-line-number="255"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-256" data-line-number="256"><span class="co">#&gt; i cost=0.00972, rbf_sigma=0.0175, num_comp=9</span></a>
-<a class="sourceLine" id="cb7-257" data-line-number="257"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-258" data-line-number="258"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-259" data-line-number="259"><span class="co">#&gt; ♥ Newest results:    roc_auc=0.8685 (+/-0.00754)</span></a>
-<a class="sourceLine" id="cb7-260" data-line-number="260"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-261" data-line-number="261"><span class="co">#&gt; ── Iteration 21 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-262" data-line-number="262"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-263" data-line-number="263"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-264" data-line-number="264"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-265" data-line-number="265"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-266" data-line-number="266"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-267" data-line-number="267"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-268" data-line-number="268"><span class="co">#&gt; i cost=28.8, rbf_sigma=0.0263, num_comp=1</span></a>
-<a class="sourceLine" id="cb7-269" data-line-number="269"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-270" data-line-number="270"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-271" data-line-number="271"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7531 (+/-0.0111)</span></a>
-<a class="sourceLine" id="cb7-272" data-line-number="272"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-273" data-line-number="273"><span class="co">#&gt; ── Iteration 22 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-274" data-line-number="274"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-275" data-line-number="275"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-276" data-line-number="276"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-277" data-line-number="277"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-278" data-line-number="278"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-279" data-line-number="279"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-280" data-line-number="280"><span class="co">#&gt; i cost=8.03, rbf_sigma=4.24e-05, num_comp=8</span></a>
-<a class="sourceLine" id="cb7-281" data-line-number="281"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-282" data-line-number="282"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-283" data-line-number="283"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8653 (+/-0.00748)</span></a>
-<a class="sourceLine" id="cb7-284" data-line-number="284"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-285" data-line-number="285"><span class="co">#&gt; ── Iteration 23 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-286" data-line-number="286"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-287" data-line-number="287"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-288" data-line-number="288"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-289" data-line-number="289"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-290" data-line-number="290"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-291" data-line-number="291"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-292" data-line-number="292"><span class="co">#&gt; i cost=0.00211, rbf_sigma=2.23e-08, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-293" data-line-number="293"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-294" data-line-number="294"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-295" data-line-number="295"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></a>
-<a class="sourceLine" id="cb7-296" data-line-number="296"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-297" data-line-number="297"><span class="co">#&gt; ── Iteration 24 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-298" data-line-number="298"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-299" data-line-number="299"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-300" data-line-number="300"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-301" data-line-number="301"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-302" data-line-number="302"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-303" data-line-number="303"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-304" data-line-number="304"><span class="co">#&gt; i cost=0.00123, rbf_sigma=4.31e-08, num_comp=1</span></a>
-<a class="sourceLine" id="cb7-305" data-line-number="305"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-306" data-line-number="306"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-307" data-line-number="307"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7031 (+/-0.0255)</span></a>
-<a class="sourceLine" id="cb7-308" data-line-number="308"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-309" data-line-number="309"><span class="co">#&gt; ── Iteration 25 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-310" data-line-number="310"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-311" data-line-number="311"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-312" data-line-number="312"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-313" data-line-number="313"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-314" data-line-number="314"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-315" data-line-number="315"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-316" data-line-number="316"><span class="co">#&gt; i cost=0.00125, rbf_sigma=1.2e-07, num_comp=10</span></a>
-<a class="sourceLine" id="cb7-317" data-line-number="317"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-318" data-line-number="318"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-319" data-line-number="319"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8639 (+/-0.00743)</span></a>
-<a class="sourceLine" id="cb7-320" data-line-number="320"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-321" data-line-number="321"><span class="co">#&gt; ── Iteration 26 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-322" data-line-number="322"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-323" data-line-number="323"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-324" data-line-number="324"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-325" data-line-number="325"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-326" data-line-number="326"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-327" data-line-number="327"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-328" data-line-number="328"><span class="co">#&gt; i cost=0.00425, rbf_sigma=1.82e-07, num_comp=15</span></a>
-<a class="sourceLine" id="cb7-329" data-line-number="329"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-330" data-line-number="330"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-331" data-line-number="331"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8608 (+/-0.00706)</span></a>
-<a class="sourceLine" id="cb7-332" data-line-number="332"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-333" data-line-number="333"><span class="co">#&gt; ── Iteration 27 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-334" data-line-number="334"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-335" data-line-number="335"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-336" data-line-number="336"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-337" data-line-number="337"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-338" data-line-number="338"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-339" data-line-number="339"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-340" data-line-number="340"><span class="co">#&gt; i cost=14.5, rbf_sigma=1.31e-10, num_comp=10</span></a>
-<a class="sourceLine" id="cb7-341" data-line-number="341"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-342" data-line-number="342"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-343" data-line-number="343"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8639 (+/-0.00743)</span></a>
-<a class="sourceLine" id="cb7-344" data-line-number="344"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-345" data-line-number="345"><span class="co">#&gt; ── Iteration 28 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-346" data-line-number="346"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-347" data-line-number="347"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-348" data-line-number="348"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-349" data-line-number="349"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-350" data-line-number="350"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-351" data-line-number="351"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-352" data-line-number="352"><span class="co">#&gt; i cost=29.7, rbf_sigma=1.77e-10, num_comp=13</span></a>
-<a class="sourceLine" id="cb7-353" data-line-number="353"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-354" data-line-number="354"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-355" data-line-number="355"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8624 (+/-0.00734)</span></a>
-<a class="sourceLine" id="cb7-356" data-line-number="356"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-357" data-line-number="357"><span class="co">#&gt; ── Iteration 29 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-358" data-line-number="358"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-359" data-line-number="359"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-360" data-line-number="360"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-361" data-line-number="361"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-362" data-line-number="362"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-363" data-line-number="363"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-364" data-line-number="364"><span class="co">#&gt; i cost=19.1, rbf_sigma=2.54e-07, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-365" data-line-number="365"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-366" data-line-number="366"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-367" data-line-number="367"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></a>
-<a class="sourceLine" id="cb7-368" data-line-number="368"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-369" data-line-number="369"><span class="co">#&gt; ── Iteration 30 ─────────────────────────────────────────────────────────────────────────</span></a>
-<a class="sourceLine" id="cb7-370" data-line-number="370"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb7-371" data-line-number="371"><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></a>
-<a class="sourceLine" id="cb7-372" data-line-number="372"><span class="co">#&gt; i Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-373" data-line-number="373"><span class="co">#&gt; ✓ Gaussian process model</span></a>
-<a class="sourceLine" id="cb7-374" data-line-number="374"><span class="co">#&gt; i Generating 5000 candidates</span></a>
-<a class="sourceLine" id="cb7-375" data-line-number="375"><span class="co">#&gt; i Predicted candidates</span></a>
-<a class="sourceLine" id="cb7-376" data-line-number="376"><span class="co">#&gt; i cost=0.00107, rbf_sigma=0.00336, num_comp=20</span></a>
-<a class="sourceLine" id="cb7-377" data-line-number="377"><span class="co">#&gt; i Estimating performance</span></a>
-<a class="sourceLine" id="cb7-378" data-line-number="378"><span class="co">#&gt; ✓ Estimating performance</span></a>
-<a class="sourceLine" id="cb7-379" data-line-number="379"><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8662 (+/-0.00692)</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1291</span>)</span>
+<span id="cb7-2"><a href="#cb7-2"></a>search_res &lt;-<span class="st"> </span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span><span class="kw"><a href="../../reference/tune_bayes.html">tune_bayes</a></span>(</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    svm_wflow, </span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="dt">resamples =</span> folds,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co"># To use non-default parameter ranges</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="dt">param_info =</span> svm_set,</span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="co"># Generate five at semi-random to start</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a>    <span class="dt">initial =</span> <span class="dv">3</span>,</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="dt">iter =</span> <span class="dv">30</span>,</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="co"># How to measure performance?</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="dt">metrics =</span> <span class="kw">metric_set</span>(roc_auc),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="dt">control =</span> <span class="kw"><a href="../../reference/control_bayes.html">control_bayes</a></span>(<span class="dt">no_improve =</span> <span class="dv">20</span>, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-14"><a href="#cb7-14"></a>  )</span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; </span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; &gt;  Generating a set of 3 initial parameter results</span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; ✓ Initialization complete</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; </span></span>
+<span id="cb7-19"><a href="#cb7-19"></a><span class="co">#&gt; Optimizing roc_auc using the expected improvement</span></span>
+<span id="cb7-20"><a href="#cb7-20"></a><span class="co">#&gt; </span></span>
+<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="co">#&gt; </span></span>
+<span id="cb7-23"><a href="#cb7-23"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-25"><a href="#cb7-25"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="co">#&gt; i cost=0.00382, rbf_sigma=5.23e-06, num_comp=3</span></span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-30"><a href="#cb7-30"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-31"><a href="#cb7-31"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8521 (+/-0.00759)</span></span>
+<span id="cb7-32"><a href="#cb7-32"></a><span class="co">#&gt; </span></span>
+<span id="cb7-33"><a href="#cb7-33"></a><span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-34"><a href="#cb7-34"></a><span class="co">#&gt; </span></span>
+<span id="cb7-35"><a href="#cb7-35"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-36"><a href="#cb7-36"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-37"><a href="#cb7-37"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-39"><a href="#cb7-39"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-40"><a href="#cb7-40"></a><span class="co">#&gt; i cost=30.3, rbf_sigma=1.2e-10, num_comp=20</span></span>
+<span id="cb7-41"><a href="#cb7-41"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-42"><a href="#cb7-42"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-43"><a href="#cb7-43"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></span>
+<span id="cb7-44"><a href="#cb7-44"></a><span class="co">#&gt; </span></span>
+<span id="cb7-45"><a href="#cb7-45"></a><span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-46"><a href="#cb7-46"></a><span class="co">#&gt; </span></span>
+<span id="cb7-47"><a href="#cb7-47"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-48"><a href="#cb7-48"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-49"><a href="#cb7-49"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-50"><a href="#cb7-50"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-51"><a href="#cb7-51"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-52"><a href="#cb7-52"></a><span class="co">#&gt; i cost=0.021, rbf_sigma=0.996, num_comp=3</span></span>
+<span id="cb7-53"><a href="#cb7-53"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-54"><a href="#cb7-54"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-55"><a href="#cb7-55"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8562 (+/-0.00732)</span></span>
+<span id="cb7-56"><a href="#cb7-56"></a><span class="co">#&gt; </span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-58"><a href="#cb7-58"></a><span class="co">#&gt; </span></span>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-60"><a href="#cb7-60"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-61"><a href="#cb7-61"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-62"><a href="#cb7-62"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-63"><a href="#cb7-63"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-64"><a href="#cb7-64"></a><span class="co">#&gt; i cost=0.00168, rbf_sigma=1.67e-10, num_comp=20</span></span>
+<span id="cb7-65"><a href="#cb7-65"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-66"><a href="#cb7-66"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-67"><a href="#cb7-67"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7917 (+/-0.034)</span></span>
+<span id="cb7-68"><a href="#cb7-68"></a><span class="co">#&gt; </span></span>
+<span id="cb7-69"><a href="#cb7-69"></a><span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-70"><a href="#cb7-70"></a><span class="co">#&gt; </span></span>
+<span id="cb7-71"><a href="#cb7-71"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-72"><a href="#cb7-72"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-73"><a href="#cb7-73"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-74"><a href="#cb7-74"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-75"><a href="#cb7-75"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-76"><a href="#cb7-76"></a><span class="co">#&gt; i cost=0.001, rbf_sigma=1.27e-09, num_comp=8</span></span>
+<span id="cb7-77"><a href="#cb7-77"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-78"><a href="#cb7-78"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-79"><a href="#cb7-79"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7922 (+/-0.0341)</span></span>
+<span id="cb7-80"><a href="#cb7-80"></a><span class="co">#&gt; </span></span>
+<span id="cb7-81"><a href="#cb7-81"></a><span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-82"><a href="#cb7-82"></a><span class="co">#&gt; </span></span>
+<span id="cb7-83"><a href="#cb7-83"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-84"><a href="#cb7-84"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-85"><a href="#cb7-85"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-86"><a href="#cb7-86"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-87"><a href="#cb7-87"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-88"><a href="#cb7-88"></a><span class="co">#&gt; i cost=0.35, rbf_sigma=2.28e-06, num_comp=3</span></span>
+<span id="cb7-89"><a href="#cb7-89"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-90"><a href="#cb7-90"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-91"><a href="#cb7-91"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8521 (+/-0.00759)</span></span>
+<span id="cb7-92"><a href="#cb7-92"></a><span class="co">#&gt; </span></span>
+<span id="cb7-93"><a href="#cb7-93"></a><span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-94"><a href="#cb7-94"></a><span class="co">#&gt; </span></span>
+<span id="cb7-95"><a href="#cb7-95"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-96"><a href="#cb7-96"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-97"><a href="#cb7-97"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-98"><a href="#cb7-98"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-99"><a href="#cb7-99"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-100"><a href="#cb7-100"></a><span class="co">#&gt; i cost=1.08, rbf_sigma=0.917, num_comp=19</span></span>
+<span id="cb7-101"><a href="#cb7-101"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-102"><a href="#cb7-102"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-103"><a href="#cb7-103"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7479 (+/-0.0117)</span></span>
+<span id="cb7-104"><a href="#cb7-104"></a><span class="co">#&gt; </span></span>
+<span id="cb7-105"><a href="#cb7-105"></a><span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-106"><a href="#cb7-106"></a><span class="co">#&gt; </span></span>
+<span id="cb7-107"><a href="#cb7-107"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-108"><a href="#cb7-108"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-109"><a href="#cb7-109"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-110"><a href="#cb7-110"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-111"><a href="#cb7-111"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-112"><a href="#cb7-112"></a><span class="co">#&gt; i cost=0.151, rbf_sigma=0.000304, num_comp=4</span></span>
+<span id="cb7-113"><a href="#cb7-113"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-114"><a href="#cb7-114"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-115"><a href="#cb7-115"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.854 (+/-0.0075)</span></span>
+<span id="cb7-116"><a href="#cb7-116"></a><span class="co">#&gt; </span></span>
+<span id="cb7-117"><a href="#cb7-117"></a><span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-118"><a href="#cb7-118"></a><span class="co">#&gt; </span></span>
+<span id="cb7-119"><a href="#cb7-119"></a><span class="co">#&gt; i Current best:      roc_auc=0.8653 (@iter 0)</span></span>
+<span id="cb7-120"><a href="#cb7-120"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-121"><a href="#cb7-121"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-122"><a href="#cb7-122"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-123"><a href="#cb7-123"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-124"><a href="#cb7-124"></a><span class="co">#&gt; i cost=0.00103, rbf_sigma=0.533, num_comp=8</span></span>
+<span id="cb7-125"><a href="#cb7-125"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-126"><a href="#cb7-126"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-127"><a href="#cb7-127"></a><span class="co">#&gt; ♥ Newest results:    roc_auc=0.867 (+/-0.00835)</span></span>
+<span id="cb7-128"><a href="#cb7-128"></a><span class="co">#&gt; </span></span>
+<span id="cb7-129"><a href="#cb7-129"></a><span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-130"><a href="#cb7-130"></a><span class="co">#&gt; </span></span>
+<span id="cb7-131"><a href="#cb7-131"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-132"><a href="#cb7-132"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-133"><a href="#cb7-133"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-134"><a href="#cb7-134"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-135"><a href="#cb7-135"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-136"><a href="#cb7-136"></a><span class="co">#&gt; i cost=2.81, rbf_sigma=1.01e-10, num_comp=18</span></span>
+<span id="cb7-137"><a href="#cb7-137"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-138"><a href="#cb7-138"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-139"><a href="#cb7-139"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8609 (+/-0.00739)</span></span>
+<span id="cb7-140"><a href="#cb7-140"></a><span class="co">#&gt; </span></span>
+<span id="cb7-141"><a href="#cb7-141"></a><span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-142"><a href="#cb7-142"></a><span class="co">#&gt; </span></span>
+<span id="cb7-143"><a href="#cb7-143"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-144"><a href="#cb7-144"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-145"><a href="#cb7-145"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-146"><a href="#cb7-146"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-147"><a href="#cb7-147"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-148"><a href="#cb7-148"></a><span class="co">#&gt; i cost=31.1, rbf_sigma=1.22e-06, num_comp=12</span></span>
+<span id="cb7-149"><a href="#cb7-149"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-150"><a href="#cb7-150"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-151"><a href="#cb7-151"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8624 (+/-0.00742)</span></span>
+<span id="cb7-152"><a href="#cb7-152"></a><span class="co">#&gt; </span></span>
+<span id="cb7-153"><a href="#cb7-153"></a><span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-154"><a href="#cb7-154"></a><span class="co">#&gt; </span></span>
+<span id="cb7-155"><a href="#cb7-155"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-156"><a href="#cb7-156"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-157"><a href="#cb7-157"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-158"><a href="#cb7-158"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-159"><a href="#cb7-159"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-160"><a href="#cb7-160"></a><span class="co">#&gt; i cost=29.9, rbf_sigma=0.878, num_comp=9</span></span>
+<span id="cb7-161"><a href="#cb7-161"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-162"><a href="#cb7-162"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-163"><a href="#cb7-163"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8342 (+/-0.00723)</span></span>
+<span id="cb7-164"><a href="#cb7-164"></a><span class="co">#&gt; </span></span>
+<span id="cb7-165"><a href="#cb7-165"></a><span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-166"><a href="#cb7-166"></a><span class="co">#&gt; </span></span>
+<span id="cb7-167"><a href="#cb7-167"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-168"><a href="#cb7-168"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-169"><a href="#cb7-169"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-170"><a href="#cb7-170"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-171"><a href="#cb7-171"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-172"><a href="#cb7-172"></a><span class="co">#&gt; i cost=10.9, rbf_sigma=1.18e-08, num_comp=14</span></span>
+<span id="cb7-173"><a href="#cb7-173"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-174"><a href="#cb7-174"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-175"><a href="#cb7-175"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.862 (+/-0.00728)</span></span>
+<span id="cb7-176"><a href="#cb7-176"></a><span class="co">#&gt; </span></span>
+<span id="cb7-177"><a href="#cb7-177"></a><span class="co">#&gt; ── Iteration 14 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-178"><a href="#cb7-178"></a><span class="co">#&gt; </span></span>
+<span id="cb7-179"><a href="#cb7-179"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-180"><a href="#cb7-180"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-181"><a href="#cb7-181"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-182"><a href="#cb7-182"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-183"><a href="#cb7-183"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-184"><a href="#cb7-184"></a><span class="co">#&gt; i cost=31.5, rbf_sigma=4.99e-09, num_comp=2</span></span>
+<span id="cb7-185"><a href="#cb7-185"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-186"><a href="#cb7-186"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-187"><a href="#cb7-187"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7926 (+/-0.0108)</span></span>
+<span id="cb7-188"><a href="#cb7-188"></a><span class="co">#&gt; </span></span>
+<span id="cb7-189"><a href="#cb7-189"></a><span class="co">#&gt; ── Iteration 15 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-190"><a href="#cb7-190"></a><span class="co">#&gt; </span></span>
+<span id="cb7-191"><a href="#cb7-191"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-192"><a href="#cb7-192"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-193"><a href="#cb7-193"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-194"><a href="#cb7-194"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-195"><a href="#cb7-195"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-196"><a href="#cb7-196"></a><span class="co">#&gt; i cost=0.0226, rbf_sigma=1.21e-10, num_comp=2</span></span>
+<span id="cb7-197"><a href="#cb7-197"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-198"><a href="#cb7-198"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-199"><a href="#cb7-199"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7358 (+/-0.0288)</span></span>
+<span id="cb7-200"><a href="#cb7-200"></a><span class="co">#&gt; </span></span>
+<span id="cb7-201"><a href="#cb7-201"></a><span class="co">#&gt; ── Iteration 16 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-202"><a href="#cb7-202"></a><span class="co">#&gt; </span></span>
+<span id="cb7-203"><a href="#cb7-203"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-204"><a href="#cb7-204"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-205"><a href="#cb7-205"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-206"><a href="#cb7-206"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-207"><a href="#cb7-207"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-208"><a href="#cb7-208"></a><span class="co">#&gt; i cost=0.00334, rbf_sigma=0.000403, num_comp=12</span></span>
+<span id="cb7-209"><a href="#cb7-209"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-210"><a href="#cb7-210"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-211"><a href="#cb7-211"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8627 (+/-0.00744)</span></span>
+<span id="cb7-212"><a href="#cb7-212"></a><span class="co">#&gt; </span></span>
+<span id="cb7-213"><a href="#cb7-213"></a><span class="co">#&gt; ── Iteration 17 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-214"><a href="#cb7-214"></a><span class="co">#&gt; </span></span>
+<span id="cb7-215"><a href="#cb7-215"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-216"><a href="#cb7-216"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-217"><a href="#cb7-217"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-218"><a href="#cb7-218"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-219"><a href="#cb7-219"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-220"><a href="#cb7-220"></a><span class="co">#&gt; i cost=0.00343, rbf_sigma=2.71e-06, num_comp=20</span></span>
+<span id="cb7-221"><a href="#cb7-221"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-222"><a href="#cb7-222"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-223"><a href="#cb7-223"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></span>
+<span id="cb7-224"><a href="#cb7-224"></a><span class="co">#&gt; </span></span>
+<span id="cb7-225"><a href="#cb7-225"></a><span class="co">#&gt; ── Iteration 18 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-226"><a href="#cb7-226"></a><span class="co">#&gt; </span></span>
+<span id="cb7-227"><a href="#cb7-227"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-228"><a href="#cb7-228"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-229"><a href="#cb7-229"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-230"><a href="#cb7-230"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-231"><a href="#cb7-231"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-232"><a href="#cb7-232"></a><span class="co">#&gt; i cost=24.6, rbf_sigma=0.000327, num_comp=20</span></span>
+<span id="cb7-233"><a href="#cb7-233"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-234"><a href="#cb7-234"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-235"><a href="#cb7-235"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8648 (+/-0.0073)</span></span>
+<span id="cb7-236"><a href="#cb7-236"></a><span class="co">#&gt; </span></span>
+<span id="cb7-237"><a href="#cb7-237"></a><span class="co">#&gt; ── Iteration 19 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-238"><a href="#cb7-238"></a><span class="co">#&gt; </span></span>
+<span id="cb7-239"><a href="#cb7-239"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-240"><a href="#cb7-240"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-241"><a href="#cb7-241"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-242"><a href="#cb7-242"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-243"><a href="#cb7-243"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-244"><a href="#cb7-244"></a><span class="co">#&gt; i cost=0.237, rbf_sigma=5.91e-05, num_comp=17</span></span>
+<span id="cb7-245"><a href="#cb7-245"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-246"><a href="#cb7-246"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-247"><a href="#cb7-247"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8599 (+/-0.00741)</span></span>
+<span id="cb7-248"><a href="#cb7-248"></a><span class="co">#&gt; </span></span>
+<span id="cb7-249"><a href="#cb7-249"></a><span class="co">#&gt; ── Iteration 20 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-250"><a href="#cb7-250"></a><span class="co">#&gt; </span></span>
+<span id="cb7-251"><a href="#cb7-251"></a><span class="co">#&gt; i Current best:      roc_auc=0.867 (@iter 9)</span></span>
+<span id="cb7-252"><a href="#cb7-252"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-253"><a href="#cb7-253"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-254"><a href="#cb7-254"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-255"><a href="#cb7-255"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-256"><a href="#cb7-256"></a><span class="co">#&gt; i cost=0.00972, rbf_sigma=0.0175, num_comp=9</span></span>
+<span id="cb7-257"><a href="#cb7-257"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-258"><a href="#cb7-258"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-259"><a href="#cb7-259"></a><span class="co">#&gt; ♥ Newest results:    roc_auc=0.8685 (+/-0.00754)</span></span>
+<span id="cb7-260"><a href="#cb7-260"></a><span class="co">#&gt; </span></span>
+<span id="cb7-261"><a href="#cb7-261"></a><span class="co">#&gt; ── Iteration 21 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-262"><a href="#cb7-262"></a><span class="co">#&gt; </span></span>
+<span id="cb7-263"><a href="#cb7-263"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-264"><a href="#cb7-264"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-265"><a href="#cb7-265"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-266"><a href="#cb7-266"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-267"><a href="#cb7-267"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-268"><a href="#cb7-268"></a><span class="co">#&gt; i cost=28.8, rbf_sigma=0.0263, num_comp=1</span></span>
+<span id="cb7-269"><a href="#cb7-269"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-270"><a href="#cb7-270"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-271"><a href="#cb7-271"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7531 (+/-0.0111)</span></span>
+<span id="cb7-272"><a href="#cb7-272"></a><span class="co">#&gt; </span></span>
+<span id="cb7-273"><a href="#cb7-273"></a><span class="co">#&gt; ── Iteration 22 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-274"><a href="#cb7-274"></a><span class="co">#&gt; </span></span>
+<span id="cb7-275"><a href="#cb7-275"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-276"><a href="#cb7-276"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-277"><a href="#cb7-277"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-278"><a href="#cb7-278"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-279"><a href="#cb7-279"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-280"><a href="#cb7-280"></a><span class="co">#&gt; i cost=8.03, rbf_sigma=4.24e-05, num_comp=8</span></span>
+<span id="cb7-281"><a href="#cb7-281"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-282"><a href="#cb7-282"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-283"><a href="#cb7-283"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8653 (+/-0.00748)</span></span>
+<span id="cb7-284"><a href="#cb7-284"></a><span class="co">#&gt; </span></span>
+<span id="cb7-285"><a href="#cb7-285"></a><span class="co">#&gt; ── Iteration 23 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-286"><a href="#cb7-286"></a><span class="co">#&gt; </span></span>
+<span id="cb7-287"><a href="#cb7-287"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-288"><a href="#cb7-288"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-289"><a href="#cb7-289"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-290"><a href="#cb7-290"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-291"><a href="#cb7-291"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-292"><a href="#cb7-292"></a><span class="co">#&gt; i cost=0.00211, rbf_sigma=2.23e-08, num_comp=20</span></span>
+<span id="cb7-293"><a href="#cb7-293"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-294"><a href="#cb7-294"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-295"><a href="#cb7-295"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></span>
+<span id="cb7-296"><a href="#cb7-296"></a><span class="co">#&gt; </span></span>
+<span id="cb7-297"><a href="#cb7-297"></a><span class="co">#&gt; ── Iteration 24 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-298"><a href="#cb7-298"></a><span class="co">#&gt; </span></span>
+<span id="cb7-299"><a href="#cb7-299"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-300"><a href="#cb7-300"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-301"><a href="#cb7-301"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-302"><a href="#cb7-302"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-303"><a href="#cb7-303"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-304"><a href="#cb7-304"></a><span class="co">#&gt; i cost=0.00123, rbf_sigma=4.31e-08, num_comp=1</span></span>
+<span id="cb7-305"><a href="#cb7-305"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-306"><a href="#cb7-306"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-307"><a href="#cb7-307"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7031 (+/-0.0255)</span></span>
+<span id="cb7-308"><a href="#cb7-308"></a><span class="co">#&gt; </span></span>
+<span id="cb7-309"><a href="#cb7-309"></a><span class="co">#&gt; ── Iteration 25 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-310"><a href="#cb7-310"></a><span class="co">#&gt; </span></span>
+<span id="cb7-311"><a href="#cb7-311"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-312"><a href="#cb7-312"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-313"><a href="#cb7-313"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-314"><a href="#cb7-314"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-315"><a href="#cb7-315"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-316"><a href="#cb7-316"></a><span class="co">#&gt; i cost=0.00125, rbf_sigma=1.2e-07, num_comp=10</span></span>
+<span id="cb7-317"><a href="#cb7-317"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-318"><a href="#cb7-318"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-319"><a href="#cb7-319"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8639 (+/-0.00743)</span></span>
+<span id="cb7-320"><a href="#cb7-320"></a><span class="co">#&gt; </span></span>
+<span id="cb7-321"><a href="#cb7-321"></a><span class="co">#&gt; ── Iteration 26 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-322"><a href="#cb7-322"></a><span class="co">#&gt; </span></span>
+<span id="cb7-323"><a href="#cb7-323"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-324"><a href="#cb7-324"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-325"><a href="#cb7-325"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-326"><a href="#cb7-326"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-327"><a href="#cb7-327"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-328"><a href="#cb7-328"></a><span class="co">#&gt; i cost=0.00425, rbf_sigma=1.82e-07, num_comp=15</span></span>
+<span id="cb7-329"><a href="#cb7-329"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-330"><a href="#cb7-330"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-331"><a href="#cb7-331"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8608 (+/-0.00706)</span></span>
+<span id="cb7-332"><a href="#cb7-332"></a><span class="co">#&gt; </span></span>
+<span id="cb7-333"><a href="#cb7-333"></a><span class="co">#&gt; ── Iteration 27 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-334"><a href="#cb7-334"></a><span class="co">#&gt; </span></span>
+<span id="cb7-335"><a href="#cb7-335"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-336"><a href="#cb7-336"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-337"><a href="#cb7-337"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-338"><a href="#cb7-338"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-339"><a href="#cb7-339"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-340"><a href="#cb7-340"></a><span class="co">#&gt; i cost=14.5, rbf_sigma=1.31e-10, num_comp=10</span></span>
+<span id="cb7-341"><a href="#cb7-341"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-342"><a href="#cb7-342"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-343"><a href="#cb7-343"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8639 (+/-0.00743)</span></span>
+<span id="cb7-344"><a href="#cb7-344"></a><span class="co">#&gt; </span></span>
+<span id="cb7-345"><a href="#cb7-345"></a><span class="co">#&gt; ── Iteration 28 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-346"><a href="#cb7-346"></a><span class="co">#&gt; </span></span>
+<span id="cb7-347"><a href="#cb7-347"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-348"><a href="#cb7-348"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-349"><a href="#cb7-349"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-350"><a href="#cb7-350"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-351"><a href="#cb7-351"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-352"><a href="#cb7-352"></a><span class="co">#&gt; i cost=29.7, rbf_sigma=1.77e-10, num_comp=13</span></span>
+<span id="cb7-353"><a href="#cb7-353"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-354"><a href="#cb7-354"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-355"><a href="#cb7-355"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8624 (+/-0.00734)</span></span>
+<span id="cb7-356"><a href="#cb7-356"></a><span class="co">#&gt; </span></span>
+<span id="cb7-357"><a href="#cb7-357"></a><span class="co">#&gt; ── Iteration 29 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-358"><a href="#cb7-358"></a><span class="co">#&gt; </span></span>
+<span id="cb7-359"><a href="#cb7-359"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-360"><a href="#cb7-360"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-361"><a href="#cb7-361"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-362"><a href="#cb7-362"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-363"><a href="#cb7-363"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-364"><a href="#cb7-364"></a><span class="co">#&gt; i cost=19.1, rbf_sigma=2.54e-07, num_comp=20</span></span>
+<span id="cb7-365"><a href="#cb7-365"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-366"><a href="#cb7-366"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-367"><a href="#cb7-367"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.865 (+/-0.00694)</span></span>
+<span id="cb7-368"><a href="#cb7-368"></a><span class="co">#&gt; </span></span>
+<span id="cb7-369"><a href="#cb7-369"></a><span class="co">#&gt; ── Iteration 30 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-370"><a href="#cb7-370"></a><span class="co">#&gt; </span></span>
+<span id="cb7-371"><a href="#cb7-371"></a><span class="co">#&gt; i Current best:      roc_auc=0.8685 (@iter 20)</span></span>
+<span id="cb7-372"><a href="#cb7-372"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb7-373"><a href="#cb7-373"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb7-374"><a href="#cb7-374"></a><span class="co">#&gt; i Generating 5000 candidates</span></span>
+<span id="cb7-375"><a href="#cb7-375"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb7-376"><a href="#cb7-376"></a><span class="co">#&gt; i cost=0.00107, rbf_sigma=0.00336, num_comp=20</span></span>
+<span id="cb7-377"><a href="#cb7-377"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb7-378"><a href="#cb7-378"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb7-379"><a href="#cb7-379"></a><span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8662 (+/-0.00692)</span></span></code></pre></div>
 <p>The resulting tibble is a stacked set of rows of the <code>rsample</code> object with an additional column for the iteration number:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">search_res</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; #  10-fold cross-validation repeated 2 times </span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; # A tibble: 620 x 6</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt;    splits             id      id2    .metrics         .notes           .iter</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt;  * &lt;list&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;           &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt;  1 &lt;split [1.4K/152]&gt; Repeat1 Fold01 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt;  2 &lt;split [1.4K/152]&gt; Repeat1 Fold02 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt;  3 &lt;split [1.4K/152]&gt; Repeat1 Fold03 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt;  4 &lt;split [1.4K/152]&gt; Repeat1 Fold04 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#&gt;  5 &lt;split [1.4K/152]&gt; Repeat1 Fold05 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#&gt;  6 &lt;split [1.4K/151]&gt; Repeat1 Fold06 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#&gt;  7 &lt;split [1.4K/151]&gt; Repeat1 Fold07 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co">#&gt;  8 &lt;split [1.4K/151]&gt; Repeat1 Fold08 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#&gt;  9 &lt;split [1.4K/151]&gt; Repeat1 Fold09 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#&gt; 10 &lt;split [1.4K/151]&gt; Repeat1 Fold10 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></a>
-<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="co">#&gt; # … with 610 more rows</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>search_res</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; #  10-fold cross-validation repeated 2 times </span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; # A tibble: 620 x 6</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt;    splits             id      id2    .metrics         .notes           .iter</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt;  * &lt;list&gt;             &lt;chr&gt;   &lt;chr&gt;  &lt;list&gt;           &lt;list&gt;           &lt;dbl&gt;</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt;  1 &lt;split [1.4K/152]&gt; Repeat1 Fold01 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt;  2 &lt;split [1.4K/152]&gt; Repeat1 Fold02 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt;  3 &lt;split [1.4K/152]&gt; Repeat1 Fold03 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt;  4 &lt;split [1.4K/152]&gt; Repeat1 Fold04 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt;  5 &lt;split [1.4K/152]&gt; Repeat1 Fold05 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt;  6 &lt;split [1.4K/151]&gt; Repeat1 Fold06 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt;  7 &lt;split [1.4K/151]&gt; Repeat1 Fold07 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt;  8 &lt;split [1.4K/151]&gt; Repeat1 Fold08 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt;  9 &lt;split [1.4K/151]&gt; Repeat1 Fold09 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; 10 &lt;split [1.4K/151]&gt; Repeat1 Fold10 &lt;tibble [3 × 6]&gt; &lt;tibble [0 × 1]&gt;     0</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; # … with 610 more rows</span></span></code></pre></div>
 <p>As with grid search, we can summarize the results over resamples:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">estimates &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/collect_predictions.html">collect_metrics</a></span>(search_res) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(.iter)</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2">estimates</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; # A tibble: 33 x 9</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt;        cost rbf_sigma num_comp .iter .metric .estimator  mean     n std_err</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;  1  0.00849  1.24e- 2       15     0 roc_auc binary     0.865    20 0.00711</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt;  2  0.0945   2.38e- 9       13     0 roc_auc binary     0.862    20 0.00734</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt;  3 13.7      3.51e- 4        5     0 roc_auc binary     0.862    20 0.00714</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt;  4  0.00382  5.23e- 6        3     1 roc_auc binary     0.852    20 0.00759</span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt;  5 30.3      1.20e-10       20     2 roc_auc binary     0.865    20 0.00694</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;  6  0.0210   9.96e- 1        3     3 roc_auc binary     0.856    20 0.00732</span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;  7  0.00168  1.67e-10       20     4 roc_auc binary     0.792    20 0.0340 </span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;  8  0.00100  1.27e- 9        8     5 roc_auc binary     0.792    20 0.0341 </span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;  9  0.350    2.28e- 6        3     6 roc_auc binary     0.852    20 0.00759</span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt; 10  1.08     9.17e- 1       19     7 roc_auc binary     0.748    20 0.0117 </span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; # … with 23 more rows</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>estimates &lt;-<span class="st"> </span><span class="kw"><a href="../../reference/collect_predictions.html">collect_metrics</a></span>(search_res) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(.iter)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>estimates</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; # A tibble: 33 x 9</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt;        cost rbf_sigma num_comp .iter .metric .estimator  mean     n std_err</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt;  1  0.00849  1.24e- 2       15     0 roc_auc binary     0.865    20 0.00711</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt;  2  0.0945   2.38e- 9       13     0 roc_auc binary     0.862    20 0.00734</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt;  3 13.7      3.51e- 4        5     0 roc_auc binary     0.862    20 0.00714</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt;  4  0.00382  5.23e- 6        3     1 roc_auc binary     0.852    20 0.00759</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt;  5 30.3      1.20e-10       20     2 roc_auc binary     0.865    20 0.00694</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt;  6  0.0210   9.96e- 1        3     3 roc_auc binary     0.856    20 0.00732</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;  7  0.00168  1.67e-10       20     4 roc_auc binary     0.792    20 0.0340 </span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt;  8  0.00100  1.27e- 9        8     5 roc_auc binary     0.792    20 0.0341 </span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt;  9  0.350    2.28e- 6        3     6 roc_auc binary     0.852    20 0.00759</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt; 10  1.08     9.17e- 1       19     7 roc_auc binary     0.748    20 0.0117 </span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; # … with 23 more rows</span></span></code></pre></div>
 <p>The best performance of the initial set of candidate values was <code>AUC = 0.865</code>. The best results were achieved at iteration 20 with a corresponding AUC value of 0.869. The five best results were:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw"><a href="../../reference/show_best.html">show_best</a></span>(search_res)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; # A tibble: 5 x 9</span></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt;      cost rbf_sigma num_comp .iter .metric .estimator  mean     n std_err</span></a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; 1 0.00972 0.0175           9    20 roc_auc binary     0.869    20 0.00754</span></a>
-<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; 2 0.00103 0.533            8     9 roc_auc binary     0.867    20 0.00835</span></a>
-<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; 3 0.00107 0.00336         20    30 roc_auc binary     0.866    20 0.00692</span></a>
-<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; 4 0.00849 0.0124          15     0 roc_auc binary     0.865    20 0.00711</span></a>
-<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; 5 8.03    0.0000424        8    22 roc_auc binary     0.865    20 0.00748</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw"><a href="../../reference/show_best.html">show_best</a></span>(search_res)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt; # A tibble: 5 x 9</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt;      cost rbf_sigma num_comp .iter .metric .estimator  mean     n std_err</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt; 1 0.00972 0.0175           9    20 roc_auc binary     0.869    20 0.00754</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt; 2 0.00103 0.533            8     9 roc_auc binary     0.867    20 0.00835</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt; 3 0.00107 0.00336         20    30 roc_auc binary     0.866    20 0.00692</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; 4 0.00849 0.0124          15     0 roc_auc binary     0.865    20 0.00711</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; 5 8.03    0.0000424        8    22 roc_auc binary     0.865    20 0.00748</span></span></code></pre></div>
 <p>A plot of the search can be created via:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(search_res, <span class="dt">type =</span> <span class="st">"performance"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(search_res, <span class="dt">type =</span> <span class="st">"performance"</span>)</span></code></pre></div>
 <p><img src="svm_classification_files/figure-html/bo-plot-1.png" width="768"></p>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
         <div id="tocnav">
       <h2 class="hasAnchor">

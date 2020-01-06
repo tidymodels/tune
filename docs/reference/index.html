@@ -57,15 +57,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -191,7 +183,7 @@
         <td>
           <p><code><a href="last_fit.html">last_fit()</a></code> </p>
         </td>
-        <td><p>Fit the best model to the training set</p></td>
+        <td><p>Fit the final best model to the training set and evaluate the test set</p></td>
       </tr><tr>
         
         <td>
@@ -203,19 +195,19 @@
         <td>
           <p><code><a href="control_bayes.html">control_bayes()</a></code> </p>
         </td>
-        <td><p>Control the Bayesian search process</p></td>
+        <td><p>Control aspects of the Bayesian search process</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="control_grid.html">control_grid()</a></code> <code><a href="control_grid.html">control_resamples()</a></code> </p>
         </td>
-        <td><p>Control the grid search process</p></td>
+        <td><p>Control aspects of the grid search process</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="autoplot.tune_results.html">autoplot(<i>&lt;tune_results&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Plot search results</p></td>
+        <td><p>Plot tuning search results</p></td>
       </tr><tr>
         
         <td>
@@ -227,7 +219,7 @@
         <td>
           <p><code><a href="collect_predictions.html">collect_predictions()</a></code> <code><a href="collect_predictions.html">collect_metrics()</a></code> </p>
         </td>
-        <td><p>Obtain and format results produced by tuning</p></td>
+        <td><p>Obtain and format results produced by tuning functions</p></td>
       </tr><tr>
         
         <td>
@@ -283,7 +275,7 @@
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#section-user-facing-functions">User-Facing Functions</a></li>

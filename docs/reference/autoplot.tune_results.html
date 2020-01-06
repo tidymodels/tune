@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot search results — autoplot.tune_results • tune</title>
+<title>Plot tuning search results — autoplot.tune_results • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Plot search results — autoplot.tune_results" />
-<meta property="og:description" content="Plot search results" />
+<meta property="og:title" content="Plot tuning search results — autoplot.tune_results" />
+<meta property="og:description" content="Plot tuning search results" />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -58,15 +58,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -145,13 +137,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot search results</h1>
+    <h1>Plot tuning search results</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
     <div class="hidden name"><code>autoplot.tune_results.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot search results</p>
+    <p>Plot tuning search results</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for tune_results</span>
@@ -168,7 +160,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A tibble of results form <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <td><p>A tibble of results from <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -179,7 +171,8 @@ latter two choices are only used for <code><a href='tune_bayes.html'>tune_bayes(
     </tr>
     <tr>
       <th>metric</th>
-      <td><p>A character vector or <code>NULL</code> for which outcome to plot.</p></td>
+      <td><p>A character vector or <code>NULL</code> for which metric to plot. By
+default, all metrics will be shown via facets.</p></td>
     </tr>
     <tr>
       <th>width</th>
@@ -221,7 +214,7 @@ can be used.</p>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"performance"</span>)</div><div class='img'><img src='autoplot.tune_results-4.png' alt='' width='768' height='552' /></div><div class='input'>
 </div></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>

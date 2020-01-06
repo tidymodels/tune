@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Control the Bayesian search process — control_bayes • tune</title>
+<title>Control aspects of the Bayesian search process — control_bayes • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -41,8 +41,8 @@
 
 
 
-<meta property="og:title" content="Control the Bayesian search process — control_bayes" />
-<meta property="og:description" content="Control the Bayesian search process" />
+<meta property="og:title" content="Control aspects of the Bayesian search process — control_bayes" />
+<meta property="og:description" content="Control aspects of the Bayesian search process" />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -58,15 +58,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -145,13 +137,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Control the Bayesian search process</h1>
+    <h1>Control aspects of the Bayesian search process</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/control.R'><code>R/control.R</code></a></small>
     <div class="hidden name"><code>control_bayes.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Control the Bayesian search process</p>
+    <p>Control aspects of the Bayesian search process</p>
     </div>
 
     <pre class="usage"><span class='fu'>control_bayes</span>(
@@ -171,7 +163,10 @@
     <tr>
       <th>verbose</th>
       <td><p>A logical for logging results as they are generated. Despite
-this argument, warnings and errors are always shown.</p></td>
+this argument, warnings and errors are always shown. If using a dark IDE
+theme, some logging messages might be hard to see. If this is the case,
+try setting the <code>tidymodels.dark</code> option with
+<code><a href='https://rdrr.io/r/base/options.html'>options(tidymodels.dark = TRUE)</a></code> to print lighter colors.</p></td>
     </tr>
     <tr>
       <th>no_improve</th>
@@ -181,10 +176,9 @@ better results.</p></td>
     <tr>
       <th>uncertain</th>
       <td><p>The number of iterations with no improvement before an
-uncertainty sample is created where a sample with high predicted variance
-is chosen. The iteration counter is reset after each uncertainty sample.
-For example, if <code>uncertain = 10</code>, this condition is triggered every 10
-samples with no improvement.</p></td>
+uncertainty sample is created where a sample with high predicted variance is
+chosen (i.e., in a region that has not yet been explored). The iteration
+counter is reset after each uncertainty sample. For example, if <code>uncertain = 10</code>, this condition is triggered every 10 samples with no improvement.</p></td>
     </tr>
     <tr>
       <th>seed</th>
@@ -192,15 +186,14 @@ samples with no improvement.</p></td>
     </tr>
     <tr>
       <th>extract</th>
-      <td><p>An optional function to collect any information from the model
-or other objects. See <code><a href='control_grid.html'>control_grid()</a></code> for details. Note that if initial
-results were already generated using <code><a href='tune_grid.html'>tune_grid()</a></code>, care must be taken if
-the Bayesian search has a different extraction function.</p></td>
+      <td><p>An optional function with at least one argument (or <code>NULL</code>)
+that can be used to retain arbitrary objects from the model fit object,
+recipe, or other elements of the workflow.</p></td>
     </tr>
     <tr>
       <th>save_pred</th>
-      <td><p>A logical to save the out-of-sample predictions from each
-resample and each parameter combination. See <code><a href='control_grid.html'>control_grid()</a></code> for details.</p></td>
+      <td><p>A logical for whether the out-of-sample predictions should
+be saved for each model <em>evaluated</em>.</p></td>
     </tr>
     <tr>
       <th>time_limit</th>
@@ -217,12 +210,31 @@ loaded (by namespace) during parallel processing.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For <code>extract</code>, this function can be used to output the model object, the
+recipe (if used), or some components of either or both. When evaluated, the
+function's sole argument has a fitted workflow If the formula method is used,
+the recipe element will be <code>NULL</code>.</p>
+<p>The results of the <code>extract</code> function are added to a list column in the
+output called <code>.extracts</code>. Each element of this list is a tibble with tuning
+parameter column and a list column (also called <code>.extracts</code>) that contains
+the results of the function. If no extraction function is used, there is no
+<code>.extracts</code> column in the resulting object. See <code><a href='tune_bayes.html'>tune_bayes()</a></code> for more
+specific details.</p>
+<p>Note that for <code><a href='collect_predictions.html'>collect_predictions()</a></code>, it is possible that each row of the
+original data point might be represented multiple times per tuning
+parameter. For example, if the bootstrap or repeated cross-validation are
+used, there will be multiple rows since the sample data point has been
+evaluated multiple times. This may cause issues when merging the predictions
+with the original data.</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#details">Details</a></li>
     </ul>
 
   </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit the best model to the training set — last_fit • tune</title>
+<title>Fit the final best model to the training set and evaluate the test set — last_fit • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -41,10 +41,10 @@
 
 
 
-<meta property="og:title" content="Fit the best model to the training set — last_fit" />
+<meta property="og:title" content="Fit the final best model to the training set and evaluate the test set — last_fit" />
 <meta property="og:description" content="last_fit() emulates the process where, after determining the best model,
-a final model is fit on the entire training set and is evaluated on the
-test set." />
+the final fit on the entire training set is needed and is then evaluated on
+the test set." />
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -60,15 +60,7 @@ test set." />
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-115082821-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-115082821-1');
-</script>
 
   </head>
 
@@ -147,15 +139,15 @@ test set." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit the best model to the training set</h1>
+    <h1>Fit the final best model to the training set and evaluate the test set</h1>
     <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/last_fit.R'><code>R/last_fit.R</code></a></small>
     <div class="hidden name"><code>last_fit.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p><code>last_fit()</code> emulates the process where, after determining the best model,
-a final model is fit on the entire training set and is evaluated on the
-test set.</p>
+the final fit on the entire training set is needed and is then evaluated on
+the test set.</p>
     </div>
 
     <pre class="usage"><span class='fu'>last_fit</span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -201,7 +193,15 @@ set of metrics.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single row tibble that emulates the structure of <code><a href='fit_resamples.html'>fit_resamples()</a></code>.</p>
+    <p>A single row tibble that emulates the structure of <code><a href='fit_resamples.html'>fit_resamples()</a></code>.
+However, a list column called <code>.workflow</code> is also attached with the fitted
+model (and recipe, if any) that used the training set.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is intended to be used after fitting a <em>variety of models</em>
+and the final tuning parameters (if any) have been finalized. The next step
+would be to fit using the entire training set and verify performance using
+the test data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
@@ -210,10 +210,6 @@ set of metrics.</p></td>
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>6735</span>)
 <span class='no'>tr_te_split</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/initial_split.html'>initial_split</a></span>(<span class='no'>mtcars</span>)
-
-<span class='co'># After fitting a _variety of models_, you've settled on a linear model that</span>
-<span class='co'># uses spline functions for a single variable. The next step is to fit the</span>
-<span class='co'># model on the entire training set and verify performance using the test data.</span>
 
 <span class='no'>spline_rec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>)
@@ -232,13 +228,27 @@ set of metrics.</p></td>
 #&gt;   .metric .estimator .estimate
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard       5.74 
-#&gt; </span><span style='color: #555555;'>2</span><span> rsq     standard       0.503</div></span></pre>
+#&gt; </span><span style='color: #555555;'>2</span><span> rsq     standard       0.503</div><div class='input'>
+<span class='co'># or use a workflow</span>
+
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>workflows</span>)
+<span class='no'>spline_wfl</span> <span class='kw'>&lt;-</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflow</a></span>() <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/workflows/man/add_recipe.html'>add_recipe</a></span>(<span class='no'>spline_rec</span>) <span class='kw'>%&gt;%</span>
+ <span class='fu'><a href='https://rdrr.io/pkg/workflows/man/add_model.html'>add_model</a></span>(<span class='no'>lin_mod</span>)
+
+<span class='fu'>last_fit</span>(<span class='no'>spline_wfl</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)</div><div class='output co'>#&gt; # # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
+#&gt; </span><span style='color: #555555;'># A tibble: 1 x 6</span><span>
+#&gt;   splits       id            .metrics      .notes       .predictions   .workflow
+#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #555555;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #555555;'>&lt;tibble [0 </span><span>… </span><span style='color: #555555;'>&lt;tibble [8 × </span><span>… </span><span style='color: #555555;'>&lt;workflo</span><span>…</div></span></pre>
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#details">Details</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

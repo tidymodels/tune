@@ -20,6 +20,7 @@ library(tune)
 library(workflows)
 library(textrecipes)
 library(textfeatures)
+library(modeldata)
 library(doMC)
 registerDoMC(cores = 10)
 
@@ -42,6 +43,7 @@ There is a column for the product, a column for the text of the review, and a fa
 ```{r data}
 library(tidymodels)
 library(tune)
+library(modeldata)
 
 data("small_fine_foods")
 training_data
