@@ -2,7 +2,6 @@ context("merge grid values into objects")
 
 # ------------------------------------------------------------------------------
 
-library(rlang)
 source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
@@ -112,11 +111,11 @@ test_that('model spec merges', {
   for (i in 1:nrow(bst_grid)) {
     expect_equal(
       bst_updated$x[[i]]$args$trees,
-      as_quosure(bst_grid[["funky name \n"]][[i]], empty_env())
+      rlang::as_quosure(bst_grid[["funky name \n"]][[i]], empty_env())
     )
     expect_equal(
       bst_updated$x[[i]]$eng_args$rules,
-      as_quosure(bst_grid$rules[[i]], empty_env())
+      rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
 
@@ -135,7 +134,7 @@ test_that('partially model spec merge', {
     )
     expect_equal(
       bst_updated$x[[i]]$eng_args$rules,
-      as_quosure(bst_grid$rules[[i]], empty_env())
+      rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
 

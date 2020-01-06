@@ -10,6 +10,15 @@
 #' tune()
 #' class(tune())
 #' tune("your name here")
+#'
+#' # How `tune()` is used in practice:
+#'
+#' library(parsnip)
+#' nearest_neighbor(
+#'   neighbors = tune("K"),
+#'   weight_func = tune(),
+#'   dist_power = tune()
+#' )
 #' @seealso [tune_grid()], [tune_bayes()]
 #' @export
 tune <- function(id = "") {

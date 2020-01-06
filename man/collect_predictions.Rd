@@ -3,16 +3,15 @@
 \name{collect_predictions}
 \alias{collect_predictions}
 \alias{collect_metrics}
-\title{Obtain and format results produced by tuning}
+\title{Obtain and format results produced by tuning functions}
 \usage{
 collect_predictions(x)
 
 collect_metrics(x, summarize = TRUE)
 }
 \arguments{
-\item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}. For
-\code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have
-been used.}
+\item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
+or \code{\link[=last_fit]{last_fit()}}. For \code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have been used.}
 
 \item{summarize}{A logical; should metrics be summarized over resamples
 (\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
@@ -21,9 +20,22 @@ is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has not effe
 \value{
 A tibble. The column names depend on the results and the mode of the
 model.
+
+For \code{\link[=collect_metrics]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, there are columns for
+each tuning parameter (using the \code{id} from \code{\link[=tune]{tune()}}, if any).
+
+For \code{\link[=collect_predictions]{collect_predictions()}}, there are additional columns for the resampling
+identifier(s), columns for the predicted values (e.g., \code{.pred},
+\code{.pred_class}, etc.), and a column for the outcome(s) using the original
+column name(s) in the data.
+
+\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
+results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
+When not summarized, the additional columns for the resampling identifier(s)
+and \code{.estimate}.
 }
 \description{
-Obtain and format results produced by tuning
+Obtain and format results produced by tuning functions
 }
 \examples{
 data("example_ames_knn")

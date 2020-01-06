@@ -48,7 +48,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
         </div>
       </div>
     </div>
@@ -183,7 +183,7 @@
 <p>We’ll use another acquisition function, <em>expected improvement</em>, that calculates the determines which candidates likely to to be helpful relative to the current best results. This is the default acquisition function.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1291</span>)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">search_res &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw">tune_bayes</span>(</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../../reference/tune_bayes.html">tune_bayes</a></span>(</a>
 <a class="sourceLine" id="cb7-4" data-line-number="4">    svm_wflow, </a>
 <a class="sourceLine" id="cb7-5" data-line-number="5">    <span class="dt">resamples =</span> folds,</a>
 <a class="sourceLine" id="cb7-6" data-line-number="6">    <span class="co"># To use non-default parameter ranges</span></a>

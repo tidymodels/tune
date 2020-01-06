@@ -222,7 +222,7 @@ check_metrics <- function(x, object) {
         x <- yardstick::metric_set(rmse, rsq)
       },
       classification = {
-        x <- yardstick::metric_set(accuracy, kap)
+        x <- yardstick::metric_set(roc_auc, accuracy)
       },
       unknown = {
         rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")

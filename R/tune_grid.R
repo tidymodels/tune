@@ -94,8 +94,8 @@
 #' \itemize{
 #'   \item For regression models, the root mean squared error and coefficient
 #'         of determination are computed.
-#'   \item For classification, the log-likelihood and overall accuracy are
-#'         computed.
+#'   \item For classification, the area under the ROC curve and overall accuracy
+#'         are computed.
 #' }
 #'
 #' Note that the metrics also determine what type of predictions are estimated
@@ -236,6 +236,8 @@ tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
 
+  empty_ellipses(...)
+
   wflow <-
     workflow() %>%
     add_recipe(object) %>%
@@ -259,6 +261,8 @@ tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
 
+  empty_ellipses(...)
+
   wflow <-
     workflow() %>%
     add_formula(formula) %>%
@@ -278,6 +282,8 @@ tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
+
+  empty_ellipses(...)
 
   tune_grid_workflow(
     object,

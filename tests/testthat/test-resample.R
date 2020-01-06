@@ -1,7 +1,6 @@
 context("resample")
 
-library(parsnip)
-library(rsample)
+source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 # fit_resamples()
@@ -165,3 +164,16 @@ test_that("cannot autoplot `fit_resamples()` results", {
 
   expect_error(autoplot(result), "no `autoplot[(][])]` implementation for `resample_results`")
 })
+
+test_that("ellipses with fit_resamples", {
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  expect_warning(
+    fit_resamples(mpg ~ ., lin_mod, folds, something = "wrong"),
+    "The `...` are not used in this function but one or more objects"
+  )
+})
+

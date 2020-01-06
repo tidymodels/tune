@@ -15,13 +15,16 @@ finalize_workflow(x, parameters)
 \arguments{
 \item{x}{A recipe, \code{parsnip} model specification, or workflow.}
 
-\item{parameters}{A list or 1-row tibble of parameter values.}
+\item{parameters}{A list or 1-row tibble of parameter values. Note that the
+column names of the tibble should be the \code{id} fields attached to \code{tune()}.
+For example, in the \code{Examples} section below, the model has \code{tune("K")}. In
+this case, the parameter tibble should be "K" and not "neighbors".}
 }
 \value{
 An updated version of \code{x}.
 }
 \description{
-The \verb{finalize_*} functions take a list or tibble or parameter values and
+The \verb{finalize_*} functions take a list or tibble of tuning parameter values and
 update objects with those values.
 }
 \examples{

@@ -90,8 +90,8 @@
 #' \itemize{
 #'   \item For regression models, the root mean squared error and coefficient
 #'         of determination are computed.
-#'   \item For classification, the log-likelihood and overall accuracy are
-#'         computed.
+#'   \item For classification, the area under the ROC curve and overall accuracy
+#'         are computed.
 #' }
 #'
 #' Note that the metrics also determine what type of predictions are estimated
@@ -150,6 +150,9 @@ tune_bayes.recipe <- function(object,
                               objective = exp_improve(),
                               initial = 5,
                               control = control_bayes()) {
+
+  empty_ellipses(...)
+
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -176,6 +179,9 @@ tune_bayes.formula <- function(formula,
                                objective = exp_improve(),
                                initial = 5,
                                control = control_bayes()) {
+
+  empty_ellipses(...)
+
   if (is_missing(model) || !inherits(model, "model_spec")) {
     stop("`model` should be a parsnip model specification object.", call. = FALSE)
   }
@@ -202,6 +208,8 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes()) {
+
+    empty_ellipses(...)
 
   tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
                       metrics = metrics, objective = objective, initial = initial,

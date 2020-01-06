@@ -1,11 +1,12 @@
-#' Plot search results
+#' Plot tuning search results
 #'
-#' @param object A tibble of results form [tune_grid()] or [tune_bayes()].
+#' @param object A tibble of results from [tune_grid()] or [tune_bayes()].
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #' 'of each predictor versus performance), `"parameters"` (each parameter versus
 #' search iteration), or `"performance"` (performance versus iteration). The
 #' latter two choices are only used for [tune_bayes()].
-#' @param metric A character vector or `NULL` for which outcome to plot.
+#' @param metric A character vector or `NULL` for which metric to plot. By
+#' default, all metrics will be shown via facets.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "perfomance"`. A value of zero prevents them from being shown.
 #' @param ... Not currently used.

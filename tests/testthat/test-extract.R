@@ -2,13 +2,6 @@ context("object extraction")
 
 # ------------------------------------------------------------------------------
 
-library(dplyr)
-library(tidyr)
-library(recipes)
-library(dials)
-library(rsample)
-library(parsnip)
-
 source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------

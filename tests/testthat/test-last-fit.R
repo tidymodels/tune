@@ -1,7 +1,8 @@
 context("last fit")
 
-library(parsnip)
-library(rsample)
+source(test_path("../helper-objects.R"))
+
+# ------------------------------------------------------------------------------
 
 set.seed(23598723)
 split <- initial_split(mtcars)
@@ -45,3 +46,13 @@ test_that("collect metrics of last fit", {
   expect_true(inherits(met, "tbl_df"))
   expect_equal(names(met), c(".metric", ".estimator", ".estimate"))
 })
+
+
+test_that("ellipses with last_fit", {
+
+  expect_warning(
+    last_fit(f, linear_reg() %>% set_engine("lm"), split, something = "wrong"),
+    "The `...` are not used in this function but one or more objects"
+  )
+})
+

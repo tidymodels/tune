@@ -150,8 +150,8 @@ If no metric set is provided, one is created:
 \itemize{
 \item For regression models, the root mean squared error and coefficient
 of determination are computed.
-\item For classification, the log-likelihood and overall accuracy are
-computed.
+\item For classification, the area under the ROC curve and overall accuracy
+are computed.
 }
 
 Note that the metrics also determine what type of predictions are estimated
