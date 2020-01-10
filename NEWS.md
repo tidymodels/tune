@@ -1,3 +1,9 @@
+# tune 0.0.1
+
+* CRAN release.
+
+* Changed license to MIT
+
 # tune 0.0.0.9002
 
 * The `...` arguments of `tune_grid()` and `tune_bayes()` have been moved

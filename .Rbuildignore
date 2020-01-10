@@ -14,3 +14,4 @@ issue_template.md
 _cache$
 ^\.github/workflows/R-CMD-check\.yaml$
 ^\inst\examples$
+^LICENSE\.md$
