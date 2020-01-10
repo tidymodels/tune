@@ -26,7 +26,6 @@ tune("your name here")
 
 library(parsnip)
 nearest_neighbor(
-  mode = "regression",
   neighbors = tune("K"),
   weight_func = tune(),
   dist_power = tune()

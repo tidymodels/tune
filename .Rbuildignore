@@ -13,3 +13,4 @@ issue_template.md
 ^.github$
 _cache$
 ^\.github/workflows/R-CMD-check\.yaml$
+^\inst\examples$

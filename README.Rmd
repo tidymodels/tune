@@ -25,7 +25,13 @@ The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels 
 
 ## Installation
 
-You can install the current development version using
+Install from CRAN:
+
+```r
+install.packages("tune", repos = "http://cran.r-project.org") #or your local mirror
+```
+
+or you can install the current development version using
 
 ```r
 devtools::install_github("tidymodels/tune")
@@ -41,12 +47,5 @@ There are a few package vignettes, the first being the [_Getting Started_](https
  - [notes on optimizations and parallel processing](https://tidymodels.github.io/tune/articles/extras/optimizations.html)
  - [details on acquisition function for scoring parameter combinations](https://tidymodels.github.io/tune/articles/acquisition_functions.html)
  
-## Important Notes
-
-This is the development version. While the APIs are pretty stable they are subject to change due to user feedback and other issues. Please give as much feedback as possible regarding the good and bad parts. 
-
-There are references to _workflow_ objects in `tune`. We have another package being developed called `workflows` that will streamline some of the `tidymodels` APIs. The functions in this package related to workflows don't do much right now and are placeholders for future functions. 
-
-In this version, you can jointly tune pre-processing parameters (via a recipe) and model parameters. Once `workflows` is released, you can also optimize post-processing parameters at the same time (e.g. the probability threshold for two-class problems). 
 
  
