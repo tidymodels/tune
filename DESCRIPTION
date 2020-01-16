@@ -4,7 +4,7 @@ Version: 0.0.1
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
-Description: The ability to tune models is important. tune contains functions and
+Description: The ability to tune models is important. 'tune' contains functions and
     classes to be used in conjunction with other tidymodels packages for 
     finding reasonable values of hyper-parameters in models, pre-processing
     methods, and post-processing steps. 

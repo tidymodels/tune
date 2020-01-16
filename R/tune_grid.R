@@ -181,7 +181,7 @@
 #' # manually create a grid
 #' spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 #'
-#' \dontrun{
+#' \donttest{
 #' # Warnings will occur from making spline terms on the holdout data that are
 #' # extrapolations.
 #' spline_res <-
@@ -205,7 +205,7 @@
 #'   set_engine("kernlab") %>%
 #'   set_mode("regression")
 #'
-#' \dontrun{
+#' \donttest{
 #' # Use a space-filling design with 7 points
 #' set.seed(3254)
 #' svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
