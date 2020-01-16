@@ -104,14 +104,15 @@
   <div class="contents col-md-9">
 <div id="tune" class="section level1">
 
-<!-- badges: start -->
 
-<p>The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on <code>recipes</code>, <code>parsnip</code>, and <code>dials</code>.</p>
+<p>The goal of <code>tune</code> is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on <code>recipes</code>, <code>parsnip</code>, and <code>dials</code>.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the current development version using</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"tidymodels/tune"</span>)</span></code></pre></div>
+<p>Install from CRAN:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"tune"</span>, <span class="dt">repos =</span> <span class="st">"http://cran.r-project.org"</span>) <span class="co">#or your local mirror</span></span></code></pre></div>
+<p>or you can install the current development version using</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"tidymodels/tune"</span>)</span></code></pre></div>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
@@ -124,13 +125,6 @@
 <li><a href="https://tidymodels.github.io/tune/articles/extras/optimizations.html">notes on optimizations and parallel processing</a></li>
 <li><a href="https://tidymodels.github.io/tune/articles/acquisition_functions.html">details on acquisition function for scoring parameter combinations</a></li>
 </ul>
-</div>
-<div id="important-notes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#important-notes" class="anchor"></a>Important Notes</h2>
-<p>This is the development version. While the APIs are pretty stable they are subject to change due to user feedback and other issues. Please give as much feedback as possible regarding the good and bad parts.</p>
-<p>There are references to <em>workflow</em> objects in <code>tune</code>. We have another package being developed called <code>workflows</code> that will streamline some of the <code>tidymodels</code> APIs. The functions in this package related to workflows don’t do much right now and are placeholders for future functions.</p>
-<p>In this version, you can jointly tune pre-processing parameters (via a recipe) and model parameters. Once <code>workflows</code> is released, you can also optimize post-processing parameters at the same time (e.g. the probability threshold for two-class problems).</p>
 </div>
 </div>
   </div>
@@ -146,8 +140,8 @@
 <div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
-<li>
-<a href="https://www.r-project.org/Licenses/GPL-2">GPL-2</a> </li>
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
 <div class="developers">
