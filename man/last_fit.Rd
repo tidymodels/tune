@@ -46,6 +46,7 @@ would be to fit using the entire training set and verify performance using
 the test data.
 }
 \examples{
+\donttest{
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -74,4 +75,5 @@ spline_wfl <-
  add_model(lin_mod)
 
 last_fit(spline_wfl, split = tr_te_split)
+}
 }

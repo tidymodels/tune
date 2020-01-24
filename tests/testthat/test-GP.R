@@ -64,6 +64,7 @@ test_that('GP fit - knn', {
 # ------------------------------------------------------------------------------
 
 test_that('GP scoring', {
+  skip_on_cran()
   ctrl <- control_bayes()
   curr <-
     collect_metrics(svm_results) %>%

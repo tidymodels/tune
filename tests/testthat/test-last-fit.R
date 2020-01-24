@@ -13,6 +13,7 @@ test_pred <- predict(lm_fit, testing(split))
 rmse_test <- yardstick::rsq_vec(testing(split) %>% pull(mpg), test_pred)
 
 test_that("formula method", {
+  skip_on_cran()
   res <- last_fit(f, linear_reg() %>% set_engine("lm"), split)
   expect_equivalent(coef(extract_model(res$.workflow[[1]])), coef(lm_fit))
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
@@ -20,6 +21,7 @@ test_that("formula method", {
 })
 
 test_that("recipe method", {
+  skip_on_cran()
   rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
   res <- last_fit(rec, linear_reg() %>% set_engine("lm"), split)
   expect_equivalent(sort(coef(extract_model(res$.workflow[[1]]))), sort(coef(lm_fit)))
@@ -28,6 +30,7 @@ test_that("recipe method", {
 })
 
 test_that("split_to_rset", {
+  skip_on_cran()
   res <- tune:::split_to_rset(split)
   expect_true(inherits(res, "mc_cv"))
   expect_true(nrow(res) == 1)
@@ -41,6 +44,7 @@ test_that("split_to_rset", {
 })
 
 test_that("collect metrics of last fit", {
+  skip_on_cran()
   res <- last_fit(f, linear_reg() %>% set_engine("lm"), split)
   met <- collect_metrics(res)
   expect_true(inherits(met, "tbl_df"))
@@ -49,7 +53,7 @@ test_that("collect metrics of last fit", {
 
 
 test_that("ellipses with last_fit", {
-
+  skip_on_cran()
   expect_warning(
     last_fit(f, linear_reg() %>% set_engine("lm"), split, something = "wrong"),
     "The `...` are not used in this function but one or more objects"

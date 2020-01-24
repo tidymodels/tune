@@ -24,6 +24,7 @@
 #'
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' library(recipes)
 #'
 #' recipe(mpg ~ ., data = mtcars) %>%
@@ -49,6 +50,7 @@
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   tune_args()
+#' }
 #' @export
 tune_args <- function(object, ...) {
   UseMethod("tune_args")

@@ -27,6 +27,7 @@
 #' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examples
+#' \donttest{
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -48,7 +49,7 @@
 #' spline_res
 #'
 #' show_best(spline_res, metric = "rmse", maximize = FALSE)
-#'
+#' }
 #' @export
 fit_resamples <- function(object, ...) {
   UseMethod("fit_resamples")

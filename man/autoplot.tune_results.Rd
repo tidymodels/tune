@@ -42,6 +42,7 @@ parameters are also in the results. Any number of numeric tuning parameters
 can be used.
 }
 \examples{
+\donttest{
 # For grid search:
 data("example_ames_knn")
 
@@ -58,7 +59,7 @@ autoplot(ames_iter_search, metric = "rmse", type = "parameters")
 
 # Plot performance over iterations
 autoplot(ames_iter_search, metric = "rmse", type = "performance")
-
+}
 }
 \seealso{
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}

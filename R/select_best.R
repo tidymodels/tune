@@ -35,6 +35,7 @@
 #' Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
 #' _Classification and Regression Trees._ Monterey, CA: Wadsworth.
 #' @examples
+#' \donttest{
 #' data("example_ames_knn")
 #'
 #' show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
@@ -52,6 +53,7 @@
 #' # Now find the least complex model that has no more than a 5% loss of RMSE:
 #' select_by_pct_loss(ames_grid_search, metric = "rmse",
 #'                    maximize = FALSE, limit = 5, desc(K))
+#' }
 #' @export
 show_best <- function(x, metric, n = 5, maximize = TRUE) {
   summary_res <- estimate_tune_results(x)

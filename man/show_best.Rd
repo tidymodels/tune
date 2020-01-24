@@ -58,6 +58,7 @@ model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100
 or 25 percent. Note that loss will always be non-negative.
 }
 \examples{
+\donttest{
 data("example_ames_knn")
 
 show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
@@ -75,6 +76,7 @@ select_by_one_std_err(ames_grid_search, metric = "rmse",
 # Now find the least complex model that has no more than a 5\% loss of RMSE:
 select_by_pct_loss(ames_grid_search, metric = "rmse",
                    maximize = FALSE, limit = 5, desc(K))
+}
 }
 \references{
 Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).

@@ -25,7 +25,7 @@
 #' method, a `NULL` is returned.
 #' @keywords internal
 #' @examples
-#'
+#' \donttest{
 #' library(recipes)
 #'
 #' recipe(mpg ~ ., data = mtcars) %>%
@@ -46,6 +46,7 @@
 #' boost_tree() %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   tunable()
+#' }
 #' @export
 tunable <- function(x, ...) {
   UseMethod("tunable")

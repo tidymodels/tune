@@ -6,6 +6,7 @@
 #' @param ... Not currently used.
 #' @return A parameter set object
 #' @examples
+#' \donttest{
 #' library(tibble)
 #' library(recipes)
 #'
@@ -35,6 +36,7 @@
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   dials::parameters()
+#' }
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {

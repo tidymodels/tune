@@ -22,6 +22,7 @@ svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
+  skip_on_cran()
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
@@ -39,6 +40,7 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe)', {
+  skip_on_cran()
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
@@ -56,6 +58,7 @@ test_that('tune model only (with recipe)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe, multi-predict)', {
+  skip_on_cran()
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
@@ -77,6 +80,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
+  skip_on_cran()
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
@@ -98,6 +102,7 @@ test_that('tune model and recipe', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (multi-predict)', {
+  skip_on_cran()
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
@@ -115,6 +120,7 @@ test_that('tune model and recipe (multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
+  skip_on_cran()
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -159,6 +165,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  skip_on_cran()
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -193,6 +200,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
+  skip_on_cran()
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -224,6 +232,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
+  skip_on_cran()
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -263,6 +272,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 
 
 test_that("ellipses with tune_grid", {
+  skip_on_cran()
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   folds <- vfold_cv(mtcars)
   expect_warning(

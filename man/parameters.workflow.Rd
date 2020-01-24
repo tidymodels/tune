@@ -25,6 +25,7 @@ These methods extend the generic \code{\link[dials:parameters]{dials::parameters
 complex objects, such as recipes, model specifications, and workflows.
 }
 \examples{
+\donttest{
 library(tibble)
 library(recipes)
 
@@ -54,5 +55,6 @@ boost_tree(trees = tune(), min_n = tune()) \%>\%
 boost_tree(trees = tune(), min_n = tune()) \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   dials::parameters()
+}
 }
 \keyword{internal}

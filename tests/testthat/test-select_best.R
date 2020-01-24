@@ -10,6 +10,7 @@ source(test_path("../helper-objects.R"))
 
 
 test_that("select_best()", {
+  skip_on_cran()
   expect_true(
     tibble::is_tibble(select_best(rcv_results, metric = "rmse", maximize = FALSE))
     )
@@ -60,6 +61,7 @@ test_that("select_best()", {
 
 
 test_that("show_best()", {
+  skip_on_cran()
   rcv_rmse <-
     rcv_results %>%
     collect_metrics() %>%
@@ -81,6 +83,7 @@ test_that("show_best()", {
 })
 
 test_that("one-std error rule", {
+  skip_on_cran()
   expect_true(
     tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
   )
@@ -124,6 +127,7 @@ test_that("one-std error rule", {
 
 
 test_that("percent loss", {
+  skip_on_cran()
   expect_true(
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
   )

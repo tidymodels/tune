@@ -28,6 +28,7 @@ The \verb{finalize_*} functions take a list or tibble of tuning parameter values
 update objects with those values.
 }
 \examples{
+\donttest{
 data("example_ames_knn")
 
 library(parsnip)
@@ -45,4 +46,5 @@ lowest_rmse
 
 knn_model
 finalize_model(knn_model, lowest_rmse)
+}
 }
