@@ -7,7 +7,7 @@ source(test_path("../helper-objects.R"))
 # ------------------------------------------------------------------------------
 
 test_that('boosted tree grid reduction - xgboost', {
-  skip_on_cran()
+  
 
   mod <- boost_tree() %>% set_engine("xgboost")
 
@@ -92,7 +92,7 @@ test_that('boosted tree grid reduction - xgboost', {
 # ------------------------------------------------------------------------------
 
 test_that('boosted tree grid reduction - C5.0', {
-  skip_on_cran()
+  
   mod <- boost_tree() %>% set_engine("C5.0")
 
   # A typical grid
@@ -176,7 +176,7 @@ test_that('boosted tree grid reduction - C5.0', {
 
 
 test_that('linear regression grid reduction - glmnet', {
-  skip_on_cran()
+  
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -268,7 +268,7 @@ test_that('linear regression grid reduction - glmnet', {
 # ------------------------------------------------------------------------------
 
 test_that('logistic regression grid reduction - glmnet', {
-  skip_on_cran()
+  
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -359,7 +359,7 @@ test_that('logistic regression grid reduction - glmnet', {
 
 # more of a negative control test
 test_that('logistic regression grid reduction - spark', {
-  skip_on_cran()
+  
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)
   reg_grid_smol <- min_grid(logistic_reg() %>% set_engine("spark"), reg_grid)
 
@@ -373,7 +373,7 @@ test_that('logistic regression grid reduction - spark', {
 # ------------------------------------------------------------------------------
 
 test_that('MARS grid reduction - earth', {
-  skip_on_cran()
+  
   mod <- mars() %>% set_engine("earth")
 
   # A typical grid
@@ -457,7 +457,7 @@ test_that('MARS grid reduction - earth', {
 # ------------------------------------------------------------------------------
 
 test_that('multinomial regression grid reduction - glmnet', {
-  skip_on_cran()
+  
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -549,7 +549,7 @@ test_that('multinomial regression grid reduction - glmnet', {
 
 
 test_that('nearest neighbors grid reduction - kknn', {
-  skip_on_cran()
+  
   mod <- nearest_neighbor() %>% set_engine("kknn")
 
   # A typical grid

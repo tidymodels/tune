@@ -1,7 +1,7 @@
 context("collect")
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
-  skip_on_cran()
+  
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
