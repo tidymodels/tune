@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It replies heavily on `recipes`, `parsnip`, and `dials`. 
+The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It relies heavily on `recipes`, `parsnip`, and `dials`. 
 
 ## Installation
 
