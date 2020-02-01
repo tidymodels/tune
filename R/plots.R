@@ -18,6 +18,7 @@
 #' can be used.
 #' @seealso [tune_grid()], [tune_bayes()]
 #' @examples
+#' \donttest{
 #' # For grid search:
 #' data("example_ames_knn")
 #'
@@ -34,7 +35,7 @@
 #'
 #' # Plot performance over iterations
 #' autoplot(ames_iter_search, metric = "rmse", type = "performance")
-#'
+#' }
 #' @export
 autoplot.tune_results <-
   function(object,

@@ -14,6 +14,7 @@
 #' @return A tibble with a column `x` that has as many rows as were in `y`.
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' library(tibble)
 #' library(recipes)
 #'
@@ -63,6 +64,7 @@
 #'   grid_max_entropy(size = 3)
 #'
 #' merge(xgb_mod, xgb_grid)
+#' }
 #' @export
 merge.recipe <- function(x, y, ...) {
   merger(x, y, ...)

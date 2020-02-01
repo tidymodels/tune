@@ -22,6 +22,7 @@
 #' When not summarized, the additional columns for the resampling identifier(s)
 #' and `.estimate`.
 #' @examples
+#' \donttest{
 #' data("example_ames_knn")
 #'
 #' # Summarized over resamples
@@ -42,6 +43,7 @@
 #'
 #' resampled <- fit_resamples(mpg ~ ., lm_mod, resamples = car_folds, control = ctrl)
 #' collect_predictions(resampled)
+#' }
 #' @export
 collect_predictions <- function(x) {
   names <- colnames(x)

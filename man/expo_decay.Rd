@@ -30,6 +30,7 @@ would be required since only the first argument would be evaluated during
 tuning.
 }
 \examples{
+\donttest{
 library(tibble)
 library(purrr)
 library(ggplot2)
@@ -45,5 +46,5 @@ tibble(
   )
 ) \%>\%
   ggplot(aes(x = iter, y =value)) + geom_path()
-
+}
 }

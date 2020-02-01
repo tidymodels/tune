@@ -11,6 +11,7 @@
 #' @return An updated version of `x`.
 #' @export
 #' @examples
+#' \donttest{
 #' data("example_ames_knn")
 #'
 #' library(parsnip)
@@ -28,6 +29,7 @@
 #'
 #' knn_model
 #' finalize_model(knn_model, lowest_rmse)
+#' }
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
     stop("`x` should be a parsnip model specification.")

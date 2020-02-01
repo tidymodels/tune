@@ -3,6 +3,7 @@ context("extracting predictions")
 source(test_path("../helper-objects.R"))
 
 check_predictions <- function(split, pred, tune_df) {
+  
   assess <- rsample::assessment(split)
   n_te <- nrow(assess)
   n_pm <- nrow(tune_df)
@@ -20,6 +21,7 @@ load(test_path("test_objects.RData"))
 # ------------------------------------------------------------------------------
 
 test_that("recipe only", {
+  
   grid <- tibble(deg_free = c(4, 5, 7, 8, 9, 11, 12, 13, 15))
 
   purrr::map2(
@@ -56,6 +58,7 @@ test_that("recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("model only", {
+  
   grid <- tibble(neighbors = c(2, 3, 5, 6, 7, 8, 10, 12, 13, 15))
 
   purrr::map2(
@@ -93,6 +96,7 @@ test_that("model only", {
 # ------------------------------------------------------------------------------
 
 test_that("model and recipe", {
+  
   grid <-
     tibble::tribble(
       ~deg_free, ~neighbors,

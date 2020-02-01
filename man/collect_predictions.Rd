@@ -38,6 +38,7 @@ and \code{.estimate}.
 Obtain and format results produced by tuning functions
 }
 \examples{
+\donttest{
 data("example_ames_knn")
 
 # Summarized over resamples
@@ -58,4 +59,5 @@ ctrl <- control_resamples(save_pred = TRUE)
 
 resampled <- fit_resamples(mpg ~ ., lm_mod, resamples = car_folds, control = ctrl)
 collect_predictions(resampled)
+}
 }

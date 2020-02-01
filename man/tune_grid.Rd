@@ -218,6 +218,7 @@ grid has a separate R object associated with it.
 }
 
 \examples{
+\donttest{
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -243,7 +244,6 @@ lin_mod <-
 # manually create a grid
 spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 
-\donttest{
 # Warnings will occur from making spline terms on the holdout data that are
 # extrapolations.
 spline_res <-
@@ -252,7 +252,6 @@ spline_res
 
 
 show_best(spline_res, metric = "rmse", maximize = FALSE)
-}
 
 # ------------------------------------------------------------------------------
 
@@ -267,7 +266,6 @@ svm_mod <-
   set_engine("kernlab") \%>\%
   set_mode("regression")
 
-\donttest{
 # Use a space-filling design with 7 points
 set.seed(3254)
 svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)

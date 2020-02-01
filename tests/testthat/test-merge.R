@@ -26,7 +26,7 @@ bst_grid <- tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 # ------------------------------------------------------------------------------
 
 test_that('recipe merges', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid),
     NA
@@ -50,7 +50,7 @@ test_that('recipe merges', {
 })
 
 test_that('partially recipe merge', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid[, -1]),
     NA
@@ -74,7 +74,7 @@ test_that('partially recipe merge', {
 })
 
 test_that('umerged recipe merge', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, bst_grid),
     NA
@@ -102,7 +102,7 @@ test_that('umerged recipe merge', {
 
 
 test_that('model spec merges', {
-
+  
   expect_error(
     bst_updated <- merge(bst_model, bst_grid),
     NA
@@ -122,7 +122,7 @@ test_that('model spec merges', {
 })
 
 test_that('partially model spec merge', {
-
+  
   expect_error(
     bst_updated <- merge(bst_model, bst_grid[, -1]),
     NA
@@ -141,7 +141,7 @@ test_that('partially model spec merge', {
 })
 
 test_that('umerged model spec merge', {
-
+  
   other_grid <- bst_grid
   names(bst_grid) <- letters[1:2]
   expect_error(

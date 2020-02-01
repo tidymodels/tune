@@ -36,6 +36,7 @@ test_that('exponential decay', {
 # ------------------------------------------------------------------------------
 
 test_that('in-line formulas on outcome', {
+  
   # see issues 121
   w1 <-
     workflow() %>%

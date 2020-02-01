@@ -91,7 +91,7 @@ specifications, If the parameter is unknown to the underlying \code{tunable}
 method, a \code{NULL} is returned.
 }
 \examples{
-
+\donttest{
 library(recipes)
 
 recipe(mpg ~ ., data = mtcars) \%>\%
@@ -112,6 +112,7 @@ boost_tree() \%>\%
 boost_tree() \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   tunable()
+}
 }
 \keyword{datasets}
 \keyword{internal}
