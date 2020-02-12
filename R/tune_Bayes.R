@@ -300,7 +300,8 @@ tune_bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control)
+      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control,
+                              param_info = param_info)
 
       check_time(start_time, control$time_limit)
 
@@ -513,7 +514,7 @@ initial_info <- function(stats, metrics, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, control) {
+more_results <- function(object, resamples, candidates, metrics, control, param_info) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -524,6 +525,7 @@ more_results <- function(object, resamples, candidates, metrics, control) {
       tune_grid(
         object,
         resamples = resamples,
+        param_info = param_info,
         grid = candidates,
         metrics = metrics,
         control = control_grid(verbose = FALSE, extract = control$extract,
