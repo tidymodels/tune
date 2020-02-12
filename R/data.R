@@ -79,7 +79,7 @@
 #'
 #' __important note__: Since the `rsample` split columns contain a reference
 #' to the same data, saving them to disk can results in large object sizes when
-#' the object is later used. In essance, R replaces all of those references with
+#' the object is later used. In essence, R replaces all of those references with
 #' the actual data. For this reason, we saved zero-row tibbles in their place.
 #' This doesn't affect how we use these objects in examples but be advised that
 #' using some `rsample` functions on them will cause issues.
