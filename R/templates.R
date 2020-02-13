@@ -98,13 +98,30 @@ add_steps_normalization <- function(base) {
     pipe_value(step_zv(all_predictors())) %>%
     pipe_value(step_normalize(all_predictors(), -all_nominal()))
 }
+factor_check <- function(base, rec, add) {
+  var_roles <- summary(rec)
+  nominal <- var_roles$variable[var_roles$type == "nominal"]
+  is_str <-
+    purrr::map_lgl(rec$template %>% dplyr::select(dplyr::one_of(nominal)),
+                   rlang::is_character)
+  if (any(is_str)) {
+    nominal <- rlang::syms(nominal[is_str])
+    selector <- rlang::expr(one_of(!!!nominal))
+    step_expr <- rlang::expr(step_mutate_at(!!selector, .fn = list(as.factor)))
+    base <-
+      base %>%
+      add_comment(string_to_factor_msg, add = add) %>%
+      pipe_value(!!step_expr)
+  }
+  base
+}
 
 
 template_workflow <- function(prefix) {
   paste0(prefix, "_wflw") %>%
     assign_value(workflow()) %>%
-    pipe_value(add_recipe(!!rlang::sym(paste0(prefix, "_rec")))) %>%
-    pipe_value(add_model(!!rlang::sym(paste0(prefix, "_mod"))))
+    pipe_value(add_recipe(!!rlang::sym(paste0(prefix, "_recipe")))) %>%
+    pipe_value(add_model(!!rlang::sym(paste0(prefix, "_model"))))
 }
 
 template_tune_with_grid <- function(prefix) {
@@ -141,7 +158,7 @@ initial_recipe_call <- function(cl) {
 
 zv_msg <- paste(
   "Before centering and scaling the numeric predictors, any predictors with",
-  "a sinlge unique value are filtered out."
+  "a single unique value are filtered out."
 )
 dist_msg <-
   paste(
@@ -164,6 +181,11 @@ dummy_hot_msg <-
     dummy_msg,
     "However, for this model, binary indicator variables can be made for",
     "each of the levels of the factors (known as 'one-hot encoding')."
+  )
+string_to_factor_msg <-
+  paste(
+    "For modeling, it is preferred to encode qualitative data as factors",
+    "(instead of character)."
   )
 
 # ------------------------------------------------------------------------------
@@ -206,6 +228,10 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
     assign_value(!!rec_cl)
 
   rec <- recipes::recipe(formula, data)
+
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
     rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
@@ -266,6 +292,10 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
   rec <- recipe(formula, data)
 
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
+
   if (has_factor_pred(rec)) {
     rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
   }
@@ -308,6 +338,10 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
     assign_value(!!rec_cl)
 
   rec <- recipes::recipe(formula, data)
+
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
     rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
