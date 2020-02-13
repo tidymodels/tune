@@ -3,11 +3,14 @@
 \name{template_glmnet}
 \alias{template_glmnet}
 \alias{template_xgboost}
+\alias{template_knn}
 \title{Template code functions for specific models}
 \usage{
 template_glmnet(formula, data, verbose = FALSE, tune = TRUE)
 
 template_xgboost(formula, data, verbose = FALSE, tune = TRUE)
+
+template_knn(formula, data, verbose = FALSE, tune = TRUE)
 }
 \arguments{
 \item{formula}{A simple model formula with no in-line functions. This will
@@ -42,5 +45,5 @@ every data analysis. It has reasonable defaults.
 }
 \examples{
 template_glmnet(Species ~ ., data = iris)
-template_glmnet(Sepal.Length ~ ., data = iris)
+template_glmnet(Sepal.Length ~ ., data = iris, verbose = TRUE)
 }

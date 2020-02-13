@@ -42,9 +42,11 @@ num_pred_col <- function(x) {
 # ------------------------------------------------------------------------------
 # helper functions
 
+expr_width <- 74L
+
 assign_value <- function(name, value, cr = TRUE) {
   value <- rlang::enexpr(value)
-  value <- rlang::expr_text(value)
+  value <- rlang::expr_text(value, width = expr_width)
   chr_assign(name, value, cr)
 }
 chr_assign <- function(name, value, cr = TRUE) {
@@ -59,31 +61,34 @@ chr_assign <- function(name, value, cr = TRUE) {
 pipe_value <- function(base, value) {
   # Find last non-comment line, add a `%>%` to the end, then add another line
   value <- rlang::enexpr(value)
-  value <- rlang::expr_text(value)
-  n <- length(base)
+  value <- rlang::expr_text(value, width = expr_width)
+  clean_base <- gsub("\\n", "", base)
+  clean_base <- trimws(base, which = "left")
+  not_comment <- seq_along(base)[!grepl("^#", clean_base)]
+  n <- max(1, max(not_comment))
   base[n] <- paste(base[n], "%>%")
   c(base, paste0("\n  ", value))
 }
-add_comment <- function(base, x, add = TRUE) {
-  if (!comments) {
+add_comment <- function(base, value, add = TRUE) {
+  if (!add) {
     return(base)
   }
-  if (!is.character(x)) {
-    rlang::abort("`x` must be character.")
+  if (!is.character(value)) {
+    rlang::abort("`value` must be character.")
   }
-  if (!grepl("^#", x)) {
-    x <- paste("#", x)
-  }
-  c(base, paste0("\n  ", x))
+  value <- strwrap(value, width = expr_width, prefix = "# ")
+  c(base, paste0("\n  ", value))
 }
-add_steps_dummy_vars <- function(base, hot = FALSE) {
+add_steps_dummy_vars <- function(base, hot = FALSE, add = FALSE) {
   base <- base %>%
     pipe_value(step_novel(all_nominal(), -all_outcomes()))
   if (hot) {
     base <- base %>%
+      add_comment(dummy_hot_msg, add) %>%
       pipe_value(step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE))
   } else {
-    base <- base %>%
+    base <- base  %>%
+      add_comment(dummy_msg, add) %>%
       pipe_value(step_dummy(all_nominal(), -all_outcomes()))
   }
   base
@@ -104,7 +109,7 @@ template_workflow <- function(prefix) {
 
 template_tune_with_grid <- function(prefix) {
   tune_expr <-
-    call2("tune_grid",
+    rlang::call2("tune_grid",
           sym(paste0(prefix, "_workflow")),
           resamples = expr(stop("add your rsample object")),
           grid = sym(paste0(prefix, "_grid")))
@@ -112,7 +117,7 @@ template_tune_with_grid <- function(prefix) {
 }
 template_tune_no_grid <- function(prefix, seed = sample.int(10^5, 1)) {
   tune_expr <-
-    call2(
+    rlang::call2(
       "tune_grid",
       sym(paste0(prefix, "_workflow")),
       resamples = expr(stop("add your rsample object")),
@@ -125,10 +130,41 @@ template_tune_no_grid <- function(prefix, seed = sample.int(10^5, 1)) {
 
 # Take the call to the template function and turn it into a call to `recipe()`
 initial_recipe_call <- function(cl) {
+  cl$tune <- NULL
+  cl$verbose <-  NULL
   rec_cl <- cl
   rec_cl[[1]] <- rlang::expr(recipe)
   rec_cl
 }
+
+# ------------------------------------------------------------------------------
+
+zv_msg <- paste(
+  "Before centering and scaling the numeric predictors, any predictors with",
+  "a sinlge unique value are filtered out."
+)
+dist_msg <-
+  paste(
+    "Since distance calculations are used, the predictor",
+    "variables should be on the same scale."
+  )
+reg_msg <-
+  paste(
+    "Regularization methods sum up functions of the model slope coefficients.",
+    "Because of this, the predictor variables should be on the same scale."
+  )
+dummy_msg <-
+  paste(
+    "This model requires the predictors to be numeric. The most common method to",
+    "convert qualitative predictors to numeric is to create binary indicator",
+    "variables (aka dummy variables) from these predictors."
+  )
+dummy_hot_msg <-
+  paste(
+    dummy_msg,
+    "However, for this model, binary indicator variables can be made for",
+    "each of the levels of the factors (known as 'one-hot encoding')."
+  )
 
 # ------------------------------------------------------------------------------
 # Functions to create model code
@@ -160,7 +196,7 @@ initial_recipe_call <- function(cl) {
 #' every data analysis. It has reasonable defaults.
 #' @examples
 #' template_glmnet(Species ~ ., data = iris)
-#' template_glmnet(Sepal.Length ~ ., data = iris)
+#' template_glmnet(Sepal.Length ~ ., data = iris, verbose = TRUE)
 #' @export
 #' @rdname templates
 template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
@@ -172,9 +208,12 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
   rec <- recipes::recipe(formula, data)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE)
+    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
   }
-  rec_syntax <- add_steps_normalization(rec_syntax)
+  rec_syntax <-
+    rec_syntax %>%
+    add_comment(paste(reg_msg, zv_msg), add = verbose) %>%
+    add_steps_normalization()
 
   mod_mode <- model_mode(rec)
 
@@ -212,7 +251,7 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
     glmn_grid <- expand.grid(penalty = 10 ^ seq(-6,-1, length.out = 20),
                              mixture = c(0.05, .2, .4, .6, .8, 1))
   )
-  cat(rlang::expr_text(glmn_grid), "\n\n")
+  cat(rlang::expr_text(glmn_grid, width = expr_width), "\n\n")
   cat(template_tune_with_grid("glmn"), "\n\n")
   invisible(NULL)
 }
@@ -228,7 +267,7 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
   rec <- recipe(formula, data)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE)
+    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
   }
 
   rec_syntax <- pipe_value(rec_syntax, step_zv(all_predictors()))
@@ -255,5 +294,50 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(mod_syntax, "\n\n")
   cat(template_workflow("xgb"), "\n\n")
   cat(template_tune_no_grid("xgb"), "\n\n", sep = "")
+  invisible(NULL)
+}
+
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname templates
+template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
+  rec_cl <- initial_recipe_call(match.call())
+  rec_syntax <-
+    "knn_recipe" %>%
+    assign_value(!!rec_cl)
+
+  rec <- recipes::recipe(formula, data)
+
+  if (has_factor_pred(rec)) {
+    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+  }
+  rec_syntax <-
+    add_steps_normalization(rec_syntax) %>%
+    add_comment(paste(dist_msg, zv_msg), add = verbose) %>%
+    add_steps_normalization()
+
+  mod_mode <- model_mode(rec)
+
+  if (mod_mode == "classification") {
+    mod_syntax <-
+      "knn_model" %>%
+      assign_value(nearest_neighbor(neighbors = tune(), weight_func = tune())) %>%
+      pipe_value(set_mode("classification"))
+  } else {
+    mod_syntax <-
+      "knn_model" %>%
+      assign_value(nearest_neighbor(neighbors = tune(), weight_func = tune())) %>%
+      pipe_value(set_mode("regression"))
+  }
+
+  mod_syntax <-
+    mod_syntax %>%
+    pipe_value(set_engine("kknn"))
+
+  cat(rec_syntax, "\n\n")
+  cat(mod_syntax, "\n\n")
+  cat(template_workflow("knn"), "\n\n")
+  cat(template_tune_no_grid("knn"), "\n\n", sep = "")
   invisible(NULL)
 }
