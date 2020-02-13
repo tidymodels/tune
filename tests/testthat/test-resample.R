@@ -126,7 +126,7 @@ test_that("`tune_grid()` falls back to resamples if there are no tuning paramete
   expect <- fit_resamples(mpg ~ ., lin_mod, folds)
 
   expect_warning(
-    result <- tune_grid(mpg ~ ., lin_mod, folds),
+    result <- tune_grid(lin_mod, mpg ~ ., folds),
     "No tuning parameters have been detected"
   )
 
@@ -143,7 +143,7 @@ test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
   expect <- fit_resamples(mpg ~ ., lin_mod, folds)
 
   expect_warning(
-    result <- tune_grid(mpg ~ ., lin_mod, grid = data.frame(x = 1), folds),
+    result <- tune_grid(lin_mod, mpg ~ ., grid = data.frame(x = 1), folds),
     "No tuning parameters have been detected"
   )
 

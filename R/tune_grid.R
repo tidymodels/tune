@@ -4,10 +4,9 @@
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
-#' @param object A model workflow, R formula or recipe object.
-#' @param formula A traditional model formula.
-#' @param model A `parsnip` model specification (or `NULL` when `object` is a
-#' workflow).
+#' @param object A `parsnip` model specification or a [workflows::workflow()].
+#' @param preprocess A traditional model formula or a recipe created using
+#'   [recipes::recipe()].
 #' @param resamples An `rset()` object.
 #' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments. Passing this argument can
@@ -185,7 +184,7 @@
 #' # Warnings will occur from making spline terms on the holdout data that are
 #' # extrapolations.
 #' spline_res <-
-#'   tune_grid(spline_rec, model = lin_mod, resamples = folds, grid = spline_grid)
+#'   tune_grid(lin_mod, preprocess = spline_rec, resamples = folds, grid = spline_grid)
 #' spline_res
 #'
 #'
@@ -206,7 +205,7 @@
 #'
 #' # Use a space-filling design with 7 points
 #' set.seed(3254)
-#' svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
+#' svm_res <- tune_grid(svm_mod, preprocess = car_rec, resamples = folds, grid = 7)
 #' svm_res
 #'
 #' show_best(svm_res, metric = "rmse", maximize = FALSE)
@@ -222,49 +221,36 @@ tune_grid <- function(object, ...) {
 #' @export
 #' @rdname tune_grid
 tune_grid.default <- function(object, ...) {
-  stop("The first argument should be either a formula, recipe, or workflow.",
+  stop("The first argument should be either a model or workflow.",
        call. = FALSE)
 }
 
 #' @export
 #' @rdname tune_grid
-tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
-                             grid = 10, metrics = NULL, control = control_grid()) {
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    stop("`model` should be a parsnip model specification object.", call. = FALSE)
+tune_grid.model_spec <- function(object, preprocess, resamples, ...,
+                                 param_info = NULL, grid = 10, metrics = NULL,
+                                 control = control_grid()) {
+
+  if (is_missing(preprocess) || !(inherits(preprocess, "recipe") || inherits(preprocess, "formula"))) {
+    stop("To tune a model spec, you must preprocess with a formula or recipe",
+         call. = FALSE)
   }
 
   empty_ellipses(...)
 
   wflow <-
     workflow() %>%
-    add_recipe(object) %>%
-    add_model(model)
+    add_model(object)
 
-  tune_grid_workflow(
-    wflow,
-    resamples = resamples,
-    grid = grid,
-    metrics = metrics,
-    pset = param_info,
-    control = control
-  )
-}
-
-#' @export
-#' @rdname tune_grid
-tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
-                              grid = 10, metrics = NULL, control = control_grid()) {
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    stop("`model` should be a parsnip model specification object.", call. = FALSE)
+  if (inherits(preprocess, "recipe")) {
+    wflow <-
+      wflow %>%
+      add_recipe(preprocess)
+  } else if (inherits(preprocess, "formula")) {
+    wflow <-
+      wflow %>%
+      add_formula(preprocess)
   }
-
-  empty_ellipses(...)
-
-  wflow <-
-    workflow() %>%
-    add_formula(formula) %>%
-    add_model(model)
 
   tune_grid_workflow(
     wflow,
@@ -336,12 +322,12 @@ quarterback <- function(x) {
   )
 
   dplyr::case_when(
-     tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
-     tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
-     has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
+    tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
+    tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
+    has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
     !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
-     has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
-     TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
+    has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
+    TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
   )
 }
 
