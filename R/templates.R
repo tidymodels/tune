@@ -107,7 +107,7 @@ factor_check <- function(base, rec, add) {
   if (any(is_str)) {
     nominal <- rlang::syms(nominal[is_str])
     selector <- rlang::expr(one_of(!!!nominal))
-    step_expr <- rlang::expr(step_mutate_at(!!selector, .fn = list(as.factor)))
+    step_expr <- rlang::expr(step_string2factor(!!selector))
     base <-
       base %>%
       add_comment(string_to_factor_msg, add = add) %>%
