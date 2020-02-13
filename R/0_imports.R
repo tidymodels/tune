@@ -4,7 +4,7 @@
 #' @importFrom tibble tibble lst
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
-#' @importFrom rlang is_missing
+#' @importFrom rlang is_missing enexpr expr_text
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output packageVersion
 #' @importFrom dials parameters_constr is_unknown encode_unit
@@ -14,7 +14,7 @@
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env
-#' @importFrom recipes all_predictors all_outcomes
+#' @importFrom recipes all_predictors all_outcomes recipe
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
 #' @importFrom ggplot2 facet_grid
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
@@ -46,8 +46,13 @@ utils::globalVariables(
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
     "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
-    ".extracts", ".metrics", "value", ".notes", ".loss", ".bound")
+    ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
+    # false positives from template code
+    "all_nominal", "boost_tree", "comments", "linear_reg", "logistic_reg",
+    "multinom_reg", "set_engine", "set_mode", "step_dummy", "step_normalize",
+    "step_novel", "step_zv"
   )
+)
 
 # ------------------------------------------------------------------------------
 
