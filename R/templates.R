@@ -243,25 +243,31 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
   mod_mode <- model_mode(rec)
 
+  if (tune) {
+    prm <- rlang::exprs(penalty = tune(), mixture = tune())
+  } else {
+    prm <- NULL
+  }
+
   if (mod_mode == "classification") {
     num_lvl <- y_lvl(rec)
     if (num_lvl == 2) {
       mod_syntax <-
         "glmn_model" %>%
-        assign_value(logistic_reg(penalty = tune(), mixture = tune())) %>%
+        assign_value(!!rlang::call2("logistic_reg", !!!prm)) %>%
         pipe_value(set_mode("classification"))
 
     } else {
       mod_syntax <-
         "glmn_model" %>%
-        assign_value(multinom_reg(penalty = tune(), mixture = tune())) %>%
+        assign_value(!!rlang::call2("multinom_reg", !!!prm)) %>%
         pipe_value(set_mode("classification"))
 
     }
   } else {
     mod_syntax <-
       "glmn_model" %>%
-      assign_value(linear_reg(penalty = tune(), mixture = tune())) %>%
+      assign_value(!!rlang::call2("linear_reg", !!!prm)) %>%
       pipe_value(set_mode("regression"))
   }
 
@@ -273,12 +279,14 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(mod_syntax, "\n\n")
   cat(template_workflow("glmn"), "\n\n")
 
-  glmn_grid <- rlang::expr(
-    glmn_grid <- expand.grid(penalty = 10 ^ seq(-6,-1, length.out = 20),
-                             mixture = c(0.05, .2, .4, .6, .8, 1))
-  )
-  cat(rlang::expr_text(glmn_grid, width = expr_width), "\n\n")
-  cat(template_tune_with_grid("glmn"), "\n\n")
+  if (tune) {
+    glmn_grid <- rlang::expr(
+      glmn_grid <- expand.grid(penalty = 10 ^ seq(-6,-1, length.out = 20),
+                               mixture = c(0.05, .2, .4, .6, .8, 1))
+    )
+    cat(rlang::expr_text(glmn_grid, width = expr_width), "\n\n")
+    cat(template_tune_with_grid("glmn"), "\n\n")
+  }
   invisible(NULL)
 }
 
@@ -302,28 +310,28 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
   rec_syntax <- pipe_value(rec_syntax, step_zv(all_predictors()))
 
-  mod_syntax <-
-    "xgb_model" %>%
-    assign_value(boost_tree(trees = tune(), min_n = tune(), tree_depth = tune(),
-                            learn_rate = tune(), loss_reduction = tune(),
-                            sample_size = tune()))
-
-  mod_mode <- model_mode(rec)
-
-  if (mod_mode == "classification") {
-    mod_syntax <- mod_syntax %>% pipe_value(set_mode("classification"))
+  if (tune) {
+    prm <-
+      rlang::exprs(
+        trees = tune(), min_n = tune(), tree_depth = tune(), learn_rate = tune(),
+        loss_reduction = tune(), sample_size = tune()
+      )
   } else {
-    mod_syntax <- mod_syntax %>% pipe_value(set_mode("regression"))
+    prm <- NULL
   }
 
   mod_syntax <-
-    mod_syntax %>%
+    "xgb_model" %>%
+    assign_value(!!rlang::call2("boost_tree", !!!prm)) %>%
+    pipe_value(set_mode(!!model_mode(rec))) %>%
     pipe_value(set_engine("xgboost"))
 
   cat(rec_syntax, "\n\n")
   cat(mod_syntax, "\n\n")
   cat(template_workflow("xgb"), "\n\n")
-  cat(template_tune_no_grid("xgb"), "\n\n", sep = "")
+  if (tune) {
+    cat(template_tune_no_grid("xgb"), "\n\n", sep = "")
+  }
   invisible(NULL)
 }
 
@@ -347,31 +355,27 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
     rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
   }
   rec_syntax <-
-    add_steps_normalization(rec_syntax) %>%
+    rec_syntax %>%
     add_comment(paste(dist_msg, zv_msg), add = verbose) %>%
     add_steps_normalization()
 
-  mod_mode <- model_mode(rec)
-
-  if (mod_mode == "classification") {
-    mod_syntax <-
-      "knn_model" %>%
-      assign_value(nearest_neighbor(neighbors = tune(), weight_func = tune())) %>%
-      pipe_value(set_mode("classification"))
+  if (tune) {
+    prm <- rlang::exprs(neighbors = tune(), weight_func = tune())
   } else {
-    mod_syntax <-
-      "knn_model" %>%
-      assign_value(nearest_neighbor(neighbors = tune(), weight_func = tune())) %>%
-      pipe_value(set_mode("regression"))
+    prm <- NULL
   }
 
   mod_syntax <-
-    mod_syntax %>%
+    "knn_model" %>%
+    assign_value(!!rlang::call2("nearest_neighbor", !!!prm)) %>%
+    pipe_value(set_mode(!!model_mode(rec))) %>%
     pipe_value(set_engine("kknn"))
 
   cat(rec_syntax, "\n\n")
   cat(mod_syntax, "\n\n")
   cat(template_workflow("knn"), "\n\n")
-  cat(template_tune_no_grid("knn"), "\n\n", sep = "")
+  if (tune) {
+    cat(template_tune_no_grid("knn"), "\n\n", sep = "")
+  }
   invisible(NULL)
 }
