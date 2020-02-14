@@ -1,0 +1,19 @@
+> template_glmnet(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
+glmn_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+glmn_model <- 
+  linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("glmnet") 
+
+glmn_workflow <- 
+  workflow() %>% 
+  add_recipe(glmn_recipe) %>% 
+  add_model(glmn_model) 
+
+

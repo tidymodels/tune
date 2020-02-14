@@ -1,0 +1,24 @@
+> set.seed(1290)
+> template_xgboost(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
+xgb_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  # This model requires the predictors to be numeric. The most common 
+  # method to convert qualitative predictors to numeric is to create binary 
+  # indicator variables (aka dummy variables) from these predictors. 
+  # However, for this model, binary indicator variables can be made for 
+  # each of the levels of the factors (known as 'one-hot encoding'). 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+  step_zv(all_predictors()) 
+
+xgb_model <- 
+  boost_tree() %>% 
+  set_mode("regression") %>% 
+  set_engine("xgboost") 
+
+xgb_workflow <- 
+  workflow() %>% 
+  add_recipe(xgb_recipe) %>% 
+  add_model(xgb_model) 
+
+

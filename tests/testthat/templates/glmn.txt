@@ -1,0 +1,17 @@
+> template_glmnet(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
+glmn_recipe <- 
+  recipe(formula = Species ~ ., data = iris) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+glmn_model <- 
+  multinom_reg() %>% 
+  set_mode("classification") %>% 
+  set_engine("glmnet") 
+
+glmn_workflow <- 
+  workflow() %>% 
+  add_recipe(glmn_recipe) %>% 
+  add_model(glmn_model) 
+
+

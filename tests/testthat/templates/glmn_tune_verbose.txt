@@ -1,0 +1,27 @@
+> template_glmnet(Species ~ ., data = iris, verbose = TRUE)
+glmn_recipe <- 
+  recipe(formula = Species ~ ., data = iris) %>% 
+  # Regularization methods sum up functions of the model slope 
+  # coefficients. Because of this, the predictor variables should be on the 
+  # same scale. Before centering and scaling the numeric predictors, any 
+  # predictors with a single unique value are filtered out. 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+glmn_model <- 
+  multinom_reg(penalty = tune(), mixture = tune()) %>% 
+  set_mode("classification") %>% 
+  set_engine("glmnet") 
+
+glmn_workflow <- 
+  workflow() %>% 
+  add_recipe(glmn_recipe) %>% 
+  add_model(glmn_model) 
+
+glmn_grid <- expand.grid(penalty = 10^seq(-6, -1, length.out = 20), mixture = c(0.05, 
+    0.2, 0.4, 0.6, 0.8, 1)) 
+
+glmn_tune <- 
+  tune_grid(glmn_workflow, resamples = stop("add your rsample object"), grid = glmn_grid) 
+
+

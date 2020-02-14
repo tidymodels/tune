@@ -1,0 +1,20 @@
+> set.seed(24214)
+> template_knn(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
+knn_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  step_dummy(all_nominal(), -all_outcomes()) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+knn_model <- 
+  nearest_neighbor() %>% 
+  set_mode("regression") %>% 
+  set_engine("kknn") 
+
+knn_workflow <- 
+  workflow() %>% 
+  add_recipe(knn_recipe) %>% 
+  add_model(knn_model) 
+
+

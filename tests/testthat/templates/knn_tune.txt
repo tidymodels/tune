@@ -1,0 +1,22 @@
+> set.seed(24214)
+> template_knn(Species ~ ., data = iris)
+knn_recipe <- 
+  recipe(formula = Species ~ ., data = iris) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+knn_model <- 
+  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
+  set_mode("classification") %>% 
+  set_engine("kknn") 
+
+knn_workflow <- 
+  workflow() %>% 
+  add_recipe(knn_recipe) %>% 
+  add_model(knn_model) 
+
+set.seed(50442)
+knn_tune <-
+  tune_grid(knn_workflow, resamples = stop("add your rsample object"), grid = 20)
+
+

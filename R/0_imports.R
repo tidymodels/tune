@@ -50,7 +50,7 @@ utils::globalVariables(
     # false positives from template code
     "all_nominal", "boost_tree", "comments", "linear_reg", "logistic_reg",
     "multinom_reg", "set_engine", "set_mode", "step_dummy", "step_normalize",
-    "step_novel", "step_zv"
+    "step_novel", "step_zv", "step_string2factor"
   )
 )
 

@@ -1,0 +1,25 @@
+> template_glmnet(Sepal.Width ~ ., data = iris)
+glmn_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+glmn_model <- 
+  linear_reg(penalty = tune(), mixture = tune()) %>% 
+  set_mode("regression") %>% 
+  set_engine("glmnet") 
+
+glmn_workflow <- 
+  workflow() %>% 
+  add_recipe(glmn_recipe) %>% 
+  add_model(glmn_model) 
+
+glmn_grid <- expand.grid(penalty = 10^seq(-6, -1, length.out = 20), mixture = c(0.05, 
+    0.2, 0.4, 0.6, 0.8, 1)) 
+
+glmn_tune <- 
+  tune_grid(glmn_workflow, resamples = stop("add your rsample object"), grid = glmn_grid) 
+
+

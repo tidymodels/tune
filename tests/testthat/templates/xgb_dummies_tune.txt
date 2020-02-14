@@ -1,0 +1,24 @@
+> set.seed(1290)
+> template_xgboost(Sepal.Width ~ ., data = iris)
+xgb_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+  step_zv(all_predictors()) 
+
+xgb_model <- 
+  boost_tree(trees = tune(), min_n = tune(), tree_depth = tune(), learn_rate = tune(), 
+    loss_reduction = tune(), sample_size = tune()) %>% 
+  set_mode("regression") %>% 
+  set_engine("xgboost") 
+
+xgb_workflow <- 
+  workflow() %>% 
+  add_recipe(xgb_recipe) %>% 
+  add_model(xgb_model) 
+
+set.seed(27739)
+xgb_tune <-
+  tune_grid(xgb_workflow, resamples = stop("add your rsample object"), grid = 20)
+
+

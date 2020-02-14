@@ -1,0 +1,28 @@
+> template_glmnet(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
+glmn_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  # This model requires the predictors to be numeric. The most common 
+  # method to convert qualitative predictors to numeric is to create binary 
+  # indicator variables (aka dummy variables) from these predictors. 
+  # However, for this model, binary indicator variables can be made for 
+  # each of the levels of the factors (known as 'one-hot encoding'). 
+  step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
+  # Regularization methods sum up functions of the model slope 
+  # coefficients. Because of this, the predictor variables should be on the 
+  # same scale. Before centering and scaling the numeric predictors, any 
+  # predictors with a single unique value are filtered out. 
+  step_zv(all_predictors()) %>% 
+  step_normalize(all_predictors(), -all_nominal()) 
+
+glmn_model <- 
+  linear_reg() %>% 
+  set_mode("regression") %>% 
+  set_engine("glmnet") 
+
+glmn_workflow <- 
+  workflow() %>% 
+  add_recipe(glmn_recipe) %>% 
+  add_model(glmn_model) 
+
+
