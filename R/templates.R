@@ -118,7 +118,7 @@ factor_check <- function(base, rec, add) {
 
 
 template_workflow <- function(prefix) {
-  paste0(prefix, "_wflw") %>%
+  paste0(prefix, "_workflow") %>%
     assign_value(workflow()) %>%
     pipe_value(add_recipe(!!rlang::sym(paste0(prefix, "_recipe")))) %>%
     pipe_value(add_model(!!rlang::sym(paste0(prefix, "_model"))))
