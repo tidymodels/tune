@@ -1,5 +1,4 @@
-> set.seed(24214)
-> template_knn(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
+> dummy_template(model, verbose, tune)
 knn_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
@@ -23,4 +22,6 @@ knn_workflow <-
   add_recipe(knn_recipe) %>% 
   add_model(knn_model) 
 
+
+NULL
 

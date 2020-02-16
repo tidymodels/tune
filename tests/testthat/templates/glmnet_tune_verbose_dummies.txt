@@ -1,4 +1,4 @@
-> template_glmnet(Sepal.Width ~ ., data = iris, verbose = TRUE)
+> dummy_template(model, verbose, tune)
 glmn_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
@@ -29,6 +29,9 @@ glmn_grid <- expand.grid(penalty = 10^seq(-6, -1, length.out = 20), mixture = c(
     0.2, 0.4, 0.6, 0.8, 1)) 
 
 glmn_tune <- 
-  tune_grid(glmn_workflow, resamples = stop("add your rsample object"), grid = glmn_grid) 
+  tune_grid(glmn_workflow, resamples = rlang::abort("add your rsample object"), 
+    grid = glmn_grid) 
 
+
+NULL
 

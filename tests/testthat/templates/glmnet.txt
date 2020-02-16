@@ -1,4 +1,4 @@
-> template_glmnet(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
+> no_dummy_template(model, verbose, tune)
 glmn_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
   step_zv(all_predictors()) %>% 
@@ -14,4 +14,6 @@ glmn_workflow <-
   add_recipe(glmn_recipe) %>% 
   add_model(glmn_model) 
 
+
+NULL
 

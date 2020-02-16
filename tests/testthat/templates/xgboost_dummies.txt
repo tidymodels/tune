@@ -1,5 +1,4 @@
-> set.seed(1290)
-> template_xgboost(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
+> dummy_template(model, verbose, tune)
 xgb_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
@@ -16,4 +15,6 @@ xgb_workflow <-
   add_recipe(xgb_recipe) %>% 
   add_model(xgb_model) 
 
+
+NULL
 

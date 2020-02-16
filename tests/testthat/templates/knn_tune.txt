@@ -1,5 +1,4 @@
-> set.seed(24214)
-> template_knn(Species ~ ., data = iris)
+> no_dummy_template(model, verbose, tune)
 knn_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
   step_zv(all_predictors()) %>% 
@@ -15,8 +14,11 @@ knn_workflow <-
   add_recipe(knn_recipe) %>% 
   add_model(knn_model) 
 
-set.seed(50442)
+set.seed(27246)
 knn_tune <-
-  tune_grid(knn_workflow, resamples = stop("add your rsample object"), grid = 20)
+  tune_grid(knn_workflow, resamples = rlang::abort("add your rsample object"), 
+    grid = 20)
 
+
+NULL
 

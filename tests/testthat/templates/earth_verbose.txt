@@ -1,0 +1,18 @@
+> no_dummy_template(model, verbose, tune)
+mars_recipe <- 
+  recipe(formula = Species ~ ., data = iris) %>% 
+  step_zv(all_predictors()) 
+
+mars_model <- 
+  mars() %>% 
+  set_mode("classification") %>% 
+  set_engine("earth") 
+
+mars_workflow <- 
+  workflow() %>% 
+  add_recipe(mars_recipe) %>% 
+  add_model(mars_model) 
+
+
+NULL
+

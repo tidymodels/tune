@@ -1,4 +1,4 @@
-> template_glmnet(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
+> dummy_template(model, verbose, tune)
 glmn_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
@@ -25,4 +25,6 @@ glmn_workflow <-
   add_recipe(glmn_recipe) %>% 
   add_model(glmn_model) 
 
+
+NULL
 

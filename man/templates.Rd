@@ -4,6 +4,8 @@
 \alias{template_glmnet}
 \alias{template_xgboost}
 \alias{template_knn}
+\alias{template_ranger}
+\alias{template_earth}
 \title{Template code functions for specific models}
 \usage{
 template_glmnet(formula, data, verbose = FALSE, tune = TRUE)
@@ -11,6 +13,12 @@ template_glmnet(formula, data, verbose = FALSE, tune = TRUE)
 template_xgboost(formula, data, verbose = FALSE, tune = TRUE)
 
 template_knn(formula, data, verbose = FALSE, tune = TRUE)
+
+template_ranger(formula, data, verbose = FALSE, tune = TRUE)
+
+template_ranger(formula, data, verbose = FALSE, tune = TRUE)
+
+template_earth(formula, data, verbose = FALSE, tune = TRUE)
 }
 \arguments{
 \item{formula}{A simple model formula with no in-line functions. This will

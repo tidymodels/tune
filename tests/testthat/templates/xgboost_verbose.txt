@@ -1,5 +1,4 @@
-> set.seed(1290)
-> template_xgboost(Species ~ ., data = iris, verbose = TRUE, tune = FALSE)
+> no_dummy_template(model, verbose, tune)
 xgb_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
   step_zv(all_predictors()) 
@@ -14,4 +13,6 @@ xgb_workflow <-
   add_recipe(xgb_recipe) %>% 
   add_model(xgb_model) 
 
+
+NULL
 

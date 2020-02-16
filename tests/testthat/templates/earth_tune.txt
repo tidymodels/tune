@@ -1,0 +1,24 @@
+> no_dummy_template(model, verbose, tune)
+mars_recipe <- 
+  recipe(formula = Species ~ ., data = iris) %>% 
+  step_zv(all_predictors()) 
+
+mars_model <- 
+  mars(num_terms = tune(), prod_degree = tune(), prune_method = "none") %>% 
+  set_mode("classification") %>% 
+  set_engine("earth") 
+
+mars_workflow <- 
+  workflow() %>% 
+  add_recipe(mars_recipe) %>% 
+  add_model(mars_model) 
+
+mars_grid <- expand.grid(num_terms = 2 * (1:6), prod_degree = 1:2) 
+
+mars_tune <- 
+  tune_grid(mars_workflow, resamples = rlang::abort("add your rsample object"), 
+    grid = mars_grid) 
+
+
+NULL
+

@@ -1,4 +1,4 @@
-> template_glmnet(Species ~ ., data = iris)
+> no_dummy_template(model, verbose, tune)
 glmn_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
   step_zv(all_predictors()) %>% 
@@ -20,4 +20,6 @@ glmn_grid <- expand.grid(penalty = 10^seq(-6, -1, length.out = 20), mixture = c(
 glmn_tune <- 
   tune_grid(glmn_workflow, resamples = stop("add your rsample object"), grid = glmn_grid) 
 
+
+NULL
 

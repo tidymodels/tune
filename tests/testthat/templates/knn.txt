@@ -1,5 +1,4 @@
-> set.seed(24214)
-> template_knn(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
+> no_dummy_template(model, verbose, tune)
 knn_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
   step_zv(all_predictors()) %>% 
@@ -15,4 +14,6 @@ knn_workflow <-
   add_recipe(knn_recipe) %>% 
   add_model(knn_model) 
 
+
+NULL
 

@@ -1,0 +1,23 @@
+> dummy_template(model, verbose, tune)
+mars_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) %>% 
+  step_novel(all_nominal(), -all_outcomes()) %>% 
+  # This model requires the predictors to be numeric. The most common 
+  # method to convert qualitative predictors to numeric is to create binary 
+  # indicator variables (aka dummy variables) from these predictors. 
+  step_dummy(all_nominal(), -all_outcomes()) %>% 
+  step_zv(all_predictors()) 
+
+mars_model <- 
+  mars() %>% 
+  set_mode("regression") %>% 
+  set_engine("earth") 
+
+mars_workflow <- 
+  workflow() %>% 
+  add_recipe(mars_recipe) %>% 
+  add_model(mars_model) 
+
+
+NULL
+

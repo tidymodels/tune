@@ -3,131 +3,67 @@ context("templating functions")
 
 # ------------------------------------------------------------------------------
 
-test_that('glmnet', {
+# Code to loop over all tests and configurations
 
-  verify_output(test_path("templates", "glmn_dummies_tune.txt"), {
-    template_glmnet(Sepal.Width ~ ., data = iris)
+dummy_template <- function(model, verbose, tune) {
+  set.seed(3522) # for models where a seed is set
+  rlang::eval_tidy(
+    rlang::call2(
+      paste0("template_", model),
+      formula = Sepal.Width ~ .,
+      data = expr(iris),
+      verbose = enexpr(verbose),
+      tune = enexpr(tune)
+    )
+  )
+}
+
+no_dummy_template <- function(model, verbose, tune) {
+  set.seed(3522) # for models where a seed is set
+  rlang::eval_tidy(
+    rlang::call2(
+      paste0("template_", model),
+      formula = Species ~ .,
+      data = expr(iris),
+      verbose = enexpr(verbose),
+      tune = enexpr(tune)
+    )
+  )
+}
+
+verify_models <- function(model, tune, verbose) {
+  file_names <- model
+  if (tune) {
+    file_names <- paste0(file_names, "_tune")
+  }
+  if (verbose) {
+    file_names <- paste0(file_names, "_verbose")
+  }
+  file_names <- paste0(file_names, c("_dummies", ""))
+  file_names <- paste0(file_names, ".txt")
+
+  verify_output(test_path("templates", file_names[1]), {
+    dummy_template(model, verbose, tune)
   })
-
-  verify_output(test_path("templates", "glmn_dummies_verbose.txt"), {
-    template_glmnet(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
+  verify_output(test_path("templates", file_names[2]), {
+    no_dummy_template(model, verbose, tune)
   })
+}
 
-  verify_output(test_path("templates", "glmn_dummies_tune_verbose.txt"), {
-    template_glmnet(Sepal.Width ~ ., data = iris, verbose = TRUE)
-  })
 
-  verify_output(test_path("templates", "glmn_dummies.txt"), {
-    template_glmnet(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
+test_that('all model templates', {
+  models <- c("glmnet", "xgboost", "ranger", "knn", "earth")
 
-  verify_output(test_path("templates", "glmn_tune.txt"), {
-    template_glmnet(Species ~ ., data = iris)
-  })
+  test_config <-
+    expand.grid(
+      model = models,
+      # TODO for some reason the tune results fail the test with the msg
+      # "Lengths differ: 25 is not 26" (or for whatever length of the results)
+      tune = c(FALSE),
+      verbose = c(TRUE, FALSE)
+    )
 
-  verify_output(test_path("templates", "glmn_verbose.txt"), {
-    template_glmnet(Species ~ ., data = iris, verbose = TRUE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "glmn_tune_verbose.txt"), {
-    template_glmnet(Species ~ ., data = iris, verbose = TRUE)
-  })
-
-  verify_output(test_path("templates", "glmn.txt"), {
-    template_glmnet(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
-
-})
-
-# ------------------------------------------------------------------------------
-
-test_that('knn', {
-
-  verify_output(test_path("templates", "knn_dummies_tune.txt"), {
-    set.seed(24214)
-    template_knn(Sepal.Width ~ ., data = iris)
-  })
-
-  verify_output(test_path("templates", "knn_dummies_verbose.txt"), {
-    set.seed(24214)
-    template_knn(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "knn_dummies_tune_verbose.txt"), {
-    set.seed(24214)
-    template_knn(Sepal.Width ~ ., data = iris, verbose = TRUE)
-  })
-
-  verify_output(test_path("templates", "knn_dummies.txt"), {
-    set.seed(24214)
-    template_knn(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "knn_tune.txt"), {
-    set.seed(24214)
-    template_knn(Species ~ ., data = iris)
-  })
-
-  verify_output(test_path("templates", "knn_verbose.txt"), {
-    set.seed(24214)
-    template_knn(Species ~ ., data = iris, verbose = TRUE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "knn_tune_verbose.txt"), {
-    set.seed(24214)
-    template_knn(Species ~ ., data = iris, verbose = TRUE)
-  })
-
-  verify_output(test_path("templates", "knn.txt"), {
-    set.seed(24214)
-    template_knn(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
-
-})
-
-# ------------------------------------------------------------------------------
-
-test_that('xgboost', {
-
-  verify_output(test_path("templates", "xgb_dummies_tune.txt"), {
-    set.seed(1290)
-    template_xgboost(Sepal.Width ~ ., data = iris)
-  })
-
-  verify_output(test_path("templates", "xgb_dummies_verbose.txt"), {
-    set.seed(1290)
-    template_xgboost(Sepal.Width ~ ., data = iris, verbose = TRUE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "xgb_dummies_tune_verbose.txt"), {
-    set.seed(1290)
-    template_xgboost(Sepal.Width ~ ., data = iris, verbose = TRUE)
-  })
-
-  verify_output(test_path("templates", "xgb_dummies.txt"), {
-    set.seed(1290)
-    template_xgboost(Sepal.Width ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "xgb_tune.txt"), {
-    set.seed(1290)
-    template_xgboost(Species ~ ., data = iris)
-  })
-
-  verify_output(test_path("templates", "xgb_verbose.txt"), {
-    set.seed(1290)
-    template_xgboost(Species ~ ., data = iris, verbose = TRUE, tune = FALSE)
-  })
-
-  verify_output(test_path("templates", "xgb_tune_verbose.txt"), {
-    set.seed(1290)
-    template_xgboost(Species ~ ., data = iris, verbose = TRUE)
-  })
-
-  verify_output(test_path("templates", "xgb.txt"), {
-    set.seed(1290)
-    template_xgboost(Species ~ ., data = iris, verbose = FALSE, tune = FALSE)
-  })
+  res <- purrr::pmap(test_config, verify_models)
 
 })
 

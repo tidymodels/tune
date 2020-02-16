@@ -115,7 +115,15 @@ factor_check <- function(base, rec, add) {
   }
   base
 }
-
+top_level_comment <- function(..., add = FALSE) {
+  if (!add) {
+    return(invisible(NULL))
+  }
+  value <- paste(...)
+  value <- strwrap(value, width = expr_width, prefix = "# ")
+  cat(paste0(value, collapse = "\n"))
+  cat("\n")
+}
 
 template_workflow <- function(prefix) {
   paste0(prefix, "_workflow") %>%
@@ -128,7 +136,7 @@ template_tune_with_grid <- function(prefix) {
   tune_expr <-
     rlang::call2("tune_grid",
           sym(paste0(prefix, "_workflow")),
-          resamples = expr(stop("add your rsample object")),
+          resamples = expr(rlang::abort("add your rsample object")),
           grid = sym(paste0(prefix, "_grid")))
   assign_value(paste0(prefix, "_tune"), !!tune_expr)
 }
@@ -137,7 +145,7 @@ template_tune_no_grid <- function(prefix, seed = sample.int(10^5, 1)) {
     rlang::call2(
       "tune_grid",
       sym(paste0(prefix, "_workflow")),
-      resamples = expr(stop("add your rsample object")),
+      resamples = expr(rlang::abort("add your rsample object")),
       grid = 20
     )
 
@@ -379,3 +387,153 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
   }
   invisible(NULL)
 }
+
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname templates
+template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
+  rec_cl <- initial_recipe_call(match.call())
+  rec_syntax <-
+    "knn_recipe" %>%
+    assign_value(!!rec_cl)
+
+  rec <- recipes::recipe(formula, data)
+
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
+
+  if (has_factor_pred(rec)) {
+    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+  }
+  rec_syntax <-
+    rec_syntax %>%
+    add_comment(paste(dist_msg, zv_msg), add = verbose) %>%
+    add_steps_normalization()
+
+  if (tune) {
+    prm <- rlang::exprs(neighbors = tune(), weight_func = tune())
+  } else {
+    prm <- NULL
+  }
+
+  mod_syntax <-
+    "knn_model" %>%
+    assign_value(!!rlang::call2("nearest_neighbor", !!!prm)) %>%
+    pipe_value(set_mode(!!model_mode(rec))) %>%
+    pipe_value(set_engine("kknn"))
+
+  cat(rec_syntax, "\n\n")
+  cat(mod_syntax, "\n\n")
+  cat(template_workflow("knn"), "\n\n")
+  if (tune) {
+    cat(template_tune_no_grid("knn"), "\n\n", sep = "")
+  }
+  invisible(NULL)
+}
+
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname templates
+template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
+  rec_cl <- initial_recipe_call(match.call())
+  rec_syntax <-
+    "ranger_recipe" %>%
+    assign_value(!!rec_cl)
+
+  rec <- recipes::recipe(formula, data)
+
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
+
+  # TODO add a check for the factor levels that are an issue for
+
+  if (tune) {
+    prm <- rlang::exprs(mtry = tune(), min_n = tune(), trees = 1000)
+  } else {
+    prm <- prm <- rlang::exprs(trees = 1000)
+  }
+
+  mod_syntax <-
+    "ranger_model" %>%
+    assign_value(!!rlang::call2("rand_forest", !!!prm)) %>%
+    pipe_value(set_mode(!!model_mode(rec))) %>%
+    pipe_value(set_engine("ranger"))
+
+  cat(rec_syntax, "\n\n")
+  cat(mod_syntax, "\n\n")
+  cat(template_workflow("ranger"), "\n\n")
+  if (tune) {
+
+    cat(template_tune_no_grid("ranger"), "\n\n", sep = "")
+  }
+  invisible(NULL)
+}
+
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname templates
+template_earth <- function(formula, data, verbose = FALSE, tune = TRUE) {
+  rec_cl <- initial_recipe_call(match.call())
+  rec_syntax <-
+    "mars_recipe" %>%
+    assign_value(!!rec_cl)
+
+  rec <- recipe(formula, data)
+
+  rec_syntax <-
+    rec_syntax %>%
+    factor_check(rec, add = verbose)
+
+  if (has_factor_pred(rec)) {
+    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+  }
+
+  rec_syntax <- pipe_value(rec_syntax, step_zv(all_predictors()))
+
+  if (tune) {
+    prm <-
+      rlang::exprs(
+        num_terms = tune(), prod_degree = tune(),  prune_method = "none"
+      )
+  } else {
+    prm <- NULL
+  }
+
+  mod_syntax <-
+    "mars_model" %>%
+    assign_value(!!rlang::call2("mars", !!!prm)) %>%
+    pipe_value(set_mode(!!model_mode(rec))) %>%
+    pipe_value(set_engine("earth"))
+
+  cat(rec_syntax, "\n\n")
+  cat(mod_syntax, "\n\n")
+  cat(template_workflow("mars"), "\n\n")
+  if (tune) {
+    # We can only have as many terms as data points but maybe we should
+    # give some wiggle room for resampling. Also, we will have a sequence of odd
+    # numbered terms so divide by 2 and keep an integer.
+    term_max <- floor(min(12, floor(floor(nrow(data) * 0.75)))/2)
+
+    mars_grid <- rlang::expr(
+      mars_grid <- expand.grid(num_terms = 2 * (1:!!term_max), prod_degree = 1:2)
+    )
+    top_level_comment(
+      "MARS models can make predictions on many _sub_models_, meaning that we can",
+      "evaluate many values of `num_terms` without much computational cost.",
+      "A regular grid is used to exploit this property.",
+      "The first term is only the intercept, so the grid is a sequence of even",
+      "numbered values.",
+      add = verbose
+    )
+    cat(rlang::expr_text(mars_grid, width = expr_width), "\n\n")
+    cat(template_tune_with_grid("mars"), "\n\n")
+  }
+  invisible(NULL)
+}
+
+

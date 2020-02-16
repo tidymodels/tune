@@ -1,0 +1,17 @@
+> dummy_template(model, verbose, tune)
+ranger_recipe <- 
+  recipe(formula = Sepal.Width ~ ., data = iris) 
+
+ranger_model <- 
+  rand_forest(trees = 1000) %>% 
+  set_mode("regression") %>% 
+  set_engine("ranger") 
+
+ranger_workflow <- 
+  workflow() %>% 
+  add_recipe(ranger_recipe) %>% 
+  add_model(ranger_model) 
+
+
+NULL
+
