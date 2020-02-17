@@ -9,7 +9,7 @@
 #' types, the method of summarizing predictions is detailed below.
 #' @param parameters An optional tibble of tuning parameter values that can be
 #'  used to filter the predicted values before processing. This tibble should
-#'  only have columns for each tuning parameter identifier (e.g. `"my_param"``
+#'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
 #'  if `tune("my_param")` was used).
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
@@ -115,7 +115,6 @@ filter_predictions <- function(x, parameters) {
     return(x)
   }
 
-  metric_types <- metrics_info(metrics)$type
   param_names <- params$id
   parameters <- dplyr::select(parameters, dplyr::one_of(param_names))
   if (ncol(parameters) != length(param_names)) {
@@ -210,7 +209,6 @@ prob_and_class_summarize <- function(x, p) {
   outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
   lvl <- levels(x[[outcome_col]])
   ord <- is.ordered(x[[outcome_col]])
-  # check this
   y <-
     x %>%
     dplyr::arrange(dplyr::desc(.value), .by_group = TRUE) %>%

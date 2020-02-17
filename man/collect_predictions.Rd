@@ -20,7 +20,8 @@ types, the method of summarizing predictions is detailed below.}
 
 \item{parameters}{An optional tibble of tuning parameter values that can be
 used to filter the predicted values before processing. This tibble should
-only have columns for each tuning parameter identifier (e.g. \verb{"my_param"`` if }tune("my_param")` was used).}
+only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
+if \code{tune("my_param")} was used).}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
