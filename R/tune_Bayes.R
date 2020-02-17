@@ -223,7 +223,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-     metrics <- check_metrics(metrics, object)
+    metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
@@ -330,7 +330,7 @@ tune_bayes_workflow <-
 
     unsummarized <- reup_rs(resamples, unsummarized)
     on.exit()
-    unsummarized
+    save_attr(unsummarized, param_info, metrics)
   }
 
 create_initial_set <- function(param, n = NULL) {
