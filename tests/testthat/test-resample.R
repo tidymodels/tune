@@ -75,7 +75,7 @@ test_that("can use `fit_resamples()` with a workflow", {
 
   result <- fit_resamples(workflow, folds)
 
-  expect_equal(as.data.frame(expect), as.data.frame(result))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 # ------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ test_that("`tune_grid()` falls back to resamples if there are no tuning paramete
     "No tuning parameters have been detected"
   )
 
-  expect_equal(as.data.frame(result), as.data.frame(expect))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
@@ -147,7 +147,7 @@ test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
     "No tuning parameters have been detected"
   )
 
-  expect_equal(as.data.frame(result), as.data.frame(expect))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 # ------------------------------------------------------------------------------

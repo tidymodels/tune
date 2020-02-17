@@ -5,13 +5,17 @@
 \alias{collect_metrics}
 \title{Obtain and format results produced by tuning functions}
 \usage{
-collect_predictions(x)
+collect_predictions(x, parameters = NULL)
 
 collect_metrics(x, summarize = TRUE)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
 or \code{\link[=last_fit]{last_fit()}}. For \code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have been used.}
+
+\item{parameters}{An optional tibble of tuning parameter values that can be
+used to filter the predicted values before processing. This tibble should
+only have columns for each tuning parameter identifier (e.g. \verb{"my_param"`` if }tune("my_param")` was used).}
 
 \item{summarize}{A logical; should metrics be summarized over resamples
 (\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}

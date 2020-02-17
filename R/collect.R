@@ -6,6 +6,10 @@
 #' @param summarize A logical; should metrics be summarized over resamples
 #' (`TRUE`) or return the values for each individual resample. Note that, if `x`
 #' is created by [last_fit()], `summarize` has not effect.
+#' @param parameters An optional tibble of tuning parameter values that can be
+#'  used to filter the predicted values before processing. This tibble should
+#'  only have columns for each tuning parameter identifier (e.g. `"my_param"``
+#'  if `tune("my_param")` was used).
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
 #'
@@ -45,7 +49,11 @@
 #' collect_predictions(resampled)
 #' }
 #' @export
-collect_predictions <- function(x) {
+collect_predictions <- function(x, parameters = NULL) {
+  # TODO check classes of x
+  # add grid argument
+  # add summarize argument
+
   names <- colnames(x)
   coll_col <- ".predictions"
 
@@ -60,8 +68,48 @@ collect_predictions <- function(x) {
     rlang::abort(msg)
   }
 
+  x <- filter_predictions(x, parameters)
+
   collector(x, coll_col = coll_col)
 }
+
+filter_predictions <- function(x, parameters) {
+  if (is.null(parameters)) {
+    return(x)
+  }
+  metrics <- attr(x, "metrics")
+  params <- attr(x, "parameters")
+  if (is.null(metrics) | is.null(params)) {
+    rlang::warn(
+      paste(
+        strwrap(
+          paste("The object is missing some attributes; it is probably from",
+                "an earlier version of `tune`. The predictions can't be filtered." ),
+          prefix = ""
+        ),
+        collapse = "\n"
+      )
+    )
+
+    return(x)
+  }
+
+  metric_types <- metrics_info(metrics)$type
+  param_names <- params$id
+  parameters <- dplyr::select(parameters, dplyr::one_of(param_names))
+  if (ncol(parameters) != length(param_names)) {
+    rlang::abort(
+      paste0("`parameters` should only have columns: ",
+             paste0("'", param_names, "'", collapse = ", "))
+    )
+  }
+  x$.predictions <-
+    purrr::map(x$.predictions, dplyr::inner_join, parameters, by = param_names)
+  x
+}
+
+
+# ------------------------------------------------------------------------------
 
 #' @export
 #' @rdname collect_predictions
