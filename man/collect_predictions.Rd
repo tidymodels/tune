@@ -5,7 +5,7 @@
 \alias{collect_metrics}
 \title{Obtain and format results produced by tuning functions}
 \usage{
-collect_predictions(x, parameters = NULL)
+collect_predictions(x, summarize = FALSE, parameters = NULL)
 
 collect_metrics(x, summarize = TRUE)
 }
@@ -13,30 +13,46 @@ collect_metrics(x, summarize = TRUE)
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
 or \code{\link[=last_fit]{last_fit()}}. For \code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have been used.}
 
+\item{summarize}{A logical; should metrics be summarized over resamples
+(\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
+is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has not effect. For the other object
+types, the method of summarizing predictions is detailed below.}
+
 \item{parameters}{An optional tibble of tuning parameter values that can be
 used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \verb{"my_param"`` if }tune("my_param")` was used).}
-
-\item{summarize}{A logical; should metrics be summarized over resamples
-(\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
-is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has not effect.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
 model.
 
-For \code{\link[=collect_metrics]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, there are columns for
-each tuning parameter (using the \code{id} from \code{\link[=tune]{tune()}}, if any).
+For \code{\link[=collect_metrics]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, when unsummarized,
+there are columns for each tuning parameter (using the \code{id} from \code{\link[=tune]{tune()}},
+if any).
+\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
+results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
+When not summarized, the additional columns for the resampling identifier(s)
+and \code{.estimate}.
 
 For \code{\link[=collect_predictions]{collect_predictions()}}, there are additional columns for the resampling
 identifier(s), columns for the predicted values (e.g., \code{.pred},
 \code{.pred_class}, etc.), and a column for the outcome(s) using the original
 column name(s) in the data.
 
-\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
-results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
-When not summarized, the additional columns for the resampling identifier(s)
-and \code{.estimate}.
+\code{\link[=collect_predictions]{collect_predictions()}} can summarize the various results over
+replicate out-of-sample predictions. For example, when using the bootstrap,
+each row in the original training set has multiple holdout predictions
+(across assessment sets). To convert these results to a format where every
+training set same has a single predicted value, the results are averaged
+over replicate predictions.
+
+For regression cases, the numeric predictions are simply averaged. For
+classification models, the problem is more complex. When class probabilities
+are used, these are averaged and then re-normalized to make sure that they
+add to one. If hard class predictions also exist in the data, then these are
+determined from the summarized probability estimates (so that they match).
+If only hard class predictions are in the results, then the mode is used to
+summarize.
 }
 \description{
 Obtain and format results produced by tuning functions
@@ -55,13 +71,15 @@ collect_metrics(ames_grid_search, summarize = FALSE)
 
 library(parsnip)
 library(rsample)
+library(dplyr)
 
 lm_mod <-linear_reg() \%>\% set_engine("lm")
 set.seed(93599150)
-car_folds <- vfold_cv(mtcars)
+car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
 ctrl <- control_resamples(save_pred = TRUE)
 
 resampled <- fit_resamples(mpg ~ ., lm_mod, resamples = car_folds, control = ctrl)
-collect_predictions(resampled)
+collect_predictions(resampled) \%>\% arrange(.row)
+collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
 }
 }

@@ -1,6 +1,7 @@
 context("collect")
 
 library(recipes)
+data(two_class_dat, package = "modeldata")
 
 # ------------------------------------------------------------------------------
 
@@ -23,6 +24,32 @@ lm_splines <-
     control = control_grid(save_pred = TRUE)
   )
 
+set.seed(93114)
+rep_folds_class <- rsample::vfold_cv(two_class_dat, v = 2, repeats = 3)
+
+svm_mod <-
+  parsnip::svm_rbf(cost = tune("cost value")) %>%
+  parsnip::set_engine("kernlab") %>%
+  parsnip::set_mode("classification")
+
+svm_tune <-
+  tune_bayes(
+    Class ~ .,
+    svm_mod,
+    rep_folds_class,
+    initial = 2,
+    iter = 2,
+    control = control_bayes(save_pred = TRUE)
+  )
+
+svm_tune_class <- svm_tune
+svm_tune_class$.predictions <-
+  purrr::map(svm_tune_class$.predictions,
+             ~ .x %>% dplyr::select(-.pred_Class1,-.pred_Class2))
+attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
+
+svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
+
 # ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
@@ -42,7 +69,7 @@ test_that("`collect_predictions()`, un-averaged", {
            cols = c(.predictions)) %>% dplyr::select(one_of(names(res)))
  expect_equal(res, exp_res)
 
- res_subset <- collect_predictions(lm_splines, grd[1,])
+ res_subset <- collect_predictions(lm_splines, parameters = grd[1,])
  exp_res_subset <- dplyr::filter(exp_res, deg_free == grd$deg_free[[1]])
  expect_equal(res_subset, exp_res_subset)
 })
@@ -52,11 +79,64 @@ test_that("`collect_predictions()`, un-averaged", {
 test_that("bad filter grid", {
   expect_warning(
     expect_error(
-      collect_predictions(lm_splines, tibble(wrong = "value")),
+      collect_predictions(lm_splines, parameters = tibble(wrong = "value")),
       "`parameters` should only have columns: 'deg_free'"
     ),
     "Unknown columns: `deg_free`"
   )
-  expect_true(nrow(collect_predictions(lm_splines, tibble(deg_free = 1))) == 0)
+  expect_true(
+    nrow(collect_predictions(lm_splines, parameters = tibble(deg_free = 1))) == 0
+  )
+})
+
+# ------------------------------------------------------------------------------
+
+test_that("regression predictions, averaged", {
+  all_res <- collect_predictions(lm_splines)
+  res <- collect_predictions(lm_splines, summarize = TRUE)
+  expect_equal(nrow(res), nrow(mtcars) * nrow(grd))
+
+  # pull out an example to test
+  all_res_subset <- dplyr::filter(all_res, .row == 3 & deg_free == 4)
+  res_subset <- dplyr::filter(res, .row == 3 & deg_free == 4)
+  expect_equal(mean(all_res_subset$.pred), res_subset$.pred)
+})
+
+# ------------------------------------------------------------------------------
+
+test_that("classification class predictions, averaged", {
+  all_res <- collect_predictions(svm_tune_class)
+  res <- collect_predictions(svm_tune_class, summarize = TRUE)
+  expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
+
+  # pull out an example to test
+  all_res_subset <-
+    dplyr::filter(all_res, .row == 5 & `cost value` == svm_grd$`cost value`[1])
+  mode_val <- names(sort(table(all_res_subset$.pred_class)))[2]
+  exp_val <- factor(mode_val, levels = levels(all_res_subset$Class))
+  res_subset <-
+    dplyr::filter(res, .row == 5 &  `cost value` == svm_grd$`cost value`[1])
+  expect_equal(exp_val, res_subset$.pred_class)
+})
+
+# ------------------------------------------------------------------------------
+
+test_that("classification class and prob predictions, averaged", {
+  all_res <- collect_predictions(svm_tune)
+  res <- collect_predictions(svm_tune, summarize = TRUE)
+  expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
+
+  # pull out an example to test
+  all_res_subset <-
+    dplyr::filter(all_res, .row == 5 & `cost value` == svm_grd$`cost value`[1])
+  .pred_Class1 <- mean(all_res_subset$.pred_Class1)
+  .pred_Class2 <- 1 - .pred_Class1
+  .pred_class <- ifelse(.pred_Class2 > .pred_Class1, "Class2", "Class1")
+  .pred_class <- factor(.pred_class, levels = levels(all_res_subset$Class))
+  res_subset <-
+    dplyr::filter(res, .row == 5 &  `cost value` == svm_grd$`cost value`[1])
+  expect_equal(.pred_Class1, res_subset$.pred_Class1)
+  expect_equal(.pred_Class2, res_subset$.pred_Class2)
+  expect_equal(.pred_class,  res_subset$.pred_class)
 })
 
