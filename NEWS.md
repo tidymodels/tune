@@ -1,8 +1,13 @@
-# tune (development version)
+# tune 0.0.1.9000
 
 ## Breaking Changes
 
 * The arguments to `fit_grid()` have been reordered to better align with parsnip's `fit()`.
+
+## Other Changes
+
+* Added more packages to be fully loaded in the workers when run in parallel using `doParallel` (#157)[https://github.com/tidymodels/tune/issues/157],  (#159)[https://github.com/tidymodels/tune/issues/159], and 
+(#160)[https://github.com/tidymodels/tune/issues/160]
 
 # tune 0.0.1
 
