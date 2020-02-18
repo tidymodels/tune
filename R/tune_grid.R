@@ -235,7 +235,7 @@ tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
 
   lifecycle::deprecate_soft("0.0.2",
                             what = "tune_grid.recipe()",
-                            details = "The first argument to `tune_grid()` should be either a model or a workflow")
+                            details = deprecate_msg(match.call(), "tune_grid"))
   empty_ellipses(...)
 
   tune_grid(model, preprocessor = object, resamples = resamples,
@@ -250,7 +250,7 @@ tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
 
   lifecycle::deprecate_soft("0.0.2",
                             what = "tune_grid.formula()",
-                            details = "The first argument to `tune_grid()` should be either a model or a workflow")
+                            details = deprecate_msg(match.call(), "tune_grid"))
   empty_ellipses(...)
 
   tune_grid(model, preprocessor = formula, resamples = resamples,
@@ -364,3 +364,20 @@ quarterback <- function(x) {
   )
 }
 
+# ------------------------------------------------------------------------------
+
+deprecate_msg <- function(cl, func_str) {
+  # re-write call to switch arguments
+  cl[[1]] <- rlang::sym(func_str)
+  pp <- cl[[2]]
+  cl[[2]] <- cl[["model"]]
+  cl[["model"]] <- pp
+  names(cl)[1:3] <- ""
+  paste0(
+    "The first argument to `",
+    func_str,
+    "()` should be either a model or a ",
+    "workflow. In the future, you can use:\n",
+    rlang::expr_text(cl)
+  )
+}
