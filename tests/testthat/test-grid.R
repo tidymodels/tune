@@ -141,7 +141,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 
   cars_res <- tune_grid(
     model,
-    preprocess = rec,
+    preprocessor = rec,
     resamples = data_folds,
     grid = cars_grid,
     control = control
@@ -178,7 +178,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   expect_warning(
     cars_res <- tune_grid(
       svm_mod,
-      preprocess = rec,
+      preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -245,7 +245,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 
   cars_res <- tune_grid(
     svm_mod,
-    preprocess = rec,
+    preprocessor = rec,
     resamples = data_folds,
     grid = cars_grid,
     control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -270,6 +270,19 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   )
 })
 
+test_that("argument order gives warning for recipes", {
+  expect_warning(
+    tune_grid(rec_tune_1, lm_mod, vfold_cv(mtcars, v = 2)),
+    "is deprecated as of lifecycle"
+  )
+})
+
+test_that("argument order gives warning for formula", {
+  expect_warning(
+    tune_grid(mpg ~ ., lm_mod, vfold_cv(mtcars, v = 2)),
+    "is deprecated as of lifecycle"
+  )
+})
 
 test_that("ellipses with tune_grid", {
 

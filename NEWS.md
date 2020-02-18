@@ -1,3 +1,9 @@
+# tune (development version)
+
+## Breaking Changes
+
+* The arguments to `fit_grid()` have been reordered to better align with parsnip's `fit()`.
+
 # tune 0.0.1
 
 * CRAN release.

@@ -31,7 +31,8 @@ Imports:
     foreach,
     parsnip (>= 0.0.4),
     workflows (>= 0.1.0),
-    hardhat (>= 0.1.0)
+    hardhat (>= 0.1.0),
+    lifecycle
 Suggests: 
     testthat,
     knitr,

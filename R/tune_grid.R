@@ -5,8 +5,11 @@
 #'  recipe across one or more resamples of the data.
 #'
 #' @param object A `parsnip` model specification or a [workflows::workflow()].
-#' @param preprocess A traditional model formula or a recipe created using
+#' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].
+#' @param formula A traditional model formula.
+#' @param model A `parsnip` model specification (or `NULL` when `object` is a
+#' workflow).
 #' @param resamples An `rset()` object.
 #' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments. Passing this argument can
@@ -184,7 +187,7 @@
 #' # Warnings will occur from making spline terms on the holdout data that are
 #' # extrapolations.
 #' spline_res <-
-#'   tune_grid(lin_mod, preprocess = spline_rec, resamples = folds, grid = spline_grid)
+#'   tune_grid(lin_mod, preprocessor = spline_rec, resamples = folds, grid = spline_grid)
 #' spline_res
 #'
 #'
@@ -205,7 +208,7 @@
 #'
 #' # Use a space-filling design with 7 points
 #' set.seed(3254)
-#' svm_res <- tune_grid(svm_mod, preprocess = car_rec, resamples = folds, grid = 7)
+#' svm_res <- tune_grid(svm_mod, preprocessor = car_rec, resamples = folds, grid = 7)
 #' svm_res
 #'
 #' show_best(svm_res, metric = "rmse", maximize = FALSE)
@@ -227,11 +230,41 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.model_spec <- function(object, preprocess, resamples, ...,
+tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
+                             grid = 10, metrics = NULL, control = control_grid()) {
+
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "tune_grid.recipe()",
+                            details = "The first argument to `tune_grid()` should be either a model or a workflow")
+  empty_ellipses(...)
+
+  tune_grid(model, preprocessor = object, resamples = resamples,
+            param_info = param_info, grid = grid,
+            metrics = metrics, control = control)
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
+                              grid = 10, metrics = NULL, control = control_grid()) {
+
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "tune_grid.formula()",
+                            details = "The first argument to `tune_grid()` should be either a model or a workflow")
+  empty_ellipses(...)
+
+  tune_grid(model, preprocessor = formula, resamples = resamples,
+            param_info = param_info, grid = grid,
+            metrics = metrics, control = control)
+}
+
+#' @export
+#' @rdname tune_grid
+tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
                                  control = control_grid()) {
 
-  if (is_missing(preprocess) || !(inherits(preprocess, "recipe") || inherits(preprocess, "formula"))) {
+  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
     stop("To tune a model spec, you must preprocess with a formula or recipe",
          call. = FALSE)
   }
@@ -242,14 +275,14 @@ tune_grid.model_spec <- function(object, preprocess, resamples, ...,
     workflow() %>%
     add_model(object)
 
-  if (inherits(preprocess, "recipe")) {
+  if (inherits(preprocessor, "recipe")) {
     wflow <-
       wflow %>%
-      add_recipe(preprocess)
-  } else if (inherits(preprocess, "formula")) {
+      add_recipe(preprocessor)
+  } else if (inherits(preprocessor, "formula")) {
     wflow <-
       wflow %>%
-      add_formula(preprocess)
+      add_formula(preprocessor)
   }
 
   tune_grid_workflow(

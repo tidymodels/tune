@@ -3,6 +3,8 @@
 \name{tune_grid}
 \alias{tune_grid}
 \alias{tune_grid.default}
+\alias{tune_grid.recipe}
+\alias{tune_grid.formula}
 \alias{tune_grid.model_spec}
 \alias{tune_grid.workflow}
 \title{Model tuning via grid search}
@@ -11,9 +13,31 @@ tune_grid(object, ...)
 
 \method{tune_grid}{default}(object, ...)
 
+\method{tune_grid}{recipe}(
+  object,
+  model,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  control = control_grid()
+)
+
+\method{tune_grid}{formula}(
+  formula,
+  model,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  control = control_grid()
+)
+
 \method{tune_grid}{model_spec}(
   object,
-  preprocess,
+  preprocessor,
   resamples,
   ...,
   param_info = NULL,
@@ -37,8 +61,8 @@ tune_grid(object, ...)
 
 \item{...}{Not currently used.}
 
-\item{preprocess}{A traditional model formula or a recipe created using
-\code{\link[recipes:recipe]{recipes::recipe()}}.}
+\item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
+workflow).}
 
 \item{resamples}{An \code{rset()} object.}
 
@@ -54,6 +78,11 @@ parameter sets to be created automatically.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}.}
 
 \item{control}{An object used to modify the tuning process.}
+
+\item{formula}{A traditional model formula.}
+
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 }
 \value{
 An updated version of \code{resamples} with extra list columns for \code{.metrics} and
@@ -233,7 +262,7 @@ spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 # Warnings will occur from making spline terms on the holdout data that are
 # extrapolations.
 spline_res <-
-  tune_grid(lin_mod, preprocess = spline_rec, resamples = folds, grid = spline_grid)
+  tune_grid(lin_mod, preprocessor = spline_rec, resamples = folds, grid = spline_grid)
 spline_res
 
 
@@ -254,7 +283,7 @@ svm_mod <-
 
 # Use a space-filling design with 7 points
 set.seed(3254)
-svm_res <- tune_grid(svm_mod, preprocess = car_rec, resamples = folds, grid = 7)
+svm_res <- tune_grid(svm_mod, preprocessor = car_rec, resamples = folds, grid = 7)
 svm_res
 
 show_best(svm_res, metric = "rmse", maximize = FALSE)
