@@ -262,7 +262,7 @@ spline_grid <- expand.grid(disp = 2:5, wt = 2:5)
 # Warnings will occur from making spline terms on the holdout data that are
 # extrapolations.
 spline_res <-
-  tune_grid(lin_mod, preprocessor = spline_rec, resamples = folds, grid = spline_grid)
+  tune_grid(lin_mod, spline_rec, resamples = folds, grid = spline_grid)
 spline_res
 
 
@@ -283,7 +283,7 @@ svm_mod <-
 
 # Use a space-filling design with 7 points
 set.seed(3254)
-svm_res <- tune_grid(svm_mod, preprocessor = car_rec, resamples = folds, grid = 7)
+svm_res <- tune_grid(svm_mod, car_rec, resamples = folds, grid = 7)
 svm_res
 
 show_best(svm_res, metric = "rmse", maximize = FALSE)
