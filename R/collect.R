@@ -238,8 +238,6 @@ class_summarize <- function(x, p) {
   nms <- names(x)
   group_cols <- nms[!(nms %in% pred_cols)]
   outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
-  lvl <- levels(x[[outcome_col]])
-  ord <- is.ordered(x[[outcome_col]])
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
