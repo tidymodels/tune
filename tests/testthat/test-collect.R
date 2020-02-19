@@ -150,7 +150,7 @@ test_that("ensure that common dplyr verbs don't affect attributes", {
     dplyr::arrange(id) %>%
     dplyr::sample_frac() %>%
     dplyr::filter(id2 == "Fold1") %>%
-    # dplyr::mutate(foo = "bar") %>%
+    dplyr::mutate(foo = "bar") %>%
     dplyr::rename(.pred = .predictions) %>%
     dplyr::select(-.pred) %>%
     dplyr::slice(1:5)
@@ -167,7 +167,7 @@ test_that("ensure that common dplyr verbs don't affect attributes", {
     dplyr::arrange(id) %>%
     dplyr::sample_frac() %>%
     dplyr::filter(id2 == "Fold1") %>%
-    # dplyr::mutate(foo = "bar") %>%
+    dplyr::mutate(foo = "bar") %>%
     dplyr::rename(.pred = .predictions) %>%
     dplyr::select(-.pred) %>%
     dplyr::slice(1:5)
