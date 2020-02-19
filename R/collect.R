@@ -5,7 +5,7 @@
 #'  = TRUE` should have been used.
 #' @param summarize A logical; should metrics be summarized over resamples
 #' (`TRUE`) or return the values for each individual resample. Note that, if `x`
-#' is created by [last_fit()], `summarize` has not effect. For the other object
+#' is created by [last_fit()], `summarize` has no effect. For the other object
 #' types, the method of summarizing predictions is detailed below.
 #' @param parameters An optional tibble of tuning parameter values that can be
 #'  used to filter the predicted values before processing. This tibble should
@@ -241,7 +241,6 @@ class_summarize <- function(x, p) {
   outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
   lvl <- levels(x[[outcome_col]])
   ord <- is.ordered(x[[outcome_col]])
-  # check this
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%

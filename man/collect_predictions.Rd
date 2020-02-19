@@ -15,7 +15,7 @@ or \code{\link[=last_fit]{last_fit()}}. For \code{\link[=collect_predictions]{co
 
 \item{summarize}{A logical; should metrics be summarized over resamples
 (\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
-is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has not effect. For the other object
+is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has no effect. For the other object
 types, the method of summarizing predictions is detailed below.}
 
 \item{parameters}{An optional tibble of tuning parameter values that can be
