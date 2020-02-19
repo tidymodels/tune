@@ -202,8 +202,11 @@ tune_bayes.model_spec <- function(object,
                                   initial = 5,
                                   control = control_bayes()) {
 
-  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
-    rlang::abort("To tune a model spec, you must preprocess with a formula or recipe")
+  if (is_missing(preprocessor) ||
+      !(inherits(preprocessor, "recipe") ||
+        inherits(preprocessor, "formula"))) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
   empty_ellipses(...)

@@ -5,25 +5,13 @@
 #' [tune_bayes()] for that), and is instead used for fitting a single
 #' model+recipe or model+formula combination across many resamples.
 #'
-#' @param object A `parsnip` model specification or a [workflows::workflow()].
-#'
-#' @param preprocessor A traditional model formula or a recipe created using
-#'   [recipes::recipe()].
-#'
-#' @param model A `parsnip` model specification.
+#' @inheritParams last_fit
 #'
 #' @param resamples A resample `rset` created from an `rsample` function such
 #'   as [rsample::vfold_cv()].
 #'
-#' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
-#'   set of metrics.
-#'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
-#'
-#' @param formula A formula specifying the terms of the model.
-#'
-#' @param ... Currently unused.
 #'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
@@ -112,8 +100,11 @@ fit_resamples.model_spec <- function(object,
                                      metrics = NULL,
                                      control = control_resamples()) {
 
-  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
-    rlang::abort("To fit resamples, you must preprocess with a formula or recipe")
+  if (is_missing(preprocessor) ||
+      !(inherits(preprocessor, "recipe") ||
+        inherits(preprocessor, "formula"))) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
   empty_ellipses(...)

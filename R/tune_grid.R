@@ -163,12 +163,12 @@
 #' library(rsample)
 #' library(parsnip)
 #'
-#' # ------------------------------------------------------------------------------
+#' # ---------------------------------------------------------------------------
 #'
 #' set.seed(6735)
 #' folds <- vfold_cv(mtcars, v = 5)
 #'
-#' # ------------------------------------------------------------------------------
+#' # ---------------------------------------------------------------------------
 #'
 #' # tuning recipe parameters:
 #'
@@ -193,7 +193,7 @@
 #'
 #' show_best(spline_res, metric = "rmse", maximize = FALSE)
 #'
-#' # ------------------------------------------------------------------------------
+#' # ---------------------------------------------------------------------------
 #'
 #' # tune model parameters only (example requires the `kernlab` package)
 #'
@@ -267,8 +267,11 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
                                  control = control_grid()) {
 
-  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
-    rlang::abort("To tune a model spec, you must preprocess with a formula or recipe")
+  if (is_missing(preprocessor) ||
+      !(inherits(preprocessor, "recipe") ||
+        inherits(preprocessor, "formula"))) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
   empty_ellipses(...)

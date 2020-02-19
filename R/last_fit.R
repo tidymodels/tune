@@ -102,8 +102,11 @@ last_fit.formula <- function(formula, model, split, ..., metrics = NULL) {
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL) {
 
-  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
-    rlang::abort("To fit the final best model, you must preprocess with a formula or recipe")
+  if (is_missing(preprocessor) ||
+      !(inherits(preprocessor, "recipe") ||
+        inherits(preprocessor, "formula"))) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
   empty_ellipses(...)
