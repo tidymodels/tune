@@ -178,12 +178,11 @@ prob_summarize <- function(x, p, wider = TRUE) {
     dplyr::group_by(!!!rlang::syms(group_cols), .column) %>%
     dplyr::summarize(.value = mean(.value, na.rm = TRUE))
 
-  avg_group_cols <- group_cols[group_cols != ".column"]
   x <-
     x %>%
     dplyr::full_join(
       x %>% dplyr::summarize(.totals = sum(.value)),
-      by = avg_group_cols
+      by = group_cols
     ) %>%
     dplyr::mutate(.value = .value/.totals) %>%
     dplyr::select(-.totals)
