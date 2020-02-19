@@ -4,7 +4,11 @@
 #' the final fit on the entire training set is needed and is then evaluated on
 #' the test set.
 #'
-#' @param object A workflow, formula, or recipe. No tuning parameters are allowed.
+#' @param object A `parsnip` model specification or a [workflows::workflow()].
+#'   No tuning parameters are allowed.
+#'
+#' @param preprocessor A traditional model formula or a recipe created using
+#'   [recipes::recipe()].
 #'
 #' @param model A `parsnip` model specification. No tuning parameters are allowed.
 #'
@@ -40,7 +44,7 @@
 #' lin_mod <- linear_reg() %>%
 #'   set_engine("lm")
 #'
-#' spline_res <- last_fit(spline_rec, lin_mod, split = tr_te_split)
+#' spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 #' spline_res
 #'
 #' # test set results
@@ -65,8 +69,8 @@ last_fit <- function(object, ...) {
 last_fit.default <- function(object, ...) {
   empty_ellipses(...)
   msg <- paste0(
-    "The first argument to [last_fit()] should be either a ",
-    "formula, recipe, or workflow."
+    "The first argument to [last_fit()] should be either ",
+    "a model or workflow."
   )
   rlang::abort(msg)
 }
@@ -74,32 +78,53 @@ last_fit.default <- function(object, ...) {
 #' @rdname last_fit
 #' @export
 last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "last_fit.recipe()",
+                            details = deprecate_msg(match.call(), "last_fit"))
   empty_ellipses(...)
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
-  }
 
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, object)
-  workflow <- add_model(workflow, model)
+  last_fit(model, preprocessor = object, split = split, metrics = metrics)
 
-  last_fit_workflow(workflow, split, metrics)
 }
 
 #' @rdname last_fit
 #' @export
 last_fit.formula <- function(formula, model, split, ..., metrics = NULL) {
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "last_fit.formula()",
+                            details = deprecate_msg(match.call(), "last_fit"))
   empty_ellipses(...)
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
+
+  last_fit(model, preprocessor = formula, split = split, metrics = metrics)
+}
+
+#' @export
+#' @rdname last_fit
+last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL) {
+
+  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
+    rlang::abort("To fit the final best model, you must preprocess with a formula or recipe")
   }
 
-  workflow <- workflow()
-  workflow <- add_formula(workflow, formula)
-  workflow <- add_model(workflow, model)
+  empty_ellipses(...)
 
-  last_fit_workflow(workflow, split, metrics)
+  wflow <-
+    workflow() %>%
+    add_model(object)
+
+  if (inherits(preprocessor, "recipe")) {
+    wflow <-
+      wflow %>%
+      add_recipe(preprocessor)
+  } else if (inherits(preprocessor, "formula")) {
+    wflow <-
+      wflow %>%
+      add_formula(preprocessor)
+  }
+
+  last_fit_workflow(wflow, split, metrics)
 }
+
 
 #' @rdname last_fit
 #' @export

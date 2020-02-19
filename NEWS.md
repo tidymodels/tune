@@ -2,7 +2,8 @@
 
 ## Breaking Changes
 
-* The arguments to `fit_grid()` have been reordered to better align with parsnip's `fit()`.
+* The arguments to the main tuning/fitting functions (`tune_grid()`, 
+  `tune_bayes()`, etc) have been reordered to better align with parsnip's `fit()`.
 
 ## Other Changes
 

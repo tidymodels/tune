@@ -224,8 +224,11 @@ tune_grid <- function(object, ...) {
 #' @export
 #' @rdname tune_grid
 tune_grid.default <- function(object, ...) {
-  stop("The first argument should be either a model or workflow.",
-       call. = FALSE)
+  msg <- paste0(
+    "The first argument to [tune_grid()] should be either ",
+    "a model or workflow."
+  )
+  rlang::abort(msg)
 }
 
 #' @export
@@ -265,8 +268,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  control = control_grid()) {
 
   if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
-    stop("To tune a model spec, you must preprocess with a formula or recipe",
-         call. = FALSE)
+    rlang::abort("To tune a model spec, you must preprocess with a formula or recipe")
   }
 
   empty_ellipses(...)
@@ -361,23 +363,5 @@ quarterback <- function(x) {
     !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
     has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
     TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
-  )
-}
-
-# ------------------------------------------------------------------------------
-
-deprecate_msg <- function(cl, func_str) {
-  # re-write call to switch arguments
-  cl[[1]] <- rlang::sym(func_str)
-  pp <- cl[[2]]
-  cl[[2]] <- cl[["model"]]
-  cl[["model"]] <- pp
-  names(cl)[1:3] <- ""
-  paste0(
-    "The first argument to `",
-    func_str,
-    "()` should be either a model or a ",
-    "workflow. In the future, you can use:\n",
-    rlang::expr_text(cl)
   )
 }

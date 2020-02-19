@@ -5,7 +5,10 @@
 #' [tune_bayes()] for that), and is instead used for fitting a single
 #' model+recipe or model+formula combination across many resamples.
 #'
-#' @param object A workflow, formula, or recipe.
+#' @param object A `parsnip` model specification or a [workflows::workflow()].
+#'
+#' @param preprocessor A traditional model formula or a recipe created using
+#'   [recipes::recipe()].
 #'
 #' @param model A `parsnip` model specification.
 #'
@@ -44,7 +47,7 @@
 #'
 #' control <- control_resamples(save_pred = TRUE)
 #'
-#' spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
+#' spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 #'
 #' spline_res
 #'
@@ -58,8 +61,8 @@ fit_resamples <- function(object, ...) {
 #' @export
 fit_resamples.default <- function(object, ...) {
   msg <- paste0(
-    "The first argument to [fit_resamples()] should be either a ",
-    "formula, recipe, or workflow."
+    "The first argument to [fit_resamples()] should be either ",
+    "a model or workflow."
   )
   rlang::abort(msg)
 }
@@ -73,17 +76,13 @@ fit_resamples.recipe <- function(object,
                                  metrics = NULL,
                                  control = control_resamples()) {
 
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "fit_resamples.recipe()",
+                            details = deprecate_msg(match.call(), "fit_resamples"))
   empty_ellipses(...)
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
-  }
-
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, object)
-  workflow <- add_model(workflow, model)
-
-  resample_workflow(workflow, resamples, metrics, control)
+  fit_resamples(model, preprocessor = object, resamples = resamples,
+                metrics = metrics, control = control)
 }
 
 #' @rdname fit_resamples
@@ -95,18 +94,47 @@ fit_resamples.formula <- function(formula,
                                   metrics = NULL,
                                   control = control_resamples()) {
 
+  lifecycle::deprecate_soft("0.0.2",
+                            what = "fit_resamples.formula()",
+                            details = deprecate_msg(match.call(), "fit_resamples"))
   empty_ellipses(...)
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
+  fit_resamples(model, preprocessor = formula, resamples = resamples,
+                metrics = metrics, control = control)
+}
+
+#' @export
+#' @rdname fit_resamples
+fit_resamples.model_spec <- function(object,
+                                     preprocessor,
+                                     resamples,
+                                     ...,
+                                     metrics = NULL,
+                                     control = control_resamples()) {
+
+  if (is_missing(preprocessor) || !(inherits(preprocessor, "recipe") || inherits(preprocessor, "formula"))) {
+    rlang::abort("To fit resamples, you must preprocess with a formula or recipe")
   }
 
-  workflow <- workflow()
-  workflow <- add_formula(workflow, formula)
-  workflow <- add_model(workflow, model)
+  empty_ellipses(...)
 
-  resample_workflow(workflow, resamples, metrics, control)
+  wflow <-
+    workflow() %>%
+    add_model(object)
+
+  if (inherits(preprocessor, "recipe")) {
+    wflow <-
+      wflow %>%
+      add_recipe(preprocessor)
+  } else if (inherits(preprocessor, "formula")) {
+    wflow <-
+      wflow %>%
+      add_formula(preprocessor)
+  }
+
+  resample_workflow(wflow, resamples, metrics, control)
 }
+
 
 #' @rdname fit_resamples
 #' @export

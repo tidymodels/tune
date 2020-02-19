@@ -4,6 +4,7 @@
 \alias{fit_resamples}
 \alias{fit_resamples.recipe}
 \alias{fit_resamples.formula}
+\alias{fit_resamples.model_spec}
 \alias{fit_resamples.workflow}
 \title{Fit multiple models via resampling}
 \usage{
@@ -27,6 +28,15 @@ fit_resamples(object, ...)
   control = control_resamples()
 )
 
+\method{fit_resamples}{model_spec}(
+  object,
+  preprocessor,
+  resamples,
+  ...,
+  metrics = NULL,
+  control = control_resamples()
+)
+
 \method{fit_resamples}{workflow}(
   object,
   resamples,
@@ -36,7 +46,7 @@ fit_resamples(object, ...)
 )
 }
 \arguments{
-\item{object}{A workflow, formula, or recipe.}
+\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.}
 
 \item{...}{Currently unused.}
 
@@ -52,6 +62,9 @@ set of metrics.}
 process.}
 
 \item{formula}{A formula specifying the terms of the model.}
+
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 }
 \description{
 \code{\link[=fit_resamples]{fit_resamples()}} computes a set of performance metrics across one or more
@@ -163,7 +176,7 @@ lin_mod <- linear_reg() \%>\%
 
 control <- control_resamples(save_pred = TRUE)
 
-spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
+spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 
 spline_res
 
