@@ -275,17 +275,15 @@ average_predictions <- function(x, grid = NULL) {
 
   if (all(metric_types == "numeric")) {
     x <- numeric_summarize(x, param_names)
+  } else if (all(metric_types == "prob")) {
+    x <- prob_summarize(x, param_names)
+  } else  if (all(metric_types == "class")) {
+    x <- class_summarize(x, param_names)
   } else {
-    if (all(metric_types == "prob")) {
-      x <- prob_summarize(x, param_names)
-    } else {
-      if (all(metric_types == "class")) {
-        x <- class_summarize(x, param_names)
-      } else {
-        x <- prob_and_class_summarize(x, param_names)
-      }
-    }
+    x <- prob_and_class_summarize(x, param_names)
   }
+
+
   x
 }
 
