@@ -64,7 +64,7 @@ fit_resamples.recipe <- function(object,
                                  metrics = NULL,
                                  control = control_resamples()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "fit_resamples.recipe()",
                             details = deprecate_msg(match.call(), "fit_resamples"))
   empty_ellipses(...)
@@ -82,7 +82,7 @@ fit_resamples.formula <- function(formula,
                                   metrics = NULL,
                                   control = control_resamples()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "fit_resamples.formula()",
                             details = deprecate_msg(match.call(), "fit_resamples"))
   empty_ellipses(...)

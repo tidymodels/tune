@@ -78,7 +78,7 @@ last_fit.default <- function(object, ...) {
 #' @rdname last_fit
 #' @export
 last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "last_fit.recipe()",
                             details = deprecate_msg(match.call(), "last_fit"))
   empty_ellipses(...)
@@ -90,7 +90,7 @@ last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
 #' @rdname last_fit
 #' @export
 last_fit.formula <- function(formula, model, split, ..., metrics = NULL) {
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "last_fit.formula()",
                             details = deprecate_msg(match.call(), "last_fit"))
   empty_ellipses(...)

@@ -154,7 +154,7 @@ tune_bayes.recipe <- function(object,
                               initial = 5,
                               control = control_bayes()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "tune_bayes.recipe()",
                             details = deprecate_msg(match.call(), "tune_bayes"))
   empty_ellipses(...)
@@ -178,7 +178,7 @@ tune_bayes.formula <- function(formula,
                                initial = 5,
                                control = control_bayes()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "tune_bayes.formula()",
                             details = deprecate_msg(match.call(), "tune_bayes"))
   empty_ellipses(...)

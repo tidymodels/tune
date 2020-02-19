@@ -236,7 +236,7 @@ tune_grid.default <- function(object, ...) {
 tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
                              grid = 10, metrics = NULL, control = control_grid()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "tune_grid.recipe()",
                             details = deprecate_msg(match.call(), "tune_grid"))
   empty_ellipses(...)
@@ -251,7 +251,7 @@ tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
 tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
                               grid = 10, metrics = NULL, control = control_grid()) {
 
-  lifecycle::deprecate_soft("0.0.2",
+  lifecycle::deprecate_soft("0.1.0",
                             what = "tune_grid.formula()",
                             details = deprecate_msg(match.call(), "tune_grid"))
   empty_ellipses(...)
