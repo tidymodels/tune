@@ -98,9 +98,8 @@ filter_predictions <- function(x, parameters) {
   if (is.null(parameters)) {
     return(x)
   }
-  metrics <- attr(x, "metrics")
   params <- attr(x, "parameters")
-  if (is.null(metrics) | is.null(params)) {
+  if (is.null(params)) {
     rlang::warn(
       paste(
         strwrap(
