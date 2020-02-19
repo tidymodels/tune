@@ -145,19 +145,39 @@ test_that("classification class and prob predictions, averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("ensure that common dplyr verbs don't affect attributes", {
-  res <-
+  res_tune <-
     svm_tune %>%
     dplyr::arrange(id) %>%
-    dplyr::select(-.notes) %>%
     dplyr::sample_frac() %>%
     dplyr::filter(id2 == "Fold1") %>%
-    dplyr::mutate(foo = "bar") %>%
+    # dplyr::mutate(foo = "bar") %>%
     dplyr::rename(.pred = .predictions) %>%
+    dplyr::select(-.pred) %>%
     dplyr::slice(1:5)
 
+  expect_true(inherits(attr(res_tune, "metrics"), "metric_set"))
+  expect_true(inherits(attr(res_tune, "parameters"), "parameters"))
 
-  expect_true(inherits(attr(res, "metrics"), "metric_set"))
-  expect_true(inherits(attr(res, "parameters"), "parameters"))
+  res_tune <- res_tune[-1,]
+  expect_true(inherits(attr(res_tune, "metrics"), "metric_set"))
+  expect_true(inherits(attr(res_tune, "parameters"), "parameters"))
+
+  res_resamples <-
+    lm_splines %>%
+    dplyr::arrange(id) %>%
+    dplyr::sample_frac() %>%
+    dplyr::filter(id2 == "Fold1") %>%
+    # dplyr::mutate(foo = "bar") %>%
+    dplyr::rename(.pred = .predictions) %>%
+    dplyr::select(-.pred) %>%
+    dplyr::slice(1:5)
+
+  expect_true(inherits(attr(res_resamples, "metrics"), "metric_set"))
+  expect_true(inherits(attr(res_resamples, "parameters"), "parameters"))
+
+  res_resamples <- res_resamples[-1,]
+  expect_true(inherits(attr(res_resamples, "metrics"), "metric_set"))
+  expect_true(inherits(attr(res_resamples, "parameters"), "parameters"))
 
 })
 
