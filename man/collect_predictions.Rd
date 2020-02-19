@@ -61,6 +61,8 @@ Obtain and format results produced by tuning functions
 \examples{
 \donttest{
 data("example_ames_knn")
+# The parameters for the model:
+parameters(ames_wflow)
 
 # Summarized over resamples
 collect_metrics(ames_grid_search)
@@ -68,19 +70,31 @@ collect_metrics(ames_grid_search)
 # Per-resample values
 collect_metrics(ames_grid_search, summarize = FALSE)
 
+
 # ---------------------------------------------------------------------------
 
 library(parsnip)
 library(rsample)
 library(dplyr)
+library(recipes)
+library(tibble)
 
 lm_mod <-linear_reg() \%>\% set_engine("lm")
 set.seed(93599150)
 car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
 ctrl <- control_resamples(save_pred = TRUE)
 
-resampled <- fit_resamples(mpg ~ ., lm_mod, resamples = car_folds, control = ctrl)
+spline_rec <-
+  recipe(mpg ~ ., data = mtcars) \%>\%
+  step_ns(disp, deg_free = tune("df"))
+
+grid <- tibble(df = 3:6)
+
+resampled <- tune_grid(spline_rec, lm_mod, resamples = car_folds,
+                       control = ctrl, grid = grid)
+
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
+collect_predictions(resampled, summarize = TRUE, grid[1,]) \%>\% arrange(.row)
 }
 }
