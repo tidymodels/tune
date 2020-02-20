@@ -82,7 +82,14 @@
 #' }
 #' @export
 collect_predictions <- function(x, summarize = FALSE, parameters = NULL) {
-  # TODO check classes of x
+  if (!inherits(x, "tune_results")) {
+    rlang::abort(
+      paste0(
+        "`x` should be an object produced by one of the `tune_*()` functions,",
+        "`fit_resamples()` or `last_fit()`."
+      )
+    )
+  }
 
   names <- colnames(x)
   coll_col <- ".predictions"
@@ -305,6 +312,14 @@ average_predictions <- function(x, grid = NULL) {
 #' @export
 #' @rdname collect_predictions
 collect_metrics <- function(x, summarize = TRUE) {
+  if (!inherits(x, "tune_results")) {
+    rlang::abort(
+      paste0(
+        "`x` should be an object produced by one of the `tune_*()` functions,",
+        "`fit_resamples()` or `last_fit()`."
+      )
+    )
+  }
 
   if (inherits(x, "last_fit")) {
     return(x$.metrics[[1]])
