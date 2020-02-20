@@ -267,27 +267,19 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
                                  control = control_grid()) {
 
-  if (is_missing(preprocessor) ||
-      !(inherits(preprocessor, "recipe") ||
-        inherits(preprocessor, "formula"))) {
+  if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste("To tune a model spec, you must preprocess",
                        "with a formula or recipe"))
   }
 
   empty_ellipses(...)
 
-  wflow <-
-    workflow() %>%
-    add_model(object)
+  wflow <- add_model(workflow(), object)
 
-  if (inherits(preprocessor, "recipe")) {
-    wflow <-
-      wflow %>%
-      add_recipe(preprocessor)
-  } else if (inherits(preprocessor, "formula")) {
-    wflow <-
-      wflow %>%
-      add_formula(preprocessor)
+  if (is_recipe(preprocessor)) {
+    wflow <- add_recipe(wflow, preprocessor)
+  } else if (rlang::is_formula(preprocessor)) {
+    wflow <- add_formula(wflow, preprocessor)
   }
 
   tune_grid_workflow(
