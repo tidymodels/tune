@@ -4,6 +4,8 @@
 
 * The arguments to the main tuning/fitting functions (`tune_grid()`, 
   `tune_bayes()`, etc) have been reordered to better align with parsnip's `fit()`.
+  The previous versions are soft-deprecated as of 0.1.0 and will be deprecated
+  as of 0.1.2.
 
 ## Other Changes
 
