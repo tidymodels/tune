@@ -2,38 +2,11 @@
 % Please edit documentation in R/tune_grid.R
 \name{tune_grid}
 \alias{tune_grid}
-\alias{tune_grid.default}
-\alias{tune_grid.recipe}
-\alias{tune_grid.formula}
 \alias{tune_grid.model_spec}
 \alias{tune_grid.workflow}
 \title{Model tuning via grid search}
 \usage{
 tune_grid(object, ...)
-
-\method{tune_grid}{default}(object, ...)
-
-\method{tune_grid}{recipe}(
-  object,
-  model,
-  resamples,
-  ...,
-  param_info = NULL,
-  grid = 10,
-  metrics = NULL,
-  control = control_grid()
-)
-
-\method{tune_grid}{formula}(
-  formula,
-  model,
-  resamples,
-  ...,
-  param_info = NULL,
-  grid = 10,
-  metrics = NULL,
-  control = control_grid()
-)
 
 \method{tune_grid}{model_spec}(
   object,
@@ -61,8 +34,8 @@ tune_grid(object, ...)
 
 \item{...}{Not currently used.}
 
-\item{model}{A \code{parsnip} model specification (or \code{NULL} when \code{object} is a
-workflow).}
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 
 \item{resamples}{An \code{rset()} object.}
 
@@ -78,11 +51,6 @@ parameter sets to be created automatically.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}.}
 
 \item{control}{An object used to modify the tuning process.}
-
-\item{formula}{A traditional model formula.}
-
-\item{preprocessor}{A traditional model formula or a recipe created using
-\code{\link[recipes:recipe]{recipes::recipe()}}.}
 }
 \value{
 An updated version of \code{resamples} with extra list columns for \code{.metrics} and
@@ -238,12 +206,12 @@ library(recipes)
 library(rsample)
 library(parsnip)
 
-# ------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
 
-# ------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 # tuning recipe parameters:
 
@@ -268,7 +236,7 @@ spline_res
 
 show_best(spline_res, metric = "rmse", maximize = FALSE)
 
-# ------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 
 # tune model parameters only (example requires the `kernlab` package)
 

@@ -55,7 +55,6 @@ fit_resamples.default <- function(object, ...) {
   rlang::abort(msg)
 }
 
-#' @rdname fit_resamples
 #' @export
 fit_resamples.recipe <- function(object,
                                  model,
@@ -73,7 +72,6 @@ fit_resamples.recipe <- function(object,
                 metrics = metrics, control = control)
 }
 
-#' @rdname fit_resamples
 #' @export
 fit_resamples.formula <- function(formula,
                                   model,

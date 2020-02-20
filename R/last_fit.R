@@ -10,14 +10,10 @@
 #' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].
 #'
-#' @param model A `parsnip` model specification. No tuning parameters are allowed.
-#'
 #' @param split An `rsplit` object created from [rsample::initial_split()].
 #'
 #' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
 #'   set of metrics.
-#'
-#' @param formula A formula specifying the terms of the model.
 #'
 #' @param ... Currently unused.
 #'
@@ -75,7 +71,6 @@ last_fit.default <- function(object, ...) {
   rlang::abort(msg)
 }
 
-#' @rdname last_fit
 #' @export
 last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
   lifecycle::deprecate_soft("0.1.0",
@@ -87,7 +82,6 @@ last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
 
 }
 
-#' @rdname last_fit
 #' @export
 last_fit.formula <- function(formula, model, split, ..., metrics = NULL) {
   lifecycle::deprecate_soft("0.1.0",

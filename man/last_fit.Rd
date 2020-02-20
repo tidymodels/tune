@@ -2,17 +2,11 @@
 % Please edit documentation in R/last_fit.R
 \name{last_fit}
 \alias{last_fit}
-\alias{last_fit.recipe}
-\alias{last_fit.formula}
 \alias{last_fit.model_spec}
 \alias{last_fit.workflow}
 \title{Fit the final best model to the training set and evaluate the test set}
 \usage{
 last_fit(object, ...)
-
-\method{last_fit}{recipe}(object, model, split, ..., metrics = NULL)
-
-\method{last_fit}{formula}(formula, model, split, ..., metrics = NULL)
 
 \method{last_fit}{model_spec}(object, preprocessor, split, ..., metrics = NULL)
 
@@ -24,17 +18,13 @@ No tuning parameters are allowed.}
 
 \item{...}{Currently unused.}
 
-\item{model}{A \code{parsnip} model specification. No tuning parameters are allowed.}
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 
 \item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
-
-\item{formula}{A formula specifying the terms of the model.}
-
-\item{preprocessor}{A traditional model formula or a recipe created using
-\code{\link[recipes:recipe]{recipes::recipe()}}.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.

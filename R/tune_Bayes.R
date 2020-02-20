@@ -132,7 +132,6 @@ tune_bayes <- function(object, ...) {
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.default <- function(object, ...) {
   msg <- paste0(
     "The first argument to [tune_bayes()] should be either ",
@@ -142,7 +141,6 @@ tune_bayes.default <- function(object, ...) {
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.recipe <- function(object,
                               model,
                               resamples,
@@ -166,7 +164,6 @@ tune_bayes.recipe <- function(object,
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.formula <- function(formula,
                                model,
                                resamples,

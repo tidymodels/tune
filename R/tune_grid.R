@@ -7,9 +7,6 @@
 #' @param object A `parsnip` model specification or a [workflows::workflow()].
 #' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].
-#' @param formula A traditional model formula.
-#' @param model A `parsnip` model specification (or `NULL` when `object` is a
-#' workflow).
 #' @param resamples An `rset()` object.
 #' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments. Passing this argument can
@@ -222,7 +219,6 @@ tune_grid <- function(object, ...) {
 }
 
 #' @export
-#' @rdname tune_grid
 tune_grid.default <- function(object, ...) {
   msg <- paste0(
     "The first argument to [tune_grid()] should be either ",
@@ -232,7 +228,6 @@ tune_grid.default <- function(object, ...) {
 }
 
 #' @export
-#' @rdname tune_grid
 tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
                              grid = 10, metrics = NULL, control = control_grid()) {
 
@@ -247,7 +242,6 @@ tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
 }
 
 #' @export
-#' @rdname tune_grid
 tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
                               grid = 10, metrics = NULL, control = control_grid()) {
 
