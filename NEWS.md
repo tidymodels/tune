@@ -1,8 +1,17 @@
 # tune 0.0.1.9000
 
+## Breaking Changes
+
+* The arguments to the main tuning/fitting functions (`tune_grid()`, 
+  `tune_bayes()`, etc) have been reordered to better align with parsnip's `fit()`.
+  The first argument to all these functions is now a model specification or model
+  workflow. The previous versions are soft-deprecated as of 0.1.0 and will be 
+  deprecated as of 0.1.2.
+
+## Other Changes
+
 * Added more packages to be fully loaded in the workers when run in parallel using `doParallel` (#157)[https://github.com/tidymodels/tune/issues/157],  (#159)[https://github.com/tidymodels/tune/issues/159], and 
 (#160)[https://github.com/tidymodels/tune/issues/160]
-
 
 # tune 0.0.1
 

@@ -22,7 +22,7 @@ svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
-  
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
@@ -40,7 +40,7 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe)', {
-  
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
@@ -58,7 +58,7 @@ test_that('tune model only (with recipe)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe, multi-predict)', {
-  
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
@@ -80,7 +80,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
-  
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
@@ -102,7 +102,7 @@ test_that('tune model and recipe', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (multi-predict)', {
-  
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
@@ -120,7 +120,7 @@ test_that('tune model and recipe (multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
-  
+
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -140,8 +140,8 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   )
 
   cars_res <- tune_grid(
-    rec,
-    model = model,
+    model,
+    preprocessor = rec,
     resamples = data_folds,
     grid = cars_grid,
     control = control
@@ -165,7 +165,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
-  
+
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -177,8 +177,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   expect_warning(
     cars_res <- tune_grid(
-      rec,
-      model = svm_mod,
+      svm_mod,
+      preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -200,7 +200,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
-  
+
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -209,8 +209,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
   # these terms don't exist!
   expect_warning(
     cars_res <- tune_grid(
+      svm_mod,
       y ~ z,
-      model = svm_mod,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -232,7 +232,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
-  
+
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
@@ -244,8 +244,8 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
   cars_res <- tune_grid(
-    rec,
-    model = svm_mod,
+    svm_mod,
+    preprocessor = rec,
     resamples = data_folds,
     grid = cars_grid,
     control = control_grid(extract = function(x) {1}, save_pred = TRUE)
@@ -270,9 +270,22 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   )
 })
 
+test_that("argument order gives warning for recipes", {
+  expect_warning(
+    tune_grid(rec_tune_1, lm_mod, vfold_cv(mtcars, v = 2)),
+    "is deprecated as of lifecycle"
+  )
+})
+
+test_that("argument order gives warning for formula", {
+  expect_warning(
+    tune_grid(mpg ~ ., lm_mod, vfold_cv(mtcars, v = 2)),
+    "is deprecated as of lifecycle"
+  )
+})
 
 test_that("ellipses with tune_grid", {
-  
+
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   folds <- vfold_cv(mtcars)
   expect_warning(
