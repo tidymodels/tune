@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
@@ -31,12 +31,14 @@ Imports:
     foreach,
     parsnip (>= 0.0.4),
     workflows (>= 0.1.0),
-    hardhat (>= 0.1.0)
+    hardhat (>= 0.1.0),
+    lifecycle
 Suggests: 
     testthat,
     knitr,
     covr,
     kernlab,
+    modeldata,
     xml2,
     spelling
 Encoding: UTF-8
