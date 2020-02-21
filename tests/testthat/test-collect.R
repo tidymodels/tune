@@ -15,8 +15,8 @@ lin_mod <- parsnip::linear_reg() %>%
 
 lm_splines <-
   fit_resamples(
-    spline_rec,
     lin_mod,
+    spline_rec,
     rep_folds,
     control = control_grid(save_pred = TRUE)
   )
@@ -31,8 +31,8 @@ svm_mod <-
 
 svm_tune <-
   tune_bayes(
-    Class ~ .,
     svm_mod,
+    Class ~ .,
     rep_folds_class,
     initial = 2,
     iter = 2,
@@ -44,10 +44,6 @@ svm_tune_class$.predictions <-
   purrr::map(svm_tune_class$.predictions,
              ~ .x %>% dplyr::select(-.pred_Class1,-.pred_Class2))
 attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
-
-svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
-
-# ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
 
