@@ -157,100 +157,84 @@ filter_predictions <- function(x, parameters) {
 #  they match). If only hard class predictions are in the results, then the
 #  mode is used to summarize.
 
-numeric_summarize <- function(x, p, wider = TRUE) {
+numeric_summarize <- function(x) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
   nms <- names(x)
   group_cols <- nms[!(nms %in% pred_cols)]
   x <-
     x %>%
-    tidyr::pivot_longer(
-      cols = c(dplyr::one_of(pred_cols)),
-      names_to = ".column",
-      values_to = ".value"
-    ) %>%
-    dplyr::group_by(!!!rlang::syms(group_cols), .column) %>%
-    dplyr::summarize(.value = mean(.value, na.rm = TRUE))
-
-  if (wider) {
-    x <-
-      x %>%
-      dplyr::ungroup() %>%
-      tidyr::pivot_wider(
-        id_cols = c(dplyr::one_of(group_cols)),
-        names_from = ".column",
-        values_from = ".value"
-      )
-  }
+    dplyr::group_by(!!!rlang::syms(group_cols)) %>%
+    dplyr::summarise_at(dplyr::vars(dplyr::starts_with(".pred")),
+                        ~ mean(., na.rm = TRUE))
   x
 }
 
-prob_summarize <- function(x, p, wider = TRUE) {
+prob_summarize <- function(x, p) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
+
+  if (any(names(x) == ".pred_class")) {
+    compute_class <- TRUE
+    x$.pred_class <- NULL
+    pred_cols <- pred_cols[pred_cols != ".pred_class"]
+  } else {
+    compute_class <- FALSE
+  }
+
   nms <- names(x)
+  y_cols <- nms[!(nms %in% c(".row", ".iter", pred_cols, p))]
   group_cols <- nms[!(nms %in% pred_cols)]
+
   x <-
     x %>%
+    dplyr::group_by(!!!rlang::syms(group_cols)) %>%
+    dplyr::summarise_at(dplyr::vars(dplyr::starts_with(".pred_")),
+                        ~ mean(., na.rm = TRUE)) %>%
+    ungroup()
+
+  # In case the class probabilities do not add up to 1 after averaging
+  group_cols <- group_cols[group_cols != y_cols]
+  totals <-
+    x %>%
+    dplyr::select(-y_cols) %>%
     tidyr::pivot_longer(
       cols = c(dplyr::one_of(pred_cols)),
       names_to = ".column",
       values_to = ".value"
     ) %>%
-    dplyr::group_by(!!!rlang::syms(group_cols), .column) %>%
-    dplyr::summarize(.value = mean(.value, na.rm = TRUE))
+    dplyr::group_by(!!!rlang::syms(group_cols)) %>%
+    dplyr::summarize(.totals = sum(.value)) %>%
+    dplyr::ungroup()
 
   x <-
     x %>%
-    dplyr::full_join(
-      x %>% dplyr::summarize(.totals = sum(.value)),
-      by = group_cols
-    ) %>%
-    dplyr::mutate(.value = .value/.totals) %>%
+    dplyr::full_join(totals, by = group_cols) %>%
+    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ ./.totals) %>%
     dplyr::select(-.totals)
 
-  if (wider) {
-    x <-
+  # If we started with hard class predictions, recompute them based on the
+  # newly averaged probability estimates.
+  if (compute_class) {
+    lvl <- levels(x[[y_cols]])
+    ord <- is.ordered(x[[y_cols]])
+    class_pred <-
       x %>%
+      dplyr::select(-y_cols) %>%
+      tidyr::pivot_longer(
+        cols = c(dplyr::one_of(pred_cols)),
+        names_to = ".column",
+        values_to = ".value"
+      ) %>%
+      dplyr::group_by(!!!rlang::syms(group_cols)) %>%
+      dplyr::arrange(dplyr::desc(.value), .by_group = TRUE) %>%
+      dplyr::slice(1) %>%
+      dplyr::mutate(
+        .pred_class = gsub("\\.pred_", "", .column),
+        .pred_class = factor(.pred_class, levels = lvl, ordered = ord)
+        ) %>%
       dplyr::ungroup() %>%
-      tidyr::pivot_wider(
-        id_cols = c(dplyr::one_of(group_cols)),
-        names_from = ".column",
-        values_from = ".value"
-      )
+      dplyr::select(-.value, -.column)
+    x <- full_join(x, class_pred, by = group_cols)
   }
-  x
-}
-
-prob_and_class_summarize <- function(x, p) {
-  x$.pred_class <- NULL
-  x <- prob_summarize(x, p, wider = FALSE)
-  nms <- names(x)
-  group_cols <- nms[!(nms %in% c(".column", ".value"))]
-  outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
-  lvl <- levels(x[[outcome_col]])
-  ord <- is.ordered(x[[outcome_col]])
-  y <-
-    x %>%
-    dplyr::arrange(dplyr::desc(.value), .by_group = TRUE) %>%
-    dplyr::slice(1) %>%
-    dplyr::mutate(
-      .value = gsub("\\.pred_", "", .column),
-      .value = factor(.value, levels = lvl, ordered = ord),
-      .column = ".pred_class") %>%
-    dplyr::ungroup() %>%
-    tidyr::pivot_wider(
-      id_cols = c(dplyr::one_of(group_cols)),
-      names_from = ".column",
-      values_from = ".value"
-    )
-  x <-
-    x %>%
-    dplyr::ungroup() %>%
-    tidyr::pivot_wider(
-      id_cols = c(dplyr::one_of(group_cols)),
-      names_from = ".column",
-      values_from = ".value"
-    ) %>%
-    dplyr::full_join(y, by = group_cols)
   x
 }
 
@@ -293,15 +277,12 @@ average_predictions <- function(x, grid = NULL) {
     dplyr::select(-starts_with("id"))
 
   if (all(metric_types == "numeric")) {
-    x <- numeric_summarize(x, param_names)
-  } else if (all(metric_types == "prob")) {
+    x <- numeric_summarize(x)
+  } else if (any(metric_types == "prob")) {
     x <- prob_summarize(x, param_names)
-  } else  if (all(metric_types == "class")) {
-    x <- class_summarize(x, param_names)
   } else {
-    x <- prob_and_class_summarize(x, param_names)
+    x <- class_summarize(x, param_names)
   }
-
 
   x
 }
@@ -372,6 +353,6 @@ estimate_tune_results <- function(x, ...) {
       n = sum(!is.na(.estimate)),
       std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 }
 
