@@ -45,6 +45,8 @@ svm_tune_class$.predictions <-
              ~ .x %>% dplyr::select(-.pred_Class1,-.pred_Class2))
 attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
+svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
+
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
 
   expect_error(
