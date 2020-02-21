@@ -251,7 +251,7 @@ spline_res <-
 spline_res
 
 
-show_best(spline_res, metric = "rmse", maximize = FALSE)
+show_best(spline_res, metric = "rmse")
 
 # ------------------------------------------------------------------------------
 
@@ -271,7 +271,7 @@ set.seed(3254)
 svm_res <- tune_grid(car_rec, model = svm_mod, resamples = folds, grid = 7)
 svm_res
 
-show_best(svm_res, metric = "rmse", maximize = FALSE)
+show_best(svm_res, metric = "rmse")
 
 autoplot(svm_res, metric = "rmse") +
   scale_x_log10()

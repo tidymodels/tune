@@ -48,7 +48,7 @@
 #'
 #' spline_res
 #'
-#' show_best(spline_res, metric = "rmse", maximize = FALSE)
+#' show_best(spline_res, metric = "rmse")
 #' }
 #' @export
 fit_resamples <- function(object, ...) {

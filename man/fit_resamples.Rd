@@ -167,7 +167,7 @@ spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
 
 spline_res
 
-show_best(spline_res, metric = "rmse", maximize = FALSE)
+show_best(spline_res, metric = "rmse")
 }
 }
 \seealso{
