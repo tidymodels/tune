@@ -154,7 +154,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   # TODO - what class?
   class(resamples) <- c("resample_results", class(resamples))
 
-  resamples
+  save_attr(resamples, parameters(workflow), metrics)
 }
 
 # ------------------------------------------------------------------------------

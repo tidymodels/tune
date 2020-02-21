@@ -354,7 +354,7 @@ tune_bayes_workflow <-
 
     unsummarized <- reup_rs(resamples, unsummarized)
     on.exit()
-    unsummarized
+    save_attr(unsummarized, param_info, metrics)
   }
 
 create_initial_set <- function(param, n = NULL) {

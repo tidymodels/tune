@@ -325,7 +325,7 @@ tune_grid_workflow <-
     }
 
     class(resamples) <- unique(c("tune_results", class(resamples)))
-    resamples
+    save_attr(resamples, pset, metrics)
   }
 
 # ------------------------------------------------------------------------------
@@ -353,4 +353,12 @@ quarterback <- function(x) {
     has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
     TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
   )
+}
+
+# ------------------------------------------------------------------------------
+
+save_attr <- function(x, param, metrics) {
+  attr(x, "parameters") <- param
+  attr(x, "metrics") <- metrics
+  x
 }

@@ -38,6 +38,7 @@ Suggests:
     knitr,
     covr,
     kernlab,
+    modeldata,
     xml2,
     spelling
 Encoding: UTF-8
