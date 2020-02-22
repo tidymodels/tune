@@ -47,6 +47,11 @@
     },
     ns
   )
+
+  # To over-ride dplyr::mutate
+  s3_register("dplyr::mutate", "tune_results")
+  # dynamically register autoplot
+  s3_register("ggplot2::autoplot", "tune_results")
 }
 
 # nocov end

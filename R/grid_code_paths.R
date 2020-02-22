@@ -141,8 +141,10 @@ tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_rec_and_mod <- super_safely_iterate(iter_rec_and_mod)
 
+  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+
   results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
+    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
     safely_iter_rec_and_mod(rs_iter, resamples, grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
@@ -243,8 +245,10 @@ tune_rec <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_rec <- super_safely_iterate(iter_rec)
 
+  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+
   results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
+    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
     safely_iter_rec(rs_iter, resamples, grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
@@ -265,8 +269,10 @@ tune_mod_with_recipe <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_mod_with_recipe <- super_safely_iterate(iter_mod_with_recipe)
 
+  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+
   results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
+    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
     safely_iter_mod_with_recipe(rs_iter, resamples, grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
@@ -377,8 +383,10 @@ tune_mod_with_formula <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_mod_with_formula <- super_safely_iterate(iter_mod_with_formula)
 
+  load_pkgs <- c(control$pkgs, "parsnip", "tune")
+
   results <-
-    foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op%
+    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
     safely_iter_mod_with_formula(rs_iter, resamples, grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)

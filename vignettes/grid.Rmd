@@ -102,9 +102,9 @@ First, the formula interface will be used:
 ```{r grid}
 set.seed(35)
 grid_form <-
+  svm_mod %>%
   tune_grid(
     Class ~ .,
-    model = svm_mod,
     resamples = iono_rs,
     metrics = roc_vals,
     control = ctrl
@@ -133,15 +133,15 @@ show_best(grid_form)
 
 ## Executing the Grid Using a Recipe
 
-The same syntax is used but a recipe is passed in the first argument:
+The same syntax is used but a recipe is passed in to preprocess the data for modeling:
 
 
 ```{r recipe}
 set.seed(325)
 rec_form <-
+  svm_mod %>%
   tune_grid(
     iono_rec,
-    model = svm_mod,
     resamples = iono_rs,
     metrics = roc_vals,
     control = ctrl

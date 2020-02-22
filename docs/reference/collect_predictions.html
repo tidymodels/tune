@@ -79,7 +79,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -146,7 +146,7 @@
     <p>Obtain and format results produced by tuning functions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collect_predictions</span>(<span class='no'>x</span>)
+    <pre class="usage"><span class='fu'>collect_predictions</span>(<span class='no'>x</span>, <span class='kw'>summarize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>parameters</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='fu'>collect_metrics</span>(<span class='no'>x</span>, <span class='kw'>summarize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
@@ -162,7 +162,15 @@ or <code><a href='last_fit.html'>last_fit()</a></code>. For <code>collect_predic
       <th>summarize</th>
       <td><p>A logical; should metrics be summarized over resamples
 (<code>TRUE</code>) or return the values for each individual resample. Note that, if <code>x</code>
-is created by <code><a href='last_fit.html'>last_fit()</a></code>, <code>summarize</code> has not effect.</p></td>
+is created by <code><a href='last_fit.html'>last_fit()</a></code>, <code>summarize</code> has not effect. For the other object
+types, the method of summarizing predictions is detailed below.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>An optional tibble of tuning parameter values that can be
+used to filter the predicted values before processing. This tibble should
+only have columns for each tuning parameter identifier (e.g. <code>"my_param"</code>
+if <code><a href='tune.html'>tune("my_param")</a></code> was used).</p></td>
     </tr>
     </table>
 
@@ -170,19 +178,34 @@ is created by <code><a href='last_fit.html'>last_fit()</a></code>, <code>summari
 
     <p>A tibble. The column names depend on the results and the mode of the
 model.</p>
-<p>For <code>collect_metrics()</code> and <code>collect_predictions()</code>, there are columns for
-each tuning parameter (using the <code>id</code> from <code><a href='tune.html'>tune()</a></code>, if any).</p>
+<p>For <code>collect_metrics()</code> and <code>collect_predictions()</code>, when unsummarized,
+there are columns for each tuning parameter (using the <code>id</code> from <code><a href='tune.html'>tune()</a></code>,
+if any).
+<code>collect_metrics()</code> also has columns <code>.metric</code>, and <code>.estimator</code>.  When the
+results are summarized, there are columns for <code>mean</code>, <code>n</code>, and <code>std_err</code>.
+When not summarized, the additional columns for the resampling identifier(s)
+and <code>.estimate</code>.</p>
 <p>For <code>collect_predictions()</code>, there are additional columns for the resampling
 identifier(s), columns for the predicted values (e.g., <code>.pred</code>,
 <code>.pred_class</code>, etc.), and a column for the outcome(s) using the original
 column name(s) in the data.</p>
-<p><code>collect_metrics()</code> also has columns <code>.metric</code>, and <code>.estimator</code>.  When the
-results are summarized, there are columns for <code>mean</code>, <code>n</code>, and <code>std_err</code>.
-When not summarized, the additional columns for the resampling identifier(s)
-and <code>.estimate</code>.</p>
+<p><code>collect_predictions()</code> can summarize the various results over
+replicate out-of-sample predictions. For example, when using the bootstrap,
+each row in the original training set has multiple holdout predictions
+(across assessment sets). To convert these results to a format where every
+training set same has a single predicted value, the results are averaged
+over replicate predictions.</p>
+<p>For regression cases, the numeric predictions are simply averaged. For
+classification models, the problem is more complex. When class probabilities
+are used, these are averaged and then re-normalized to make sure that they
+add to one. If hard class predictions also exist in the data, then these are
+determined from the summarized probability estimates (so that they match).
+If only hard class predictions are in the results, then the mode is used to
+summarize.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
 
 <span class='co'># Summarized over resamples</span>
 <span class='fu'>collect_metrics</span>(<span class='no'>ames_grid_search</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 20 x 10</span><span>
@@ -227,27 +250,46 @@ and <code>.estimate</code>.</p>
 <span class='co'># ---------------------------------------------------------------------------</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: tidyr</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘dplyr’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
 <span class='no'>lm_mod</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>93599150</span>)
-<span class='no'>car_folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>)
+<span class='no'>car_folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>repeats</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 <span class='no'>ctrl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>(<span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='no'>resampled</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='fit_resamples.html'>fit_resamples</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='no'>lm_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>car_folds</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='no'>ctrl</span>)
-<span class='fu'>collect_predictions</span>(<span class='no'>resampled</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 32 x 4</span><span>
-#&gt;    id     .pred  .row   mpg
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> Fold01  30.8    19  30.4
-#&gt; </span><span style='color: #555555;'> 2</span><span> Fold01  25.6    21  21.5
-#&gt; </span><span style='color: #555555;'> 3</span><span> Fold01  17.4    30  19.7
-#&gt; </span><span style='color: #555555;'> 4</span><span> Fold01  10.1    31  15  
-#&gt; </span><span style='color: #555555;'> 5</span><span> Fold02  22.5     2  21  
-#&gt; </span><span style='color: #555555;'> 6</span><span> Fold02  13.5    12  16.4
-#&gt; </span><span style='color: #555555;'> 7</span><span> Fold02  16.2    25  19.2
-#&gt; </span><span style='color: #555555;'> 8</span><span> Fold02  28.5    26  27.3
-#&gt; </span><span style='color: #555555;'> 9</span><span> Fold03  20.9    11  17.8
-#&gt; </span><span style='color: #555555;'>10</span><span> Fold03  27.0    28  30.4
-#&gt; </span><span style='color: #555555;'># … with 22 more rows</span><span></div></span></pre>
+<span class='fu'>collect_predictions</span>(<span class='no'>resampled</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='no'>.row</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 96 x 5</span><span>
+#&gt;    id      id2   .pred  .row   mpg
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span> Repeat1 Fold2  25.9     1  21  
+#&gt; </span><span style='color: #555555;'> 2</span><span> Repeat2 Fold1  19.0     1  21  
+#&gt; </span><span style='color: #555555;'> 3</span><span> Repeat3 Fold1  22.3     1  21  
+#&gt; </span><span style='color: #555555;'> 4</span><span> Repeat1 Fold2  25.9     2  21  
+#&gt; </span><span style='color: #555555;'> 5</span><span> Repeat2 Fold2  21.7     2  21  
+#&gt; </span><span style='color: #555555;'> 6</span><span> Repeat3 Fold1  23.7     2  21  
+#&gt; </span><span style='color: #555555;'> 7</span><span> Repeat1 Fold2  29.4     3  22.8
+#&gt; </span><span style='color: #555555;'> 8</span><span> Repeat2 Fold1  29.5     3  22.8
+#&gt; </span><span style='color: #555555;'> 9</span><span> Repeat3 Fold2  31.9     3  22.8
+#&gt; </span><span style='color: #555555;'>10</span><span> Repeat1 Fold1  19.1     4  21.4
+#&gt; </span><span style='color: #555555;'># … with 86 more rows</span><span></div><div class='input'><span class='fu'>collect_predictions</span>(<span class='no'>resampled</span>, <span class='kw'>summarize</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span>(<span class='no'>.row</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 32 x 3</span><span>
+#&gt;     .row   mpg .pred
+#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #555555;'> 1</span><span>     1  21    22.4
+#&gt; </span><span style='color: #555555;'> 2</span><span>     2  21    23.8
+#&gt; </span><span style='color: #555555;'> 3</span><span>     3  22.8  30.3
+#&gt; </span><span style='color: #555555;'> 4</span><span>     4  21.4  17.6
+#&gt; </span><span style='color: #555555;'> 5</span><span>     5  18.7  19.0
+#&gt; </span><span style='color: #555555;'> 6</span><span>     6  18.1  16.6
+#&gt; </span><span style='color: #555555;'> 7</span><span>     7  14.3  13.8
+#&gt; </span><span style='color: #555555;'> 8</span><span>     8  24.4  19.0
+#&gt; </span><span style='color: #555555;'> 9</span><span>     9  22.8  34.2
+#&gt; </span><span style='color: #555555;'>10</span><span>    10  19.2  16.5
+#&gt; </span><span style='color: #555555;'># … with 22 more rows</span><span></div><div class='input'># }
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>
