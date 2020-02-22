@@ -168,6 +168,10 @@ is_metric_maximize <- function(metric) {
   if (rlang::is_missing(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for `metric`.")
   }
+  tryCatch(ev <- rlang::sym(metric) %>%
+             rlang::eval_tidy() %>%
+             is_function(),
+           error = function(c) rlang::abort("Please check the value of `metric`."))
   dplyr::pull(
     metrics_info(yardstick::metric_set(!! rlang::sym(metric))),
     direction

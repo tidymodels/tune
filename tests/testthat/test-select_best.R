@@ -36,7 +36,7 @@ test_that("select_best()", {
 
   expect_error(
     select_best(rcv_results, metric = "random"),
-    "object 'random' not found"
+    "Please check the value of `metric`"
     )
   expect_error(
     select_best(rcv_results, metric = c("rmse", "rsq")),
@@ -88,7 +88,7 @@ test_that("one-std error rule", {
 
   expect_error(
     select_by_one_std_err(rcv_results, metric = "random", deg_free),
-    "object 'random' not found"
+    "Please check the value of `metric`"
   )
   expect_error(
     select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free),
@@ -121,7 +121,7 @@ test_that("percent loss", {
 
   expect_error(
     select_by_pct_loss(rcv_results, metric = "random", deg_free),
-    "object 'random' not found"
+    "Please check the value of `metric`"
   )
   expect_error(
     select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free),
