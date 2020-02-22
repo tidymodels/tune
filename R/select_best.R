@@ -61,8 +61,6 @@ show_best <- function(x, metric, n = 5) {
     metric <- metrics
   }
 
-  check_metric_choice(metric, maximize)
-
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
 
@@ -98,7 +96,6 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
   maximize <- is_metric_maximize(metric)
-  check_metric_choice(metric, maximize)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -136,7 +133,6 @@ select_by_one_std_err <- function(x, ..., metric) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
   maximize <- is_metric_maximize(metric)
-  check_metric_choice(metric, maximize)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -166,16 +162,6 @@ select_by_one_std_err <- function(x, ..., metric) {
 
   res <- dplyr::arrange(res, ...)
   res %>% dplyr::slice(1)
-}
-
-check_metric_choice <- function(metric, maximize) {
-  # trap some cases that we know about
-  to_min <- c("rmse", "mae", "mase", "mape")
-  if (maximize & metric %in% to_min) {
-    msg <- paste0("Did you mean to maximize ", metric, "?")
-    rlang::warn(msg)
-  }
-  invisible(NULL)
 }
 
 is_metric_maximize <- function(metric) {
