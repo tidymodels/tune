@@ -33,6 +33,10 @@ test_that("select_best()", {
     select_best(rcv_results, metric = "rsq"),
     best_rsq
   )
+  expect_warning(
+    select_best(rcv_results, metric = "rsq", maximize = TRUE),
+    "Ignored the `maximize` argument"
+  )
 
   expect_error(
     select_best(rcv_results, metric = "random"),
@@ -86,6 +90,11 @@ test_that("one-std error rule", {
     25L
   )
 
+  expect_warning(
+    select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE),
+    "Ignored the `maximize` argument"
+  )
+
   expect_error(
     select_by_one_std_err(rcv_results, metric = "random", deg_free),
     "Please check the value of `metric`"
@@ -117,6 +126,11 @@ test_that("percent loss", {
   expect_equal(
     select_by_pct_loss(knn_results, metric = "accuracy", K)$K,
     12L
+  )
+
+  expect_warning(
+    select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE),
+    "Ignored the `maximize` argument"
   )
 
   expect_error(

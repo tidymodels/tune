@@ -7,9 +7,9 @@
 \alias{select_by_one_std_err}
 \title{Investigate best tuning parameters}
 \usage{
-show_best(x, metric, n = 5)
+show_best(x, metric, n = 5, ...)
 
-select_best(x, metric)
+select_best(x, metric, ...)
 
 select_by_pct_loss(x, ..., metric, limit = 2)
 

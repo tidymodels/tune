@@ -53,7 +53,12 @@
 #'                    limit = 5, desc(K))
 #' }
 #' @export
-show_best <- function(x, metric, n = 5) {
+show_best <- function(x, metric, n = 5, ...) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("Ignored the `maximize` argument.",
+                      "Direction is built in to each metric set."))
+  }
   maximize <- is_metric_maximize(metric)
   summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
@@ -80,7 +85,12 @@ show_best <- function(x, metric, n = 5) {
 
 #' @export
 #' @rdname show_best
-select_best <- function(x, metric) {
+select_best <- function(x, metric, ...) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("Ignored the `maximize` argument.",
+                      "Direction is built in to each metric set."))
+  }
   res <- show_best(x, metric = metric, n = 1)
   res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
   if (any(names(res) == ".iter")) {
@@ -92,7 +102,14 @@ select_best <- function(x, metric) {
 #' @export
 #' @rdname show_best
 select_by_pct_loss <- function(x, ..., metric, limit = 2) {
-  if (length(rlang::enquos(...)) == 0) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("Ignored the `maximize` argument.",
+                      "Direction is built in to each metric set."))
+    dots[["maximize"]] <- NULL
+  }
+
+  if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
   maximize <- is_metric_maximize(metric)
@@ -116,7 +133,7 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
                     .loss = (mean - best_metric)/best_metric * 100)
   }
 
-  res <- dplyr::arrange(res, ...)
+  res <- dplyr::arrange(res, !!!dots)
   # discard models more complex than the best then rank by loss
   best_index <- which(res$.loss == 0)
   res %>%
@@ -129,7 +146,13 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err <- function(x, ..., metric) {
-  if (length(rlang::enquos(...)) == 0) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("Ignored the `maximize` argument.",
+                      "Direction is built in to each metric set."))
+    dots[["maximize"]] <- NULL
+  }
+  if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
   maximize <- is_metric_maximize(metric)
@@ -160,7 +183,7 @@ select_by_one_std_err <- function(x, ..., metric) {
       dplyr::filter(mean <= .bound)
   }
 
-  res <- dplyr::arrange(res, ...)
+  res <- dplyr::arrange(res, !!!dots)
   res %>% dplyr::slice(1)
 }
 
