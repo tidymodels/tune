@@ -1,9 +1,54 @@
 context("`select_best()` and `show_best()`")
 
 # ------------------------------------------------------------------------------
+# library(tidymodels)
+# set.seed(7898)
+# data_folds <- vfold_cv(mtcars, repeats = 2)
+#
+# base_rec <-
+#   recipe(mpg ~ ., data = mtcars) %>%
+#   step_normalize(all_predictors())
+#
+# disp_rec <-
+#   base_rec %>%
+#   step_bs(disp, degree = tune(), deg_free = tune()) %>%
+#   step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
+#
+# lm_model <-
+#   linear_reg(mode = "regression") %>%
+#   set_engine("lm")
+#
+# cars_wflow <-
+#   workflow() %>%
+#   add_recipe(disp_rec) %>%
+#   add_model(lm_model)
+#
+# cars_set <-
+#   cars_wflow %>%
+#   parameters %>%
+#   update(degree = degree_int(1:2)) %>%
+#   update(deg_free = deg_free(c(2, 10))) %>%
+#   update(`wt degree` = degree_int(1:2)) %>%
+#   update(`wt df` = deg_free(c(2, 10)))
+#
+# set.seed(255)
+# cars_grid <-
+#   cars_set %>%
+#   grid_regular(levels = c(3, 2, 3, 2))
+#
+#
+# cars_res <- tune_grid(cars_wflow,
+#                       resamples = data_folds,
+#                       grid = cars_grid,
+#                       control = control_grid(verbose = TRUE, save_pred = TRUE))
+# saveRDS(cars_res,
+#         file = testthat::test_path("rcv_results.rds"),
+#         version = 2, compress = "xz")
 
-load(test_path("rcv_results.RData"))
-load(test_path("knn_results.RData"))
+# ------------------------------------------------------------------------------
+
+rcv_results <- readRDS(test_path("rcv_results.rds"))
+knn_results <- readRDS(test_path("knn_results.rds"))
 source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
@@ -13,7 +58,7 @@ test_that("select_best()", {
 
   expect_true(
     tibble::is_tibble(select_best(rcv_results, metric = "rmse"))
-    )
+  )
   best_rmse <-
     tibble::tribble(
       ~deg_free, ~degree, ~`wt df`, ~`wt degree`,
@@ -41,7 +86,7 @@ test_that("select_best()", {
   expect_error(
     select_best(rcv_results, metric = "random"),
     "Please check the value of `metric`"
-    )
+  )
   expect_error(
     select_best(rcv_results, metric = c("rmse", "rsq")),
     "Please specify a single character"
