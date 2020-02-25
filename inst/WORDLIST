@@ -8,6 +8,7 @@ EI
 el
 FineFoods
 frac
+github
 geo
 https
 Isomap
@@ -19,6 +20,7 @@ Monterey
 notag
 Olshen
 parallelizes
+param
 plaintext
 pre
 RBF
@@ -29,6 +31,7 @@ tidymodels
 tokenized
 tunable
 unnest
+unsummarized
 Wadsworth
 wiggliness
 Yeo
