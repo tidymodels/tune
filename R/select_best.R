@@ -59,7 +59,7 @@ show_best <- function(x, metric, n = 5, ...) {
     rlang::warn(paste("Ignored the `maximize` argument.",
                       "Direction is built in to each metric set."))
   }
-  maximize <- is_metric_maximize(metric)
+  maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
@@ -112,7 +112,7 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
-  maximize <- is_metric_maximize(metric)
+  maximize <- is_metric_maximize(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -155,7 +155,7 @@ select_by_one_std_err <- function(x, ..., metric) {
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
-  maximize <- is_metric_maximize(metric)
+  maximize <- is_metric_maximize(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -187,16 +187,19 @@ select_by_one_std_err <- function(x, ..., metric) {
   res %>% dplyr::slice(1)
 }
 
-is_metric_maximize <- function(metric) {
+is_metric_maximize <- function(x, metric) {
   if (rlang::is_missing(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for `metric`.")
   }
-  tryCatch(ev <- rlang::sym(metric) %>%
-             rlang::eval_tidy() %>%
-             is_function(),
-           error = function(c) rlang::abort("Please check the value of `metric`."))
-  dplyr::pull(
-    metrics_info(yardstick::metric_set(!! rlang::sym(metric))),
-    direction
-  ) == "maximize"
+  attr_x <- attr(x, "metrics") %>%
+    attr("metrics")
+  if (!metric %in% names(attr_x)) {
+    rlang::abort("Please check the value of `metric`.")
+  }
+  directions <-
+    attr(x, "metrics") %>%
+    attr("metrics") %>%
+    purrr::map(~ attr(.x, "direction"))
+
+  directions[[metric]] == "maximize"
 }
