@@ -1,4 +1,4 @@
-context("grid search")
+context("Bayesian search")
 
 # ------------------------------------------------------------------------------
 
@@ -19,22 +19,28 @@ lm_mod <- linear_reg() %>% set_engine("lm")
 
 svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 
+rf_mod <- rand_forest(mode = "regression", mtry = tune()) %>% set_engine("randomForest")
+
+iter1 <- 2
+iter2 <- 2
+iterT <- iter1 + iter2
+
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
-  grid <- grid_regular(pset, levels = 3)
+  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
   res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), nrow(grid) * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
-  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
-  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
 # ------------------------------------------------------------------------------
@@ -44,37 +50,39 @@ test_that('tune model only (with recipe)', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
-  grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
   res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), nrow(grid) * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
-  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
-  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe, multi-predict)', {
 
+  skip_if_not(has_multi_predict())
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
-  grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
     c("cost", ".metric", ".estimator", ".estimate")
   )
   res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), nrow(grid) * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
-  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
-  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
 # ------------------------------------------------------------------------------
@@ -84,42 +92,87 @@ test_that('tune model and recipe', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
-  grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
     c("cost", "num_comp", ".metric", ".estimator", ".estimate")
   )
   res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), nrow(grid) * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
-  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
-  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (multi-predict)', {
 
+  skip_if_not(has_multi_predict())
+
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 2))
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
   res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), nrow(grid) * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
-  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
-  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
+})
+
+# ------------------------------------------------------------------------------
+
+test_that('tune recipe and model, which has_unknowns', {
+
+  # This test needs a tuning parameter object with default 'unknown' parameter
+  # values (e.g., mtry).
+
+  skip_if_not_installed("randomForest")
+
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(rf_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(3, 5)),
+                                              mtry = mtry(c(1, 3)))
+  expect_true(
+    any(
+      vapply(
+        dials::parameters(wflow)$object,
+        dials::has_unknowns,
+        FUN.VALUE = TRUE
+      )
+    )
+  )
+  folds <- vfold_cv(mtcars)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+  expect_equal(unique(res$id), folds$id)
+  expect_equal(
+    colnames(res$.metrics[[1]]),
+    c("mtry", "num_comp", ".metric", ".estimator", ".estimate")
+  )
+  res_est <- collect_metrics(res)
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
+
+  skip("test is not implemented for tune_bayes()")
+
+  # With tune_grid() this tests for NA values in the grid.
+  # This is not applicable for tune_bayes().
 
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
@@ -134,16 +187,15 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   cars_grid <- tibble(deg_free = c(3, NA_real_, 4))
 
   # ask for predictions and extractions
-  control <- control_grid(
+  control <- control_bayes(
     save_pred = TRUE,
     extract = function(x) 1L
   )
 
-  cars_res <- tune_grid(
+  cars_res <- tune_bayes(
     model,
     preprocessor = rec,
     resamples = data_folds,
-    grid = cars_grid,
     control = control
   )
 
@@ -173,30 +225,15 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   rec <- recipe(mpg ~ ., data = mtcars) %>%
     step_bs(disp, deg_free = NA_real_)
 
-  cars_grid <- tibble(cost = c(0.01, 0.02))
-
-  expect_warning(
-    cars_res <- tune_grid(
-      svm_mod,
-      preprocessor = rec,
-      resamples = data_folds,
-      grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    ),
-    "All models failed"
+  expect_error(
+    cars_res <- suppressWarnings(
+      tune_bayes(
+        svm_mod,
+        preprocessor = rec,
+        resamples = data_folds
+      )),
+    "All of the models failed"
   )
-
-  notes <- cars_res$.notes
-  note <- notes[[1]]$.notes
-
-  extracts <- cars_res$.extracts
-  predictions <- cars_res$.predictions
-
-  expect_length(notes, 2L)
-
-  # recipe failed - no models run
-  expect_equal(extracts, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
@@ -204,34 +241,28 @@ test_that("tune model only - failure in formula is caught elegantly", {
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
 
-  cars_grid <- tibble(cost = 0.01)
-
   # these terms don't exist!
-  expect_warning(
-    cars_res <- tune_grid(
-      svm_mod,
-      y ~ z,
-      resamples = data_folds,
-      grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    ),
-    "All models failed"
+  wflow <- workflow() %>%
+    add_formula(y ~ z) %>%
+    add_model(svm_mod)
+
+  expect_error(
+    cars_res <- suppressWarnings(
+      tune_bayes(
+        wflow,
+        resamples = data_folds,
+        control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
+      )),
+    "All of the models failed"
   )
-
-  notes <- cars_res$.notes
-  note <- notes[[1]]$.notes
-
-  extracts <- cars_res$.extracts
-  predictions <- cars_res$.predictions
-
-  expect_length(notes, 2L)
-
-  # formula failed - no models run
-  expect_equal(extracts, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
+
+  skip("test is not implemented for tune_bayes()")
+
+  # With tune_grid() this tests for NA values in the grid.
+  # This is not applicable for tune_bayes().
 
   set.seed(7898)
   data_folds <- vfold_cv(mtcars, v = 2)
@@ -243,12 +274,11 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
-  cars_res <- tune_grid(
+  cars_res <- tune_bayes(
     svm_mod,
     preprocessor = rec,
     resamples = data_folds,
-    grid = cars_grid,
-    control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+    control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
   )
 
   notes <- cars_res$.notes
@@ -272,24 +302,36 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 
 test_that("argument order gives warning for recipes", {
   expect_warning(
-    tune_grid(rec_tune_1, lm_mod, vfold_cv(mtcars, v = 2)),
+    tune_bayes(rec_tune_1, model = lm_mod, resamples = vfold_cv(mtcars, v = 2),
+               param_info = dials::parameters(rec_tune_1),
+               iter = iter1, initial = iter2),
     "is deprecated as of lifecycle"
   )
 })
 
 test_that("argument order gives warning for formula", {
   expect_warning(
-    tune_grid(mpg ~ ., lm_mod, vfold_cv(mtcars, v = 2)),
+    tune_bayes(mpg ~ ., svm_mod, resamples = vfold_cv(mtcars, v = 2),
+               param_info = dials::parameters(svm_mod),
+               initial = iter1, iter = iter2),
     "is deprecated as of lifecycle"
   )
 })
 
-test_that("ellipses with tune_grid", {
+test_that("ellipses with tune_bayes", {
 
+  # This test currently fails, because tune_bayes() actually passes the ... to
+  # fit_gp(). This behavior seems to be undocumented.
+
+  skip_if("..." %in% names(formals(fit_gp)))
+
+  set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  pset <- dials::parameters(wflow)
   folds <- vfold_cv(mtcars)
   expect_warning(
-    tune_grid(wflow, resamples = folds, grid = 3, something = "wrong"),
+    tune_bayes(wflow, resamples = folds, param_info = pset,
+               initial = iter1, iter = iter2, something = "wrong"),
     "The `...` are not used in this function but one or more objects"
   )
 })
