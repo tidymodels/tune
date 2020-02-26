@@ -81,7 +81,7 @@ recipe across one or more resamples of the data." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -373,7 +373,8 @@ grid has a separate R object associated with it.</p>
 <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
@@ -398,7 +399,6 @@ grid has a separate R object associated with it.</p>
 <span class='co'># manually create a grid</span>
 <span class='no'>spline_grid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(<span class='kw'>disp</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>, <span class='kw'>wt</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>)
 
-<span class='co'># \donttest{</span>
 <span class='co'># Warnings will occur from making spline terms on the holdout data that are</span>
 <span class='co'># extrapolations.</span>
 <span class='no'>spline_res</span> <span class='kw'>&lt;-</span>
@@ -420,8 +420,7 @@ grid has a separate R object associated with it.</p>
 #&gt; </span><span style='color: #555555;'>2</span><span>     3     3 rmse    standard    2.64     5   0.234
 #&gt; </span><span style='color: #555555;'>3</span><span>     4     3 rmse    standard    2.82     5   0.456
 #&gt; </span><span style='color: #555555;'>4</span><span>     4     2 rmse    standard    2.93     5   0.489
-#&gt; </span><span style='color: #555555;'>5</span><span>     4     4 rmse    standard    3.01     5   0.475</div><div class='input'><span class='co'># }</span>
-
+#&gt; </span><span style='color: #555555;'>5</span><span>     4     4 rmse    standard    3.01     5   0.475</div><div class='input'>
 <span class='co'># ------------------------------------------------------------------------------</span>
 
 <span class='co'># tune model parameters only (example requires the `kernlab` package)</span>
@@ -435,7 +434,6 @@ grid has a separate R object associated with it.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kernlab"</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_args.html'>set_mode</a></span>(<span class='st'>"regression"</span>)
 
-<span class='co'># \donttest{</span>
 <span class='co'># Use a space-filling design with 7 points</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>3254</span>)
 <span class='no'>svm_res</span> <span class='kw'>&lt;-</span> <span class='fu'>tune_grid</span>(<span class='no'>car_rec</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>svm_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>7</span>)

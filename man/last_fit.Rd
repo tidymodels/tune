@@ -2,32 +2,29 @@
 % Please edit documentation in R/last_fit.R
 \name{last_fit}
 \alias{last_fit}
-\alias{last_fit.recipe}
-\alias{last_fit.formula}
+\alias{last_fit.model_spec}
 \alias{last_fit.workflow}
 \title{Fit the final best model to the training set and evaluate the test set}
 \usage{
 last_fit(object, ...)
 
-\method{last_fit}{recipe}(object, model, split, ..., metrics = NULL)
-
-\method{last_fit}{formula}(formula, model, split, ..., metrics = NULL)
+\method{last_fit}{model_spec}(object, preprocessor, split, ..., metrics = NULL)
 
 \method{last_fit}{workflow}(object, split, ..., metrics = NULL)
 }
 \arguments{
-\item{object}{A workflow, formula, or recipe. No tuning parameters are allowed.}
+\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
+No tuning parameters are allowed.}
 
 \item{...}{Currently unused.}
 
-\item{model}{A \code{parsnip} model specification. No tuning parameters are allowed.}
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 
 \item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
-
-\item{formula}{A formula specifying the terms of the model.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.
@@ -60,7 +57,7 @@ spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
 lin_mod <- linear_reg() \%>\%
   set_engine("lm")
 
-spline_res <- last_fit(spline_rec, lin_mod, split = tr_te_split)
+spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 spline_res
 
 # test set results
