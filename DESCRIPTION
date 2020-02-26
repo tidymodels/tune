@@ -38,6 +38,7 @@ Suggests:
     knitr,
     covr,
     kernlab,
+    randomForest,
     modeldata,
     xml2,
     spelling
