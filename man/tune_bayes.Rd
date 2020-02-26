@@ -117,13 +117,13 @@ the number of parameters being optimized.
 
 
 In some cases, the tuning parameter values depend on the dimensions of the
-data. For example, \code{mtry} in random forest models depends on the number of
-predictors. In this case, the default tuning parameter object requires an
-upper range. \code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent
-parameters. Otherwise, a parameter set can be created (via
-\code{\link[dials:parameters]{dials::parameters()}} and the \code{dials} \code{update()} function can be used to
-change the ranges or values. This updated parameter set can be passed to
-the function via the \code{param_info} argument.
+data (they are said to contain \link[dials:unknown]{unknown} values). For
+example, \code{mtry} in random forest models depends on the number of predictors.
+In such cases, the unknowns in the tuning parameter object must be determined
+beforehand and passed to the function via the \code{param_info} argument.
+\code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent parameters.
+Otherwise, a parameter set can be created via \code{\link[dials:parameters]{dials::parameters()}}, and the
+\code{dials} \code{update()} function can be used to specify the ranges or values.
 }
 
 \section{Performance Metrics}{
