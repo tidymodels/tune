@@ -64,13 +64,13 @@
 #' @section Parameter Ranges and Values:
 #'
 #' In some cases, the tuning parameter values depend on the dimensions of the
-#'  data. For example, `mtry` in random forest models depends on the number of
-#'  predictors. In this case, the default tuning parameter object requires an
-#'  upper range. [dials::finalize()] can be used to derive the data-dependent
-#'  parameters. Otherwise, a parameter set can be created (via
-#'  [dials::parameters()] and the `dials` `update()` function can be used to
-#'  change the ranges or values. This updated parameter set can be passed to
-#'  the function via the `param_info` argument.
+#' data (they are said to contain [unknown][dials::unknown] values). For
+#' example, `mtry` in random forest models depends on the number of predictors.
+#' In such cases, the unknowns in the tuning parameter object must be determined
+#' beforehand and passed to the function via the `param_info` argument.
+#' [dials::finalize()] can be used to derive the data-dependent parameters.
+#' Otherwise, a parameter set can be created via [dials::parameters()], and the
+#' `dials` `update()` function can be used to specify the ranges or values.
 #'
 #' @section Performance Metrics:
 #'
@@ -324,7 +324,8 @@ tune_bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control)
+      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control,
+                              param_info = param_info)
 
       check_time(start_time, control$time_limit)
 
@@ -537,7 +538,7 @@ initial_info <- function(stats, metrics, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, control) {
+more_results <- function(object, resamples, candidates, metrics, control, param_info) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -548,6 +549,7 @@ more_results <- function(object, resamples, candidates, metrics, control) {
       tune_grid(
         object,
         resamples = resamples,
+        param_info = param_info,
         grid = candidates,
         metrics = metrics,
         control = control_grid(verbose = FALSE, extract = control$extract,

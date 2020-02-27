@@ -13,6 +13,10 @@
 
 * `select_best()`, `select_by_one_std_err()`, and `select_by_pct_loss()` no longer have a redundant `maximize` argument (#176). Each metric set in yardstick now has a direction (maximize vs. minimize) built in.
 
+## Bug Fixes
+
+* `tune_bayes()` no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (#168)[https://github.com/tidymodels/tune/issues/168].
+
 # tune 0.0.1
 
 * CRAN release.
