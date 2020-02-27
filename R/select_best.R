@@ -18,7 +18,6 @@
 #'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
 #'  more details). Not required if a single metric exists in `x`.
 #' @param n An integer for the number of top results/rows to return.
-#' @param maximize A logical value (TRUE/FALSE).
 #' @param limit The limit of loss of performance that is acceptable (in percent
 #' units). See details below.
 #' @param ... For [select_by_one_std_err()] and [select_by_pct_loss()], this
@@ -38,7 +37,7 @@
 #' \donttest{
 #' data("example_ames_knn")
 #'
-#' show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
+#' show_best(ames_iter_search, metric = "rmse")
 #'
 #' select_best(ames_iter_search, metric = "rsq")
 #'
@@ -47,22 +46,25 @@
 #' # number of neighbors (the least complex class boundary) to the smallest
 #' # (corresponding to the most complex model).
 #'
-#' select_by_one_std_err(ames_grid_search, metric = "rmse",
-#'                       maximize = FALSE, desc(K))
+#' select_by_one_std_err(ames_grid_search, metric = "rmse", desc(K))
 #'
 #' # Now find the least complex model that has no more than a 5% loss of RMSE:
 #' select_by_pct_loss(ames_grid_search, metric = "rmse",
-#'                    maximize = FALSE, limit = 5, desc(K))
+#'                    limit = 5, desc(K))
 #' }
 #' @export
-show_best <- function(x, metric, n = 5, maximize = TRUE) {
+show_best <- function(x, metric, n = 5, ...) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
+  }
+  maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
     metric <- metrics
   }
-
-  check_metric_choice(metric, maximize)
 
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
@@ -83,8 +85,13 @@ show_best <- function(x, metric, n = 5, maximize = TRUE) {
 
 #' @export
 #' @rdname show_best
-select_best <- function(x, metric, maximize = TRUE) {
-  res <- show_best(x, metric = metric, maximize = maximize, n = 1)
+select_best <- function(x, metric, ...) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
+  }
+  res <- show_best(x, metric = metric, n = 1)
   res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
   if (any(names(res) == ".iter")) {
     res <- res %>% dplyr::select(-.iter)
@@ -94,11 +101,18 @@ select_best <- function(x, metric, maximize = TRUE) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss <- function(x, ..., metric, maximize = TRUE, limit = 2) {
-  check_metric_choice(metric, maximize)
-  if (length(rlang::enquos(...)) == 0) {
+select_by_pct_loss <- function(x, ..., metric, limit = 2) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
+    dots[["maximize"]] <- NULL
+  }
+
+  if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
+  maximize <- is_metric_maximize(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -119,7 +133,7 @@ select_by_pct_loss <- function(x, ..., metric, maximize = TRUE, limit = 2) {
                     .loss = (mean - best_metric)/best_metric * 100)
   }
 
-  res <- dplyr::arrange(res, ...)
+  res <- dplyr::arrange(res, !!!dots)
   # discard models more complex than the best then rank by loss
   best_index <- which(res$.loss == 0)
   res %>%
@@ -131,11 +145,17 @@ select_by_pct_loss <- function(x, ..., metric, maximize = TRUE, limit = 2) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err <- function(x, ..., metric, maximize = TRUE) {
-  check_metric_choice(metric, maximize)
-  if (length(rlang::enquos(...)) == 0) {
+select_by_one_std_err <- function(x, ..., metric) {
+  dots <- rlang::enquos(...)
+  if (!is.null(dots$maximize)) {
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
+    dots[["maximize"]] <- NULL
+  }
+  if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
+  maximize <- is_metric_maximize(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -163,23 +183,23 @@ select_by_one_std_err <- function(x, ..., metric, maximize = TRUE) {
       dplyr::filter(mean <= .bound)
   }
 
-  res <- dplyr::arrange(res, ...)
+  res <- dplyr::arrange(res, !!!dots)
   res %>% dplyr::slice(1)
 }
 
-check_metric_choice <- function(metric, maximize) {
+is_metric_maximize <- function(x, metric) {
   if (rlang::is_missing(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for `metric`.")
   }
-  if (!is.logical(maximize) | length(maximize) > 1) {
-    rlang::abort("Please specify a single logical value for `maximize`.")
+  attr_x <- attr(x, "metrics") %>%
+    attr("metrics")
+  if (!metric %in% names(attr_x)) {
+    rlang::abort("Please check the value of `metric`.")
   }
+  directions <-
+    attr(x, "metrics") %>%
+    attr("metrics") %>%
+    purrr::map(~ attr(.x, "direction"))
 
-  # trap some cases that we know about
-  to_min <- c("rmse", "mae", "mase", "mape")
-  if (maximize & metric %in% to_min) {
-    msg <- paste0("Did you mean to maximize ", metric, "?")
-    rlang::warn(msg)
-  }
-  invisible(NULL)
+  directions[[metric]] == "maximize"
 }
