@@ -56,8 +56,8 @@
 show_best <- function(x, metric, n = 5, ...) {
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("Ignored the `maximize` argument.",
-                      "Direction is built in to each metric set."))
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
   }
   maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
@@ -88,8 +88,8 @@ show_best <- function(x, metric, n = 5, ...) {
 select_best <- function(x, metric, ...) {
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("Ignored the `maximize` argument.",
-                      "Direction is built in to each metric set."))
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
   }
   res <- show_best(x, metric = metric, n = 1)
   res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
@@ -104,8 +104,8 @@ select_best <- function(x, metric, ...) {
 select_by_pct_loss <- function(x, ..., metric, limit = 2) {
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("Ignored the `maximize` argument.",
-                      "Direction is built in to each metric set."))
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
     dots[["maximize"]] <- NULL
   }
 
@@ -148,8 +148,8 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
 select_by_one_std_err <- function(x, ..., metric) {
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("Ignored the `maximize` argument.",
-                      "Direction is built in to each metric set."))
+    rlang::warn(paste("The `maximize` argument is no longer needed.",
+                      "This value was ignored."))
     dots[["maximize"]] <- NULL
   }
   if (length(dots) == 0) {

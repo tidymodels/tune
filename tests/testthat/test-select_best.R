@@ -80,7 +80,7 @@ test_that("select_best()", {
   )
   expect_warning(
     select_best(rcv_results, metric = "rsq", maximize = TRUE),
-    "Ignored the `maximize` argument"
+    "The `maximize` argument is no longer"
   )
 
   expect_error(
@@ -137,7 +137,7 @@ test_that("one-std error rule", {
 
   expect_warning(
     select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE),
-    "Ignored the `maximize` argument"
+    "The `maximize` argument is no longer"
   )
 
   expect_error(
@@ -175,7 +175,7 @@ test_that("percent loss", {
 
   expect_warning(
     select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE),
-    "Ignored the `maximize` argument"
+    "The `maximize` argument is no longer"
   )
 
   expect_error(
