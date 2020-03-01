@@ -20,6 +20,7 @@ library(tune)
 library(workflows)
 library(textrecipes)
 library(textfeatures)
+library(modeldata)
 library(doMC)
 registerDoMC(cores = 10)
 
@@ -42,6 +43,7 @@ There is a column for the product, a column for the text of the review, and a fa
 ```{r data}
 library(tidymodels)
 library(tune)
+library(modeldata)
 
 data("small_fine_foods")
 training_data
@@ -181,7 +183,7 @@ roc_scores <- metric_set(roc_auc)
 
 set.seed(1559)
 five_star_glmnet <- 
-  tune_grid(pre_proc, lr_mod, resamples = folds, grid = five_star_grid, 
+  tune_grid(lr_mod, pre_proc, resamples = folds, grid = five_star_grid, 
             metrics = roc_scores, control = ctrl)
 ```
 

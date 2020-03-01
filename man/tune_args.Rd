@@ -46,6 +46,7 @@ The \code{id} field has any identifier that was passed to \code{\link[=tune]{tun
 the \code{id} field reverts to the name of the parameters.
 }
 \examples{
+\donttest{
 library(recipes)
 
 recipe(mpg ~ ., data = mtcars) \%>\%
@@ -71,5 +72,6 @@ boost_tree(trees = tune(), min_n = tune()) \%>\%
 boost_tree(trees = tune(), min_n = tune()) \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   tune_args()
+}
 }
 \keyword{internal}

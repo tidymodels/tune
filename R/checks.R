@@ -194,7 +194,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
     quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
     quant_name <- pset$id[quant_param]
-    compl <- map_lgl(pset$object[quant_param],
+    compl <- purrr::map_lgl(pset$object[quant_param],
                      ~ !dials::is_unknown(.x$range$lower) &
                        !dials::is_unknown(.x$range$upper))
 
@@ -222,7 +222,7 @@ check_metrics <- function(x, object) {
         x <- yardstick::metric_set(rmse, rsq)
       },
       classification = {
-        x <- yardstick::metric_set(accuracy, kap)
+        x <- yardstick::metric_set(roc_auc, accuracy)
       },
       unknown = {
         rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
@@ -273,6 +273,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
     x <- tune_grid(wflow, resamples = resamples, grid = x, metrics = metrics,
+                   param_info = pset,
                    control = control_grid(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {

@@ -14,6 +14,7 @@
 #' @return A tibble with a column `x` that has as many rows as were in `y`.
 #' @keywords internal
 #' @examples
+#' \donttest{
 #' library(tibble)
 #' library(recipes)
 #'
@@ -63,6 +64,7 @@
 #'   grid_max_entropy(size = 3)
 #'
 #' merge(xgb_mod, xgb_grid)
+#' }
 #' @export
 merge.recipe <- function(x, y, ...) {
   merger(x, y, ...)
@@ -115,7 +117,7 @@ merger <- function(x, y, ...) {
   pset <- dials::parameters(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
     return(res)
   }
   grid_name <- colnames(y)
@@ -131,13 +133,13 @@ merger <- function(x, y, ...) {
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- tibble::tibble(x = map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
     return(res)
   }
 
   y %>%
     dplyr::mutate(
-      ..object = map(1:nrow(y), ~ updater(y[.x,], x, pset, step_ids, grid_name))
+      ..object = purrr::map(1:nrow(y), ~ updater(y[.x,], x, pset, step_ids, grid_name))
     ) %>%
     dplyr::select(x = ..object)
 }

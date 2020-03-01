@@ -7,13 +7,13 @@
 \alias{select_by_one_std_err}
 \title{Investigate best tuning parameters}
 \usage{
-show_best(x, metric, n_top = 5, maximize = TRUE)
+show_best(x, metric, n = 5, ...)
 
-select_best(x, metric, maximize = TRUE)
+select_best(x, metric, ...)
 
-select_by_pct_loss(x, ..., metric, maximize = TRUE, limit = 2)
+select_by_pct_loss(x, ..., metric, limit = 2)
 
-select_by_one_std_err(x, ..., metric, maximize = TRUE)
+select_by_one_std_err(x, ..., metric)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
@@ -23,9 +23,7 @@ the models. (See
 \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
 more details). Not required if a single metric exists in \code{x}.}
 
-\item{n_top}{An integer for the number of top results/rows to return.}
-
-\item{maximize}{A logical value (TRUE/FALSE).}
+\item{n}{An integer for the number of top results/rows to return.}
 
 \item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
 argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
@@ -58,9 +56,10 @@ model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100
 or 25 percent. Note that loss will always be non-negative.
 }
 \examples{
+\donttest{
 data("example_ames_knn")
 
-show_best(ames_iter_search, metric = "rmse", maximize = FALSE)
+show_best(ames_iter_search, metric = "rmse")
 
 select_best(ames_iter_search, metric = "rsq")
 
@@ -69,12 +68,12 @@ select_best(ames_iter_search, metric = "rsq")
 # number of neighbors (the least complex class boundary) to the smallest
 # (corresponding to the most complex model).
 
-select_by_one_std_err(ames_grid_search, metric = "rmse",
-                      maximize = FALSE, desc(K))
+select_by_one_std_err(ames_grid_search, metric = "rmse", desc(K))
 
 # Now find the least complex model that has no more than a 5\% loss of RMSE:
 select_by_pct_loss(ames_grid_search, metric = "rmse",
-                   maximize = FALSE, limit = 5, desc(K))
+                   limit = 5, desc(K))
+}
 }
 \references{
 Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).

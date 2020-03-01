@@ -8,6 +8,13 @@
 
 <title>Example Analysis of Ames Housing Data — example_ames_knn • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -36,6 +43,7 @@
 
 <meta property="og:title" content="Example Analysis of Ames Housing Data — example_ames_knn" />
 <meta property="og:description" content="Example Analysis of Ames Housing Data" />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -71,7 +79,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -153,8 +161,7 @@
 housing data. A K-nearest neighbors model was used with a small
 predictor set that included natural spline transformations of
 the <code>Longitude</code> and <code>Latitude</code> predictors. The code used to
-generate these examples was:</p><pre>
-library(tidymodels)
+generate these examples was:</p><pre>library(tidymodels)
 library(tune)
 library(AmesHousing)
 
@@ -173,13 +180,13 @@ rs_splits &lt;- vfold_cv(ames_train, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec &lt;-
-  recipe(Sale_Price ~ ., data = ames_train) <!-- %&gt;% -->
-  step_log(Sale_Price, base = 10) <!-- %&gt;% -->
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) <!-- %&gt;% -->
-  step_other(Neighborhood, threshold = .1)  <!-- %&gt;% -->
-  step_dummy(all_nominal()) <!-- %&gt;% -->
-  step_zv(all_predictors()) <!-- %&gt;% -->
-  step_ns(Longitude, deg_free = tune("lon")) <!-- %&gt;% -->
+  recipe(Sale_Price ~ ., data = ames_train) %&gt;%
+  step_log(Sale_Price, base = 10) %&gt;%
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %&gt;%
+  step_other(Neighborhood, threshold = .1)  %&gt;%
+  step_dummy(all_nominal()) %&gt;%
+  step_zv(all_predictors()) %&gt;%
+  step_ns(Longitude, deg_free = tune("lon")) %&gt;%
   step_ns(Latitude, deg_free = tune("lat"))
 
 knn_model &lt;-
@@ -188,21 +195,21 @@ knn_model &lt;-
     neighbors = tune("K"),
     weight_func = tune(),
     dist_power = tune()
-  ) <!-- %&gt;% -->
+  ) %&gt;%
   set_engine("kknn")
 
 ames_wflow &lt;-
-  workflow() <!-- %&gt;% -->
-  add_recipe(ames_rec) <!-- %&gt;% -->
+  workflow() %&gt;%
+  add_recipe(ames_rec) %&gt;%
   add_model(knn_model)
 
 ames_set &lt;-
-  parameters(ames_wflow) <!-- %&gt;% -->
+  parameters(ames_wflow) %&gt;%
   update(K = neighbors(c(1, 50)))
 
 set.seed(7014)
 ames_grid &lt;-
-  ames_set <!-- %&gt;% -->
+  ames_set %&gt;%
   grid_max_entropy(size = 10)
 
 ames_grid_search &lt;-

@@ -1,13 +1,17 @@
 #' Splice final parameters into objects
 #'
-#' The `finalize_*` functions take a list or tibble or parameter values and
+#' The `finalize_*` functions take a list or tibble of tuning parameter values and
 #' update objects with those values.
 #'
 #' @param x A recipe, `parsnip` model specification, or workflow.
-#' @param parameters A list or 1-row tibble of parameter values.
+#' @param parameters A list or 1-row tibble of parameter values. Note that the
+#'  column names of the tibble should be the `id` fields attached to `tune()`.
+#'  For example, in the `Examples` section below, the model has `tune("K")`. In
+#'  this case, the parameter tibble should be "K" and not "neighbors".
 #' @return An updated version of `x`.
 #' @export
 #' @examples
+#' \donttest{
 #' data("example_ames_knn")
 #'
 #' library(parsnip)
@@ -20,11 +24,12 @@
 #'   ) %>%
 #'   set_engine("kknn")
 #'
-#' lowest_rmse <- select_best(ames_grid_search, metric = "rmse", maximize = FALSE)
+#' lowest_rmse <- select_best(ames_grid_search, metric = "rmse")
 #' lowest_rmse
 #'
 #' knn_model
 #' finalize_model(knn_model, lowest_rmse)
+#' }
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
     stop("`x` should be a parsnip model specification.")

@@ -69,7 +69,8 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   control2$verbose = TRUE
 
   wrn <- res$signals
-  if (length(wrn) > 0 | runif(1) < .1) {
+
+  if (length(wrn) > 0 | runif(1) < 0.05) {
     wrn_msg <- map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
@@ -231,7 +232,7 @@ who <- c("Tessa", "Moira", "Alex")
 
 good_news <- function() {
   Sys.sleep(rpois(1, 2))
-  msg <- c("excellent!", "awesome!", "noice!")
+  msg <- c("excellent!", "awesome!", "noice!", "bravo!", "you're the best")
   msg <- base::sample(msg, 1)
   cmd <- paste("say", msg)
   cmd <- paste(cmd, "-v", sample(who, 1))

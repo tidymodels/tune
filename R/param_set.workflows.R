@@ -6,6 +6,7 @@
 #' @param ... Not currently used.
 #' @return A parameter set object
 #' @examples
+#' \donttest{
 #' library(tibble)
 #' library(recipes)
 #'
@@ -35,6 +36,7 @@
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   dials::parameters()
+#' }
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {
@@ -70,7 +72,7 @@ parameters.model_spec <- function(x, ...) {
       all_args,
       by = c("name", "source", "component")
     ) %>%
-    mutate(object = map(call_info, eval_call_info))
+    mutate(object = purrr::map(call_info, eval_call_info))
 
   dials::parameters_constr(
     res$name,
@@ -94,7 +96,7 @@ parameters.recipe <- function(x, ...) {
       all_args,
       by = c("name", "source", "component", "component_id")
     ) %>%
-    mutate(object = map(call_info, eval_call_info))
+    mutate(object = purrr::map(call_info, eval_call_info))
 
   dials::parameters_constr(
     res$name,

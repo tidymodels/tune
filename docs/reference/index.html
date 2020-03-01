@@ -8,6 +8,13 @@
 
 <title>Function reference • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -35,6 +42,8 @@
 
 
 <meta property="og:title" content="Function reference" />
+<meta property="og:image" content="/logo.png" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -69,7 +78,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -174,7 +183,7 @@
         <td>
           <p><code><a href="last_fit.html">last_fit()</a></code> </p>
         </td>
-        <td><p>Fit the best model to the training set</p></td>
+        <td><p>Fit the final best model to the training set and evaluate the test set</p></td>
       </tr><tr>
         
         <td>
@@ -186,19 +195,19 @@
         <td>
           <p><code><a href="control_bayes.html">control_bayes()</a></code> </p>
         </td>
-        <td><p>Control the Bayesian search process</p></td>
+        <td><p>Control aspects of the Bayesian search process</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="control_grid.html">control_grid()</a></code> <code><a href="control_grid.html">control_resamples()</a></code> </p>
         </td>
-        <td><p>Control the grid search process</p></td>
+        <td><p>Control aspects of the grid search process</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="autoplot.tune_results.html">autoplot(<i>&lt;tune_results&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Plot search results</p></td>
+        <td><p>Plot tuning search results</p></td>
       </tr><tr>
         
         <td>
@@ -210,7 +219,7 @@
         <td>
           <p><code><a href="collect_predictions.html">collect_predictions()</a></code> <code><a href="collect_predictions.html">collect_metrics()</a></code> </p>
         </td>
-        <td><p>Obtain and format results produced by tuning</p></td>
+        <td><p>Obtain and format results produced by tuning functions</p></td>
       </tr><tr>
         
         <td>

@@ -2,7 +2,6 @@ context("merge grid values into objects")
 
 # ------------------------------------------------------------------------------
 
-library(rlang)
 source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
@@ -27,7 +26,7 @@ bst_grid <- tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 # ------------------------------------------------------------------------------
 
 test_that('recipe merges', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid),
     NA
@@ -51,7 +50,7 @@ test_that('recipe merges', {
 })
 
 test_that('partially recipe merge', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid[, -1]),
     NA
@@ -75,7 +74,7 @@ test_that('partially recipe merge', {
 })
 
 test_that('umerged recipe merge', {
-
+  
   expect_error(
     spline_updated <- merge(spline_rec, bst_grid),
     NA
@@ -103,7 +102,7 @@ test_that('umerged recipe merge', {
 
 
 test_that('model spec merges', {
-
+  
   expect_error(
     bst_updated <- merge(bst_model, bst_grid),
     NA
@@ -112,18 +111,18 @@ test_that('model spec merges', {
   for (i in 1:nrow(bst_grid)) {
     expect_equal(
       bst_updated$x[[i]]$args$trees,
-      as_quosure(bst_grid[["funky name \n"]][[i]], empty_env())
+      rlang::as_quosure(bst_grid[["funky name \n"]][[i]], empty_env())
     )
     expect_equal(
       bst_updated$x[[i]]$eng_args$rules,
-      as_quosure(bst_grid$rules[[i]], empty_env())
+      rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
 
 })
 
 test_that('partially model spec merge', {
-
+  
   expect_error(
     bst_updated <- merge(bst_model, bst_grid[, -1]),
     NA
@@ -135,14 +134,14 @@ test_that('partially model spec merge', {
     )
     expect_equal(
       bst_updated$x[[i]]$eng_args$rules,
-      as_quosure(bst_grid$rules[[i]], empty_env())
+      rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
 
 })
 
 test_that('umerged model spec merge', {
-
+  
   other_grid <- bst_grid
   names(bst_grid) <- letters[1:2]
   expect_error(

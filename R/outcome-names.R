@@ -5,6 +5,7 @@
 #' @return A character string of variable names
 #' @keywords internal
 #' @examples
+#' library(dplyr)
 #' lm(cbind(mpg, wt) ~ ., data = mtcars) %>%
 #'   purrr::pluck(terms) %>%
 #'   outcome_names()

@@ -1,8 +1,7 @@
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
-#' @importFrom dplyr distinct arrange rename mutate_if starts_with
-#' @importFrom purrr map_lgl map_dfr iwalk map map_chr map_int map2_dfc
-#' @importFrom tibble tibble lst
+#' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
+#' @importFrom tibble tibble lst is_tibble as_tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
 #' @importFrom rlang is_missing
@@ -11,7 +10,7 @@
 #' @importFrom dials parameters_constr is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame update
-#' @importFrom yardstick rsq rmse accuracy kap
+#' @importFrom yardstick rsq rmse accuracy roc_auc
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env
@@ -47,7 +46,8 @@ utils::globalVariables(
     ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
     "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
     "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
-    ".extracts", ".metrics", "value", ".notes", ".loss", ".bound")
+    ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
+    ".column", ".totals", ".value", "direction")
   )
 
 # ------------------------------------------------------------------------------
@@ -57,6 +57,7 @@ tidyr_new_interface <- function() {
 }
 
 # ------------------------------------------------------------------------------
+## function is called in .onLoad() in zzz.R
 
 # nocov start
 s3_register <- function(generic, class, method = NULL) {
@@ -118,11 +119,3 @@ s3_register <- function(generic, class, method = NULL) {
 }
 
 # nocov end
-
-.onLoad <- function(libname, pkgname) {
-
-  # dynamically register autoplot
-  s3_register("ggplot2::autoplot", "tune_results")
-
-  invisible()
-}

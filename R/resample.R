@@ -5,28 +5,20 @@
 #' [tune_bayes()] for that), and is instead used for fitting a single
 #' model+recipe or model+formula combination across many resamples.
 #'
-#' @param object A workflow, formula, or recipe.
-#'
-#' @param model A `parsnip` model specification.
+#' @inheritParams last_fit
 #'
 #' @param resamples A resample `rset` created from an `rsample` function such
 #'   as [rsample::vfold_cv()].
 #'
-#' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
-#'   set of metrics.
-#'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
-#'
-#' @param formula A formula specifying the terms of the model.
-#'
-#' @param ... Currently unused.
 #'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examples
+#' \donttest{
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -43,12 +35,12 @@
 #'
 #' control <- control_resamples(save_pred = TRUE)
 #'
-#' spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
+#' spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 #'
 #' spline_res
 #'
-#' show_best(spline_res, metric = "rmse", maximize = FALSE)
-#'
+#' show_best(spline_res, metric = "rmse")
+#' }
 #' @export
 fit_resamples <- function(object, ...) {
   UseMethod("fit_resamples")
@@ -57,13 +49,12 @@ fit_resamples <- function(object, ...) {
 #' @export
 fit_resamples.default <- function(object, ...) {
   msg <- paste0(
-    "The first argument to [fit_resamples()] should be either a ",
-    "formula, recipe, or workflow."
+    "The first argument to [fit_resamples()] should be either ",
+    "a model or workflow."
   )
   rlang::abort(msg)
 }
 
-#' @rdname fit_resamples
 #' @export
 fit_resamples.recipe <- function(object,
                                  model,
@@ -72,18 +63,15 @@ fit_resamples.recipe <- function(object,
                                  metrics = NULL,
                                  control = control_resamples()) {
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
-  }
+  lifecycle::deprecate_soft("0.1.0",
+                            what = "fit_resamples.recipe()",
+                            details = deprecate_msg(match.call(), "fit_resamples"))
+  empty_ellipses(...)
 
-  workflow <- workflow()
-  workflow <- add_recipe(workflow, object)
-  workflow <- add_model(workflow, model)
-
-  resample_workflow(workflow, resamples, metrics, control)
+  fit_resamples(model, preprocessor = object, resamples = resamples,
+                metrics = metrics, control = control)
 }
 
-#' @rdname fit_resamples
 #' @export
 fit_resamples.formula <- function(formula,
                                   model,
@@ -92,16 +80,42 @@ fit_resamples.formula <- function(formula,
                                   metrics = NULL,
                                   control = control_resamples()) {
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    rlang::abort("`model` should be a parsnip model specification object.")
+  lifecycle::deprecate_soft("0.1.0",
+                            what = "fit_resamples.formula()",
+                            details = deprecate_msg(match.call(), "fit_resamples"))
+  empty_ellipses(...)
+
+  fit_resamples(model, preprocessor = formula, resamples = resamples,
+                metrics = metrics, control = control)
+}
+
+#' @export
+#' @rdname fit_resamples
+fit_resamples.model_spec <- function(object,
+                                     preprocessor,
+                                     resamples,
+                                     ...,
+                                     metrics = NULL,
+                                     control = control_resamples()) {
+
+  if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
-  workflow <- workflow()
-  workflow <- add_formula(workflow, formula)
-  workflow <- add_model(workflow, model)
+  empty_ellipses(...)
 
-  resample_workflow(workflow, resamples, metrics, control)
+  wflow <- add_model(workflow(), object)
+
+  if (is_recipe(preprocessor)) {
+    wflow <- add_recipe(wflow, preprocessor)
+  } else if (rlang::is_formula(preprocessor)) {
+    wflow <- add_formula(wflow, preprocessor)
+  }
+
+  resample_workflow(wflow, resamples, metrics, control)
 }
+
 
 #' @rdname fit_resamples
 #' @export
@@ -110,6 +124,8 @@ fit_resamples.workflow <- function(object,
                                    ...,
                                    metrics = NULL,
                                    control = control_resamples()) {
+
+  empty_ellipses(...)
 
   resample_workflow(object, resamples, metrics, control)
 }
@@ -138,7 +154,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   # TODO - what class?
   class(resamples) <- c("resample_results", class(resamples))
 
-  resamples
+  save_attr(resamples, parameters(workflow), metrics)
 }
 
 # ------------------------------------------------------------------------------

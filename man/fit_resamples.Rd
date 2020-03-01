@@ -2,25 +2,15 @@
 % Please edit documentation in R/resample.R
 \name{fit_resamples}
 \alias{fit_resamples}
-\alias{fit_resamples.recipe}
-\alias{fit_resamples.formula}
+\alias{fit_resamples.model_spec}
 \alias{fit_resamples.workflow}
 \title{Fit multiple models via resampling}
 \usage{
 fit_resamples(object, ...)
 
-\method{fit_resamples}{recipe}(
+\method{fit_resamples}{model_spec}(
   object,
-  model,
-  resamples,
-  ...,
-  metrics = NULL,
-  control = control_resamples()
-)
-
-\method{fit_resamples}{formula}(
-  formula,
-  model,
+  preprocessor,
   resamples,
   ...,
   metrics = NULL,
@@ -36,11 +26,13 @@ fit_resamples(object, ...)
 )
 }
 \arguments{
-\item{object}{A workflow, formula, or recipe.}
+\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
+No tuning parameters are allowed.}
 
 \item{...}{Currently unused.}
 
-\item{model}{A \code{parsnip} model specification.}
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 
 \item{resamples}{A resample \code{rset} created from an \code{rsample} function such
 as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
@@ -50,8 +42,6 @@ set of metrics.}
 
 \item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
 process.}
-
-\item{formula}{A formula specifying the terms of the model.}
 }
 \description{
 \code{\link[=fit_resamples]{fit_resamples()}} computes a set of performance metrics across one or more
@@ -78,8 +68,8 @@ If no metric set is provided, one is created:
 \itemize{
 \item For regression models, the root mean squared error and coefficient
 of determination are computed.
-\item For classification, the log-likelihood and overall accuracy are
-computed.
+\item For classification, the area under the ROC curve and overall accuracy
+are computed.
 }
 
 Note that the metrics also determine what type of predictions are estimated
@@ -146,6 +136,7 @@ grid has a separate R object associated with it.
 }
 
 \examples{
+\donttest{
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -162,12 +153,12 @@ lin_mod <- linear_reg() \%>\%
 
 control <- control_resamples(save_pred = TRUE)
 
-spline_res <- fit_resamples(spline_rec, lin_mod, folds, control = control)
+spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 
 spline_res
 
-show_best(spline_res, metric = "rmse", maximize = FALSE)
-
+show_best(spline_res, metric = "rmse")
+}
 }
 \seealso{
 \code{\link[=control_resamples]{control_resamples()}}, \code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_metrics]{collect_metrics()}}

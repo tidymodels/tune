@@ -1,32 +1,29 @@
-#' Control the grid search process
+#' Control aspects of the grid search process
 #'
-#' @param verbose A logical for logging results as they are generated. Despite
-#'   this argument, warnings and errors are always shown. If using a dark IDE
-#'   theme, some logging messages might be hard to see. If this is the case,
-#'   try setting the `tidymodels.dark` option with
-#'   `options(tidymodels.dark = TRUE)` to print lighter colors.
+#' @inheritParams control_bayes
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
-#' @param extract An optional function with at least one argument (or `NULL`)
-#'   that can be used to retain arbitrary objects from the model fit object,
-#'   recipe, or other elements of the workflow.
-#' @param save_pred A logical for whether the out-of-sample predictions should
-#'   be saved for each model _evaluated_.
-#' @param pkgs An optional character string of R package names that should be
-#'   loaded (by namespace) during parallel processing.
 #'
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
 #' recipe (if used), or some components of either or both. When evaluated, the
-#' function's sole argument has a named list with elements `recipe` and `model`.
-#' If the formula method is used, the recipe element will be `NULL`.
+#' function's sole argument has a fitted workflow If the formula method is used,
+#' the recipe element will be `NULL`.
 #'
 #' The results of the `extract` function are added to a list column in the
 #' output called `.extracts`. Each element of this list is a tibble with tuning
 #' parameter column and a list column (also called `.extracts`) that contains
 #' the results of the function. If no extraction function is used, there is no
-#' `.extracts` column in the resulting object.
+#' `.extracts` column in the resulting object. See [tune_bayes()] for more
+#' specific details.
+#'
+#' Note that for [collect_predictions()], it is possible that each row of the
+#'  original data point might be represented multiple times per tuning
+#'  parameter. For example, if the bootstrap or repeated cross-validation are
+#'  used, there will be multiple rows since the sample data point has been
+#'  evaluated multiple times. This may cause issues when merging the predictions
+#'  with the original data.
 #'
 #' [control_resamples()] is an alias for [control_grid()] and is meant to be
 #' used with [fit_resamples()].
@@ -53,31 +50,53 @@ control_resamples <- control_grid
 
 # ------------------------------------------------------------------------------
 
-#' Control the Bayesian search process
+#' Control aspects of the Bayesian search process
 #'
 #' @param verbose A logical for logging results as they are generated. Despite
-#'   this argument, warnings and errors are always shown.
+#'   this argument, warnings and errors are always shown. If using a dark IDE
+#'   theme, some logging messages might be hard to see. If this is the case,
+#'   try setting the `tidymodels.dark` option with
+#'   `options(tidymodels.dark = TRUE)` to print lighter colors.
 #' @param no_improve The integer cutoff for the number of iterations without
 #'   better results.
 #' @param uncertain The number of iterations with no improvement before an
-#'   uncertainty sample is created where a sample with high predicted variance
-#'   is chosen. The iteration counter is reset after each uncertainty sample.
-#'   For example, if `uncertain = 10`, this condition is triggered every 10
-#'   samples with no improvement.
+#'  uncertainty sample is created where a sample with high predicted variance is
+#'  chosen (i.e., in a region that has not yet been explored). The iteration
+#'  counter is reset after each uncertainty sample. For example, if `uncertain =
+#'  10`, this condition is triggered every 10 samples with no improvement.
 #' @param seed An integer for controlling the random number stream.
-#' @param extract An optional function to collect any information from the model
-#'   or other objects. See [control_grid()] for details. Note that if initial
-#'   results were already generated using [tune_grid()], care must be taken if
-#'   the Bayesian search has a different extraction function.
-#' @param save_pred A logical to save the out-of-sample predictions from each
-#'   resample and each parameter combination. See [control_grid()] for details.
 #' @param time_limit A number for the minimum number of _minutes_ (elapsed) that
 #'   the function should execute. The elapsed time is evaluated at internal
 #'   checkpoints and, if over time, the results at that time are returned (with
 #'   a warning). This means that the `time_limit` is not an exact limit, but a
 #'   minimum time limit.
+#' @param extract An optional function with at least one argument (or `NULL`)
+#'   that can be used to retain arbitrary objects from the model fit object,
+#'   recipe, or other elements of the workflow.
+#' @param save_pred A logical for whether the out-of-sample predictions should
+#'   be saved for each model _evaluated_.
 #' @param pkgs An optional character string of R package names that should be
 #'   loaded (by namespace) during parallel processing.
+#' @details
+#'
+#' For `extract`, this function can be used to output the model object, the
+#' recipe (if used), or some components of either or both. When evaluated, the
+#' function's sole argument has a fitted workflow If the formula method is used,
+#' the recipe element will be `NULL`.
+#'
+#' The results of the `extract` function are added to a list column in the
+#' output called `.extracts`. Each element of this list is a tibble with tuning
+#' parameter column and a list column (also called `.extracts`) that contains
+#' the results of the function. If no extraction function is used, there is no
+#' `.extracts` column in the resulting object. See [tune_bayes()] for more
+#' specific details.
+#'
+#' Note that for [collect_predictions()], it is possible that each row of the
+#'  original data point might be represented multiple times per tuning
+#'  parameter. For example, if the bootstrap or repeated cross-validation are
+#'  used, there will be multiple rows since the sample data point has been
+#'  evaluated multiple times. This may cause issues when merging the predictions
+#'  with the original data.
 #' @export
 control_bayes <-
   function(verbose = FALSE,

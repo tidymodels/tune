@@ -2,42 +2,48 @@
 % Please edit documentation in R/last_fit.R
 \name{last_fit}
 \alias{last_fit}
-\alias{last_fit.recipe}
-\alias{last_fit.formula}
+\alias{last_fit.model_spec}
 \alias{last_fit.workflow}
-\title{Fit the best model to the training set}
+\title{Fit the final best model to the training set and evaluate the test set}
 \usage{
 last_fit(object, ...)
 
-\method{last_fit}{recipe}(object, model, split, ..., metrics = NULL)
-
-\method{last_fit}{formula}(formula, model, split, ..., metrics = NULL)
+\method{last_fit}{model_spec}(object, preprocessor, split, ..., metrics = NULL)
 
 \method{last_fit}{workflow}(object, split, ..., metrics = NULL)
 }
 \arguments{
-\item{object}{A workflow, formula, or recipe. No tuning parameters are allowed.}
+\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
+No tuning parameters are allowed.}
 
 \item{...}{Currently unused.}
 
-\item{model}{A \code{parsnip} model specification. No tuning parameters are allowed.}
+\item{preprocessor}{A traditional model formula or a recipe created using
+\code{\link[recipes:recipe]{recipes::recipe()}}.}
 
 \item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
-
-\item{formula}{A formula specifying the terms of the model.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.
+However, a list column called \code{.workflow} is also attached with the fitted
+model (and recipe, if any) that used the training set.
 }
 \description{
 \code{\link[=last_fit]{last_fit()}} emulates the process where, after determining the best model,
-a final model is fit on the entire training set and is evaluated on the
-test set.
+the final fit on the entire training set is needed and is then evaluated on
+the test set.
+}
+\details{
+This function is intended to be used after fitting a \emph{variety of models}
+and the final tuning parameters (if any) have been finalized. The next step
+would be to fit using the entire training set and verify performance using
+the test data.
 }
 \examples{
+\donttest{
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -45,19 +51,26 @@ library(parsnip)
 set.seed(6735)
 tr_te_split <- initial_split(mtcars)
 
-# After fitting a _variety of models_, you've settled on a linear model that
-# uses spline functions for a single variable. The next step is to fit the
-# model on the entire training set and verify performance using the test data.
-
 spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
   step_ns(disp)
 
 lin_mod <- linear_reg() \%>\%
   set_engine("lm")
 
-spline_res <- last_fit(spline_rec, lin_mod, split = tr_te_split)
+spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 spline_res
 
 # test set results
 spline_res$.metrics[[1]]
+
+# or use a workflow
+
+library(workflows)
+spline_wfl <-
+ workflow() \%>\%
+ add_recipe(spline_rec) \%>\%
+ add_model(lin_mod)
+
+last_fit(spline_wfl, split = tr_te_split)
+}
 }

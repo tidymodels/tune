@@ -8,6 +8,13 @@
 
 <title>Bayesian optimization of model parameters. — tune_bayes • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -37,6 +44,7 @@
 <meta property="og:title" content="Bayesian optimization of model parameters. — tune_bayes" />
 <meta property="og:description" content="tune_bayes() uses models to generate new candidate tuning parameter
 combinations based on previous results." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -72,7 +80,7 @@ combinations based on previous results." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -316,8 +324,8 @@ typical probability cutoff of 0.50), the <code>metrics</code> argument could be 
 <p>If no metric set is provided, one is created:</p><ul>
 <li><p>For regression models, the root mean squared error and coefficient
 of determination are computed.</p></li>
-<li><p>For classification, the log-likelihood and overall accuracy are
-computed.</p></li>
+<li><p>For classification, the area under the ROC curve and overall accuracy
+are computed.</p></li>
 </ul>
 
 <p>Note that the metrics also determine what type of predictions are estimated

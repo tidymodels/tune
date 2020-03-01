@@ -1,11 +1,12 @@
-#' Plot search results
+#' Plot tuning search results
 #'
-#' @param object A tibble of results form [tune_grid()] or [tune_bayes()].
+#' @param object A tibble of results from [tune_grid()] or [tune_bayes()].
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #' 'of each predictor versus performance), `"parameters"` (each parameter versus
 #' search iteration), or `"performance"` (performance versus iteration). The
 #' latter two choices are only used for [tune_bayes()].
-#' @param metric A character vector or `NULL` for which outcome to plot.
+#' @param metric A character vector or `NULL` for which metric to plot. By
+#' default, all metrics will be shown via facets.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "perfomance"`. A value of zero prevents them from being shown.
 #' @param ... Not currently used.
@@ -17,6 +18,7 @@
 #' can be used.
 #' @seealso [tune_grid()], [tune_bayes()]
 #' @examples
+#' \donttest{
 #' # For grid search:
 #' data("example_ames_knn")
 #'
@@ -33,7 +35,7 @@
 #'
 #' # Plot performance over iterations
 #' autoplot(ames_iter_search, metric = "rmse", type = "performance")
-#'
+#' }
 #' @export
 autoplot.tune_results <-
   function(object,
@@ -106,7 +108,7 @@ plot_param_vs_iter <- function(x) {
   x <- estimate_tune_results(x)
   excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
   param_cols <- names(x)[!((names(x) %in% excl_cols))]
-  is_num <- map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
   num_param_cols <- param_cols[is_num]
   x <-
     x %>%

@@ -8,6 +8,13 @@
 
 <title>Splice final parameters into objects — finalize_model • tune</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -35,8 +42,9 @@
 
 
 <meta property="og:title" content="Splice final parameters into objects — finalize_model" />
-<meta property="og:description" content="The finalize_* functions take a list or tibble or parameter values and
+<meta property="og:description" content="The finalize_* functions take a list or tibble of tuning parameter values and
 update objects with those values." />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -72,7 +80,7 @@ update objects with those values." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9004</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
         </div>
       </div>
     </div>
@@ -136,7 +144,7 @@ update objects with those values." />
     </div>
 
     <div class="ref-description">
-    <p>The <code>finalize_*</code> functions take a list or tibble or parameter values and
+    <p>The <code>finalize_*</code> functions take a list or tibble of tuning parameter values and
 update objects with those values.</p>
     </div>
 
@@ -155,7 +163,10 @@ update objects with those values.</p>
     </tr>
     <tr>
       <th>parameters</th>
-      <td><p>A list or 1-row tibble of parameter values.</p></td>
+      <td><p>A list or 1-row tibble of parameter values. Note that the
+column names of the tibble should be the <code>id</code> fields attached to <code><a href='tune.html'>tune()</a></code>.
+For example, in the <code>Examples</code> section below, the model has <code><a href='tune.html'>tune("K")</a></code>. In
+this case, the parameter tibble should be "K" and not "neighbors".</p></td>
     </tr>
     </table>
 
@@ -164,7 +175,8 @@ update objects with those values.</p>
     <p>An updated version of <code>x</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 <span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
@@ -197,7 +209,8 @@ update objects with those values.</p>
 #&gt;   dist_power = 0.511191629664972
 #&gt; 
 #&gt; Computational engine: kknn 
-#&gt; </div></span></pre>
+#&gt; </div><div class='input'># }
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <h2>Contents</h2>

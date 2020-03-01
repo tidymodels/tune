@@ -26,6 +26,7 @@ A tibble with a column \code{x} that has as many rows as were in \code{y}.
 \pkg{parsnip} model or recipe.
 }
 \examples{
+\donttest{
 library(tibble)
 library(recipes)
 
@@ -75,5 +76,6 @@ xgb_grid <-
   grid_max_entropy(size = 3)
 
 merge(xgb_mod, xgb_grid)
+}
 }
 \keyword{internal}

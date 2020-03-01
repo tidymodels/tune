@@ -1,36 +1,3 @@
-#' Fine Foods example data
-#'
-#' @details
-#' These data are from Amazon, who describe it as "This dataset consists of
-#'  reviews of fine foods from amazon. The data span a period of more than 10
-#'  years, including all ~500,000 reviews up to October 2012. Reviews include
-#'  product and user information, ratings, and a plaintext review."
-#'
-#' A subset of the data are contained here and are split into a training and
-#'  test set. The training set sampled 10 products and retained all of their
-#'  individual reviews. Since the reviews within these products are correlated,
-#'  we recommend resampling the data using a leave-one-product-out approach. The
-#'  test set sampled 500 products that were not included in the training set
-#'  and selected a single review at random for each.
-#'
-#' There is a column for the product, a column for the text of the review, and
-#'  a factor column for a class variable. The outcome is whether the reviewer
-#'  gave the product a 5-star rating or not.
-#'
-#' @name small_fine_foods
-#' @aliases small_fine_foods training_data testing_data
-#' @docType data
-#' @return \item{training_data,testing_data}{tibbles}
-#'
-#' @source https://snap.stanford.edu/data/web-FineFoods.html
-#'
-#'
-#' @keywords datasets
-#' @examples
-#' data(small_fine_foods)
-#' str(training_data)
-NULL
-
 #' Example Analysis of Ames Housing Data
 #'
 #' @details
@@ -39,7 +6,8 @@ NULL
 #'  predictor set that included natural spline transformations of
 #'  the `Longitude` and `Latitude` predictors. The code used to
 #'  generate these examples was:
-#' \preformatted{
+#'
+#' ```
 #' library(tidymodels)
 #' library(tune)
 #' library(AmesHousing)
@@ -107,11 +75,11 @@ NULL
 #'     initial = ames_grid_search,
 #'     iter = 15
 #'   )
-#' }
+#' ```
 #'
 #' __important note__: Since the `rsample` split columns contain a reference
 #' to the same data, saving them to disk can results in large object sizes when
-#' the object is later used. In essance, R replaces all of those references with
+#' the object is later used. In essence, R replaces all of those references with
 #' the actual data. For this reason, we saved zero-row tibbles in their place.
 #' This doesn't affect how we use these objects in examples but be advised that
 #' using some `rsample` functions on them will cause issues.

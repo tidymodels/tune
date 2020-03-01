@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{autoplot.tune_results}
 \alias{autoplot.tune_results}
-\title{Plot search results}
+\title{Plot tuning search results}
 \usage{
 \method{autoplot}{tune_results}(
   object,
@@ -13,14 +13,15 @@
 )
 }
 \arguments{
-\item{object}{A tibble of results form \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
+\item{object}{A tibble of results from \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
 
 \item{type}{A single character value. Choices are \code{"marginals"} (for a plot
 'of each predictor versus performance), \code{"parameters"} (each parameter versus
 search iteration), or \code{"performance"} (performance versus iteration). The
 latter two choices are only used for \code{\link[=tune_bayes]{tune_bayes()}}.}
 
-\item{metric}{A character vector or \code{NULL} for which outcome to plot.}
+\item{metric}{A character vector or \code{NULL} for which metric to plot. By
+default, all metrics will be shown via facets.}
 
 \item{width}{A number for the width of the confidence interval bars when
 \code{type = "perfomance"}. A value of zero prevents them from being shown.}
@@ -31,7 +32,7 @@ latter two choices are only used for \code{\link[=tune_bayes]{tune_bayes()}}.}
 A \code{ggplot2} object.
 }
 \description{
-Plot search results
+Plot tuning search results
 }
 \details{
 The parameters are currently represented in their natural units.
@@ -41,6 +42,7 @@ parameters are also in the results. Any number of numeric tuning parameters
 can be used.
 }
 \examples{
+\donttest{
 # For grid search:
 data("example_ames_knn")
 
@@ -57,7 +59,7 @@ autoplot(ames_iter_search, metric = "rmse", type = "parameters")
 
 # Plot performance over iterations
 autoplot(ames_iter_search, metric = "rmse", type = "performance")
-
+}
 }
 \seealso{
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}

@@ -1,7 +1,8 @@
 context("last fit")
 
-library(parsnip)
-library(rsample)
+source(test_path("../helper-objects.R"))
+
+# ------------------------------------------------------------------------------
 
 set.seed(23598723)
 split <- initial_split(mtcars)
@@ -12,29 +13,64 @@ test_pred <- predict(lm_fit, testing(split))
 rmse_test <- yardstick::rsq_vec(testing(split) %>% pull(mpg), test_pred)
 
 test_that("formula method", {
-  res <- last_fit(f, linear_reg() %>% set_engine("lm"), split)
+
+  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
   expect_equivalent(coef(extract_model(res$.workflow[[1]])), coef(lm_fit))
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
 })
 
 test_that("recipe method", {
+
   rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
-  res <- last_fit(rec, linear_reg() %>% set_engine("lm"), split)
+  res <- linear_reg() %>% set_engine("lm") %>% last_fit(rec, split)
   expect_equivalent(sort(coef(extract_model(res$.workflow[[1]]))), sort(coef(lm_fit)))
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
 })
 
 test_that("split_to_rset", {
+
   res <- tune:::split_to_rset(split)
   expect_true(inherits(res, "mc_cv"))
   expect_true(nrow(res) == 1)
   expect_true(nrow(res) == 1)
 
-  res <- last_fit(f, linear_reg() %>% set_engine("lm"), split)
+  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
   expect_true(is.list(res$.workflow))
   expect_true(inherits(res$.workflow[[1]], "workflow"))
   expect_true(is.list(res$.predictions))
   expect_true(inherits(res$.predictions[[1]], "tbl_df"))
+})
+
+test_that("collect metrics of last fit", {
+
+  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
+  met <- collect_metrics(res)
+  expect_true(inherits(met, "tbl_df"))
+  expect_equal(names(met), c(".metric", ".estimator", ".estimate"))
+})
+
+
+test_that("ellipses with last_fit", {
+
+  expect_warning(
+    linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong"),
+    "The `...` are not used in this function but one or more objects"
+  )
+})
+
+test_that("argument order gives warnings for recipe/formula", {
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  expect_warning(
+    last_fit(rec, lin_mod, split),
+    "is deprecated as of lifecycle"
+  )
+  expect_warning(
+    last_fit(f, lin_mod, split),
+    "is deprecated as of lifecycle"
+  )
 })

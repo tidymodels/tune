@@ -2,7 +2,7 @@
 % Please edit documentation in R/control.R
 \name{control_bayes}
 \alias{control_bayes}
-\title{Control the Bayesian search process}
+\title{Control aspects of the Bayesian search process}
 \usage{
 control_bayes(
   verbose = FALSE,
@@ -17,26 +17,27 @@ control_bayes(
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
-this argument, warnings and errors are always shown.}
+this argument, warnings and errors are always shown. If using a dark IDE
+theme, some logging messages might be hard to see. If this is the case,
+try setting the \code{tidymodels.dark} option with
+\code{options(tidymodels.dark = TRUE)} to print lighter colors.}
 
 \item{no_improve}{The integer cutoff for the number of iterations without
 better results.}
 
 \item{uncertain}{The number of iterations with no improvement before an
-uncertainty sample is created where a sample with high predicted variance
-is chosen. The iteration counter is reset after each uncertainty sample.
-For example, if \code{uncertain = 10}, this condition is triggered every 10
-samples with no improvement.}
+uncertainty sample is created where a sample with high predicted variance is
+chosen (i.e., in a region that has not yet been explored). The iteration
+counter is reset after each uncertainty sample. For example, if \code{uncertain = 10}, this condition is triggered every 10 samples with no improvement.}
 
 \item{seed}{An integer for controlling the random number stream.}
 
-\item{extract}{An optional function to collect any information from the model
-or other objects. See \code{\link[=control_grid]{control_grid()}} for details. Note that if initial
-results were already generated using \code{\link[=tune_grid]{tune_grid()}}, care must be taken if
-the Bayesian search has a different extraction function.}
+\item{extract}{An optional function with at least one argument (or \code{NULL})
+that can be used to retain arbitrary objects from the model fit object,
+recipe, or other elements of the workflow.}
 
-\item{save_pred}{A logical to save the out-of-sample predictions from each
-resample and each parameter combination. See \code{\link[=control_grid]{control_grid()}} for details.}
+\item{save_pred}{A logical for whether the out-of-sample predictions should
+be saved for each model \emph{evaluated}.}
 
 \item{time_limit}{A number for the minimum number of \emph{minutes} (elapsed) that
 the function should execute. The elapsed time is evaluated at internal
@@ -48,5 +49,25 @@ minimum time limit.}
 loaded (by namespace) during parallel processing.}
 }
 \description{
-Control the Bayesian search process
+Control aspects of the Bayesian search process
+}
+\details{
+For \code{extract}, this function can be used to output the model object, the
+recipe (if used), or some components of either or both. When evaluated, the
+function's sole argument has a fitted workflow If the formula method is used,
+the recipe element will be \code{NULL}.
+
+The results of the \code{extract} function are added to a list column in the
+output called \code{.extracts}. Each element of this list is a tibble with tuning
+parameter column and a list column (also called \code{.extracts}) that contains
+the results of the function. If no extraction function is used, there is no
+\code{.extracts} column in the resulting object. See \code{\link[=tune_bayes]{tune_bayes()}} for more
+specific details.
+
+Note that for \code{\link[=collect_predictions]{collect_predictions()}}, it is possible that each row of the
+original data point might be represented multiple times per tuning
+parameter. For example, if the bootstrap or repeated cross-validation are
+used, there will be multiple rows since the sample data point has been
+evaluated multiple times. This may cause issues when merging the predictions
+with the original data.
 }
