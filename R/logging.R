@@ -232,7 +232,7 @@ who <- c("Tessa", "Moira", "Alex")
 
 good_news <- function() {
   Sys.sleep(rpois(1, 2))
-  msg <- c("excellent!", "awesome!", "noice!", "bravo!", "you're the best")
+  msg <- c("excellent!", "awesome!", "noice!", "bravo!", "you are the best")
   msg <- base::sample(msg, 1)
   cmd <- paste("say", msg)
   cmd <- paste(cmd, "-v", sample(who, 1))
