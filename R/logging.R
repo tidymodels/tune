@@ -241,8 +241,8 @@ good_news <- function() {
 
 
 bad_news <- function() {
-  Sys.sleep(rpois(1, 2))
-  msg <- c("shit", "bad, very bad", "NO", "damn it")
+  Sys.sleep(rexp(1))
+  msg <- c("shit", "bad, very bad", "FAIL", "damn it")
   msg <- base::sample(msg, 1)
   cmd <- paste("say", msg)
   cmd <- paste(cmd, "-v", sample(who, 1))
