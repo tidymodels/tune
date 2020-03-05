@@ -109,7 +109,10 @@ catch_and_log_fit <- function(expr, ..., notes) {
   tune_log(..., type = "info")
 
   result <- catcher(expr)
-  fit <- result$res$fit$fit$fit
+  fit <- tryCatch(
+    result$res$fit$fit$fit,
+    error = function(c) as.character(result$res)
+  )
 
   # Log underlying fit failures that parsnip caught and exit
   if (is_failure(fit)) {
