@@ -115,6 +115,38 @@ test_that("failure in recipe is caught elegantly", {
   expect_equal(predictions, list(NULL, NULL))
 })
 
+test_that("classification models generate correct error message", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  rec <- recipe(vs ~ ., data = mtcars)
+
+  log_mod <- logistic_reg() %>%
+    set_engine("glm")
+
+  control <- control_resamples(extract = function(x) x, save_pred = TRUE)
+
+  expect_warning(
+    result <- fit_resamples(log_mod, rec, folds, control = control),
+    "All models failed"
+  )
+
+  notes <- result$.notes
+  note <- notes[[1]]$.notes
+
+  extract <- result$.extracts
+  predictions <- result$.predictions
+
+  expect_length(notes, 2L)
+
+  # Known failure in the recipe
+  expect_true(all(grepl("outcome should be a factor", note)))
+
+  expect_equal(extract, list(NULL, NULL))
+  expect_equal(predictions, list(NULL, NULL))
+})
+
+
 # ------------------------------------------------------------------------------
 # tune_grid() fallback
 

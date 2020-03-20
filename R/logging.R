@@ -108,21 +108,39 @@ catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
 catch_and_log_fit <- function(expr, ..., notes) {
   tune_log(..., type = "info")
 
-  result <- catcher(expr)
-  fit <- result$res$fit$fit$fit
+  caught <- catcher(expr)
+  result <- caught$res
 
-  # Log underlying fit failures that parsnip caught and exit
+  # Log failures that come from parsnip before the model is fit
+  if (is_failure(result)) {
+    result_parsnip <- list(res = result, signals = list())
+
+    new_notes <- log_problems(notes, ..., result_parsnip)
+    assign(".notes", new_notes, envir = parent.frame())
+    return(result)
+  }
+
+  if (!is_workflow(result)) {
+    abort("Internal error: Model result is not a workflow!")
+  }
+
+  # Extract the parsnip model from the fitted workflow
+  fit <- result$fit$fit$fit
+
+  # Log underlying fit failures that parsnip caught during the actual
+  # fitting process
   if (is_failure(fit)) {
     result_fit <- list(res = fit, signals = list())
 
     new_notes <- log_problems(notes, ..., result_fit)
     assign(".notes", new_notes, envir = parent.frame())
-    return(result$res)
+    return(result)
   }
 
-  new_notes <- log_problems(notes, ..., result)
+  new_notes <- log_problems(notes, ..., caught)
   assign(".notes", new_notes, envir = parent.frame())
-  result$res
+
+  result
 }
 
 log_best <- function(control, iter, info, digits = 4) {

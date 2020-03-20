@@ -3,7 +3,7 @@ context("autoplot")
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
-load(test_path("knn_results.RData"))
+knn_results <- readRDS(test_path("knn_results.rds"))
 load(test_path("svm_results.RData"))
 load(test_path("bayes_example.RData"))
 

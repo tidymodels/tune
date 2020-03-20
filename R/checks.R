@@ -273,6 +273,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
     x <- tune_grid(wflow, resamples = resamples, grid = x, metrics = metrics,
+                   param_info = pset,
                    control = control_grid(extract = ctrl$extract,
                                           save_pred = ctrl$save_pred))
     if (ctrl$verbose) {

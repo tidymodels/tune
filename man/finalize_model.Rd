@@ -41,7 +41,7 @@ knn_model <-
   ) \%>\%
   set_engine("kknn")
 
-lowest_rmse <- select_best(ames_grid_search, metric = "rmse", maximize = FALSE)
+lowest_rmse <- select_best(ames_grid_search, metric = "rmse")
 lowest_rmse
 
 knn_model
