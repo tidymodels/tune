@@ -205,6 +205,7 @@ grid has a separate R object associated with it.
 library(recipes)
 library(rsample)
 library(parsnip)
+library(ggplot2)
 
 # ---------------------------------------------------------------------------
 

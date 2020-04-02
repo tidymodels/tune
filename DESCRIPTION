@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.0.1.9000
+Version: 0.1.0
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
@@ -45,5 +45,5 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.2.9000
+RoxygenNote: 7.1.0.9000
 Language: en-US

@@ -1,6 +1,6 @@
 pandoc: 2.9.1
 pkgdown: 1.4.1.9000
-pkgdown_sha: 03fa5022ff360a6f87586145e45f71fe090c64a2
+pkgdown_sha: b7045baef5c241c61ecf06d95b8bd4f12a3fc622
 articles:
   acquisition_functions: acquisition_functions.html
   optimizations: extras/optimizations.html
@@ -8,4 +8,5 @@ articles:
   text_analysis: extras/text_analysis.html
   getting_started: getting_started.html
   grid: grid.html
+last_built: 2020-04-02T03:49Z
 

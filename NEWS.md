@@ -1,4 +1,4 @@
-# tune 0.0.1.9000
+# tune 0.1.0
 
 ## Breaking Changes
 
@@ -6,8 +6,7 @@
 
 ## Other Changes
 
-* Added more packages to be fully loaded in the workers when run in parallel using `doParallel` (#157)[https://github.com/tidymodels/tune/issues/157],  (#159)[https://github.com/tidymodels/tune/issues/159], and 
-(#160)[https://github.com/tidymodels/tune/issues/160]
+* Added more packages to be fully loaded in the workers when run in parallel using `doParallel` (#157),  (#159), and  (#160)
 
 * `collect_predictions()` gains two new arguments. `parameters` allows for pre-filtering of the hold-out predictions by tuning parameters values. If you are only interested in one sub-model, this makes things much faster. The other option is `summarize` and is used when the resampling method has training set rows that are predicted in multiple holdout sets.  
 
@@ -15,7 +14,7 @@
 
 ## Bug Fixes
 
-* `tune_bayes()` no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (#168)[https://github.com/tidymodels/tune/issues/168].
+* `tune_bayes()` no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (#168).
 
 # tune 0.0.1
 

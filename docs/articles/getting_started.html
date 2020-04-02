@@ -18,7 +18,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../tidyverse-2.css" rel="stylesheet">
 <meta property="og:title" content="Getting Started with tune">
-<meta property="og:description" content="">
+<meta property="og:description" content="tune">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -26,7 +26,7 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -42,7 +42,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -97,10 +97,10 @@
 
       
 
-      </header><script src="getting_started_files/jquery-1.11.3/jquery.min.js"></script><script src="getting_started_files/elevate-section-attrs-2.0/elevate-section-attrs.js"></script><div class="row">
+      </header><script src="getting_started_files/header-attrs-2.1/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Getting Started with tune</h1>
+      <h1 data-toc-skip>Getting Started with tune</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/getting_started.Rmd"><code>vignettes/getting_started.Rmd</code></a></small>
@@ -221,13 +221,13 @@
 <span id="cb12-2"><a href="#cb12-2"></a>cv_splits &lt;-<span class="st"> </span><span class="kw">vfold_cv</span>(ames_train, <span class="dt">v =</span> <span class="dv">10</span>, <span class="dt">strata =</span> <span class="st">"Sale_Price"</span>)</span></code></pre></div>
 <p>The root mean squared error will be used to measure performance (and this is the default for regression problems).</p>
 <p>Using these objects, <code><a href="../reference/tune_grid.html">tune_grid()</a></code> can be used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>ames_res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(ames_rec, <span class="dt">model =</span> lm_mod, <span class="dt">resamples =</span> cv_splits, <span class="dt">grid =</span> spline_grid)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>ames_res &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tune_grid.html">tune_grid</a></span>(lm_mod, ames_rec, <span class="dt">resamples =</span> cv_splits, <span class="dt">grid =</span> spline_grid)</span></code></pre></div>
 <p>The object is similar to the <code>rsample</code> object but with one or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>ames_res</span>
 <span id="cb14-2"><a href="#cb14-2"></a><span class="co">#&gt; #  10-fold cross-validation using stratification </span></span>
 <span id="cb14-3"><a href="#cb14-3"></a><span class="co">#&gt; # A tibble: 10 x 4</span></span>
 <span id="cb14-4"><a href="#cb14-4"></a><span class="co">#&gt;    splits           id     .metrics           .notes          </span></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="co">#&gt;  * &lt;list&gt;           &lt;chr&gt;  &lt;list&gt;             &lt;list&gt;          </span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="co">#&gt;    &lt;list&gt;           &lt;chr&gt;  &lt;list&gt;             &lt;list&gt;          </span></span>
 <span id="cb14-6"><a href="#cb14-6"></a><span class="co">#&gt;  1 &lt;split [2K/221]&gt; Fold01 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
 <span id="cb14-7"><a href="#cb14-7"></a><span class="co">#&gt;  2 &lt;split [2K/220]&gt; Fold02 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
 <span id="cb14-8"><a href="#cb14-8"></a><span class="co">#&gt;  3 &lt;split [2K/220]&gt; Fold03 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></span>
@@ -360,150 +360,162 @@
 <span id="cb23-8"><a href="#cb23-8"></a><span class="co">#&gt; </span></span>
 <span id="cb23-9"><a href="#cb23-9"></a><span class="co">#&gt; Optimizing rmse using the expected improvement</span></span>
 <span id="cb23-10"><a href="#cb23-10"></a><span class="co">#&gt; </span></span>
-<span id="cb23-11"><a href="#cb23-11"></a><span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-11"><a href="#cb23-11"></a><span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-12"><a href="#cb23-12"></a><span class="co">#&gt; </span></span>
 <span id="cb23-13"><a href="#cb23-13"></a><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></span>
 <span id="cb23-14"><a href="#cb23-14"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-15"><a href="#cb23-15"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-16"><a href="#cb23-16"></a><span class="co">#&gt; i Generating 4658 candidates</span></span>
+<span id="cb23-16"><a href="#cb23-16"></a><span class="co">#&gt; i Generating 4733 candidates</span></span>
 <span id="cb23-17"><a href="#cb23-17"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-18"><a href="#cb23-18"></a><span class="co">#&gt; i neighbors=5, weight_func=rectangular, long df=18, lat df=10</span></span>
+<span id="cb23-18"><a href="#cb23-18"></a><span class="co">#&gt; i neighbors=19, weight_func=gaussian, long df=5, lat df=7</span></span>
 <span id="cb23-19"><a href="#cb23-19"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-20"><a href="#cb23-20"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-21"><a href="#cb23-21"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.09998 (+/-0.00331)</span></span>
+<span id="cb23-21"><a href="#cb23-21"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.101 (+/-0.00284)</span></span>
 <span id="cb23-22"><a href="#cb23-22"></a><span class="co">#&gt; </span></span>
-<span id="cb23-23"><a href="#cb23-23"></a><span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-23"><a href="#cb23-23"></a><span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-24"><a href="#cb23-24"></a><span class="co">#&gt; </span></span>
 <span id="cb23-25"><a href="#cb23-25"></a><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></span>
 <span id="cb23-26"><a href="#cb23-26"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-27"><a href="#cb23-27"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-28"><a href="#cb23-28"></a><span class="co">#&gt; i Generating 4685 candidates</span></span>
+<span id="cb23-28"><a href="#cb23-28"></a><span class="co">#&gt; i Generating 4764 candidates</span></span>
 <span id="cb23-29"><a href="#cb23-29"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-30"><a href="#cb23-30"></a><span class="co">#&gt; i neighbors=12, weight_func=inv, long df=16, lat df=18</span></span>
+<span id="cb23-30"><a href="#cb23-30"></a><span class="co">#&gt; i neighbors=50, weight_func=rectangular, long df=3, lat df=16</span></span>
 <span id="cb23-31"><a href="#cb23-31"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-32"><a href="#cb23-32"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-33"><a href="#cb23-33"></a><span class="co">#&gt; ♥ Newest results:    rmse=0.09799 (+/-0.00326)</span></span>
+<span id="cb23-33"><a href="#cb23-33"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1276 (+/-0.00268)</span></span>
 <span id="cb23-34"><a href="#cb23-34"></a><span class="co">#&gt; </span></span>
-<span id="cb23-35"><a href="#cb23-35"></a><span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-35"><a href="#cb23-35"></a><span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-36"><a href="#cb23-36"></a><span class="co">#&gt; </span></span>
-<span id="cb23-37"><a href="#cb23-37"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-37"><a href="#cb23-37"></a><span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span></span>
 <span id="cb23-38"><a href="#cb23-38"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-39"><a href="#cb23-39"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-40"><a href="#cb23-40"></a><span class="co">#&gt; i Generating 4694 candidates</span></span>
+<span id="cb23-40"><a href="#cb23-40"></a><span class="co">#&gt; i Generating 4768 candidates</span></span>
 <span id="cb23-41"><a href="#cb23-41"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-42"><a href="#cb23-42"></a><span class="co">#&gt; i neighbors=6, weight_func=gaussian, long df=18, lat df=17</span></span>
+<span id="cb23-42"><a href="#cb23-42"></a><span class="co">#&gt; i neighbors=16, weight_func=inv, long df=18, lat df=8</span></span>
 <span id="cb23-43"><a href="#cb23-43"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-44"><a href="#cb23-44"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-45"><a href="#cb23-45"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.09841 (+/-0.00308)</span></span>
+<span id="cb23-45"><a href="#cb23-45"></a><span class="co">#&gt; ♥ Newest results:    rmse=0.09808 (+/-0.00297)</span></span>
 <span id="cb23-46"><a href="#cb23-46"></a><span class="co">#&gt; </span></span>
-<span id="cb23-47"><a href="#cb23-47"></a><span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-47"><a href="#cb23-47"></a><span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-48"><a href="#cb23-48"></a><span class="co">#&gt; </span></span>
-<span id="cb23-49"><a href="#cb23-49"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-49"><a href="#cb23-49"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-50"><a href="#cb23-50"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-51"><a href="#cb23-51"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-52"><a href="#cb23-52"></a><span class="co">#&gt; i Generating 4703 candidates</span></span>
+<span id="cb23-52"><a href="#cb23-52"></a><span class="co">#&gt; i Generating 4771 candidates</span></span>
 <span id="cb23-53"><a href="#cb23-53"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-54"><a href="#cb23-54"></a><span class="co">#&gt; i neighbors=4, weight_func=inv, long df=5, lat df=2</span></span>
+<span id="cb23-54"><a href="#cb23-54"></a><span class="co">#&gt; i neighbors=3, weight_func=rectangular, long df=2, lat df=14</span></span>
 <span id="cb23-55"><a href="#cb23-55"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-56"><a href="#cb23-56"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-57"><a href="#cb23-57"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1003 (+/-0.0028)</span></span>
+<span id="cb23-57"><a href="#cb23-57"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1099 (+/-0.00402)</span></span>
 <span id="cb23-58"><a href="#cb23-58"></a><span class="co">#&gt; </span></span>
-<span id="cb23-59"><a href="#cb23-59"></a><span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-59"><a href="#cb23-59"></a><span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-60"><a href="#cb23-60"></a><span class="co">#&gt; </span></span>
-<span id="cb23-61"><a href="#cb23-61"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-61"><a href="#cb23-61"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-62"><a href="#cb23-62"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-63"><a href="#cb23-63"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-64"><a href="#cb23-64"></a><span class="co">#&gt; i Generating 4686 candidates</span></span>
+<span id="cb23-64"><a href="#cb23-64"></a><span class="co">#&gt; i Generating 4781 candidates</span></span>
 <span id="cb23-65"><a href="#cb23-65"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-66"><a href="#cb23-66"></a><span class="co">#&gt; i neighbors=50, weight_func=inv, long df=18, lat df=14</span></span>
+<span id="cb23-66"><a href="#cb23-66"></a><span class="co">#&gt; i neighbors=50, weight_func=gaussian, long df=18, lat df=14</span></span>
 <span id="cb23-67"><a href="#cb23-67"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-68"><a href="#cb23-68"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-69"><a href="#cb23-69"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1025 (+/-0.00311)</span></span>
+<span id="cb23-69"><a href="#cb23-69"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1051 (+/-0.00288)</span></span>
 <span id="cb23-70"><a href="#cb23-70"></a><span class="co">#&gt; </span></span>
-<span id="cb23-71"><a href="#cb23-71"></a><span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-71"><a href="#cb23-71"></a><span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-72"><a href="#cb23-72"></a><span class="co">#&gt; </span></span>
-<span id="cb23-73"><a href="#cb23-73"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-73"><a href="#cb23-73"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-74"><a href="#cb23-74"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-75"><a href="#cb23-75"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-76"><a href="#cb23-76"></a><span class="co">#&gt; i Generating 4684 candidates</span></span>
+<span id="cb23-76"><a href="#cb23-76"></a><span class="co">#&gt; i Generating 4776 candidates</span></span>
 <span id="cb23-77"><a href="#cb23-77"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-78"><a href="#cb23-78"></a><span class="co">#&gt; i neighbors=5, weight_func=rectangular, long df=2, lat df=18</span></span>
+<span id="cb23-78"><a href="#cb23-78"></a><span class="co">#&gt; i neighbors=4, weight_func=rectangular, long df=18, lat df=3</span></span>
 <span id="cb23-79"><a href="#cb23-79"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-80"><a href="#cb23-80"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-81"><a href="#cb23-81"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1116 (+/-0.0039)</span></span>
+<span id="cb23-81"><a href="#cb23-81"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1063 (+/-0.00331)</span></span>
 <span id="cb23-82"><a href="#cb23-82"></a><span class="co">#&gt; </span></span>
-<span id="cb23-83"><a href="#cb23-83"></a><span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-83"><a href="#cb23-83"></a><span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-84"><a href="#cb23-84"></a><span class="co">#&gt; </span></span>
-<span id="cb23-85"><a href="#cb23-85"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-85"><a href="#cb23-85"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-86"><a href="#cb23-86"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-87"><a href="#cb23-87"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-88"><a href="#cb23-88"></a><span class="co">#&gt; i Generating 4692 candidates</span></span>
+<span id="cb23-88"><a href="#cb23-88"></a><span class="co">#&gt; i Generating 4764 candidates</span></span>
 <span id="cb23-89"><a href="#cb23-89"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-90"><a href="#cb23-90"></a><span class="co">#&gt; i neighbors=49, weight_func=rectangular, long df=18, lat df=16</span></span>
+<span id="cb23-90"><a href="#cb23-90"></a><span class="co">#&gt; i neighbors=48, weight_func=rectangular, long df=18, lat df=11</span></span>
 <span id="cb23-91"><a href="#cb23-91"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-92"><a href="#cb23-92"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-93"><a href="#cb23-93"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1175 (+/-0.00265)</span></span>
+<span id="cb23-93"><a href="#cb23-93"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1191 (+/-0.00276)</span></span>
 <span id="cb23-94"><a href="#cb23-94"></a><span class="co">#&gt; </span></span>
-<span id="cb23-95"><a href="#cb23-95"></a><span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-95"><a href="#cb23-95"></a><span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-96"><a href="#cb23-96"></a><span class="co">#&gt; </span></span>
-<span id="cb23-97"><a href="#cb23-97"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-97"><a href="#cb23-97"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-98"><a href="#cb23-98"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-99"><a href="#cb23-99"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-100"><a href="#cb23-100"></a><span class="co">#&gt; i Generating 4717 candidates</span></span>
+<span id="cb23-100"><a href="#cb23-100"></a><span class="co">#&gt; i Generating 4784 candidates</span></span>
 <span id="cb23-101"><a href="#cb23-101"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-102"><a href="#cb23-102"></a><span class="co">#&gt; i neighbors=50, weight_func=gaussian, long df=2, lat df=16</span></span>
+<span id="cb23-102"><a href="#cb23-102"></a><span class="co">#&gt; i neighbors=3, weight_func=inv, long df=2, lat df=10</span></span>
 <span id="cb23-103"><a href="#cb23-103"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-104"><a href="#cb23-104"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-105"><a href="#cb23-105"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.121 (+/-0.00278)</span></span>
+<span id="cb23-105"><a href="#cb23-105"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1065 (+/-0.0034)</span></span>
 <span id="cb23-106"><a href="#cb23-106"></a><span class="co">#&gt; </span></span>
-<span id="cb23-107"><a href="#cb23-107"></a><span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-107"><a href="#cb23-107"></a><span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-108"><a href="#cb23-108"></a><span class="co">#&gt; </span></span>
-<span id="cb23-109"><a href="#cb23-109"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-109"><a href="#cb23-109"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-110"><a href="#cb23-110"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-111"><a href="#cb23-111"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-112"><a href="#cb23-112"></a><span class="co">#&gt; i Generating 4703 candidates</span></span>
+<span id="cb23-112"><a href="#cb23-112"></a><span class="co">#&gt; i Generating 4772 candidates</span></span>
 <span id="cb23-113"><a href="#cb23-113"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-114"><a href="#cb23-114"></a><span class="co">#&gt; i neighbors=12, weight_func=inv, long df=15, lat df=2</span></span>
+<span id="cb23-114"><a href="#cb23-114"></a><span class="co">#&gt; i neighbors=19, weight_func=gaussian, long df=18, lat df=11</span></span>
 <span id="cb23-115"><a href="#cb23-115"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-116"><a href="#cb23-116"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-117"><a href="#cb23-117"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1032 (+/-0.00324)</span></span>
+<span id="cb23-117"><a href="#cb23-117"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1006 (+/-0.00316)</span></span>
 <span id="cb23-118"><a href="#cb23-118"></a><span class="co">#&gt; </span></span>
-<span id="cb23-119"><a href="#cb23-119"></a><span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-119"><a href="#cb23-119"></a><span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-120"><a href="#cb23-120"></a><span class="co">#&gt; </span></span>
-<span id="cb23-121"><a href="#cb23-121"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-121"><a href="#cb23-121"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-122"><a href="#cb23-122"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-123"><a href="#cb23-123"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-124"><a href="#cb23-124"></a><span class="co">#&gt; i Generating 4679 candidates</span></span>
+<span id="cb23-124"><a href="#cb23-124"></a><span class="co">#&gt; i Generating 4767 candidates</span></span>
 <span id="cb23-125"><a href="#cb23-125"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-126"><a href="#cb23-126"></a><span class="co">#&gt; i neighbors=49, weight_func=rectangular, long df=2, lat df=2</span></span>
+<span id="cb23-126"><a href="#cb23-126"></a><span class="co">#&gt; i neighbors=50, weight_func=gaussian, long df=2, lat df=10</span></span>
 <span id="cb23-127"><a href="#cb23-127"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-128"><a href="#cb23-128"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-129"><a href="#cb23-129"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.121 (+/-0.00274)</span></span>
+<span id="cb23-129"><a href="#cb23-129"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1152 (+/-0.00285)</span></span>
 <span id="cb23-130"><a href="#cb23-130"></a><span class="co">#&gt; </span></span>
-<span id="cb23-131"><a href="#cb23-131"></a><span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-131"><a href="#cb23-131"></a><span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-132"><a href="#cb23-132"></a><span class="co">#&gt; </span></span>
-<span id="cb23-133"><a href="#cb23-133"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-133"><a href="#cb23-133"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-134"><a href="#cb23-134"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-135"><a href="#cb23-135"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-136"><a href="#cb23-136"></a><span class="co">#&gt; i Generating 4699 candidates</span></span>
+<span id="cb23-136"><a href="#cb23-136"></a><span class="co">#&gt; i Generating 4783 candidates</span></span>
 <span id="cb23-137"><a href="#cb23-137"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-138"><a href="#cb23-138"></a><span class="co">#&gt; i neighbors=49, weight_func=inv, long df=11, lat df=13</span></span>
+<span id="cb23-138"><a href="#cb23-138"></a><span class="co">#&gt; i neighbors=50, weight_func=inv, long df=17, lat df=3</span></span>
 <span id="cb23-139"><a href="#cb23-139"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-140"><a href="#cb23-140"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-141"><a href="#cb23-141"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1011 (+/-0.00313)</span></span>
+<span id="cb23-141"><a href="#cb23-141"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1063 (+/-0.00279)</span></span>
 <span id="cb23-142"><a href="#cb23-142"></a><span class="co">#&gt; </span></span>
-<span id="cb23-143"><a href="#cb23-143"></a><span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-143"><a href="#cb23-143"></a><span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
 <span id="cb23-144"><a href="#cb23-144"></a><span class="co">#&gt; </span></span>
-<span id="cb23-145"><a href="#cb23-145"></a><span class="co">#&gt; i Current best:      rmse=0.09799 (@iter 2)</span></span>
+<span id="cb23-145"><a href="#cb23-145"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
 <span id="cb23-146"><a href="#cb23-146"></a><span class="co">#&gt; i Gaussian process model</span></span>
 <span id="cb23-147"><a href="#cb23-147"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
-<span id="cb23-148"><a href="#cb23-148"></a><span class="co">#&gt; i Generating 4675 candidates</span></span>
+<span id="cb23-148"><a href="#cb23-148"></a><span class="co">#&gt; i Generating 4759 candidates</span></span>
 <span id="cb23-149"><a href="#cb23-149"></a><span class="co">#&gt; i Predicted candidates</span></span>
-<span id="cb23-150"><a href="#cb23-150"></a><span class="co">#&gt; i neighbors=42, weight_func=inv, long df=2, lat df=8</span></span>
+<span id="cb23-150"><a href="#cb23-150"></a><span class="co">#&gt; i neighbors=29, weight_func=rectangular, long df=2, lat df=16</span></span>
 <span id="cb23-151"><a href="#cb23-151"></a><span class="co">#&gt; i Estimating performance</span></span>
 <span id="cb23-152"><a href="#cb23-152"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
-<span id="cb23-153"><a href="#cb23-153"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1046 (+/-0.00298)</span></span>
-<span id="cb23-154"><a href="#cb23-154"></a><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></span></code></pre></div>
+<span id="cb23-153"><a href="#cb23-153"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1263 (+/-0.00272)</span></span>
+<span id="cb23-154"><a href="#cb23-154"></a><span class="co">#&gt; </span></span>
+<span id="cb23-155"><a href="#cb23-155"></a><span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span></span>
+<span id="cb23-156"><a href="#cb23-156"></a><span class="co">#&gt; </span></span>
+<span id="cb23-157"><a href="#cb23-157"></a><span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span></span>
+<span id="cb23-158"><a href="#cb23-158"></a><span class="co">#&gt; i Gaussian process model</span></span>
+<span id="cb23-159"><a href="#cb23-159"></a><span class="co">#&gt; ✓ Gaussian process model</span></span>
+<span id="cb23-160"><a href="#cb23-160"></a><span class="co">#&gt; i Generating 4758 candidates</span></span>
+<span id="cb23-161"><a href="#cb23-161"></a><span class="co">#&gt; i Predicted candidates</span></span>
+<span id="cb23-162"><a href="#cb23-162"></a><span class="co">#&gt; i neighbors=24, weight_func=inv, long df=2, lat df=7</span></span>
+<span id="cb23-163"><a href="#cb23-163"></a><span class="co">#&gt; i Estimating performance</span></span>
+<span id="cb23-164"><a href="#cb23-164"></a><span class="co">#&gt; ✓ Estimating performance</span></span>
+<span id="cb23-165"><a href="#cb23-165"></a><span class="co">#&gt; ⓧ Newest results:    rmse=0.1011 (+/-0.00304)</span></span>
+<span id="cb23-166"><a href="#cb23-166"></a><span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></span></code></pre></div>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(knn_search, <span class="dt">type =</span> <span class="st">"performance"</span>, <span class="dt">metric =</span> <span class="st">"rmse"</span>)</span></code></pre></div>
 <p><img src="getting_started_files/figure-html/bo-iter-1.png" width="768"></p>
@@ -511,27 +523,28 @@
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw"><a href="../reference/collect_predictions.html">collect_metrics</a></span>(knn_search) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb25-2"><a href="#cb25-2"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(.metric <span class="op">==</span><span class="st"> "rmse"</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb25-3"><a href="#cb25-3"></a><span class="st">  </span><span class="kw">arrange</span>(mean)</span>
-<span id="cb25-4"><a href="#cb25-4"></a><span class="co">#&gt; # A tibble: 17 x 10</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a><span class="co">#&gt; # A tibble: 18 x 10</span></span>
 <span id="cb25-5"><a href="#cb25-5"></a><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .iter .metric .estimator   mean</span></span>
 <span id="cb25-6"><a href="#cb25-6"></a><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;           &lt;int&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;</span></span>
-<span id="cb25-7"><a href="#cb25-7"></a><span class="co">#&gt;  1        12 inv                16       18     2 rmse    standard   0.0980</span></span>
-<span id="cb25-8"><a href="#cb25-8"></a><span class="co">#&gt;  2         6 gaussian           18       17     3 rmse    standard   0.0984</span></span>
-<span id="cb25-9"><a href="#cb25-9"></a><span class="co">#&gt;  3        28 inv                16       10     0 rmse    standard   0.0987</span></span>
-<span id="cb25-10"><a href="#cb25-10"></a><span class="co">#&gt;  4         5 rectangular        18       10     1 rmse    standard   0.100 </span></span>
-<span id="cb25-11"><a href="#cb25-11"></a><span class="co">#&gt;  5         4 inv                 5        2     4 rmse    standard   0.100 </span></span>
-<span id="cb25-12"><a href="#cb25-12"></a><span class="co">#&gt;  6         5 gaussian            8       14     0 rmse    standard   0.101 </span></span>
-<span id="cb25-13"><a href="#cb25-13"></a><span class="co">#&gt;  7        49 inv                11       13    11 rmse    standard   0.101 </span></span>
-<span id="cb25-14"><a href="#cb25-14"></a><span class="co">#&gt;  8        50 inv                18       14     5 rmse    standard   0.102 </span></span>
-<span id="cb25-15"><a href="#cb25-15"></a><span class="co">#&gt;  9        12 inv                15        2     9 rmse    standard   0.103 </span></span>
-<span id="cb25-16"><a href="#cb25-16"></a><span class="co">#&gt; 10        42 inv                 2        8    12 rmse    standard   0.105 </span></span>
-<span id="cb25-17"><a href="#cb25-17"></a><span class="co">#&gt; 11        36 gaussian            9        6     0 rmse    standard   0.105 </span></span>
-<span id="cb25-18"><a href="#cb25-18"></a><span class="co">#&gt; 12         5 rectangular         2       18     6 rmse    standard   0.112 </span></span>
-<span id="cb25-19"><a href="#cb25-19"></a><span class="co">#&gt; 13        18 rectangular        13        3     0 rmse    standard   0.114 </span></span>
-<span id="cb25-20"><a href="#cb25-20"></a><span class="co">#&gt; 14        49 rectangular        18       16     7 rmse    standard   0.117 </span></span>
-<span id="cb25-21"><a href="#cb25-21"></a><span class="co">#&gt; 15        49 rectangular         2        2    10 rmse    standard   0.121 </span></span>
-<span id="cb25-22"><a href="#cb25-22"></a><span class="co">#&gt; 16        50 gaussian            2       16     8 rmse    standard   0.121 </span></span>
-<span id="cb25-23"><a href="#cb25-23"></a><span class="co">#&gt; 17        47 rectangular         3       16     0 rmse    standard   0.127 </span></span>
-<span id="cb25-24"><a href="#cb25-24"></a><span class="co">#&gt; # … with 2 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;</span></span></code></pre></div>
+<span id="cb25-7"><a href="#cb25-7"></a><span class="co">#&gt;  1        16 inv                18        8     3 rmse    standard   0.0981</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="co">#&gt;  2        28 inv                16       10     0 rmse    standard   0.0987</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a><span class="co">#&gt;  3        19 gaussian           18       11     9 rmse    standard   0.101 </span></span>
+<span id="cb25-10"><a href="#cb25-10"></a><span class="co">#&gt;  4         5 triangular          8       14     0 rmse    standard   0.101 </span></span>
+<span id="cb25-11"><a href="#cb25-11"></a><span class="co">#&gt;  5        19 gaussian            5        7     1 rmse    standard   0.101 </span></span>
+<span id="cb25-12"><a href="#cb25-12"></a><span class="co">#&gt;  6        24 inv                 2        7    13 rmse    standard   0.101 </span></span>
+<span id="cb25-13"><a href="#cb25-13"></a><span class="co">#&gt;  7        36 triangular          9        6     0 rmse    standard   0.104 </span></span>
+<span id="cb25-14"><a href="#cb25-14"></a><span class="co">#&gt;  8        50 gaussian           18       14     5 rmse    standard   0.105 </span></span>
+<span id="cb25-15"><a href="#cb25-15"></a><span class="co">#&gt;  9        50 inv                17        3    11 rmse    standard   0.106 </span></span>
+<span id="cb25-16"><a href="#cb25-16"></a><span class="co">#&gt; 10         4 rectangular        18        3     6 rmse    standard   0.106 </span></span>
+<span id="cb25-17"><a href="#cb25-17"></a><span class="co">#&gt; 11         3 inv                 2       10     8 rmse    standard   0.107 </span></span>
+<span id="cb25-18"><a href="#cb25-18"></a><span class="co">#&gt; 12        47 inv                 3       16     0 rmse    standard   0.108 </span></span>
+<span id="cb25-19"><a href="#cb25-19"></a><span class="co">#&gt; 13         3 rectangular         2       14     4 rmse    standard   0.110 </span></span>
+<span id="cb25-20"><a href="#cb25-20"></a><span class="co">#&gt; 14        18 rectangular        13        3     0 rmse    standard   0.114 </span></span>
+<span id="cb25-21"><a href="#cb25-21"></a><span class="co">#&gt; 15        50 gaussian            2       10    10 rmse    standard   0.115 </span></span>
+<span id="cb25-22"><a href="#cb25-22"></a><span class="co">#&gt; 16        48 rectangular        18       11     7 rmse    standard   0.119 </span></span>
+<span id="cb25-23"><a href="#cb25-23"></a><span class="co">#&gt; 17        29 rectangular         2       16    12 rmse    standard   0.126 </span></span>
+<span id="cb25-24"><a href="#cb25-24"></a><span class="co">#&gt; 18        50 rectangular         3       16     2 rmse    standard   0.128 </span></span>
+<span id="cb25-25"><a href="#cb25-25"></a><span class="co">#&gt; # … with 2 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;</span></span></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe.</p>
 </div>
 <div class="footnotes">
@@ -546,16 +559,9 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#introduction">Introduction</a></li>
-      <li><a href="#grid-search">Grid Search</a></li>
-      <li><a href="#model-optimization">Model Optimization</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
