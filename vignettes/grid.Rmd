@@ -128,7 +128,7 @@ estimates
 The best combination was:
 
 ```{r sorted-metrics}
-show_best(grid_form)
+show_best(grid_form, metric = "roc_auc")
 ```
 
 ## Executing the Grid Using a Recipe
@@ -152,6 +152,6 @@ rec_form
 The best setting here was:
 
 ```{r best-rec}
-show_best(rec_form)
+show_best(rec_form, metric = "roc_auc")
 ```
 

@@ -159,6 +159,7 @@
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
+#' library(ggplot2)
 #'
 #' # ---------------------------------------------------------------------------
 #'

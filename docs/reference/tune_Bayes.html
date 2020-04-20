@@ -63,7 +63,7 @@ combinations based on previous results." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -80,7 +80,7 @@ combinations based on previous results." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
         </div>
       </div>
     </div>
@@ -120,7 +120,7 @@ combinations based on previous results." />
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -150,27 +150,10 @@ combinations based on previous results.</p>
 
     <pre class="usage"><span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>tune_bayes</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for recipe</span>
+<span class='co'># S3 method for model_spec</span>
 <span class='fu'>tune_bayes</span>(
   <span class='no'>object</span>,
-  <span class='no'>model</span>,
-  <span class='no'>resamples</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>objective</span> <span class='kw'>=</span> <span class='fu'><a href='prob_improve.html'>exp_improve</a></span>(),
-  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='fl'>5</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_bayes.html'>control_bayes</a></span>()
-)
-
-<span class='co'># S3 method for formula</span>
-<span class='fu'>tune_bayes</span>(
-  <span class='no'>formula</span>,
-  <span class='no'>model</span>,
+  <span class='no'>preprocessor</span>,
   <span class='no'>resamples</span>,
   <span class='no'>...</span>,
   <span class='kw'>iter</span> <span class='kw'>=</span> <span class='fl'>10</span>,
@@ -199,16 +182,16 @@ combinations based on previous results.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A model workflow, R formula or recipe object.</p></td>
+      <td><p>A <code>parsnip</code> model specification or a <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Not currently used.</p></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>A <code>parsnip</code> model specification (or <code>NULL</code> when <code>object</code> is a
-workflow).</p></td>
+      <th>preprocessor</th>
+      <td><p>A traditional model formula or a recipe created using
+<code><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipes::recipe()</a></code>.</p></td>
     </tr>
     <tr>
       <th>resamples</th>
@@ -244,10 +227,6 @@ initial results be greater than the number of parameters being optimized.</p></t
     <tr>
       <th>control</th>
       <td><p>A control object created by <code><a href='control_bayes.html'>control_bayes()</a></code></p></td>
-    </tr>
-    <tr>
-      <th>formula</th>
-      <td><p>A traditional model formula.</p></td>
     </tr>
     </table>
 
@@ -299,13 +278,13 @@ the number of parameters being optimized.</p>
 
 
 <p>In some cases, the tuning parameter values depend on the dimensions of the
-data. For example, <code>mtry</code> in random forest models depends on the number of
-predictors. In this case, the default tuning parameter object requires an
-upper range. <code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent
-parameters. Otherwise, a parameter set can be created (via
-<code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> and the <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to
-change the ranges or values. This updated parameter set can be passed to
-the function via the <code>param_info</code> argument.</p>
+data (they are said to contain <a href='https://rdrr.io/pkg/dials/man/unknown.html'>unknown</a> values). For
+example, <code>mtry</code> in random forest models depends on the number of predictors.
+In such cases, the unknowns in the tuning parameter object must be determined
+beforehand and passed to the function via the <code>param_info</code> argument.
+<code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent parameters.
+Otherwise, a parameter set can be created via <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code>, and the
+<code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to specify the ranges or values.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
     
@@ -317,8 +296,7 @@ metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
 typical probability cutoff of 0.50), the <code>metrics</code> argument could be given:</p>
 <pre>
-  metrics = metric_set(roc_auc, sens, spec)
-</pre>
+  <span class='no'>metrics</span> <span class='kw'>=</span> <span class='fu'>metric_set</span>(<span class='no'>roc_auc</span>, <span class='no'>sens</span>, <span class='no'>spec</span>)</pre>
 
 <p>Each metric is calculated for each candidate model.</p>
 <p>If no metric set is provided, one is created:</p><ul>
@@ -374,8 +352,7 @@ object (see <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>work
 helper functions that can be used to easily pull out the recipe (if any)
 and/or the model: <code><a href='extract_recipe.html'>extract_recipe()</a></code> and <code><a href='extract_recipe.html'>extract_model()</a></code>.</p>
 <p>As an example, if there is interest in getting each model back, one could use:</p><pre>
-  extract = function (x) extract_model(x)
-</pre>
+  <span class='no'>extract</span> <span class='kw'>=</span> <span class='kw'>function</span> (<span class='no'>x</span>) <span class='fu'><a href='extract_recipe.html'>extract_model</a></span>(<span class='no'>x</span>)</pre>
 
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
 every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
@@ -391,20 +368,9 @@ grid has a separate R object associated with it.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#parallel-processing">Parallel Processing</a></li>
-      <li><a href="#initial-values">Initial Values</a></li>
-      <li><a href="#parameter-ranges-and-values">Parameter Ranges and Values</a></li>
-      <li><a href="#performance-metrics">Performance Metrics</a></li>
-      <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
-      <li><a href="#extracting-information">Extracting Information</a></li>
-      <li><a href="#see-also">See also</a></li>
-    </ul>
-
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

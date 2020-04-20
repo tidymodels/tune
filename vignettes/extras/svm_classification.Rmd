@@ -147,7 +147,7 @@ estimates
 The best performance of the initial set of candidate values was `AUC = `r max(estimates$mean[estimates$.iter == 0])` `. The best results were achieved at iteration `r estimates$.iter[which.max(estimates$mean)]` with a corresponding AUC value of `r max(estimates$mean)`. The five best results were:
 
 ```{r best}
-show_best(search_res)
+show_best(search_res, metric = "roc_auc")
 ```
 
 A plot of the search can be created via:
