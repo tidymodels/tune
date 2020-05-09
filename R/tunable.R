@@ -99,7 +99,10 @@ tunable.model_spec <- function(x, ...) {
     dplyr::mutate(
       source = "model_spec",
       component = mod_type(x),
-      component_id = ifelse(name %in% names(x$args), "main", "engine"))
+      component_id = as.character(
+        ifelse(name %in% names(x$args), "main", "engine")
+      )
+    )
 
   if (nrow(arg_vals) > 0) {
     has_info <- purrr::map_lgl(arg_vals$call_info, is.null)
