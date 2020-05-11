@@ -12,7 +12,5 @@ issue_template.md
 ^codecov\.yml$
 ^\.github$
 _cache$
-^.inst/examples$
 ^inst/examples$
 ^LICENSE\.md$
-
