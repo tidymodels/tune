@@ -99,9 +99,7 @@ tunable.model_spec <- function(x, ...) {
     dplyr::mutate(
       source = "model_spec",
       component = mod_type(x),
-      component_id = as.character(
-        ifelse(name %in% names(x$args), "main", "engine")
-      )
+      component_id = dplyr::if_else(name %in% names(x$args), "main", "engine")
     )
 
   if (nrow(arg_vals) > 0) {
