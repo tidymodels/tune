@@ -1,6 +1,6 @@
 #' @export
 print.tune_results <- function(x, ...) {
-  total_notes <- sum(map_int(x$.notes, nrow)) > 0
+  total_notes <- sum(purrr::map_int(x$.notes, nrow)) > 0
   if (total_notes > 0) {
     print_notes <- glue::glue("This tuning result has notes.\n",
                               "Example notes on model fitting include:\n",
