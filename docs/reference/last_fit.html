@@ -45,7 +45,7 @@
 <meta property="og:description" content="last_fit() emulates the process where, after determining the best model,
 the final fit on the entire training set is needed and is then evaluated on
 the test set." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@ the test set." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -80,8 +80,8 @@ the test set." />
       <div class="navbar-brand-container">
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
-          <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+          <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
         </div>
       </div>
     </div>
@@ -121,7 +121,7 @@ the test set." />
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -152,11 +152,8 @@ the test set.</p>
 
     <pre class="usage"><span class='fu'>last_fit</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for recipe</span>
-<span class='fu'>last_fit</span>(<span class='no'>object</span>, <span class='no'>model</span>, <span class='no'>split</span>, <span class='no'>...</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
-
-<span class='co'># S3 method for formula</span>
-<span class='fu'>last_fit</span>(<span class='no'>formula</span>, <span class='no'>model</span>, <span class='no'>split</span>, <span class='no'>...</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='co'># S3 method for model_spec</span>
+<span class='fu'>last_fit</span>(<span class='no'>object</span>, <span class='no'>preprocessor</span>, <span class='no'>split</span>, <span class='no'>...</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
 <span class='co'># S3 method for workflow</span>
 <span class='fu'>last_fit</span>(<span class='no'>object</span>, <span class='no'>split</span>, <span class='no'>...</span>, <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
@@ -166,15 +163,17 @@ the test set.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A workflow, formula, or recipe. No tuning parameters are allowed.</p></td>
+      <td><p>A <code>parsnip</code> model specification or a <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code>.
+No tuning parameters are allowed.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Currently unused.</p></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>A <code>parsnip</code> model specification. No tuning parameters are allowed.</p></td>
+      <th>preprocessor</th>
+      <td><p>A traditional model formula or a recipe created using
+<code><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipes::recipe()</a></code>.</p></td>
     </tr>
     <tr>
       <th>split</th>
@@ -184,10 +183,6 @@ the test set.</p>
       <th>metrics</th>
       <td><p>A <code><a href='https://rdrr.io/pkg/yardstick/man/metric_set.html'>yardstick::metric_set()</a></code>, or <code>NULL</code> to compute a standard
 set of metrics.</p></td>
-    </tr>
-    <tr>
-      <th>formula</th>
-      <td><p>A formula specifying the terms of the model.</p></td>
     </tr>
     </table>
 
@@ -218,11 +213,11 @@ the test data.</p>
 <span class='no'>lin_mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 
-<span class='no'>spline_res</span> <span class='kw'>&lt;-</span> <span class='fu'>last_fit</span>(<span class='no'>spline_rec</span>, <span class='no'>lin_mod</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)
-<span class='no'>spline_res</span></div><div class='output co'>#&gt; # # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
+<span class='no'>spline_res</span> <span class='kw'>&lt;-</span> <span class='fu'>last_fit</span>(<span class='no'>lin_mod</span>, <span class='no'>spline_rec</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)
+<span class='no'>spline_res</span></div><div class='output co'>#&gt; # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
 #&gt; <span style='color: #555555;'># A tibble: 1 x 6</span><span>
 #&gt;   splits       id            .metrics      .notes       .predictions   .workflow
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #555555;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #555555;'>&lt;tibble [0 </span><span>… </span><span style='color: #555555;'>&lt;tibble [8 × </span><span>… </span><span style='color: #555555;'>&lt;workflo</span><span>…</div><div class='input'>
 <span class='co'># test set results</span>
 <span class='no'>spline_res</span>$<span class='no'>.metrics</span><span class='kw'>[[</span><span class='fl'>1</span>]]</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 3</span><span>
@@ -238,22 +233,17 @@ the test data.</p>
  <span class='fu'><a href='https://rdrr.io/pkg/workflows/man/add_recipe.html'>add_recipe</a></span>(<span class='no'>spline_rec</span>) <span class='kw'>%&gt;%</span>
  <span class='fu'><a href='https://rdrr.io/pkg/workflows/man/add_model.html'>add_model</a></span>(<span class='no'>lin_mod</span>)
 
-<span class='fu'>last_fit</span>(<span class='no'>spline_wfl</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)</div><div class='output co'>#&gt; # # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
+<span class='fu'>last_fit</span>(<span class='no'>spline_wfl</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)</div><div class='output co'>#&gt; # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
 #&gt; </span><span style='color: #555555;'># A tibble: 1 x 6</span><span>
 #&gt;   splits       id            .metrics      .notes       .predictions   .workflow
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>   
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #555555;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #555555;'>&lt;tibble [0 </span><span>… </span><span style='color: #555555;'>&lt;tibble [8 × </span><span>… </span><span style='color: #555555;'>&lt;workflo</span><span>…</div><div class='input'># }
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

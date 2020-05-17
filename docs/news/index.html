@@ -42,7 +42,7 @@
 
 
 <meta property="og:title" content="Changelog" />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -61,7 +61,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -77,8 +77,8 @@
       <div class="navbar-brand-container">
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
-          <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
+          <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -136,20 +136,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Changelog <small></small></h1>
+      <h1 data-toc-skip>Changelog <small></small></h1>
       <small>Source: <a href='https://github.com/tidymodels/tune/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="tune-0019000" class="section level1">
-<h1 class="page-header">
-<a href="#tune-0019000" class="anchor"></a>tune 0.0.1.9000<small> Unreleased </small>
+    <div id="tune-010" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.0">
+<a href="#tune-010" class="anchor"></a>tune 0.1.0<small> 2020-04-02 </small>
 </h1>
+<div id="breaking-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
-<li>Added more packages to be fully loaded in the workers when run in parallel using <code>doParallel</code> (<a href='https://github.com/tidymodels/tune/issues/157'>#157</a>)[<a href="https://github.com/tidymodels/tune/issues/157" class="uri">https://github.com/tidymodels/tune/issues/157</a>], (<a href='https://github.com/tidymodels/tune/issues/159'>#159</a>)[<a href="https://github.com/tidymodels/tune/issues/159" class="uri">https://github.com/tidymodels/tune/issues/159</a>], and (<a href='https://github.com/tidymodels/tune/issues/160'>#160</a>)[<a href="https://github.com/tidymodels/tune/issues/160" class="uri">https://github.com/tidymodels/tune/issues/160</a>]</li>
+<li>The arguments to the main tuning/fitting functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) have been reordered to better align with parsnip’s <code>fit()</code>. The first argument to all these functions is now a model specification or model workflow. The previous versions are soft-deprecated as of 0.1.0 and will be deprecated as of 0.1.2.</li>
 </ul>
 </div>
+<div id="other-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-changes" class="anchor"></a>Other Changes</h2>
+<ul>
+<li><p>Added more packages to be fully loaded in the workers when run in parallel using <code>doParallel</code> (<a href='https://github.com/tidymodels/tune/issues/157'>#157</a>), (<a href='https://github.com/tidymodels/tune/issues/159'>#159</a>), and (<a href='https://github.com/tidymodels/tune/issues/160'>#160</a>)</p></li>
+<li><p><code><a href="../reference/collect_predictions.html">collect_predictions()</a></code> gains two new arguments. <code>parameters</code> allows for pre-filtering of the hold-out predictions by tuning parameters values. If you are only interested in one sub-model, this makes things much faster. The other option is <code>summarize</code> and is used when the resampling method has training set rows that are predicted in multiple holdout sets.</p></li>
+<li><p><code><a href="../reference/show_best.html">select_best()</a></code>, <code><a href="../reference/show_best.html">select_by_one_std_err()</a></code>, and <code><a href="../reference/show_best.html">select_by_pct_loss()</a></code> no longer have a redundant <code>maximize</code> argument (<a href='https://github.com/tidymodels/tune/issues/176'>#176</a>). Each metric set in yardstick now has a direction (maximize vs. minimize) built in.</p></li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug Fixes</h2>
+<ul>
+<li>
+<code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (<a href='https://github.com/tidymodels/tune/issues/168'>#168</a>).</li>
+</ul>
+</div>
+</div>
     <div id="tune-001" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.0.1">
 <a href="#tune-001" class="anchor"></a>tune 0.0.1<small> 2020-02-11 </small>
 </h1>
 <ul>
@@ -158,7 +179,7 @@
 </ul>
 </div>
     <div id="tune-0009002" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.0.0.9002">
 <a href="#tune-0009002" class="anchor"></a>tune 0.0.0.9002<small> Unreleased </small>
 </h1>
 <ul>
@@ -168,7 +189,7 @@
 </ul>
 </div>
     <div id="tune-0009000" class="section level1">
-<h1 class="page-header">
+<h1 class="page-header" data-toc-text="0.0.0.9000">
 <a href="#tune-0009000" class="anchor"></a>tune 0.0.0.9000<small> Unreleased </small>
 </h1>
 <ul>
@@ -178,15 +199,9 @@
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div id="tocnav">
-      <h2>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-        <li><a href="#tune-0019000">0.0.1.9000</a></li>
-        <li><a href="#tune-001">0.0.1</a></li>
-        <li><a href="#tune-0009002">0.0.0.9002</a></li>
-        <li><a href="#tune-0009000">0.0.0.9000</a></li>
-      </ul>
-    </div>
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 
 </div>

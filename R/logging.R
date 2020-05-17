@@ -121,7 +121,7 @@ catch_and_log_fit <- function(expr, ..., notes) {
   }
 
   if (!is_workflow(result)) {
-    abort("Internal error: Model result is not a workflow!")
+    rlang::abort("Internal error: Model result is not a workflow!")
   }
 
   # Extract the parsnip model from the fitted workflow

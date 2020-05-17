@@ -290,7 +290,7 @@ What would we do if we knew about the grid search results? In this case, we woul
 Jumping back to the grid search results, let's examine the results of our `extract` function. For each _fitted model_, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let's look at these results for the best model:
 
 ```{r best-res}
-params <- select_best(five_star_glmnet)
+params <- select_best(five_star_glmnet, metric = "roc_auc")
 params
 ```
 
@@ -303,6 +303,7 @@ five_star_glmnet$.extracts[[1]]
 More nested tibbles! Let's unnest `five_star_glmnet$.extracts`:
 
 ```{r unnest}
+library(tidyr)
 extracted <- 
   five_star_glmnet %>% 
   dplyr::select(id, .extracts) %>% 
