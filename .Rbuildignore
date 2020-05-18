@@ -10,8 +10,7 @@
 issue_template.md
 ^azure-pipelines\.yml$
 ^codecov\.yml$
-^.github$
+^\.github$
 _cache$
-^\.github/workflows/R-CMD-check\.yaml$
-^\inst\examples$
+^inst/examples$
 ^LICENSE\.md$
