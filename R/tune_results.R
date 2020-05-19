@@ -13,7 +13,7 @@ print.tune_results <- function(x, ...) {
                                   dplyr::arrange(note) %>%
                                   dplyr::pull(.notes),
                                 sep = "\n"))
-    warning(print_notes, call. = FALSE)
+    rlang::warn(print_notes)
   }
   class(x) <- class(x)[!(class(x) %in% c("tune_results"))]
   print(x, ...)
