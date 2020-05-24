@@ -55,7 +55,11 @@ autoplot.tune_results <-
       if (type == "performance") {
         p <- plot_perf_vs_iter(object, metric, width)
       } else {
-        p <- plot_marginals(object, metric = metric)
+        if (regular_grid_plot(object)) {
+          p <-  plot_regular_grid(object, metric = metric, ...)
+        } else {
+          p <- plot_marginals(object, metric = metric)
+        }
       }
     }
     p
@@ -65,6 +69,39 @@ autoplot.tune_results <-
 autoplot.resample_results <- function(object, ...) {
   rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
 }
+
+# ------------------------------------------------------------------------------
+
+is_regular_grid <- function(grid) {
+  num_points <- nrow(grid)
+  p <- ncol(grid)
+
+  if (p == 1) {
+    return(TRUE)
+  }
+
+  pct_unique <- purrr::map_int(grid, ~ length(unique(.x)))/num_points
+  max_pct_unique <- max(pct_unique, na.rm = TRUE)
+  np_ratio <- p/num_points
+
+  # Derived from simulation data and C5.0 tree
+  if (max_pct_unique >  1/2) res <- FALSE
+  if (max_pct_unique <= 1/2 & max_pct_unique <= 1/6) res <- TRUE
+  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio >  0.05) res <- TRUE
+  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio <= 0.05) res <- FALSE
+  res
+}
+
+# This will eventually change and use a parameters object.
+regular_grid_plot <- function(x) {
+  dat <- collect_metrics(x)
+  other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+  param_cols <- names(dat)[!(names(dat) %in% other_names)]
+  grd <- dat %>% dplyr::select(one_of(param_cols)) %>% distinct()
+  dials::is_regular_grid(grd)
+}
+
+# ------------------------------------------------------------------------------
 
 plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
@@ -199,6 +236,104 @@ plot_marginals <- function(x, metric = NULL) {
         xlab("Parameter Value") +
         ylab(unique(x$.metric))
     }
+  }
+
+  p
+}
+
+
+plot_regular_grid <- function(x, metric = NULL, ...) {
+  # eventually pull a parameter set from x attributes
+  dat <- collect_metrics(x)
+  if (!is.null(metric)) {
+    dat <- dat %>% dplyr::filter(.metric %in% metric)
+  }
+  dat <- dat %>% dplyr::filter(!is.na(mean))
+  multi_metrics <- length(unique(dat$.metric)) > 1
+
+  # ----------------------------------------------------------------------------
+
+  excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+  param_cols <- names(dat)[!((names(dat) %in% excl_cols))]
+
+  # ----------------------------------------------------------------------------
+
+  grd <- dat %>% dplyr::select(any_of(param_cols))
+
+  # ----------------------------------------------------------------------------
+  # get parameter labels
+  # transform any predictors
+  # relabel with transformation (if needed)
+  # ----------------------------------------------------------------------------
+
+
+  is_num <- purrr::map_lgl(grd, is.numeric)
+  num_param_cols <- param_cols[ is_num]
+  chr_param_cols <- param_cols[!is_num]
+
+  num_values <- purrr::map_int(grd[, num_param_cols], ~ length(unique(.x)))
+  num_values <- sort(num_values, decreasing = TRUE)
+
+  if (!any(is_num)) {
+    x_col <-  chr_param_cols[1]
+    grp_cols <- chr_param_cols[-1]
+  } else {
+    x_col <-  names(num_values)[1]
+    grp_cols <- c(chr_param_cols, names(num_values)[-1])
+  }
+
+  g <- length(grp_cols)
+
+  if (g > 5) {
+    return(autoplot(x, metric = metric))
+  }
+
+
+  dat <-
+    dat %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, .metric) %>%
+    tidyr::pivot_longer(cols = dplyr::one_of(x_col))
+
+  # ------------------------------------------------------------------------------
+
+  if (g > 1) {
+    # col aes and possibly faceting variables
+    if (is.numeric(dat[[ grp_cols[1] ]])) {
+      dat[[ grp_cols[1] ]] <- format(dat[[ grp_cols[1] ]], ...)
+    }
+    p <- ggplot(dat, aes_string(x = "value", y = "mean", col = grp_cols[[1]], group = grp_cols[[1]]))
+
+    if (g >= 2) {
+      facets <- grp_cols[-1]
+      facets <- purrr::map(facets, sym)
+      facets <- rlang::quos(!!!facets)
+      # faceting variables
+      if (multi_metrics) {
+        # TODO fix labels to be columns only
+        p <- p + facet_grid(rows = vars(.metric), vars(!!!facets), labeller = "label_both", scales = "free_y")
+      } else {
+        p <- p + facet_wrap(vars(!!!facets), labeller = "label_both")
+      }
+    }
+
+  } else {
+    p <- ggplot(dat, aes(x = value, y = mean))
+    if (multi_metrics) {
+      p <- p + facet_wrap(~ .metric, scales = "free_y", ncol = 1)
+    }
+  }
+
+  p <- p + geom_point() + xlab(x_col)
+  if (multi_metrics) {
+    p <- p + ylab("Metric")
+  } else {
+    dat$.metric[1]
+    p <- p + ylab(dat$.metric[1])
+  }
+
+
+  if (any(is_num)) {
+    p <- p + geom_line()
   }
 
   p
