@@ -258,7 +258,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   # ----------------------------------------------------------------------------
 
-  grd <- dat %>% dplyr::select(any_of(param_cols))
+  grd <- dat %>% dplyr::select(one_of(param_cols))
 
   # ----------------------------------------------------------------------------
   # get parameter labels

@@ -1,4 +1,4 @@
-#' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
+#' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when vars
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
 #' @importFrom tibble tibble lst is_tibble as_tibble
@@ -16,7 +16,7 @@
 #' @importFrom parsnip get_from_env
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
-#' @importFrom ggplot2 facet_grid
+#' @importFrom ggplot2 facet_grid geom_line aes_string
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom foreach foreach getDoParName
