@@ -25,7 +25,7 @@
 #'  are used in column faceting.
 #'
 #'   The plot has the performance metric(s) on the y-axis. If there are multiple
-#'  metrics, these are row-facetted.
+#'  metrics, these are row-faceted.
 #'
 #'   If there are more than five tuning parameters, the "marginal effects" plots
 #'  are used instead.
