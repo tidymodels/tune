@@ -6,6 +6,7 @@ source(test_path("../helper-objects.R"))
 knn_results <- readRDS(test_path("knn_results.rds"))
 load(test_path("svm_results.RData"))
 load(test_path("bayes_example.RData"))
+rcv_results <- readRDS(test_path("rcv_results.rds"))
 
 # ------------------------------------------------------------------------------
 
@@ -91,5 +92,38 @@ test_that("parameter plot for iterative search",{
   expect_equal(rlang::get_expr(p$mapping$y), expr(value))
   expect_equal(p$labels$y, "Parameter Value")
   expect_equal(p$labels$x, "Iteration")
+})
+
+
+test_that("regular grid plot",{
+  p <- autoplot(rcv_results)
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p$mapping$col), sym("wt df"))
+  expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
+  expect_equal(p$facet$vars(), c(".metric", "degree", "wt degree"))
+
+  # expect_equal(p$labels$y, "Performance")
+  # expect_equal(p$labels$x, "Parameter Value")
+
+  p <- autoplot(rcv_results, metric = "rmse")
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p$mapping$col), sym("wt df"))
+  expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
+  expect_equal(p$facet$vars(), c("degree", "wt degree"))
+
+  # expect_equal(p$labels$y, "Performance")
+  # expect_equal(p$labels$x, "Parameter Value")
 })
 

@@ -35,7 +35,7 @@
 #' For space-filling or random grids, a _marginal_ effect plot is created. A
 #'  panel is made for each numeric parameter so that each parameter is on the
 #'  x-axis and performance is on the y-xis. If there are multiple metrics, these
-#'  are row-facetted.
+#'  are row-faceted.
 #'
 #' A single categorical parameter is shown as colors. If there are two or more
 #'  non-numeric parameters, an error is given. A similar result occurs is only
@@ -342,10 +342,13 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   if (g >= 1) {
     # col aes and possibly faceting variables
-    if (is.numeric(dat[[ grp_cols[1] ]])) {
-      dat[[ grp_cols[1] ]] <- format(dat[[ grp_cols[1] ]], ...)
+    col_col <- grp_cols[1]
+    if (is.numeric(dat[[col_col]])) {
+      dat[[col_col]] <- format(dat[[col_col]], ...)
     }
-    p <- ggplot(dat, aes_string(x = "value", y = "mean", col = grp_cols[[1]], group = grp_cols[[1]]))
+    col_col <- rlang::ensym(col_col)
+    p <- ggplot(dat, aes_(x = rlang::expr(value), y = rlang::expr(mean),
+                          col = col_col, group = col_col))
 
     if (g >= 2) {
       facets <- grp_cols[-1]
@@ -354,7 +357,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       # faceting variables
       if (multi_metrics) {
         # TODO fix labels to be columns only
-        p <- p + facet_grid(rows = vars(.metric), vars(!!!facets), labeller = "label_both", scales = "free_y")
+        p <- p + facet_grid(rows = vars(.metric), vars(!!!facets),
+                            labeller = "label_both", scales = "free_y")
       } else {
         p <- p + facet_wrap(vars(!!!facets), labeller = "label_both")
       }
