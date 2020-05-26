@@ -2,20 +2,46 @@
 #'
 #' @param object A tibble of results from [tune_grid()] or [tune_bayes()].
 #' @param type A single character value. Choices are `"marginals"` (for a plot
-#' 'of each predictor versus performance), `"parameters"` (each parameter versus
-#' search iteration), or `"performance"` (performance versus iteration). The
-#' latter two choices are only used for [tune_bayes()].
+#'  of each predictor versus performance; see Details below), `"parameters"`
+#'  (each parameter versus search iteration), or `"performance"` (performance
+#'  versus iteration). The latter two choices are only used for [tune_bayes()].
 #' @param metric A character vector or `NULL` for which metric to plot. By
 #' default, all metrics will be shown via facets.
 #' @param width A number for the width of the confidence interval bars when
-#' `type = "perfomance"`. A value of zero prevents them from being shown.
+#' `type = "performance"`. A value of zero prevents them from being shown.
 #' @param ... Not currently used.
 #' @return A `ggplot2` object.
-#' @details The parameters are currently represented in their natural units.
+#' @details
+#' The parameters are currently represented in their natural units.
 #'
-#' A single categorical tuning parameter is supported when other numeric
-#' parameters are also in the results. Any number of numeric tuning parameters
-#' can be used.
+#' When the results of `tune_grid()` are used with `autoplot()`, it tries to
+#'  determine whether a _regular grid_ was used.
+#'
+#' ## Regular grids
+#'
+#'   For regular grids with one or more numeric tuning parameters, the parameter
+#'  with the most unique values is used on the x-axis. If there are categorical
+#'  parameters, the first is used to color the geometries. All other parameters
+#'  are used in column faceting.
+#'
+#'   The plot has the performance metric(s) on the y-axis. If there are multiple
+#'  metrics, these are row-facetted.
+#'
+#'   If there are more than five tuning parameters, the "marginal effects" plots
+#'  are used instead.
+#'
+#' ## Irregular grids
+#'
+#' For space-filling or random grids, a _marginal_ effect plot is created. A
+#'  panel is made for each numeric parameter so that each parameter is on the
+#'  x-axis and performance is on the y-xis. If there are multiple metrics, these
+#'  are row-facetted.
+#'
+#' A single categorical parameter is shown as colors. If there are two or more
+#'  non-numeric parameters, an error is given. A similar result occurs is only
+#'  non-numeric parameters are in the grid. In these cases, we suggest using
+#'  `collect_metrics()` and `ggplot()` to create a plot that is appropriate for
+#'  the data.
 #' @seealso [tune_grid()], [tune_bayes()]
 #' @examples
 #' \donttest{
