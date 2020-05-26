@@ -64,6 +64,15 @@ jobs:
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
+      - name: Install TensorFlow
+        run: |
+          Rscript -e "remotes::install_github('rstudio/reticulate') # TODO remove when reticulate 1.14 is on CRAN"
+          Rscript -e "reticulate::install_miniconda()"
+          Rscript -e "reticulate::conda_create('r-reticulate', packages = 'python==3.6.9')"
+          Rscript -e "tensorflow::install_tensorflow(version='1.14.0')"
+      - name: Check
+        run: Rscript -e "rcmdcheck::rcmdcheck(args = '--no-manual', error_on = 'warning', check_dir = 'check')"
+
       - name: Session info
         run: |
           options(width = 100)
@@ -83,7 +92,7 @@ jobs:
         shell: bash
 
       - name: Upload check results
-        if: failure()
+        if: always()
         uses: actions/upload-artifact@master
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results

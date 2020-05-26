@@ -47,7 +47,7 @@ parameters, the first is used to color the geometries. All other parameters
 are used in column faceting.
 
 The plot has the performance metric(s) on the y-axis. If there are multiple
-metrics, these are row-facetted.
+metrics, these are row-faceted.
 
 If there are more than five tuning parameters, the "marginal effects" plots
 are used instead.
@@ -58,7 +58,7 @@ are used instead.
 For space-filling or random grids, a \emph{marginal} effect plot is created. A
 panel is made for each numeric parameter so that each parameter is on the
 x-axis and performance is on the y-xis. If there are multiple metrics, these
-are row-facetted.
+are row-faceted.
 
 A single categorical parameter is shown as colors. If there are two or more
 non-numeric parameters, an error is given. A similar result occurs is only
