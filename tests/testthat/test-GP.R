@@ -56,6 +56,13 @@ knn_results <- readRDS(test_path("knn_results.rds"))
 knn_set <- readRDS(test_path("knn_set.rds"))
 knn_grid <- readRDS(test_path("knn_grid.rds"))
 
+knn_gp <-
+  tune:::fit_gp(collect_metrics(knn_results),
+                knn_set,
+                "accuracy",
+                control_bayes()
+  )
+
 # ------------------------------------------------------------------------------
 
 test_that('encoding before model', {
@@ -91,13 +98,6 @@ test_that('GP fit - svm', {
 # ------------------------------------------------------------------------------
 
 test_that('GP fit - knn', {
-
-  knn_gp <-
-    tune:::fit_gp(collect_metrics(knn_results),
-                  knn_set,
-                  "accuracy",
-                  control_bayes()
-    )
 
   knn_cols <- c(
     'K', 'weight_funcrectangular', 'weight_functriangular',

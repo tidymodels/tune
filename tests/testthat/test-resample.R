@@ -111,8 +111,8 @@ test_that("failure in recipe is caught elegantly", {
   # Known failure in the recipe
   expect_true(any(grepl("recipe", note)))
 
-  expect_equal(extract, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
+  expect_equivalent(extract, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
 })
 
 test_that("classification models generate correct error message", {
@@ -142,8 +142,8 @@ test_that("classification models generate correct error message", {
   # Known failure in the recipe
   expect_true(all(grepl("outcome should be a factor", note)))
 
-  expect_equal(extract, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
+  expect_equivalent(extract, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
 })
 
 
