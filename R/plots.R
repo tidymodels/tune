@@ -287,7 +287,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   grd <- dat %>% dplyr::select(one_of(param_cols))
 
   # ----------------------------------------------------------------------------
-  # get parameter labels
+  # get parameter labels (also for colored parameters)
   # transform any predictors
   # relabel with transformation (if needed)
   # ----------------------------------------------------------------------------
@@ -322,7 +322,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   # ------------------------------------------------------------------------------
 
-  if (g > 1) {
+  if (g >= 1) {
     # col aes and possibly faceting variables
     if (is.numeric(dat[[ grp_cols[1] ]])) {
       dat[[ grp_cols[1] ]] <- format(dat[[ grp_cols[1] ]], ...)
@@ -340,6 +340,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       } else {
         p <- p + facet_wrap(vars(!!!facets), labeller = "label_both")
       }
+    } else if (multi_metrics) {
+      p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
     }
 
   } else {
