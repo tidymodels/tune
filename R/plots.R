@@ -124,7 +124,7 @@ regular_grid_plot <- function(x) {
   other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
   param_cols <- names(dat)[!(names(dat) %in% other_names)]
   grd <- dat %>% dplyr::select(one_of(param_cols)) %>% distinct()
-  dials::is_regular_grid(grd)
+  is_regular_grid(grd)
 }
 
 # ------------------------------------------------------------------------------
