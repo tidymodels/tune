@@ -98,12 +98,30 @@ autoplot.resample_results <- function(object, ...) {
 
 # ------------------------------------------------------------------------------
 
+is_factorial <- function(x, cutoff = 0.95) {
+  n <- nrow(x)
+  p <- ncol(x)
+  vals <- purrr::map(x, unique)
+  full_fact <-
+    tidyr::crossing(!!!vals) %>%
+    dplyr::full_join(x %>%  dplyr::mutate(..obs = 1), by = names(x))
+  mean(!is.na(full_fact$..obs)) >= cutoff
+}
+
+
 is_regular_grid <- function(grid) {
   num_points <- nrow(grid)
   p <- ncol(grid)
 
   if (p == 1) {
     return(TRUE)
+  }
+
+  if (p <= 5) {
+    ff <- is_factorial(grid)
+    if (ff) {
+      return(TRUE)
+    }
   }
 
   pct_unique <- purrr::map_int(grid, ~ length(unique(.x)))/num_points
