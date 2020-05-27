@@ -258,13 +258,14 @@ tune_bayes_workflow <-
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
     unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
+
     mean_stats <- estimate_tune_results(unsummarized)
 
     check_time(start_time, control$time_limit)
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      return(reup_rs(resamples, unsummarized))
+      return(unsummarized)
     })
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
@@ -324,8 +325,15 @@ tune_bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control,
-                              param_info = param_info)
+      tmp_res <-
+        more_results(
+          object,
+          resamples = resamples,
+          candidates = candidates,
+          metrics = metrics,
+          control = control,
+          param_info = param_info
+        )
 
       check_time(start_time, control$time_limit)
 
@@ -353,7 +361,6 @@ tune_bayes_workflow <-
       check_time(start_time, control$time_limit)
     }
 
-    unsummarized <- reup_rs(resamples, unsummarized)
     on.exit()
     save_attr(unsummarized, param_info, metrics)
   }

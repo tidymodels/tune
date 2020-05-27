@@ -315,6 +315,9 @@ tune_grid_workflow <-
     check_workflow(object, pset = pset)
     grid <- check_grid(grid, object, pset)
 
+    # Down-cast rset to tibble
+    resamples <- tibble::as_tibble(resamples)
+
     code_path <- quarterback(object)
 
     resamples <- rlang::eval_tidy(code_path)
