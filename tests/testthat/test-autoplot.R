@@ -6,6 +6,7 @@ source(test_path("../helper-objects.R"))
 knn_results <- readRDS(test_path("knn_results.rds"))
 load(test_path("svm_results.RData"))
 load(test_path("bayes_example.RData"))
+rcv_results <- readRDS(test_path("rcv_results.rds"))
 
 # ------------------------------------------------------------------------------
 
@@ -92,4 +93,75 @@ test_that("parameter plot for iterative search",{
   expect_equal(p$labels$y, "Parameter Value")
   expect_equal(p$labels$x, "Iteration")
 })
+
+
+test_that("regular grid plot",{
+  p <- autoplot(rcv_results)
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p$mapping$col), sym("wt df"))
+  expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
+  expect_equal(p$facet$vars(), c(".metric", "degree", "wt degree"))
+
+  # expect_equal(p$labels$y, "Performance")
+  # expect_equal(p$labels$x, "Parameter Value")
+
+  p <- autoplot(rcv_results, metric = "rmse")
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p$mapping$col), sym("wt df"))
+  expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
+  expect_equal(p$facet$vars(), c("degree", "wt degree"))
+
+  # expect_equal(p$labels$y, "Performance")
+  # expect_equal(p$labels$x, "Parameter Value")
+})
+
+
+
+test_that("coord_obs_pred",{
+  data(solubility_test, package = "modeldata")
+
+  library(ggplot2)
+  p <-
+    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+    geom_abline(lty = 2) +
+    geom_point(alpha = 0.5)
+
+  rng <- range(solubility_test[[1]], solubility_test[[2]])
+
+  p2 <- p + coord_obs_pred()
+
+  expect_error(print(p2), regexp = NA)
+
+  expect_true(inherits(p2$coordinates, "CoordObsPred"))
+  expect_equal(p2$coordinates$limits$x, rng)
+  expect_equal(p2$coordinates$limits$y, rng)
+  expect_equal(p2$coordinates$ratio, 1)
+
+  solubility_test$solubility[1] <- NA
+  p3 <-
+    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+    geom_abline(lty = 2) +
+    geom_point(alpha = 0.5)
+
+  expect_warning(
+    print(p3 + coord_obs_pred()),
+    "Removed 1 rows containing missing values"
+  )
+
+
+})
+
+
 

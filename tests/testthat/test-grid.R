@@ -195,8 +195,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   expect_length(notes, 2L)
 
   # recipe failed - no models run
-  expect_equal(extracts, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
+  expect_equivalent(extracts, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
@@ -227,8 +227,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
   expect_length(notes, 2L)
 
   # formula failed - no models run
-  expect_equal(extracts, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
+  expect_equivalent(extracts, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
@@ -293,3 +293,17 @@ test_that("ellipses with tune_grid", {
     "The `...` are not used in this function but one or more objects"
   )
 })
+
+
+test_that("determining the grid type", {
+  grid_1 <- expand.grid(a = 1:100, b = letters[1:2])
+  expect_true(tune:::is_regular_grid(grid_1))
+  expect_true(tune:::is_regular_grid(grid_1[-(1:10),]))
+  expect_false(tune:::is_regular_grid(grid_1[-(1:100),]))
+  set.seed(1932)
+  grid_2 <- data.frame(a = runif(length(letters)), b = letters)
+  expect_false(tune:::is_regular_grid(grid_2))
+})
+
+
+

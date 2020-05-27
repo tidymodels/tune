@@ -211,16 +211,18 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 #&gt; </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
-<span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
+
+<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
   <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;     id parameter type object class
 #&gt;  trees          trees    nparam[+]
 #&gt;  min_n          min_n    nparam[+]
 #&gt; </div><div class='input'>
-<span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+
+<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
   <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;     id parameter type object class

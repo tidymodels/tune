@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot tuning search results — autoplot.tune_results • tune</title>
+<title>Use same scale for plots of observed vs predicted values — coord_obs_pred • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -41,8 +41,9 @@
 
 
 
-<meta property="og:title" content="Plot tuning search results — autoplot.tune_results" />
-<meta property="og:description" content="Plot tuning search results" />
+<meta property="og:title" content="Use same scale for plots of observed vs predicted values — coord_obs_pred" />
+<meta property="og:description" content="For regression models, coord_obs_pred() can be used in a ggplot to make the
+x- and y-axes have the same exact scale along with an aspect ratio of one." />
 <meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -137,105 +138,62 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot tuning search results</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
-    <div class="hidden name"><code>autoplot.tune_results.Rd</code></div>
+    <h1>Use same scale for plots of observed vs predicted values</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/coord_obs_pred.R'><code>R/coord_obs_pred.R</code></a></small>
+    <div class="hidden name"><code>coord_obs_pred.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot tuning search results</p>
+    <p>For regression models, <code>coord_obs_pred()</code> can be used in a ggplot to make the
+x- and y-axes have the same exact scale along with an aspect ratio of one.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for tune_results</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(
-  <span class='no'>object</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"marginals"</span>, <span class='st'>"parameters"</span>, <span class='st'>"performance"</span>),
-  <span class='kw'>metric</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>coord_obs_pred</span>(<span class='kw'>ratio</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>xlim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ylim</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>expand</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>clip</span> <span class='kw'>=</span> <span class='st'>"on"</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A tibble of results from <code><a href='tune_grid.html'>tune_grid()</a></code> or <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <th>ratio</th>
+      <td><p>Aspect ratio, expressed as <code>y / x</code>. Defaults to 1.0.</p></td>
     </tr>
     <tr>
-      <th>type</th>
-      <td><p>A single character value. Choices are <code>"marginals"</code> (for a plot
-of each predictor versus performance; see Details below), <code>"parameters"</code>
-(each parameter versus search iteration), or <code>"performance"</code> (performance
-versus iteration). The latter two choices are only used for <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+      <th>xlim, ylim</th>
+      <td><p>Limits for the x and y axes.</p></td>
     </tr>
     <tr>
-      <th>metric</th>
-      <td><p>A character vector or <code>NULL</code> for which metric to plot. By
-default, all metrics will be shown via facets.</p></td>
-    </tr>
-    <tr>
-      <th>width</th>
-      <td><p>A number for the width of the confidence interval bars when
-<code>type = "performance"</code>. A value of zero prevents them from being shown.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
+      <th>expand</th>
       <td><p>Not currently used.</p></td>
+    </tr>
+    <tr>
+      <th>clip</th>
+      <td><p>Should drawing be clipped to the extent of the plot panel? A setting
+of "on" (the default) means yes, and a setting of "off" means no. In most
+cases, the default of "on" should not be changed, as setting <code>clip = "off"</code>
+can cause unexpected results. It allows drawing of data points anywhere on
+the plot, including in the plot margins. If limits are set via <code>xlim</code> and
+<code>ylim</code> and some data points fall outside those limits, then those data points
+may show up in places such as the axes, the legend, the plot title, or the
+plot margins.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>ggplot2</code> object.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The parameters are currently represented in their natural units.</p>
-<p>When the results of <code><a href='tune_grid.html'>tune_grid()</a></code> are used with <code><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot()</a></code>, it tries to
-determine whether a <em>regular grid</em> was used.</p><h3>Regular grids</h3>
-
-
-<p>For regular grids with one or more numeric tuning parameters, the parameter
-with the most unique values is used on the x-axis. If there are categorical
-parameters, the first is used to color the geometries. All other parameters
-are used in column faceting.</p>
-<p>The plot has the performance metric(s) on the y-axis. If there are multiple
-metrics, these are row-faceted.</p>
-<p>If there are more than five tuning parameters, the "marginal effects" plots
-are used instead.</p>
-
-<h3>Irregular grids</h3>
-
-
-<p>For space-filling or random grids, a <em>marginal</em> effect plot is created. A
-panel is made for each numeric parameter so that each parameter is on the
-x-axis and performance is on the y-xis. If there are multiple metrics, these
-are row-faceted.</p>
-<p>A single categorical parameter is shown as colors. If there are two or more
-non-numeric parameters, an error is given. A similar result occurs is only
-non-numeric parameters are in the grid. In these cases, we suggest using
-<code><a href='collect_predictions.html'>collect_metrics()</a></code> and <code>ggplot()</code> to create a plot that is appropriate for
-the data.</p>
-
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code></p></div>
+    <p>A <code>ggproto</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='co'># For grid search:</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>solubility_test</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"modeldata"</span>)
 
-<span class='co'># Plot the tuning parameter values versus performance</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)</div><div class='img'><img src='autoplot.tune_results-1.png' alt='' width='768' height='552' /></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>solubility_test</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='no'>solubility</span>, <span class='kw'>y</span> <span class='kw'>=</span> <span class='no'>prediction</span>)) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_abline.html'>geom_abline</a></span>(<span class='kw'>lty</span> <span class='kw'>=</span> <span class='fl'>2</span>) +
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_point.html'>geom_point</a></span>(<span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.5</span>)
 
-<span class='co'># For iterative search:</span>
-<span class='co'># Plot the tuning parameter values versus performance</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"marginals"</span>)</div><div class='img'><img src='autoplot.tune_results-2.png' alt='' width='768' height='552' /></div><div class='input'>
-<span class='co'># Plot tuning parameters versus iterations</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"parameters"</span>)</div><div class='img'><img src='autoplot.tune_results-3.png' alt='' width='768' height='552' /></div><div class='input'>
-<span class='co'># Plot performance over iterations</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"performance"</span>)</div><div class='img'><img src='autoplot.tune_results-4.png' alt='' width='768' height='552' /></div><div class='input'><span class='co'># }</span></div></pre>
+<span class='no'>p</span></div><div class='img'><img src='coord_obs_pred-1.png' alt='' width='768' height='552' /></div><div class='input'>
+<span class='no'>p</span> + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/coord_fixed.html'>coord_fixed</a></span>()</div><div class='img'><img src='coord_obs_pred-2.png' alt='' width='768' height='552' /></div><div class='input'>
+<span class='no'>p</span> + <span class='fu'>coord_obs_pred</span>()</div><div class='img'><img src='coord_obs_pred-3.png' alt='' width='768' height='552' /></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

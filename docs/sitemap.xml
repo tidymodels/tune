@@ -16,6 +16,9 @@
     <loc>https://tune.tidymodels.org/reference/control_grid.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/coord_obs_pred.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/example_ames_knn.html</loc>
   </url>
   <url>
