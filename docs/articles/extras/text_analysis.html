@@ -42,7 +42,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -286,7 +286,7 @@
 <p>Then we can extract and manipulate the corresponding parameter set:</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">five_star_set</span> <span class="kw">&lt;-</span>
   <span class="no">five_star_wflow</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">num_terms</span> <span class="kw">=</span> <span class="no">hash_range</span>, <span class="kw">penalty</span> <span class="kw">=</span> <span class="fu">penalty</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">3</span>, <span class="fl">0</span>)))</pre></body></html></div>
 <p>This is passed to the search function via the <code>param_info</code> argument.</p>
 <p>Finally, the initial rounds of search can be biased more towards exploration of the parameter space (as opposed to staying near the current best results). If expected improvement is used as the acquisition function, the trade-off value can be slowly moved from exploration to exploitation over iterations<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. <code>tune</code> has a built-in function called <code><a href="../../reference/expo_decay.html">expo_decay()</a></code> that can help accomplish this:</p>

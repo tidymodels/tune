@@ -42,7 +42,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -152,8 +152,8 @@
   <span class="fu">step_log</span>(<span class="no">Sale_Price</span>, <span class="kw">base</span> <span class="kw">=</span> <span class="fl">10</span>) <span class="kw">%&gt;%</span>
   <span class="fu">step_ns</span>(<span class="no">Longitude</span>, <span class="kw">deg_free</span> <span class="kw">=</span> <span class="fu"><a href="../reference/tune.html">tune</a></span>(<span class="st">"long df"</span>)) <span class="kw">%&gt;%</span>
   <span class="fu">step_ns</span>(<span class="no">Latitude</span>,  <span class="kw">deg_free</span> <span class="kw">=</span> <span class="fu"><a href="../reference/tune.html">tune</a></span>(<span class="st">"lat df"</span>))</pre></body></html></div>
-<p>The function <code><a href="https://rdrr.io/pkg/dials/man/parameters.html">dials::parameters()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(<span class="no">ames_rec</span>)
+<p>The function <code><a href="https://dials.tidymodels.org/reference/parameters.html">dials::parameters()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>(<span class="no">ames_rec</span>)
 <span class="co">#&gt; Collection of 2 parameters for tuning</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;       id parameter type object class</span>
@@ -170,7 +170,7 @@
 <p>The parameter objects can be easily changed using the <code><a href="https://rdrr.io/r/stats/update.html">update()</a></code> function:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">ames_param</span> <span class="kw">&lt;-</span>
   <span class="no">ames_rec</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(
     <span class="kw">`long df`</span> <span class="kw">=</span> <span class="fu">spline_degree</span>(),
     <span class="kw">`lat df`</span> <span class="kw">=</span> <span class="fu">spline_degree</span>()
@@ -334,7 +334,7 @@
 <p>From this, the parameter set can be used to modify the range and values of parameters being optimized<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">knn_param</span> <span class="kw">&lt;-</span>
   <span class="no">knn_wflow</span> <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
     <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(
     <span class="kw">`long df`</span> <span class="kw">=</span> <span class="fu">spline_degree</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">18</span>)),
     <span class="kw">`lat df`</span> <span class="kw">=</span> <span class="fu">spline_degree</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">18</span>)),

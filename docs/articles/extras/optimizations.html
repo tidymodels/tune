@@ -42,7 +42,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -125,7 +125,7 @@
 ## see '?methods' for accessing help and source code</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span>
 <span class="co"># For xgboost, `trees` are cheep to evaluate: </span>
-<span class="kw pkg">parsnip</span><span class="kw ns">:::</span><span class="no"><a href="https://rdrr.io/pkg/parsnip/man/multi_predict.html">multi_predict._xgb.Booster</a></span> <span class="kw">%&gt;%</span>
+<span class="kw pkg">parsnip</span><span class="kw ns">:::</span><span class="no"><a href="https://parsnip.tidymodels.org/reference/multi_predict.html">multi_predict._xgb.Booster</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/formals.html">formals</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>()</pre></body></html></div>
 <pre><code>## [1] "object"   "new_data" "type"     "trees"    "..."</code></pre>
@@ -148,7 +148,7 @@
   <span class="fu">set_mode</span>(<span class="st">"regression"</span>)
 
 <span class="no">grid</span> <span class="kw">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/dials/man/parameters.html">parameters</a></span>(<span class="fu">num_terms</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">9</span>)), <span class="fu">neighbors</span>(), <span class="fu">weight_func</span>()) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>(<span class="fu">num_terms</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">9</span>)), <span class="fu">neighbors</span>(), <span class="fu">weight_func</span>()) <span class="kw">%&gt;%</span>
   <span class="fu">grid_regular</span>(<span class="kw">levels</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">7</span>)) <span class="kw">%&gt;%</span>
   <span class="fu">arrange</span>(<span class="no">num_terms</span>, <span class="no">neighbors</span>, <span class="no">weight_func</span>)
 <span class="no">grid</span></pre></body></html></div>
