@@ -127,3 +127,41 @@ test_that("regular grid plot",{
   # expect_equal(p$labels$x, "Parameter Value")
 })
 
+
+
+test_that("coord_obs_pred",{
+  data(solubility_test, package = "modeldata")
+
+  library(ggplot2)
+  p <-
+    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+    geom_abline(lty = 2) +
+    geom_point(alpha = 0.5)
+
+  rng <- range(solubility_test[[1]], solubility_test[[2]])
+
+  p2 <- p + coord_obs_pred()
+
+  expect_error(print(p2), regexp = NA)
+
+  expect_true(inherits(p2$coordinates, "CoordObsPred"))
+  expect_equal(p2$coordinates$limits$x, rng)
+  expect_equal(p2$coordinates$limits$y, rng)
+  expect_equal(p2$coordinates$ratio, 1)
+
+  solubility_test$solubility[1] <- NA
+  p3 <-
+    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+    geom_abline(lty = 2) +
+    geom_point(alpha = 0.5)
+
+  expect_warning(
+    print(p3 + coord_obs_pred()),
+    "Removed 1 rows containing missing values"
+  )
+
+
+})
+
+
+
