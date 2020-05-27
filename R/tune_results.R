@@ -15,6 +15,24 @@ print.tune_results <- function(x, ...) {
                                 sep = "\n"))
     rlang::warn(print_notes)
   }
-  class(x) <- class(x)[!(class(x) %in% c("tune_results"))]
-  print(x, ...)
+
+  if (inherits(x, "resample_results")) {
+    cat("# Resampling results\n")
+  } else {
+    cat("# Tuning results\n")
+  }
+
+  att <- attributes(x)
+  if (any(names(att) == "resample_label")) {
+    cat("#", att$resample_label, "\n")
+  } else {
+    if (inherits(x, "rset")) {
+      resample_label <- try(pretty(x), silent = TRUE)
+      if (!inherits(resample_label, "try-error")) {
+        cat("#", resample_label, "\n")
+      }
+    }
+  }
+
+  print(tibble::as_tibble(x), ...)
 }

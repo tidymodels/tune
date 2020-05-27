@@ -316,6 +316,7 @@ tune_grid_workflow <-
     grid <- check_grid(grid, object, pset)
 
     # Down-cast rset to tibble
+    resample_label <- pretty(resamples)
     resamples <- tibble::as_tibble(resamples)
 
     code_path <- quarterback(object)
@@ -329,7 +330,7 @@ tune_grid_workflow <-
     }
 
     class(resamples) <- unique(c("tune_results", class(resamples)))
-    save_attr(resamples, pset, metrics)
+    save_attr(resamples, pset, metrics, resample_label)
   }
 
 # ------------------------------------------------------------------------------
@@ -361,8 +362,9 @@ quarterback <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-save_attr <- function(x, param, metrics) {
+save_attr <- function(x, param, metrics, resample_label) {
   attr(x, "parameters") <- param
   attr(x, "metrics") <- metrics
+  attr(x, "resample_label") <- resample_label
   x
 }

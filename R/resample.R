@@ -134,6 +134,7 @@ fit_resamples.workflow <- function(object,
 
 resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
+  resample_label <- pretty(resamples)
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
 
@@ -155,7 +156,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   class(resamples) <- c("resample_results", class(resamples))
 
-  save_attr(resamples, parameters(workflow), metrics)
+  save_attr(resamples, parameters(workflow), metrics, resample_label)
 }
 
 # ------------------------------------------------------------------------------
