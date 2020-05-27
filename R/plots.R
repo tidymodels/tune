@@ -305,6 +305,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   grd <- dat %>% dplyr::select(one_of(param_cols))
 
   # ----------------------------------------------------------------------------
+  # Once the tune object has a parameters object:
   # get parameter labels (also for colored parameters)
   # transform any predictors
   # relabel with transformation (if needed)
@@ -356,11 +357,11 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       facets <- rlang::quos(!!!facets)
       # faceting variables
       if (multi_metrics) {
-        # TODO fix labels to be columns only
         p <- p + facet_grid(rows = vars(.metric), vars(!!!facets),
-                            labeller = "label_both", scales = "free_y")
+                            labeller = ggplot2::labeller(.cols = ggplot2::label_both),
+                            scales = "free_y")
       } else {
-        p <- p + facet_wrap(vars(!!!facets), labeller = "label_both")
+        p <- p + facet_wrap(vars(!!!facets), labeller = ggplot2::labeller(.cols = ggplot2::label_both))
       }
     } else if (multi_metrics) {
       p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
