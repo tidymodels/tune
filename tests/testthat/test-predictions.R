@@ -3,7 +3,7 @@ context("extracting predictions")
 source(test_path("../helper-objects.R"))
 
 check_predictions <- function(split, pred, tune_df) {
-  
+
   assess <- rsample::assessment(split)
   n_te <- nrow(assess)
   n_pm <- nrow(tune_df)
@@ -21,8 +21,10 @@ load(test_path("test_objects.RData"))
 # ------------------------------------------------------------------------------
 
 test_that("recipe only", {
-  
-  grid <- tibble(deg_free = c(4, 5, 7, 8, 9, 11, 12, 13, 15))
+
+  grid <- collect_metrics(mt_spln_lm_grid) %>%
+    dplyr::select(deg_free) %>%
+    dplyr::distinct()
 
   purrr::map2(
     mt_spln_lm_grid$splits,
@@ -33,7 +35,11 @@ test_that("recipe only", {
 
   # initial values for Bayes opt
   init <- mt_spln_lm_bo %>% dplyr::filter(.iter == 0)
-  init_grid <- tibble(deg_free = c(3, 10, 14))
+  init_grid <-
+    collect_metrics(mt_spln_lm_bo) %>%
+    dplyr::filter(.iter == 0) %>%
+    dplyr::select(deg_free) %>%
+    dplyr::distinct()
 
   purrr::map2(
     init$splits,
@@ -58,8 +64,11 @@ test_that("recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("model only", {
-  
-  grid <- tibble(neighbors = c(2, 3, 5, 6, 7, 8, 10, 12, 13, 15))
+
+  grid <-
+    collect_metrics(mt_knn_grid) %>%
+    dplyr::select(neighbors) %>%
+    dplyr::distinct()
 
   purrr::map2(
     mt_knn_grid$splits,
@@ -70,7 +79,11 @@ test_that("model only", {
 
   # initial values for Bayes opt
   init <- mt_knn_bo %>% dplyr::filter(.iter == 0)
-  init_grid <- tibble(neighbors = c(1, 9, 14))
+  init_grid <-
+    collect_metrics(mt_knn_bo) %>%
+    dplyr::filter(.iter == 0) %>%
+    dplyr::select(neighbors) %>%
+    distinct()
 
   purrr::map2(
     init$splits,
@@ -96,20 +109,11 @@ test_that("model only", {
 # ------------------------------------------------------------------------------
 
 test_that("model and recipe", {
-  
+
   grid <-
-    tibble::tribble(
-      ~deg_free, ~neighbors,
-      3L,         1L,
-      3L,         8L,
-      3L,        15L,
-      9L,         1L,
-      9L,         8L,
-      9L,        15L,
-      15L,         1L,
-      15L,         8L,
-      15L,        15L
-    )
+    collect_metrics(mt_spln_knn_grid) %>%
+    dplyr::select(deg_free, neighbors) %>%
+    dplyr::distinct()
 
   purrr::map2(
     mt_spln_knn_grid$splits,
@@ -121,12 +125,10 @@ test_that("model and recipe", {
   # initial values for Bayes opt
   init <- mt_spln_knn_bo %>% dplyr::filter(.iter == 0)
   init_grid <-
-    tibble::tribble(
-      ~deg_free, ~neighbors,
-      8L,        14L,
-      11L,         5L,
-      4L,         6L
-    )
+    collect_metrics(mt_spln_knn_bo) %>%
+    dplyr::filter(.iter == 0) %>%
+    dplyr::select(deg_free, neighbors) %>%
+    dplyr::distinct()
 
   purrr::map2(
     init$splits,
