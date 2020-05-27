@@ -180,13 +180,13 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 <span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/nearest_neighbor.html'>nearest_neighbor</a></span>(
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/nearest_neighbor.html'>nearest_neighbor</a></span>(
     <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
     <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"K"</span>),
     <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(),
     <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()
   ) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
 
 <span class='no'>lowest_rmse</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)
 <span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 5</span><span>

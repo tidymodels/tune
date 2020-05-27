@@ -270,7 +270,7 @@ summarize.</p>
 #&gt; <span class='message'></span>
 #&gt; <span class='message'>    step</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>tibble</span>)
 
-<span class='no'>lm_mod</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+<span class='no'>lm_mod</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>93599150</span>)
 <span class='no'>car_folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rsample.tidymodels.org/reference/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>repeats</span> <span class='kw'>=</span> <span class='fl'>3</span>)
 <span class='no'>ctrl</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span>(<span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)

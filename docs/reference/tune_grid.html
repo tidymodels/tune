@@ -373,8 +373,8 @@ grid has a separate R object associated with it.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt"</span>))
 
 <span class='no'>lin_mod</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 
 <span class='co'># manually create a grid</span>
 <span class='no'>spline_grid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(<span class='kw'>disp</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>, <span class='kw'>wt</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>)
@@ -410,9 +410,9 @@ grid has a separate R object associated with it.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_normalize.html'>step_normalize</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>())
 
 <span class='no'>svm_mod</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/svm_rbf.html'>svm_rbf</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>rbf_sigma</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kernlab"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_args.html'>set_mode</a></span>(<span class='st'>"regression"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/svm_rbf.html'>svm_rbf</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>rbf_sigma</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"kernlab"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_args.html'>set_mode</a></span>(<span class='st'>"regression"</span>)
 
 <span class='co'># Use a space-filling design with 7 points</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>3254</span>)

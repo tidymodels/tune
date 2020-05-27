@@ -210,8 +210,8 @@ the test data.</p>
 <span class='no'>spline_rec</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>)
 
-<span class='no'>lin_mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+<span class='no'>lin_mod</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 
 <span class='no'>spline_res</span> <span class='kw'>&lt;-</span> <span class='fu'>last_fit</span>(<span class='no'>lin_mod</span>, <span class='no'>spline_rec</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='no'>tr_te_split</span>)
 <span class='no'>spline_res</span></div><div class='output co'>#&gt; # Monte Carlo cross-validation (0.75/0.25) with 1 resamples  
