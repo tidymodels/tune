@@ -80,7 +80,7 @@ complex objects, such as recipes, model specifications, and workflows." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -144,18 +144,18 @@ complex objects, such as recipes, model specifications, and workflows." />
     </div>
 
     <div class="ref-description">
-    <p>These methods extend the generic <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> to work with more
+    <p>These methods extend the generic <code><a href='https://dials.tidymodels.org/reference/parameters.html'>dials::parameters()</a></code> to work with more
 complex objects, such as recipes, model specifications, and workflows.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for workflow</span>
-<span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for model_spec</span>
-<span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for recipe</span>
-<span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -182,21 +182,21 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_knnimpute.html'>step_knnimpute</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_pca.html'>step_pca</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>(), <span class='kw'>num_comp</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;         id parameter type object class
 #&gt;  neighbors      neighbors    nparam[+]
 #&gt;   num_comp       num_comp    nparam[+]
 #&gt; </div><div class='input'>
  <span class='co'># A peak under the hood</span>
- <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span>(<span class='no'>.Last.value</span>)</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 1</span><span>
+ <span class='kw pkg'>tibble</span><span class='kw ns'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/as_tibble.html'>as_tibble</a></span>(<span class='no'>.Last.value</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 1</span><span>
 #&gt;   value
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;lgl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> TRUE </div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> TRUE </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>disp</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"disp df"</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt df"</span>)) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;       id parameter type object class
 #&gt;  disp df       deg_free    nparam[+]
@@ -204,30 +204,29 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 #&gt; </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipe</a></span>(<span class='no'>mpg</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>mtcars</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_normalize.html'>step_normalize</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 0 parameters for tuning
 #&gt; 
 #&gt; [1] id             parameter type object class  
 #&gt; &lt;0 rows&gt; (or 0-length row.names)
 #&gt; </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 
-<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+<span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"xgboost"</span>) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;     id parameter type object class
 #&gt;  trees          trees    nparam[+]
 #&gt;  min_n          min_n    nparam[+]
 #&gt; </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
-  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
+<span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span>(<span class='kw'>trees</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>min_n</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"C5.0"</span>, <span class='kw'>rules</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>dials</span><span class='kw ns'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>()</div><div class='output co'>#&gt; Collection of 2 parameters for tuning
 #&gt; 
 #&gt;     id parameter type object class
 #&gt;  trees          trees    nparam[+]
 #&gt;  min_n          min_n    nparam[+]
-#&gt; </div><div class='input'># }
-</div></span></pre>
+#&gt; </div><div class='input'><span class='co'># }</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

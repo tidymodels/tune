@@ -80,7 +80,7 @@ combinations based on previous results." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@ combinations based on previous results.</p>
     </tr>
     <tr>
       <th>param_info</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
+      <td><p>A <code><a href='https://dials.tidymodels.org/reference/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
 a parameters set is derived from other arguments. Passing this argument can
 be useful when parameter ranges need to be customized.</p></td>
     </tr>
@@ -278,12 +278,12 @@ the number of parameters being optimized.</p>
 
 
 <p>In some cases, the tuning parameter values depend on the dimensions of the
-data (they are said to contain <a href='https://rdrr.io/pkg/dials/man/unknown.html'>unknown</a> values). For
+data (they are said to contain <a href='https://dials.tidymodels.org/reference/unknown.html'>unknown</a> values). For
 example, <code>mtry</code> in random forest models depends on the number of predictors.
 In such cases, the unknowns in the tuning parameter object must be determined
 beforehand and passed to the function via the <code>param_info</code> argument.
-<code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent parameters.
-Otherwise, a parameter set can be created via <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code>, and the
+<code><a href='https://dials.tidymodels.org/reference/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent parameters.
+Otherwise, a parameter set can be created via <code><a href='https://dials.tidymodels.org/reference/parameters.html'>dials::parameters()</a></code>, and the
 <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to specify the ranges or values.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
 
