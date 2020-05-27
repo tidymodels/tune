@@ -315,8 +315,8 @@ tune_grid_workflow <-
     check_workflow(object, pset = pset)
     grid <- check_grid(grid, object, pset)
 
-    # Down-cast rset to tibble
-    resample_label <- pretty(resamples)
+    # Down-cast rset to tibble but get information first
+    resample_info <- pull_rset_attributes(resamples)
     resamples <- tibble::as_tibble(resamples)
 
     code_path <- quarterback(object)
@@ -329,8 +329,8 @@ tune_grid_workflow <-
               call. = FALSE)
     }
 
-    class(resamples) <- unique(c("tune_results", class(resamples)))
-    save_attr(resamples, pset, metrics, resample_label)
+    class(resamples) <- unique(c("tune_results", class(tibble())))
+    save_attr(resamples, pset, metrics, resample_info)
   }
 
 # ------------------------------------------------------------------------------
@@ -362,9 +362,25 @@ quarterback <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-save_attr <- function(x, param, metrics, resample_label) {
+pull_rset_attributes <- function(x) {
+  excl_att <- c("names", "row.names")
+  att <- attributes(x)
+  att_nms <- names(att)
+  att_nms <- setdiff(att_nms, excl_att)
+  att$class <- setdiff(class(x), class(tibble()))
+  att$class <- att$class[att$class != "rset"]
+
+  lab <- try(pretty(x), silent = TRUE)
+  if (inherits(lab, "try-error")) {
+    lab <- NA_character_
+  }
+  list(att = att[att_nms], label = lab)
+}
+
+
+save_attr <- function(x, param, metrics, rset_info) {
   attr(x, "parameters") <- param
   attr(x, "metrics") <- metrics
-  attr(x, "resample_label") <- resample_label
+  attr(x, "rset_info") <- rset_info
   x
 }

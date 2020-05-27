@@ -247,7 +247,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    resample_label <- pretty(resamples)
+    resample_info <- pull_rset_attributes(resamples)
     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
@@ -363,7 +363,7 @@ tune_bayes_workflow <-
     }
 
     on.exit()
-    save_attr(unsummarized, param_info, metrics, resample_label)
+    save_attr(unsummarized, param_info, metrics, resample_info)
   }
 
 create_initial_set <- function(param, n = NULL) {

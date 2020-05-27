@@ -134,12 +134,12 @@ fit_resamples.workflow <- function(object,
 
 resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
-  resample_label <- pretty(resamples)
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
 
   has_formula <- has_preprocessor_formula(workflow)
 
+  resample_info <- pull_rset_attributes(resamples)
   resamples <- tibble::as_tibble(resamples)
 
   if (has_formula) {
@@ -156,7 +156,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   class(resamples) <- c("resample_results", class(resamples))
 
-  save_attr(resamples, parameters(workflow), metrics, resample_label)
+  save_attr(resamples, parameters(workflow), metrics, resample_info)
 }
 
 # ------------------------------------------------------------------------------

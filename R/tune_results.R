@@ -23,13 +23,13 @@ print.tune_results <- function(x, ...) {
   }
 
   att <- attributes(x)
-  if (any(names(att) == "resample_label")) {
-    cat("#", att$resample_label, "\n")
+  if (any(names(att) == "rset_info")) {
+    cat("#", att$rset_info$label, "\n")
   } else {
     if (inherits(x, "rset")) {
-      resample_label <- try(pretty(x), silent = TRUE)
-      if (!inherits(resample_label, "try-error")) {
-        cat("#", resample_label, "\n")
+      rset_info <- try(pretty(x), silent = TRUE)
+      if (!inherits(rset_info, "try-error")) {
+        cat("#", rset_info, "\n")
       }
     }
   }
