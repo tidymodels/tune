@@ -23,7 +23,7 @@ knn_mod <-
 
 verb <- TRUE
 g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
-b_ctrl <- ctrl_Bayes(verbose = verb, save_pred = TRUE)
+b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
 
 
 # ------------------------------------------------------------------------------
