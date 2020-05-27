@@ -79,7 +79,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -167,52 +167,52 @@ generate these examples was:</p><pre><span class='fu'><a href='https://rdrr.io/r
 
 <span class='co'># ------------------------------------------------------------------------------</span>
 
-<span class='no'>ames</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='fu'><a href='https://rdrr.io/pkg/AmesHousing/man/make_ames.html'>make_ames</a></span>()
+<span class='no'>ames</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/AmesHousing/man/make_ames.html'>make_ames</a></span>()
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>4595</span>)
-<span class='no'>data_split</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='fu'>initial_split</span>(<span class='no'>ames</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='st'>"Sale_Price"</span>)
+<span class='no'>data_split</span> <span class='kw'>&lt;-</span> <span class='fu'>initial_split</span>(<span class='no'>ames</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='st'>"Sale_Price"</span>)
 
-<span class='no'>ames_train</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='fu'>training</span>(<span class='no'>data_split</span>)
+<span class='no'>ames_train</span> <span class='kw'>&lt;-</span> <span class='fu'>training</span>(<span class='no'>data_split</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>2453</span>)
-<span class='no'>rs_splits</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='fu'>vfold_cv</span>(<span class='no'>ames_train</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='st'>"Sale_Price"</span>)
+<span class='no'>rs_splits</span> <span class='kw'>&lt;-</span> <span class='fu'>vfold_cv</span>(<span class='no'>ames_train</span>, <span class='kw'>strata</span> <span class='kw'>=</span> <span class='st'>"Sale_Price"</span>)
 
 <span class='co'># ------------------------------------------------------------------------------</span>
 
-<span class='no'>ames_rec</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
-  <span class='fu'>recipe</span>(<span class='no'>Sale_Price</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>ames_train</span>) <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_log</span>(<span class='no'>Sale_Price</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_YeoJohnson</span>(<span class='no'>Lot_Area</span>, <span class='no'>Gr_Liv_Area</span>) <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_other</span>(<span class='no'>Neighborhood</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>.1</span>)  <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_dummy</span>(<span class='fu'>all_nominal</span>()) <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_zv</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>step_ns</span>(<span class='no'>Longitude</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"lon"</span>)) <span class='kw'>%&amp;gt;%</span>
+<span class='no'>ames_rec</span> <span class='kw'>&lt;-</span>
+  <span class='fu'>recipe</span>(<span class='no'>Sale_Price</span> ~ <span class='no'>.</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>ames_train</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_log</span>(<span class='no'>Sale_Price</span>, <span class='kw'>base</span> <span class='kw'>=</span> <span class='fl'>10</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_YeoJohnson</span>(<span class='no'>Lot_Area</span>, <span class='no'>Gr_Liv_Area</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_other</span>(<span class='no'>Neighborhood</span>, <span class='kw'>threshold</span> <span class='kw'>=</span> <span class='fl'>.1</span>)  <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_dummy</span>(<span class='fu'>all_nominal</span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_zv</span>(<span class='fu'>all_predictors</span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'>step_ns</span>(<span class='no'>Longitude</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"lon"</span>)) <span class='kw'>%&gt;%</span>
   <span class='fu'>step_ns</span>(<span class='no'>Latitude</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"lat"</span>))
 
-<span class='no'>knn_model</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
+<span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
   <span class='fu'>nearest_neighbor</span>(
     <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
     <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"K"</span>),
     <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(),
     <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()
-  ) <span class='kw'>%&amp;gt;%</span>
+  ) <span class='kw'>%&gt;%</span>
   <span class='fu'>set_engine</span>(<span class='st'>"kknn"</span>)
 
-<span class='no'>ames_wflow</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
-  <span class='fu'>workflow</span>() <span class='kw'>%&amp;gt;%</span>
-  <span class='fu'>add_recipe</span>(<span class='no'>ames_rec</span>) <span class='kw'>%&amp;gt;%</span>
+<span class='no'>ames_wflow</span> <span class='kw'>&lt;-</span>
+  <span class='fu'>workflow</span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'>add_recipe</span>(<span class='no'>ames_rec</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'>add_model</span>(<span class='no'>knn_model</span>)
 
-<span class='no'>ames_set</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
-  <span class='fu'><a href='https://rdrr.io/pkg/dials/man/parameters.html'>parameters</a></span>(<span class='no'>ames_wflow</span>) <span class='kw'>%&amp;gt;%</span>
+<span class='no'>ames_set</span> <span class='kw'>&lt;-</span>
+  <span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span>(<span class='no'>ames_wflow</span>) <span class='kw'>%&gt;%</span>
   <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span>(<span class='kw'>K</span> <span class='kw'>=</span> <span class='fu'>neighbors</span>(<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>50</span>)))
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>7014</span>)
-<span class='no'>ames_grid</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
-  <span class='no'>ames_set</span> <span class='kw'>%&amp;gt;%</span>
+<span class='no'>ames_grid</span> <span class='kw'>&lt;-</span>
+  <span class='no'>ames_set</span> <span class='kw'>%&gt;%</span>
   <span class='fu'>grid_max_entropy</span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>10</span>)
 
-<span class='no'>ames_grid_search</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
+<span class='no'>ames_grid_search</span> <span class='kw'>&lt;-</span>
   <span class='fu'><a href='tune_grid.html'>tune_grid</a></span>(
     <span class='no'>ames_wflow</span>,
     <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>rs_splits</span>,
@@ -220,7 +220,7 @@ generate these examples was:</p><pre><span class='fu'><a href='https://rdrr.io/r
   )
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>2082</span>)
-<span class='no'>ames_iter_search</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;-
+<span class='no'>ames_iter_search</span> <span class='kw'>&lt;-</span>
   <span class='fu'><a href='tune_bayes.html'>tune_bayes</a></span>(
     <span class='no'>ames_wflow</span>,
     <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>rs_splits</span>,
@@ -238,33 +238,33 @@ using some <code>rsample</code> functions on them will cause issues.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>ames_grid_search</span></div><div class='output co'>#&gt; #  10-fold cross-validation using stratification 
-#&gt; <span style='color: #555555;'># A tibble: 10 x 4</span><span>
+#&gt; <span style='color: #949494;'># A tibble: 10 x 4</span><span>
 #&gt;    splits         id     .metrics          .notes          
-#&gt;  </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
-#&gt; </span><span style='color: #555555;'> 1</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold01 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 2</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold02 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 3</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold03 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 4</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold04 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 5</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold05 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 6</span><span> </span><span style='color: #555555;'>&lt;split [2K/2]&gt;</span><span> Fold06 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 7</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold07 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 8</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold08 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 9</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold09 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>10</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold10 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'><span class='no'>ames_iter_search</span></div><div class='output co'>#&gt; #  10-fold cross-validation using stratification 
-#&gt; </span><span style='color: #555555;'># A tibble: 110 x 5</span><span>
+#&gt;  </span><span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold01 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold02 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold03 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold04 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold05 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> </span><span style='color: #949494;'>&lt;split [2K/2]&gt;</span><span> Fold06 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold07 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold08 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold09 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold10 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'><span class='no'>ames_iter_search</span></div><div class='output co'>#&gt; #  10-fold cross-validation using stratification 
+#&gt; </span><span style='color: #949494;'># A tibble: 110 x 5</span><span>
 #&gt;    splits         id     .metrics          .notes           .iter
-#&gt;  </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold01 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 2</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold02 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 3</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold03 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 4</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold04 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 5</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold05 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 6</span><span> </span><span style='color: #555555;'>&lt;split [2K/2]&gt;</span><span> Fold06 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 7</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold07 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 8</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold08 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'> 9</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold09 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'>10</span><span> </span><span style='color: #555555;'>&lt;split [2K/1]&gt;</span><span> Fold10 </span><span style='color: #555555;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #555555;'># … with 100 more rows</span><span></div></span></pre>
+#&gt;  </span><span style='color: #BCBCBC;'>*</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold01 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold02 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold03 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold04 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold05 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> </span><span style='color: #949494;'>&lt;split [2K/2]&gt;</span><span> Fold06 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold07 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold08 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold09 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> </span><span style='color: #949494;'>&lt;split [2K/1]&gt;</span><span> Fold10 </span><span style='color: #949494;'>&lt;tibble [20 × 8]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>     0
+#&gt; </span><span style='color: #949494;'># … with 100 more rows</span><span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

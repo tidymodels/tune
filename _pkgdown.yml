@@ -29,6 +29,7 @@ reference:
     - starts_with("select_")
     - starts_with("extract_")
     - starts_with("finalize")
+    - coord_obs_pred
   - title: Low-Level Functions
     contents:
     - merge.recipe
