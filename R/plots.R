@@ -81,7 +81,7 @@ autoplot.tune_results <-
       if (type == "performance") {
         p <- plot_perf_vs_iter(object, metric, width)
       } else {
-        if (regular_grid_plot(object)) {
+        if (use_regular_grid_plot(object)) {
           p <-  plot_regular_grid(object, metric = metric, ...)
         } else {
           p <- plot_marginals(object, metric = metric)
@@ -94,6 +94,43 @@ autoplot.tune_results <-
 #' @export
 autoplot.resample_results <- function(object, ...) {
   rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
+}
+
+# ------------------------------------------------------------------------------
+
+get_param_object <- function(x) {
+  att <- attributes(x)
+  if (any(names(att) == "parameters")) {
+    res <- att$parameters
+  } else {
+    res <- NULL
+  }
+  res
+}
+
+get_param_columns <- function(x) {
+  prm <- get_param_object(x)
+  if (!is.null(prm)) {
+    res <- prm$id
+  } else {
+    dat <- collect_metrics(x)
+    other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+    res <- names(dat)[!(names(dat) %in% other_names)]
+  }
+  res
+}
+
+# Use the user-given id for the parameter or the parameter label?
+get_var_label <- function(x, id_val) {
+  y <- dplyr::filter(x, id == id_val) %>% dplyr::slice(1)
+  num_param <- sum(x$name == y$name)
+  no_special_id <- y$name == y$id
+  if (no_special_id && num_param == 1) {
+    res <- y$object[[1]]$label
+  } else {
+    res <- id_val
+  }
+  res
 }
 
 # ------------------------------------------------------------------------------
@@ -137,10 +174,9 @@ is_regular_grid <- function(grid) {
 }
 
 # This will eventually change and use a parameters object.
-regular_grid_plot <- function(x) {
+use_regular_grid_plot <- function(x) {
   dat <- collect_metrics(x)
-  other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
-  param_cols <- names(dat)[!(names(dat) %in% other_names)]
+  param_cols <- get_param_columns(x)
   grd <- dat %>% dplyr::select(one_of(param_cols)) %>% distinct()
   is_regular_grid(grd)
 }
@@ -186,9 +222,8 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
 }
 
 plot_param_vs_iter <- function(x) {
+  param_cols <- get_param_columns(x)
   x <- estimate_tune_results(x)
-  excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
-  param_cols <- names(x)[!((names(x) %in% excl_cols))]
   is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
   num_param_cols <- param_cols[is_num]
   x <-
@@ -207,14 +242,18 @@ plot_param_vs_iter <- function(x) {
 }
 
 plot_marginals <- function(x, metric = NULL) {
+  param_cols <- get_param_columns(x)
+  pset <- get_param_object(x)
+
+  # ----------------------------------------------------------------------------
+
   x <- estimate_tune_results(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
   x <- x %>% dplyr::filter(!is.na(mean))
 
-  excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
-  param_cols <- names(x)[!((names(x) %in% excl_cols))]
+  # ----------------------------------------------------------------------------
 
   is_num <- purrr::map_lgl(x %>% dplyr::select(param_cols), is.numeric)
   num_val <- purrr::map_int(x %>% dplyr::select(param_cols), ~ length(unique(.x)))
@@ -243,15 +282,35 @@ plot_marginals <- function(x, metric = NULL) {
     chr_param_cols <- character(0)
   }
 
+  # ----------------------------------------------------------------------------
+
+  for (prm in num_param_cols) {
+    pobj <- pset$object[[which(pset$id == prm)]]
+    if (!is.null(pobj$trans)) {
+      x[[prm]] <- pobj$trans$transform(x[[prm]])
+      new_name <- paste0(prm, " (", pobj$trans$name, ")")
+      names(x)[names(x) == prm] <- new_name
+      num_param_cols[num_param_cols == prm] <- new_name
+      param_cols[param_cols == prm] <- new_name
+    }
+
+  }
+
+  # ----------------------------------------------------------------------------
+
   x <-
     x %>%
     dplyr::select(dplyr::one_of(param_cols), mean, .metric) %>%
     tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
 
+  # ----------------------------------------------------------------------------
+
   p <- ggplot(x, aes(x = value, y = mean))
 
   if (length(chr_param_cols) > 0) {
     p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
+    pset_chr <- get_var_label(pset, chr_param_cols)
+    p <- p + ggplot2::labs(color = pset_chr)
   } else {
     p <- p + geom_point(alpha = .7)
   }
@@ -287,18 +346,21 @@ plot_marginals <- function(x, metric = NULL) {
 
 
 plot_regular_grid <- function(x, metric = NULL, ...) {
-  # eventually pull a parameter set from x attributes
   dat <- collect_metrics(x)
   if (!is.null(metric)) {
     dat <- dat %>% dplyr::filter(.metric %in% metric)
+    if (nrow(dat) == 0) {
+      rlang::stop(paste0("After filtering for metric '", metric, "', there were ",
+                         "no data points."))
+    }
   }
   dat <- dat %>% dplyr::filter(!is.na(mean))
   multi_metrics <- length(unique(dat$.metric)) > 1
 
   # ----------------------------------------------------------------------------
 
-  excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
-  param_cols <- names(dat)[!((names(dat) %in% excl_cols))]
+  param_cols <- get_param_columns(x)
+  pset <- get_param_object(x)
 
   # ----------------------------------------------------------------------------
 
@@ -310,7 +372,6 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   # transform any predictors
   # relabel with transformation (if needed)
   # ----------------------------------------------------------------------------
-
 
   is_num <- purrr::map_lgl(grd, is.numeric)
   num_param_cols <- param_cols[ is_num]
@@ -329,10 +390,29 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   g <- length(grp_cols)
 
+  # ----------------------------------------------------------------------------
+
   if (g > 5) {
     return(autoplot(x, metric = metric))
   }
 
+  # ----------------------------------------------------------------------------
+
+  x_col_prm <- pset$object[[which(pset$id == x_col)]]
+  if (inherits(x_col_prm, "quant_param") && !is.null(x_col_prm$trans)) {
+    trans <- x_col_prm$trans
+  } else {
+    trans <- NULL
+  }
+
+  # Re-label columns if no special ID values are used
+
+  # pset_col <- get_var_label(pset, col_col)
+  # p <- p + ggplot2::labs(color = pset_col)
+
+
+
+  # ----------------------------------------------------------------------------
 
   dat <-
     dat %>%
@@ -361,7 +441,9 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
                             labeller = ggplot2::labeller(.cols = ggplot2::label_both),
                             scales = "free_y")
       } else {
-        p <- p + facet_wrap(vars(!!!facets), labeller = ggplot2::labeller(.cols = ggplot2::label_both))
+        p <-
+          p + facet_wrap(vars(!!!facets),
+                         labeller = ggplot2::labeller(.cols = ggplot2::label_both))
       }
     } else if (multi_metrics) {
       p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
@@ -385,6 +467,10 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   if (any(is_num)) {
     p <- p + geom_line()
+  }
+
+  if (!is.null(trans)) {
+    p <- p + ggplot2::scale_x_continuous(trans = trans)
   }
 
   p
