@@ -392,8 +392,12 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   is_quant <- purrr::map_lgl(pset$object, inherits, "quant_param")
   # Convert all data to the [0, 1] scale based on their possible range (not on
   # their observed range)
-  x[, is_quant] <- purrr::map2_dfc(pset$object[is_quant], x[, is_quant],
-                                   encode_unit, direction = "forward")
+  if (any(is_quant)) {
+    new_vals <- purrr::map2(pset$object[is_quant], x[, is_quant], encode_unit, direction = "forward")
+    names(new_vals) <- names(x)[is_quant]
+    new_vals <- tibble::as_tibble(new_vals)
+    x[, is_quant] <- new_vals
+  }
 
   # Ensure that the right levels are used to create dummy variables
   if (any(!is_quant)) {
