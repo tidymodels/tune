@@ -69,6 +69,8 @@ jobs:
         if: runner.os == 'macOS' && matrix.config.dev_dplyr
         run: |
           remotes::install_github("tidyverse/dplyr")
+          remotes::install_github("tidymodels/rsample")
+          remotes::install_github("tidymodels/dials")
         shell: Rscript {0}
 
       - name: Session info
