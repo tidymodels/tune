@@ -2,20 +2,46 @@
 #'
 #' @param object A tibble of results from [tune_grid()] or [tune_bayes()].
 #' @param type A single character value. Choices are `"marginals"` (for a plot
-#' 'of each predictor versus performance), `"parameters"` (each parameter versus
-#' search iteration), or `"performance"` (performance versus iteration). The
-#' latter two choices are only used for [tune_bayes()].
+#'  of each predictor versus performance; see Details below), `"parameters"`
+#'  (each parameter versus search iteration), or `"performance"` (performance
+#'  versus iteration). The latter two choices are only used for [tune_bayes()].
 #' @param metric A character vector or `NULL` for which metric to plot. By
 #' default, all metrics will be shown via facets.
 #' @param width A number for the width of the confidence interval bars when
-#' `type = "perfomance"`. A value of zero prevents them from being shown.
+#' `type = "performance"`. A value of zero prevents them from being shown.
 #' @param ... Not currently used.
 #' @return A `ggplot2` object.
-#' @details The parameters are currently represented in their natural units.
+#' @details
+#' The parameters are currently represented in their natural units.
 #'
-#' A single categorical tuning parameter is supported when other numeric
-#' parameters are also in the results. Any number of numeric tuning parameters
-#' can be used.
+#' When the results of `tune_grid()` are used with `autoplot()`, it tries to
+#'  determine whether a _regular grid_ was used.
+#'
+#' ## Regular grids
+#'
+#'   For regular grids with one or more numeric tuning parameters, the parameter
+#'  with the most unique values is used on the x-axis. If there are categorical
+#'  parameters, the first is used to color the geometries. All other parameters
+#'  are used in column faceting.
+#'
+#'   The plot has the performance metric(s) on the y-axis. If there are multiple
+#'  metrics, these are row-faceted.
+#'
+#'   If there are more than five tuning parameters, the "marginal effects" plots
+#'  are used instead.
+#'
+#' ## Irregular grids
+#'
+#' For space-filling or random grids, a _marginal_ effect plot is created. A
+#'  panel is made for each numeric parameter so that each parameter is on the
+#'  x-axis and performance is on the y-xis. If there are multiple metrics, these
+#'  are row-faceted.
+#'
+#' A single categorical parameter is shown as colors. If there are two or more
+#'  non-numeric parameters, an error is given. A similar result occurs is only
+#'  non-numeric parameters are in the grid. In these cases, we suggest using
+#'  `collect_metrics()` and `ggplot()` to create a plot that is appropriate for
+#'  the data.
 #' @seealso [tune_grid()], [tune_bayes()]
 #' @examples
 #' \donttest{
@@ -55,7 +81,11 @@ autoplot.tune_results <-
       if (type == "performance") {
         p <- plot_perf_vs_iter(object, metric, width)
       } else {
-        p <- plot_marginals(object, metric = metric)
+        if (regular_grid_plot(object)) {
+          p <-  plot_regular_grid(object, metric = metric, ...)
+        } else {
+          p <- plot_marginals(object, metric = metric)
+        }
       }
     }
     p
@@ -65,6 +95,57 @@ autoplot.tune_results <-
 autoplot.resample_results <- function(object, ...) {
   rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
 }
+
+# ------------------------------------------------------------------------------
+
+is_factorial <- function(x, cutoff = 0.95) {
+  n <- nrow(x)
+  p <- ncol(x)
+  vals <- purrr::map(x, unique)
+  full_fact <-
+    tidyr::crossing(!!!vals) %>%
+    dplyr::full_join(x %>%  dplyr::mutate(..obs = 1), by = names(x))
+  mean(!is.na(full_fact$..obs)) >= cutoff
+}
+
+
+is_regular_grid <- function(grid) {
+  num_points <- nrow(grid)
+  p <- ncol(grid)
+
+  if (p == 1) {
+    return(TRUE)
+  }
+
+  if (p <= 5) {
+    ff <- is_factorial(grid)
+    if (ff) {
+      return(TRUE)
+    }
+  }
+
+  pct_unique <- purrr::map_int(grid, ~ length(unique(.x)))/num_points
+  max_pct_unique <- max(pct_unique, na.rm = TRUE)
+  np_ratio <- p/num_points
+
+  # Derived from simulation data and C5.0 tree
+  if (max_pct_unique >  1/2) res <- FALSE
+  if (max_pct_unique <= 1/2 & max_pct_unique <= 1/6) res <- TRUE
+  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio >  0.05) res <- TRUE
+  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio <= 0.05) res <- FALSE
+  res
+}
+
+# This will eventually change and use a parameters object.
+regular_grid_plot <- function(x) {
+  dat <- collect_metrics(x)
+  other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+  param_cols <- names(dat)[!(names(dat) %in% other_names)]
+  grd <- dat %>% dplyr::select(one_of(param_cols)) %>% distinct()
+  is_regular_grid(grd)
+}
+
+# ------------------------------------------------------------------------------
 
 plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
@@ -199,6 +280,111 @@ plot_marginals <- function(x, metric = NULL) {
         xlab("Parameter Value") +
         ylab(unique(x$.metric))
     }
+  }
+
+  p
+}
+
+
+plot_regular_grid <- function(x, metric = NULL, ...) {
+  # eventually pull a parameter set from x attributes
+  dat <- collect_metrics(x)
+  if (!is.null(metric)) {
+    dat <- dat %>% dplyr::filter(.metric %in% metric)
+  }
+  dat <- dat %>% dplyr::filter(!is.na(mean))
+  multi_metrics <- length(unique(dat$.metric)) > 1
+
+  # ----------------------------------------------------------------------------
+
+  excl_cols <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+  param_cols <- names(dat)[!((names(dat) %in% excl_cols))]
+
+  # ----------------------------------------------------------------------------
+
+  grd <- dat %>% dplyr::select(one_of(param_cols))
+
+  # ----------------------------------------------------------------------------
+  # Once the tune object has a parameters object:
+  # get parameter labels (also for colored parameters)
+  # transform any predictors
+  # relabel with transformation (if needed)
+  # ----------------------------------------------------------------------------
+
+
+  is_num <- purrr::map_lgl(grd, is.numeric)
+  num_param_cols <- param_cols[ is_num]
+  chr_param_cols <- param_cols[!is_num]
+
+  num_values <- purrr::map_int(grd[, num_param_cols], ~ length(unique(.x)))
+  num_values <- sort(num_values, decreasing = TRUE)
+
+  if (!any(is_num)) {
+    x_col <-  chr_param_cols[1]
+    grp_cols <- chr_param_cols[-1]
+  } else {
+    x_col <-  names(num_values)[1]
+    grp_cols <- c(chr_param_cols, names(num_values)[-1])
+  }
+
+  g <- length(grp_cols)
+
+  if (g > 5) {
+    return(autoplot(x, metric = metric))
+  }
+
+
+  dat <-
+    dat %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, .metric) %>%
+    tidyr::pivot_longer(cols = dplyr::one_of(x_col))
+
+  # ------------------------------------------------------------------------------
+
+  if (g >= 1) {
+    # col aes and possibly faceting variables
+    col_col <- grp_cols[1]
+    if (is.numeric(dat[[col_col]])) {
+      dat[[col_col]] <- format(dat[[col_col]], ...)
+    }
+    col_col <- rlang::ensym(col_col)
+    p <- ggplot(dat, aes_(x = rlang::expr(value), y = rlang::expr(mean),
+                          col = col_col, group = col_col))
+
+    if (g >= 2) {
+      facets <- grp_cols[-1]
+      facets <- purrr::map(facets, sym)
+      facets <- rlang::quos(!!!facets)
+      # faceting variables
+      if (multi_metrics) {
+        p <- p + facet_grid(rows = vars(.metric), vars(!!!facets),
+                            labeller = ggplot2::labeller(.cols = ggplot2::label_both),
+                            scales = "free_y")
+      } else {
+        p <- p + facet_wrap(vars(!!!facets), labeller = ggplot2::labeller(.cols = ggplot2::label_both))
+      }
+    } else if (multi_metrics) {
+      p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
+    }
+
+  } else {
+    p <- ggplot(dat, aes(x = value, y = mean))
+    if (multi_metrics) {
+      p <- p + facet_wrap(~ .metric, scales = "free_y", ncol = 1)
+    }
+  }
+
+  p <- p + geom_point() + xlab(x_col)
+  if (multi_metrics) {
+    p <- p + ylab("Metric")
+  } else {
+    dat$.metric[1]
+    p <- p + ylab(dat$.metric[1])
+  }
+
+
+  if (any(is_num)) {
+    p <- p + geom_line()
   }
 
   p

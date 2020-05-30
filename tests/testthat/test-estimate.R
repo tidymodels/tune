@@ -3,7 +3,7 @@ context("`collect_metrics` methods")
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
-load(test_path("rcv_results.RData"))
+rcv_results <- readRDS(test_path("rcv_results.rds"))
 
 # ------------------------------------------------------------------------------
 
@@ -15,5 +15,5 @@ compl <-
 
 
 test_that('estimate method', {
-  expect_equal(collect_metrics(rcv_results), compl)
+  expect_equivalent(collect_metrics(rcv_results), compl)
 })

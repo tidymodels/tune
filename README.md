@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/tidymodels/tune/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/tune)
+[![R build status](https://github.com/tidymodels/tune/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/tune/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/tidymodels/tune/branch/master/graph/badge.svg)](https://codecov.io/gh/tidymodels/tune?branch=master)
 [![Lifecycle:

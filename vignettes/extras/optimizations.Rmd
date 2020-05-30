@@ -11,7 +11,6 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidymodels)
-library(tune)
 ```
 
 `tune` attempts to evaluate the candidate models in the shortest amount of time. This vignette is a summary of those approaches. 
@@ -65,7 +64,7 @@ To evaluate these `r nrow(grid)` candidate models, we would have to recompute th
 `tune_grid()` determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:
 
 ```{r nest, echo = FALSE}
-alt_grid <- nest_legacy(grid, -num_terms)
+alt_grid <- tidyr::nest(grid, data = c(-num_terms))
 alt_grid
 ```
 Only `r nrow(alt_grid)` recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with `num_terms = 1` is created, the model parameters are iteratively tuned: 

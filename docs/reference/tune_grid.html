@@ -45,7 +45,7 @@
 <meta property="og:description" content="tune_grid() computes a set of performance metrics (e.g. accuracy or RMSE)
 for a pre-defined set of tuning parameters that correspond to a model or
 recipe across one or more resamples of the data." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -64,7 +64,7 @@ recipe across one or more resamples of the data." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -80,8 +80,8 @@ recipe across one or more resamples of the data." />
       <div class="navbar-brand-container">
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
-          <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+          <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -121,7 +121,7 @@ recipe across one or more resamples of the data." />
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -152,25 +152,10 @@ recipe across one or more resamples of the data.</p>
 
     <pre class="usage"><span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for default</span>
-<span class='fu'>tune_grid</span>(<span class='no'>object</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for recipe</span>
+<span class='co'># S3 method for model_spec</span>
 <span class='fu'>tune_grid</span>(
   <span class='no'>object</span>,
-  <span class='no'>model</span>,
-  <span class='no'>resamples</span>,
-  <span class='no'>...</span>,
-  <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>metrics</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='control_grid.html'>control_grid</a></span>()
-)
-
-<span class='co'># S3 method for formula</span>
-<span class='fu'>tune_grid</span>(
-  <span class='no'>formula</span>,
-  <span class='no'>model</span>,
+  <span class='no'>preprocessor</span>,
   <span class='no'>resamples</span>,
   <span class='no'>...</span>,
   <span class='kw'>param_info</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
@@ -195,16 +180,16 @@ recipe across one or more resamples of the data.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A model workflow, R formula or recipe object.</p></td>
+      <td><p>A <code>parsnip</code> model specification or a <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Not currently used.</p></td>
     </tr>
     <tr>
-      <th>model</th>
-      <td><p>A <code>parsnip</code> model specification (or <code>NULL</code> when <code>object</code> is a
-workflow).</p></td>
+      <th>preprocessor</th>
+      <td><p>A traditional model formula or a recipe created using
+<code><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipes::recipe()</a></code>.</p></td>
     </tr>
     <tr>
       <th>resamples</th>
@@ -212,7 +197,7 @@ workflow).</p></td>
     </tr>
     <tr>
       <th>param_info</th>
-      <td><p>A <code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
+      <td><p>A <code><a href='https://dials.tidymodels.org/reference/parameters.html'>dials::parameters()</a></code> object or <code>NULL</code>. If none is given,
 a parameters set is derived from other arguments. Passing this argument can
 be useful when parameter ranges need to be customized.</p></td>
     </tr>
@@ -230,10 +215,6 @@ parameter sets to be created automatically.</p></td>
     <tr>
       <th>control</th>
       <td><p>An object used to modify the tuning process.</p></td>
-    </tr>
-    <tr>
-      <th>formula</th>
-      <td><p>A traditional model formula.</p></td>
     </tr>
     </table>
 
@@ -274,7 +255,7 @@ They are (usually) not aggregated until the end of processing.</p>
 
 
 <p>If no tuning grid is provided, a semi-random grid (via
-<code><a href='https://rdrr.io/pkg/dials/man/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is created with 10 candidate parameter
+<code><a href='https://dials.tidymodels.org/reference/grid_max_entropy.html'>dials::grid_latin_hypercube()</a></code>) is created with 10 candidate parameter
 combinations.</p>
 <p>When provided, the grid should have column names for each parameter and
 these should be named by the parameter name or <code>id</code>. For example, if a
@@ -285,9 +266,9 @@ be <code>lambda</code>.</p>
 <p>In some cases, the tuning parameter values depend on the dimensions of the
 data. For example, <code>mtry</code> in random forest models depends on the number of
 predictors. In this case, the default tuning parameter object requires an
-upper range. <code><a href='https://rdrr.io/pkg/dials/man/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent
+upper range. <code><a href='https://dials.tidymodels.org/reference/finalize.html'>dials::finalize()</a></code> can be used to derive the data-dependent
 parameters. Otherwise, a parameter set can be created (via
-<code><a href='https://rdrr.io/pkg/dials/man/parameters.html'>dials::parameters()</a></code> and the <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to
+<code><a href='https://dials.tidymodels.org/reference/parameters.html'>dials::parameters()</a></code> and the <code>dials</code> <code><a href='https://rdrr.io/r/stats/update.html'>update()</a></code> function can be used to
 change the values. This updated parameter set can be passed to the function
 via the <code>param_info</code> argument.</p>
     <h2 class="hasAnchor" id="performance-metrics"><a class="anchor" href="#performance-metrics"></a>Performance Metrics</h2>
@@ -301,8 +282,7 @@ metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
 typical probability cutoff of 0.50), the <code>metrics</code> argument could be given:</p>
 <pre>
-  metrics = metric_set(roc_auc, sens, spec)
-</pre>
+  <span class='no'>metrics</span> <span class='kw'>=</span> <span class='fu'>metric_set</span>(<span class='no'>roc_auc</span>, <span class='no'>sens</span>, <span class='no'>spec</span>)</pre>
 
 <p>Each metric is calculated for each candidate model.</p>
 <p>If no metric set is provided, one is created:</p><ul>
@@ -358,8 +338,7 @@ object (see <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>work
 helper functions that can be used to easily pull out the recipe (if any)
 and/or the model: <code><a href='extract_recipe.html'>extract_recipe()</a></code> and <code><a href='extract_recipe.html'>extract_model()</a></code>.</p>
 <p>As an example, if there is interest in getting each model back, one could use:</p><pre>
-  extract = function (x) extract_model(x)
-</pre>
+  <span class='no'>extract</span> <span class='kw'>=</span> <span class='kw'>function</span> (<span class='no'>x</span>) <span class='fu'><a href='extract_recipe.html'>extract_model</a></span>(<span class='no'>x</span>)</pre>
 
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
 every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
@@ -373,16 +352,18 @@ grid has a separate R object associated with it.</p>
 <code><a href='collect_predictions.html'>collect_predictions()</a></code>, <code><a href='collect_predictions.html'>collect_metrics()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>recipes</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>rsample</span>)
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>ggplot2</span>)
 
-<span class='co'># ------------------------------------------------------------------------------</span>
+<span class='co'># ---------------------------------------------------------------------------</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>6735</span>)
-<span class='no'>folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/rsample/man/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+<span class='no'>folds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rsample.tidymodels.org/reference/vfold_cv.html'>vfold_cv</a></span>(<span class='no'>mtcars</span>, <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>5</span>)
 
-<span class='co'># ------------------------------------------------------------------------------</span>
+<span class='co'># ---------------------------------------------------------------------------</span>
 
 <span class='co'># tuning recipe parameters:</span>
 
@@ -392,37 +373,35 @@ grid has a separate R object associated with it.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_ns.html'>step_ns</a></span>(<span class='no'>wt</span>, <span class='kw'>deg_free</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"wt"</span>))
 
 <span class='no'>lin_mod</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"lm"</span>)
 
 <span class='co'># manually create a grid</span>
 <span class='no'>spline_grid</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span>(<span class='kw'>disp</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>, <span class='kw'>wt</span> <span class='kw'>=</span> <span class='fl'>2</span>:<span class='fl'>5</span>)
 
-<span class='co'># \donttest{</span>
 <span class='co'># Warnings will occur from making spline terms on the holdout data that are</span>
 <span class='co'># extrapolations.</span>
 <span class='no'>spline_res</span> <span class='kw'>&lt;-</span>
-  <span class='fu'>tune_grid</span>(<span class='no'>spline_rec</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>lin_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='no'>spline_grid</span>)
+  <span class='fu'>tune_grid</span>(<span class='no'>lin_mod</span>, <span class='no'>spline_rec</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='no'>spline_grid</span>)
 <span class='no'>spline_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
-#&gt; <span style='color: #555555;'># A tibble: 5 x 4</span><span>
+#&gt; <span style='color: #949494;'># A tibble: 5 x 4</span><span>
 #&gt;   splits         id    .metrics          .notes          
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
-#&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>4</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>5</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #555555;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #949494;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> </span><span style='color: #949494;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #949494;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #949494;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #949494;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #949494;'>&lt;tibble [32 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'>
 
-<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>spline_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 5 x 7</span><span>
+<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>spline_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 5 x 7</span><span>
 #&gt;    disp    wt .metric .estimator  mean     n std_err
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     3     2 rmse    standard    2.54     5   0.207
-#&gt; </span><span style='color: #555555;'>2</span><span>     3     3 rmse    standard    2.64     5   0.234
-#&gt; </span><span style='color: #555555;'>3</span><span>     4     3 rmse    standard    2.82     5   0.456
-#&gt; </span><span style='color: #555555;'>4</span><span>     4     2 rmse    standard    2.93     5   0.489
-#&gt; </span><span style='color: #555555;'>5</span><span>     4     4 rmse    standard    3.01     5   0.475</div><div class='input'><span class='co'># }</span>
-
-<span class='co'># ------------------------------------------------------------------------------</span>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     3     2 rmse    standard    2.54     5   0.207
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     3     3 rmse    standard    2.64     5   0.234
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     4     3 rmse    standard    2.82     5   0.456
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span>     4     2 rmse    standard    2.93     5   0.489
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>     4     4 rmse    standard    3.01     5   0.475</div><div class='input'>
+<span class='co'># ---------------------------------------------------------------------------</span>
 
 <span class='co'># tune model parameters only (example requires the `kernlab` package)</span>
 
@@ -431,49 +410,37 @@ grid has a separate R object associated with it.</p>
   <span class='fu'><a href='https://rdrr.io/pkg/recipes/man/step_normalize.html'>step_normalize</a></span>(<span class='fu'><a href='https://rdrr.io/pkg/recipes/man/has_role.html'>all_predictors</a></span>())
 
 <span class='no'>svm_mod</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/svm_rbf.html'>svm_rbf</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>rbf_sigma</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kernlab"</span>) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_args.html'>set_mode</a></span>(<span class='st'>"regression"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/svm_rbf.html'>svm_rbf</a></span>(<span class='kw'>cost</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(), <span class='kw'>rbf_sigma</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"kernlab"</span>) <span class='kw'>%&gt;%</span>
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_args.html'>set_mode</a></span>(<span class='st'>"regression"</span>)
 
-<span class='co'># \donttest{</span>
 <span class='co'># Use a space-filling design with 7 points</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span>(<span class='fl'>3254</span>)
-<span class='no'>svm_res</span> <span class='kw'>&lt;-</span> <span class='fu'>tune_grid</span>(<span class='no'>car_rec</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='no'>svm_mod</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>7</span>)
+<span class='no'>svm_res</span> <span class='kw'>&lt;-</span> <span class='fu'>tune_grid</span>(<span class='no'>svm_mod</span>, <span class='no'>car_rec</span>, <span class='kw'>resamples</span> <span class='kw'>=</span> <span class='no'>folds</span>, <span class='kw'>grid</span> <span class='kw'>=</span> <span class='fl'>7</span>)
 <span class='no'>svm_res</span></div><div class='output co'>#&gt; #  5-fold cross-validation 
-#&gt; </span><span style='color: #555555;'># A tibble: 5 x 4</span><span>
+#&gt; </span><span style='color: #949494;'># A tibble: 5 x 4</span><span>
 #&gt;   splits         id    .metrics          .notes          
-#&gt; </span><span style='color: #555555;'>*</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
-#&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #555555;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>2</span><span> </span><span style='color: #555555;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #555555;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #555555;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>4</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #555555;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>5</span><span> </span><span style='color: #555555;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #555555;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #555555;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'>
-<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>svm_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 5 x 7</span><span>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>          
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [25/7]&gt;</span><span> Fold1 </span><span style='color: #949494;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> </span><span style='color: #949494;'>&lt;split [25/7]&gt;</span><span> Fold2 </span><span style='color: #949494;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold3 </span><span style='color: #949494;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold4 </span><span style='color: #949494;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span> </span><span style='color: #949494;'>&lt;split [26/6]&gt;</span><span> Fold5 </span><span style='color: #949494;'>&lt;tibble [14 × 5]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span><span></div><div class='input'>
+<span class='fu'><a href='show_best.html'>show_best</a></span>(<span class='no'>svm_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 5 x 7</span><span>
 #&gt;       cost   rbf_sigma .metric .estimator  mean     n std_err
-#&gt;      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>  0.304   0.117       rmse    standard    3.91     5   0.652
-#&gt; </span><span style='color: #555555;'>2</span><span>  4.53    0.000</span><span style='text-decoration: underline;'>420</span><span>    rmse    standard    4.13     5   0.741
-#&gt; </span><span style='color: #555555;'>3</span><span>  0.002</span><span style='text-decoration: underline;'>47</span><span> 0.009</span><span style='text-decoration: underline;'>31</span><span>     rmse    standard    5.94     5   0.966
-#&gt; </span><span style='color: #555555;'>4</span><span> 23.2     0.000</span><span style='text-decoration: underline;'>000</span><span>684 rmse    standard    5.94     5   0.967
-#&gt; </span><span style='color: #555555;'>5</span><span>  0.012</span><span style='text-decoration: underline;'>6</span><span>  0.000</span><span style='text-decoration: underline;'>002</span><span>39  rmse    standard    5.96     5   0.970</div><div class='input'>
+#&gt;      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>  0.304   0.117       rmse    standard    3.91     5   0.652
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>  4.53    0.000</span><span style='text-decoration: underline;'>420</span><span>    rmse    standard    4.13     5   0.741
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>  0.002</span><span style='text-decoration: underline;'>47</span><span> 0.009</span><span style='text-decoration: underline;'>31</span><span>     rmse    standard    5.94     5   0.966
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 23.2     0.000</span><span style='text-decoration: underline;'>000</span><span>684 rmse    standard    5.94     5   0.967
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span>  0.012</span><span style='text-decoration: underline;'>6</span><span>  0.000</span><span style='text-decoration: underline;'>002</span><span>39  rmse    standard    5.96     5   0.970</div><div class='input'>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>svm_res</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>) +
-  <span class='fu'>scale_x_log10</span>()</div><div class='img'><img src='tune_grid-1.png' alt='' width='768' height='552' /></div><div class='input'># }
-</div></span></pre>
+  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span>()</div><div class='img'><img src='tune_grid-1.png' alt='' width='768' height='552' /></div><div class='input'><span class='co'># }</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#parameter-grids">Parameter Grids</a></li>
-      <li><a href="#performance-metrics">Performance Metrics</a></li>
-      <li><a href="#obtaining-predictions">Obtaining Predictions</a></li>
-      <li><a href="#extracting-information">Extracting Information</a></li>
-      <li><a href="#see-also">See also</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

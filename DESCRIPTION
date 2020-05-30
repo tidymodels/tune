@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.0.1
+Version: 0.1.0.9000
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
@@ -9,7 +9,7 @@ Description: The ability to tune models is important. 'tune' contains functions 
     finding reasonable values of hyper-parameters in models, pre-processing
     methods, and post-processing steps. 
 License: MIT + file LICENSE
-URL: https://github.com/tidymodels/tune
+URL: https://github.com/tidymodels/tune, https://tune.tidymodels.org
 Depends:
     R (>= 2.10)
 Imports:
@@ -31,16 +31,19 @@ Imports:
     foreach,
     parsnip (>= 0.0.4),
     workflows (>= 0.1.0),
-    hardhat (>= 0.1.0)
+    hardhat (>= 0.1.0),
+    lifecycle
 Suggests: 
     testthat,
     knitr,
     covr,
     kernlab,
+    randomForest,
+    modeldata,
     xml2,
     spelling
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.2.9000
+RoxygenNote: 7.1.0.9000
 Language: en-US

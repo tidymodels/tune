@@ -40,8 +40,20 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_class_or_null(extract, "function", "control_grid()")
 
 
-  list(verbose = verbose, allow_par = allow_par, extract = extract,
-       save_pred = save_pred, pkgs = pkgs)
+  res <- list(verbose = verbose,
+              allow_par = allow_par,
+              extract = extract,
+              save_pred = save_pred,
+              pkgs = pkgs)
+
+  class(res) <- c("control_grid", "control_resamples")
+  res
+}
+
+#' @export
+print.control_grid <- function(x, ...) {
+  cat("grid/resamples control object\n")
+  invisible(x)
 }
 
 #' @rdname control_grid
@@ -124,14 +136,23 @@ control_bayes <-
       )
     }
 
-    list(
-      verbose = verbose,
-      no_improve = no_improve,
-      uncertain = uncertain,
-      seed = seed,
-      extract = extract,
-      save_pred = save_pred,
-      time_limit = time_limit,
-      pkgs = pkgs
-    )
+    res <-
+      list(
+        verbose = verbose,
+        no_improve = no_improve,
+        uncertain = uncertain,
+        seed = seed,
+        extract = extract,
+        save_pred = save_pred,
+        time_limit = time_limit,
+        pkgs = pkgs
+      )
+
+    class(res) <- "control_bayes"
+    res
   }
+
+print.control_bayes <- function(x, ...) {
+  cat("bayes control object\n")
+  invisible(x)
+}

@@ -12,7 +12,8 @@ test_that("`fit_resamples()` returns a `resample_result` object", {
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  result <- fit_resamples(mpg ~ ., lin_mod, folds)
+  result <- lin_mod %>%
+    fit_resamples(mpg ~ ., folds)
 
   expect_is(result, "resample_results")
 })
@@ -25,7 +26,8 @@ test_that("can use `fit_resamples()` with a formula", {
     set_engine("lm")
 
   expect_warning(
-    result <- fit_resamples(mpg ~ ., lin_mod, folds),
+    result <- lin_mod %>%
+      fit_resamples(mpg ~ ., folds),
     NA
   )
 
@@ -46,7 +48,7 @@ test_that("can use `fit_resamples()` with a recipe", {
   # Ensure the recipes are prepped and returned
   control <- control_resamples(extract = function(x) x)
 
-  result <- fit_resamples(rec, lin_mod, folds, control = control)
+  result <- fit_resamples(lin_mod, rec, folds, control = control)
 
   prepped_rec <- extract_recipe(result$.extracts[[1]][[1]][[1]])
 
@@ -71,11 +73,11 @@ test_that("can use `fit_resamples()` with a workflow", {
     add_recipe(rec) %>%
     add_model(lin_mod)
 
-  expect <- fit_resamples(rec, lin_mod, folds)
+  expect <- fit_resamples(lin_mod, rec, folds)
 
   result <- fit_resamples(workflow, folds)
 
-  expect_equal(as.data.frame(expect), as.data.frame(result))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 # ------------------------------------------------------------------------------
@@ -94,7 +96,7 @@ test_that("failure in recipe is caught elegantly", {
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
   expect_warning(
-    result <- fit_resamples(rec, lin_mod, folds, control = control),
+    result <- fit_resamples(lin_mod, rec, folds, control = control),
     "All models failed"
   )
 
@@ -109,9 +111,41 @@ test_that("failure in recipe is caught elegantly", {
   # Known failure in the recipe
   expect_true(any(grepl("recipe", note)))
 
-  expect_equal(extract, list(NULL, NULL))
-  expect_equal(predictions, list(NULL, NULL))
+  expect_equivalent(extract, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
 })
+
+test_that("classification models generate correct error message", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  rec <- recipe(vs ~ ., data = mtcars)
+
+  log_mod <- logistic_reg() %>%
+    set_engine("glm")
+
+  control <- control_resamples(extract = function(x) x, save_pred = TRUE)
+
+  expect_warning(
+    result <- fit_resamples(log_mod, rec, folds, control = control),
+    "All models failed"
+  )
+
+  notes <- result$.notes
+  note <- notes[[1]]$.notes
+
+  extract <- result$.extracts
+  predictions <- result$.predictions
+
+  expect_length(notes, 2L)
+
+  # Known failure in the recipe
+  expect_true(all(grepl("outcome should be a factor", note)))
+
+  expect_equivalent(extract, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
+})
+
 
 # ------------------------------------------------------------------------------
 # tune_grid() fallback
@@ -123,14 +157,15 @@ test_that("`tune_grid()` falls back to resamples if there are no tuning paramete
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  expect <- fit_resamples(mpg ~ ., lin_mod, folds)
+  expect <- lin_mod %>%
+    fit_resamples(mpg ~ ., folds)
 
   expect_warning(
-    result <- tune_grid(mpg ~ ., lin_mod, folds),
+    result <- tune_grid(lin_mod, mpg ~ ., folds),
     "No tuning parameters have been detected"
   )
 
-  expect_equal(as.data.frame(result), as.data.frame(expect))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
@@ -140,14 +175,15 @@ test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  expect <- fit_resamples(mpg ~ ., lin_mod, folds)
+  expect <- lin_mod %>%
+    fit_resamples(mpg ~ ., folds)
 
   expect_warning(
-    result <- tune_grid(mpg ~ ., lin_mod, grid = data.frame(x = 1), folds),
+    result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds),
     "No tuning parameters have been detected"
   )
 
-  expect_equal(as.data.frame(result), as.data.frame(expect))
+  expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
 # ------------------------------------------------------------------------------
@@ -160,7 +196,8 @@ test_that("cannot autoplot `fit_resamples()` results", {
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  result <- fit_resamples(mpg ~ ., lin_mod, folds)
+  result <- lin_mod %>%
+    fit_resamples(mpg ~ ., folds)
 
   expect_error(autoplot(result), "no `autoplot[(][])]` implementation for `resample_results`")
 })
@@ -172,8 +209,28 @@ test_that("ellipses with fit_resamples", {
     set_engine("lm")
 
   expect_warning(
-    fit_resamples(mpg ~ ., lin_mod, folds, something = "wrong"),
+    lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong"),
     "The `...` are not used in this function but one or more objects"
   )
 })
 
+test_that("argument order gives warnings for recipe/formula", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_ns(disp) %>%
+    step_ns(wt)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  expect_warning(
+    fit_resamples(rec, lin_mod, folds),
+    "is deprecated as of lifecycle"
+  )
+  expect_warning(
+    fit_resamples(mpg ~ ., lin_mod, folds),
+    "is deprecated as of lifecycle"
+  )
+})

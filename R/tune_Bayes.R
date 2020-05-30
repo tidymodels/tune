@@ -64,13 +64,13 @@
 #' @section Parameter Ranges and Values:
 #'
 #' In some cases, the tuning parameter values depend on the dimensions of the
-#'  data. For example, `mtry` in random forest models depends on the number of
-#'  predictors. In this case, the default tuning parameter object requires an
-#'  upper range. [dials::finalize()] can be used to derive the data-dependent
-#'  parameters. Otherwise, a parameter set can be created (via
-#'  [dials::parameters()] and the `dials` `update()` function can be used to
-#'  change the ranges or values. This updated parameter set can be passed to
-#'  the function via the `param_info` argument.
+#' data (they are said to contain [unknown][dials::unknown] values). For
+#' example, `mtry` in random forest models depends on the number of predictors.
+#' In such cases, the unknowns in the tuning parameter object must be determined
+#' beforehand and passed to the function via the `param_info` argument.
+#' [dials::finalize()] can be used to derive the data-dependent parameters.
+#' Otherwise, a parameter set can be created via [dials::parameters()], and the
+#' `dials` `update()` function can be used to specify the ranges or values.
 #'
 #' @section Performance Metrics:
 #'
@@ -132,14 +132,15 @@ tune_bayes <- function(object, ...) {
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.default <- function(object, ...) {
-  stop("The first argument should be either a formula, recipe, or workflow.",
-       call. = FALSE)
+  msg <- paste0(
+    "The first argument to [tune_bayes()] should be either ",
+    "a model or workflow."
+  )
+  rlang::abort(msg)
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.recipe <- function(object,
                               model,
                               resamples,
@@ -151,24 +152,18 @@ tune_bayes.recipe <- function(object,
                               initial = 5,
                               control = control_bayes()) {
 
+  lifecycle::deprecate_soft("0.1.0",
+                            what = "tune_bayes.recipe()",
+                            details = deprecate_msg(match.call(), "tune_bayes"))
   empty_ellipses(...)
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    stop("`model` should be a parsnip model specification object.", call. = FALSE)
-  }
-
-  wflow <-
-    workflow() %>%
-    add_recipe(object) %>%
-    add_model(model)
-
-  tune_bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
-                      metrics = metrics, objective = objective, initial = initial,
-                      control = control, ...)
+  tune_bayes(model, preprocessor = object, resamples = resamples,
+             iter = iter, param_info = param_info,
+             metrics = metrics, objective = objective,
+             initial = initial, control = control)
 }
 
 #' @export
-#' @rdname tune_bayes
 tune_bayes.formula <- function(formula,
                                model,
                                resamples,
@@ -180,21 +175,50 @@ tune_bayes.formula <- function(formula,
                                initial = 5,
                                control = control_bayes()) {
 
+  lifecycle::deprecate_soft("0.1.0",
+                            what = "tune_bayes.formula()",
+                            details = deprecate_msg(match.call(), "tune_bayes"))
   empty_ellipses(...)
 
-  if (is_missing(model) || !inherits(model, "model_spec")) {
-    stop("`model` should be a parsnip model specification object.", call. = FALSE)
+  tune_bayes(model, preprocessor = formula, resamples = resamples,
+             iter = iter, param_info = param_info,
+             metrics = metrics, objective = objective,
+             initial = initial, control = control)
+}
+
+#' @export
+#' @rdname tune_bayes
+tune_bayes.model_spec <- function(object,
+                                  preprocessor,
+                                  resamples,
+                                  ...,
+                                  iter = 10,
+                                  param_info = NULL,
+                                  metrics = NULL,
+                                  objective = exp_improve(),
+                                  initial = 5,
+                                  control = control_bayes()) {
+
+  if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
+    rlang::abort(paste("To tune a model spec, you must preprocess",
+                       "with a formula or recipe"))
   }
 
-  wflow <-
-    workflow() %>%
-    add_formula(formula) %>%
-    add_model(model)
+  empty_ellipses(...)
+
+  wflow <- add_model(workflow(), object)
+
+  if (is_recipe(preprocessor)) {
+    wflow <- add_recipe(wflow, preprocessor)
+  } else if (rlang::is_formula(preprocessor)) {
+    wflow <- add_formula(wflow, preprocessor)
+  }
 
   tune_bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
                       metrics = metrics, objective = objective, initial = initial,
                       control = control, ...)
 }
+
 
 #' @export
 #' @rdname tune_bayes
@@ -211,10 +235,10 @@ tune_bayes.workflow <-
 
     empty_ellipses(...)
 
-  tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
-                      metrics = metrics, objective = objective, initial = initial,
-                      control = control, ...)
-}
+    tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
+                        metrics = metrics, objective = objective, initial = initial,
+                        control = control, ...)
+  }
 
 tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
@@ -223,7 +247,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-     metrics <- check_metrics(metrics, object)
+    metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
@@ -300,7 +324,8 @@ tune_bayes_workflow <-
 
       param_msg(control, candidates)
       set.seed(control$seed[1] + i + 2)
-      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control)
+      tmp_res <- more_results(object, resamples = resamples, candidates = candidates, metrics = metrics, control = control,
+                              param_info = param_info)
 
       check_time(start_time, control$time_limit)
 
@@ -330,7 +355,7 @@ tune_bayes_workflow <-
 
     unsummarized <- reup_rs(resamples, unsummarized)
     on.exit()
-    unsummarized
+    save_attr(unsummarized, param_info, metrics)
   }
 
 create_initial_set <- function(param, n = NULL) {
@@ -513,7 +538,7 @@ initial_info <- function(stats, metrics, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, control) {
+more_results <- function(object, resamples, candidates, metrics, control, param_info) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -524,6 +549,7 @@ more_results <- function(object, resamples, candidates, metrics, control) {
       tune_grid(
         object,
         resamples = resamples,
+        param_info = param_info,
         grid = candidates,
         metrics = metrics,
         control = control_grid(verbose = FALSE, extract = control$extract,
@@ -555,7 +581,7 @@ is_cataclysmic <- function(x) {
   is_err <- purrr::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
   if (any(!is_err)) {
     is_good <- purrr::map_lgl(x$.metrics[!is_err],
-                               ~ tibble::is_tibble(.x) && nrow(.x) > 0)
+                              ~ tibble::is_tibble(.x) && nrow(.x) > 0)
     is_err[!is_err] <- !is_good
   }
   all(is_err)

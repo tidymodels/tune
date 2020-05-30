@@ -43,7 +43,7 @@
 
 <meta property="og:title" content="Plot tuning search results — autoplot.tune_results" />
 <meta property="og:description" content="Plot tuning search results" />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -62,7 +62,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -78,8 +78,8 @@
       <div class="navbar-brand-container">
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
-          <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+          <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -165,9 +165,9 @@
     <tr>
       <th>type</th>
       <td><p>A single character value. Choices are <code>"marginals"</code> (for a plot
-'of each predictor versus performance), <code>"parameters"</code> (each parameter versus
-search iteration), or <code>"performance"</code> (performance versus iteration). The
-latter two choices are only used for <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
+of each predictor versus performance; see Details below), <code>"parameters"</code>
+(each parameter versus search iteration), or <code>"performance"</code> (performance
+versus iteration). The latter two choices are only used for <code><a href='tune_bayes.html'>tune_bayes()</a></code>.</p></td>
     </tr>
     <tr>
       <th>metric</th>
@@ -177,7 +177,7 @@ default, all metrics will be shown via facets.</p></td>
     <tr>
       <th>width</th>
       <td><p>A number for the width of the confidence interval bars when
-<code>type = "perfomance"</code>. A value of zero prevents them from being shown.</p></td>
+<code>type = "performance"</code>. A value of zero prevents them from being shown.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,15 +191,39 @@ default, all metrics will be shown via facets.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The parameters are currently represented in their natural units.</p>
-<p>A single categorical tuning parameter is supported when other numeric
-parameters are also in the results. Any number of numeric tuning parameters
-can be used.</p>
+<p>When the results of <code><a href='tune_grid.html'>tune_grid()</a></code> are used with <code><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot()</a></code>, it tries to
+determine whether a <em>regular grid</em> was used.</p><h3>Regular grids</h3>
+
+
+<p>For regular grids with one or more numeric tuning parameters, the parameter
+with the most unique values is used on the x-axis. If there are categorical
+parameters, the first is used to color the geometries. All other parameters
+are used in column faceting.</p>
+<p>The plot has the performance metric(s) on the y-axis. If there are multiple
+metrics, these are row-faceted.</p>
+<p>If there are more than five tuning parameters, the "marginal effects" plots
+are used instead.</p>
+
+<h3>Irregular grids</h3>
+
+
+<p>For space-filling or random grids, a <em>marginal</em> effect plot is created. A
+panel is made for each numeric parameter so that each parameter is on the
+x-axis and performance is on the y-xis. If there are multiple metrics, these
+are row-faceted.</p>
+<p>A single categorical parameter is shown as colors. If there are two or more
+non-numeric parameters, an error is given. A similar result occurs is only
+non-numeric parameters are in the grid. In these cases, we suggest using
+<code><a href='collect_predictions.html'>collect_metrics()</a></code> and <code>ggplot()</code> to create a plot that is appropriate for
+the data.</p>
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># For grid search:</span>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='co'># For grid search:</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
 
 <span class='co'># Plot the tuning parameter values versus performance</span>
@@ -211,19 +235,12 @@ can be used.</p>
 <span class='co'># Plot tuning parameters versus iterations</span>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"parameters"</span>)</div><div class='img'><img src='autoplot.tune_results-3.png' alt='' width='768' height='552' /></div><div class='input'>
 <span class='co'># Plot performance over iterations</span>
-<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"performance"</span>)</div><div class='img'><img src='autoplot.tune_results-4.png' alt='' width='768' height='552' /></div><div class='input'>
-</div></pre>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span>(<span class='no'>ames_iter_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"performance"</span>)</div><div class='img'><img src='autoplot.tune_results-4.png' alt='' width='768' height='552' /></div><div class='input'><span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
-      <li><a href="#see-also">See also</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

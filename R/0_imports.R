@@ -1,10 +1,10 @@
-#' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when
+#' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when vars
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
-#' @importFrom dplyr distinct arrange rename mutate_if starts_with
-#' @importFrom tibble tibble lst
+#' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
+#' @importFrom tibble tibble lst is_tibble as_tibble
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
-#' @importFrom rlang is_missing enexpr expr_text
+#' @importFrom rlang is_missing %||% enexpr expr_text
 #' @importFrom glue glue glue_collapse
 #' @importFrom utils globalVariables capture.output packageVersion
 #' @importFrom dials parameters_constr is_unknown encode_unit
@@ -16,7 +16,7 @@
 #' @importFrom parsnip get_from_env
 #' @importFrom recipes all_predictors all_outcomes recipe
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
-#' @importFrom ggplot2 facet_grid
+#' @importFrom ggplot2 facet_grid geom_line aes_string aes_
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom foreach foreach getDoParName
@@ -42,11 +42,12 @@ ggplot2::autoplot
 utils::globalVariables(
   c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
-    ".estimator", ".estimate", "n", "object", "splits", "grid", "resamples",
-    ".iter", "mean", ".submodels", "metrics", "data", ".mean", ".sd",
-    "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective", "delta",
-    "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
+    ".estimator", ".estimate", "n", "note", "object", "splits", "grid",
+    "resamples", ".iter", "mean", ".submodels", "metrics", "data", ".mean",
+    ".sd", "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective",
+    "delta", "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
     ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
+    ".column", ".totals", ".value", "direction",
     # false positives from template code
     "all_nominal", "boost_tree", "comments", "linear_reg", "logistic_reg",
     "multinom_reg", "set_engine", "set_mode", "step_dummy", "step_normalize",
@@ -61,6 +62,7 @@ tidyr_new_interface <- function() {
 }
 
 # ------------------------------------------------------------------------------
+## function is called in .onLoad() in zzz.R
 
 # nocov start
 s3_register <- function(generic, class, method = NULL) {
@@ -122,11 +124,3 @@ s3_register <- function(generic, class, method = NULL) {
 }
 
 # nocov end
-
-.onLoad <- function(libname, pkgname) {
-
-  # dynamically register autoplot
-  s3_register("ggplot2::autoplot", "tune_results")
-
-  invisible()
-}

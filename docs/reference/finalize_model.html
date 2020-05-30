@@ -44,7 +44,7 @@
 <meta property="og:title" content="Splice final parameters into objects — finalize_model" />
 <meta property="og:description" content="The finalize_* functions take a list or tibble of tuning parameter values and
 update objects with those values." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +63,7 @@ update objects with those values." />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,8 +79,8 @@ update objects with those values." />
       <div class="navbar-brand-container">
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info">
-          <span class="partof">part of <a href="https://github.com/tidymodels">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+          <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
         </div>
       </div>
     </div>
@@ -120,7 +120,7 @@ update objects with those values." />
   <a href="../news/index.html">News</a>
 </li>
         <li>
-  <a href="https://github.com/tidymodels/tune">
+  <a href="https://github.com/tidymodels/tune/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -175,23 +175,24 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
     <p>An updated version of <code>x</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='st'>"example_ames_knn"</span>)
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 <span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/nearest_neighbor.html'>nearest_neighbor</a></span>(
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/nearest_neighbor.html'>nearest_neighbor</a></span>(
     <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
     <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"K"</span>),
     <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(),
     <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()
   ) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
 
-<span class='no'>lowest_rmse</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>, <span class='kw'>maximize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 5</span><span>
+<span class='no'>lowest_rmse</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)
+<span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 5</span><span>
 #&gt;       K weight_func dist_power   lon   lat
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>    33 triweight        0.511    11     5</div><div class='input'>
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    33 triweight        0.325    10     3</div><div class='input'>
 <span class='no'>knn_model</span></div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (regression)
 #&gt; 
 #&gt; Main Arguments:
@@ -205,19 +206,15 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 #&gt; Main Arguments:
 #&gt;   neighbors = 33
 #&gt;   weight_func = triweight
-#&gt;   dist_power = 0.511191629664972
+#&gt;   dist_power = 0.324624970788136
 #&gt; 
 #&gt; Computational engine: kknn 
-#&gt; </div></span></pre>
+#&gt; </div><div class='input'><span class='co'># }</span></div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#examples">Examples</a></li>
-    </ul>
-
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
