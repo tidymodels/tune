@@ -1,11 +1,15 @@
 > no_dummy_template(model, verbose, tune)
 knn_recipe <- 
   recipe(formula = Species ~ ., data = iris) %>% 
+  ## Since distance calculations are used, the predictor variables should 
+  ## be on the same scale. Before centering and scaling the numeric 
+  ## predictors, any predictors with a single unique value are filtered 
+  ## out. 
   step_zv(all_predictors()) %>% 
   step_normalize(all_predictors(), -all_nominal()) 
 
 knn_model <- 
-  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
+  nearest_neighbor() %>% 
   set_mode("classification") %>% 
   set_engine("kknn") 
 
@@ -13,11 +17,6 @@ knn_workflow <-
   workflow() %>% 
   add_recipe(knn_recipe) %>% 
   add_model(knn_model) 
-
-set.seed(27246)
-knn_tune <-
-  tune_grid(knn_workflow, resamples = rlang::abort("add your rsample object"), 
-    grid = 20)
 
 
 NULL

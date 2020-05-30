@@ -2,13 +2,15 @@
 knn_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
-  # This model requires the predictors to be numeric. The most common 
-  # method to convert qualitative predictors to numeric is to create binary 
-  # indicator variables (aka dummy variables) from these predictors. 
+  ## This model requires the predictors to be numeric. The most common 
+  ## method to convert qualitative predictors to numeric is to create 
+  ## binary indicator variables (aka dummy variables) from these 
+  ## predictors. 
   step_dummy(all_nominal(), -all_outcomes()) %>% 
-  # Since distance calculations are used, the predictor variables should be 
-  # on the same scale. Before centering and scaling the numeric predictors, 
-  # any predictors with a single unique value are filtered out. 
+  ## Since distance calculations are used, the predictor variables should 
+  ## be on the same scale. Before centering and scaling the numeric 
+  ## predictors, any predictors with a single unique value are filtered 
+  ## out. 
   step_zv(all_predictors()) %>% 
   step_normalize(all_predictors(), -all_nominal()) 
 

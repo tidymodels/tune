@@ -64,31 +64,37 @@ pipe_value <- function(base, value) {
   value <- rlang::expr_text(value, width = expr_width)
   clean_base <- gsub("\\n", "", base)
   clean_base <- trimws(base, which = "left")
-  not_comment <- seq_along(base)[!grepl("^#", clean_base)]
+  not_comment <- seq_along(base)[!grepl("## ", clean_base)]
   n <- max(1, max(not_comment))
   base[n] <- paste(base[n], "%>%")
   c(base, paste0("\n  ", value))
 }
-add_comment <- function(base, value, add = TRUE) {
+add_comment <- function(base, value, add = TRUE, colors = TRUE) {
   if (!add) {
     return(base)
   }
   if (!is.character(value)) {
     rlang::abort("`value` must be character.")
   }
-  value <- strwrap(value, width = expr_width, prefix = "# ")
-  c(base, paste0("\n  ", value))
+
+  value <- strwrap(value, width = expr_width, prefix = "## ")
+  if (colors) {
+    value <- tune_color$message$warning(value)
+  }
+
+  res <- c(base, paste0("\n  ", value))
+  res
 }
-add_steps_dummy_vars <- function(base, hot = FALSE, add = FALSE) {
+add_steps_dummy_vars <- function(base, hot = FALSE, add = FALSE, colors = TRUE) {
   base <- base %>%
     pipe_value(step_novel(all_nominal(), -all_outcomes()))
   if (hot) {
     base <- base %>%
-      add_comment(dummy_hot_msg, add) %>%
+      add_comment(dummy_hot_msg, add, colors = colors) %>%
       pipe_value(step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE))
   } else {
     base <- base  %>%
-      add_comment(dummy_msg, add) %>%
+      add_comment(dummy_msg, add, colors = colors) %>%
       pipe_value(step_dummy(all_nominal(), -all_outcomes()))
   }
   base
@@ -110,17 +116,21 @@ factor_check <- function(base, rec, add) {
     step_expr <- rlang::expr(step_string2factor(!!selector))
     base <-
       base %>%
-      add_comment(string_to_factor_msg, add = add) %>%
+      add_comment(string_to_factor_msg, add = add, colors = colors) %>%
       pipe_value(!!step_expr)
   }
   base
 }
-top_level_comment <- function(..., add = FALSE) {
+top_level_comment <- function(..., add = FALSE, colors = TRUE) {
   if (!add) {
     return(invisible(NULL))
   }
   value <- paste(...)
-  value <- strwrap(value, width = expr_width, prefix = "# ")
+  value <- strwrap(value, width = expr_width, prefix = "## ")
+  if (colors) {
+    value <- tune_color$message$warning(value)
+  }
+
   cat(paste0(value, collapse = "\n"))
   cat("\n")
 }
@@ -132,25 +142,50 @@ template_workflow <- function(prefix) {
     pipe_value(add_model(!!rlang::sym(paste0(prefix, "_model"))))
 }
 
-template_tune_with_grid <- function(prefix) {
+template_tune_with_grid <- function(prefix, colors = TRUE) {
   tune_expr <-
     rlang::call2("tune_grid",
           sym(paste0(prefix, "_workflow")),
-          resamples = expr(rlang::abort("add your rsample object")),
+          resamples = expr(stop("add your rsample object")),
           grid = sym(paste0(prefix, "_grid")))
-  assign_value(paste0(prefix, "_tune"), !!tune_expr)
+  res <- assign_value(paste0(prefix, "_tune"), !!tune_expr)
+  if (colors) {
+    res <- sub(
+      "stop(\"add your rsample object\")",
+      tune_color$message$danger("stop(\"add your rsample object\")"),
+      res,
+      fixed = TRUE
+    )
+  }
+  res
 }
-template_tune_no_grid <- function(prefix, seed = sample.int(10^5, 1)) {
+template_tune_no_grid <- function(prefix, seed = sample.int(10^5, 1), colors = TRUE) {
   tune_expr <-
     rlang::call2(
       "tune_grid",
       sym(paste0(prefix, "_workflow")),
-      resamples = expr(rlang::abort("add your rsample object")),
-      grid = 20
+      resamples = expr(stop("add your rsample object")),
+      grid = expr(stop("add number of candidate points"))
     )
 
-  c(paste0("set.seed(", seed,")\n"),
-    assign_value(paste0(prefix, "_tune"), !!tune_expr))
+  res <- c(paste0("set.seed(", seed,")\n"),
+           assign_value(paste0(prefix, "_tune"), !!tune_expr))
+
+  if (colors) {
+    res <- sub(
+      "stop(\"add your rsample object\")",
+      tune_color$message$danger("stop(\"add your rsample object\")"),
+      res,
+      fixed = TRUE
+    )
+    res <- sub(
+      "stop(\"add number of candidate points\")",
+      tune_color$message$danger("stop(\"add number of candidate points\")"),
+      res,
+      fixed = TRUE
+    )
+  }
+  res
 }
 
 # Take the call to the template function and turn it into a call to `recipe()`
@@ -200,7 +235,7 @@ string_to_factor_msg <-
 # Functions to create model code
 # Alternate prefixes: scaffold? suggest?
 
-#' Template code functions for specific models
+#' Functions to create boilerplate code for specific models
 #'
 #' These functions make suggestions for code when using a few common models.
 #' They print out code to the console that could be considered minimal syntax
@@ -215,6 +250,8 @@ string_to_factor_msg <-
 #' the printed code explaining why certain lines are used.
 #' @param tune A single logical that controls if code for model tuning should be
 #' printed.
+#' @param colors A single logical for coloring warnings and code snippets that
+#'  require the users attention.
 #' @return Invisible `NULL` but code is printed to the console.
 #' @details
 #' Based on the columns in `data`, certain recipe steps printed. For example, if
@@ -225,11 +262,11 @@ string_to_factor_msg <-
 #' The syntax is opinionated and should not be considered the exact answer for
 #' every data analysis. It has reasonable defaults.
 #' @examples
-#' template_glmnet(Species ~ ., data = iris)
-#' template_glmnet(Sepal.Length ~ ., data = iris, verbose = TRUE)
+#' use_glmnet(Species ~ ., data = iris)
+#' use_glmnet(Sepal.Length ~ ., data = iris, verbose = TRUE)
 #' @export
 #' @rdname templates
-template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "glmn_recipe" %>%
@@ -242,11 +279,15 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
     factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
+    rec_syntax <-
+      add_steps_dummy_vars(rec_syntax,
+                           hot = TRUE,
+                           add = verbose,
+                           colors = colors)
   }
   rec_syntax <-
     rec_syntax %>%
-    add_comment(paste(reg_msg, zv_msg), add = verbose) %>%
+    add_comment(paste(reg_msg, zv_msg), add = verbose, colors = colors) %>%
     add_steps_normalization()
 
   mod_mode <- model_mode(rec)
@@ -293,14 +334,14 @@ template_glmnet <- function(formula, data, verbose = FALSE, tune = TRUE) {
                                mixture = c(0.05, .2, .4, .6, .8, 1))
     )
     cat(rlang::expr_text(glmn_grid, width = expr_width), "\n\n")
-    cat(template_tune_with_grid("glmn"), "\n\n")
+    cat(template_tune_with_grid("glmn", colors = colors), "\n\n")
   }
   invisible(NULL)
 }
 
 #' @export
 #' @rdname templates
-template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "xgb_recipe" %>%
@@ -313,7 +354,11 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
     factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, hot = TRUE, add = verbose)
+    rec_syntax <-
+      add_steps_dummy_vars(rec_syntax,
+                           hot = TRUE,
+                           add = verbose,
+                           colors = colors)
   }
 
   rec_syntax <- pipe_value(rec_syntax, step_zv(all_predictors()))
@@ -338,7 +383,7 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(mod_syntax, "\n\n")
   cat(template_workflow("xgb"), "\n\n")
   if (tune) {
-    cat(template_tune_no_grid("xgb"), "\n\n", sep = "")
+    cat(template_tune_no_grid("xgb", colors = colors), "\n\n", sep = "")
   }
   invisible(NULL)
 }
@@ -347,7 +392,7 @@ template_xgboost <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
 #' @export
 #' @rdname templates
-template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_kknn <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "knn_recipe" %>%
@@ -360,11 +405,12 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
     factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+    rec_syntax <-
+      add_steps_dummy_vars(rec_syntax, add = verbose, colors = colors)
   }
   rec_syntax <-
     rec_syntax %>%
-    add_comment(paste(dist_msg, zv_msg), add = verbose) %>%
+    add_comment(paste(dist_msg, zv_msg), add = verbose, colors = colors) %>%
     add_steps_normalization()
 
   if (tune) {
@@ -383,7 +429,7 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(mod_syntax, "\n\n")
   cat(template_workflow("knn"), "\n\n")
   if (tune) {
-    cat(template_tune_no_grid("knn"), "\n\n", sep = "")
+    cat(template_tune_no_grid("knn", colors = colors), "\n\n", sep = "")
   }
   invisible(NULL)
 }
@@ -392,7 +438,7 @@ template_knn <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
 #' @export
 #' @rdname templates
-template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_ranger <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "knn_recipe" %>%
@@ -405,11 +451,12 @@ template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
     factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+    rec_syntax <-
+      add_steps_dummy_vars(rec_syntax, add = verbose, colors = colors)
   }
   rec_syntax <-
     rec_syntax %>%
-    add_comment(paste(dist_msg, zv_msg), add = verbose) %>%
+    add_comment(paste(dist_msg, zv_msg), add = verbose, colors = colors) %>%
     add_steps_normalization()
 
   if (tune) {
@@ -428,7 +475,7 @@ template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(mod_syntax, "\n\n")
   cat(template_workflow("knn"), "\n\n")
   if (tune) {
-    cat(template_tune_no_grid("knn"), "\n\n", sep = "")
+    cat(template_tune_no_grid("knn", colors = colors), "\n\n", sep = "")
   }
   invisible(NULL)
 }
@@ -437,7 +484,7 @@ template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
 #' @export
 #' @rdname templates
-template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_ranger <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "ranger_recipe" %>%
@@ -468,7 +515,7 @@ template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
   cat(template_workflow("ranger"), "\n\n")
   if (tune) {
 
-    cat(template_tune_no_grid("ranger"), "\n\n", sep = "")
+    cat(template_tune_no_grid("ranger", colors = colors), "\n\n", sep = "")
   }
   invisible(NULL)
 }
@@ -477,7 +524,7 @@ template_ranger <- function(formula, data, verbose = FALSE, tune = TRUE) {
 
 #' @export
 #' @rdname templates
-template_earth <- function(formula, data, verbose = FALSE, tune = TRUE) {
+use_earth <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
     "mars_recipe" %>%
@@ -490,7 +537,8 @@ template_earth <- function(formula, data, verbose = FALSE, tune = TRUE) {
     factor_check(rec, add = verbose)
 
   if (has_factor_pred(rec)) {
-    rec_syntax <- add_steps_dummy_vars(rec_syntax, add = verbose)
+    rec_syntax <-
+      add_steps_dummy_vars(rec_syntax, add = verbose, colors = colors)
   }
 
   rec_syntax <- pipe_value(rec_syntax, step_zv(all_predictors()))
@@ -528,10 +576,11 @@ template_earth <- function(formula, data, verbose = FALSE, tune = TRUE) {
       "A regular grid is used to exploit this property.",
       "The first term is only the intercept, so the grid is a sequence of even",
       "numbered values.",
-      add = verbose
+      add = verbose,
+      colors = colors
     )
     cat(rlang::expr_text(mars_grid, width = expr_width), "\n\n")
-    cat(template_tune_with_grid("mars"), "\n\n")
+    cat(template_tune_with_grid("mars", colors = colors), "\n\n")
   }
   invisible(NULL)
 }

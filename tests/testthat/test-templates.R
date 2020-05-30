@@ -9,7 +9,7 @@ dummy_template <- function(model, verbose, tune) {
   set.seed(3522) # for models where a seed is set
   rlang::eval_tidy(
     rlang::call2(
-      paste0("template_", model),
+      paste0("use_", model),
       formula = Sepal.Width ~ .,
       data = expr(iris),
       verbose = enexpr(verbose),
@@ -22,7 +22,7 @@ no_dummy_template <- function(model, verbose, tune) {
   set.seed(3522) # for models where a seed is set
   rlang::eval_tidy(
     rlang::call2(
-      paste0("template_", model),
+      paste0("use_", model),
       formula = Species ~ .,
       data = expr(iris),
       verbose = enexpr(verbose),
@@ -52,7 +52,7 @@ verify_models <- function(model, tune, verbose) {
 
 
 test_that('all model templates', {
-  models <- c("glmnet", "xgboost", "ranger", "knn", "earth")
+  models <- c("glmnet", "xgboost", "ranger", "kknn", "earth")
 
   test_config <-
     expand.grid(

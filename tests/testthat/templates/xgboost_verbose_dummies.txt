@@ -2,11 +2,12 @@
 xgb_recipe <- 
   recipe(formula = Sepal.Width ~ ., data = iris) %>% 
   step_novel(all_nominal(), -all_outcomes()) %>% 
-  # This model requires the predictors to be numeric. The most common 
-  # method to convert qualitative predictors to numeric is to create binary 
-  # indicator variables (aka dummy variables) from these predictors. 
-  # However, for this model, binary indicator variables can be made for 
-  # each of the levels of the factors (known as 'one-hot encoding'). 
+  ## This model requires the predictors to be numeric. The most common 
+  ## method to convert qualitative predictors to numeric is to create 
+  ## binary indicator variables (aka dummy variables) from these 
+  ## predictors. However, for this model, binary indicator variables can be 
+  ## made for each of the levels of the factors (known as 'one-hot 
+  ## encoding'). 
   step_dummy(all_nominal(), -all_outcomes(), one_hot = TRUE) %>% 
   step_zv(all_predictors()) 
 
