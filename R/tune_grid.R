@@ -329,7 +329,7 @@ tune_grid_workflow <-
               call. = FALSE)
     }
 
-    class(resamples) <- unique(c("tune_results", class(tibble())))
+    class(resamples) <- c("tune_results", class(tibble()))
     save_attr(resamples, pset, metrics, resample_info)
   }
 
