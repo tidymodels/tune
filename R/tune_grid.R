@@ -306,32 +306,47 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <-
-  function(object, resamples, grid = 10, metrics = NULL, pset = NULL,
-           control = control_grid()) {
-    check_rset(resamples)
-    metrics <- check_metrics(metrics, object)
-    pset <- check_parameters(object, pset = pset, data = resamples$splits[[1]]$data)
-    check_workflow(object, pset = pset)
-    grid <- check_grid(grid, object, pset)
+tune_grid_workflow <- function(object,
+                               resamples,
+                               grid = 10,
+                               metrics = NULL,
+                               pset = NULL,
+                               control = control_grid()) {
+  check_rset(resamples)
+  metrics <- check_metrics(metrics, object)
+  pset <- check_parameters(object, pset = pset, data = resamples$splits[[1]]$data)
+  check_workflow(object, pset = pset)
+  grid <- check_grid(grid, object, pset)
 
-    # Down-cast rset to tibble but get information first
-    resample_info <- pull_rset_attributes(resamples)
-    resamples <- tibble::as_tibble(resamples)
+  # Save rset attributes, then fall back to a bare tibble
+  rset_info <- pull_rset_attributes(resamples)
+  resamples <- new_bare_tibble(resamples)
 
-    code_path <- quarterback(object)
+  code_path <- quarterback(object)
 
-    resamples <- rlang::eval_tidy(code_path)
+  resamples <- rlang::eval_tidy(code_path)
 
-    all_bad <- is_cataclysmic(resamples)
-    if (all_bad) {
-      warning("All models failed in tune_grid(). See the `.notes` column.",
-              call. = FALSE)
-    }
-
-    class(resamples) <- c("tune_results", class(tibble()))
-    save_attr(resamples, pset, metrics, resample_info)
+  if (is_cataclysmic(resamples)) {
+    rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
   }
+
+  new_tune_results(
+    x = resamples,
+    parameters = pset,
+    metrics = metrics,
+    rset_info = rset_info
+  )
+}
+
+new_tune_results <- function(x, parameters, metrics, rset_info) {
+  new_results(
+    x = x,
+    parameters = parameters,
+    metrics = metrics,
+    rset_info = rset_info,
+    class = "tune_results"
+  )
+}
 
 # ------------------------------------------------------------------------------
 
