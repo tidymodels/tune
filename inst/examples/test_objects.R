@@ -376,6 +376,29 @@ rcv_results <-
   )
 
 # ------------------------------------------------------------------------------
+# Object classed with `resample_results` for use in vctrs/dplyr tests
+
+set.seed(6735)
+
+folds <- vfold_cv(mtcars, v = 3)
+
+rec <- recipe(mpg ~ ., data = mtcars)
+
+mod <- linear_reg() %>%
+  set_engine("lm")
+
+lm_resamples <- fit_resamples(mod, rec, folds)
+
+lm_resamples
+
+saveRDS(
+  lm_resamples,
+  file = testthat::test_path("lm_resamples.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
 
 sessioninfo::session_info()
 
