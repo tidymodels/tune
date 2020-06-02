@@ -338,16 +338,6 @@ tune_grid_workflow <- function(object,
   )
 }
 
-new_tune_results <- function(x, parameters, metrics, rset_info) {
-  new_results(
-    x = x,
-    parameters = parameters,
-    metrics = metrics,
-    rset_info = rset_info,
-    class = "tune_results"
-  )
-}
-
 # ------------------------------------------------------------------------------
 
 quarterback <- function(x) {
