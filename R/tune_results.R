@@ -15,6 +15,44 @@ print.tune_results <- function(x, ...) {
                                 sep = "\n"))
     rlang::warn(print_notes)
   }
-  class(x) <- class(x)[!(class(x) %in% c("tune_results"))]
-  print(x, ...)
+
+  if (inherits(x, "resample_results")) {
+    cat("# Resampling results\n")
+  } else {
+    cat("# Tuning results\n")
+  }
+
+  att <- attributes(x)
+  rset_info <- att$rset_info
+
+  if (is.null(rset_info)) {
+    print_compat_tune_results_label(x)
+  } else {
+    cat("#", rset_info$label, "\n")
+  }
+
+  print(tibble::as_tibble(x), ...)
+}
+
+# `tune_results` have been changed to no longer inherit from `rset`,
+# and should instead use the `rset_info` attribute. This code
+# ensures that printing still works on old versions of `tune_results`
+# that might have been saved to disk and then loaded back up with
+# a new version of tune.
+print_compat_tune_results_label <- function(x) {
+  # Somehow we don't have the `rset_info` attribute, but this isn't
+  # an rset subclass. Just don't print a label to avoid erroring.
+  if (!inherits(x, "rset")) {
+    return()
+  }
+
+  label <- try(pretty(x), silent = TRUE)
+
+  # Somehow the rset `pretty()` method failed.
+  # Just don't print a label to avoid erroring.
+  if (inherits(label, "try-error")) {
+    return()
+  }
+
+  cat("#", label, "\n")
 }

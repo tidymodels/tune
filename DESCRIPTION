@@ -22,7 +22,7 @@ Imports:
     utils,
     ggplot2,
     glue,
-    cli (>= 2.0.0), 
+    cli (>= 2.0.0),
     crayon,
     yardstick,
     rsample,
@@ -32,7 +32,8 @@ Imports:
     parsnip (>= 0.0.4),
     workflows (>= 0.1.0),
     hardhat (>= 0.1.0),
-    lifecycle
+    lifecycle,
+    vctrs (>= 0.3.0)
 Suggests: 
     testthat,
     knitr,
