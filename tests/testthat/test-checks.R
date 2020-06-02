@@ -235,7 +235,7 @@ test_that('initial values', {
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
 
   expect_error(
-    tune:::check_initial(collect_metrics(grid_1),
+    tune:::check_initial(data.frame(),
                          dials::parameters(wflow_1), wflow_1,
                          mtfolds, yardstick::metric_set(yardstick::rsq),
                          control_bayes()),
