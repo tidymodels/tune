@@ -3,6 +3,7 @@
 S3method("[",iteration_results)
 S3method("[",resample_results)
 S3method("[",tune_results)
+S3method("names<-",iteration_results)
 S3method("names<-",resample_results)
 S3method("names<-",tune_results)
 S3method(autoplot,resample_results)

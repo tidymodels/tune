@@ -7,7 +7,7 @@
 }
 
 #' @export
-`names<-.resample_results` <- function(x, value) {
+`names<-.iteration_results` <- function(x, value) {
   out <- NextMethod()
   iteration_results_reconstruct(out, x)
 }
