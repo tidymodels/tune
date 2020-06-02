@@ -272,10 +272,20 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
-    x <- tune_grid(wflow, resamples = resamples, grid = x, metrics = metrics,
-                   param_info = pset,
-                   control = control_grid(extract = ctrl$extract,
-                                          save_pred = ctrl$save_pred))
+
+    x <- tune_grid(
+      wflow,
+      resamples = resamples,
+      grid = x,
+      metrics = metrics,
+      param_info = pset,
+      control = control_grid(extract = ctrl$extract, save_pred = ctrl$save_pred)
+    )
+
+    # Strip off `tune_results` class since we add on an `iteration_results`
+    # class later.
+    x <- new_bare_tibble(x)
+
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
       message()

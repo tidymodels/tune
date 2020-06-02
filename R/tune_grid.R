@@ -381,11 +381,3 @@ pull_rset_attributes <- function(x) {
   }
   list(att = att[att_nms], label = lab)
 }
-
-
-save_attr <- function(x, param, metrics, rset_info) {
-  attr(x, "parameters") <- param
-  attr(x, "metrics") <- metrics
-  attr(x, "rset_info") <- rset_info
-  x
-}

@@ -115,11 +115,44 @@ resample_results_can_reconstruct <- function(x, to) {
 }
 
 # ------------------------------------------------------------------------------
+# iteration_results
 
-# `detect_cols_*()` detects the "special" columns required by the subclass
-# `detect_order_cols_*()` detects the columns used to order the subclass rows.
-# The order columns are generally the special columns but without the
-# list-columns, since `vec_order()` doesn't really order those.
+iteration_results_reconstruct <- function(x, to) {
+  if (iteration_results_can_reconstruct(x, to)) {
+    new_iteration_results_from_template(x, to)
+  } else {
+    new_bare_tibble(x)
+  }
+}
+
+new_iteration_results_from_template <- function(x, to) {
+  attrs <- attributes(to)
+
+  new_iteration_results(
+    x = x,
+    parameters = attrs$parameters,
+    metrics = attrs$metrics,
+    rset_info = attrs$rset_info
+  )
+}
+
+# Invariants:
+# - Same as `tune_results`, but also special cases the `.iter` column
+iteration_results_can_reconstruct <- function(x, to) {
+  results_can_reconstruct(
+    x = x,
+    to = to,
+    detect_cols_fn = detect_cols_iteration_results,
+    detect_order_cols_fn = detect_order_cols_iteration_results
+  )
+}
+
+# ------------------------------------------------------------------------------
+
+# - `detect_cols_*()` detects the "special" columns required by the subclass
+# - `detect_order_cols_*()` detects the columns used to order the subclass rows.
+#   The order columns are generally the special columns but without the
+#   list-columns, since `vec_order()` doesn't really order those.
 
 detect_cols_tune_results <- function(x) {
   col_equals_splits(x) | col_starts_with_id(x) | col_equals_dot_metrics(x) | col_equals_dot_notes(x)

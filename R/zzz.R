@@ -65,9 +65,17 @@
     vctrs::s3_register("dplyr::rename", "resample_results", method = rename_resample_results)
     vctrs::s3_register("dplyr::select", "resample_results", method = select_resample_results)
     vctrs::s3_register("dplyr::slice", "resample_results", method = slice_resample_results)
+
+    vctrs::s3_register("dplyr::mutate", "iteration_results", method = mutate_iteration_results)
+    vctrs::s3_register("dplyr::arrange", "iteration_results", method = arrange_iteration_results)
+    vctrs::s3_register("dplyr::filter", "iteration_results", method = filter_iteration_results)
+    vctrs::s3_register("dplyr::rename", "iteration_results", method = rename_iteration_results)
+    vctrs::s3_register("dplyr::select", "iteration_results", method = select_iteration_results)
+    vctrs::s3_register("dplyr::slice", "iteration_results", method = slice_iteration_results)
   } else {
     vctrs::s3_register("dplyr::dplyr_reconstruct", "tune_results", method = dplyr_reconstruct_tune_results)
     vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
+    vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
   }
 }
 

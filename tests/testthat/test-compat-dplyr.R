@@ -180,10 +180,15 @@ test_that("right_join() can keep tune_results class if tune_results structure is
     expect_s3_class_tune_results(right_join(x, x, by = names(x)))
 
     x_names <- names(x)
-    id_names <- x_names[col_starts_with_id(x_names)]
+    y_names <- x_names[col_starts_with_id(x_names)]
 
-    y <- mutate(select(x, all_of(id_names)), x = 1)
-    expect_s3_class_tune_results(right_join(x, y, by = id_names))
+    # Also add `.iter` column
+    if (inherits(x, "iteration_results")) {
+      y_names <- c(y_names, x_names[col_equals_dot_iter(x_names)])
+    }
+
+    y <- mutate(select(x, all_of(y_names)), x = 1)
+    expect_s3_class_tune_results(right_join(x, y, by = y_names))
   }
 })
 

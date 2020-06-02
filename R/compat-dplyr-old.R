@@ -79,3 +79,42 @@ slice_resample_results <- function(.data, ...) {
   out <- NextMethod()
   resample_results_reconstruct(out, .data)
 }
+
+# ------------------------------------------------------------------------------
+# iteration_results
+
+# Registered in `.onLoad()`
+mutate_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}
+
+# Registered in `.onLoad()`
+arrange_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}
+
+# Registered in `.onLoad()`
+filter_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}
+
+# Registered in `.onLoad()`
+rename_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}
+
+# Registered in `.onLoad()`
+select_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}
+
+# Registered in `.onLoad()`
+slice_iteration_results <- function(.data, ...) {
+  out <- NextMethod()
+  iteration_results_reconstruct(out, .data)
+}

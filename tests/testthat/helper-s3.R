@@ -13,7 +13,8 @@ expect_s3_class_bare_tibble <- function(x) {
 load_helper_tune_results <- function() {
   list(
     resample = readRDS(test_path("lm_resamples.rds")),
-    tune = readRDS(test_path("knn_results.rds"))
+    tune = readRDS(test_path("knn_results.rds")),
+    bayes = readRDS(test_path("lm_bayes.rds"))
   )
 }
 
