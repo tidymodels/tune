@@ -338,16 +338,6 @@ tune_grid_workflow <- function(object,
   )
 }
 
-new_tune_results <- function(x, parameters, metrics, rset_info) {
-  new_results(
-    x = x,
-    parameters = parameters,
-    metrics = metrics,
-    rset_info = rset_info,
-    class = "tune_results"
-  )
-}
-
 # ------------------------------------------------------------------------------
 
 quarterback <- function(x) {
@@ -390,12 +380,4 @@ pull_rset_attributes <- function(x) {
     lab <- NA_character_
   }
   list(att = att[att_nms], label = lab)
-}
-
-
-save_attr <- function(x, param, metrics, rset_info) {
-  attr(x, "parameters") <- param
-  attr(x, "metrics") <- metrics
-  attr(x, "rset_info") <- rset_info
-  x
 }
