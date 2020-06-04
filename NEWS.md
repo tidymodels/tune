@@ -1,3 +1,10 @@
+# tune 0.1.0.9000
+
+## Breaking Changes
+
+* `tune` objects no longer keep the `rset` class that they have from the `resamples` argument. 
+
+
 # tune 0.1.0
 
 ## Breaking Changes

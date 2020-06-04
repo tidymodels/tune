@@ -96,6 +96,8 @@ This doesn't affect how we use these objects in examples but be advised that
 using some \code{rsample} functions on them will cause issues.
 }
 \examples{
+library(tune)
+
 ames_grid_search
 ames_iter_search
 }
