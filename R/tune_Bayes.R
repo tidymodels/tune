@@ -247,7 +247,8 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    resample_info <- pull_rset_attributes(resamples)
+    rset_info <- pull_rset_attributes(resamples)
+
     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
@@ -266,7 +267,8 @@ tune_bayes_workflow <-
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      return(unsummarized)
+      out <- new_iteration_results(unsummarized, param_info, metrics, rset_info)
+      return(out)
     })
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
@@ -362,8 +364,15 @@ tune_bayes_workflow <-
       check_time(start_time, control$time_limit)
     }
 
+    # Reset `on.exit()` hook
     on.exit()
-    save_attr(unsummarized, param_info, metrics, resample_info)
+
+    new_iteration_results(
+      x = unsummarized,
+      parameters = param_info,
+      metrics = metrics,
+      rset_info = rset_info
+    )
   }
 
 create_initial_set <- function(param, n = NULL) {

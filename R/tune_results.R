@@ -56,3 +56,30 @@ print_compat_tune_results_label <- function(x) {
 
   cat("#", label, "\n")
 }
+
+# ------------------------------------------------------------------------------
+
+#' @export
+`[.tune_results` <- function(x, i, j, ...) {
+  out <- NextMethod()
+  tune_results_reconstruct(out, x)
+}
+
+#' @export
+`names<-.tune_results` <- function(x, value) {
+  out <- NextMethod()
+  tune_results_reconstruct(out, x)
+}
+
+# ------------------------------------------------------------------------------
+
+new_tune_results <- function(x, parameters, metrics, rset_info, ..., class = character()) {
+  new_bare_tibble(
+    x = x,
+    parameters = parameters,
+    metrics = metrics,
+    rset_info = rset_info,
+    ...,
+    class = c(class, "tune_results")
+  )
+}

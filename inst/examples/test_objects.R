@@ -376,6 +376,55 @@ rcv_results <-
   )
 
 # ------------------------------------------------------------------------------
+# Object classed with `resample_results` for use in vctrs/dplyr tests
+
+set.seed(6735)
+
+folds <- vfold_cv(mtcars, v = 3)
+
+rec <- recipe(mpg ~ ., data = mtcars)
+
+mod <- linear_reg() %>%
+  set_engine("lm")
+
+lm_resamples <- fit_resamples(mod, rec, folds)
+
+lm_resamples
+
+saveRDS(
+  lm_resamples,
+  file = testthat::test_path("lm_resamples.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+# Object classed with `iteration_results` for use in vctrs/dplyr tests
+
+set.seed(7898)
+folds <- vfold_cv(mtcars, v = 2)
+
+rec <- recipe(mpg ~ ., data = mtcars) %>%
+  step_normalize(all_predictors()) %>%
+  step_bs(disp, degree = tune(), deg_free = tune())
+
+mod <- linear_reg(mode = "regression") %>%
+  set_engine("lm")
+
+wflow <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(mod)
+
+lm_bayes <- tune_bayes(wflow, folds)
+
+saveRDS(
+  lm_bayes,
+  file = testthat::test_path("lm_bayes.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
 
 sessioninfo::session_info()
 
