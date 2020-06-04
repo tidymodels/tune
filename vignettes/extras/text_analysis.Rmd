@@ -239,7 +239,11 @@ Then we can extract and manipulate the corresponding parameter set:
 five_star_set <-
   five_star_wflow %>%
   parameters() %>%
-  update(num_terms = hash_range, penalty = penalty(c(-3, 0)))
+  update(
+    num_terms = hash_range, 
+    penalty = penalty(c(-3, 0)),
+    mixture = mixture(c(0.05, 1.00))
+    )
 ```
 
 This is passed to the search function via the `param_info` argument. 

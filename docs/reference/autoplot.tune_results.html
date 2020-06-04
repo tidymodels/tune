@@ -197,7 +197,8 @@ default, all metrics will be shown via facets.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Not currently used.</p></td>
+      <td><p>For plots with a regular grid, this is passed to <code><a href='https://rdrr.io/r/base/format.html'>format()</a></code> and is
+applied to a parameter used to color points. Otherwise, it is not used.</p></td>
     </tr>
     </table>
 
@@ -206,8 +207,7 @@ default, all metrics will be shown via facets.</p></td>
     <p>A <code>ggplot2</code> object.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The parameters are currently represented in their natural units.</p>
-<p>When the results of <code><a href='tune_grid.html'>tune_grid()</a></code> are used with <code><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot()</a></code>, it tries to
+    <p>When the results of <code><a href='tune_grid.html'>tune_grid()</a></code> are used with <code><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot()</a></code>, it tries to
 determine whether a <em>regular grid</em> was used.</p><h3>Regular grids</h3>
 
 
@@ -232,6 +232,11 @@ non-numeric parameters, an error is given. A similar result occurs is only
 non-numeric parameters are in the grid. In these cases, we suggest using
 <code><a href='collect_predictions.html'>collect_metrics()</a></code> and <code>ggplot()</code> to create a plot that is appropriate for
 the data.</p>
+<p>If a parameter has an associated transformation associated with it (as
+determined by the parameter object used to create it), the plot shows the
+values in the transformed units (and is labeled with the transformation type).</p>
+<p>Parameters are labeled using the labels found in the parameter object
+<em>except</em> when an identifier was used (e.g. <code>neighbors = tune("K")</code>).</p>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

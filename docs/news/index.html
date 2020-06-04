@@ -164,8 +164,18 @@
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
-<li>
-<code>tune</code> objects no longer keep the <code>rset</code> class that they have from the <code>resamples</code> argument.</li>
+<li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> not requires objects made by version 0.1.0 or higher of tune.</p></li>
+<li><p><code>tune</code> objects no longer keep the <code>rset</code> class that they have from the <code>resamples</code> argument.</p></li>
+</ul>
+</div>
+<div id="other-changes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-changes" class="anchor"></a>Other Changes</h2>
+<ul>
+<li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now produces a different plot when the tuning grid is a regular grid (i.e. factorial or nearly factorial in nature). If there are 5+ parameters, the standard plot is produced. Non-regular grids are plotted in the same way (although see next bullet point). See <code><a href="../reference/autoplot.tune_results.html">?autoplot.tune_results</a></code> for more information.</p></li>
+<li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now transforms the parameter values for the plot. For example, if the <code>penalty</code> parameter was used for a regularized regression, the points are plotted on the log-10 scale (its default transformation). For non-regular grids, the facet labels show the transformation type (e.g. <code>"penalty (log-10)"</code> or <code>"cost (log-2)"</code>). For regular grid, the x-axis is scaled using <code>scale_x_continuous()</code>.</p></li>
+<li><p>Finally, <code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now shows the parameter <em>labels</em> in a plot. For example, if a k-nearest neighbors model was used with <code>neighbors = tune()</code>, the parameter will be labeled as <code>"# Nearest Neighbors"</code>. When an ID was used, such as <code>neighbors = tune("K")</code>, this is used to identify the parameter.</p></li>
+<li><p>In other plotting news, <code><a href="../reference/coord_obs_pred.html">coord_obs_pred()</a></code> has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1.</p></li>
 </ul>
 </div>
 </div>
@@ -180,9 +190,9 @@
 <li>The arguments to the main tuning/fitting functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) have been reordered to better align with parsnip’s <code>fit()</code>. The first argument to all these functions is now a model specification or model workflow. The previous versions are soft-deprecated as of 0.1.0 and will be deprecated as of 0.1.2.</li>
 </ul>
 </div>
-<div id="other-changes" class="section level2">
+<div id="other-changes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#other-changes" class="anchor"></a>Other Changes</h2>
+<a href="#other-changes-1" class="anchor"></a>Other Changes</h2>
 <ul>
 <li><p>Added more packages to be fully loaded in the workers when run in parallel using <code>doParallel</code> (<a href='https://github.com/tidymodels/tune/issues/157'>#157</a>), (<a href='https://github.com/tidymodels/tune/issues/159'>#159</a>), and (<a href='https://github.com/tidymodels/tune/issues/160'>#160</a>)</p></li>
 <li><p><code><a href="../reference/collect_predictions.html">collect_predictions()</a></code> gains two new arguments. <code>parameters</code> allows for pre-filtering of the hold-out predictions by tuning parameters values. If you are only interested in one sub-model, this makes things much faster. The other option is <code>summarize</code> and is used when the resampling method has training set rows that are predicted in multiple holdout sets.</p></li>

@@ -519,7 +519,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     }
   }
 
-  p <- p + geom_point()
+  p <- p + geom_point(size = 1)
 
   if (multi_metrics) {
     p <- p + ylab("")
@@ -534,7 +534,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   }
 
   if (!is.null(trans)) {
-    p <- p + ggplot2::scale_x_continuous(trans = trans, breaks = ggplot2::pretty_breaks())
+    p <- p + ggplot2::scale_x_continuous(trans = trans)
   }
 
   p

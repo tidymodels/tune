@@ -375,6 +375,14 @@ rcv_results <-
     control = control_grid(verbose = FALSE, save_pred = TRUE)
   )
 
+saveRDS(
+  rcv_results,
+  file = testthat::test_path("rcv_results.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+
 # ------------------------------------------------------------------------------
 # Object classed with `resample_results` for use in vctrs/dplyr tests
 

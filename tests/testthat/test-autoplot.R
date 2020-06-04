@@ -4,7 +4,7 @@ context("autoplot")
 
 source(test_path("../helper-objects.R"))
 knn_results <- readRDS(test_path("knn_results.rds"))
-load(test_path("svm_results.RData"))
+svm_results <- readRDS(test_path("svm_results.rds"))
 load(test_path("bayes_example.RData"))
 rcv_results <- readRDS(test_path("rcv_results.rds"))
 
@@ -39,7 +39,7 @@ set.seed(4189)
 svm_bo <-
   svm_mod %>%
   tune_bayes(mpg ~ .,
-             resamples = svm_reg,
+             resamples = mt_bt,
              initial = svm_irreg,
              iter = 2)
 

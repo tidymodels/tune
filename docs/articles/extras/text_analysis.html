@@ -290,7 +290,11 @@
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">five_star_set</span> <span class="kw">&lt;-</span>
   <span class="no">five_star_wflow</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(<span class="kw">num_terms</span> <span class="kw">=</span> <span class="no">hash_range</span>, <span class="kw">penalty</span> <span class="kw">=</span> <span class="fu">penalty</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">3</span>, <span class="fl">0</span>)))</pre></body></html></div>
+  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span>(
+    <span class="kw">num_terms</span> <span class="kw">=</span> <span class="no">hash_range</span>,
+    <span class="kw">penalty</span> <span class="kw">=</span> <span class="fu">penalty</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">3</span>, <span class="fl">0</span>)),
+    <span class="kw">mixture</span> <span class="kw">=</span> <span class="fu">mixture</span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">0.05</span>, <span class="fl">1.00</span>))
+    )</pre></body></html></div>
 <p>This is passed to the search function via the <code>param_info</code> argument.</p>
 <p>Finally, the initial rounds of search can be biased more towards exploration of the parameter space (as opposed to staying near the current best results). If expected improvement is used as the acquisition function, the trade-off value can be slowly moved from exploration to exploitation over iterations<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. <code>tune</code> has a built-in function called <code><a href="../../reference/expo_decay.html">expo_decay()</a></code> that can help accomplish this:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">trade_off_decay</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">iter</span>) {
@@ -315,7 +319,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimizing roc_auc using the expected improvement with variable trade-off values.</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -328,7 +332,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -341,7 +345,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7457 (+/-0.00813)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -354,7 +358,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.7945 (+/-0.00494)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7945 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -367,7 +371,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8015 (+/-0.00618)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -380,7 +384,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -393,7 +397,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8132 (+/-0.00563)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8132 (@iter 6)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -406,7 +410,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8134 (+/-0.00997)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -419,7 +423,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7548 (+/-0.00496)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -432,7 +436,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7785 (+/-0.00568)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -445,7 +449,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -458,7 +462,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -471,7 +475,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7971 (+/-0.00783)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -484,7 +488,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7694 (+/-0.00751)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 14 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -497,7 +501,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7931 (+/-0.00966)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 15 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -510,7 +514,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7817 (+/-0.00834)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 16 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -523,7 +527,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8073 (+/-0.00653)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 17 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
