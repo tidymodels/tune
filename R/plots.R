@@ -403,8 +403,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   if (!is.null(metric)) {
     dat <- dat %>% dplyr::filter(.metric %in% metric)
     if (nrow(dat) == 0) {
-      rlang::stop(paste0("After filtering for metric '", metric, "', there were ",
-                         "no data points."))
+      rlang::abort(paste0("After filtering for metric '", metric, "', there were ",
+                          "no data points."))
     }
   }
   dat <- dat %>% dplyr::filter(!is.na(mean))

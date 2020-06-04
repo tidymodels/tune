@@ -3,7 +3,7 @@ context("object checking")
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
-load(test_path("svm_results.RData"))
+svm_results <- readRDS(test_path("svm_results.rds"))
 
 # ------------------------------------------------------------------------------
 
