@@ -1,7 +1,10 @@
 library(tidymodels)
-library(tune)
+library(sessioninfo)
+library(modeldata)
+library(testthat)
 
 # ------------------------------------------------------------------------------
+# "mt_*" test objects used in test-predictions.R and test-extract.R
 
 set.seed(455)
 folds <- vfold_cv(mtcars, v = 5)
@@ -21,10 +24,9 @@ knn_mod <-
   nearest_neighbor(mode = "regression", neighbors = tune()) %>%
   set_engine("kknn")
 
-verb <- TRUE
+verb <- FALSE
 g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
-b_ctrl <- ctrl_Bayes(verbose = verb, save_pred = TRUE)
-
+b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
 
 # ------------------------------------------------------------------------------
 
@@ -161,13 +163,271 @@ mt_spln_lm_grid_fails <-
             resamples = folds,
             control = g_ctrl)
 
-
 # ------------------------------------------------------------------------------
 
 save(
   list = grep("^mt_", ls(), value = TRUE),
-  file = "tests/testthat/test_objects.RData",
+  file = test_path("test_objects.RData"),
   version = 2,
   compress = "xz"
 )
 
+# ------------------------------------------------------------------------------
+# "knn_*" test objects used in test-predictions.R, test-autoplot.R, test-GP.R
+# and test-select_best.R
+
+data(two_class_dat, package = "modeldata")
+set.seed(7898)
+data_folds <- vfold_cv(two_class_dat, repeats = 5)
+
+two_class_rec <-
+  recipe(Class ~ ., data = two_class_dat) %>%
+  step_normalize(A, B)
+
+knn_model <-
+  nearest_neighbor(
+    mode = "classification",
+    neighbors = tune("K"),
+    weight_func = tune(),
+    dist_power = tune("exponent")
+  ) %>%
+  set_engine("kknn")
+
+two_class_wflow <-
+  workflow() %>%
+  add_recipe(two_class_rec) %>%
+  add_model(knn_model)
+
+two_class_set <-
+  parameters(two_class_wflow) %>%
+  update(K = neighbors(c(1, 50))) %>%
+  update(exponent = dist_power(c(1 / 10, 2)))
+
+set.seed(2494)
+two_class_grid <-
+  two_class_set %>%
+  grid_max_entropy(size = 10)
+
+class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
+
+knn_results <-
+  tune_grid(
+    two_class_wflow,
+    resamples = data_folds,
+    grid = two_class_grid,
+    metrics = class_metrics
+  )
+
+
+knn_set <- two_class_set
+
+knn_gp <-
+  tune:::fit_gp(collect_metrics(knn_results),
+                knn_set,
+                "accuracy",
+                control_bayes()
+  )
+
+saveRDS(
+  knn_results,
+  file = testthat::test_path("knn_results.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+saveRDS(
+  two_class_set,
+  file = testthat::test_path("knn_set.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+saveRDS(
+  two_class_grid,
+  file = testthat::test_path("knn_grid.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+saveRDS(
+  knn_set,
+  file = testthat::test_path("knn_set.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+saveRDS(
+  knn_gp,
+  file = testthat::test_path("knn_gp.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+# "svm_*" test objects used in numerous test files
+
+svm_model <-
+  svm_poly(
+    mode = "classification",
+    cost = tune(),
+    degree = tune("%^*#"),
+    scale_factor = tune()
+  ) %>%
+  set_engine("kernlab")
+
+two_class_wflow <-
+  workflow() %>%
+  add_recipe(two_class_rec) %>%
+  add_model(svm_model)
+
+two_class_set <-
+  parameters(two_class_wflow) %>%
+  update(cost = cost(c(-10, 4)))
+
+set.seed(2494)
+two_class_grid <-
+  two_class_set %>%
+  grid_max_entropy(size = 5)
+
+class_only <- metric_set(accuracy, kap, mcc)
+
+svm_results <-
+  tune_grid(
+    two_class_wflow,
+    resamples = data_folds,
+    grid = two_class_grid,
+    metrics = class_only,
+    control = control_grid(save_pred = TRUE)
+  )
+
+saveRDS(
+  svm_results,
+  file = testthat::test_path("svm_results.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+two_class_reg_grid <-
+  two_class_set %>%
+  grid_regular(levels = c(5, 4, 2))
+
+svm_reg_results <-
+  tune_grid(
+    two_class_wflow,
+    resamples = data_folds,
+    grid = two_class_reg_grid,
+    metrics = class_only,
+    control = control_grid(save_pred = TRUE)
+  )
+
+saveRDS(
+  svm_reg_results,
+  file = testthat::test_path("svm_reg_results.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+
+set.seed(7898)
+data_folds <- vfold_cv(mtcars, repeats = 2)
+
+# ------------------------------------------------------------------------------
+# "rcv_results" used in test-autoplot.R, test-select_best.R, and test-estimate.R
+
+base_rec <-
+  recipe(mpg ~ ., data = mtcars) %>%
+  step_normalize(all_predictors())
+
+disp_rec <-
+  base_rec %>%
+  step_bs(disp, degree = tune(), deg_free = tune()) %>%
+  step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
+
+lm_model <-
+  linear_reg(mode = "regression") %>%
+  set_engine("lm")
+
+cars_wflow <-
+  workflow() %>%
+  add_recipe(disp_rec) %>%
+  add_model(lm_model)
+
+cars_set <-
+  cars_wflow %>%
+  parameters %>%
+  update(degree = degree_int(1:2)) %>%
+  update(deg_free = deg_free(c(2, 10))) %>%
+  update(`wt degree` = degree_int(1:2)) %>%
+  update(`wt df` = deg_free(c(2, 10)))
+
+set.seed(255)
+cars_grid <-
+  cars_set %>%
+  grid_regular(levels = c(3, 2, 3, 2))
+
+
+rcv_results <-
+  tune_grid(
+    cars_wflow,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control_grid(verbose = FALSE, save_pred = TRUE)
+  )
+
+# ------------------------------------------------------------------------------
+# Object classed with `resample_results` for use in vctrs/dplyr tests
+
+set.seed(6735)
+
+folds <- vfold_cv(mtcars, v = 3)
+
+rec <- recipe(mpg ~ ., data = mtcars)
+
+mod <- linear_reg() %>%
+  set_engine("lm")
+
+lm_resamples <- fit_resamples(mod, rec, folds)
+
+lm_resamples
+
+saveRDS(
+  lm_resamples,
+  file = testthat::test_path("lm_resamples.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+# Object classed with `iteration_results` for use in vctrs/dplyr tests
+
+set.seed(7898)
+folds <- vfold_cv(mtcars, v = 2)
+
+rec <- recipe(mpg ~ ., data = mtcars) %>%
+  step_normalize(all_predictors()) %>%
+  step_bs(disp, degree = tune(), deg_free = tune())
+
+mod <- linear_reg(mode = "regression") %>%
+  set_engine("lm")
+
+wflow <- workflow() %>%
+  add_recipe(rec) %>%
+  add_model(mod)
+
+lm_bayes <- tune_bayes(wflow, folds)
+
+saveRDS(
+  lm_bayes,
+  file = testthat::test_path("lm_bayes.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+
+sessioninfo::session_info()
+
+if (!interactive()) {
+  q("no")
+}

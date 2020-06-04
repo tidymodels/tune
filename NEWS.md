@@ -1,6 +1,10 @@
+# tune 0.1.0.9000
+
 ## Breaking Changes
 
 * `autoplot.tune_results()` not requires objects made by version 0.1.0 or higher of tune. 
+
+* `tune` objects no longer keep the `rset` class that they have from the `resamples` argument. 
 
 ## Other Changes
 
@@ -11,6 +15,8 @@
 * Finally, `autoplot.tune_results()` now shows the parameter _labels_ in a plot. For example, if a k-nearest neighbors model was used with `neighbors = tune()`, the parameter will be labeled as `"# Nearest Neighbors"`. When an ID was used, such as `neighbors = tune("K")`, this is used to identify the parameter. 
 
 * In other plotting news, `coord_obs_pred()` has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1. 
+
+
 
 # tune 0.1.0
 

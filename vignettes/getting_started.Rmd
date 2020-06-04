@@ -196,13 +196,7 @@ rmse_vals
 Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
 
 ```{r rmse-tile}
-rmse_vals %>% 
-  # convert to factors for easier plotting
-  mutate(`lat df` = factor(format(`lat df`))) %>% 
-  ggplot(aes(x = `long df`, y = mean, col = `lat df`)) + 
-  geom_point() + 
-  geom_line() + 
-  ylab("Mean RMSE")
+autoplot(ames_res, metric = "rmse")
 ```
 
 Interestingly, latitude does _not_ do well with degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? 

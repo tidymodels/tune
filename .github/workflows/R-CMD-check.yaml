@@ -17,7 +17,10 @@ jobs:
         config:
           - {os: windows-latest, r: '3.6'}
           - {os: windows-latest, r: 'devel'}
-          - {os: macOS-latest, r: '3.6'}
+          - {os: macOS-latest, r: '3.6', old_dplyr: true,  dev_tidymodels: true}
+          - {os: macOS-latest, r: '3.6', old_dplyr: true,  dev_tidymodels: false}
+          - {os: macOS-latest, r: '3.6', old_dplyr: false, dev_tidymodels: true}
+          - {os: macOS-latest, r: '3.6', old_dplyr: false, dev_tidymodels: false}
           - {os: ubuntu-16.04, r: '3.6', rspm: "https://demo.rstudiopm.com/all/__linux__/xenial/latest"}
 
     env:
@@ -63,6 +66,21 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
+
+
+      - name: Install dev dependencies
+        if: runner.os == 'macOS' && matrix.config.dev_tidymodels
+        run: |
+          remotes::install_github("tidymodels/rsample")
+          remotes::install_github("tidymodels/dials")
+        shell: Rscript {0}
+
+      - name: Install old dplyr
+        if: runner.os == 'macOS' && matrix.config.old_dplyr
+        run: |
+          remotes::install_version("dplyr", "0.8.5")
+        shell: Rscript {0}
+
 
       - name: Session info
         run: |
