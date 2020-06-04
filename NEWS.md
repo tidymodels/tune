@@ -1,3 +1,23 @@
+# tune 0.1.0.9000
+
+## Breaking Changes
+
+* `autoplot.tune_results()` not requires objects made by version 0.1.0 or higher of tune. 
+
+* `tune` objects no longer keep the `rset` class that they have from the `resamples` argument. 
+
+## Other Changes
+
+* `autoplot.tune_results()` now produces a different plot when the tuning grid is a regular grid (i.e. factorial or nearly factorial in nature). If there are 5+ parameters, the standard plot is produced. Non-regular grids are plotted in the same way (although see next bullet point). See `?autoplot.tune_results` for more information.
+
+* `autoplot.tune_results()` now transforms the parameter values for the plot. For example, if the `penalty` parameter was used for a regularized regression, the points are plotted on the log-10 scale (its default transformation). For non-regular grids, the facet labels show the transformation type (e.g. `"penalty (log-10)"` or `"cost (log-2)"`). For regular grid, the x-axis is scaled using `scale_x_continuous()`. 
+
+* Finally, `autoplot.tune_results()` now shows the parameter _labels_ in a plot. For example, if a k-nearest neighbors model was used with `neighbors = tune()`, the parameter will be labeled as `"# Nearest Neighbors"`. When an ID was used, such as `neighbors = tune("K")`, this is used to identify the parameter. 
+
+* In other plotting news, `coord_obs_pred()` has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1. 
+
+
+
 # tune 0.1.0
 
 ## Breaking Changes

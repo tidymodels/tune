@@ -40,7 +40,8 @@ pulley <- function(resamples, res, col) {
     pulled_vals <- tidyr::nest(pulled_vals, -starts_with("id"), .key = !!col)
   }
 
-  res <- full_join(resamples, pulled_vals, by = id_cols)
+  res <- new_bare_tibble(resamples)
+  res <- full_join(res, pulled_vals, by = id_cols)
   res <- reup_rs(resamples, res)
   res
 }

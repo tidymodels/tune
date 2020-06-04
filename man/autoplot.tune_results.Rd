@@ -26,7 +26,8 @@ default, all metrics will be shown via facets.}
 \item{width}{A number for the width of the confidence interval bars when
 \code{type = "performance"}. A value of zero prevents them from being shown.}
 
-\item{...}{Not currently used.}
+\item{...}{For plots with a regular grid, this is passed to \code{format()} and is
+applied to a parameter used to color points. Otherwise, it is not used.}
 }
 \value{
 A \code{ggplot2} object.
@@ -35,8 +36,6 @@ A \code{ggplot2} object.
 Plot tuning search results
 }
 \details{
-The parameters are currently represented in their natural units.
-
 When the results of \code{tune_grid()} are used with \code{autoplot()}, it tries to
 determine whether a \emph{regular grid} was used.
 \subsection{Regular grids}{
@@ -65,6 +64,13 @@ non-numeric parameters, an error is given. A similar result occurs is only
 non-numeric parameters are in the grid. In these cases, we suggest using
 \code{collect_metrics()} and \code{ggplot()} to create a plot that is appropriate for
 the data.
+
+If a parameter has an associated transformation associated with it (as
+determined by the parameter object used to create it), the plot shows the
+values in the transformed units (and is labeled with the transformation type).
+
+Parameters are labeled using the labels found in the parameter object
+\emph{except} when an identifier was used (e.g. \code{neighbors = tune("K")}).
 }
 }
 \examples{

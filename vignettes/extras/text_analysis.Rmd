@@ -201,12 +201,7 @@ The best results had a fairly high penalty value and focused on the ridge penalt
 What was the relationship between performance and the tuning parameters? 
 
 ```{r grid-plot}
-ggplot(grid_roc, aes(x = penalty, y = mean, col = factor(mixture), group = factor(mixture))) +
-  facet_wrap(~ num_terms) +
-  geom_point(cex = 1) + 
-  geom_line() +
-  scale_x_log10() + 
-  theme(legend.position = "top")
+autoplot(five_star_glmnet, metric = "roc_auc")
 ```
 
 There is definitely an effect due to the number of features used^[This is a small sample of the overall data set. When more data are used, a larger feature set is optimal.]. The profiles with mixture values greater than zero had steep drop-offs in performance. What's that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model^[See the last section below for more details.].  
@@ -244,7 +239,11 @@ Then we can extract and manipulate the corresponding parameter set:
 five_star_set <-
   five_star_wflow %>%
   parameters() %>%
-  update(num_terms = hash_range, penalty = penalty(c(-3, 0)))
+  update(
+    num_terms = hash_range, 
+    penalty = penalty(c(-3, 0)),
+    mixture = mixture(c(0.05, 1.00))
+    )
 ```
 
 This is passed to the search function via the `param_info` argument. 
