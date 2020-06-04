@@ -8,7 +8,7 @@ articles:
   text_analysis: extras/text_analysis.html
   getting_started: getting_started.html
   grid: grid.html
-last_built: 2020-06-04T03:20Z
+last_built: 2020-06-04T14:24Z
 urls:
   reference: https://tune.tidymodels.org/reference
   article: https://tune.tidymodels.org/articles

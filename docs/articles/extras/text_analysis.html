@@ -257,12 +257,12 @@
 <span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753</span>
 <span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776</span>
 <span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781</span>
-<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00795</span>
-<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00791</span>
+<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00794</span>
+<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00790</span>
 <span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805</span>
 <span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810</span>
 <span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803</span>
-<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00813</span>
+<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00812</span>
 <span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808</span>
 <span class="co">#&gt; # … with 290 more rows</span></pre></body></html></div>
 <p>The best results had a fairly high penalty value and focused on the ridge penalty (i.e. no feature selection via the lasso’s L1 penalty). The best solutions also used the largest number of hashing features.</p>
@@ -315,7 +315,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimizing roc_auc using the expected improvement with variable trade-off values.</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -328,7 +328,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -339,9 +339,9 @@
 <span class="co">#&gt; i penalty=0.00276, mixture=0.0931, num_terms=257</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7457 (+/-0.00814)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7457 (+/-0.00813)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -354,7 +354,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.7945 (+/-0.00494)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7945 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -367,7 +367,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8015 (+/-0.00618)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -380,7 +380,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -393,7 +393,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8132 (+/-0.00563)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8132 (@iter 6)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -406,7 +406,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8134 (+/-0.00997)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -417,9 +417,9 @@
 <span class="co">#&gt; i penalty=0.00102, mixture=0.538, num_terms=334</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7548 (+/-0.00495)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7548 (+/-0.00496)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -430,9 +430,9 @@
 <span class="co">#&gt; i penalty=0.00102, mixture=0.202, num_terms=3964</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7785 (+/-0.00569)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7785 (+/-0.00568)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -445,7 +445,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -458,7 +458,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -469,9 +469,9 @@
 <span class="co">#&gt; i penalty=0.0693, mixture=0.302, num_terms=4088</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.797 (+/-0.00783)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7971 (+/-0.00783)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -482,9 +482,9 @@
 <span class="co">#&gt; i penalty=0.0537, mixture=0.0652, num_terms=491</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7694 (+/-0.00752)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7694 (+/-0.00751)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 14 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 14 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -495,9 +495,9 @@
 <span class="co">#&gt; i penalty=0.036, mixture=0.415, num_terms=2450</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7931 (+/-0.00965)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7931 (+/-0.00966)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 15 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 15 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -508,9 +508,9 @@
 <span class="co">#&gt; i penalty=0.0123, mixture=0.991, num_terms=785</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7818 (+/-0.00833)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7817 (+/-0.00834)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 16 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 16 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -521,9 +521,9 @@
 <span class="co">#&gt; i penalty=0.0457, mixture=0.054, num_terms=4075</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8072 (+/-0.00654)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8073 (+/-0.00653)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 17 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 17 ──────────────────────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -534,7 +534,7 @@
 <span class="co">#&gt; i penalty=0.0049, mixture=0.965, num_terms=1973</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7962 (+/-0.0067)</span>
+<span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7961 (+/-0.00669)</span>
 <span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></pre></body></html></div>
 <p>The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> where good performance can be achieved. Using more iterations would probably result in the search finding better results.</p>
 <p>A plot of model performance versus the search iterations:</p>
@@ -560,13 +560,13 @@
 <span class="co">#&gt;  1       256       1    0    &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  2       256       1    0.25 &lt;tibble [89 × 2]&gt; </span>
 <span class="co">#&gt;  3       256       1    0.5  &lt;tibble [82 × 2]&gt; </span>
-<span class="co">#&gt;  4       256       1    0.75 &lt;tibble [79 × 2]&gt; </span>
-<span class="co">#&gt;  5       256       1    1    &lt;tibble [76 × 2]&gt; </span>
+<span class="co">#&gt;  4       256       1    0.75 &lt;tibble [69 × 2]&gt; </span>
+<span class="co">#&gt;  5       256       1    1    &lt;tibble [70 × 2]&gt; </span>
 <span class="co">#&gt;  6      1024       1    0    &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  7      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  8      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  9      1024       1    0.75 &lt;tibble [99 × 2]&gt; </span>
-<span class="co">#&gt; 10      1024       1    1    &lt;tibble [95 × 2]&gt; </span>
+<span class="co">#&gt;  9      1024       1    0.75 &lt;tibble [98 × 2]&gt; </span>
+<span class="co">#&gt; 10      1024       1    1    &lt;tibble [97 × 2]&gt; </span>
 <span class="co">#&gt; 11      4096       1    0    &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt; 12      4096       1    0.25 &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt; 13      4096       1    0.5  &lt;tibble [100 × 2]&gt;</span>
@@ -585,13 +585,13 @@
 <span class="co">#&gt;  1 Fold01       256       1    0    &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  2 Fold01       256       1    0.25 &lt;tibble [89 × 2]&gt; </span>
 <span class="co">#&gt;  3 Fold01       256       1    0.5  &lt;tibble [82 × 2]&gt; </span>
-<span class="co">#&gt;  4 Fold01       256       1    0.75 &lt;tibble [79 × 2]&gt; </span>
-<span class="co">#&gt;  5 Fold01       256       1    1    &lt;tibble [76 × 2]&gt; </span>
+<span class="co">#&gt;  4 Fold01       256       1    0.75 &lt;tibble [69 × 2]&gt; </span>
+<span class="co">#&gt;  5 Fold01       256       1    1    &lt;tibble [70 × 2]&gt; </span>
 <span class="co">#&gt;  6 Fold01      1024       1    0    &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  7 Fold01      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span>
 <span class="co">#&gt;  8 Fold01      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  9 Fold01      1024       1    0.75 &lt;tibble [99 × 2]&gt; </span>
-<span class="co">#&gt; 10 Fold01      1024       1    1    &lt;tibble [95 × 2]&gt; </span>
+<span class="co">#&gt;  9 Fold01      1024       1    0.75 &lt;tibble [98 × 2]&gt; </span>
+<span class="co">#&gt; 10 Fold01      1024       1    1    &lt;tibble [97 × 2]&gt; </span>
 <span class="co">#&gt; # … with 140 more rows</span></pre></body></html></div>
 <p>One thing to realize here is that <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> <a href="optimizations.html">may not fit all of the models</a> that are evaluated. In this case, for each value of <code>mixture</code> and <code>num_terms</code>, the model is fit overall <em>all</em> penalty values<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. To select the best parameter set, we can exclude the <code>penalty</code> column in <code>extracted</code>:</p>
 <div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">extracted</span> <span class="kw">&lt;-</span>
