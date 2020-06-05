@@ -69,3 +69,12 @@ is_windows <- function () {
 }
 
 # nocov end
+
+#' Get colors for tune text.
+#'
+#' @keywords internal
+#' @export
+#' @return  A list of colors that should be used for different types of text.
+
+get_tune_colors <- function() tune_color
+
