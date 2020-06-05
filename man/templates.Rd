@@ -16,8 +16,6 @@ use_kknn(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE)
 
 use_ranger(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE)
 
-use_ranger(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE)
-
 use_earth(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE)
 }
 \arguments{

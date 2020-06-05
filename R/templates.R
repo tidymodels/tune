@@ -441,52 +441,6 @@ use_kknn <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE)
 use_ranger <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
   rec_cl <- initial_recipe_call(match.call())
   rec_syntax <-
-    "knn_recipe" %>%
-    assign_value(!!rec_cl)
-
-  rec <- recipes::recipe(formula, data)
-
-  rec_syntax <-
-    rec_syntax %>%
-    factor_check(rec, add = verbose)
-
-  if (has_factor_pred(rec)) {
-    rec_syntax <-
-      add_steps_dummy_vars(rec_syntax, add = verbose, colors = colors)
-  }
-  rec_syntax <-
-    rec_syntax %>%
-    add_comment(paste(dist_msg, zv_msg), add = verbose, colors = colors) %>%
-    add_steps_normalization()
-
-  if (tune) {
-    prm <- rlang::exprs(neighbors = tune(), weight_func = tune())
-  } else {
-    prm <- NULL
-  }
-
-  mod_syntax <-
-    "knn_model" %>%
-    assign_value(!!rlang::call2("nearest_neighbor", !!!prm)) %>%
-    pipe_value(set_mode(!!model_mode(rec))) %>%
-    pipe_value(set_engine("kknn"))
-
-  cat(rec_syntax, "\n\n")
-  cat(mod_syntax, "\n\n")
-  cat(template_workflow("knn"), "\n\n")
-  if (tune) {
-    cat(template_tune_no_grid("knn", colors = colors), "\n\n", sep = "")
-  }
-  invisible(NULL)
-}
-
-# ------------------------------------------------------------------------------
-
-#' @export
-#' @rdname templates
-use_ranger <- function(formula, data, verbose = FALSE, tune = TRUE, colors = TRUE) {
-  rec_cl <- initial_recipe_call(match.call())
-  rec_syntax <-
     "ranger_recipe" %>%
     assign_value(!!rec_cl)
 
