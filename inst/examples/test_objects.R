@@ -4,7 +4,7 @@ library(modeldata)
 library(testthat)
 
 # ------------------------------------------------------------------------------
-# "mt_*" test objects used in test-predictions.R and test-extract.R
+# "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
 
 set.seed(455)
 folds <- vfold_cv(mtcars, v = 5)
@@ -22,6 +22,10 @@ lm_mod <- linear_reg() %>% set_engine("lm")
 
 knn_mod <-
   nearest_neighbor(mode = "regression", neighbors = tune()) %>%
+  set_engine("kknn")
+
+knn_mod_two <-
+  nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
   set_engine("kknn")
 
 verb <- FALSE
@@ -62,25 +66,6 @@ mt_spln_lm_bo <-
     control = b_ctrl
   )
 
-set.seed(8825)
-mt_spln_lm_grid_sep <-
-  tune_grid(
-    spline_rec,
-    lm_mod,
-    resamples = folds,
-    control = g_ctrl
-  )
-
-set.seed(8825)
-mt_spln_lm_bo_sep <-
-  tune_bayes(
-    spline_rec,
-    lm_mod,
-    resamples = folds,
-    iter = 3,
-    control = b_ctrl
-  )
-
 # ------------------------------------------------------------------------------
 
 set.seed(8825)
@@ -99,21 +84,10 @@ mt_spln_knn_bo <-
              iter = 3,
              control = b_ctrl)
 
-
-set.seed(8825)
-mt_spln_knn_grid_sep <-
-  tune_grid(
-    spline_rec,
-    knn_mod,
-    resamples = folds,
-    grid = grid_regular(parameters(mt_spln_knn)),
-    control = g_ctrl
-  )
-
 set.seed(8825)
 mt_spln_knn_bo_sep <-
   tune_bayes(spline_rec,
-             knn_mod,
+             knn_mod_two,
              resamples = folds,
              iter = 3,
              control = b_ctrl)
@@ -129,39 +103,6 @@ mt_knn_bo <-
              resamples = folds,
              iter = 3,
              control = b_ctrl)
-
-set.seed(8825)
-mt_knn_grid_sep <-
-  tune_grid(simple_rec, knn_mod, resamples = folds, control = g_ctrl)
-
-set.seed(8825)
-mt_knn_bo_sep <-
-  tune_bayes(simple_rec,
-             knn_mod,
-             resamples = folds,
-             iter = 3,
-             control = b_ctrl)
-
-set.seed(8825)
-mt_knn_grid_form <-
-  tune_grid(form, knn_mod, resamples = folds, control = g_ctrl)
-
-set.seed(8825)
-mt_knn_bo_form <-
-  tune_bayes(form,
-             knn_mod,
-             resamples = folds,
-             iter = 3,
-             control = b_ctrl)
-
-# ------------------------------------------------------------------------------
-
-options(warn = 2, error = traceback)
-set.seed(8825)
-mt_spln_lm_grid_fails <-
-  tune_grid(mt_spln_lm,
-            resamples = folds,
-            control = g_ctrl)
 
 # ------------------------------------------------------------------------------
 
@@ -374,6 +315,14 @@ rcv_results <-
     grid = cars_grid,
     control = control_grid(verbose = FALSE, save_pred = TRUE)
   )
+
+saveRDS(
+  rcv_results,
+  file = testthat::test_path("rcv_results.rds"),
+  version = 2,
+  compress = "xz"
+)
+
 
 # ------------------------------------------------------------------------------
 # Object classed with `resample_results` for use in vctrs/dplyr tests

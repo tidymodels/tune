@@ -1,14 +1,17 @@
 context("GP model and helpers")
 
+library(dplyr)
+
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
-load(test_path("svm_results.RData"))
-
+svm_results <- readRDS(test_path("svm_results.rds"))
 knn_results <- readRDS(test_path("knn_results.rds"))
 knn_set <- readRDS(test_path("knn_set.rds"))
 knn_grid <- readRDS(test_path("knn_grid.rds"))
 knn_gp <- readRDS(test_path("knn_gp.rds"))
+
+svm_set <- attributes(svm_results)$parameters
 
 # ------------------------------------------------------------------------------
 
@@ -36,7 +39,7 @@ test_that('GP fit - svm', {
   expect_equal(class(svm_gp), "GP")
   expect_equal(
     colnames(svm_gp$X),
-    c('C', '`%^*#`', 'scale_factor')
+    c('cost', '`%^*#`', 'scale_factor')
   )
 
 })
@@ -64,7 +67,7 @@ test_that('GP scoring', {
   ctrl <- control_bayes()
   curr <-
     collect_metrics(svm_results) %>%
-    filter(.metric == "accuracy") %>%
+    dplyr::filter(.metric == "accuracy") %>%
     mutate(.iter = 0)
 
   svm_gp <-
@@ -85,7 +88,7 @@ test_that('GP scoring', {
   expect_true(tibble::is_tibble(svm_scores))
   expect_equal(
     colnames(svm_scores),
-    c('C', '%^*#', 'scale_factor', '.mean', '.sd')
+    c('cost', '%^*#', 'scale_factor', '.mean', '.sd')
   )
   expect_equal(nrow(svm_scores), 20)
 

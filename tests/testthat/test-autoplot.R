@@ -4,9 +4,10 @@ context("autoplot")
 
 source(test_path("../helper-objects.R"))
 knn_results <- readRDS(test_path("knn_results.rds"))
-load(test_path("svm_results.RData"))
-load(test_path("bayes_example.RData"))
+svm_results <- readRDS(test_path("svm_results.rds"))
+svm_reg_results <- readRDS(test_path("svm_reg_results.rds"))
 rcv_results <- readRDS(test_path("rcv_results.rds"))
+load(test_path("test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 
@@ -16,8 +17,8 @@ test_that("two quantitative predictor marginal plot",{
   expect_equal(names(p$data), c('mean', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
-  expect_equal(p$labels$y, "Performance")
-  expect_equal(p$labels$x, "Parameter Value")
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$x, "")
 
   p <- autoplot(svm_results, metric = "accuracy")
   expect_true(isTRUE(all.equal(unique(p$data$.metric), "accuracy")))
@@ -27,12 +28,15 @@ test_that("two quantitative predictor marginal plot",{
 test_that("two quantitative predictor and one qualitative marginal plot",{
   p <- autoplot(knn_results)
   expect_is(p, "ggplot")
-  expect_equal(names(p$data), c('weight_func', 'mean', '.metric', 'name', 'value'))
+  expect_equal(
+    names(p$data),
+    c('Distance Weighting Function', 'mean', '.metric', 'name', 'value')
+  )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
-  expect_equal(p$labels$y, "Performance")
-  expect_equal(p$labels$x, "Parameter Value")
-  expect_equal(p$labels$colour, "weight_func")
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$x, "")
+  expect_equal(p$labels$colour, "Distance Weighting Function")
 })
 
 test_that("not marginal plot with grid search",{
@@ -46,29 +50,60 @@ test_that("not marginal plot with grid search",{
   )
 })
 
-# ------------------------------------------------------------------------------
 
-test_that("marginal plot for iterative search",{
-  p <- autoplot(search_res)
+test_that("marginal plot labels and transformations - irregular grid",{
+  p <- autoplot(svm_results)
   expect_is(p, "ggplot")
-  expect_equal(names(p$data), c('weight_func', 'mean', '.metric', 'name', 'value'))
+  expect_equal(names(p$data), c('mean', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
-  expect_equal(p$labels$y, "Performance")
-  expect_equal(p$labels$x, "Parameter Value")
-  expect_equal(p$labels$colour, "weight_func")
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$x, "")
+  expect_equal(
+    sort(unique(p$data$name)),
+    c("%^*#", "Cost (log-2)", "Scale Factor (log-10)")
+  )
+  expect_equal(
+    sort(unique(collect_metrics(svm_results)$cost)),
+    unique(2^(p$data$value[p$data$name == "Cost (log-2)"])),
+    tol = 0.001
+  )
+  expect_equal(
+    sort(unique(collect_metrics(svm_results)$scale_factor)),
+    sort(unique(10^(p$data$value[p$data$name == "Scale Factor (log-10)"]))),
+    tol = 0.001
+  )
 
   p <- autoplot(svm_results, metric = "accuracy")
   expect_true(isTRUE(all.equal(unique(p$data$.metric), "accuracy")))
 })
 
+# ------------------------------------------------------------------------------
+
+test_that("marginal plot for iterative search",{
+  p <- autoplot(mt_spln_knn_bo_sep)
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c('Distance Weighting Function', 'mean', '.metric', 'name', 'value')
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$x, "")
+  expect_equal(p$labels$colour, "Distance Weighting Function")
+
+  p <- autoplot(mt_spln_knn_bo_sep, metric = "rmse")
+  expect_true(isTRUE(all.equal(unique(p$data$.metric), "rmse")))
+})
+
 
 test_that("performance plot for iterative search",{
-  p <- autoplot(search_res, type = "performance")
+  p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
   expect_is(p, "ggplot")
   expect_equal(names(p$data),
-               c('neighbors', 'weight_func', 'dist_power', 'degrees of freedom',
-                 '.iter', '.metric', '.estimator', 'mean', 'n', 'std_err'))
+               c('K', 'weight_func', 'deg_free', '.iter', '.metric',
+                 '.estimator', 'mean', 'n', 'std_err'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$x, "Iteration")
@@ -76,21 +111,24 @@ test_that("performance plot for iterative search",{
   expect_equal(p$labels$ymin, "mean - const * std_err")
   expect_equal(p$labels$ymax, "mean + const * std_err")
 
-  p <- autoplot(search_res, type = "performance", metric = "accuracy")
-  expect_true(isTRUE(all.equal(unique(p$data$.metric), "accuracy")))
+  p <- autoplot(mt_spln_knn_bo_sep, type = "performance", metric = "rmse")
+  expect_true(isTRUE(all.equal(unique(p$data$.metric), "rmse")))
 
-  p <- autoplot(search_res, type = "performance", width = 0)
+  p <- autoplot(mt_spln_knn_bo_sep, type = "performance", width = 0)
   expect_true(isTRUE(all.equal(names(p$mapping), c("x", "y"))))
 })
 
 
 test_that("parameter plot for iterative search",{
-  p <- autoplot(search_res, type = "parameters")
+  p <- autoplot(mt_spln_knn_bo_sep, type = "parameters")
   expect_is(p, "ggplot")
   expect_equal(names(p$data), c('.iter', 'name', 'value'))
+
+  name_vals <- sort(unique(p$data$name))
+  expect_equal(name_vals, c("K", "Piecewise Polynomial Degree"))
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(value))
-  expect_equal(p$labels$y, "Parameter Value")
+  expect_equal(p$labels$y, "")
   expect_equal(p$labels$x, "Iteration")
 })
 
@@ -108,8 +146,8 @@ test_that("regular grid plot",{
   expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
   expect_equal(p$facet$vars(), c(".metric", "degree", "wt degree"))
 
-  # expect_equal(p$labels$y, "Performance")
-  # expect_equal(p$labels$x, "Parameter Value")
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$x, "deg_free")
 
   p <- autoplot(rcv_results, metric = "rmse")
   expect_is(p, "ggplot")
@@ -123,8 +161,29 @@ test_that("regular grid plot",{
   expect_equal(rlang::get_expr(p$mapping$group), sym("wt df"))
   expect_equal(p$facet$vars(), c("degree", "wt degree"))
 
-  # expect_equal(p$labels$y, "Performance")
-  # expect_equal(p$labels$x, "Parameter Value")
+  expect_equal(p$labels$y, "rmse")
+  expect_equal(p$labels$x, "deg_free")
+
+  p <- autoplot(svm_reg_results)
+  expect_is(p, "ggplot")
+  expect_equal(
+    names(p$data),
+    c("%^*#", "Scale Factor",  "mean", ".metric", "name", "value")
+  )
+  expect_equal(rlang::get_expr(p$mapping$x), expr(value))
+  expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
+  expect_equal(rlang::get_expr(p$mapping$col), sym("%^*#"))
+  expect_equal(rlang::get_expr(p$mapping$group), sym("%^*#"))
+  expect_equal(p$facet$vars(), c(".metric", "Scale Factor"))
+
+  expect_equal(p$labels$y, "")
+  expect_equal(p$labels$colour, as.name("%^*#"))
+  expect_equal(p$labels$x, "Cost")
+  expect_equal(p$labels$group, "%^*#")
+
+  expect_equal(class(p$scales$scales[[1]]$trans), "trans")
+  expect_equal(p$scales$scales[[1]]$trans$name, "log-2")
+  expect_equal(unique(p$data$name), "Cost")
 })
 
 
