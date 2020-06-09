@@ -15,13 +15,16 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
 <!-- badges: end -->
 
+## Overview
+
 The goal of tune is to facilitate the tuning of hyper-parameters the
 tidymodels packages. It relies heavily on `recipes`, `parsnip`, and
 `dials`.
 
 ## Installation
 
-Install from CRAN:
+Install from
+CRAN:
 
 ``` r
 install.packages("tune", repos = "http://cran.r-project.org") #or your local mirror

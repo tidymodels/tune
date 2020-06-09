@@ -21,6 +21,8 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
 <!-- badges: end -->
 
+## Overview
+
 The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It relies heavily on `recipes`, `parsnip`, and `dials`. 
 
 ## Installation
