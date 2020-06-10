@@ -5,6 +5,7 @@
 \alias{tune_args.model_spec}
 \alias{tune_args.recipe}
 \alias{tune_args.step}
+\alias{tune_args.check}
 \alias{tune_args.workflow}
 \title{Determine arguments tagged for tuning}
 \usage{
@@ -15,6 +16,8 @@ tune_args(object, ...)
 \method{tune_args}{recipe}(object, full = FALSE, ...)
 
 \method{tune_args}{step}(object, full = FALSE, ...)
+
+\method{tune_args}{check}(object, full = FALSE, ...)
 
 \method{tune_args}{workflow}(object, ...)
 }

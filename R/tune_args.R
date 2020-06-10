@@ -150,6 +150,9 @@ tune_args.step <- function(object, full = FALSE, ...) {
   )
 }
 
+#' @export
+#' @rdname tune_args
+tune_args.check <- tune_args.step
 
 # ------------------------------------------------------------------------------
 
