@@ -234,3 +234,29 @@ test_that("argument order gives warnings for recipe/formula", {
     "is deprecated as of lifecycle"
   )
 })
+
+
+
+test_that("retain extra attributes", {
+
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  res <- lin_mod %>%
+    fit_resamples(mpg ~ ., folds)
+
+  att <- attributes(res)
+  att_names <- names(att)
+  expect_true(any(att_names == "metrics"))
+  expect_true(any(att_names == "outcomes"))
+  expect_true(any(att_names == "parameters"))
+
+  expect_true(is.character(att$outcomes))
+  expect_true(att$outcomes == "mpg")
+  expect_true(inherits(att$parameters, "parameters"))
+  expect_true(inherits(att$metrics, "metric_set"))
+
+})
