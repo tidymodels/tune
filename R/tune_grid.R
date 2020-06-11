@@ -334,6 +334,7 @@ tune_grid_workflow <- function(object,
     x = resamples,
     parameters = pset,
     metrics = metrics,
+    outcomes = outcome_names(object),
     rset_info = rset_info
   )
 }
