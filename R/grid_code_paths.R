@@ -179,7 +179,7 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
-    rec_id <- names0(num_rec, "Recipe")
+    rec_id <- names0(param_iter, "Recipe")
 
     workflow <- catch_and_log(
       train_recipe(split, workflow, param_vals),
