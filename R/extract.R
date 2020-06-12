@@ -108,12 +108,12 @@ pull_notes <- function(resamples, res, control) {
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, metrics, split) {
+append_metrics <- function(collection, predictions, workflow, metrics, split, mod) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
   tmp_est <- estimate_metrics(predictions, metrics, workflow)
-  tmp_est <- cbind(tmp_est, labels(split))
+  tmp_est <- cbind(tmp_est, labels(split), .model = mod)
   dplyr::bind_rows(collection, tmp_est)
 }
 
