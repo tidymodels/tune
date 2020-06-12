@@ -73,7 +73,7 @@ test_that('empty ellipses', {
 # ------------------------------------------------------------------------------
 
 test_that('accessor functions', {
-  skip_if(utils::packageVersion("rsample") <= "0.0.6")
+  skip_if(utils::packageVersion("dials") <= "0.0.6")
   expect_equal(
     tibble::as_tibble(.get_tune_parameters(mt_knn_bo)),
     tibble::as_tibble(attributes(mt_knn_bo)$parameters)
