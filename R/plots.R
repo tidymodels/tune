@@ -122,7 +122,8 @@ get_param_columns <- function(x) {
     res <- prm$id
   } else {
     dat <- collect_metrics(x)
-    other_names <- c(".metric", ".estimator", "mean", "n", "std_err", ".iter")
+    other_names <- c(".metric", ".estimator", "mean", "n",
+                     "std_err", ".iter", ".config")
     res <- names(dat)[!(names(dat) %in% other_names)]
   }
   res
