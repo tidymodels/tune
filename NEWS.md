@@ -16,6 +16,7 @@
 
 * In other plotting news, `coord_obs_pred()` has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1. 
 
+* The outcome names are saved in an attribute called `outcomes` to objects with class `tune_results`. Also, several accessor functions (named `.get_tune_*) were added to more easily access such attributes.  
 
 
 # tune 0.1.0

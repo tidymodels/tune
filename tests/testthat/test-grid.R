@@ -307,3 +307,43 @@ test_that("determining the grid type", {
 
 
 
+test_that("retain extra attributes", {
+
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  pset <- dials::parameters(wflow)
+  grid <- grid_regular(pset, levels = 3)
+  folds <- vfold_cv(mtcars)
+  res <- tune_grid(wflow, resamples = folds, grid = grid)
+
+  att <- attributes(res)
+  att_names <- names(att)
+  expect_true(any(att_names == "metrics"))
+  expect_true(any(att_names == "outcomes"))
+  expect_true(any(att_names == "parameters"))
+
+  expect_true(is.character(att$outcomes))
+  expect_true(att$outcomes == "mpg")
+  expect_true(inherits(att$parameters, "parameters"))
+  expect_true(inherits(att$metrics, "metric_set"))
+
+  set.seed(4400)
+  wflow <- workflow() %>% add_formula(mpg ~ .) %>% add_model(svm_mod)
+  pset <- dials::parameters(wflow)
+  grid <- grid_regular(pset, levels = 3)
+  folds <- vfold_cv(mtcars)
+  res <- tune_grid(wflow, resamples = folds, grid = grid)
+
+  att <- attributes(res)
+  att_names <- names(att)
+  expect_true(any(att_names == "metrics"))
+  expect_true(any(att_names == "outcomes"))
+  expect_true(any(att_names == "parameters"))
+
+  expect_true(is.character(att$outcomes))
+  expect_true(att$outcomes == "mpg")
+  expect_true(inherits(att$parameters, "parameters"))
+  expect_true(inherits(att$metrics, "metric_set"))
+
+})
+

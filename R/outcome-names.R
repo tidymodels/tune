@@ -49,3 +49,15 @@ outcome_names.workflow <- function(x, ...) {
   }
   res
 }
+
+#' @export
+#' @rdname outcome_names
+outcome_names.tune_results <- function(x, ...) {
+  att <- attributes(x)
+  if (any(names(att) == "outcomes")) {
+    res <- att$outcomes
+  } else {
+    res <- NA_character_
+  }
+  res
+}

@@ -3,6 +3,7 @@ context("misc functions")
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
+load(test_path("test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ test_that('exponential decay', {
 # ------------------------------------------------------------------------------
 
 test_that('in-line formulas on outcome', {
-  
+
   # see issues 121
   w1 <-
     workflow() %>%
@@ -67,4 +68,37 @@ test_that('in-line formulas on outcome', {
 test_that('empty ellipses', {
   expect_error(tune:::empty_ellipses(), regexp = NA)
   expect_warning(tune:::empty_ellipses(a = 1), regexp = ": 'a'")
+})
+
+# ------------------------------------------------------------------------------
+
+test_that('accessor functions', {
+
+  expect_equal(.get_tune_parameter_names(mt_spln_knn_bo), attributes(mt_spln_knn_bo)$parameters$id)
+  attr(mt_spln_knn_bo, "parameters") <- NULL
+  expect_equal(.get_tune_parameter_names(mt_spln_knn_bo), character(0))
+
+  expect_equal(.get_tune_metrics(mt_knn_bo), attributes(mt_knn_bo)$metrics)
+  attr(mt_knn_bo, "metrics") <- NULL
+  expect_null(.get_tune_metrics(mt_knn_bo))
+
+  expect_equal(.get_tune_metric_names(mt_spln_knn_bo),
+               names(attributes(attributes(mt_spln_knn_bo)$metrics)$metrics))
+  attr(mt_spln_knn_bo, "metrics") <- NULL
+  expect_equal(.get_tune_metric_names(mt_spln_knn_bo), character(0))
+
+  expect_equal(.get_tune_outcome_names(mt_spln_knn_bo), attributes(mt_spln_knn_bo)$outcomes)
+  attr(mt_spln_knn_bo, "outcomes") <- NULL
+  expect_equal(.get_tune_outcome_names(mt_spln_knn_bo), character(0))
+
+})
+
+test_that('accessor functions', {
+  skip_if(utils::packageVersion("dials") >= "0.0.7")
+  expect_equal(
+    tibble::as_tibble(.get_tune_parameters(mt_knn_bo)),
+    tibble::as_tibble(attributes(mt_knn_bo)$parameters)
+  )
+  attr(mt_knn_bo, "parameters") <- NULL
+  expect_equal(.get_tune_parameters(mt_knn_bo), tibble::tibble())
 })

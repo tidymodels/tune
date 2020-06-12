@@ -371,6 +371,7 @@ tune_bayes_workflow <-
       x = unsummarized,
       parameters = param_info,
       metrics = metrics,
+      outcomes = outcome_names(object),
       rset_info = rset_info
     )
   }

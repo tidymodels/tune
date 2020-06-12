@@ -335,3 +335,29 @@ test_that("ellipses with tune_bayes", {
     "The `...` are not used in this function but one or more objects"
   )
 })
+
+
+
+
+test_that("retain extra attributes", {
+
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
+  folds <- vfold_cv(mtcars)
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2)
+
+  att <- attributes(res)
+  att_names <- names(att)
+  expect_true(any(att_names == "metrics"))
+  expect_true(any(att_names == "outcomes"))
+  expect_true(any(att_names == "parameters"))
+
+  expect_true(is.character(att$outcomes))
+  expect_true(att$outcomes == "mpg")
+  expect_true(inherits(att$parameters, "parameters"))
+  expect_true(inherits(att$metrics, "metric_set"))
+
+
+})

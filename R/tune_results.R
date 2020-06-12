@@ -73,11 +73,12 @@ print_compat_tune_results_label <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-new_tune_results <- function(x, parameters, metrics, rset_info, ..., class = character()) {
+new_tune_results <- function(x, parameters, metrics, outcomes = character(0), rset_info, ..., class = character()) {
   new_bare_tibble(
     x = x,
     parameters = parameters,
     metrics = metrics,
+    outcomes = outcomes,
     rset_info = rset_info,
     ...,
     class = c(class, "tune_results")

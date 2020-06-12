@@ -27,10 +27,10 @@ if \code{tune("my_param")} was used).}
 A tibble. The column names depend on the results and the mode of the
 model.
 
-For \code{\link[=collect_metrics]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, when unsummarized,
+For \code{\link[=collect_predictions]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, when unsummarized,
 there are columns for each tuning parameter (using the \code{id} from \code{\link[=tune]{tune()}},
 if any).
-\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
+\code{\link[=collect_predictions]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
 results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
 When not summarized, the additional columns for the resampling identifier(s)
 and \code{.estimate}.
