@@ -8,8 +8,12 @@
 #' @param parameters A tibble with a single tuning parameter combination. Only
 #' one tuning parameter combination (if any were used) is allowed here.
 #' @param tidy Should the results come back in a tibble (`TRUE`) or a matrix.
-#' @return A tibble or matrix with the average cell count aross resamples.
+#' @return A tibble or matrix with the average cell count across resamples.
 #' @examples
+#' library(parsnip)
+#' library(rsample)
+#' library(dplyr)
+#'
 #' data(two_class_dat, package = "modeldata")
 #'
 #' set.seed(2393)

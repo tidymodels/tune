@@ -16,13 +16,17 @@ one tuning parameter combination (if any were used) is allowed here.}
 \item{tidy}{Should the results come back in a tibble (\code{TRUE}) or a matrix.}
 }
 \value{
-A tibble or matrix with the average cell count aross resamples.
+A tibble or matrix with the average cell count across resamples.
 }
 \description{
 For classification problems, \code{conf_mat_resampled()} computes a separate
 confusion matrix for each resample then averages the cell counts.
 }
 \examples{
+library(parsnip)
+library(rsample)
+library(dplyr)
+
 data(two_class_dat, package = "modeldata")
 
 set.seed(2393)
