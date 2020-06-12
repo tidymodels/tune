@@ -68,7 +68,7 @@ test_that('tune model only (with recipe, multi-predict)', {
   expect_equal(res$id, folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
-    c("cost", ".metric", ".estimator", ".estimate")
+    c("cost", ".metric", ".estimator", ".estimate", ".config")
   )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), nrow(grid) * 2)
@@ -90,7 +90,7 @@ test_that('tune model and recipe', {
   expect_equal(res$id, folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
-    c("cost", "num_comp", ".metric", ".estimator", ".estimate")
+    c("cost", "num_comp", ".metric", ".estimator", ".estimate", ".config")
   )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), nrow(grid) * 2)
