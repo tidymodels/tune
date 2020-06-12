@@ -73,13 +73,6 @@ test_that('empty ellipses', {
 # ------------------------------------------------------------------------------
 
 test_that('accessor functions', {
-  skip_if(utils::packageVersion("dials") <= "0.0.6")
-  expect_equal(
-    tibble::as_tibble(.get_tune_parameters(mt_knn_bo)),
-    tibble::as_tibble(attributes(mt_knn_bo)$parameters)
-  )
-  attr(mt_knn_bo, "parameters") <- NULL
-  expect_equal(.get_tune_parameters(mt_knn_bo), tibble::tibble())
 
   expect_equal(.get_tune_parameter_names(mt_spln_knn_bo), attributes(mt_spln_knn_bo)$parameters$id)
   attr(mt_spln_knn_bo, "parameters") <- NULL
@@ -98,4 +91,14 @@ test_that('accessor functions', {
   attr(mt_spln_knn_bo, "outcomes") <- NULL
   expect_equal(.get_tune_outcome_names(mt_spln_knn_bo), character(0))
 
+})
+
+test_that('accessor functions', {
+  skip_if(utils::packageVersion("dials") >= "0.0.7")
+  expect_equal(
+    tibble::as_tibble(.get_tune_parameters(mt_knn_bo)),
+    tibble::as_tibble(attributes(mt_knn_bo)$parameters)
+  )
+  attr(mt_knn_bo, "parameters") <- NULL
+  expect_equal(.get_tune_parameters(mt_knn_bo), tibble::tibble())
 })
