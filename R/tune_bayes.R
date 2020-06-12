@@ -247,6 +247,7 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
+    y_names <- outcome_names(object)
     rset_info <- pull_rset_attributes(resamples)
 
     metrics <- check_metrics(metrics, object)
@@ -267,7 +268,7 @@ tune_bayes_workflow <-
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      out <- new_iteration_results(unsummarized, param_info, metrics, rset_info)
+      out <- new_iteration_results(unsummarized, param_info, metrics, y_names, rset_info)
       return(out)
     })
 
@@ -371,7 +372,7 @@ tune_bayes_workflow <-
       x = unsummarized,
       parameters = param_info,
       metrics = metrics,
-      outcomes = outcome_names(object),
+      outcomes = y_names,
       rset_info = rset_info
     )
   }
