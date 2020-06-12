@@ -263,7 +263,6 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
 
   if (is_failure(predictions)) {
     out <- list(
-      .config = rs_id,
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
@@ -332,7 +331,6 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
 
   if (is_failure(workflow)) {
     out <- list(
-      .config = rs_id,
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
