@@ -18,6 +18,7 @@
 
 * The outcome names are saved in an attribute called `outcomes` to objects with class `tune_results`. Also, several accessor functions (named `.get_tune_*) were added to more easily access such attributes.  
 
+* `conf_mat_resampled()` computes the average confusion matrix across resampling statistics for a single model.  
 
 # tune 0.1.0
 
