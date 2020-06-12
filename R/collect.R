@@ -230,7 +230,7 @@ prob_summarize <- function(x, p) {
       dplyr::mutate(
         .pred_class = gsub("\\.pred_", "", .column),
         .pred_class = factor(.pred_class, levels = lvl, ordered = ord)
-        ) %>%
+      ) %>%
       dplyr::ungroup() %>%
       dplyr::select(-.value, -.column)
     x <- full_join(x, class_pred, by = group_cols)
@@ -345,7 +345,7 @@ estimate_tune_results <- function(x, ...) {
   excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
                  grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
   param_names <- all_col[!(all_col %in% excl_cols)]
-  x %>%
+  x <- x %>%
     tibble::as_tibble() %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
     dplyr::summarize(
@@ -354,5 +354,14 @@ estimate_tune_results <- function(x, ...) {
       std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
     ) %>%
     dplyr::ungroup()
+
+  if (".config" %in% param_names) {
+    x <- dplyr::bind_cols(
+      dplyr::select(x, -.config),
+      dplyr::select(x, .config)
+    ) %>%
+      dplyr::arrange(.config)
+  }
+  x
 }
 
