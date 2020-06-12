@@ -294,6 +294,14 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
     if (!inherits(x, "tune_results")) {
       rlang::abort(bayes_msg)
     }
+
+    if (ctrl$save_pred & !any(names(x) == ".predictions")) {
+      rlang::abort("`save_pred` can only be used if the initial results saved predictions.")
+    }
+    if (!is.null(ctrl$extract) & !any(names(x) == ".extracts")) {
+      rlang::abort("`extract` can only be used if the initial results has extractions.")
+    }
+
   }
   if (!any(names(x) == ".iter")) {
     x <- x %>% dplyr::mutate(.iter = 0)
