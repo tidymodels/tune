@@ -113,7 +113,7 @@ append_metrics <- function(collection, predictions, workflow, metrics, split, mo
     return(collection)
   }
   tmp_est <- estimate_metrics(predictions, metrics, workflow)
-  tmp_est <- cbind(tmp_est, labels(split), .model = mod)
+  tmp_est <- cbind(.config = mod, tmp_est, labels(split))
   dplyr::bind_rows(collection, tmp_est)
 }
 
