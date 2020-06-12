@@ -201,6 +201,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
   split <- resamples$splits[[rs_iter]]
+  rs_id <- dplyr::last(recipes::names0(rs_iter, "Resample"))
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -263,6 +264,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
 
   if (is_failure(predictions)) {
     out <- list(
+      .config = rs_id,
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
@@ -272,7 +274,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split, rs_id)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -316,6 +318,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
   split <- resamples$splits[[rs_iter]]
+  rs_id <- dplyr::last(recipes::names0(rs_iter, "Resample"))
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -331,6 +334,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
 
   if (is_failure(workflow)) {
     out <- list(
+      .config = rs_id,
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
@@ -387,7 +391,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split, rs_id)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
