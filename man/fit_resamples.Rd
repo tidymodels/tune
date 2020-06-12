@@ -40,7 +40,7 @@ as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
+\item{control}{A \code{\link[=control_grid]{control_resamples()}} object used to fine tune the resampling
 process.}
 }
 \description{
@@ -81,7 +81,7 @@ The out-of-sample estimates of these metrics are contained in a list column
 called \code{.metrics}. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.
 
-\code{\link[=collect_metrics]{collect_metrics()}} can be used for these objects to collapse the results
+\code{\link[=collect_predictions]{collect_metrics()}} can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).
 }
@@ -101,7 +101,7 @@ function generates a column called \code{.pred} and so on. As noted above, the
 prediction columns that are returned are determined by the type of metric(s)
 requested.
 
-This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::unnest()}} or using the
+This list column can be \code{unnested} using \code{\link[tidyr:nest]{tidyr::unnest()}} or using the
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
@@ -121,7 +121,7 @@ argument should be a function with a single argument. The value of the
 argument that is given to the function in each resample is a workflow
 object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). There are two
 helper functions that can be used to easily pull out the recipe (if any)
-and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_model]{extract_model()}}.
+and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_recipe]{extract_model()}}.
 
 As an example, if there is interest in getting each model back, one could use:
 \preformatted{
@@ -161,5 +161,5 @@ show_best(spline_res, metric = "rmse")
 }
 }
 \seealso{
-\code{\link[=control_resamples]{control_resamples()}}, \code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_metrics]{collect_metrics()}}
+\code{\link[=control_grid]{control_resamples()}}, \code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_predictions]{collect_metrics()}}
 }
