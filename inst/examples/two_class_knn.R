@@ -4,11 +4,12 @@ library("doFuture")
 registerDoFuture()
 plan(multicore)
 
+data(two_class_dat, package = "modeldata")
 
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- vfold_cv(two_class_dat, repeats = 5)
+data_folds <- vfold_cv(two_class_dat, repeats = 1)
 
 # ------------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ two_class_grid <-
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
 res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid,
-                 metrics = class_metrics, control = control_grid(verbose = TRUE))
+                 metrics = class_metrics, control = control_grid(verbose = TRUE, save_pred = TRUE))
 
 
 # all_pred <-
@@ -77,8 +78,8 @@ svm_search <-
     initial = res,
     objective = conf_bound(kappa = decr_kappa),
     metrics = class_metrics,
-    iter = 30,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 5)
+    iter = 3,
+    control = control_bayes(verbose = TRUE, uncertain = 5, save_pred = TRUE)
   )
 
 ggplot(svm_search %>%  summarize() %>% filter(.metric == "roc_auc")) +
