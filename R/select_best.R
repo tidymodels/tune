@@ -16,7 +16,9 @@
 #' @param metric A character value for the metric that will be used to sort
 #'  the models. (See
 #'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
-#'  more details). Not required if a single metric exists in `x`.
+#'  more details). Not required if a single metric exists in `x`. If there are
+#'  multiple metric and none are given, the first in the metric set is used (and
+#'  a warning is issued).
 #' @param n An integer for the number of top results/rows to return.
 #' @param limit The limit of loss of performance that is acceptable (in percent
 #' units). See details below.
@@ -53,7 +55,8 @@
 #'                    limit = 5, desc(K))
 #' }
 #' @export
-show_best <- function(x, metric, n = 5, ...) {
+show_best <- function(x, metric = NULL, n = 5, ...) {
+  metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste("The `maximize` argument is no longer needed.",
@@ -82,10 +85,24 @@ show_best <- function(x, metric, n = 5, ...) {
   summary_res %>% dplyr::slice(show_ind)
 }
 
+choose_metric <- function(metric, x) {
+  if (is.null(metric)) {
+    metric_vals <- .get_tune_metric_names(x)
+    metric <- metric_vals[1]
+    if (length(metric_vals) > 1) {
+      msg <- paste0("No value of `metric` was given; metric '", metric, "' ",
+                    "will be used.")
+      rlang::warn(msg)
+    }
+  }
+  metric
+}
+
 
 #' @export
 #' @rdname show_best
-select_best <- function(x, metric, ...) {
+select_best <- function(x, metric = NULL, ...) {
+  metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste("The `maximize` argument is no longer needed.",
@@ -101,7 +118,8 @@ select_best <- function(x, metric, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss <- function(x, ..., metric, limit = 2) {
+select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
+  metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste("The `maximize` argument is no longer needed.",
@@ -145,7 +163,8 @@ select_by_pct_loss <- function(x, ..., metric, limit = 2) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err <- function(x, ..., metric) {
+select_by_one_std_err <- function(x, ..., metric = NULL) {
+  metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste("The `maximize` argument is no longer needed.",
