@@ -32,6 +32,7 @@ reference:
     - starts_with("extract_")
     - starts_with("finalize")
     - coord_obs_pred
+    - conf_mat_resampled
   - title: Low-Level Functions
     contents:
     - merge.recipe
