@@ -2,17 +2,25 @@
 print.tune_results <- function(x, ...) {
   total_notes <- sum(purrr::map_int(x$.notes, nrow)) > 0
   if (total_notes > 0) {
-    print_notes <- glue::glue("This tuning result has notes.\n",
+    max_note_nchar <- 500
+    note_samples <-
+      x %>%
+      dplyr::select(.notes) %>%
+      tidyr::unnest(.notes) %>%
+      dplyr::mutate(
+        note = dplyr::row_number(),
+        .notes = substr(.notes, 1, max_note_nchar)
+      )
+
+    note_samples <-
+      note_samples %>%
+      dplyr::sample_n(min(3, nrow(note_samples))) %>%
+      dplyr::arrange(note) %>%
+      dplyr::pull(.notes)
+
+    print_notes <- glue::glue("This tuning result has notes. ",
                               "Example notes on model fitting include:\n",
-                              glue::glue_collapse(
-                                x %>%
-                                  dplyr::select(.notes) %>%
-                                  tidyr::unnest(.notes) %>%
-                                  dplyr::mutate(note = dplyr::row_number()) %>%
-                                  dplyr::sample_n(3) %>%
-                                  dplyr::arrange(note) %>%
-                                  dplyr::pull(.notes),
-                                sep = "\n"))
+                              glue::glue_collapse(note_samples, sep = "\n"))
     rlang::warn(print_notes)
   }
 
