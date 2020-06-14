@@ -7,13 +7,13 @@
 \alias{select_by_one_std_err}
 \title{Investigate best tuning parameters}
 \usage{
-show_best(x, metric, n = 5, ...)
+show_best(x, metric = NULL, n = 5, ...)
 
-select_best(x, metric, ...)
+select_best(x, metric = NULL, ...)
 
-select_by_pct_loss(x, ..., metric, limit = 2)
+select_by_pct_loss(x, ..., metric = NULL, limit = 2)
 
-select_by_one_std_err(x, ..., metric)
+select_by_one_std_err(x, ..., metric = NULL)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
@@ -21,7 +21,9 @@ select_by_one_std_err(x, ..., metric)
 \item{metric}{A character value for the metric that will be used to sort
 the models. (See
 \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
-more details). Not required if a single metric exists in \code{x}.}
+more details). Not required if a single metric exists in \code{x}. If there are
+multiple metric and none are given, the first in the metric set is used (and
+a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
 

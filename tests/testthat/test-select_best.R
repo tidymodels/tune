@@ -91,9 +91,12 @@ test_that("select_best()", {
     select_best(rcv_results, metric = c("rmse", "rsq")),
     "Please specify a single character"
   )
-  expect_error(
-    select_best(rcv_results),
-    'argument "metric" is missing, with no default'
+  expect_warning(
+    expect_equal(
+      select_best(rcv_results),
+      select_best(rcv_results, metric = "rmse")
+    ),
+    "metric 'rmse' will be used"
   )
 })
 
@@ -117,6 +120,13 @@ test_that("show_best()", {
   expect_equal(
     show_best(rcv_results, metric = "rmse", n = 1) %>% names(),
     rcv_rmse %>% names()
+  )
+  expect_warning(
+    expect_equal(
+      show_best(rcv_results),
+      show_best(rcv_results, metric = "rmse")
+    ),
+    "metric 'rmse' will be used"
   )
 })
 
@@ -148,9 +158,12 @@ test_that("one-std error rule", {
     select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free),
     "Please specify a single character"
   )
-  expect_error(
-    select_by_one_std_err(rcv_results, deg_free),
-    'argument "metric" is missing, with no default'
+  expect_warning(
+    expect_equal(
+      select_by_one_std_err(knn_results, K),
+      select_by_one_std_err(knn_results, K, metric = "roc_auc")
+    ),
+    "metric 'roc_auc' will be used"
   )
   expect_error(
     select_by_one_std_err(rcv_results, metric = "random"),
@@ -186,9 +199,12 @@ test_that("percent loss", {
     select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free),
     "Please specify a single character"
   )
-  expect_error(
-    select_by_pct_loss(rcv_results, deg_free),
-    'argument "metric" is missing, with no default'
+  expect_warning(
+    expect_equal(
+      select_by_pct_loss(knn_results, K),
+      select_by_pct_loss(knn_results, K, metric = "roc_auc")
+    ),
+    "metric 'roc_auc' will be used"
   )
   expect_error(
     select_by_pct_loss(rcv_results, metric = "random"),

@@ -20,6 +20,8 @@
 
 * `conf_mat_resampled()` computes the average confusion matrix across resampling statistics for a single model.  
 
+* `show_best()`, and the `select_*()` functions will now use the first metric in the metric set if no metric is supplied. 
+
 # tune 0.1.0
 
 ## Breaking Changes
