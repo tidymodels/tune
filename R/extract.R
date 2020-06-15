@@ -108,19 +108,19 @@ pull_notes <- function(resamples, res, control) {
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, metrics, split, mod = NULL) {
+append_metrics <- function(collection, predictions, workflow, metrics, split, .config = NULL) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
   tmp_est <- estimate_metrics(predictions, metrics, workflow)
   tmp_est <- cbind(tmp_est, labels(split))
-  if (!rlang::is_null(mod)) {
-    tmp_est <- cbind(tmp_est, .config = mod)
+  if (!rlang::is_null(.config)) {
+    tmp_est <- cbind(tmp_est, .config)
   }
   dplyr::bind_rows(collection, tmp_est)
 }
 
-append_predictions <- function(collection, predictions, split, control) {
+append_predictions <- function(collection, predictions, split, control, .config = NULL) {
   if (!control$save_pred) {
     return(NULL)
   }
@@ -128,6 +128,9 @@ append_predictions <- function(collection, predictions, split, control) {
     return(collection)
   }
   predictions <- cbind(predictions, labels(split))
+  if (!rlang::is_null(.config)) {
+    predictions <- cbind(predictions, .config)
+  }
   dplyr::bind_rows(collection, predictions)
 }
 
