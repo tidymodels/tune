@@ -356,9 +356,11 @@ estimate_tune_results <- function(x, ...) {
     dplyr::ungroup()
 
   if (".config" %in% param_names) {
-    x <- dplyr::bind_cols(
+    join_names <- param_names[!(param_names %in% ".config")]
+    x <- dplyr::inner_join(
       dplyr::select(x, -.config),
-      dplyr::select(x, .config)
+      x,
+      by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
     ) %>%
       dplyr::arrange(.config)
   }
