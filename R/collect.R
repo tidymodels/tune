@@ -181,7 +181,7 @@ prob_summarize <- function(x, p) {
   }
 
   nms <- names(x)
-  y_cols <- nms[!(nms %in% c(".row", ".iter", pred_cols, p))]
+  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", pred_cols, p))]
   group_cols <- nms[!(nms %in% pred_cols)]
 
   x <-
@@ -242,7 +242,7 @@ class_summarize <- function(x, p) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
   nms <- names(x)
   group_cols <- nms[!(nms %in% pred_cols)]
-  outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
+  outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter", ".config"))]
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
