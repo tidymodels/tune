@@ -58,7 +58,7 @@ filter_parameters <- function(x, parameters) {
   }
 
   # run a test to make sure that there are no issues in filtering
-  tst_orig <- x$.metrics[[1]]
+  tst_orig <- bind_rows(x$.metrics)
   tst_filtered <- filter_iter(tst_orig, parameters)
   if (nrow(tst_filtered) == 0) {
     rlang::abort("No parameter combinations were selected using your subset.")
