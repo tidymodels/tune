@@ -44,6 +44,7 @@ filter_parameters <- function(x, parameters) {
   # check parameters vs x
   param_names <- .get_tune_parameter_names(x)
   filter_names <- names(parameters)
+  filter_names <- filter_names[filter_names != ".config"]
   if (length(intersect(filter_names, param_names)) == 0){
     msg <- paste0("There are no columns in 'parameters' that match with ",
                   as.character(cl_x))
