@@ -98,7 +98,7 @@ test_that('tune model and recipe', {
   expect_equal(unique(res$id), folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
-    c("cost", "num_comp", ".metric", ".estimator", ".estimate")
+    c("cost", "num_comp", ".metric", ".estimator", ".estimate", ".config")
   )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), iterT * 2)
@@ -156,7 +156,7 @@ test_that('tune recipe and model, which has_unknowns', {
   expect_equal(unique(res$id), folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
-    c("mtry", "num_comp", ".metric", ".estimator", ".estimate")
+    c("mtry", "num_comp", ".metric", ".estimator", ".estimate", ".config")
   )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), iterT * 2)

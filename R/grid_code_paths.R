@@ -46,6 +46,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
     workflow <- original_workflow
 
     rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
+    rec_id <- dplyr::last(recipes::names0(rec_iter, "Recipe"))
 
     # Current recipe parameters only
     rec_grid_vals <-
@@ -85,6 +86,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
       workflow <- original_prepped_workflow
 
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
+      mod_id <- paste0(rec_id, "_", dplyr::last(recipes::names0(mod_iter, "Model")))
 
       fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
       submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
@@ -123,8 +125,8 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
         next
       }
 
-      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
     } # end model loop
 
   } # end recipe loop
@@ -179,6 +181,7 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
+    rec_id <- dplyr::last(recipes::names0(param_iter, "Recipe"))
 
     workflow <- catch_and_log(
       train_recipe(split, workflow, param_vals),
@@ -230,8 +233,8 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
-    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, rec_id)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, rec_id)
   } # recipe parameters
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -331,6 +334,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     workflow <- original_workflow
 
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
+    mod_id <- dplyr::last(recipes::names0(mod_iter, "Model"))
 
     workflow <- catch_and_log_fit(
       train_model(workflow, mod_grid_vals[mod_iter,], control_workflow),
@@ -367,8 +371,8 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -446,6 +450,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
 
     param_val <- mod_grid_vals[mod_iter, ]
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
+    mod_id <- dplyr::last(recipes::names0(mod_iter, "Model"))
 
     workflow <- catch_and_log_fit(
       train_model(workflow, param_val, control = control_workflow),
@@ -478,8 +483,8 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control)
+    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)

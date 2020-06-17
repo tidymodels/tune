@@ -181,7 +181,7 @@ prob_summarize <- function(x, p) {
   }
 
   nms <- names(x)
-  y_cols <- nms[!(nms %in% c(".row", ".iter", pred_cols, p))]
+  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", pred_cols, p))]
   group_cols <- nms[!(nms %in% pred_cols)]
 
   x <-
@@ -230,7 +230,7 @@ prob_summarize <- function(x, p) {
       dplyr::mutate(
         .pred_class = gsub("\\.pred_", "", .column),
         .pred_class = factor(.pred_class, levels = lvl, ordered = ord)
-        ) %>%
+      ) %>%
       dplyr::ungroup() %>%
       dplyr::select(-.value, -.column)
     x <- full_join(x, class_pred, by = group_cols)
@@ -242,7 +242,7 @@ class_summarize <- function(x, p) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
   nms <- names(x)
   group_cols <- nms[!(nms %in% pred_cols)]
-  outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter"))]
+  outcome_col <- group_cols[!(group_cols %in% c(p, ".row", ".iter", ".config"))]
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
@@ -345,7 +345,7 @@ estimate_tune_results <- function(x, ...) {
   excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
                  grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
   param_names <- all_col[!(all_col %in% excl_cols)]
-  x %>%
+  x <- x %>%
     tibble::as_tibble() %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
     dplyr::summarize(
@@ -354,5 +354,16 @@ estimate_tune_results <- function(x, ...) {
       std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
     ) %>%
     dplyr::ungroup()
+
+  if (".config" %in% param_names) {
+    join_names <- param_names[!(param_names %in% ".config")]
+    x <- dplyr::inner_join(
+      dplyr::select(x, -.config),
+      x,
+      by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
+    ) %>%
+      dplyr::arrange(.config)
+  }
+  x
 }
 
