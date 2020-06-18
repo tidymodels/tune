@@ -79,9 +79,19 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
 
   res <-
     purrr::map_dfr(preds$conf_mats, ~ as.data.frame(.x$table)) %>%
-    dplyr::group_by(Prediction, Truth) %>%
-    dplyr::summarize(Freq = mean(Freq, na.rm = TRUE), .groups = "keep") %>%
-    dplyr::ungroup()
+    dplyr::group_by(Prediction, Truth)
+
+  if (utils::packageVersion("dplyr") <= "0.8.5") {
+    res <-
+      res %>%
+      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE), .groups = "keep") %>%
+      dplyr::ungroup()
+  } else {
+    res <-
+      res %>%
+      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
+      dplyr::ungroup()
+  }
 
   if (!tidy) {
     lvls <- levels(res$Prediction)
