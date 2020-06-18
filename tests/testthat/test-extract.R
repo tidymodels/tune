@@ -38,7 +38,7 @@ test_that('tune recipe only', {
   )
   expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
 
-  expect_true(all(names(extract_1_1) == c("num_comp", ".extracts")))
+  expect_true(all(names(extract_1_1) == c("num_comp", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
   )
@@ -59,7 +59,7 @@ test_that('tune recipe only', {
   )
 
   expect_error(extract_1_2 <- dplyr::bind_rows(res_1_2$.extracts), NA)
-  expect_true(all(names(extract_1_2) == c("num_comp", ".extracts")))
+  expect_true(all(names(extract_1_2) == c("num_comp", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_1_2$.extracts, ~ inherits(.x, "try-error"))),
   )
@@ -90,7 +90,7 @@ test_that('tune model only', {
   )
   expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
 
-  expect_true(all(names(extract_2_1) == c("cost", ".extracts")))
+  expect_true(all(names(extract_2_1) == c("cost", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
   )
@@ -151,7 +151,7 @@ test_that('tune model and recipe', {
   )
   expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts")))
+  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
