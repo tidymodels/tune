@@ -84,12 +84,12 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
   if (utils::packageVersion("dplyr") <= "0.8.5") {
     res <-
       res %>%
-      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE), .groups = "keep") %>%
+      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
       dplyr::ungroup()
   } else {
     res <-
       res %>%
-      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
+      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE), .groups = "keep") %>%
       dplyr::ungroup()
   }
 
