@@ -22,6 +22,8 @@
 
 * `show_best()`, and the `select_*()` functions will now use the first metric in the metric set if no metric is supplied. 
 
+* `filter_parameters()` can trim the `.metrics` column of unwanted results (as well as columns `.predictions` and `.extracts`) from `tune_*` objects. 
+
 # tune 0.1.0
 
 ## Breaking Changes

@@ -328,6 +328,7 @@ collector <- function(x, coll_col = ".predictions") {
 
 estimate_tune_results <- function(x, ...) {
   param_names <- .get_tune_parameter_names(x)
+
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
     rlang::abort("All of the models failed. See the .notes column.")
@@ -342,6 +343,11 @@ estimate_tune_results <- function(x, ...) {
     keep_cols <- ".metrics"
   }
   x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
+
+  all_col <- names(x)
+  excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
+                 grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
+  param_names <- all_col[!(all_col %in% excl_cols)]
   x <- x %>%
     tibble::as_tibble() %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
