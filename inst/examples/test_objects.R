@@ -2,6 +2,7 @@ library(tidymodels)
 library(sessioninfo)
 library(modeldata)
 library(testthat)
+library(broom)
 
 # ------------------------------------------------------------------------------
 # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
@@ -28,9 +29,15 @@ knn_mod_two <-
   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
   set_engine("kknn")
 
+get_coefs  <- function(x) {
+  x %>%
+    pull_workflow_fit() %>%
+    tidy()
+}
+
 verb <- FALSE
-g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
-b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
+g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
+b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
 
 # ------------------------------------------------------------------------------
 
@@ -355,7 +362,7 @@ folds <- vfold_cv(mtcars, v = 2)
 
 rec <- recipe(mpg ~ ., data = mtcars) %>%
   step_normalize(all_predictors()) %>%
-  step_bs(disp, degree = tune(), deg_free = tune())
+  step_ns(disp, deg_free = tune())
 
 mod <- linear_reg(mode = "regression") %>%
   set_engine("lm")
@@ -364,7 +371,8 @@ wflow <- workflow() %>%
   add_recipe(rec) %>%
   add_model(mod)
 
-lm_bayes <- tune_bayes(wflow, folds)
+set.seed(2934)
+lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
 
 saveRDS(
   lm_bayes,

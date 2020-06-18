@@ -45,6 +45,7 @@ The following object is masked from ‘package:dplyr’:
 
     matches
 
+> library(broom)
 > 
 > # ------------------------------------------------------------------------------
 > # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
@@ -71,9 +72,15 @@ The following object is masked from ‘package:dplyr’:
 +   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
 +   set_engine("kknn")
 > 
+> get_coefs  <- function(x) {
++   x %>%
++     pull_workflow_fit() %>%
++     tidy()
++ }
+> 
 > verb <- FALSE
-> g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
-> b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
+> g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
+> b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -823,7 +830,7 @@ Call `lifecycle::last_warnings()` to see where this warning was generated.
 > 
 > rec <- recipe(mpg ~ ., data = mtcars) %>%
 +   step_normalize(all_predictors()) %>%
-+   step_bs(disp, degree = tune(), deg_free = tune())
++   step_ns(disp, deg_free = tune())
 > 
 > mod <- linear_reg(mode = "regression") %>%
 +   set_engine("lm")
@@ -832,19 +839,16 @@ Call `lifecycle::last_warnings()` to see where this warning was generated.
 +   add_recipe(rec) %>%
 +   add_model(mod)
 > 
-> lm_bayes <- tune_bayes(wflow, folds)
-! Fold1: recipe 1/5, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 3/5, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 5/5, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-x Gaussian process model: Error in chol.default(x = Sig): the leading mino...
-Error in eval(expr, p) : no loop for break/next, jumping to top level
-Calls: tune_bayes ... tune_bayes_workflow -> check_and_log_flow -> eval.parent -> eval -> eval
-✖ Optimization stopped prematurely; returning current results.
+> set.seed(2934)
+> lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
+! Fold1: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold1: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold2: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold2: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold1: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold2: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold1: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold2: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
 > 
 > saveRDS(
 +   lm_bayes,
@@ -944,7 +948,7 @@ Calls: tune_bayes ... tune_bayes_workflow -> check_and_log_flow -> eval.parent -
  tidytext      0.2.4       2020-04-17 [1]
  timeDate      3043.102    2018-02-21 [1]
  tokenizers    0.2.1       2018-03-29 [1]
- tune        * 0.1.0.9000  2020-06-17 [1]
+ tune        * 0.1.0.9000  2020-06-18 [1]
  utf8          1.1.4       2018-05-24 [1]
  vctrs         0.3.1       2020-06-05 [1]
  withr         2.2.0       2020-04-20 [1]
@@ -1041,4 +1045,4 @@ Calls: tune_bayes ... tune_bayes_workflow -> check_and_log_flow -> eval.parent -
 + }
 > proc.time()
     user   system  elapsed 
-1604.925    7.833 1613.136 
+1562.259    7.413 1569.888 
