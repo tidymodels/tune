@@ -94,7 +94,7 @@ They are (usually) not aggregated until the end of processing.
 
 
 If no tuning grid is provided, a semi-random grid (via
-\code{\link[dials:grid_max_entropy]{dials::grid_latin_hypercube()}}) is created with 10 candidate parameter
+\code{\link[dials:grid_latin_hypercube]{dials::grid_latin_hypercube()}}) is created with 10 candidate parameter
 combinations.
 
 When provided, the grid should have column names for each parameter and
@@ -166,7 +166,7 @@ function generates a column called \code{.pred} and so on. As noted above, the
 prediction columns that are returned are determined by the type of metric(s)
 requested.
 
-This list column can be \code{unnested} using \code{\link[tidyr:nest]{tidyr::unnest()}} or using the
+This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::unnest()}} or using the
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 

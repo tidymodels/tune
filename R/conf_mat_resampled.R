@@ -77,21 +77,16 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
         purrr::map(data, ~ yardstick::conf_mat(.x, truth = {{truth}}, estimate = .pred_class))
     )
 
+  opt <- getOption("dplyr.summarise.inform", default = "FALSE")
+  options(dplyr.summarise.inform = FALSE)
+
   res <-
     purrr::map_dfr(preds$conf_mats, ~ as.data.frame(.x$table)) %>%
-    dplyr::group_by(Prediction, Truth)
+    dplyr::group_by(Prediction, Truth) %>%
+    dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
+    dplyr::ungroup()
 
-  if (utils::packageVersion("dplyr") <= "0.8.5") {
-    res <-
-      res %>%
-      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
-      dplyr::ungroup()
-  } else {
-    res <-
-      res %>%
-      dplyr::summarize(Freq = mean(Freq, na.rm = TRUE), .groups = "keep") %>%
-      dplyr::ungroup()
-  }
+  options(dplyr.summarise.inform = opt)
 
   if (!tidy) {
     lvls <- levels(res$Prediction)
