@@ -178,7 +178,7 @@ function generates a column called \code{.pred} and so on. As noted above, the
 prediction columns that are returned are determined by the type of metric(s)
 requested.
 
-This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::unnest()}} or using the
+This list column can be \code{unnested} using \code{\link[tidyr:nest]{tidyr::unnest()}} or using the
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
