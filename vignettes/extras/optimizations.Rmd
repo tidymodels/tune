@@ -113,11 +113,11 @@ Some helpful advice to avoid errors in parallel processing is to not use variabl
 ```{r par-tip, eval = FALSE}
 num_pcs <- 3
 
-recipe(Species ~ ., data = iris) %>% 
+recipe(mpg ~ ., data = mtcars) %>% 
   # Bad since num_pcs might not be found by a worker process
   step_pca(all_predictors(), num_comp = num_pcs)
 
-recipe(Species ~ ., data = iris) %>% 
+recipe(mpg ~ ., data = mtcars) %>% 
   # Good since the value is injected into the object
   step_pca(all_predictors(), num_comp = !!num_pcs)
 ```
