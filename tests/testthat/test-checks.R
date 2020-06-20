@@ -366,3 +366,26 @@ test_that('check parameter finalization', {
   expect_true(inherits(p5, "parameters"))
 })
 
+## -----------------------------------------------------------------------------
+
+test_that('check for finalization with engine parameters', {
+  pset_1 <- parameters(mtry(), penalty(), mixture())
+  pset_2 <- pset_1
+  pset_2$object[[3]] <- NA
+
+  pset_3 <- parameters(mtry(1:2), penalty(), mixture())
+  pset_4 <- pset_3
+  pset_4$object[[3]] <- NA
+
+  expect_true(needs_finalization(pset_1))
+  expect_true(needs_finalization(pset_2))
+  expect_true(needs_finalization(pset_1, "potato"))
+  expect_true(needs_finalization(pset_2, "potato"))
+
+  expect_false(needs_finalization(pset_1, "mtry"))
+  expect_false(needs_finalization(pset_2, "mtry"))
+  expect_false(needs_finalization(pset_3, "mtry"))
+  expect_false(needs_finalization(pset_4, "mtry"))
+  expect_false(needs_finalization(pset_3))
+  expect_false(needs_finalization(pset_4))
+})

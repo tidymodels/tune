@@ -94,7 +94,19 @@ check_grid <- function(x, object, pset = NULL) {
   x
 }
 
-check_parameters <- function(object, pset = NULL, data) {
+needs_finalization <- function(x, nms = character(0)) {
+  # If an unknown engine-specific parameter, the object column is missing and
+  # no need for finalization
+  x <- x[!is.na(x$object), ]
+  # If the parameter is in a pre-defined grid, then no need to finalize
+  x <- x[!(x$id %in% nms),]
+  if (length(x) == 0) {
+    return(FALSE)
+  }
+  any(dials::has_unknowns(x$object))
+}
+
+check_parameters <- function(object, pset = NULL, data, grid_names) {
   if (is.null(pset)) {
     pset <- parameters(object)
   }
@@ -114,17 +126,21 @@ check_parameters <- function(object, pset = NULL, data) {
       )
     )
   }
-  msg <- "Creating pre-processing data to finalize unknown parameter"
-  unk_names <- pset$id[unk]
-  if (length(unk_names) == 1) {
-    msg <- paste0(msg, ": ", unk_names)
-  } else {
-    msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
-  }
 
-  tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
-  x <- workflows::.fit_pre(object, data)$pre$mold$predictors
-  pset$object <- purrr::map(pset$object, dials::finalize, x = x)
+  if (needs_finalization(pset, grid_names)) {
+    msg <- "Creating pre-processing data to finalize unknown parameter"
+    unk_names <- pset$id[unk]
+    if (length(unk_names) == 1) {
+      msg <- paste0(msg, ": ", unk_names)
+    } else {
+      msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
+    }
+
+    tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
+
+    x <- workflows::.fit_pre(object, data)$pre$mold$predictors
+    pset$object <- purrr::map(pset$object, dials::finalize, x = x)
+  }
   pset
 }
 
