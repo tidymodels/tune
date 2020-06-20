@@ -318,7 +318,7 @@ tune_grid_workflow <- function(object,
     check_parameters(object,
                      pset = pset,
                      data = resamples$splits[[1]]$data,
-                     names(grid))
+                     grid_names = names(grid))
   check_workflow(object, pset = pset)
   grid <- check_grid(grid, object, pset)
 
