@@ -298,12 +298,17 @@ test_that('check parameter finalization', {
 
   expect_message(
     expect_error(
-      p1 <- tune:::check_parameters(w1, data = mtcars),
+      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0)),
       regex = NA
     ),
     "finalize unknown parameter: mtry"
   )
   expect_false(any(dials::has_unknowns(p1$object)))
+
+  expect_error(
+    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry"),
+    regex = NA
+  )
 
   w2 <-
     workflow() %>%

@@ -106,7 +106,7 @@ needs_finalization <- function(x, nms = character(0)) {
   any(dials::has_unknowns(x$object))
 }
 
-check_parameters <- function(object, pset = NULL, data, grid_names) {
+check_parameters <- function(object, pset = NULL, data, grid_names = character(0)) {
   if (is.null(pset)) {
     pset <- parameters(object)
   }
@@ -213,16 +213,12 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
     check_param_objects(pset)
 
-    quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
-    quant_name <- pset$id[quant_param]
-    compl <- purrr::map_lgl(pset$object[quant_param],
-                     ~ !dials::is_unknown(.x$range$lower) &
-                       !dials::is_unknown(.x$range$upper))
+    incompl <- dials::has_unknowns(pset$object)
 
-    if (any(!compl)) {
+    if (any(incompl)) {
       rlang::abort(paste0(
         "The workflow has arguments whose ranges are not finalized: ",
-        paste0("'", quant_name[!compl], "'", collapse = ", ")
+        paste0("'", pset$id[incompl], "'", collapse = ", ")
       ))
     }
   }
