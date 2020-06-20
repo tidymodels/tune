@@ -378,6 +378,7 @@ tune_bayes_workflow <-
   }
 
 create_initial_set <- function(param, n = NULL) {
+  check_param_objects(param)
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
@@ -386,8 +387,6 @@ create_initial_set <- function(param, n = NULL) {
 
 
 # ------------------------------------------------------------------------------
-
-# TODO what happens to  logicals?
 
 encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   # change the numeric variables to the transformed scale (if any)
