@@ -82,6 +82,17 @@ autoplot.tune_results <-
     if (!has_iter && type != "marginals") {
       rlang::abort(paste0("`type = ", type, "` is only used iterative search results."))
     }
+    pset <- .get_tune_parameters(object)
+    if (any(is.na(pset$object))) {
+      p_names <- pset$id[is.na(pset$object)]
+      msg <-
+        paste0(
+          "Some parameters do not have corresponding parameter objects ",
+          "and cannot be used with `autoplot()`: ",
+          paste0("'", p_names, "'", collapse = ", ")
+        )
+      rlang::abort(msg)
+    }
 
     if (type == "parameters") {
       p <- plot_param_vs_iter(object)
