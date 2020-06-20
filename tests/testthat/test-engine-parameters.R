@@ -31,7 +31,7 @@ test_that('check for finalization with engine parameters', {
 
 test_that('tuning with engine parameters with dials objects', {
   skip_if_not_installed("randomForest")
-  skip_if(utils::packageVersion("dials") > "0.0.7")
+  skip_if(utils::packageVersion("dials") <= "0.0.7")
 
   rf_mod <-
     rand_forest(min_n = tune()) %>%
@@ -66,7 +66,7 @@ test_that('tuning with engine parameters with dials objects', {
 
 test_that('tuning with engine parameters without dials objects', {
   skip_if_not_installed("randomForest")
-  skip_if(utils::packageVersion("dials") > "0.0.7")
+  skip_if(utils::packageVersion("dials") <= "0.0.7")
 
   ## ---------------------------------------------------------------------------
 
