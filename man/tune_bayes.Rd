@@ -84,7 +84,7 @@ A large grid of potential hyperparameter combinations is predicted using
 the model and scored using an \emph{acquisition function}. These functions
 usually combine the predicted mean and variance of the GP to decide the best
 parameter combination to try next. For more information, see the
-documentation for \code{\link[=prob_improve]{exp_improve()}} and the corresponding package vignette.
+documentation for \code{\link[=exp_improve]{exp_improve()}} and the corresponding package vignette.
 
 The best combination is evaluated using resampling and the process continues.
 }
@@ -158,7 +158,7 @@ The out-of-sample estimates of these metrics are contained in a list column
 called \code{.metrics}. This tibble contains a row for each metric and columns
 for the value, the estimator type, and so on.
 
-\code{\link[=collect_predictions]{collect_metrics()}} can be used for these objects to collapse the results
+\code{\link[=collect_metrics]{collect_metrics()}} can be used for these objects to collapse the results
 over the resampled (to obtain the final resampling estimates per tuning
 parameter combination).
 }
@@ -198,7 +198,7 @@ argument should be a function with a single argument. The value of the
 argument that is given to the function in each resample is a workflow
 object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). There are two
 helper functions that can be used to easily pull out the recipe (if any)
-and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_recipe]{extract_model()}}.
+and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\link[=extract_model]{extract_model()}}.
 
 As an example, if there is interest in getting each model back, one could use:
 \preformatted{
@@ -214,7 +214,7 @@ grid has a separate R object associated with it.
 
 \seealso{
 \code{\link[=control_bayes]{control_bayes()}}, \code{\link[=tune]{tune()}}, \code{\link[=autoplot.tune_results]{autoplot.tune_results()}},
-\code{\link[=show_best]{show_best()}}, \code{\link[=show_best]{select_best()}}, \code{\link[=collect_predictions]{collect_predictions()}},
-\code{\link[=collect_predictions]{collect_metrics()}}, \code{\link[=prob_improve]{prob_improve()}}, \code{\link[=prob_improve]{exp_improve()}}, \code{\link[=prob_improve]{conf_bound()}},
+\code{\link[=show_best]{show_best()}}, \code{\link[=select_best]{select_best()}}, \code{\link[=collect_predictions]{collect_predictions()}},
+\code{\link[=collect_metrics]{collect_metrics()}}, \code{\link[=prob_improve]{prob_improve()}}, \code{\link[=exp_improve]{exp_improve()}}, \code{\link[=conf_bound]{conf_bound()}},
 \code{\link[=fit_resamples]{fit_resamples()}}
 }

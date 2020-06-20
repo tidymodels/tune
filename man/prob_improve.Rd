@@ -47,14 +47,14 @@ acquisition function will down-play the effect of the \emph{mean} prediction and
 give more weight to the variation. This has the effect of searching for new
 parameter combinations that are in areas that have yet to be sampled.
 
-Note that for \code{\link[=prob_improve]{exp_improve()}} and \code{\link[=prob_improve]{prob_improve()}}, the \code{trade_off} value is
+Note that for \code{\link[=exp_improve]{exp_improve()}} and \code{\link[=prob_improve]{prob_improve()}}, the \code{trade_off} value is
 in the units of the outcome. The functions are parameterized so that the
 \code{trade_off} value should always be non-negative.
 
 The confidence bound function does not take into account the current best
 results in the data.
 
-If a function is passed to  \code{\link[=prob_improve]{exp_improve()}} or \code{\link[=prob_improve]{prob_improve()}}, the function
+If a function is passed to  \code{\link[=exp_improve]{exp_improve()}} or \code{\link[=prob_improve]{prob_improve()}}, the function
 can have multiple arguments but only the first (the current iteration number)
 is given to the function. In other words, the function argument should have
 defaults for all but the first argument. See \code{\link[=expo_decay]{expo_decay()}} as an example of
