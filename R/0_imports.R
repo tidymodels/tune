@@ -48,7 +48,8 @@ utils::globalVariables(
     ".sd", "rs_iter", "pkg", ".pred_class", "std_err", "const", "objective",
     "delta", "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
     ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
-    ".column", ".totals", ".value", "direction", ".config")
+    ".column", ".totals", ".value", "direction", ".config", "Prediction",
+    "Truth", "Freq")
   )
 
 # ------------------------------------------------------------------------------
