@@ -27,7 +27,7 @@ a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
 
-\item{...}{For \code{\link[=show_best]{select_by_one_std_err()}} and \code{\link[=show_best]{select_by_pct_loss()}}, this
+\item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
 argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
 the models from \emph{most simple to most complex}. See the examples below. At
 least one term is required for these two functions.}
@@ -43,14 +43,14 @@ includes columns for performance metrics.
 \code{\link[=show_best]{show_best()}} displays the top sub-models and their performance estimates.
 }
 \details{
-\code{\link[=show_best]{select_best()}} finds the tuning parameter combination with the best
+\code{\link[=select_best]{select_best()}} finds the tuning parameter combination with the best
 performance values.
 
-\code{\link[=show_best]{select_by_one_std_err()}} uses the "one-standard error rule" (Breiman _el
+\code{\link[=select_by_one_std_err]{select_by_one_std_err()}} uses the "one-standard error rule" (Breiman _el
 at, 1984) that selects the most simple model that is within one standard
 error of the numerically optimal results.
 
-\code{\link[=show_best]{select_by_pct_loss()}} selects the most simple model whose loss of
+\code{\link[=select_by_pct_loss]{select_by_pct_loss()}} selects the most simple model whose loss of
 performance is within some acceptable limit.
 
 For percent loss, suppose the best model has an RMSE of 0.75 and a simpler
