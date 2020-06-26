@@ -4,20 +4,25 @@
 \alias{filter_parameters}
 \title{Remove some tuning parameter results}
 \usage{
-filter_parameters(x, parameters)
+filter_parameters(x, ..., parameters = NULL)
 }
 \arguments{
 \item{x}{An object of class \code{tune_results} that has multiple tuning parameters.}
+
+\item{...}{Expressions that return a logical value, and are defined in terms
+of the tuning parameter values. If multiple expressions are included, they
+are combined with the \code{&} operator. Only rows for which all conditions
+evaluate to \code{TRUE} are kept.}
 
 \item{parameters}{A tibble of tuning parameter values that can be used to
 filter the predicted values before processing. This tibble should only have
 columns for tuning parameter identifiers (e.g. \code{"my_param"} if
 \code{tune("my_param")} was used). There can be multiple rows and one or more
-columns.}
+columns. \strong{If used, this parameter must be named.}}
 }
 \value{
 A version of \code{x} where the lists columns only retain the parameter
-combinations in \code{parameters}.
+combinations in \code{parameters} or satisfied by the filtering logic.
 }
 \description{
 For objects produced by the \verb{tune_*()} functions, there may only be a subset
@@ -37,12 +42,24 @@ data("example_ames_knn")
 ## -----------------------------------------------------------------------------
 # select all combinations using the 'rank' weighting scheme
 
-ames_grid_search
-filter_parameters(ames_grid_search, tibble::tibble(weight_func = "rank"))
+ames_grid_search \%>\%
+ collect_metrics()
+
+filter_parameters(ames_grid_search, weight_func == "rank") \%>\%
+ collect_metrics()
+
+rank_only <- tibble::tibble(weight_func = "rank")
+filter_parameters(ames_grid_search, parameters = rank_only) \%>\%
+ collect_metrics()
 
 ## -----------------------------------------------------------------------------
 # Keep only the results from the numerically best combination
 
-ames_iter_search
-filter_parameters(ames_iter_search, select_best(ames_iter_search, metric = "rmse"))
+ames_iter_search \%>\%
+ collect_metrics()
+
+best_param <- select_best(ames_iter_search, metric = "rmse")
+ames_iter_search \%>\%
+ filter_parameters(parameters = best_param) \%>\%
+ collect_metrics()
 }

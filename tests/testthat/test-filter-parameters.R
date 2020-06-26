@@ -31,12 +31,12 @@ lm_res <-
 # ------------------------------------------------------------------------------
 
 test_that("basic functionality",{
-  filtered_grid <- filter_parameters(svm_reg_results, tibble(`%^*#` = 1))
+  filtered_grid <- filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1))
   expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$`%^*#` == 1))))
   expect_true(all(purrr::map_lgl(filtered_grid$.predictions, ~ all(.x$`%^*#` == 1))))
 
   best_param <- select_best(svm_reg_results, metric = "accuracy")
-  best_grid <- filter_parameters(svm_reg_results, best_param)
+  best_grid <- filter_parameters(svm_reg_results, parameters = best_param)
   expect_true(all(purrr::map_lgl(best_grid$.metrics, ~ all(.x$cost == best_param$cost))))
   expect_true(all(purrr::map_lgl(best_grid$.metrics, ~ all(.x$`%^*#` == best_param$`%^*#`))))
   expect_true(all(purrr::map_lgl(best_grid$.metrics, ~ all(.x$scale_factor == best_param$scale_factor))))
@@ -44,24 +44,28 @@ test_that("basic functionality",{
   expect_true(all(purrr::map_lgl(best_grid$.predictions, ~ all(.x$`%^*#` == best_param$`%^*#`))))
   expect_true(all(purrr::map_lgl(best_grid$.predictions, ~ all(.x$scale_factor == best_param$scale_factor))))
 
-  filtered_grid <- filter_parameters(mt_knn_bo, tibble(neighbors = 1))
+  filtered_grid <- filter_parameters(mt_knn_bo, parameters = tibble(neighbors = 1))
   expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$neighbors == 1))))
   expect_true(all(purrr::map_lgl(filtered_grid$.predictions, ~ all(.x$neighbors == 1))))
 
   best_param <- select_best(mt_knn_bo, metric = "rmse")
-  best_grid <- filter_parameters(mt_knn_bo, best_param)
+  best_grid <- filter_parameters(mt_knn_bo, parameters = best_param)
   expect_true(all(purrr::map_lgl(best_grid$.metrics, ~ all(.x$neighbors == best_param$neighbors))))
   expect_true(all(purrr::map_lgl(best_grid$.predictions, ~ all(.x$neighbors == best_param$neighbors))))
 
-  filtered_grid <- filter_parameters(lm_res, tibble(num_comp = 1))
+  filtered_grid <- filter_parameters(lm_res, parameters = tibble(num_comp = 1))
   expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$num_comp == 1))))
   expect_true(all(purrr::map_lgl(filtered_grid$.extracts, ~ all(.x$num_comp == 1))))
 
   best_param <- select_best(lm_res, metric = "rmse")
-  best_grid <- filter_parameters(lm_res, best_param)
+  best_grid <- filter_parameters(lm_res, parameters = best_param)
   expect_true(all(purrr::map_lgl(best_grid$.metrics, ~ all(.x$num_comp == best_param$num_comp))))
   expect_true(all(purrr::map_lgl(best_grid$.extracts, ~ all(.x$num_comp == best_param$num_comp))))
 
+
+  filtered_grid <- filter_parameters(svm_reg_results, `%^*#` == 1)
+  expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$`%^*#` == 1))))
+  expect_true(all(purrr::map_lgl(filtered_grid$.predictions, ~ all(.x$`%^*#` == 1))))
 })
 
 # ------------------------------------------------------------------------------
@@ -69,19 +73,23 @@ test_that("basic functionality",{
 test_that("bad inputs",{
 
   expect_error(
-    filter_parameters(collect_metrics(svm_reg_results), tibble(`%^*#` = 1)),
+    filter_parameters(collect_metrics(svm_reg_results), parameters = tibble(`%^*#` = 1)),
     "should have class 'tune_results'"
     )
   expect_error(
-    filter_parameters(svm_reg_results, tibble(soup = 1)),
+    filter_parameters(svm_reg_results, parameters = tibble(soup = 1)),
     "There are no columns in"
   )
   expect_error(
-    filter_parameters(svm_reg_results, tibble(`%^*#` = 1/3)),
+    filter_parameters(svm_reg_results, tibble(soup = 1)),
+    "must be a logical vector, not a double", class = "dplyr_error"
+  )
+  expect_error(
+    filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1/3)),
     "No parameter combinations were selected"
   )
   expect_warning(
-    filter_parameters(svm_reg_results, tibble(`%^*#` = 1, soup = 2)),
+    filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1, soup = 2)),
     "There are unneeded columns in `parameters`"
   )
  })
