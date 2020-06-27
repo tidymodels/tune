@@ -46,16 +46,17 @@ test_that('model with main and engine parameters', {
   skip_if_not_installed("parsnip")
   c5_info <- tunable(bst_model)
   check_tunable_tibble(c5_info)
-  expect_equal(nrow(c5_info), 5)
+  expect_equal(nrow(c5_info), 9)
   expect_true(all(c5_info$source == "model_spec"))
   expect_true(all(c5_info$component == "boost_tree"))
   expect_true(all(c5_info$component_id[1:3] == "main"))
   expect_true(all(c5_info$component_id[-(1:3)] == "engine"))
-  nms <- c("trees", "min_n", "sample_size", "rules", "noGlobalPruning")
+  nms <- c("trees", "min_n", "sample_size", "rules", "CF", "noGlobalPruning",
+           "winnow", "fuzzyThreshold", "bands")
   expect_equal(c5_info$name, nms)
   expect_true(all(purrr::map_lgl(c5_info$call_info[1:3], ~ .x$pkg == "dials")))
   expect_equal(purrr::map_chr(c5_info$call_info[1:3], ~ .x$fun), nms[1:3])
-  expect_true(all(purrr::map_lgl(c5_info$call_info[-(1:3)], is.null)))
+  expect_true(sum(purrr::map_lgl(c5_info$call_info, is.null)) == 1)
 })
 
 
