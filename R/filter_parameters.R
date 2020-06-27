@@ -19,6 +19,9 @@
 #' @return A version of `x` where the lists columns only retain the parameter
 #' combinations in `parameters` or satisfied by the filtering logic.
 #' @examples
+#' library(dplyr)
+#' library(tibble)
+#'
 #' # For grid search:
 #' data("example_ames_knn")
 #'

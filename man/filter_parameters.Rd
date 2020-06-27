@@ -36,6 +36,9 @@ Removing some parameter combinations might affect the results of \code{autoplot(
 for the object.
 }
 \examples{
+library(dplyr)
+library(tibble)
+
 # For grid search:
 data("example_ames_knn")
 
