@@ -52,6 +52,7 @@
 #'
 #' library(parsnip)
 #' library(dials)
+#' data(hpc_data, pacakge = "modeldata")
 #'
 #' xgb_mod <-
 #'   boost_tree(trees = tune(), min_n = tune()) %>%
@@ -60,7 +61,7 @@
 #' set.seed(254)
 #' xgb_grid <-
 #'   dials::parameters(xgb_mod) %>%
-#'   finalize(iris) %>%
+#'   finalize(hpc_data) %>%
 #'   grid_max_entropy(size = 3)
 #'
 #' merge(xgb_mod, xgb_grid)

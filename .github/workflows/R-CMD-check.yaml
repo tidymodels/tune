@@ -73,6 +73,7 @@ jobs:
         run: |
           remotes::install_github("tidymodels/rsample")
           remotes::install_github("tidymodels/dials")
+          remotes::install_cran("vctrs")
         shell: Rscript {0}
 
       - name: Install old dplyr
@@ -81,6 +82,19 @@ jobs:
           remotes::install_version("dplyr", "0.8.5")
         shell: Rscript {0}
 
+
+      - name: Install dev dependencies
+        if: runner.os == 'macOS' && matrix.config.dev_tidymodels
+        run: |
+          remotes::install_github("tidymodels/rsample")
+          remotes::install_github("tidymodels/dials")
+        shell: Rscript {0}
+
+      - name: Ensure CRAN vctrs
+        if: runner.os == 'macOS'
+        run: |
+          remotes::install_cran("vctrs")
+        shell: Rscript {0}
 
       - name: Session info
         run: |

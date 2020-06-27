@@ -314,7 +314,11 @@ tune_grid_workflow <- function(object,
                                control = control_grid()) {
   check_rset(resamples)
   metrics <- check_metrics(metrics, object)
-  pset <- check_parameters(object, pset = pset, data = resamples$splits[[1]]$data)
+  pset <-
+    check_parameters(object,
+                     pset = pset,
+                     data = resamples$splits[[1]]$data,
+                     grid_names = names(grid))
   check_workflow(object, pset = pset)
   grid <- check_grid(grid, object, pset)
 

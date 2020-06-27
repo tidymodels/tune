@@ -94,7 +94,19 @@ check_grid <- function(x, object, pset = NULL) {
   x
 }
 
-check_parameters <- function(object, pset = NULL, data) {
+needs_finalization <- function(x, nms = character(0)) {
+  # If an unknown engine-specific parameter, the object column is missing and
+  # no need for finalization
+  x <- x[!is.na(x$object), ]
+  # If the parameter is in a pre-defined grid, then no need to finalize
+  x <- x[!(x$id %in% nms),]
+  if (length(x) == 0) {
+    return(FALSE)
+  }
+  any(dials::has_unknowns(x$object))
+}
+
+check_parameters <- function(object, pset = NULL, data, grid_names = character(0)) {
   if (is.null(pset)) {
     pset <- parameters(object)
   }
@@ -114,17 +126,21 @@ check_parameters <- function(object, pset = NULL, data) {
       )
     )
   }
-  msg <- "Creating pre-processing data to finalize unknown parameter"
-  unk_names <- pset$id[unk]
-  if (length(unk_names) == 1) {
-    msg <- paste0(msg, ": ", unk_names)
-  } else {
-    msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
-  }
 
-  tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
-  x <- workflows::.fit_pre(object, data)$pre$mold$predictors
-  pset$object <- purrr::map(pset$object, dials::finalize, x = x)
+  if (needs_finalization(pset, grid_names)) {
+    msg <- "Creating pre-processing data to finalize unknown parameter"
+    unk_names <- pset$id[unk]
+    if (length(unk_names) == 1) {
+      msg <- paste0(msg, ": ", unk_names)
+    } else {
+      msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
+    }
+
+    tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
+
+    x <- workflows::.fit_pre(object, data)$pre$mold$predictors
+    pset$object <- purrr::map(pset$object, dials::finalize, x = x)
+  }
   pset
 }
 
@@ -160,6 +176,19 @@ check_installs <- function(x) {
   }
 }
 
+check_param_objects <- function(pset) {
+  params <- purrr::map_lgl(pset$object, inherits, "param")
+
+  if (!all(params)) {
+    rlang::abort(paste0(
+      "The workflow has arguments to be tuned that are missing some ",
+      "parameter objects: ",
+      paste0("'", pset$id[!params], "'", collapse = ", ")
+    ))
+  }
+  invisible(pset)
+}
+
 check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
@@ -182,26 +211,14 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
       pset <- dials::parameters(x)
     }
 
-    params <- purrr::map_lgl(pset$object, inherits, "param")
+    check_param_objects(pset)
 
-    if (!all(params)) {
-      rlang::abort(paste0(
-        "The workflow has arguments to be tuned that are missing some ",
-        "parameter objects: ",
-        paste0("'", pset$id, "'", collapse = ", ")
-      ))
-    }
+    incompl <- dials::has_unknowns(pset$object)
 
-    quant_param <- purrr::map_lgl(pset$object, inherits, "quant_param")
-    quant_name <- pset$id[quant_param]
-    compl <- purrr::map_lgl(pset$object[quant_param],
-                     ~ !dials::is_unknown(.x$range$lower) &
-                       !dials::is_unknown(.x$range$upper))
-
-    if (any(!compl)) {
+    if (any(incompl)) {
       rlang::abort(paste0(
         "The workflow has arguments whose ranges are not finalized: ",
-        paste0("'", quant_name[!compl], "'", collapse = ", ")
+        paste0("'", pset$id[incompl], "'", collapse = ", ")
       ))
     }
   }

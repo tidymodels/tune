@@ -71,11 +71,11 @@ test_that("select_best()", {
     )
 
   expect_equal(
-    select_best(rcv_results, metric = "rmse"),
+    select_best(rcv_results, metric = "rmse") %>% select(-.config),
     best_rmse
   )
   expect_equal(
-    select_best(rcv_results, metric = "rsq"),
+    select_best(rcv_results, metric = "rsq") %>% select(-.config),
     best_rsq
   )
   expect_warning(

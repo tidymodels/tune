@@ -79,7 +79,10 @@ get_submodel_info <- function(spec) {
       dials::parameters(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
       by = "name"
     ) %>%
-    dplyr::mutate(id = ifelse(is.na(id), name, id))
+    dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%
+    # In case the parameter is an engine parameter
+    dplyr::mutate(has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel))
+
   param_info
 }
 

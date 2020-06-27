@@ -19,7 +19,9 @@
 \alias{tunable.logistic_reg}
 \alias{tunable.multinomial_reg}
 \alias{tunable.boost_tree}
-\alias{tunable.nearest_neighbor}
+\alias{tunable.rand_forest}
+\alias{tunable.mars}
+\alias{tunable.decision_tree}
 \title{Find recommended methods for generating parameter values}
 \format{
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 0 rows and 5 columns.
@@ -59,7 +61,11 @@ no_param
 
 \method{tunable}{boost_tree}(x, ...)
 
-\method{tunable}{nearest_neighbor}(x, ...)
+\method{tunable}{rand_forest}(x, ...)
+
+\method{tunable}{mars}(x, ...)
+
+\method{tunable}{decision_tree}(x, ...)
 }
 \arguments{
 \item{x}{An object, such as a recipe, recipe step, or \code{parsnip} model

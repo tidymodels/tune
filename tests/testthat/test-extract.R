@@ -3,6 +3,7 @@ context("object extraction")
 # ------------------------------------------------------------------------------
 
 source(test_path("../helper-objects.R"))
+load(test_path("test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 
@@ -23,7 +24,7 @@ mt_folds <- vfold_cv(mtcars, v = 5)
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
-  
+
   extr_1_1 <- function(x) {
     extract_recipe(x) %>% tidy(number = 2)
   }
@@ -37,7 +38,7 @@ test_that('tune recipe only', {
   )
   expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
 
-  expect_true(all(names(extract_1_1) == c("num_comp", ".extracts")))
+  expect_true(all(names(extract_1_1) == c("num_comp", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
   )
@@ -58,7 +59,7 @@ test_that('tune recipe only', {
   )
 
   expect_error(extract_1_2 <- dplyr::bind_rows(res_1_2$.extracts), NA)
-  expect_true(all(names(extract_1_2) == c("num_comp", ".extracts")))
+  expect_true(all(names(extract_1_2) == c("num_comp", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_1_2$.extracts, ~ inherits(.x, "try-error"))),
   )
@@ -68,7 +69,7 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only', {
-  
+
   extr_2_1 <- function(x) {
     mod <- extract_model(x)
     tibble(index = mod@alphaindex[[1]], estimate = mod@coef[[1]])
@@ -89,7 +90,7 @@ test_that('tune model only', {
   )
   expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
 
-  expect_true(all(names(extract_2_1) == c("cost", ".extracts")))
+  expect_true(all(names(extract_2_1) == c("cost", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
   )
@@ -128,7 +129,7 @@ test_that('tune model only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
-  
+
   extr_3_1 <- function(x) {
     x
   }
@@ -150,10 +151,44 @@ test_that('tune model and recipe', {
   )
   expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts")))
+  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".config", ".extracts")))
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
+
+})
+
+# ------------------------------------------------------------------------------
+
+
+test_that('check .config in extracts', {
+
+  # recipe only
+  for (i in 1:nrow(mt_spln_lm_grid)) {
+    expect_true(any(names(mt_spln_lm_grid$.extracts[[i]]) == ".config"))
+  }
+
+  for (i in 1:nrow(mt_spln_lm_bo)) {
+    expect_true(any(names(mt_spln_lm_bo$.extracts[[i]]) == ".config"))
+  }
+
+  # recipe and model
+  for (i in 1:nrow(mt_spln_knn_grid)) {
+    expect_true(any(names(mt_spln_knn_grid$.extracts[[i]]) == ".config"))
+  }
+
+  for (i in 1:nrow(mt_spln_knn_bo)) {
+    expect_true(any(names(mt_spln_knn_bo$.extracts[[i]]) == ".config"))
+  }
+
+  # model only
+  for (i in 1:nrow(mt_knn_grid)) {
+    expect_true(any(names(mt_knn_grid$.extracts[[i]]) == ".config"))
+  }
+
+  for (i in 1:nrow(mt_knn_bo)) {
+    expect_true(any(names(mt_knn_bo$.extracts[[i]]) == ".config"))
+  }
 
 })
 
