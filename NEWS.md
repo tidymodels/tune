@@ -24,6 +24,9 @@
 
 * `filter_parameters()` can trim the `.metrics` column of unwanted results (as well as columns `.predictions` and `.extracts`) from `tune_*` objects. 
 
+* In concert with `dials` > 0.0.7, tuning engine-specific arguments is possible. Many known engine-specific tuning parameters and handled automatically. 
+
+
 # tune 0.1.0
 
 ## Breaking Changes

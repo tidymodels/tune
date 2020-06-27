@@ -252,6 +252,89 @@ tunable.workflow <- function(x, ...) {
   param_data
 }
 
+## -----------------------------------------------------------------------------
+
+add_engine_parameters <- function(pset, engines) {
+  is_engine_param <- pset$name %in% engines$name
+  if (any(is_engine_param)) {
+    engine_names <- pset$name[is_engine_param]
+    pset <- pset[!is_engine_param,]
+    pset <-
+      dplyr::bind_rows(pset, engines %>% dplyr::filter(name %in% engines$name))
+  }
+  pset
+}
+
+
+c5_tree_engine_args <-
+  tibble::tibble(
+    name = c(
+      "CF",
+      "noGlobalPruning",
+      "winnow",
+      "fuzzyThreshold",
+      "bands"
+    ),
+    call_info = list(
+      list(pkg = "dials", fun = "confidence_factor"),
+      list(pkg = "dials", fun = "no_global_pruning"),
+      list(pkg = "dials", fun = "predictor_winnowing"),
+      list(pkg = "dials", fun = "fuzzy_thresholding"),
+      list(pkg = "dials", fun = "rule_bands")
+    ),
+    source = "model_spec",
+    component = "decision_tree",
+    component_id = "engine"
+  )
+
+c5_boost_engine_args <- c5_tree_engine_args
+c5_boost_engine_args$component <- "boost_tree"
+
+ranger_engine_args <-
+  tibble::tibble(
+    name = c(
+      "regularization.factor",
+      "regularization.usedepth",
+      "alpha",
+      "minprop",
+      "splitrule",
+      "num.random.splits"
+    ),
+    call_info = list(
+      list(pkg = "dials", fun = "regularization_factor"),
+      list(pkg = "dials", fun = "regularize_depth"),
+      list(pkg = "dials", fun = "significance_threshold"),
+      list(pkg = "dials", fun = "lower_quantile"),
+      list(pkg = "dials", fun = "splitting_rule"),
+      list(pkg = "dials", fun = "num_random_splits")
+    ),
+    source = "model_spec",
+    component = "rand_forest",
+    component_id = "engine"
+  )
+
+randomForest_engine_args <-
+  tibble::tibble(
+    name = c("maxnodes"),
+    call_info = list(
+      list(pkg = "dials", fun = "max_nodes")
+    ),
+    source = "model_spec",
+    component = "rand_forest",
+    component_id = "engine"
+  )
+
+earth_engine_args <-
+  tibble::tibble(
+    name = c("nk"),
+    call_info = list(
+      list(pkg = "dials", fun = "max_num_terms")
+    ),
+    source = "model_spec",
+    component = "mars",
+    component_id = "engine"
+  )
+
 
 # ------------------------------------------------------------------------------
 
@@ -301,6 +384,7 @@ tunable.boost_tree <- function(x, ...) {
       list(list(pkg = "dials", fun = "sample_prop"))
   } else {
     if (x$engine == "C5.0") {
+      res <- add_engine_parameters(res, c5_boost_engine_args)
       res$call_info[res$name == "trees"] <-
         list(list(pkg = "dials", fun = "trees", range = c(1, 100)))
     }
@@ -308,15 +392,36 @@ tunable.boost_tree <- function(x, ...) {
   res
 }
 
+#' @rdname tunable
+#' @export
+tunable.rand_forest <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "ranger") {
+    res <- add_engine_parameters(res, ranger_engine_args)
+  }
+  if (x$engine == "randomForest") {
+    res <- add_engine_parameters(res, randomForest_engine_args)
+  }
+
+  res
+}
 
 #' @rdname tunable
 #' @export
-tunable.nearest_neighbor <- function(x, ...) {
+tunable.mars <- function(x, ...) {
   res <- NextMethod()
-  if (x$engine == "kknn") {
-    res$call_info[res$name == "dist_power"] <-
-      list(list(pkg = "dials", fun = "dist_power", range = c(0.0, 1.5)))
+  if (x$engine == "earth") {
+    res <- add_engine_parameters(res, earth_engine_args)
   }
   res
 }
 
+#' @rdname tunable
+#' @export
+tunable.decision_tree <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "C5.0") {
+    res <- add_engine_parameters(res, c5_tree_engine_args)
+  }
+  res
+}
