@@ -65,7 +65,7 @@ test_that("marginal plot labels and transformations - irregular grid",{
   )
   expect_equal(
     sort(unique(collect_metrics(svm_results)$cost)),
-    unique(2^(p$data$value[p$data$name == "Cost (log-2)"])),
+    sort(unique(2^(p$data$value[p$data$name == "Cost (log-2)"]))),
     tol = 0.001
   )
   expect_equal(
@@ -103,7 +103,7 @@ test_that("performance plot for iterative search",{
   expect_is(p, "ggplot")
   expect_equal(names(p$data),
                c('K', 'weight_func', 'deg_free', '.iter', '.metric',
-                 '.estimator', 'mean', 'n', 'std_err'))
+                 '.estimator', 'mean', 'n', 'std_err', '.config'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$x, "Iteration")

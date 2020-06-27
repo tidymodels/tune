@@ -27,6 +27,7 @@ reference:
     - coord_obs_pred
     - expo_decay
     - starts_with("collect")
+    - filter_predictions
     - show_best
     - starts_with("select_")
     - starts_with("extract_")
