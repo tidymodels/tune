@@ -71,6 +71,7 @@ test_that("basic functionality",{
 # ------------------------------------------------------------------------------
 
 test_that("bad inputs",{
+  skip_if(tune:::dplyr_pre_1.0.0())
 
   expect_error(
     filter_parameters(collect_metrics(svm_reg_results), parameters = tibble(`%^*#` = 1)),
@@ -82,7 +83,7 @@ test_that("bad inputs",{
   )
   expect_error(
     filter_parameters(svm_reg_results, tibble(soup = 1)),
-    "must be a logical vector, not a double", class = "dplyr_error"
+    class = "dplyr_error"
   )
   expect_error(
     filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1/3)),
