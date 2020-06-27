@@ -78,5 +78,5 @@ ames_grid_search$splits <- purrr::map(ames_grid_search$splits, zero_out_data)
 ames_iter_search$splits <- purrr::map(ames_iter_search$splits, zero_out_data)
 
 save(ames_wflow, ames_grid_search, ames_iter_search,
-     file = "~/github/tune/data/example_ames_knn.RData",
+     file = "data/example_ames_knn.RData",
      version = 2, compress = "xz")

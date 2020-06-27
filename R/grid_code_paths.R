@@ -108,7 +108,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
 
       all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
-      extracted <- append_extracts(extracted, workflow, all_param, split, control)
+      extracted <-
+        append_extracts(extracted,
+                        workflow,
+                        all_param %>% dplyr::mutate(.config = mod_id),
+                        split,
+                        control)
 
       tmp_pred <-
         catch_and_log(
@@ -209,13 +214,14 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
-    extracted <- append_extracts(
-      extracted,
-      workflow,
-      grid[param_iter, ],
-      split,
-      control
-    )
+    extracted <-
+      append_extracts(
+        extracted,
+        workflow,
+        grid[param_iter, ] %>% dplyr::mutate(.config = rec_id),
+        split,
+        control
+      )
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
@@ -349,13 +355,14 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
       next
     }
 
-    extracted <- append_extracts(
-      extracted,
-      workflow,
-      mod_grid_vals[mod_iter, ],
-      split,
-      control
-    )
+    extracted <-
+      append_extracts(
+        extracted,
+        workflow,
+        mod_grid_vals[mod_iter, ] %>% dplyr::mutate(.config = mod_id),
+        split,
+        control
+      )
 
     tmp_pred <- catch_and_log(
       predict_model(split, workflow, mod_grid_vals[mod_iter,], metrics),
@@ -465,7 +472,12 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
       next
     }
 
-    extracted <- append_extracts(extracted, workflow, param_val, split, control)
+    extracted <-
+      append_extracts(extracted,
+                      workflow,
+                      param_val %>% dplyr::mutate(.config = mod_id),
+                      split,
+                      control)
 
     pred_msg <- paste(mod_msg, "(predictions)")
 

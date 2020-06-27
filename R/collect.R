@@ -330,9 +330,11 @@ collector <- function(x, coll_col = ".predictions") {
 }
 
 estimate_tune_results <- function(x, ...) {
+  param_names <- .get_tune_parameter_names(x)
+
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
-    stop("All of the models failed.", call. = FALSE)
+    rlang::abort("All of the models failed. See the .notes column.")
   }
 
   tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
@@ -344,6 +346,7 @@ estimate_tune_results <- function(x, ...) {
     keep_cols <- ".metrics"
   }
   x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
+
   all_col <- names(x)
   excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
                  grep("^id", all_col, value = TRUE), ".predictions", ".extracts")

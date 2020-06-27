@@ -1,0 +1,148 @@
+
+R version 4.0.0 (2020-04-24) -- "Arbor Day"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(tidymodels)
+── Attaching packages ───────────────────────────────── tidymodels 0.1.0.9000 ──
+✔ broom     0.5.6           ✔ recipes   0.1.12.9000
+✔ dials     0.0.7           ✔ rsample   0.0.7      
+✔ dplyr     1.0.0           ✔ tibble    3.0.1      
+✔ ggplot2   3.3.1           ✔ tune      0.1.0.9000 
+✔ infer     0.5.1           ✔ workflows 0.1.1      
+✔ parsnip   0.1.1.9000      ✔ yardstick 0.0.6      
+✔ purrr     0.3.4           
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard() masks scales::discard()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ recipes::step()  masks stats::step()
+> library(tune)
+> library(AmesHousing)
+> library(butcher)
+> library(doMC)
+Loading required package: foreach
+
+Attaching package: ‘foreach’
+
+The following objects are masked from ‘package:purrr’:
+
+    accumulate, when
+
+Loading required package: iterators
+Loading required package: parallel
+> registerDoMC(cores = 10)
+> 
+> # ------------------------------------------------------------------------------
+> 
+> ames <- make_ames()
+Warning message:
+`funs()` is deprecated as of dplyr 0.8.0.
+Please use a list of either functions or lambdas: 
+
+  # Simple named list: 
+  list(mean = mean, median = median)
+
+  # Auto named with `tibble::lst()`: 
+  tibble::lst(mean, median)
+
+  # Using lambdas
+  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_warnings()` to see where this warning was generated. 
+> 
+> set.seed(4595)
+> data_split <- initial_split(ames, strata = "Sale_Price")
+> 
+> ames_train <- training(data_split)
+> 
+> set.seed(2453)
+> rs_splits <- vfold_cv(ames_train, strata = "Sale_Price")
+> 
+> # ------------------------------------------------------------------------------
+> 
+> ames_rec <-
++   recipe(Sale_Price ~ ., data = ames_train) %>%
++   step_log(Sale_Price, base = 10) %>%
++   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
++   step_other(Neighborhood, threshold = .1)  %>%
++   step_dummy(all_nominal()) %>%
++   step_zv(all_predictors()) %>%
++   step_ns(Longitude, deg_free = tune("lon")) %>%
++   step_ns(Latitude, deg_free = tune("lat"))
+> 
+> knn_model <-
++   nearest_neighbor(
++     mode = "regression",
++     neighbors = tune("K"),
++     weight_func = tune(),
++     dist_power = tune()
++   ) %>%
++   set_engine("kknn")
+> 
+> ames_wflow <-
++   workflow() %>%
++   add_recipe(ames_rec) %>%
++   add_model(knn_model)
+> 
+> ames_set <-
++   parameters(ames_wflow) %>%
++   update(K = neighbors(c(1, 50)))
+> 
+> set.seed(7014)
+> ames_grid <-
++   ames_set %>%
++   grid_max_entropy(size = 10)
+> 
+> ames_grid_search <-
++   tune_grid(
++     ames_wflow,
++     resamples = rs_splits,
++     grid = ames_grid
++   )
+> 
+> set.seed(2082)
+> ames_iter_search <-
++   tune_bayes(
++     ames_wflow,
++     resamples = rs_splits,
++     param_info = ames_set,
++     initial = ames_grid_search,
++     iter = 15
++   )
+! Gaussian process model: did not converge in 10 iterations
+! Gaussian process model: did not converge in 10 iterations
+! Gaussian process model: did not converge in 10 iterations
+! Gaussian process model: did not converge in 10 iterations
+! Gaussian process model: did not converge in 10 iterations
+! No improvement for 10 iterations; returning current results.
+> 
+> zero_out_data <- function(x) {
++   x$data <- x$data[0,]
++   x
++ }
+> 
+> ames_grid_search$splits <- purrr::map(ames_grid_search$splits, zero_out_data)
+> ames_iter_search$splits <- purrr::map(ames_iter_search$splits, zero_out_data)
+> 
+> save(ames_wflow, ames_grid_search, ames_iter_search,
++      file = "data/example_ames_knn.RData",
++      version = 2, compress = "xz")
+> 
+> proc.time()
+    user   system  elapsed 
+4743.514   62.904 1320.955 
