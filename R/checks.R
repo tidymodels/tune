@@ -117,17 +117,17 @@ check_parameters <- function(object, pset = NULL, data, grid_names = character(0
   tune_param <- tune_args(object)
   tune_recipe <- tune_param$id[tune_param$source == "recipe"]
   tune_recipe <- length(tune_recipe) > 0
-  if (tune_recipe) {
-    rlang::abort(
-      paste(
-        "Some tuning parameters require finalization but there are recipe",
-        "parameters that require tuning. Please use `parameters()` to",
-        "finalize the parameter ranges."
-      )
-    )
-  }
 
   if (needs_finalization(pset, grid_names)) {
+    if (tune_recipe) {
+      rlang::abort(
+        paste(
+          "Some tuning parameters require finalization but there are recipe",
+          "parameters that require tuning. Please use `parameters()` to",
+          "finalize the parameter ranges."
+        )
+      )
+    }
     msg <- "Creating pre-processing data to finalize unknown parameter"
     unk_names <- pset$id[unk]
     if (length(unk_names) == 1) {
