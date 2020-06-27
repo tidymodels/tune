@@ -94,6 +94,7 @@ test_that("regression predictions, averaged", {
   all_res <- collect_predictions(lm_splines)
   res <- collect_predictions(lm_splines, summarize = TRUE)
   expect_equal(nrow(res), nrow(mtcars))
+  expect_false(dplyr::is_grouped_df(res))
 
   # pull out an example to test
   all_res_subset <- dplyr::filter(all_res, .row == 3)
@@ -107,6 +108,7 @@ test_that("classification class predictions, averaged", {
   all_res <- collect_predictions(svm_tune_class)
   res <- collect_predictions(svm_tune_class, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
+  expect_false(dplyr::is_grouped_df(res))
 
   # pull out an example to test
   all_res_subset <-
@@ -124,6 +126,7 @@ test_that("classification class and prob predictions, averaged", {
   all_res <- collect_predictions(svm_tune)
   res <- collect_predictions(svm_tune, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
+  expect_false(dplyr::is_grouped_df(res))
 
   # pull out an example to test
   all_res_subset <-

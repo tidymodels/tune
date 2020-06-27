@@ -284,6 +284,9 @@ average_predictions <- function(x, grid = NULL) {
     x <- class_summarize(x, param_names)
   }
 
+  if (dplyr::is_grouped_df(x)) {
+    x <- dplyr::ungroup(x)
+  }
   x
 }
 
