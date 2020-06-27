@@ -73,6 +73,7 @@ jobs:
         run: |
           remotes::install_github("tidymodels/rsample")
           remotes::install_github("tidymodels/dials")
+          remotes::install_cran("vctrs")
         shell: Rscript {0}
 
       - name: Install old dplyr
