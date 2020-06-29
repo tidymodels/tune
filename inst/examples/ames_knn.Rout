@@ -18,14 +18,14 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(tidymodels)
-── Attaching packages ───────────────────────────────── tidymodels 0.1.0.9000 ──
-✔ broom     0.5.6           ✔ recipes   0.1.12.9000
-✔ dials     0.0.7           ✔ rsample   0.0.7      
-✔ dplyr     1.0.0           ✔ tibble    3.0.1      
-✔ ggplot2   3.3.1           ✔ tune      0.1.0.9000 
-✔ infer     0.5.1           ✔ workflows 0.1.1      
-✔ parsnip   0.1.1.9000      ✔ yardstick 0.0.6      
-✔ purrr     0.3.4           
+── Attaching packages ────────────────────────────────────── tidymodels 0.1.0 ──
+✔ broom     0.5.6          ✔ recipes   0.1.13    
+✔ dials     0.0.7.9000     ✔ rsample   0.0.7     
+✔ dplyr     1.0.0          ✔ tibble    3.0.1     
+✔ ggplot2   3.3.2          ✔ tune      0.1.0.9000
+✔ infer     0.5.2          ✔ workflows 0.1.1     
+✔ parsnip   0.1.1          ✔ yardstick 0.0.6     
+✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
 ✖ dplyr::filter()  masks stats::filter()
@@ -50,20 +50,6 @@ Loading required package: parallel
 > # ------------------------------------------------------------------------------
 > 
 > ames <- make_ames()
-Warning message:
-`funs()` is deprecated as of dplyr 0.8.0.
-Please use a list of either functions or lambdas: 
-
-  # Simple named list: 
-  list(mean = mean, median = median)
-
-  # Auto named with `tibble::lst()`: 
-  tibble::lst(mean, median)
-
-  # Using lambdas
-  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_warnings()` to see where this warning was generated. 
 > 
 > set.seed(4595)
 > data_split <- initial_split(ames, strata = "Sale_Price")
@@ -126,9 +112,6 @@ Call `lifecycle::last_warnings()` to see where this warning was generated.
 +   )
 ! Gaussian process model: did not converge in 10 iterations
 ! Gaussian process model: did not converge in 10 iterations
-! Gaussian process model: did not converge in 10 iterations
-! Gaussian process model: did not converge in 10 iterations
-! Gaussian process model: did not converge in 10 iterations
 ! No improvement for 10 iterations; returning current results.
 > 
 > zero_out_data <- function(x) {
@@ -145,4 +128,4 @@ Call `lifecycle::last_warnings()` to see where this warning was generated.
 > 
 > proc.time()
     user   system  elapsed 
-4743.514   62.904 1320.955 
+5520.658   80.407 1698.728 
