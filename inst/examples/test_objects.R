@@ -93,8 +93,8 @@ mt_spln_knn_bo <-
 
 set.seed(8825)
 mt_spln_knn_bo_sep <-
-  tune_bayes(spline_rec,
-             knn_mod_two,
+  tune_bayes(knn_mod_two,
+             spline_rec,
              resamples = folds,
              iter = 3,
              control = b_ctrl)
