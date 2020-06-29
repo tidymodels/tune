@@ -117,9 +117,10 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
       extracted <-
         append_extracts(extracted,
                         workflow,
-                        all_param %>% dplyr::mutate(.config = mod_id),
+                        all_param,
                         split,
-                        control)
+                        control,
+                        mod_id)
 
       tmp_pred <-
         catch_and_log(
@@ -224,9 +225,10 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       append_extracts(
         extracted,
         workflow,
-        grid[param_iter, ] %>% dplyr::mutate(.config = rec_id),
+        grid[param_iter, ],
         split,
-        control
+        control,
+        rec_id
       )
 
     pred_msg <- paste(mod_msg, "(predictions)")
@@ -371,9 +373,10 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
       append_extracts(
         extracted,
         workflow,
-        mod_grid_vals[mod_iter, ] %>% dplyr::mutate(.config = mod_id),
+        mod_grid_vals[mod_iter, ],
         split,
-        control
+        control,
+        mod_id
       )
 
     tmp_pred <- catch_and_log(
@@ -492,9 +495,10 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     extracted <-
       append_extracts(extracted,
                       workflow,
-                      param_val %>% dplyr::mutate(.config = mod_id),
+                      param_val,
                       split,
-                      control)
+                      control,
+                      mod_id)
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
