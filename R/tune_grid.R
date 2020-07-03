@@ -334,12 +334,15 @@ tune_grid_workflow <- function(object,
     rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
   }
 
+  workflow_output <- set_workflow(object, control)
+
   new_tune_results(
     x = resamples,
     parameters = pset,
     metrics = metrics,
     outcomes = outcome_names(object),
-    rset_info = rset_info
+    rset_info = rset_info,
+    workflow = workflow_output
   )
 }
 
@@ -370,7 +373,6 @@ quarterback <- function(x) {
   )
 }
 
-# ------------------------------------------------------------------------------
 
 pull_rset_attributes <- function(x) {
   excl_att <- c("names", "row.names")
@@ -385,4 +387,10 @@ pull_rset_attributes <- function(x) {
     lab <- NA_character_
   }
   list(att = att[att_nms], label = lab)
+}
+
+# ------------------------------------------------------------------------------
+
+set_workflow <- function(workflow, control) {
+  if (control$save_workflow) {workflow} else {NULL}
 }
