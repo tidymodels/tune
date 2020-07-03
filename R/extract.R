@@ -134,7 +134,7 @@ append_predictions <- function(collection, predictions, split, control, .config 
   dplyr::bind_rows(collection, predictions)
 }
 
-append_extracts <- function(collection, workflow, param, split, ctrl) {
+append_extracts <- function(collection, workflow, param, split, ctrl, .config = NULL) {
   if (any(names(param) == ".submodels")) {
     param <- param %>% dplyr::select(-.submodels)
   }
@@ -147,6 +147,10 @@ append_extracts <- function(collection, workflow, param, split, ctrl) {
         extract_details(workflow, ctrl$extract)
       )
     )
+
+  if (!rlang::is_null(.config)) {
+    extracts <- cbind(extracts, .config)
+  }
 
   dplyr::bind_rows(collection, extracts)
 }
