@@ -46,7 +46,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
     workflow <- original_workflow
 
     rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
-    rec_id <- last(recipes::names0(rec_iter, "Recipe"))
+    rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), rec_iter)
 
     # Current recipe parameters only
     rec_grid_vals <-
@@ -75,11 +75,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
+    num_submodels <- nrow(mod_grid_vals)
     mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(mod_grid_vals)
+    num_mod <- nrow(mod_grid_vals)
 
     # ------------------------------------------------------------------------
 
-    num_mod <- nrow(mod_grid_vals)
     original_prepped_workflow <- workflow
 
     for (mod_iter in 1:num_mod) {
@@ -89,13 +90,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
       submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
       submd_param <- submd_param$.submodels[[1]]
 
-      num_submd <- length(unlist(submd_param)) + 1
-      submd_id <- num_submd * mod_iter
+      submd_id <- num_submodels / num_mod * mod_iter
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
       mod_id <- paste0(rec_id, "_",
                        vec_slice(
-                         recipes::names0(submd_id, "Model"),
-                         (submd_id - num_submd + 1):submd_id
+                         recipes::names0(num_submodels, "Model"),
+                         (submd_id - num_submodels / num_mod + 1):submd_id
                        ))
 
       workflow <-
@@ -193,7 +193,7 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
-    rec_id <- last(recipes::names0(param_iter, "Recipe"))
+    rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), param_iter)
 
     workflow <- catch_and_log(
       train_recipe(split, workflow, param_vals),
@@ -342,18 +342,18 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
   mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
+  num_submodels <- nrow(grid)
   original_workflow <- workflow
 
   for (mod_iter in 1:num_mod) {
     workflow <- original_workflow
 
     param_val <- mod_grid_vals[mod_iter, ]
-    num_submodels <- length(unlist(param_val$.submodels)) + 1
-    submodel_id <- num_submodels * mod_iter
+    submodel_id <- num_submodels / num_mod * mod_iter
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
     mod_id <- vec_slice(
-      recipes::names0(submodel_id, "Model"),
-      (submodel_id - num_submodels + 1):submodel_id
+      recipes::names0(num_submodels, "Model"),
+      (submodel_id - num_submodels / num_mod + 1):submodel_id
     )
 
     workflow <- catch_and_log_fit(
@@ -465,18 +465,18 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
   mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(grid)
 
   num_mod <- nrow(mod_grid_vals)
+  num_submodels <- nrow(grid)
   original_workflow <- workflow
 
   for (mod_iter in 1:num_mod) {
     workflow <- original_workflow
 
     param_val <- mod_grid_vals[mod_iter, ]
-    num_submodels <- length(unlist(param_val$.submodels)) + 1
-    submodel_id <- num_submodels * mod_iter
+    submodel_id <- num_submodels / num_mod * mod_iter
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
     mod_id <- vec_slice(
-      recipes::names0(submodel_id, "Model"),
-      (submodel_id - num_submodels + 1):submodel_id
+      recipes::names0(num_submodels, "Model"),
+      (submodel_id - num_submodels / num_mod + 1):submodel_id
       )
 
     workflow <- catch_and_log_fit(
