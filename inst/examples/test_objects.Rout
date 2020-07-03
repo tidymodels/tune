@@ -23,8 +23,8 @@ Type 'q()' to quit R.
 ✔ dials     0.0.7.9000     ✔ rsample   0.0.7     
 ✔ dplyr     1.0.0          ✔ tibble    3.0.1     
 ✔ ggplot2   3.3.2          ✔ tune      0.1.0.9000
-✔ infer     0.5.2          ✔ workflows 0.1.1     
-✔ parsnip   0.1.1          ✔ yardstick 0.0.6     
+✔ infer     0.5.2          ✔ workflows 0.1.1.9000
+✔ parsnip   0.1.1.9000     ✔ yardstick 0.0.6     
 ✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
@@ -863,139 +863,269 @@ The following object is masked from ‘package:dplyr’:
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       America/Denver              
- date     2020-06-28                  
+ date     2020-07-02                  
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package       * version    date       lib source                             
- assertthat      0.2.1      2019-03-21 [1] CRAN (R 4.0.0)                     
- backports       1.1.8      2020-06-17 [1] CRAN (R 4.0.0)                     
- base64enc       0.1-3      2015-07-28 [1] CRAN (R 4.0.0)                     
- bayesplot       1.7.2      2020-05-28 [1] CRAN (R 4.0.0)                     
- boot            1.3-25     2020-04-26 [1] CRAN (R 4.0.0)                     
- broom         * 0.5.6      2020-04-20 [1] CRAN (R 4.0.0)                     
- callr           3.4.3      2020-03-28 [1] CRAN (R 4.0.0)                     
- class           7.3-17     2020-04-26 [1] CRAN (R 4.0.0)                     
- cli             2.0.2      2020-02-28 [1] CRAN (R 4.0.0)                     
- codetools       0.2-16     2018-12-24 [1] CRAN (R 4.0.0)                     
- colorspace      1.4-1      2019-03-18 [1] CRAN (R 4.0.0)                     
- colourpicker    1.0        2017-09-27 [1] CRAN (R 4.0.0)                     
- crayon          1.3.4      2017-09-16 [1] CRAN (R 4.0.0)                     
- crosstalk       1.1.0.1    2020-03-13 [1] CRAN (R 4.0.0)                     
- dials         * 0.0.7.9000 2020-06-29 [1] Github (tidymodels/dials@096f49d)  
- DiceDesign      1.8-1      2019-07-31 [1] CRAN (R 4.0.0)                     
- digest          0.6.25     2020-02-23 [1] CRAN (R 4.0.0)                     
- dplyr         * 1.0.0      2020-05-29 [1] CRAN (R 4.0.0)                     
- DT              0.14       2020-06-24 [1] CRAN (R 4.0.0)                     
- dygraphs        1.1.1.6    2018-07-11 [1] CRAN (R 4.0.0)                     
- ellipsis        0.3.1      2020-05-15 [1] CRAN (R 4.0.0)                     
- fansi           0.4.1      2020-01-08 [1] CRAN (R 4.0.0)                     
- fastmap         1.0.1      2019-10-08 [1] CRAN (R 4.0.0)                     
- foreach         1.5.0      2020-03-30 [1] CRAN (R 4.0.0)                     
- furrr           0.1.0      2018-05-16 [1] CRAN (R 4.0.0)                     
- future          1.17.0     2020-04-18 [1] CRAN (R 4.0.0)                     
- generics        0.0.2      2018-11-29 [1] CRAN (R 4.0.0)                     
- ggplot2       * 3.3.2      2020-06-19 [1] CRAN (R 4.0.0)                     
- ggridges        0.5.2      2020-01-12 [1] CRAN (R 4.0.0)                     
- globals         0.12.5     2019-12-07 [1] CRAN (R 4.0.0)                     
- glue            1.4.1      2020-05-13 [1] CRAN (R 4.0.0)                     
- gower           0.2.2      2020-06-23 [1] CRAN (R 4.0.0)                     
- GPfit           1.0-8      2019-02-08 [1] CRAN (R 4.0.0)                     
- gridExtra       2.3        2017-09-09 [1] CRAN (R 4.0.0)                     
- gtable          0.3.0      2019-03-25 [1] CRAN (R 4.0.0)                     
- gtools          3.8.2      2020-03-31 [1] CRAN (R 4.0.0)                     
- hardhat         0.1.3.9000 2020-06-23 [1] Github (tidymodels/hardhat@2ee41a5)
- htmltools       0.5.0      2020-06-16 [1] CRAN (R 4.0.0)                     
- htmlwidgets     1.5.1      2019-10-08 [1] CRAN (R 4.0.0)                     
- httpuv          1.5.4      2020-06-06 [1] CRAN (R 4.0.0)                     
- igraph          1.2.5      2020-03-19 [1] CRAN (R 4.0.0)                     
- infer         * 0.5.2      2020-06-14 [1] CRAN (R 4.0.0)                     
- inline          0.3.15     2018-05-18 [1] CRAN (R 4.0.0)                     
- ipred           0.9-9      2019-04-28 [1] CRAN (R 4.0.0)                     
- iterators       1.0.12     2019-07-26 [1] CRAN (R 4.0.0)                     
- janeaustenr     0.1.5      2017-06-10 [1] CRAN (R 4.0.0)                     
- kernlab         0.9-29     2019-11-12 [1] CRAN (R 4.0.0)                     
- kknn          * 1.3.1      2016-03-26 [1] CRAN (R 4.0.0)                     
- knitr           1.29       2020-06-23 [1] CRAN (R 4.0.0)                     
- later           1.1.0.1    2020-06-05 [1] CRAN (R 4.0.0)                     
- lattice         0.20-41    2020-04-02 [1] CRAN (R 4.0.0)                     
- lava            1.6.7      2020-03-05 [1] CRAN (R 4.0.0)                     
- lhs             1.0.2      2020-04-13 [1] CRAN (R 4.0.0)                     
- lifecycle       0.2.0      2020-03-06 [1] CRAN (R 4.0.0)                     
- listenv         0.8.0      2019-12-05 [1] CRAN (R 4.0.0)                     
- lme4            1.1-23     2020-04-07 [1] CRAN (R 4.0.0)                     
- loo             2.2.0      2019-12-19 [1] CRAN (R 4.0.0)                     
- lubridate       1.7.9      2020-06-08 [1] CRAN (R 4.0.0)                     
- magrittr        1.5        2014-11-22 [1] CRAN (R 4.0.0)                     
- markdown        1.1        2019-08-07 [1] CRAN (R 4.0.0)                     
- MASS            7.3-51.6   2020-04-26 [1] CRAN (R 4.0.0)                     
- Matrix          1.2-18     2019-11-27 [1] CRAN (R 4.0.0)                     
- matrixStats     0.56.0     2020-03-13 [1] CRAN (R 4.0.0)                     
- mime            0.9        2020-02-04 [1] CRAN (R 4.0.0)                     
- miniUI          0.1.1.1    2018-05-18 [1] CRAN (R 4.0.0)                     
- minqa           1.2.4      2014-10-09 [1] CRAN (R 4.0.0)                     
- modeldata     * 0.0.2      2020-06-22 [1] CRAN (R 4.0.0)                     
- munsell         0.5.0      2018-06-12 [1] CRAN (R 4.0.0)                     
- nlme            3.1-148    2020-05-24 [1] CRAN (R 4.0.0)                     
- nloptr          1.2.2.1    2020-03-11 [1] CRAN (R 4.0.0)                     
- nnet            7.3-14     2020-04-26 [1] CRAN (R 4.0.0)                     
- parsnip       * 0.1.1      2020-05-06 [1] CRAN (R 4.0.0)                     
- pillar          1.4.4      2020-05-05 [1] CRAN (R 4.0.0)                     
- pkgbuild        1.0.8      2020-05-07 [1] CRAN (R 4.0.0)                     
- pkgconfig       2.0.3      2019-09-22 [1] CRAN (R 4.0.0)                     
- plyr            1.8.6      2020-03-03 [1] CRAN (R 4.0.0)                     
- prettyunits     1.1.1      2020-01-24 [1] CRAN (R 4.0.0)                     
- pROC            1.16.2     2020-03-19 [1] CRAN (R 4.0.0)                     
- processx        3.4.2      2020-02-09 [1] CRAN (R 4.0.0)                     
- prodlim         2019.11.13 2019-11-17 [1] CRAN (R 4.0.0)                     
- promises        1.1.1      2020-06-09 [1] CRAN (R 4.0.0)                     
- ps              1.3.3      2020-05-08 [1] CRAN (R 4.0.0)                     
- purrr         * 0.3.4      2020-04-17 [1] CRAN (R 4.0.0)                     
- R6              2.4.1      2019-11-12 [1] CRAN (R 4.0.0)                     
- Rcpp            1.0.4.6    2020-04-09 [1] CRAN (R 4.0.0)                     
- RcppParallel    5.0.2      2020-06-24 [1] CRAN (R 4.0.0)                     
- recipes       * 0.1.13     2020-06-23 [1] CRAN (R 4.0.0)                     
- reshape2        1.4.4      2020-04-09 [1] CRAN (R 4.0.0)                     
- rlang           0.4.6      2020-05-02 [1] CRAN (R 4.0.0)                     
- rpart           4.1-15     2019-04-12 [1] CRAN (R 4.0.0)                     
- rsample       * 0.0.7      2020-06-04 [1] CRAN (R 4.0.0)                     
- rsconnect       0.8.16     2019-12-13 [1] CRAN (R 4.0.0)                     
- rstan           2.19.3     2020-02-11 [1] CRAN (R 4.0.0)                     
- rstanarm        2.19.3     2020-02-11 [1] CRAN (R 4.0.0)                     
- rstantools      2.0.0      2019-09-15 [1] CRAN (R 4.0.0)                     
- rstudioapi      0.11       2020-02-07 [1] CRAN (R 4.0.0)                     
- scales        * 1.1.1      2020-05-11 [1] CRAN (R 4.0.0)                     
- sessioninfo   * 1.1.1      2018-11-05 [1] CRAN (R 4.0.0)                     
- shiny           1.5.0      2020-06-23 [1] CRAN (R 4.0.0)                     
- shinyjs         1.1        2020-01-13 [1] CRAN (R 4.0.0)                     
- shinystan       2.5.0      2018-05-01 [1] CRAN (R 4.0.0)                     
- shinythemes     1.1.2      2018-11-06 [1] CRAN (R 4.0.0)                     
- SnowballC       0.7.0      2020-04-01 [1] CRAN (R 4.0.0)                     
- StanHeaders     2.21.0-5   2020-06-09 [1] CRAN (R 4.0.0)                     
- statmod         1.4.34     2020-02-17 [1] CRAN (R 4.0.0)                     
- stringi         1.4.6      2020-02-17 [1] CRAN (R 4.0.0)                     
- stringr         1.4.0      2019-02-10 [1] CRAN (R 4.0.0)                     
- survival        3.2-3      2020-06-13 [1] CRAN (R 4.0.0)                     
- testthat      * 2.3.2      2020-03-02 [1] CRAN (R 4.0.0)                     
- threejs         0.3.3      2020-01-21 [1] CRAN (R 4.0.0)                     
- tibble        * 3.0.1      2020-04-20 [1] CRAN (R 4.0.0)                     
- tidymodels    * 0.1.0      2020-02-16 [1] CRAN (R 4.0.0)                     
- tidyposterior   0.0.3      2020-06-11 [1] CRAN (R 4.0.0)                     
- tidypredict     0.4.5      2020-02-10 [1] CRAN (R 4.0.0)                     
- tidyr           1.1.0      2020-05-20 [1] CRAN (R 4.0.0)                     
- tidyselect      1.1.0      2020-05-11 [1] CRAN (R 4.0.0)                     
- tidytext        0.2.4.900  2020-06-24 [1] local                              
- timeDate        3043.102   2018-02-21 [1] CRAN (R 4.0.0)                     
- tokenizers      0.2.1      2018-03-29 [1] CRAN (R 4.0.0)                     
- tune          * 0.1.0.9000 2020-06-29 [1] local                              
- utf8            1.1.4      2018-05-24 [1] CRAN (R 4.0.0)                     
- vctrs           0.3.1      2020-06-05 [1] CRAN (R 4.0.0)                     
- withr           2.2.0      2020-04-20 [1] CRAN (R 4.0.0)                     
- workflows     * 0.1.1      2020-03-17 [1] CRAN (R 4.0.0)                     
- xfun            0.15       2020-06-21 [1] CRAN (R 4.0.0)                     
- xtable          1.8-4      2019-04-21 [1] CRAN (R 4.0.0)                     
- xts             0.12-0     2020-01-19 [1] CRAN (R 4.0.0)                     
- yardstick     * 0.0.6      2020-03-17 [1] CRAN (R 4.0.0)                     
- zoo             1.8-8      2020-05-02 [1] CRAN (R 4.0.0)                     
+ package       * version    date       lib
+ assertthat      0.2.1      2019-03-21 [1]
+ backports       1.1.8      2020-06-17 [1]
+ base64enc       0.1-3      2015-07-28 [1]
+ bayesplot       1.7.2      2020-05-28 [1]
+ boot            1.3-25     2020-04-26 [1]
+ broom         * 0.5.6      2020-04-20 [1]
+ callr           3.4.3      2020-03-28 [1]
+ class           7.3-17     2020-04-26 [1]
+ cli             2.0.2      2020-02-28 [1]
+ codetools       0.2-16     2018-12-24 [1]
+ colorspace      1.4-1      2019-03-18 [1]
+ colourpicker    1.0        2017-09-27 [1]
+ crayon          1.3.4      2017-09-16 [1]
+ crosstalk       1.1.0.1    2020-03-13 [1]
+ dials         * 0.0.7.9000 2020-06-29 [1]
+ DiceDesign      1.8-1      2019-07-31 [1]
+ digest          0.6.25     2020-02-23 [1]
+ dplyr         * 1.0.0      2020-05-29 [1]
+ DT              0.14       2020-06-24 [1]
+ dygraphs        1.1.1.6    2018-07-11 [1]
+ ellipsis        0.3.1      2020-05-15 [1]
+ fansi           0.4.1      2020-01-08 [1]
+ fastmap         1.0.1      2019-10-08 [1]
+ foreach         1.5.0      2020-03-30 [1]
+ furrr           0.1.0      2018-05-16 [1]
+ future          1.17.0     2020-04-18 [1]
+ generics        0.0.2      2018-11-29 [1]
+ ggplot2       * 3.3.2      2020-06-19 [1]
+ ggridges        0.5.2      2020-01-12 [1]
+ globals         0.12.5     2019-12-07 [1]
+ glue            1.4.1      2020-05-13 [1]
+ gower           0.2.2      2020-06-23 [1]
+ GPfit           1.0-8      2019-02-08 [1]
+ gridExtra       2.3        2017-09-09 [1]
+ gtable          0.3.0      2019-03-25 [1]
+ gtools          3.8.2      2020-03-31 [1]
+ hardhat         0.1.4.9000 2020-07-03 [1]
+ htmltools       0.5.0      2020-06-16 [1]
+ htmlwidgets     1.5.1      2019-10-08 [1]
+ httpuv          1.5.4      2020-06-06 [1]
+ igraph          1.2.5      2020-03-19 [1]
+ infer         * 0.5.2      2020-06-14 [1]
+ inline          0.3.15     2018-05-18 [1]
+ ipred           0.9-9      2019-04-28 [1]
+ iterators       1.0.12     2019-07-26 [1]
+ janeaustenr     0.1.5      2017-06-10 [1]
+ kernlab         0.9-29     2019-11-12 [1]
+ kknn          * 1.3.1      2016-03-26 [1]
+ knitr           1.29       2020-06-23 [1]
+ later           1.1.0.1    2020-06-05 [1]
+ lattice         0.20-41    2020-04-02 [1]
+ lava            1.6.7      2020-03-05 [1]
+ lhs             1.0.2      2020-04-13 [1]
+ lifecycle       0.2.0      2020-03-06 [1]
+ listenv         0.8.0      2019-12-05 [1]
+ lme4            1.1-23     2020-04-07 [1]
+ loo             2.2.0      2019-12-19 [1]
+ lubridate       1.7.9      2020-06-08 [1]
+ magrittr        1.5        2014-11-22 [1]
+ markdown        1.1        2019-08-07 [1]
+ MASS            7.3-51.6   2020-04-26 [1]
+ Matrix          1.2-18     2019-11-27 [1]
+ matrixStats     0.56.0     2020-03-13 [1]
+ mime            0.9        2020-02-04 [1]
+ miniUI          0.1.1.1    2018-05-18 [1]
+ minqa           1.2.4      2014-10-09 [1]
+ modeldata     * 0.0.2      2020-06-22 [1]
+ munsell         0.5.0      2018-06-12 [1]
+ nlme            3.1-148    2020-05-24 [1]
+ nloptr          1.2.2.1    2020-03-11 [1]
+ nnet            7.3-14     2020-04-26 [1]
+ parsnip       * 0.1.1.9000 2020-07-02 [1]
+ pillar          1.4.4      2020-05-05 [1]
+ pkgbuild        1.0.8      2020-05-07 [1]
+ pkgconfig       2.0.3      2019-09-22 [1]
+ plyr            1.8.6      2020-03-03 [1]
+ prettyunits     1.1.1      2020-01-24 [1]
+ pROC            1.16.2     2020-03-19 [1]
+ processx        3.4.2      2020-02-09 [1]
+ prodlim         2019.11.13 2019-11-17 [1]
+ promises        1.1.1      2020-06-09 [1]
+ ps              1.3.3      2020-05-08 [1]
+ purrr         * 0.3.4      2020-04-17 [1]
+ R6              2.4.1      2019-11-12 [1]
+ Rcpp            1.0.4.6    2020-04-09 [1]
+ RcppParallel    5.0.2      2020-06-24 [1]
+ recipes       * 0.1.13     2020-06-23 [1]
+ reshape2        1.4.4      2020-04-09 [1]
+ rlang           0.4.6      2020-05-02 [1]
+ rpart           4.1-15     2019-04-12 [1]
+ rsample       * 0.0.7      2020-06-04 [1]
+ rsconnect       0.8.16     2019-12-13 [1]
+ rstan           2.19.3     2020-02-11 [1]
+ rstanarm        2.19.3     2020-02-11 [1]
+ rstantools      2.0.0      2019-09-15 [1]
+ rstudioapi      0.11       2020-02-07 [1]
+ scales        * 1.1.1      2020-05-11 [1]
+ sessioninfo   * 1.1.1      2018-11-05 [1]
+ shiny           1.5.0      2020-06-23 [1]
+ shinyjs         1.1        2020-01-13 [1]
+ shinystan       2.5.0      2018-05-01 [1]
+ shinythemes     1.1.2      2018-11-06 [1]
+ SnowballC       0.7.0      2020-04-01 [1]
+ StanHeaders     2.21.0-5   2020-06-09 [1]
+ statmod         1.4.34     2020-02-17 [1]
+ stringi         1.4.6      2020-02-17 [1]
+ stringr         1.4.0      2019-02-10 [1]
+ survival        3.2-3      2020-06-13 [1]
+ testthat      * 2.3.2      2020-03-02 [1]
+ threejs         0.3.3      2020-01-21 [1]
+ tibble        * 3.0.1      2020-04-20 [1]
+ tidymodels    * 0.1.0      2020-02-16 [1]
+ tidyposterior   0.0.3      2020-06-11 [1]
+ tidypredict     0.4.5      2020-02-10 [1]
+ tidyr           1.1.0      2020-05-20 [1]
+ tidyselect      1.1.0      2020-05-11 [1]
+ tidytext        0.2.4.900  2020-06-24 [1]
+ timeDate        3043.102   2018-02-21 [1]
+ tokenizers      0.2.1      2018-03-29 [1]
+ tune          * 0.1.0.9000 2020-07-03 [1]
+ utf8            1.1.4      2018-05-24 [1]
+ vctrs           0.3.1      2020-06-05 [1]
+ withr           2.2.0      2020-04-20 [1]
+ workflows     * 0.1.1.9000 2020-07-01 [1]
+ xfun            0.15       2020-06-21 [1]
+ xtable          1.8-4      2019-04-21 [1]
+ xts             0.12-0     2020-01-19 [1]
+ yardstick     * 0.0.6      2020-03-17 [1]
+ zoo             1.8-8      2020-05-02 [1]
+ source                               
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ Github (tidymodels/dials@096f49d)    
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ Github (tidymodels/hardhat@e726cfa)  
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ local                                
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ local                                
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ local                                
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ Github (tidymodels/workflows@464b11f)
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
+ CRAN (R 4.0.0)                       
 
 [1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library
 > 
@@ -1004,4 +1134,4 @@ The following object is masked from ‘package:dplyr’:
 + }
 > proc.time()
     user   system  elapsed 
-1597.398    6.379 1608.337 
+1645.424    4.862 1653.252 
