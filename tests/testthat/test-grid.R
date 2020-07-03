@@ -345,5 +345,9 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$parameters, "parameters"))
   expect_true(inherits(att$metrics, "metric_set"))
 
+  res2 <- tune_grid(wflow, resamples = folds, grid = grid,
+                    control = control_grid(save_workflow = TRUE))
+  expect_null(attr(res, "workflow"))
+  expect_true(inherits(attr(res2, "workflow"), "workflow"))
 })
 
