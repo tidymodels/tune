@@ -28,6 +28,8 @@
 
 * If a grid is given, parameters do not need to be finalized to be used in the `tune_*()` functions. 
 
+* Added a `save_workflow` argument to `control_*` functions that will result in the workflow object used to carry out tuning/fitting to be appended to the resulting `tune_results` object in a `workflow` attribute.
+
 
 # tune 0.1.0
 
