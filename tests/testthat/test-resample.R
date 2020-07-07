@@ -264,4 +264,14 @@ test_that("retain extra attributes", {
                   control = control_resamples(save_workflow = TRUE))
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
+
+  expect_warning(
+    fit_resamples(
+      lin_mod,
+      recipes::recipe(mpg ~ ., mtcars),
+      folds,
+      control = control_resamples(save_workflow = TRUE)
+    ),
+    "being saved contains a recipe, which is"
+  )
 })
