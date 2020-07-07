@@ -356,7 +356,7 @@ test_that("retain extra attributes", {
   pset2 <- dials::parameters(wflow2)
   grid2 <- grid_regular(pset2, levels = 3)
 
-  expect_warning(
+  expect_message(
     tune_grid(wflow2, resamples = folds, grid = grid2,
               control = control_grid(save_workflow = TRUE)),
     "being saved contains a recipe, which is"

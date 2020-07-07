@@ -265,7 +265,7 @@ test_that("retain extra attributes", {
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
-  expect_warning(
+  expect_message(
     fit_resamples(
       lin_mod,
       recipes::recipe(mpg ~ ., mtcars),
