@@ -12,7 +12,9 @@ pred_type <- function(x) {
   res
 }
 
-
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 metrics_info <- function(x) {
   metric_list <- rlang::env_get(environment(x), "fns")
   metric_dir <- purrr::map_chr(metric_list, attr, "direction")
