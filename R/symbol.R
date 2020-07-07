@@ -74,7 +74,6 @@ is_windows <- function () {
 #'
 #' @keywords internal
 #' @export
-#' @return  A list of colors that should be used for different types of text.
-
+#' @rdname empty_ellipses
 get_tune_colors <- function() tune_color
 

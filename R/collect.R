@@ -329,6 +329,9 @@ collector <- function(x, coll_col = ".predictions") {
   x
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 estimate_tune_results <- function(x, ...) {
   param_names <- .get_tune_parameter_names(x)
 

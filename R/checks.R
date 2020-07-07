@@ -1,3 +1,6 @@
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 check_rset <- function(x) {
   if (!inherits(x, "rset")) {
     stop("The `resamples` argument should be an 'rset' object, such as the type ",
@@ -189,6 +192,10 @@ check_param_objects <- function(pset) {
   invisible(pset)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param check_dials A logical for check for a NULL parameter object.
 check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
@@ -229,6 +236,10 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   invisible(NULL)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param object A `workflow` object.
 check_metrics <- function(x, object) {
   mode <- workflows::pull_workflow_spec(object)$mode
 
@@ -278,6 +289,12 @@ check_metrics <- function(x, object) {
 
 bayes_msg <- "`initial` should be a positive integer or the results of [tune_grid()]"
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param wflow A `workflow` object.
+#' @param resamples An `rset` object.
+#' @param ctrl A `control_grid` object.
 check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
@@ -362,6 +379,11 @@ check_class_or_null <- function(x, cls = "numeric") {
   inherits(x, cls) | is.null(x)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param cls A character vector of possible classes
+#' @param where A character string for the calling function.
 val_class_or_null <- function(x, cls = "numeric", where = NULL) {
   cl <- match.call()
   fine <- check_class_or_null(x, cls)
@@ -380,6 +402,9 @@ check_class_and_single <- function(x, cls = "numeric") {
   isTRUE(inherits(x, cls) & length(x) == 1)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   cl <- match.call()
   fine <- check_class_and_single(x, cls)
