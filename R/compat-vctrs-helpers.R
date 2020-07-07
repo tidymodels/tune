@@ -135,7 +135,8 @@ new_iteration_results_from_template <- function(x, to) {
     parameters = attrs$parameters,
     metrics = attrs$metrics,
     outcomes = attrs$outcomes,
-    rset_info = attrs$rset_info
+    rset_info = attrs$rset_info,
+    workflow = attrs$workflow
   )
 }
 

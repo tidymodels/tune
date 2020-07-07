@@ -31,6 +31,8 @@ new_bare_tibble <- function(x, ..., class = character()) {
 #'   \item `.get_tune_parameter_names()`, `.get_tune_metric_names()`, and
 #'    `.get_tune_outcome_names()` return a character string.
 #'   \item `.get_tune_metrics()` returns a metric set or NULL.
+#'   \item `.get_tune_workflow()` returns the workflow used to fit the
+#'   resamples (if `save_workflow` was set to `TRUE` during fitting) or NULL.
 #' }
 #' @keywords internal
 #' @export
@@ -89,6 +91,18 @@ new_bare_tibble <- function(x, ..., class = character()) {
     res <- x$outcomes
   } else {
     res <- character(0)
+  }
+  res
+}
+
+#' @export
+#' @rdname tune_accessor
+.get_tune_workflow <- function(x) {
+  x <- attributes(x)
+  if (any(names(x) == "workflow")) {
+    res <- x$workflow
+  } else {
+    res <- NULL
   }
   res
 }

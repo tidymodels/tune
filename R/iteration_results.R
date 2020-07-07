@@ -18,7 +18,7 @@
 # the `.iter` column sticks around.
 
 new_iteration_results <- function(x, parameters, metrics, outcomes = character(0),
-                                  rset_info, workflow = NULL) {
+                                  rset_info, workflow) {
   new_tune_results(
     x = x,
     parameters = parameters,
