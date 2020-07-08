@@ -42,7 +42,8 @@ new_iteration_results(
   parameters,
   metrics,
   outcomes = character(0),
-  rset_info
+  rset_info,
+  workflow
 )
 
 get_tune_colors()
@@ -89,6 +90,8 @@ is_workflow(x)
 \item{outcomes}{A character vector of outcome names.}
 
 \item{rset_info}{Attributes from an \code{rset} object.}
+
+\item{workflow}{The workflow used to fit the iteration results.}
 
 \item{as_matrix}{A logical for the return type.}
 

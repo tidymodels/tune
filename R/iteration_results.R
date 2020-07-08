@@ -25,6 +25,7 @@
 #' @param metrics A metric set.
 #' @param outcomes A character vector of outcome names.
 #' @param rset_info Attributes from an `rset` object.
+#' @param workflow The workflow used to fit the iteration results.
 new_iteration_results <- function(x, parameters, metrics, outcomes = character(0),
                                   rset_info, workflow) {
 
