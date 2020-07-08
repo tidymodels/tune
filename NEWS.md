@@ -1,8 +1,8 @@
-# tune 0.1.0.9000
+# tune 0.1.1
 
 ## Breaking Changes
 
-* `autoplot.tune_results()` not requires objects made by version 0.1.0 or higher of tune. 
+* `autoplot.tune_results()` now requires objects made by version 0.1.0 or higher of tune. 
 
 * `tune` objects no longer keep the `rset` class that they have from the `resamples` argument. 
 
@@ -28,12 +28,9 @@
 
 * If a grid is given, parameters do not need to be finalized to be used in the `tune_*()` functions. 
 
-* Added a `save_workflow` argument to `control_*` functions that will result in the
-workflow object used to carry out tuning/fitting (regardless of whether a formula 
-or recipe was given as input to the function) to be appended to the resulting
-`tune_results` object in a `workflow` attribute. The new `.get_tune_workflow()`
-function can be used to access the workflow.
+* Added a `save_workflow` argument to `control_*` functions that will result in the workflow object used to carry out tuning/fitting (regardless of whether a formula or recipe was given as input to the function) to be appended to the resulting `tune_results` object in a `workflow` attribute. The new `.get_tune_workflow()` function can be used to access the workflow.
 
+* Many of the output columns in a `tune_results` object have an additional column called `.config`. This is meant to be a unique, qualitative value that used for sorting and merging. These values also correspond to the messages in the logging produced when `verbose = TRUE`. 
 
 # tune 0.1.0
 
