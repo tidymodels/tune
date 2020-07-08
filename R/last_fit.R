@@ -148,13 +148,3 @@ last_fit_workflow <- function(object, split, metrics) {
   res
 }
 
-empty_ellipses <- function(...) {
-  dots <- rlang::enquos(...)
-  if (length(dots) > 0) {
-    msg <- "The `...` are not used in this function but one or more objects were passed: "
-    msg <- paste0(msg, paste0("'", names(dots), "'", collapse = ", "))
-    rlang::warn(msg)
-  }
-  invisible(NULL)
-}
-

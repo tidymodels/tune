@@ -392,6 +392,11 @@ create_initial_set <- function(param, n = NULL) {
 
 # ------------------------------------------------------------------------------
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param pset A `parameters` object.
+#' @param as_matrix A logical for the return type.
 encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   # change the numeric variables to the transformed scale (if any)
   has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
@@ -615,7 +620,11 @@ is_cataclysmic <- function(x) {
 
 
 
-
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param origin The calculation start time.
+#' @param limit The allowable time (in minutes).
 check_time <- function(origin, limit) {
   if (is.na(limit)) {
     return(invisible(NULL))

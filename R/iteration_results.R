@@ -17,8 +17,17 @@
 # Same as `tune_results`, except that the vctrs invariants also require that
 # the `.iter` column sticks around.
 
+
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+#' @param parameters A `parameters` object.
+#' @param metrics A metric set.
+#' @param outcomes A character vector of outcome names.
+#' @param rset_info Attributes from an `rset` object.
 new_iteration_results <- function(x, parameters, metrics, outcomes = character(0),
                                   rset_info, workflow) {
+
   new_tune_results(
     x = x,
     parameters = parameters,

@@ -374,6 +374,9 @@ quarterback <- function(x) {
 }
 
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 pull_rset_attributes <- function(x) {
   excl_att <- c("names", "row.names")
   att <- attributes(x)

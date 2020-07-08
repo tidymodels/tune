@@ -1,11 +1,38 @@
+#' Internal functions for developers
+#'
+#' These are not intended for use by the general public.
+#' @param x An object.
+#' @param ... Other options
+#' @keywords internal
+#' @export
+empty_ellipses <- function(...) {
+  dots <- rlang::enquos(...)
+  if (length(dots) > 0) {
+    msg <- "The `...` are not used in this function but one or more objects were passed: "
+    msg <- paste0(msg, paste0("'", names(dots), "'", collapse = ", "))
+    rlang::warn(msg)
+  }
+  invisible(NULL)
+}
+
+
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 is_recipe <- function(x) {
   inherits(x, "recipe")
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 is_preprocessor <- function(x) {
   is_recipe(x) || rlang::is_formula(x)
 }
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 is_workflow <- function(x) {
   inherits(x, "workflow")
 }
