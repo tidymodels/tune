@@ -14,13 +14,14 @@
 
 # ------------------------------------------------------------------------------
 
-new_resample_results <- function(x, parameters, metrics, outcomes = character(0), rset_info) {
+new_resample_results <- function(x, parameters, metrics, outcomes = character(0), rset_info, workflow = NULL) {
   new_tune_results(
     x = x,
     parameters = parameters,
     metrics = metrics,
     outcomes = outcomes,
     rset_info = rset_info,
+    workflow = workflow,
     class = "resample_results"
   )
 }

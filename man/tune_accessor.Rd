@@ -6,6 +6,7 @@
 \alias{.get_tune_metrics}
 \alias{.get_tune_metric_names}
 \alias{.get_tune_outcome_names}
+\alias{.get_tune_workflow}
 \title{Various accessor functions}
 \usage{
 .get_tune_parameters(x)
@@ -17,6 +18,8 @@
 .get_tune_metric_names(x)
 
 .get_tune_outcome_names(x)
+
+.get_tune_workflow(x)
 }
 \arguments{
 \item{x}{An object of class \code{tune_result}.}
@@ -27,6 +30,8 @@
 \item \code{.get_tune_parameter_names()}, \code{.get_tune_metric_names()}, and
 \code{.get_tune_outcome_names()} return a character string.
 \item \code{.get_tune_metrics()} returns a metric set or NULL.
+\item \code{.get_tune_workflow()} returns the workflow used to fit the
+resamples (if \code{save_workflow} was set to \code{TRUE} during fitting) or NULL.
 }
 }
 \description{

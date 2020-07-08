@@ -359,5 +359,14 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$parameters, "parameters"))
   expect_true(inherits(att$metrics, "metric_set"))
 
+  expect_message(
+    res2 <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                       initial = iter1, iter = iter2,
+                       control = control_bayes(save_workflow = TRUE)),
+    "being saved contains a recipe, which is"
+  )
+  expect_null(attr(res, "workflow"))
+  expect_true(inherits(attr(res2, "workflow"), "workflow"))
+
 
 })

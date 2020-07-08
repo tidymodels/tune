@@ -155,12 +155,15 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
     )
   }
 
+  workflow_output <- set_workflow(workflow, control)
+
   new_resample_results(
     x = resamples,
     parameters = parameters(workflow),
     metrics = metrics,
     outcomes = outcome_names(workflow),
-    rset_info = rset_info
+    rset_info = rset_info,
+    workflow = workflow_output
   )
 }
 

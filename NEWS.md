@@ -28,6 +28,12 @@
 
 * If a grid is given, parameters do not need to be finalized to be used in the `tune_*()` functions. 
 
+* Added a `save_workflow` argument to `control_*` functions that will result in the
+workflow object used to carry out tuning/fitting (regardless of whether a formula 
+or recipe was given as input to the function) to be appended to the resulting
+`tune_results` object in a `workflow` attribute. The new `.get_tune_workflow()`
+function can be used to access the workflow.
+
 
 # tune 0.1.0
 

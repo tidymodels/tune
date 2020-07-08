@@ -345,5 +345,21 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$parameters, "parameters"))
   expect_true(inherits(att$metrics, "metric_set"))
 
+  res2 <- tune_grid(wflow, resamples = folds, grid = grid,
+                    control = control_grid(save_workflow = TRUE))
+  expect_null(attr(res, "workflow"))
+  expect_true(inherits(attr(res2, "workflow"), "workflow"))
+
+  wflow2 <- workflow() %>%
+    add_recipe(recipes::recipe(mpg ~ ., mtcars)) %>%
+    add_model(svm_mod)
+  pset2 <- dials::parameters(wflow2)
+  grid2 <- grid_regular(pset2, levels = 3)
+
+  expect_message(
+    tune_grid(wflow2, resamples = folds, grid = grid2,
+              control = control_grid(save_workflow = TRUE)),
+    "being saved contains a recipe, which is"
+  )
 })
 

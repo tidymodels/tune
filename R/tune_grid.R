@@ -334,12 +334,15 @@ tune_grid_workflow <- function(object,
     rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
   }
 
+  workflow_output <- set_workflow(object, control)
+
   new_tune_results(
     x = resamples,
     parameters = pset,
     metrics = metrics,
     outcomes = outcome_names(object),
-    rset_info = rset_info
+    rset_info = rset_info,
+    workflow = workflow_output
   )
 }
 
@@ -370,7 +373,6 @@ quarterback <- function(x) {
   )
 }
 
-# ------------------------------------------------------------------------------
 
 #' @export
 #' @keywords internal
@@ -388,4 +390,22 @@ pull_rset_attributes <- function(x) {
     lab <- NA_character_
   }
   list(att = att[att_nms], label = lab)
+}
+
+# ------------------------------------------------------------------------------
+
+set_workflow <- function(workflow, control) {
+  if (control$save_workflow) {
+    if (!is.null(workflow$pre$actions$recipe)) {
+      rlang::inform(paste0(
+        "The workflow being saved contains a recipe, which is ",
+        format(object.size(workflow$pre$actions$recipe), units = "Mb", digits = 2),
+        " in memory. If this was not intentional, please set the control ",
+        "setting `save_workflow = FALSE`."
+      ))
+    }
+    workflow
+  } else {
+    NULL
+  }
 }

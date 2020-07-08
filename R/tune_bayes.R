@@ -268,7 +268,8 @@ tune_bayes_workflow <-
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      out <- new_iteration_results(unsummarized, param_info, metrics, y_names, rset_info)
+      out <- new_iteration_results(unsummarized, param_info, metrics, y_names,
+                                   rset_info, workflow = NULL)
       return(out)
     })
 
@@ -365,6 +366,8 @@ tune_bayes_workflow <-
       check_time(start_time, control$time_limit)
     }
 
+    workflow_output <- set_workflow(object, control)
+
     # Reset `on.exit()` hook
     on.exit()
 
@@ -373,7 +376,8 @@ tune_bayes_workflow <-
       parameters = param_info,
       metrics = metrics,
       outcomes = y_names,
-      rset_info = rset_info
+      rset_info = rset_info,
+      workflow = workflow_output
     )
   }
 
