@@ -96,7 +96,7 @@ update objects with those values." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -196,19 +196,19 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>parsnip</span>)
 <span class='no'>knn_model</span> <span class='kw'>&lt;-</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/nearest_neighbor.html'>nearest_neighbor</a></span>(
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/nearest_neighbor.html'>nearest_neighbor</a></span>(
     <span class='kw'>mode</span> <span class='kw'>=</span> <span class='st'>"regression"</span>,
     <span class='kw'>neighbors</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(<span class='st'>"K"</span>),
     <span class='kw'>weight_func</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>(),
     <span class='kw'>dist_power</span> <span class='kw'>=</span> <span class='fu'><a href='tune.html'>tune</a></span>()
   ) <span class='kw'>%&gt;%</span>
-  <span class='fu'><a href='https://rdrr.io/pkg/parsnip/man/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
+  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span>(<span class='st'>"kknn"</span>)
 
 <span class='no'>lowest_rmse</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span>(<span class='no'>ames_grid_search</span>, <span class='kw'>metric</span> <span class='kw'>=</span> <span class='st'>"rmse"</span>)
-<span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 5</span><span>
-#&gt;       K weight_func dist_power   lon   lat
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    33 triweight        0.325    10     3</div><div class='input'>
+<span class='no'>lowest_rmse</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 6</span><span>
+#&gt;       K weight_func dist_power   lon   lat .config        
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    33 triweight        0.511    10     3 Recipe10_Model1</div><div class='input'>
 <span class='no'>knn_model</span></div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (regression)
 #&gt; 
 #&gt; Main Arguments:
@@ -222,7 +222,7 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 #&gt; Main Arguments:
 #&gt;   neighbors = 33
 #&gt;   weight_func = triweight
-#&gt;   dist_power = 0.324624970788136
+#&gt;   dist_power = 0.511191629664972
 #&gt; 
 #&gt; Computational engine: kknn 
 #&gt; </div><div class='input'># }

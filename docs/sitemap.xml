@@ -10,6 +10,9 @@
     <loc>https://tune.tidymodels.org/reference/collect_predictions.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/conf_mat_resampled.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/control_bayes.html</loc>
   </url>
   <url>
@@ -19,6 +22,9 @@
     <loc>https://tune.tidymodels.org/reference/coord_obs_pred.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/empty_ellipses.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/example_ames_knn.html</loc>
   </url>
   <url>
@@ -26,6 +32,9 @@
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/extract_recipe.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/filter_parameters.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/finalize_model.html</loc>
@@ -65,6 +74,9 @@
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/tune.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/tune_accessor.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/tune_args.html</loc>

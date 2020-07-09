@@ -96,7 +96,7 @@ combinations based on previous results." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -155,7 +155,7 @@ combinations based on previous results." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Bayesian optimization of model parameters.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/tune_Bayes.R'><code>R/tune_Bayes.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/tune_bayes.R'><code>R/tune_bayes.R</code></a></small>
     <div class="hidden name"><code>tune_bayes.Rd</code></div>
     </div>
 
@@ -198,7 +198,7 @@ combinations based on previous results.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>A <code>parsnip</code> model specification or a <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code>.</p></td>
+      <td><p>A <code>parsnip</code> model specification or a <code><a href='https://workflows.tidymodels.org//reference/workflow.html'>workflows::workflow()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -207,7 +207,7 @@ combinations based on previous results.</p>
     <tr>
       <th>preprocessor</th>
       <td><p>A traditional model formula or a recipe created using
-<code><a href='https://rdrr.io/pkg/recipes/man/recipe.html'>recipes::recipe()</a></code>.</p></td>
+<code><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipes::recipe()</a></code>.</p></td>
     </tr>
     <tr>
       <th>resamples</th>
@@ -364,7 +364,7 @@ object, depending on what is returned.</p>
 retain any model or recipe that was created within the resamples. This
 argument should be a function with a single argument. The value of the
 argument that is given to the function in each resample is a workflow
-object (see <code><a href='https://rdrr.io/pkg/workflows/man/workflow.html'>workflows::workflow()</a></code> for more information). There are two
+object (see <code><a href='https://workflows.tidymodels.org//reference/workflow.html'>workflows::workflow()</a></code> for more information). There are two
 helper functions that can be used to easily pull out the recipe (if any)
 and/or the model: <code><a href='extract_recipe.html'>extract_recipe()</a></code> and <code><a href='extract_recipe.html'>extract_model()</a></code>.</p>
 <p>As an example, if there is interest in getting each model back, one could use:</p><pre>

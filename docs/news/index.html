@@ -94,7 +94,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -156,15 +156,20 @@
       <small>Source: <a href='https://github.com/tidymodels/tune/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="tune-0109000" class="section level1">
-<h1 class="page-header" data-toc-text="0.1.0.9000">
-<a href="#tune-0109000" class="anchor"></a>tune 0.1.0.9000<small> Unreleased </small>
+    <div id="tune-development-version" class="section level1">
+<h1 class="page-header" data-toc-text="development version">
+<a href="#tune-development-version" class="anchor"></a>tune (development version)<small> Unreleased </small>
+</h1>
+</div>
+    <div id="tune-011" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.1">
+<a href="#tune-011" class="anchor"></a>tune 0.1.1<small> 2020-07-08 </small>
 </h1>
 <div id="breaking-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#breaking-changes" class="anchor"></a>Breaking Changes</h2>
 <ul>
-<li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> not requires objects made by version 0.1.0 or higher of tune.</p></li>
+<li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now requires objects made by version 0.1.0 or higher of tune.</p></li>
 <li><p><code>tune</code> objects no longer keep the <code>rset</code> class that they have from the <code>resamples</code> argument.</p></li>
 </ul>
 </div>
@@ -176,6 +181,14 @@
 <li><p><code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now transforms the parameter values for the plot. For example, if the <code>penalty</code> parameter was used for a regularized regression, the points are plotted on the log-10 scale (its default transformation). For non-regular grids, the facet labels show the transformation type (e.g. <code>"penalty (log-10)"</code> or <code>"cost (log-2)"</code>). For regular grid, the x-axis is scaled using <code>scale_x_continuous()</code>.</p></li>
 <li><p>Finally, <code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> now shows the parameter <em>labels</em> in a plot. For example, if a k-nearest neighbors model was used with <code>neighbors = tune()</code>, the parameter will be labeled as <code>"# Nearest Neighbors"</code>. When an ID was used, such as <code>neighbors = tune("K")</code>, this is used to identify the parameter.</p></li>
 <li><p>In other plotting news, <code><a href="../reference/coord_obs_pred.html">coord_obs_pred()</a></code> has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1.</p></li>
+<li><p>The outcome names are saved in an attribute called <code>outcomes</code> to objects with class <code>tune_results</code>. Also, several accessor functions (named `.get_tune_*()) were added to more easily access such attributes.</p></li>
+<li><p><code><a href="../reference/conf_mat_resampled.html">conf_mat_resampled()</a></code> computes the average confusion matrix across resampling statistics for a single model.</p></li>
+<li><p><code><a href="../reference/show_best.html">show_best()</a></code>, and the <code>select_*()</code> functions will now use the first metric in the metric set if no metric is supplied.</p></li>
+<li><p><code><a href="../reference/filter_parameters.html">filter_parameters()</a></code> can trim the <code>.metrics</code> column of unwanted results (as well as columns <code>.predictions</code> and <code>.extracts</code>) from <code>tune_*</code> objects.</p></li>
+<li><p>In concert with <code>dials</code> &gt; 0.0.7, tuning engine-specific arguments is possible. Many known engine-specific tuning parameters and handled automatically.</p></li>
+<li><p>If a grid is given, parameters do not need to be finalized to be used in the <code>tune_*()</code> functions.</p></li>
+<li><p>Added a <code>save_workflow</code> argument to <code>control_*</code> functions that will result in the workflow object used to carry out tuning/fitting (regardless of whether a formula or recipe was given as input to the function) to be appended to the resulting <code>tune_results</code> object in a <code>workflow</code> attribute. The new <code><a href="../reference/tune_accessor.html">.get_tune_workflow()</a></code> function can be used to access the workflow.</p></li>
+<li><p>Many of the output columns in a <code>tune_results</code> object have an additional column called <code>.config</code>. This is meant to be a unique, qualitative value that used for sorting and merging. These values also correspond to the messages in the logging produced when <code>verbose = TRUE</code>.</p></li>
 </ul>
 </div>
 </div>

@@ -53,7 +53,7 @@
         <a class="navbar-brand" href="index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -110,33 +110,50 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="tune" class="section level1">
+<div id="tune-" class="section level1">
 
 <!-- badges: start -->
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The goal of tune is to facilitate the tuning of hyper-parameters the tidymodels packages. It relies heavily on <code>recipes</code>, <code>parsnip</code>, and <code>dials</code>.</p>
+<p>The goal of tune is to facilitate hyperparameter tuning for the tidymodels packages. It relies heavily on <a href="https://recipes.tidymodels.org/">recipes</a>, <a href="https://parsnip.tidymodels.org/">parsnip</a>, and <a href="https://dials.tidymodels.org/">dials</a>.</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Install from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"tune"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="st">"http://cran.r-project.org"</span>) <span class="co">#or your local mirror</span></pre></div>
-<p>or you can install the current development version using</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"tidymodels/tune"</span>)</pre></div>
+<p>or you can install the current development version using:</p>
+<div class="sourceCode" id="cb2"><pre class="r"><span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span>(<span class="st">"tidymodels/tune"</span>)</pre></div>
 </div>
 <div id="examples" class="section level2">
 <h2 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h2>
-<p>There are a few package vignettes, the first being the <a href="https://tidymodels.github.io/tune/articles/getting_started.html"><em>Getting Started</em></a> document. Other examples resources:</p>
+<p>There are several package vignettes, as well as articles available at <a href="https://www.tidymodels.org/">tidymodels.org</a>, demonstrating how to use tune.</p>
+<p>Good places to begin include:</p>
 <ul>
-<li><a href="https://tidymodels.github.io/tune/articles/grid.html">basic grid search</a></li>
-<li><a href="https://tidymodels.github.io/tune/articles/extras/svm_classification.html">Bayesian optimization example</a></li>
-<li><a href="https://tidymodels.github.io/tune/articles/extras/text_analysis.html">an advanced text mining example</a></li>
-<li><a href="https://tidymodels.github.io/tune/articles/extras/optimizations.html">notes on optimizations and parallel processing</a></li>
-<li><a href="https://tidymodels.github.io/tune/articles/acquisition_functions.html">details on acquisition function for scoring parameter combinations</a></li>
+<li><a href="https://www.tidymodels.org/start/tuning/">Getting started with cell segmentation data</a></li>
+<li><a href="https://tune.tidymodels.org/articles/getting_started.html">Getting started with Ames housing data</a></li>
+</ul>
+<p>More advanced resources available are:</p>
+<ul>
+<li><a href="https://www.tidymodels.org/learn/work/tune-svm/">Basic grid search for an SVM model</a></li>
+<li><a href="https://www.tidymodels.org/learn/work/bayes-opt/">Iterative Bayesian optimization of a classification model</a></li>
+<li><a href="https://tune.tidymodels.org/articles/extras/text_analysis.html">Advanced text mining example</a></li>
+<li><a href="https://tune.tidymodels.org/articles/extras/optimizations.html">Notes on optimizations and parallel processing</a></li>
+<li><a href="https://tune.tidymodels.org/articles/acquisition_functions.html">Details on acquisition function for scoring parameter combinations</a></li>
+</ul>
+</div>
+<div id="contributing" class="section level2">
+<h2 class="hasAnchor">
+<a href="#contributing" class="anchor"></a>Contributing</h2>
+<p>This project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<ul>
+<li><p>For questions and discussions about tidymodels packages, modeling, and machine learning, please <a href="https://rstd.io/tidymodels-community">post on RStudio Community</a>.</p></li>
+<li><p>If you think you have encountered a bug, please <a href="https://github.com/tidymodels/tune/issues">submit an issue</a>.</p></li>
+<li><p>Either way, learn how to create and share a <a href="https://rstd.io/reprex">reprex</a> (a minimal, reproducible example), to clearly communicate about your code.</p></li>
+<li><p>Check out further details on <a href="https://www.tidymodels.org/contribute/">contributing guidelines for tidymodels packages</a> and <a href="https://www.tidymodels.org/help/">how to get help</a>.</p></li>
 </ul>
 </div>
 </div>
@@ -157,6 +174,12 @@
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+</ul>
+</div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
 <div class="developers">

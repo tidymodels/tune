@@ -50,7 +50,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
 
       
 
-      </header><script src="getting_started_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
+      </header><script src="getting_started_files/header-attrs-2.3.2/header-attrs.js"></script><script src="getting_started_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting Started with tune</h1>
@@ -128,19 +128,6 @@
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">AmesHousing</span>)
 
 <span class="no">ames</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/AmesHousing/man/make_ames.html">make_ames</a></span>()
-<span class="co">#&gt; Warning: `funs()` is deprecated as of dplyr 0.8.0.</span>
-<span class="co">#&gt; Please use a list of either functions or lambdas: </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Simple named list: </span>
-<span class="co">#&gt;   list(mean = mean, median = median)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Auto named with `tibble::lst()`: </span>
-<span class="co">#&gt;   tibble::lst(mean, median)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   # Using lambdas</span>
-<span class="co">#&gt;   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_warnings()` to see where this warning was generated.</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">4595</span>)
 <span class="no">data_split</span> <span class="kw">&lt;-</span> <span class="fu">initial_split</span>(<span class="no">ames</span>, <span class="kw">strata</span> <span class="kw">=</span> <span class="st">"Sale_Price"</span>)
@@ -250,48 +237,48 @@
 <span class="co">#&gt; # A tibble: 10 x 4</span>
 <span class="co">#&gt;    splits           id     .metrics           .notes          </span>
 <span class="co">#&gt;    &lt;list&gt;           &lt;chr&gt;  &lt;list&gt;             &lt;list&gt;          </span>
-<span class="co">#&gt;  1 &lt;split [2K/221]&gt; Fold01 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [2K/220]&gt; Fold02 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [2K/220]&gt; Fold03 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [2K/220]&gt; Fold04 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [2K/220]&gt; Fold05 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [2K/220]&gt; Fold06 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [2K/220]&gt; Fold07 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [2K/220]&gt; Fold08 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [2K/220]&gt; Fold09 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [2K/218]&gt; Fold10 &lt;tibble [162 × 5]&gt; &lt;tibble [0 × 1]&gt;</span></pre></body></html></div>
+<span class="co">#&gt;  1 &lt;split [2K/221]&gt; Fold01 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  2 &lt;split [2K/220]&gt; Fold02 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  3 &lt;split [2K/220]&gt; Fold03 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  4 &lt;split [2K/220]&gt; Fold04 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  5 &lt;split [2K/220]&gt; Fold05 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  6 &lt;split [2K/220]&gt; Fold06 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  7 &lt;split [2K/220]&gt; Fold07 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  8 &lt;split [2K/220]&gt; Fold08 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  9 &lt;split [2K/220]&gt; Fold09 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 10 &lt;split [2K/218]&gt; Fold10 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></pre></body></html></div>
 <p>The <code>.metrics</code> column has all of the holdout performance estimates<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for each parameter combination:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">ames_res</span>$<span class="no">.metrics</span><span class="kw">[[</span><span class="fl">1</span>]]
-<span class="co">#&gt; # A tibble: 162 x 5</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate</span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;</span>
-<span class="co">#&gt;  1         2        2 rmse    standard       0.150</span>
-<span class="co">#&gt;  2         2        2 rsq     standard       0.362</span>
-<span class="co">#&gt;  3         4        2 rmse    standard       0.150</span>
-<span class="co">#&gt;  4         4        2 rsq     standard       0.360</span>
-<span class="co">#&gt;  5         6        2 rmse    standard       0.146</span>
-<span class="co">#&gt;  6         6        2 rsq     standard       0.395</span>
-<span class="co">#&gt;  7         8        2 rmse    standard       0.145</span>
-<span class="co">#&gt;  8         8        2 rsq     standard       0.399</span>
-<span class="co">#&gt;  9        10        2 rmse    standard       0.144</span>
-<span class="co">#&gt; 10        10        2 rsq     standard       0.406</span>
+<span class="co">#&gt; # A tibble: 162 x 6</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   </span>
+<span class="co">#&gt;  1         2        2 rmse    standard       0.150 Recipe01</span>
+<span class="co">#&gt;  2         2        2 rsq     standard       0.362 Recipe01</span>
+<span class="co">#&gt;  3         4        2 rmse    standard       0.150 Recipe02</span>
+<span class="co">#&gt;  4         4        2 rsq     standard       0.360 Recipe02</span>
+<span class="co">#&gt;  5         6        2 rmse    standard       0.146 Recipe03</span>
+<span class="co">#&gt;  6         6        2 rsq     standard       0.395 Recipe03</span>
+<span class="co">#&gt;  7         8        2 rmse    standard       0.145 Recipe04</span>
+<span class="co">#&gt;  8         8        2 rsq     standard       0.399 Recipe04</span>
+<span class="co">#&gt;  9        10        2 rmse    standard       0.144 Recipe05</span>
+<span class="co">#&gt; 10        10        2 rsq     standard       0.406 Recipe05</span>
 <span class="co">#&gt; # … with 152 more rows</span></pre></body></html></div>
 <p>To get the average metric value for each parameter combination, <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
 <div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">estimates</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span>(<span class="no">ames_res</span>)
 <span class="no">estimates</span>
-<span class="co">#&gt; # A tibble: 162 x 7</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err</span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1         2        2 rmse    standard   0.144    10 0.00221</span>
-<span class="co">#&gt;  2         2        2 rsq     standard   0.351    10 0.0158 </span>
-<span class="co">#&gt;  3         2        4 rmse    standard   0.143    10 0.00233</span>
-<span class="co">#&gt;  4         2        4 rsq     standard   0.356    10 0.0156 </span>
-<span class="co">#&gt;  5         2        6 rmse    standard   0.143    10 0.00221</span>
-<span class="co">#&gt;  6         2        6 rsq     standard   0.363    10 0.0161 </span>
-<span class="co">#&gt;  7         2        8 rmse    standard   0.136    10 0.00246</span>
-<span class="co">#&gt;  8         2        8 rsq     standard   0.422    10 0.0164 </span>
-<span class="co">#&gt;  9         2       10 rmse    standard   0.136    10 0.00244</span>
-<span class="co">#&gt; 10         2       10 rsq     standard   0.419    10 0.0160 </span>
+<span class="co">#&gt; # A tibble: 162 x 8</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err .config </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   </span>
+<span class="co">#&gt;  1         2        2 rmse    standard   0.144    10 0.00221 Recipe01</span>
+<span class="co">#&gt;  2         2        2 rsq     standard   0.351    10 0.0158  Recipe01</span>
+<span class="co">#&gt;  3         4        2 rmse    standard   0.143    10 0.00221 Recipe02</span>
+<span class="co">#&gt;  4         4        2 rsq     standard   0.359    10 0.0151  Recipe02</span>
+<span class="co">#&gt;  5         6        2 rmse    standard   0.140    10 0.00220 Recipe03</span>
+<span class="co">#&gt;  6         6        2 rsq     standard   0.386    10 0.0139  Recipe03</span>
+<span class="co">#&gt;  7         8        2 rmse    standard   0.139    10 0.00221 Recipe04</span>
+<span class="co">#&gt;  8         8        2 rsq     standard   0.392    10 0.0135  Recipe04</span>
+<span class="co">#&gt;  9        10        2 rmse    standard   0.137    10 0.00223 Recipe05</span>
+<span class="co">#&gt; 10        10        2 rsq     standard   0.409    10 0.0131  Recipe05</span>
 <span class="co">#&gt; # … with 152 more rows</span></pre></body></html></div>
 <p>The values in the <code>mean</code> column are the averages of the 10 resamples. The best RMSE values corresponded to:</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">rmse_vals</span> <span class="kw">&lt;-</span>
@@ -299,19 +286,19 @@
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">.metric</span> <span class="kw">==</span> <span class="st">"rmse"</span>) <span class="kw">%&gt;%</span>
   <span class="fu">arrange</span>(<span class="no">mean</span>)
 <span class="no">rmse_vals</span>
-<span class="co">#&gt; # A tibble: 81 x 7</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err</span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1        16       16 rmse    standard   0.128    10 0.00244</span>
-<span class="co">#&gt;  2        16       18 rmse    standard   0.128    10 0.00247</span>
-<span class="co">#&gt;  3        16       12 rmse    standard   0.128    10 0.00235</span>
-<span class="co">#&gt;  4        18       16 rmse    standard   0.128    10 0.00239</span>
-<span class="co">#&gt;  5        18       18 rmse    standard   0.128    10 0.00242</span>
-<span class="co">#&gt;  6        16       14 rmse    standard   0.128    10 0.00229</span>
-<span class="co">#&gt;  7        18       12 rmse    standard   0.128    10 0.00231</span>
-<span class="co">#&gt;  8        16        8 rmse    standard   0.129    10 0.00240</span>
-<span class="co">#&gt;  9        12       16 rmse    standard   0.129    10 0.00253</span>
-<span class="co">#&gt; 10        18       14 rmse    standard   0.129    10 0.00225</span>
+<span class="co">#&gt; # A tibble: 81 x 8</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err .config </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   </span>
+<span class="co">#&gt;  1        16       16 rmse    standard   0.128    10 0.00244 Recipe71</span>
+<span class="co">#&gt;  2        16       18 rmse    standard   0.128    10 0.00247 Recipe80</span>
+<span class="co">#&gt;  3        16       12 rmse    standard   0.128    10 0.00235 Recipe53</span>
+<span class="co">#&gt;  4        18       16 rmse    standard   0.128    10 0.00239 Recipe72</span>
+<span class="co">#&gt;  5        18       18 rmse    standard   0.128    10 0.00242 Recipe81</span>
+<span class="co">#&gt;  6        16       14 rmse    standard   0.128    10 0.00229 Recipe62</span>
+<span class="co">#&gt;  7        18       12 rmse    standard   0.128    10 0.00231 Recipe54</span>
+<span class="co">#&gt;  8        16        8 rmse    standard   0.129    10 0.00240 Recipe35</span>
+<span class="co">#&gt;  9        12       16 rmse    standard   0.129    10 0.00253 Recipe69</span>
+<span class="co">#&gt; 10        18       14 rmse    standard   0.129    10 0.00225 Recipe63</span>
 <span class="co">#&gt; # … with 71 more rows</span></pre></body></html></div>
 <p>Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE?</p>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span>(<span class="no">ames_res</span>, <span class="kw">metric</span> <span class="kw">=</span> <span class="st">"rmse"</span>)</pre></body></html></div>
@@ -344,9 +331,9 @@
 <p>The easiest approach to optimize the pre-processing and model parameters is to bundle these objects into a <em>workflow</em>:</p>
 <div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">workflows</span>)
 <span class="no">knn_wflow</span> <span class="kw">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(<span class="no">knn_mod</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(<span class="no">ames_rec</span>)</pre></body></html></div>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/workflow.html">workflow</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_model.html">add_model</a></span>(<span class="no">knn_mod</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_recipe.html">add_recipe</a></span>(<span class="no">ames_rec</span>)</pre></body></html></div>
 <p>From this, the parameter set can be used to modify the range and values of parameters being optimized<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">knn_param</span> <span class="kw">&lt;-</span>
   <span class="no">knn_wflow</span> <span class="kw">%&gt;%</span>
@@ -376,7 +363,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimizing rmse using the expected improvement</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 1 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 1 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -388,7 +375,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.101 (+/-0.00284)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 2 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 2 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -400,7 +387,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1276 (+/-0.00268)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 3 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 3 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09869 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -412,7 +399,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    rmse=0.09808 (+/-0.00297)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 4 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 4 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -424,7 +411,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1099 (+/-0.00402)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 5 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 5 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -436,7 +423,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1051 (+/-0.00288)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 6 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 6 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -448,7 +435,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1063 (+/-0.00331)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 7 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 7 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -460,7 +447,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1191 (+/-0.00276)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 8 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 8 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -472,7 +459,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1065 (+/-0.0034)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 9 ───────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 9 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -484,7 +471,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1006 (+/-0.00316)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 10 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 10 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -496,7 +483,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1152 (+/-0.00285)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 11 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 11 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -508,7 +495,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1063 (+/-0.00279)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 12 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 12 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -520,7 +507,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    rmse=0.1263 (+/-0.00272)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 13 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 13 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      rmse=0.09808 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -539,7 +526,7 @@
 <div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span>(<span class="no">knn_search</span>) <span class="kw">%&gt;%</span>
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span>(<span class="no">.metric</span> <span class="kw">==</span> <span class="st">"rmse"</span>) <span class="kw">%&gt;%</span>
   <span class="fu">arrange</span>(<span class="no">mean</span>)
-<span class="co">#&gt; # A tibble: 18 x 10</span>
+<span class="co">#&gt; # A tibble: 18 x 11</span>
 <span class="co">#&gt;    neighbors weight_func `long df` `lat df` .iter .metric .estimator   mean</span>
 <span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;           &lt;int&gt;    &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt;  1        16 inv                18        8     3 rmse    standard   0.0981</span>
@@ -560,7 +547,7 @@
 <span class="co">#&gt; 16        48 rectangular        18       11     7 rmse    standard   0.119 </span>
 <span class="co">#&gt; 17        29 rectangular         2       16    12 rmse    standard   0.126 </span>
 <span class="co">#&gt; 18        50 rectangular         3       16     2 rmse    standard   0.128 </span>
-<span class="co">#&gt; # … with 2 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;</span></pre></body></html></div>
+<span class="co">#&gt; # … with 3 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;</span></pre></body></html></div>
 <p>With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe.</p>
 </div>
 <div class="footnotes">

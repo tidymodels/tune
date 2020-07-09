@@ -95,7 +95,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -167,7 +167,8 @@
   <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_workflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )
 
 <span class='fu'>control_resamples</span>(
@@ -175,7 +176,8 @@
   <span class='kw'>allow_par</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>extract</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>save_pred</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+  <span class='kw'>pkgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>save_workflow</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -209,6 +211,11 @@ be saved for each model <em>evaluated</em>.</p></td>
       <th>pkgs</th>
       <td><p>An optional character string of R package names that should be
 loaded (by namespace) during parallel processing.</p></td>
+    </tr>
+    <tr>
+      <th>save_workflow</th>
+      <td><p>A logical for whether the workflow should be appended
+to the output as an attribute.</p></td>
     </tr>
     </table>
 

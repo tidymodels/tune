@@ -50,7 +50,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
 
       
 
-      </header><script src="text_analysis_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
+      </header><script src="text_analysis_files/header-attrs-2.3.2/header-attrs.js"></script><script src="text_analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Text Analysis Example</h1>
@@ -251,19 +251,19 @@
   <span class="fu"><a href="../../reference/collect_predictions.html">collect_metrics</a></span>(<span class="no">five_star_glmnet</span>) <span class="kw">%&gt;%</span>
   <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="no">mean</span>))
 <span class="no">grid_roc</span>
-<span class="co">#&gt; # A tibble: 300 x 8</span>
-<span class="co">#&gt;    penalty mixture num_terms .metric .estimator  mean     n std_err</span>
-<span class="co">#&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753</span>
-<span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776</span>
-<span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781</span>
-<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00794</span>
-<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00790</span>
-<span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805</span>
-<span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810</span>
-<span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803</span>
-<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00812</span>
-<span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808</span>
+<span class="co">#&gt; # A tibble: 300 x 9</span>
+<span class="co">#&gt;    penalty mixture num_terms .metric .estimator  mean     n std_err .config     </span>
+<span class="co">#&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;       </span>
+<span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753 Recipe3_Mod…</span>
+<span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776 Recipe3_Mod…</span>
+<span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781 Recipe3_Mod…</span>
+<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00794 Recipe3_Mod…</span>
+<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00790 Recipe3_Mod…</span>
+<span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805 Recipe3_Mod…</span>
+<span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810 Recipe3_Mod…</span>
+<span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803 Recipe3_Mod…</span>
+<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00812 Recipe3_Mod…</span>
+<span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808 Recipe3_Mod…</span>
 <span class="co">#&gt; # … with 290 more rows</span></pre></body></html></div>
 <p>The best results had a fairly high penalty value and focused on the ridge penalty (i.e. no feature selection via the lasso’s L1 penalty). The best solutions also used the largest number of hashing features.</p>
 <p>What was the relationship between performance and the tuning parameters?</p>
@@ -283,9 +283,9 @@
 <p>To use this, we have to merge the recipe and <code>parsnip</code> model object into a workflow:</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">workflows</span>)
 <span class="no">five_star_wflow</span> <span class="kw">&lt;-</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/workflow.html">workflow</a></span>() <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/add_recipe.html">add_recipe</a></span>(<span class="no">pre_proc</span>) <span class="kw">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/workflows/man/add_model.html">add_model</a></span>(<span class="no">lr_mod</span>)</pre></body></html></div>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/workflow.html">workflow</a></span>() <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_recipe.html">add_recipe</a></span>(<span class="no">pre_proc</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_model.html">add_model</a></span>(<span class="no">lr_mod</span>)</pre></body></html></div>
 <p>Then we can extract and manipulate the corresponding parameter set:</p>
 <div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">five_star_set</span> <span class="kw">&lt;-</span>
   <span class="no">five_star_wflow</span> <span class="kw">%&gt;%</span>
@@ -319,7 +319,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Optimizing roc_auc using the expected improvement with variable trade-off values.</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 1 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 1 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -332,7 +332,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 2 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 2 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -345,7 +345,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7457 (+/-0.00813)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 3 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 3 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7559 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -358,7 +358,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.7945 (+/-0.00494)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 4 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 4 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.7945 (@iter 3)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -371,7 +371,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8015 (+/-0.00618)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 5 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 5 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -384,7 +384,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 6 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 6 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8015 (@iter 4)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -397,7 +397,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8132 (+/-0.00563)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 7 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 7 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8132 (@iter 6)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -410,7 +410,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ♥ Newest results:    roc_auc=0.8134 (+/-0.00997)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 8 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 8 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -423,7 +423,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7548 (+/-0.00496)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 9 ──────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 9 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -436,7 +436,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7785 (+/-0.00568)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 10 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 10 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -449,7 +449,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 11 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 11 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -462,7 +462,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 12 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 12 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -475,7 +475,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7971 (+/-0.00783)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 13 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 13 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -488,7 +488,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7694 (+/-0.00751)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 14 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 14 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -501,7 +501,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7931 (+/-0.00966)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 15 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 15 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -514,7 +514,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.7817 (+/-0.00834)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 16 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 16 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -527,7 +527,7 @@
 <span class="co">#&gt; ✓ Estimating performance</span>
 <span class="co">#&gt; ⓧ Newest results:    roc_auc=0.8073 (+/-0.00653)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 17 ─────────────────────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 17 ───────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; i Current best:      roc_auc=0.8134 (@iter 7)</span>
 <span class="co">#&gt; i Gaussian process model</span>
@@ -552,30 +552,26 @@
 <p>Jumping back to the grid search results, let’s examine the results of our <code>extract</code> function. For each <em>fitted model</em>, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let’s look at these results for the best model:</p>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">params</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/show_best.html">select_best</a></span>(<span class="no">five_star_glmnet</span>, <span class="kw">metric</span> <span class="kw">=</span> <span class="st">"roc_auc"</span>)
 <span class="no">params</span>
-<span class="co">#&gt; # A tibble: 1 x 3</span>
-<span class="co">#&gt;   penalty mixture num_terms</span>
-<span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;</span>
-<span class="co">#&gt; 1  0.0379    0.25      4096</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 1 x 4</span>
+<span class="co">#&gt;   penalty mixture num_terms .config         </span>
+<span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;           </span>
+<span class="co">#&gt; 1  0.0379    0.25      4096 Recipe3_Model031</span></pre></body></html></div>
 <p>Recall that we saved the <code>glmnet</code> results in a tibble. The column <code>five_star_glmnet$.extracts</code> is a list of tibbles. As an example, the first element of the list is:</p>
 <div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="no">five_star_glmnet</span>$<span class="no">.extracts</span><span class="kw">[[</span><span class="fl">1</span>]]
-<span class="co">#&gt; # A tibble: 15 x 4</span>
-<span class="co">#&gt;    num_terms penalty mixture .extracts         </span>
-<span class="co">#&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span>
-<span class="co">#&gt;  1       256       1    0    &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  2       256       1    0.25 &lt;tibble [89 × 2]&gt; </span>
-<span class="co">#&gt;  3       256       1    0.5  &lt;tibble [82 × 2]&gt; </span>
-<span class="co">#&gt;  4       256       1    0.75 &lt;tibble [69 × 2]&gt; </span>
-<span class="co">#&gt;  5       256       1    1    &lt;tibble [70 × 2]&gt; </span>
-<span class="co">#&gt;  6      1024       1    0    &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  7      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  8      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  9      1024       1    0.75 &lt;tibble [98 × 2]&gt; </span>
-<span class="co">#&gt; 10      1024       1    1    &lt;tibble [97 × 2]&gt; </span>
-<span class="co">#&gt; 11      4096       1    0    &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt; 12      4096       1    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt; 13      4096       1    0.5  &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt; 14      4096       1    0.75 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt; 15      4096       1    1    &lt;tibble [100 × 2]&gt;</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 300 x 5</span>
+<span class="co">#&gt;    num_terms penalty mixture .extracts          .config         </span>
+<span class="co">#&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;           </span>
+<span class="co">#&gt;  1       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model001</span>
+<span class="co">#&gt;  2       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model002</span>
+<span class="co">#&gt;  3       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model003</span>
+<span class="co">#&gt;  4       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model004</span>
+<span class="co">#&gt;  5       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model005</span>
+<span class="co">#&gt;  6       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model006</span>
+<span class="co">#&gt;  7       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model007</span>
+<span class="co">#&gt;  8       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model008</span>
+<span class="co">#&gt;  9       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model009</span>
+<span class="co">#&gt; 10       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model010</span>
+<span class="co">#&gt; # … with 290 more rows</span></pre></body></html></div>
 <p>More nested tibbles! Let’s unnest <code>five_star_glmnet$.extracts</code>:</p>
 <div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
 <span class="no">extracted</span> <span class="kw">&lt;-</span>
@@ -583,20 +579,20 @@
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(<span class="no">id</span>, <span class="no">.extracts</span>) <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span>(<span class="kw">cols</span> <span class="kw">=</span> <span class="no">.extracts</span>)
 <span class="no">extracted</span>
-<span class="co">#&gt; # A tibble: 150 x 5</span>
-<span class="co">#&gt;    id     num_terms penalty mixture .extracts         </span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span>
-<span class="co">#&gt;  1 Fold01       256       1    0    &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  2 Fold01       256       1    0.25 &lt;tibble [89 × 2]&gt; </span>
-<span class="co">#&gt;  3 Fold01       256       1    0.5  &lt;tibble [82 × 2]&gt; </span>
-<span class="co">#&gt;  4 Fold01       256       1    0.75 &lt;tibble [69 × 2]&gt; </span>
-<span class="co">#&gt;  5 Fold01       256       1    1    &lt;tibble [70 × 2]&gt; </span>
-<span class="co">#&gt;  6 Fold01      1024       1    0    &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  7 Fold01      1024       1    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  8 Fold01      1024       1    0.5  &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  9 Fold01      1024       1    0.75 &lt;tibble [98 × 2]&gt; </span>
-<span class="co">#&gt; 10 Fold01      1024       1    1    &lt;tibble [97 × 2]&gt; </span>
-<span class="co">#&gt; # … with 140 more rows</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 3,000 x 6</span>
+<span class="co">#&gt;    id     num_terms penalty mixture .extracts          .config         </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;           </span>
+<span class="co">#&gt;  1 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model001</span>
+<span class="co">#&gt;  2 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model002</span>
+<span class="co">#&gt;  3 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model003</span>
+<span class="co">#&gt;  4 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model004</span>
+<span class="co">#&gt;  5 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model005</span>
+<span class="co">#&gt;  6 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model006</span>
+<span class="co">#&gt;  7 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model007</span>
+<span class="co">#&gt;  8 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model008</span>
+<span class="co">#&gt;  9 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model009</span>
+<span class="co">#&gt; 10 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model010</span>
+<span class="co">#&gt; # … with 2,990 more rows</span></pre></body></html></div>
 <p>One thing to realize here is that <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> <a href="optimizations.html">may not fit all of the models</a> that are evaluated. In this case, for each value of <code>mixture</code> and <code>num_terms</code>, the model is fit overall <em>all</em> penalty values<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. To select the best parameter set, we can exclude the <code>penalty</code> column in <code>extracted</code>:</p>
 <div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">extracted</span> <span class="kw">&lt;-</span>
   <span class="no">extracted</span> <span class="kw">%&gt;%</span>
@@ -605,38 +601,39 @@
   <span class="co"># Now remove it from the final results</span>
   <span class="kw pkg">dplyr</span><span class="kw ns">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span>(-<span class="no">penalty</span>)
 <span class="no">extracted</span>
-<span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    id     num_terms mixture .extracts         </span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;            </span>
-<span class="co">#&gt;  1 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  2 Fold02      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  3 Fold03      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  4 Fold04      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  5 Fold05      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  6 Fold06      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  7 Fold07      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  8 Fold08      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt;  9 Fold09      4096    0.25 &lt;tibble [100 × 2]&gt;</span>
-<span class="co">#&gt; 10 Fold10      4096    0.25 &lt;tibble [100 × 2]&gt;</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 200 x 6</span>
+<span class="co">#&gt;    id     num_terms mixture .extracts          .config.x        .config.y       </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;            &lt;chr&gt;           </span>
+<span class="co">#&gt;  1 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  2 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model022 Recipe3_Model031</span>
+<span class="co">#&gt;  3 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model023 Recipe3_Model031</span>
+<span class="co">#&gt;  4 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model024 Recipe3_Model031</span>
+<span class="co">#&gt;  5 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model025 Recipe3_Model031</span>
+<span class="co">#&gt;  6 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model026 Recipe3_Model031</span>
+<span class="co">#&gt;  7 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model027 Recipe3_Model031</span>
+<span class="co">#&gt;  8 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model028 Recipe3_Model031</span>
+<span class="co">#&gt;  9 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model029 Recipe3_Model031</span>
+<span class="co">#&gt; 10 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model030 Recipe3_Model031</span>
+<span class="co">#&gt; # … with 190 more rows</span></pre></body></html></div>
 <p>Now we can get at the results that we want using another <code>unnest</code>:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">extracted</span> <span class="kw">&lt;-</span>
   <span class="no">extracted</span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span>(<span class="kw">col</span> <span class="kw">=</span> <span class="no">.extracts</span>) <span class="co"># &lt;- these contain a `penalty` column</span>
 <span class="no">extracted</span>
-<span class="co">#&gt; # A tibble: 1,000 x 5</span>
-<span class="co">#&gt;    id     num_terms mixture penalty num_vars</span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt;</span>
-<span class="co">#&gt;  1 Fold01      4096    0.25   0.360        0</span>
-<span class="co">#&gt;  2 Fold01      4096    0.25   0.344        1</span>
-<span class="co">#&gt;  3 Fold01      4096    0.25   0.328        2</span>
-<span class="co">#&gt;  4 Fold01      4096    0.25   0.313        2</span>
-<span class="co">#&gt;  5 Fold01      4096    0.25   0.299        3</span>
-<span class="co">#&gt;  6 Fold01      4096    0.25   0.286        3</span>
-<span class="co">#&gt;  7 Fold01      4096    0.25   0.273        4</span>
-<span class="co">#&gt;  8 Fold01      4096    0.25   0.260        5</span>
-<span class="co">#&gt;  9 Fold01      4096    0.25   0.248        7</span>
-<span class="co">#&gt; 10 Fold01      4096    0.25   0.237        7</span>
-<span class="co">#&gt; # … with 990 more rows</span></pre></body></html></div>
+<span class="co">#&gt; # A tibble: 20,000 x 7</span>
+<span class="co">#&gt;    id     num_terms mixture penalty num_vars .config.x        .config.y       </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;           </span>
+<span class="co">#&gt;  1 Fold01      4096    0.25   0.360        0 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  2 Fold01      4096    0.25   0.344        1 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  3 Fold01      4096    0.25   0.328        2 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  4 Fold01      4096    0.25   0.313        2 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  5 Fold01      4096    0.25   0.299        3 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  6 Fold01      4096    0.25   0.286        3 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  7 Fold01      4096    0.25   0.273        4 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  8 Fold01      4096    0.25   0.260        5 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;  9 Fold01      4096    0.25   0.248        7 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt; 10 Fold01      4096    0.25   0.237        7 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt; # … with 19,990 more rows</span></pre></body></html></div>
 <p>Let’s look at a plot of these results (per resample):</p>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu">ggplot</span>(<span class="no">extracted</span>, <span class="fu">aes</span>(<span class="kw">x</span> <span class="kw">=</span> <span class="no">penalty</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="no">num_vars</span>)) +
   <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="kw">group</span> <span class="kw">=</span> <span class="no">id</span>, <span class="kw">col</span> <span class="kw">=</span> <span class="no">id</span>), <span class="kw">alpha</span> <span class="kw">=</span> <span class="fl">.5</span>) +

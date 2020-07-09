@@ -50,7 +50,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
 
       
 
-      </header><script src="optimizations_files/header-attrs-2.2/header-attrs.js"></script><div class="row">
+      </header><script src="optimizations_files/header-attrs-2.3.2/header-attrs.js"></script><script src="optimizations_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Optimizations and Parallel Processing</h1>
@@ -133,7 +133,7 @@
 ## see '?methods' for accessing help and source code</code></pre>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span>
 <span class="co"># For xgboost, `trees` are cheep to evaluate: </span>
-<span class="kw pkg">parsnip</span><span class="kw ns">:::</span><span class="no"><a href="https://rdrr.io/pkg/parsnip/man/multi_predict.html">multi_predict._xgb.Booster</a></span> <span class="kw">%&gt;%</span>
+<span class="kw pkg">parsnip</span><span class="kw ns">:::</span><span class="no"><a href="https://parsnip.tidymodels.org/reference/multi_predict.html">multi_predict._xgb.Booster</a></span> <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/formals.html">formals</a></span>() <span class="kw">%&gt;%</span>
   <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>()</pre></body></html></div>
 <pre><code>## [1] "object"   "new_data" "type"     "trees"    "..."</code></pre>
@@ -162,7 +162,7 @@
 <span class="no">grid</span></pre></body></html></div>
 <pre><code>## # A tibble: 350 x 3
 ##    num_terms neighbors weight_func 
-##  *     &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
+##        &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
 ##  1         1         1 biweight    
 ##  2         1         1 cos         
 ##  3         1         1 epanechnikov
@@ -225,11 +225,11 @@
 <p>Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:</p>
 <div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="no">num_pcs</span> <span class="kw">&lt;-</span> <span class="fl">3</span>
 
-<span class="fu">recipe</span>(<span class="no">Species</span> ~ <span class="no">.</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">iris</span>) <span class="kw">%&gt;%</span>
+<span class="fu">recipe</span>(<span class="no">mpg</span> ~ <span class="no">.</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">mtcars</span>) <span class="kw">%&gt;%</span>
   <span class="co"># Bad since num_pcs might not be found by a worker process</span>
   <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>(), <span class="kw">num_comp</span> <span class="kw">=</span> <span class="no">num_pcs</span>)
 
-<span class="fu">recipe</span>(<span class="no">Species</span> ~ <span class="no">.</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">iris</span>) <span class="kw">%&gt;%</span>
+<span class="fu">recipe</span>(<span class="no">mpg</span> ~ <span class="no">.</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">mtcars</span>) <span class="kw">%&gt;%</span>
   <span class="co"># Good since the value is injected into the object</span>
   <span class="fu">step_pca</span>(<span class="fu">all_predictors</span>(), <span class="kw">num_comp</span> <span class="kw">=</span> !!<span class="no">num_pcs</span>)</pre></body></html></div>
 <p>This issue is likely to occur if <code><a href="https://dplyr.tidyverse.org/reference/reexports.html">dplyr::one_of()</a></code> is used as a sector.</p>
