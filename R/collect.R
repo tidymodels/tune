@@ -326,7 +326,9 @@ collector <- function(x, coll_col = ".predictions") {
   }
   x <- dplyr::select(x, dplyr::starts_with("id"), !!!keep_cols)
   x <- tidyr::unnest(x, cols = c(dplyr::one_of(coll_col)))
-  x
+  arrange_cols <- c(".iter", ".config")
+  arrange_cols <- arrange_cols[(arrange_cols %in% names(x))]
+  arrange(x, !!!rlang::syms(arrange_cols))
 }
 
 #' @export
@@ -365,13 +367,15 @@ estimate_tune_results <- function(x, ...) {
     dplyr::ungroup()
 
   if (".config" %in% param_names) {
-    join_names <- param_names[!(param_names %in% ".config")]
+    arrange_names <- c(".iter", ".config")
+    arrange_names <- arrange_names[(arrange_names %in% param_names)]
+    join_names <- param_names[!(param_names %in% arrange_names)]
     x <- dplyr::inner_join(
-      dplyr::select(x, -.config),
+      dplyr::select(x, !arrange_names),
       x,
       by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
     ) %>%
-      dplyr::arrange(.config)
+      dplyr::arrange(!!!rlang::syms(arrange_names))
   }
   x
 }
