@@ -40,6 +40,7 @@ test_that('tune recipe only', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
@@ -58,6 +59,7 @@ test_that('tune model only (with recipe)', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
@@ -82,6 +84,7 @@ test_that('tune model only (with recipe, multi-predict)', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
@@ -104,6 +107,7 @@ test_that('tune model and recipe', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
@@ -125,6 +129,7 @@ test_that('tune model and recipe (multi-predict)', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
@@ -162,6 +167,7 @@ test_that('tune recipe and model, which has_unknowns', {
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
 })
 
