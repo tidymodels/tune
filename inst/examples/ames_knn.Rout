@@ -1,5 +1,5 @@
 
-R version 4.0.0 (2020-04-24) -- "Arbor Day"
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
 Copyright (C) 2020 The R Foundation for Statistical Computing
 Platform: x86_64-apple-darwin17.0 (64-bit)
 
@@ -18,13 +18,14 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(tidymodels)
-── Attaching packages ────────────────────────────────────── tidymodels 0.1.0 ──
-✔ broom     0.5.6          ✔ recipes   0.1.13    
-✔ dials     0.0.7.9000     ✔ rsample   0.0.7     
-✔ dplyr     1.0.0          ✔ tibble    3.0.2     
-✔ ggplot2   3.3.2          ✔ tune      0.1.1.9000
-✔ infer     0.5.2          ✔ workflows 0.1.1.9000
-✔ parsnip   0.1.2.9000     ✔ yardstick 0.0.6     
+── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──
+✔ broom     0.7.0          ✔ recipes   0.1.13    
+✔ dials     0.0.8          ✔ rsample   0.0.7     
+✔ dplyr     1.0.0          ✔ tibble    3.0.3     
+✔ ggplot2   3.3.2          ✔ tidyr     1.1.0     
+✔ infer     0.5.3          ✔ tune      0.1.1.9000
+✔ modeldata 0.0.2          ✔ workflows 0.1.2     
+✔ parsnip   0.1.2          ✔ yardstick 0.0.7     
 ✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
@@ -128,4 +129,4 @@ Loading required package: parallel
 > 
 > proc.time()
     user   system  elapsed 
-5412.769   78.658 1705.601 
+5385.562   70.949 1711.813 
