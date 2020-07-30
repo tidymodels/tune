@@ -13,6 +13,7 @@
 \alias{tunable.step_tf}
 \alias{tunable.step_tokenfilter}
 \alias{tunable.step_tokenize}
+\alias{tunable.step_ngram}
 \alias{tunable.recipe}
 \alias{tunable.workflow}
 \alias{tunable.linear_reg}
@@ -48,6 +49,8 @@ no_param
 \method{tunable}{step_tokenfilter}(x, ...)
 
 \method{tunable}{step_tokenize}(x, ...)
+
+\method{tunable}{step_ngram}(x, ...)
 
 \method{tunable}{recipe}(x, ...)
 
