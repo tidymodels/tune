@@ -126,6 +126,11 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::full_join(fit_only, by = fixed_args) %>%
     dplyr::rename(!!subm_nm := max_val)
 
+  min_grid_df$.submodels <-
+    dplyr::if_else(!map_lgl(min_grid_df$.submodels, rlang::is_null),
+          min_grid_df$.submodels,
+          purrr::map(1:nrow(min_grid_df), ~list()))
+
   dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
     dplyr::mutate_if(is.factor, as.character)
 }
