@@ -25,14 +25,13 @@ Type 'q()' to quit R.
 ✔ ggplot2   3.3.2          ✔ tidyr     1.1.0     
 ✔ infer     0.5.3          ✔ tune      0.1.1.9000
 ✔ modeldata 0.0.2          ✔ workflows 0.1.2     
-✔ parsnip   0.1.2          ✔ yardstick 0.0.7     
+✔ parsnip   0.1.2.9000     ✔ yardstick 0.0.7     
 ✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
 ✖ dplyr::filter()  masks stats::filter()
 ✖ dplyr::lag()     masks stats::lag()
 ✖ recipes::step()  masks stats::step()
-> library(tune)
 > library(AmesHousing)
 > library(butcher)
 > library(doMC)
@@ -129,4 +128,4 @@ Loading required package: parallel
 > 
 > proc.time()
     user   system  elapsed 
-5385.562   70.949 1711.813 
+5459.153  109.215 1865.638 
