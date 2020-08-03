@@ -43,27 +43,6 @@ test_that('tune recipe only', {
     all(purrr::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
   )
 
-
-  extr_1_2 <- function(x) {
-    tidy(x, number = 2) # should fail
-  }
-
-  # should not fail:
-  expect_error(
-    res_1_2 <-
-      workflow() %>%
-      add_recipe(rec_tune_1) %>%
-      add_model(lm_mod) %>%
-      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_2)),
-    NA
-  )
-
-  expect_error(extract_1_2 <- dplyr::bind_rows(res_1_2$.extracts), NA)
-  expect_true(all(names(extract_1_2) == c("num_comp", ".extracts", ".config")))
-  expect_true(
-    all(purrr::map_lgl(extract_1_2$.extracts, ~ inherits(.x, "try-error"))),
-  )
-
 })
 
 # ------------------------------------------------------------------------------
