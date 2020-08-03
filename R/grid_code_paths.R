@@ -76,12 +76,12 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
 
+
+    mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(mod_grid_vals)
     num_submodels <- mod_grid_vals %>%
       unnest(.submodels, keep_empty = TRUE) %>%
       pull(.submodels) %>%
       map_int(length)
-
-    mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(mod_grid_vals)
     num_mod <- nrow(mod_grid_vals)
 
     # ------------------------------------------------------------------------
