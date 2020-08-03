@@ -127,7 +127,7 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
-    dplyr::if_else(!map_lgl(min_grid_df$.submodels, rlang::is_null),
+    dplyr::if_else(!purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
           min_grid_df$.submodels,
           purrr::map(1:nrow(min_grid_df), ~list()))
 
