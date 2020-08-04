@@ -338,7 +338,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
 
   }
   if (!any(names(x) == ".iter")) {
-    x <- x %>% dplyr::mutate(.iter = 0)
+    x <- x %>% dplyr::mutate(.iter = 0L)
   }
   x
 }

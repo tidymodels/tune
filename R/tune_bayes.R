@@ -345,6 +345,16 @@ tune_bayes_workflow <-
       all_bad <- is_cataclysmic(tmp_res)
 
       if (!inherits(tmp_res, "try-error") & !all_bad) {
+        tmp_res[[".metrics"]] <- purrr::map(
+          tmp_res[[".metrics"]],
+          ~ dplyr::mutate(., .config = paste0("Iter", i))
+        )
+        if(control$save_pred) {
+          tmp_res[[".predictions"]] <- purrr::map(
+            tmp_res[[".predictions"]],
+            ~ dplyr::mutate(., .config = paste0("Iter", i))
+          )
+        }
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
         rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))

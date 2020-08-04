@@ -1,8 +1,6 @@
 library(tidymodels)
 library(sessioninfo)
-library(modeldata)
 library(testthat)
-library(broom)
 
 # ------------------------------------------------------------------------------
 # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R

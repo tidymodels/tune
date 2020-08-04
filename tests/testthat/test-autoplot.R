@@ -102,8 +102,8 @@ test_that("performance plot for iterative search",{
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
   expect_is(p, "ggplot")
   expect_equal(names(p$data),
-               c('K', 'weight_func', 'deg_free', '.iter', '.metric',
-                 '.estimator', 'mean', 'n', 'std_err', '.config'))
+               c('K', 'weight_func', 'deg_free', '.metric',
+                 '.estimator', 'mean', 'n', 'std_err', '.config', '.iter'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$x, "Iteration")
