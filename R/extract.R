@@ -162,7 +162,6 @@ extract_config <- function(workflow, metrics) {
   param_names <- c(dials::parameters(workflow)$id, ".config")
   idx <- vctrs::vec_unique_loc(metrics[param_names])
   metrics[idx, param_names]
-
 }
 
 #' Convenience functions to extract model or recipe
