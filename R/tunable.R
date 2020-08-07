@@ -222,6 +222,20 @@ tunable.step_tokenize <- function(x, ...) {
 
 #' @rdname tunable
 #' @export
+tunable.step_ngram <- function(x, ...) {
+  tibble::tibble(
+    name = c("num_tokens"),
+    call_info = list(
+      list(pkg = "dials", fun = "num_tokens", range = c(1, 3))
+    ),
+    source = "recipe",
+    component = "step_ngram",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
 tunable.recipe <- function(x, ...) {
   if (length(x$steps) == 0) {
     res <- no_param
