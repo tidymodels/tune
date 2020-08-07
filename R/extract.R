@@ -127,9 +127,12 @@ append_predictions <- function(collection, predictions, split, control, .config 
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
+
   predictions <- cbind(predictions, labels(split))
   if (!rlang::is_null(.config)) {
-    predictions <- cbind(predictions, .config)
+    predictions <- inner_join(
+      predictions, .config, by = setdiff(names(.config), ".config")
+      )
   }
   dplyr::bind_rows(collection, predictions)
 }
@@ -153,6 +156,11 @@ append_extracts <- function(collection, workflow, param, split, ctrl, .config = 
   }
 
   dplyr::bind_rows(collection, extracts)
+}
+
+extract_config <- function(workflow, metrics) {
+  param_names <- dials::parameters(workflow)$id
+  dplyr::distinct(metrics, dplyr::across(c(param_names, ".config")))
 }
 
 #' Convenience functions to extract model or recipe
