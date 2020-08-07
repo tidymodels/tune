@@ -159,8 +159,10 @@ append_extracts <- function(collection, workflow, param, split, ctrl, .config = 
 }
 
 extract_config <- function(workflow, metrics) {
-  param_names <- dials::parameters(workflow)$id
-  dplyr::distinct(metrics, dplyr::across(c(param_names, ".config")))
+  param_names <- c(dials::parameters(workflow)$id, ".config")
+  idx <- vctrs::vec_unique_loc(metrics[param_names])
+  metrics[idx, param_names]
+
 }
 
 #' Convenience functions to extract model or recipe
