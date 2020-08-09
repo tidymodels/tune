@@ -40,7 +40,7 @@
 #'         and/or post-processing parameters, the minimum number of fits are
 #'         used. For example, if the number of PCA components in a recipe step
 #'         are being tuned over three values (along with model tuning
-#'         parameters), only three recipes are are trained. The alternative
+#'         parameters), only three recipes are trained. The alternative
 #'         would be to re-train the same recipe multiple times for each model
 #'         tuning parameter.
 #' }
@@ -62,7 +62,7 @@
 #' When provided, the grid should have column names for each parameter and
 #'  these should be named by the parameter name or `id`. For example, if a
 #'  parameter is marked for optimization using `penalty = tune()`, there should
-#'  be a column names `tune`. If the optional identifier is used, such as
+#'  be a column named `penalty`. If the optional identifier is used, such as
 #'  `penalty = tune(id = 'lambda')`, then the corresponding column name should
 #'  be `lambda`.
 #'
