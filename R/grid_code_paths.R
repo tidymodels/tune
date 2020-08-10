@@ -143,7 +143,8 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
       }
 
       metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
-      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
+      config_id <- extract_config(workflow, metric_est)
+      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
     } # end model loop
 
   } # end recipe loop
@@ -253,7 +254,8 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     }
 
     metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, rec_id)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, rec_id)
+    config_id <- extract_config(workflow, metric_est)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # recipe parameters
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -403,7 +405,8 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     }
 
     metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
+    config_id <- extract_config(workflow, metric_est)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
@@ -530,7 +533,8 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     }
 
     metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, mod_id)
+    config_id <- extract_config(workflow, metric_est)
+    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
   list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
