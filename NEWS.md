@@ -1,5 +1,9 @@
 # tune (development version)
 
+## Bug Fixes
+
+* Fixed two bugs in the acquisition function calculations.
+
 # tune 0.1.1
 
 ## Breaking Changes
