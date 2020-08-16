@@ -316,6 +316,10 @@ tune_bayes_workflow <-
         dplyr::bind_cols(candidates,
                          stats::predict(objective, candidates, iter = i,
                                         maximize = maximize, score_card$best_val))
+      tm <- Sys.time()
+      tmp <- candidates %>% mutate(time = tm)
+      time_stamp <- format(tm, "~/tmp/gp_test/candidates_%d_%H_%M_%S.RData")
+      save(tmp, file = time_stamp)
 
       check_time(start_time, control$time_limit)
 
@@ -462,7 +466,7 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 
 pred_gp <- function(object, pset, size = 5000, current, control) {
   pred_grid <-
-    dials::grid_latin_hypercube(pset, size = size) %>%
+    dials::grid_regular(pset, levels = 100) %>%
     dplyr::distinct() %>%
     dplyr::anti_join(current, by = pset$id)
 
