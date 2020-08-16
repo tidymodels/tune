@@ -148,7 +148,7 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
   new_data <-
     new_data %>%
     mutate(
-      delta = ifelse(delta < 0, 0, delta),
+      # delta = ifelse(delta < 0, 0, delta),
       snr = delta/sd_trunc,
       z = ifelse(.sd <= object$eps, 0, snr),
       objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
@@ -188,10 +188,11 @@ predict.conf_bound<- function(object, new_data, maximize, iter, ...) {
     kappa <- object$kappa
   }
 
+  # `tune` is setup to always maximize the objective function
   if (maximize) {
-    new_data <- new_data %>% mutate(objective = .mean - kappa * .sd)
-  } else {
     new_data <- new_data %>% mutate(objective = .mean + kappa * .sd)
+  } else {
+    new_data <- new_data %>% mutate(objective = -(.mean + kappa * .sd))
   }
   new_data %>% dplyr::select(objective)
 }
