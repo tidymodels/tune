@@ -19,19 +19,19 @@ test_that('conf_bound interface', {
 test_that('conf_bound calculations', {
   expect_equal(
     predict(conf_bound(kappa = 1), test_res, maximize = TRUE, iter = 1),
-    test_res %>% mutate(objective = .mean - 1 * .sd) %>% select(objective)
+    test_res %>% mutate(objective = .mean + 1 * .sd) %>% select(objective)
   )
   expect_equal(
     predict(conf_bound(2), test_res, maximize = TRUE, iter = 1),
-    test_res %>% mutate(objective = .mean - 2 * .sd) %>% select(objective)
+    test_res %>% mutate(objective = .mean + 2 * .sd) %>% select(objective)
   )
   expect_equal(
     predict(conf_bound(dbled), test_res, maximize = TRUE, iter = 2),
-    test_res %>% mutate(objective = .mean - 4 * .sd) %>% select(objective)
+    test_res %>% mutate(objective = .mean + 4 * .sd) %>% select(objective)
   )
   expect_equal(
     predict(conf_bound(kappa = 1), test_res, maximize = FALSE, iter = 1),
-    test_res %>% mutate(objective = .mean + 1 * .sd) %>% select(objective)
+    test_res %>% mutate(objective = -(.mean + 1 * .sd)) %>% select(objective)
   )
 })
 
@@ -104,7 +104,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = .mean - 15,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
@@ -114,7 +113,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = 15 - .mean,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
@@ -125,7 +123,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = .mean - 16,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
@@ -135,7 +132,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = 16 - .mean,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
@@ -147,7 +143,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = .mean - 19,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
@@ -157,7 +152,6 @@ test_that('exp_improve calculations', {
     test_res %>%
       mutate(
         diff = 19 - .mean,
-        diff = ifelse(diff < 0, 0, diff),
         objective = (diff * pnorm(diff/.sd)) + (.sd * dnorm(diff/.sd))
       ) %>%
       select(objective)
