@@ -161,7 +161,7 @@ tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_rec_and_mod <- super_safely_iterate(iter_rec_and_mod)
 
-  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
@@ -269,7 +269,7 @@ tune_rec <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_rec <- super_safely_iterate(iter_rec)
 
-  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
@@ -293,7 +293,7 @@ tune_mod_with_recipe <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_mod_with_recipe <- super_safely_iterate(iter_mod_with_recipe)
 
-  load_pkgs <- c(control$pkgs, "recipes", "parsnip", "tune")
+  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
@@ -421,7 +421,7 @@ tune_mod_with_formula <- function(resamples, grid, workflow, metrics, control) {
 
   safely_iter_mod_with_formula <- super_safely_iterate(iter_mod_with_formula)
 
-  load_pkgs <- c(control$pkgs, "parsnip", "tune")
+  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%

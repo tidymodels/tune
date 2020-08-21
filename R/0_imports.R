@@ -21,7 +21,7 @@
 #' @importFrom ggplot2 facet_grid geom_line aes_string aes_
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
-#' @importFrom foreach foreach getDoParName
+#' @importFrom foreach foreach getDoParName %dopar%
 
 # ------------------------------------------------------------------------------
 # Only a small number of functions in workflows.

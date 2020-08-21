@@ -178,16 +178,19 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 
   safely_iter_resample_with_recipe <- super_safely_iterate(iter_resample_with_recipe)
 
-  results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op% {
-    safely_iter_resample_with_recipe(
-      rs_iter = rs_iter,
-      resamples = resamples,
-      grid = NULL,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
-  }
+  results <-
+    foreach::foreach(rs_iter = 1:B,
+                     .packages = required_pkgs(workflow),
+                     .errorhandling = "pass") %op% {
+                       safely_iter_resample_with_recipe(
+                         rs_iter = rs_iter,
+                         resamples = resamples,
+                         grid = NULL,
+                         workflow = workflow,
+                         metrics = metrics,
+                         control = control
+                       )
+                     }
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -293,16 +296,19 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 
   safely_iter_resample_with_formula <- super_safely_iterate(iter_resample_with_formula)
 
-  results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op% {
-    safely_iter_resample_with_formula(
-      rs_iter = rs_iter,
-      resamples = resamples,
-      grid = NULL,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
-  }
+  results <-
+    foreach::foreach(rs_iter = 1:B,
+                     .packages = required_pkgs(workflow),
+                     .errorhandling = "pass") %op% {
+                       safely_iter_resample_with_formula(
+                         rs_iter = rs_iter,
+                         resamples = resamples,
+                         grid = NULL,
+                         workflow = workflow,
+                         metrics = metrics,
+                         control = control
+                       )
+                     }
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
