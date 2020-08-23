@@ -58,8 +58,8 @@ load_namespace <- function(x) {
 
 ## -----------------------------------------------------------------------------
 
-infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "tibble",
-                "dials", "rsample")
+infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr",
+                "tibble", "dials", "rsample")
 
 #' Determine packages required by objects
 #'
@@ -71,6 +71,7 @@ required_pkgs <- function(x, ...) {
   UseMethod("required_pkgs")
 }
 
+#' @rdname required_pkgs
 #' @export
 required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
   mod_name <- class(x)[1]
@@ -82,11 +83,43 @@ required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
   if (infra) {
     res <- c(infra_pkgs, res)
   }
-  unique(res)
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
 }
 
-
+#' @rdname required_pkgs
 #' @export
 required_pkgs.workflow <- function(x, infra = TRUE, ...) {
-  res <- required_pkgs(workflows::pull_workflow_spec(x), infra = infra)
+  res <- required_pkgs(workflows::pull_workflow_spec(x), infra = FALSE)
+  pp <- workflows::pull_workflow_preprocessor(x)
+  if (inherits(pp, "recipe")) {
+    res_rec <- required_pkgs(pp, infra = FALSE)
+    res <- c(res, res_rec)
+  }
+  if (infra) {
+    res <- c(infra_pkgs, res)
+  }
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.recipe <- function(x, infra = TRUE, ...) {
+  res <- purrr::map(x$steps, required_pkgs)
+  res <- unique(unlist(res))
+  if (infra) {
+    res <- c(infra_pkgs, res)
+  }
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.step <- function(x, ...) {
+  character(0)
 }

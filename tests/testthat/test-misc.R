@@ -104,3 +104,13 @@ test_that('accessor functions', {
   attr(mt_knn_bo, "parameters") <- NULL
   expect_equal(.get_tune_parameters(mt_knn_bo), tibble::tibble())
 })
+
+test_that('required package lists', {
+  expect_equal(required_pkgs(bare_rec, FALSE), NULL)
+  expect_equal(required_pkgs(bare_rec, TRUE), tune:::infra_pkgs)
+
+  expect_equal(required_pkgs(lm_model, FALSE), "stats")
+
+  expect_equal(required_pkgs(chi_wflow, FALSE), "glmnet")
+
+})
