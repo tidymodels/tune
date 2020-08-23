@@ -9,7 +9,7 @@ load(test_path("test_objects.RData"))
 
 test_that('model package lookup', {
   mod_obj <- workflows::pull_workflow_spec(chi_wflow)
-  expect_equal(tune:::mod_pkgs(mod_obj), "glmnet")
+  expect_equal(tune:::required_pkgs(mod_obj, FALSE), "glmnet")
 })
 
 
