@@ -2,9 +2,21 @@
 % Please edit documentation in R/load_ns.R
 \name{required_pkgs}
 \alias{required_pkgs}
+\alias{required_pkgs.model_spec}
+\alias{required_pkgs.workflow}
+\alias{required_pkgs.recipe}
+\alias{required_pkgs.step}
 \title{Determine packages required by objects}
 \usage{
 required_pkgs(x, ...)
+
+\method{required_pkgs}{model_spec}(x, infra = TRUE, ...)
+
+\method{required_pkgs}{workflow}(x, infra = TRUE, ...)
+
+\method{required_pkgs}{recipe}(x, infra = TRUE, ...)
+
+\method{required_pkgs}{step}(x, ...)
 }
 \arguments{
 \item{x}{An object.}
