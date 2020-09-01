@@ -30,7 +30,7 @@ Imports:
     GPfit,
     foreach,
     parsnip (>= 0.0.4),
-    workflows (>= 0.1.0),
+    workflows (>= 0.1.3.9000),
     hardhat (>= 0.1.0),
     lifecycle,
     vctrs (>= 0.3.0)
@@ -49,4 +49,5 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Language: en-US
 Remotes:
-    tidymodels/rsample
+    tidymodels/rsample,
+    tidymodels/workflows
