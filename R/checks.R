@@ -316,10 +316,6 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       control = control_grid(extract = ctrl$extract, save_pred = ctrl$save_pred)
     )
 
-    # Strip off `tune_results` class since we add on an `iteration_results`
-    # class later.
-    x <- new_bare_tibble(x)
-
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
       message()
