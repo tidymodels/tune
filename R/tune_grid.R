@@ -334,13 +334,16 @@ tune_grid_workflow <- function(object,
     rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
   }
 
+  outcomes <- reduce_all_outcome_names(resamples)
+  resamples[[".all_outcome_names"]] <- NULL
+
   workflow_output <- set_workflow(object, control)
 
   new_tune_results(
     x = resamples,
     parameters = pset,
     metrics = metrics,
-    outcomes = outcome_names(object),
+    outcomes = outcomes,
     rset_info = rset_info,
     workflow = workflow_output
   )
