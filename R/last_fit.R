@@ -122,13 +122,6 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL) {
   last_fit_workflow(object, split, metrics)
 }
 
-split_to_rset <- function(x) {
-  prop <- length(x$in_id)/nrow(x$data)
-  res <- rsample::mc_cv(x$data, times = 1, prop = prop)
-  res$splits[[1]] <- x
-  res
-}
-
 last_fit_workflow <- function(object, split, metrics) {
   extr <- function(x)
     x
@@ -140,7 +133,6 @@ last_fit_workflow <- function(object, split, metrics) {
       metrics = metrics,
       control = ctrl
     )
-  res$id[[1]] <- "train/test split"
   res$.workflow <- res$.extracts[[1]][[1]]
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
@@ -148,3 +140,18 @@ last_fit_workflow <- function(object, split, metrics) {
   res
 }
 
+# Fake an rset for `fit_resamples()`
+split_to_rset <- function(x) {
+  splits <- list(x)
+  ids <- "train/test split"
+  new_manual_rset(splits, ids)
+}
+
+new_manual_rset <- function(splits, ids) {
+  rsample::new_rset(splits, ids, subclass = c("manual_rset", "rset"))
+}
+
+#' @export
+pretty.manual_rset <- function(x, ...) {
+  "Manual resampling"
+}

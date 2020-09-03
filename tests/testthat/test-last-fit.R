@@ -32,7 +32,7 @@ test_that("recipe method", {
 test_that("split_to_rset", {
 
   res <- tune:::split_to_rset(split)
-  expect_true(inherits(res, "mc_cv"))
+  expect_true(inherits(res, "manual_rset"))
   expect_true(nrow(res) == 1)
   expect_true(nrow(res) == 1)
 
