@@ -316,10 +316,8 @@ tune_bayes_workflow <-
         dplyr::bind_cols(candidates,
                          stats::predict(objective, candidates, iter = i,
                                         maximize = maximize, score_card$best_val))
-      tm <- Sys.time()
-      tmp <- candidates %>% mutate(time = tm)
-      time_stamp <- format(tm, "~/tmp/gp_test/candidates_%d_%H_%M_%S.RData")
-      save(tmp, file = time_stamp)
+
+      save_gp_results(candidates, control, i, iter)
 
       check_time(start_time, control$time_limit)
 
@@ -670,4 +668,26 @@ reup_rs <- function(resamples, res)  {
 
   class(res) <- unique(c("tune_results", class(res)))
   res
+}
+
+## -----------------------------------------------------------------------------
+
+check_hidden_arg <- function(x, name, value) {
+  if (!any(names(x) == name)) {
+    return(FALSE)
+  }
+  identical(x[[name]], value)
+}
+
+save_gp_results <- function(x, ctrl, i, iter) {
+  check_hidden_arg(ctrl, "save_gp_results", TRUE)
+
+  nm <- recipes::names0(iter, "gp_candidates_")[i]
+  file_name <- paste0(nm, ".RData")
+  candidates <- x %>% mutate(.iter = i)
+  res <- try(save(candidates, file = file.path(tempdir(), file_name)), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    rlang::warn(paste("Could not save GP results:", as.character(res)))
+  }
+  invisible(res)
 }
