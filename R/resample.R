@@ -155,13 +155,16 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
     )
   }
 
+  outcomes <- reduce_all_outcome_names(resamples)
+  resamples[[".all_outcome_names"]] <- NULL
+
   workflow_output <- set_workflow(workflow, control)
 
   new_resample_results(
     x = resamples,
     parameters = parameters(workflow),
     metrics = metrics,
-    outcomes = outcome_names(workflow),
+    outcomes = outcomes,
     rset_info = rset_info,
     workflow = workflow_output
   )
@@ -196,6 +199,7 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -211,6 +215,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   workflow <- catch_and_log(
@@ -226,6 +231,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -246,11 +252,15 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
     return(out)
   }
+
+  # Extract names from the mold
+  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
   # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
   # against in `append_extracts()`
@@ -273,6 +283,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -282,7 +293,13 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -314,6 +331,7 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -329,6 +347,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   workflow <- catch_and_log(
@@ -344,6 +363,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -364,11 +384,15 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
     return(out)
   }
+
+  # Extract names from the mold
+  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
   # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
   # against in `append_extracts()`
@@ -391,6 +415,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -400,7 +425,13 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ------------------------------------------------------------------------------

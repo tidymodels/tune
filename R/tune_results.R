@@ -92,3 +92,21 @@ new_tune_results <- function(x, parameters, metrics, outcomes = character(0), rs
     class = c(class, "tune_results")
   )
 }
+
+is_tune_results <- function(x) {
+  inherits(x, "tune_results")
+}
+
+peek_tune_results_outcomes <- function(x) {
+  if (!is_tune_results(x)) {
+    rlang::abort("Internal error: `outcomes` can only be extracted from 'tune_results'.")
+  }
+
+  out <- attr(x, "outcomes", exact = TRUE)
+
+  if (is.null(out)) {
+    rlang::abort("'tune_results' object doesn't have an 'outcomes' attribute.")
+  }
+
+  out
+}

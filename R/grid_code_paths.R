@@ -18,6 +18,7 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   split <- resamples$splits[[rs_iter]]
@@ -117,6 +118,9 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
         next
       }
 
+      # Extract names from the mold
+      all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+
       all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
       extracted <-
@@ -149,7 +153,13 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
 
   } # end recipe loop
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
@@ -171,6 +181,7 @@ tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -188,6 +199,7 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   num_rec <- nrow(grid)
@@ -227,6 +239,9 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
+    # Extract names from the mold
+    all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+
     extracted <-
       append_extracts(
         extracted,
@@ -258,8 +273,13 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # recipe parameters
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
-
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 tune_rec <- function(resamples, grid, workflow, metrics, control) {
@@ -279,6 +299,7 @@ tune_rec <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -303,6 +324,7 @@ tune_mod_with_recipe <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -318,6 +340,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   # ----------------------------------------------------------------------------
@@ -336,6 +359,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -380,6 +404,9 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
       next
     }
 
+    # Extract names from the mold
+    all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+
     extracted <-
       append_extracts(
         extracted,
@@ -409,7 +436,13 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -431,6 +464,7 @@ tune_mod_with_formula <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -446,6 +480,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   # ----------------------------------------------------------------------------
@@ -464,6 +499,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -508,6 +544,9 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
       next
     }
 
+    # Extract names from the mold
+    all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+
     extracted <-
       append_extracts(extracted,
                       workflow,
@@ -537,7 +576,13 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ----------------------------------------------------------------------------
@@ -586,6 +631,7 @@ super_safely_iterate_impl <- function(fn, rs_iter, resamples, grid, workflow, me
       .metrics = NULL,
       .extracts = NULL,
       .predictions = NULL,
+      .all_outcome_names = list(),
       .notes = NULL
     )
   }

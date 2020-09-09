@@ -90,6 +90,37 @@ pull_predictions <- function(resamples, res, control) {
   resamples
 }
 
+pull_all_outcome_names <- function(resamples, res) {
+  all_outcome_names <- purrr::map(res, ~ .x[[".all_outcome_names"]])
+  resamples$.all_outcome_names <- all_outcome_names
+  resamples
+}
+
+reduce_all_outcome_names <- function(resamples) {
+  all_outcome_names <- resamples$.all_outcome_names
+  all_outcome_names <- rlang::flatten(all_outcome_names)
+  all_outcome_names <- vctrs::vec_unique(all_outcome_names)
+
+  n_unique <- length(all_outcome_names)
+
+  # All models failed
+  if (n_unique == 0L) {
+    return(character())
+  }
+
+  if (n_unique > 1L) {
+    rlang::warn(paste0(
+      "More than one set of outcomes were used when tuning. ",
+      "This should never happen. ",
+      "Review how the outcome is specified in your model."
+    ))
+  }
+
+  outcome_names <- all_outcome_names[[1L]]
+
+  outcome_names
+}
+
 ensure_tibble <- function(x) {
   if (is.null(x)) {
     res <- tibble(.notes = character(0))
@@ -156,6 +187,12 @@ append_extracts <- function(collection, workflow, param, split, ctrl, .config = 
   }
 
   dplyr::bind_rows(collection, extracts)
+}
+
+append_outcome_names <- function(all_outcome_names, workflow) {
+  outcome_names <- outcome_names(workflow)
+  outcome_names <- list(outcome_names)
+  c(all_outcome_names, outcome_names)
 }
 
 extract_config <- function(workflow, metrics) {
