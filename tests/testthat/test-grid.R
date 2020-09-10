@@ -57,6 +57,32 @@ test_that('tune model only (with recipe)', {
 
 # ------------------------------------------------------------------------------
 
+test_that('tune model only (with variables)', {
+  set.seed(4400)
+
+  wflow <- workflow() %>%
+    add_variables(mpg, c(-mpg, everything())) %>%
+    add_model(svm_mod)
+
+  pset <- dials::parameters(wflow)
+  grid <- grid_regular(pset, levels = 3)
+
+  folds <- vfold_cv(mtcars)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid)
+
+  expect_equal(res$id, folds$id)
+
+  res_est <- collect_metrics(res)
+
+  expect_equal(nrow(res_est), nrow(grid) * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
+  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
+  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+})
+
+# ------------------------------------------------------------------------------
+
 test_that('tune model only (with recipe, multi-predict)', {
 
   set.seed(4400)
