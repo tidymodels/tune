@@ -354,8 +354,12 @@ tune_grid_workflow <- function(object,
 quarterback <- function(x) {
   y <- dials::parameters(x)
   sources <- unique(y$source)
+
   has_form <- has_preprocessor_formula(x)
-  tune_rec <- any(sources == "recipe") & !has_form
+  has_rec <- has_preprocessor_recipe(x)
+  has_vars <- has_preprocessor_variables(x)
+
+  tune_rec <- has_rec && any(sources == "recipe")
   tune_model <- any(sources == "model_spec")
 
   args <- list(
@@ -366,14 +370,20 @@ quarterback <- function(x) {
     control = expr(control)
   )
 
-  dplyr::case_when(
-    tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
-    tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
-    has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
-    !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
-    has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
-    TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
+  fn <- dplyr::case_when(
+    has_form && tune_model ~ "tune_mod_with_formula",
+    has_form && !tune_model ~ "tune_nothing_with_formula",
+
+    has_rec && tune_rec && tune_model ~ "tune_rec_and_mod",
+    has_rec && tune_rec && !tune_model ~ "tune_rec",
+    has_rec && !tune_rec && tune_model ~ "tune_mod_with_recipe",
+    has_rec && !tune_rec && !tune_model ~ "tune_nothing_with_recipe",
+
+    has_vars && tune_model ~ "tune_mod_with_variables",
+    has_vars && !tune_model ~ "tune_nothing_with_variables"
   )
+
+  rlang::call2(fn, !!!args)
 }
 
 
