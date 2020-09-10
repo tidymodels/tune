@@ -353,7 +353,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     notes = .notes
   )
 
-  # check for recipe failure
+  # check for failure
   if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
@@ -392,7 +392,7 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     )
 
     workflow <- catch_and_log_fit(
-      train_model(workflow, mod_grid_vals[mod_iter,], control_workflow),
+      train_model(workflow, param_val, control_workflow),
       control,
       split,
       mod_msg,
@@ -407,21 +407,22 @@ iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, co
     # Extract names from the mold
     all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
-    extracted <-
-      append_extracts(
-        extracted,
-        workflow,
-        mod_grid_vals[mod_iter, ],
-        split,
-        control,
-        mod_id
-      )
+    extracted <- append_extracts(
+      extracted,
+      workflow,
+      param_val,
+      split,
+      control,
+      mod_id
+    )
+
+    pred_msg <- paste(mod_msg, "(predictions)")
 
     tmp_pred <- catch_and_log(
-      predict_model(split, workflow, mod_grid_vals[mod_iter,], metrics),
+      predict_model(split, workflow, param_val, metrics),
       control,
       split,
-      paste(mod_msg, "(predictions)"),
+      pred_msg,
       bad_only = TRUE,
       notes = .notes
     )
@@ -493,7 +494,7 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     notes = .notes
   )
 
-  # check for formula failure
+  # check for failure
   if (is_failure(workflow)) {
     out <- list(
       .metrics = metric_est,
@@ -547,24 +548,25 @@ iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, c
     # Extract names from the mold
     all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
-    extracted <-
-      append_extracts(extracted,
-                      workflow,
-                      param_val,
-                      split,
-                      control,
-                      mod_id)
+    extracted <- append_extracts(
+      extracted,
+      workflow,
+      param_val,
+      split,
+      control,
+      mod_id
+    )
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
-    tmp_pred <-
-      catch_and_log(
-        predict_model(split, workflow, param_val, metrics),
-        control,
-        split,
-        mod_msg,
-        notes = .notes
-      )
+    tmp_pred <- catch_and_log(
+      predict_model(split, workflow, param_val, metrics),
+      control,
+      split,
+      pred_msg,
+      bad_only = TRUE,
+      notes = .notes
+    )
 
     # check for prediction level failure
     if (is_failure(tmp_pred)) {
