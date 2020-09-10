@@ -122,7 +122,7 @@ test_that('workflow objects', {
     workflow() %>%
     add_model(glmn)
   expect_error(tune:::check_workflow(wflow_3),
-               "A model formula or recipe are required.")
+               "A formula, recipe, or variables preprocessor is required.")
 
   wflow_4 <-
     workflow() %>%
