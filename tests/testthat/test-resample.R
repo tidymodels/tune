@@ -58,7 +58,7 @@ test_that("can use `fit_resamples()` with a recipe", {
   expect_equal(nrow(result$.metrics[[1]]), 2L)
 })
 
-test_that("can use `fit_resamples()` with a workflow", {
+test_that("can use `fit_resamples()` with a workflow - recipe", {
   set.seed(6735)
   folds <- vfold_cv(mtcars, v = 2)
 
@@ -74,6 +74,42 @@ test_that("can use `fit_resamples()` with a workflow", {
     add_model(lin_mod)
 
   expect <- fit_resamples(lin_mod, rec, folds)
+
+  result <- fit_resamples(workflow, folds)
+
+  expect_equal(collect_metrics(expect), collect_metrics(result))
+})
+
+test_that("can use `fit_resamples()` with a workflow - variables", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  workflow <- workflow() %>%
+    add_variables(mpg, c(cyl, disp)) %>%
+    add_model(lin_mod)
+
+  expect <- fit_resamples(lin_mod, mpg ~ cyl + disp, folds)
+
+  result <- fit_resamples(workflow, folds)
+
+  expect_equal(collect_metrics(expect), collect_metrics(result))
+})
+
+test_that("can use `fit_resamples()` with a workflow - formula", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  workflow <- workflow() %>%
+    add_formula(mpg ~ cyl + disp) %>%
+    add_model(lin_mod)
+
+  expect <- fit_resamples(lin_mod, mpg ~ cyl + disp, folds)
 
   result <- fit_resamples(workflow, folds)
 
@@ -110,6 +146,39 @@ test_that("failure in recipe is caught elegantly", {
 
   # Known failure in the recipe
   expect_true(any(grepl("recipe", note)))
+
+  expect_equivalent(extract, list(NULL, NULL))
+  expect_equivalent(predictions, list(NULL, NULL))
+})
+
+test_that("failure in variables tidyselect specification is caught elegantly", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  workflow <- workflow() %>%
+    add_model(lin_mod) %>%
+    add_variables(mpg, foobar)
+
+  control <- control_resamples(extract = function(x) x, save_pred = TRUE)
+
+  expect_warning(
+    result <- fit_resamples(workflow, folds, control = control),
+    "All models failed"
+  )
+
+  notes <- result$.notes
+  note <- notes[[1]]$.notes
+
+  extract <- result$.extracts
+  predictions <- result$.predictions
+
+  expect_length(notes, 2L)
+
+  # Known failure in the variables part
+  expect_true(any(grepl("variables", note)))
 
   expect_equivalent(extract, list(NULL, NULL))
   expect_equivalent(predictions, list(NULL, NULL))
