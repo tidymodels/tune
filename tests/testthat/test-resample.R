@@ -219,18 +219,38 @@ test_that("classification models generate correct error message", {
 # ------------------------------------------------------------------------------
 # tune_grid() fallback
 
-test_that("`tune_grid()` falls back to resamples if there are no tuning parameters", {
+test_that("`tune_grid()` falls back to `fit_resamples()` - formula", {
   set.seed(6735)
   folds <- vfold_cv(mtcars, v = 2)
 
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  expect <- lin_mod %>%
-    fit_resamples(mpg ~ ., folds)
+  expect <- fit_resamples(lin_mod, mpg ~ ., folds)
 
   expect_warning(
     result <- tune_grid(lin_mod, mpg ~ ., folds),
+    "No tuning parameters have been detected"
+  )
+
+  expect_equal(collect_metrics(expect), collect_metrics(result))
+})
+
+test_that("`tune_grid()` falls back to `fit_resamples()` - workflow variables", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  wf <- workflow() %>%
+    add_model(lin_mod) %>%
+    add_variables(mpg, c(cyl, disp))
+
+  expect <- fit_resamples(wf, folds)
+
+  expect_warning(
+    result <- tune_grid(wf, folds),
     "No tuning parameters have been detected"
   )
 

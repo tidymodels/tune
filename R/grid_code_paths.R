@@ -6,6 +6,10 @@ tune_nothing_with_formula <- function(resamples, grid, workflow, metrics, contro
   resample_with_formula(resamples, workflow, metrics, control)
 }
 
+tune_nothing_with_variables <- function(resamples, grid, workflow, metrics, control)  {
+  resample_with_variables(resamples, workflow, metrics, control)
+}
+
 # ------------------------------------------------------------------------------
 
 iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, control) {
