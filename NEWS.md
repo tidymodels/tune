@@ -4,6 +4,8 @@
 
 * Fixed two bugs in the acquisition function calculations.
 
+* Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)
+
 # tune 0.1.1
 
 ## Breaking Changes

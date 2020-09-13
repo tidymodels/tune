@@ -139,6 +139,8 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   has_formula <- has_preprocessor_formula(workflow)
 
+  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
+
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
   resamples <- new_bare_tibble(resamples)
@@ -161,7 +163,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   workflow_output <- set_workflow(workflow, control)
 
   new_resample_results(
-    x = resamples,
+    x = resamples %>% dplyr::select(-.seed),
     parameters = parameters(workflow),
     metrics = metrics,
     outcomes = outcomes,
@@ -205,6 +207,7 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 }
 
 iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, control) {
+  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
 
@@ -337,6 +340,7 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 }
 
 iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, control) {
+  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
 
