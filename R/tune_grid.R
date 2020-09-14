@@ -214,7 +214,6 @@
 #'
 #' autoplot(svm_res, metric = "rmse") +
 #'   scale_x_log10()
-#' }
 #'
 #' # ---------------------------------------------------------------------------
 #'
@@ -230,6 +229,7 @@
 #'
 #' set.seed(3254)
 #' svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
+#' }
 #' @export
 tune_grid <- function(object, ...) {
   UseMethod("tune_grid")

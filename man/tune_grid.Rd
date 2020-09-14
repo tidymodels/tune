@@ -260,7 +260,6 @@ show_best(svm_res, metric = "rmse")
 
 autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
-}
 
 # ---------------------------------------------------------------------------
 
@@ -276,6 +275,7 @@ wf <- workflow() \%>\%
 
 set.seed(3254)
 svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
+}
 }
 \seealso{
 \code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},
