@@ -6,6 +6,11 @@
 
 * Fixed two bugs in the acquisition function calculations.
 
+## Other Changes
+
+* tune now supports workflows created with the new `workflows::add_variables()`
+  preprocessor.
+
 # tune 0.1.1
 
 ## Breaking Changes

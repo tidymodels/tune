@@ -159,6 +159,7 @@
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
+#' library(workflows)
 #' library(ggplot2)
 #'
 #' # ---------------------------------------------------------------------------
@@ -213,6 +214,21 @@
 #'
 #' autoplot(svm_res, metric = "rmse") +
 #'   scale_x_log10()
+#'
+#' # ---------------------------------------------------------------------------
+#'
+#' # Using a variables preprocessor with a workflow
+#'
+#' # Rather than supplying a preprocessor (like a recipe) and a model directly
+#' # to `tune_grid()`, you can also wrap them up in a workflow and pass
+#' # that along instead (note that this doesn't do any preprocessing to
+#' # the variables, it passes them along as-is).
+#' wf <- workflow() %>%
+#'   add_variables(outcomes = mpg, predictors = everything()) %>%
+#'   add_model(svm_mod)
+#'
+#' set.seed(3254)
+#' svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
 #' }
 #' @export
 tune_grid <- function(object, ...) {
@@ -354,8 +370,12 @@ tune_grid_workflow <- function(object,
 quarterback <- function(x) {
   y <- dials::parameters(x)
   sources <- unique(y$source)
+
   has_form <- has_preprocessor_formula(x)
-  tune_rec <- any(sources == "recipe") & !has_form
+  has_rec <- has_preprocessor_recipe(x)
+  has_vars <- has_preprocessor_variables(x)
+
+  tune_rec <- has_rec && any(sources == "recipe")
   tune_model <- any(sources == "model_spec")
 
   args <- list(
@@ -366,14 +386,20 @@ quarterback <- function(x) {
     control = expr(control)
   )
 
-  dplyr::case_when(
-    tune_rec & !tune_model ~ rlang::call2("tune_rec", !!!args),
-    tune_rec &  tune_model ~ rlang::call2("tune_rec_and_mod", !!!args),
-    has_form &  tune_model ~ rlang::call2("tune_mod_with_formula", !!!args),
-    !tune_rec &  tune_model ~ rlang::call2("tune_mod_with_recipe", !!!args),
-    has_form & !tune_model ~ rlang::call2("tune_nothing_with_formula", !!!args),
-    TRUE ~ rlang::call2("tune_nothing_with_recipe", !!!args)
+  fn <- dplyr::case_when(
+    has_form && tune_model ~ "tune_mod_with_formula",
+    has_form && !tune_model ~ "tune_nothing_with_formula",
+
+    has_rec && tune_rec && tune_model ~ "tune_rec_and_mod",
+    has_rec && tune_rec && !tune_model ~ "tune_rec",
+    has_rec && !tune_rec && tune_model ~ "tune_mod_with_recipe",
+    has_rec && !tune_rec && !tune_model ~ "tune_nothing_with_recipe",
+
+    has_vars && tune_model ~ "tune_mod_with_variables",
+    has_vars && !tune_model ~ "tune_nothing_with_variables"
   )
+
+  rlang::call2(fn, !!!args)
 }
 
 
