@@ -484,6 +484,7 @@ resample_with_variables <- function(resamples, workflow, metrics, control) {
 }
 
 iter_resample_with_variables <- function(rs_iter, resamples, workflow, metrics, control) {
+  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
 
