@@ -69,7 +69,7 @@ test_that('tune model only (with variables)', {
   set.seed(4400)
 
   wflow <- workflow() %>%
-    add_variables(mpg, c(-mpg, everything())) %>%
+    add_variables(mpg, everything()) %>%
     add_model(svm_mod)
 
   pset <- dials::parameters(wflow)
