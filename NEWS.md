@@ -2,6 +2,8 @@
 
 ## Bug Fixes
 
+* `last_fit()` no longer accidentally adjusts the random seed (#264).
+
 * Fixed two bugs in the acquisition function calculations.
 
 # tune 0.1.1

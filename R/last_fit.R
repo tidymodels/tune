@@ -122,29 +122,22 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL) {
   last_fit_workflow(object, split, metrics)
 }
 
-split_to_rset <- function(x) {
-  prop <- length(x$in_id)/nrow(x$data)
-  res <- rsample::mc_cv(x$data, times = 1, prop = prop)
-  res$splits[[1]] <- x
-  res
-}
-
 last_fit_workflow <- function(object, split, metrics) {
   extr <- function(x)
     x
   ctrl <- control_resamples(save_pred = TRUE, extract = extr)
+  splits <- list(split)
+  resamples <- rsample::manual_rset(splits, ids = "train/test split")
   res <-
     fit_resamples(
       object,
-      resamples = split_to_rset(split),
+      resamples = resamples,
       metrics = metrics,
       control = ctrl
     )
-  res$id[[1]] <- "train/test split"
   res$.workflow <- res$.extracts[[1]][[1]]
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
   class(res) <- unique(class(res))
   res
 }
-
