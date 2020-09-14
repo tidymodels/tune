@@ -205,6 +205,7 @@ grid has a separate R object associated with it.
 library(recipes)
 library(rsample)
 library(parsnip)
+library(workflows)
 library(ggplot2)
 
 # ---------------------------------------------------------------------------
@@ -260,6 +261,21 @@ show_best(svm_res, metric = "rmse")
 autoplot(svm_res, metric = "rmse") +
   scale_x_log10()
 }
+
+# ---------------------------------------------------------------------------
+
+# Using a variables preprocessor with a workflow
+
+# Rather than supplying a preprocessor (like a recipe) and a model directly
+# to `tune_grid()`, you can also wrap them up in a workflow and pass
+# that along instead (note that this doesn't do any preprocessing to
+# the variables, it passes them along as-is).
+wf <- workflow() \%>\%
+  add_variables(outcomes = mpg, predictors = everything()) \%>\%
+  add_model(svm_mod)
+
+set.seed(3254)
+svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
 }
 \seealso{
 \code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},

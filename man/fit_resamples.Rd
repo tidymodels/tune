@@ -140,6 +140,7 @@ grid has a separate R object associated with it.
 library(recipes)
 library(rsample)
 library(parsnip)
+library(workflows)
 
 set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
@@ -158,6 +159,16 @@ spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 spline_res
 
 show_best(spline_res, metric = "rmse")
+
+# You can also wrap up a preprocessor and a model into a workflow, and
+# supply that to `fit_resamples()` instead. Here, a workflows "variables"
+# preprocessor is used, which lets you supply terms using tidyselect.
+# The variables are used as-is, no preprocessing is done to them.
+wf <- workflow() \%>\%
+  add_variables(outcomes = mpg, predictors = everything()) \%>\%
+  add_model(lin_mod)
+
+wf_res <- fit_resamples(wf, folds)
 }
 }
 \seealso{
