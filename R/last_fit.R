@@ -126,10 +126,12 @@ last_fit_workflow <- function(object, split, metrics) {
   extr <- function(x)
     x
   ctrl <- control_resamples(save_pred = TRUE, extract = extr)
+  splits <- list(split)
+  resamples <- rsample::manual_rset(splits, ids = "train/test split")
   res <-
     fit_resamples(
       object,
-      resamples = split_to_rset(split),
+      resamples = resamples,
       metrics = metrics,
       control = ctrl
     )
@@ -138,20 +140,4 @@ last_fit_workflow <- function(object, split, metrics) {
   class(res) <- c("last_fit", class(res))
   class(res) <- unique(class(res))
   res
-}
-
-# Fake an rset for `fit_resamples()`
-split_to_rset <- function(x) {
-  splits <- list(x)
-  ids <- "train/test split"
-  new_manual_rset(splits, ids)
-}
-
-new_manual_rset <- function(splits, ids) {
-  rsample::new_rset(splits, ids, subclass = c("manual_rset", "rset"))
-}
-
-#' @export
-pretty.manual_rset <- function(x, ...) {
-  "Manual resampling"
 }

@@ -29,20 +29,6 @@ test_that("recipe method", {
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
 })
 
-test_that("split_to_rset", {
-
-  res <- tune:::split_to_rset(split)
-  expect_true(inherits(res, "manual_rset"))
-  expect_true(nrow(res) == 1)
-  expect_true(nrow(res) == 1)
-
-  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
-  expect_true(is.list(res$.workflow))
-  expect_true(inherits(res$.workflow[[1]], "workflow"))
-  expect_true(is.list(res$.predictions))
-  expect_true(inherits(res$.predictions[[1]], "tbl_df"))
-})
-
 test_that("collect metrics of last fit", {
 
   res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
