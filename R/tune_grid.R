@@ -336,6 +336,9 @@ tune_grid_workflow <- function(object,
                      data = resamples$splits[[1]]$data,
                      grid_names = names(grid))
   check_workflow(object, pset = pset)
+
+  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
+
   grid <- check_grid(grid, object, pset)
 
   # Save rset attributes, then fall back to a bare tibble
@@ -355,6 +358,7 @@ tune_grid_workflow <- function(object,
 
   workflow_output <- set_workflow(object, control)
 
+  resamples <- resamples %>% dplyr::select(-.seed)
   new_tune_results(
     x = resamples,
     parameters = pset,

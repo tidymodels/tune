@@ -147,6 +147,9 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
+  has_formula <- has_preprocessor_formula(workflow)
+
+  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
 
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
@@ -173,6 +176,7 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 
   workflow_output <- set_workflow(workflow, control)
 
+  resamples <- resamples %>% dplyr::select(-.seed)
   new_resample_results(
     x = resamples,
     parameters = parameters(workflow),
@@ -220,6 +224,7 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -352,6 +357,7 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -481,6 +487,7 @@ resample_with_variables <- function(resamples, workflow, metrics, control) {
 iter_resample_with_variables <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)

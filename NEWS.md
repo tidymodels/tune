@@ -8,8 +8,10 @@
 
 ## Other Changes
 
-* tune now supports workflows created with the new `workflows::add_variables()`
-  preprocessor.
+* tune now supports workflows created with the new `workflows::add_variables()` preprocessor.
+
+* Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)
+
 
 # tune 0.1.1
 

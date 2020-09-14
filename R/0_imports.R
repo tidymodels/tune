@@ -50,7 +50,7 @@ utils::globalVariables(
     "delta", "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
     ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
-    "Truth")
+    "Truth", ".seed")
   )
 
 # ------------------------------------------------------------------------------
