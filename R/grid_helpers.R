@@ -148,6 +148,20 @@ train_formula <- function(split, workflow) {
 }
 
 # ------------------------------------------------------------------------------
+# Variables-oriented helpers
+
+train_variables <- function(split, workflow) {
+  training <- rsample::analysis(split)
+  .fit_pre(workflow, training)
+}
+
+# ------------------------------------------------------------------------------
+
+has_preprocessor <- function(workflow) {
+  has_preprocessor_recipe(workflow) ||
+    has_preprocessor_formula(workflow) ||
+    has_preprocessor_variables(workflow)
+}
 
 has_preprocessor_recipe <- function(workflow) {
   "recipe" %in% names(workflow$pre$actions)
@@ -155,6 +169,10 @@ has_preprocessor_recipe <- function(workflow) {
 
 has_preprocessor_formula <- function(workflow) {
   "formula" %in% names(workflow$pre$actions)
+}
+
+has_preprocessor_variables <- function(workflow) {
+  "variables" %in% names(workflow$pre$actions)
 }
 
 has_spec <- function(workflow) {

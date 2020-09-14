@@ -2,9 +2,16 @@
 
 ## Bug Fixes
 
+* `last_fit()` no longer accidentally adjusts the random seed (#264).
+
 * Fixed two bugs in the acquisition function calculations.
 
+## Other Changes
+
+* tune now supports workflows created with the new `workflows::add_variables()` preprocessor.
+
 * Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)
+
 
 # tune 0.1.1
 
