@@ -31,6 +31,9 @@ test_that('grid objects', {
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
 
+  expect_warning(tune:::check_grid(rbind(grid_1, grid_1), chi_wflow),
+                 "Duplicate rows in grid of tuning combinations")
+
   expect_error(tune:::check_grid(chi_wflow, chi_wflow),
                "`grid` should be a positive integer or a data frame")
 
@@ -119,7 +122,7 @@ test_that('workflow objects', {
     workflow() %>%
     add_model(glmn)
   expect_error(tune:::check_workflow(wflow_3),
-               "A model formula or recipe are required.")
+               "A formula, recipe, or variables preprocessor is required.")
 
   wflow_4 <-
     workflow() %>%

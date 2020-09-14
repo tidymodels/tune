@@ -247,7 +247,6 @@ tune_bayes_workflow <-
     start_time <- proc.time()[3]
 
     check_rset(resamples)
-    y_names <- outcome_names(object)
     rset_info <- pull_rset_attributes(resamples)
 
     metrics <- check_metrics(metrics, object)
@@ -262,14 +261,29 @@ tune_bayes_workflow <-
 
     unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
 
+    # Pull outcome names from initialization run
+    outcomes <- peek_tune_results_outcomes(unsummarized)
+
+    # Strip off `tune_results` class and drop all attributes since
+    # we add on an `iteration_results` class later.
+    unsummarized <- new_bare_tibble(unsummarized)
+
     mean_stats <- estimate_tune_results(unsummarized)
 
     check_time(start_time, control$time_limit)
 
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
-      out <- new_iteration_results(unsummarized, param_info, metrics, y_names,
-                                   rset_info, workflow = NULL)
+
+      out <- new_iteration_results(
+        x = unsummarized,
+        parameters = param_info,
+        metrics = metrics,
+        outcomes = outcomes,
+        rset_info = rset_info,
+        workflow = NULL
+      )
+
       return(out)
     })
 
@@ -387,7 +401,7 @@ tune_bayes_workflow <-
       x = unsummarized,
       parameters = param_info,
       metrics = metrics,
-      outcomes = y_names,
+      outcomes = outcomes,
       rset_info = rset_info,
       workflow = workflow_output
     )

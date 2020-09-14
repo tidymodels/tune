@@ -45,6 +45,14 @@ check_grid <- function(x, object, pset = NULL) {
       rlang::abort(grid_msg)
     }
 
+    grid_distinct <- distinct(x)
+    if (!identical(x, grid_distinct)) {
+      rlang::warn(
+        "Duplicate rows in grid of tuning combinations found and removed."
+      )
+      x <- grid_distinct
+    }
+
     tune_tbl <- tune_args(object)
     tune_params <- tune_tbl$id
 
@@ -201,15 +209,11 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
 
-  has_preprocessor <- has_preprocessor_formula(x) || has_preprocessor_recipe(x)
-
-  if (!has_preprocessor) {
-    rlang::abort("A model formula or recipe are required.")
+  if (!has_preprocessor(x)) {
+    rlang::abort("A formula, recipe, or variables preprocessor is required.")
   }
 
-  has_spec <- has_spec(x)
-
-  if (!has_spec) {
+  if (!has_spec(x)) {
     rlang::abort("A parsnip model is required.")
   }
 
@@ -315,10 +319,6 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       param_info = pset,
       control = control_grid(extract = ctrl$extract, save_pred = ctrl$save_pred)
     )
-
-    # Strip off `tune_results` class since we add on an `iteration_results`
-    # class later.
-    x <- new_bare_tibble(x)
 
     if (ctrl$verbose) {
       tune_log(ctrl, split = NULL, "Initialization complete", type = "success")

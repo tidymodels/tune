@@ -22,6 +22,7 @@
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
+#' library(workflows)
 #'
 #' set.seed(6735)
 #' folds <- vfold_cv(mtcars, v = 5)
@@ -40,6 +41,16 @@
 #' spline_res
 #'
 #' show_best(spline_res, metric = "rmse")
+#'
+#' # You can also wrap up a preprocessor and a model into a workflow, and
+#' # supply that to `fit_resamples()` instead. Here, a workflows "variables"
+#' # preprocessor is used, which lets you supply terms using tidyselect.
+#' # The variables are used as-is, no preprocessing is done to them.
+#' wf <- workflow() %>%
+#'   add_variables(outcomes = mpg, predictors = everything()) %>%
+#'   add_model(lin_mod)
+#'
+#' wf_res <- fit_resamples(wf, folds)
 #' }
 #' @export
 fit_resamples <- function(object, ...) {
@@ -136,17 +147,22 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
-
   has_formula <- has_preprocessor_formula(workflow)
+
+  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
 
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
   resamples <- new_bare_tibble(resamples)
 
-  if (has_formula) {
+  if (has_preprocessor_formula(workflow)) {
     resamples <- resample_with_formula(resamples, workflow, metrics, control)
-  } else {
+  } else if (has_preprocessor_recipe(workflow)) {
     resamples <- resample_with_recipe(resamples, workflow, metrics, control)
+  } else if (has_preprocessor_variables(workflow)) {
+    resamples <- resample_with_variables(resamples, workflow, metrics, control)
+  } else {
+    rlang::abort("Internal error: `workflow` should have been checked for a preprocessor by now.")
   }
 
   if (is_cataclysmic(resamples)) {
@@ -155,13 +171,17 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
     )
   }
 
+  outcomes <- reduce_all_outcome_names(resamples)
+  resamples[[".all_outcome_names"]] <- NULL
+
   workflow_output <- set_workflow(workflow, control)
 
+  resamples <- resamples %>% dplyr::select(-.seed)
   new_resample_results(
     x = resamples,
     parameters = parameters(workflow),
     metrics = metrics,
-    outcomes = outcome_names(workflow),
+    outcomes = outcomes,
     rset_info = rset_info,
     workflow = workflow_output
   )
@@ -178,21 +198,25 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 
   safely_iter_resample_with_recipe <- super_safely_iterate(iter_resample_with_recipe)
 
-  results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op% {
-    safely_iter_resample_with_recipe(
-      rs_iter = rs_iter,
-      resamples = resamples,
-      grid = NULL,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
-  }
+  results <-
+    foreach::foreach(rs_iter = 1:B,
+                     .packages = required_pkgs(workflow),
+                     .errorhandling = "pass") %op% {
+                       safely_iter_resample_with_recipe(
+                         rs_iter = rs_iter,
+                         resamples = resamples,
+                         grid = NULL,
+                         workflow = workflow,
+                         metrics = metrics,
+                         control = control
+                       )
+                     }
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -200,6 +224,7 @@ resample_with_recipe <- function(resamples, workflow, metrics, control) {
 iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -208,6 +233,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   workflow <- catch_and_log(
@@ -223,6 +249,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -243,11 +270,15 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
     return(out)
   }
+
+  # Extract names from the mold
+  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
   # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
   # against in `append_extracts()`
@@ -270,6 +301,7 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -279,7 +311,13 @@ iter_resample_with_recipe <- function(rs_iter, resamples, workflow, metrics, con
   metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -293,21 +331,25 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 
   safely_iter_resample_with_formula <- super_safely_iterate(iter_resample_with_formula)
 
-  results <- foreach::foreach(rs_iter = 1:B, .packages = "tune", .errorhandling = "pass") %op% {
-    safely_iter_resample_with_formula(
-      rs_iter = rs_iter,
-      resamples = resamples,
-      grid = NULL,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
-  }
+  results <-
+    foreach::foreach(rs_iter = 1:B,
+                     .packages = required_pkgs(workflow),
+                     .errorhandling = "pass") %op% {
+                       safely_iter_resample_with_formula(
+                         rs_iter = rs_iter,
+                         resamples = resamples,
+                         grid = NULL,
+                         workflow = workflow,
+                         metrics = metrics,
+                         control = control
+                       )
+                     }
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
 }
@@ -315,6 +357,7 @@ resample_with_formula <- function(resamples, workflow, metrics, control) {
 iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -323,6 +366,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
+  all_outcome_names <- list()
   .notes <- NULL
 
   workflow <- catch_and_log(
@@ -338,6 +382,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -358,11 +403,15 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
     return(out)
   }
+
+  # Extract names from the mold
+  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
   # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
   # against in `append_extracts()`
@@ -385,6 +434,7 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
       .metrics = metric_est,
       .extracts = extracted,
       .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
       .notes = .notes
     )
 
@@ -394,7 +444,143 @@ iter_resample_with_formula <- function(rs_iter, resamples, workflow, metrics, co
   metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
-  list(.metrics = metric_est, .extracts = extracted, .predictions = pred_vals, .notes = .notes)
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
+}
+
+# ------------------------------------------------------------------------------
+
+resample_with_variables <- function(resamples, workflow, metrics, control) {
+  B <- nrow(resamples)
+
+  `%op%` <- get_operator(control$allow_par, workflow)
+
+  safely_iter_resample_with_variables <- super_safely_iterate(iter_resample_with_variables)
+
+  results <- foreach::foreach(rs_iter = 1:B,
+                              .packages = required_pkgs(workflow),
+                              .errorhandling = "pass") %op% {
+    safely_iter_resample_with_variables(
+      rs_iter = rs_iter,
+      resamples = resamples,
+      grid = NULL,
+      workflow = workflow,
+      metrics = metrics,
+      control = control
+    )
+  }
+
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
+
+  resamples
+}
+
+iter_resample_with_variables <- function(rs_iter, resamples, workflow, metrics, control) {
+  load_pkgs(workflow)
+  load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
+
+  control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
+  control_workflow <- control_workflow(control_parsnip = control_parsnip)
+
+  split <- resamples$splits[[rs_iter]]
+  metric_est <- NULL
+  extracted <- NULL
+  pred_vals <- NULL
+  all_outcome_names <- list()
+  .notes <- NULL
+
+  workflow <- catch_and_log(
+    train_variables(split, workflow),
+    control,
+    split,
+    "variables",
+    notes = .notes
+  )
+
+  if (is_failure(workflow)) {
+    out <- list(
+      .metrics = metric_est,
+      .extracts = extracted,
+      .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
+      .notes = .notes
+    )
+
+    return(out)
+  }
+
+  workflow <- catch_and_log_fit(
+    train_model(workflow, NULL, control = control_workflow),
+    control,
+    split,
+    "model",
+    notes = .notes
+  )
+
+  # check for parsnip level and model level failure
+  if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
+    out <- list(
+      .metrics = metric_est,
+      .extracts = extracted,
+      .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
+      .notes = .notes
+    )
+
+    return(out)
+  }
+
+  # Extract names from the mold
+  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+
+  # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
+  # against in `append_extracts()`
+  split_label_tbl <- labels(split)
+  dummy_param_tbl <- tibble(.rows = nrow(split_label_tbl))
+
+  extracted <- append_extracts(extracted, workflow, dummy_param_tbl, split, control)
+
+  predictions <- catch_and_log(
+    predict_model_no_grid(split, workflow, metrics),
+    control,
+    split,
+    "model (predictions)",
+    bad_only = TRUE,
+    notes = .notes
+  )
+
+  if (is_failure(predictions)) {
+    out <- list(
+      .metrics = metric_est,
+      .extracts = extracted,
+      .predictions = pred_vals,
+      .all_outcome_names = all_outcome_names,
+      .notes = .notes
+    )
+
+    return(out)
+  }
+
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  pred_vals <- append_predictions(pred_vals, predictions, split, control)
+
+  list(
+    .metrics = metric_est,
+    .extracts = extracted,
+    .predictions = pred_vals,
+    .all_outcome_names = all_outcome_names,
+    .notes = .notes
+  )
 }
 
 # ------------------------------------------------------------------------------

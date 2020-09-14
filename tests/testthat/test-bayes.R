@@ -65,6 +65,38 @@ test_that('tune model only (with recipe)', {
 
 # ------------------------------------------------------------------------------
 
+test_that('tune model only (with variables)', {
+  set.seed(4400)
+
+  wflow <- workflow() %>%
+    add_variables(mpg, everything()) %>%
+    add_model(svm_mod)
+
+  pset <- dials::parameters(wflow)
+
+  folds <- vfold_cv(mtcars)
+
+  res <- tune_bayes(
+    wflow,
+    resamples = folds,
+    param_info = pset,
+    initial = iter1,
+    iter = iter2
+  )
+
+  expect_equal(unique(res$id), folds$id)
+
+  res_est <- collect_metrics(res)
+
+  expect_equal(nrow(res_est), iterT * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), iterT)
+  expect_equal(sum(res_est$.metric == "rsq"), iterT)
+  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
+  expect_equal(res_est$n, rep(10, iterT * 2))
+})
+
+# ------------------------------------------------------------------------------
+
 test_that('tune model only (with recipe, multi-predict)', {
 
   skip_if_not(has_multi_predict())

@@ -18,10 +18,8 @@ load_pkgs.character <- function(x, ...) {
 
 #' @export
 load_pkgs.model_spec <- function(x, ...) {
-  pkgs <- mod_pkgs(x)
-  pkgs <- c(pkgs, "recipes", "parsnip", "yardstick", "purrr", "tibble", "dials",
-            "rsample")
-  load_namespace(pkgs)
+  pkgs <- required_pkgs(x)
+  load_namespace(unique(pkgs))
 }
 
 #' @export
@@ -58,11 +56,70 @@ load_namespace <- function(x) {
   invisible(TRUE)
 }
 
-mod_pkgs <- function(x) {
+## -----------------------------------------------------------------------------
+
+infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr",
+                "tibble", "dials", "rsample")
+
+#' Determine packages required by objects
+#'
+#' @param x An object.
+#' @return A character string.
+#' @keywords internal
+#' @export
+required_pkgs <- function(x, ...) {
+  UseMethod("required_pkgs")
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
   mod_name <- class(x)[1]
   pkg_list <-
     parsnip::get_from_env(paste0(mod_name, "_pkgs")) %>%
     dplyr::filter(engine == x$engine) %>%
     dplyr::pull(pkg)
-  pkg_list[[1]]
+  res <- pkg_list[[1]]
+  if (infra) {
+    res <- c(infra_pkgs, res)
+  }
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.workflow <- function(x, infra = TRUE, ...) {
+  res <- required_pkgs(workflows::pull_workflow_spec(x), infra = FALSE)
+  pp <- workflows::pull_workflow_preprocessor(x)
+  if (inherits(pp, "recipe")) {
+    res_rec <- required_pkgs(pp, infra = FALSE)
+    res <- c(res, res_rec)
+  }
+  if (infra) {
+    res <- c(infra_pkgs, res)
+  }
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.recipe <- function(x, infra = TRUE, ...) {
+  res <- purrr::map(x$steps, required_pkgs)
+  res <- unique(unlist(res))
+  if (infra) {
+    res <- c(infra_pkgs, res)
+  }
+  res <- unique(res)
+  res <- res[length(res) != 0]
+  res
+}
+
+#' @rdname required_pkgs
+#' @export
+required_pkgs.step <- function(x, ...) {
+  character(0)
 }
