@@ -13,9 +13,9 @@ tune_nothing_with_variables <- function(resamples, grid, workflow, metrics, cont
 # ------------------------------------------------------------------------------
 
 iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, control) {
-  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -194,9 +194,9 @@ tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
 # ------------------------------------------------------------------------------
 
 iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
-  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -336,9 +336,9 @@ tune_mod_with_recipe <- function(resamples, grid, workflow, metrics, control) {
 }
 
 iter_mod_with_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
-  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -478,9 +478,9 @@ tune_mod_with_formula <- function(resamples, grid, workflow, metrics, control) {
 }
 
 iter_mod_with_formula <- function(rs_iter, resamples, grid, workflow, metrics, control) {
-  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -622,9 +622,9 @@ tune_mod_with_variables <- function(resamples, grid, workflow, metrics, control)
 }
 
 iter_mod_with_variables <- function(rs_iter, resamples, grid, workflow, metrics, control) {
-  set.seed(resamples$.seed[[rs_iter]])
   load_pkgs(workflow)
   load_namespace(control$pkgs)
+  set.seed(resamples$.seed[[rs_iter]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)

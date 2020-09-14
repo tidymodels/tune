@@ -358,8 +358,9 @@ tune_grid_workflow <- function(object,
 
   workflow_output <- set_workflow(object, control)
 
+  resamples <- resamples %>% dplyr::select(-.seed)
   new_tune_results(
-    x = resamples %>% dplyr::select(-.seed),
+    x = resamples,
     parameters = pset,
     metrics = metrics,
     outcomes = outcomes,
