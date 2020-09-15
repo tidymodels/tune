@@ -147,7 +147,6 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   check_rset(resamples)
   check_workflow(workflow)
   metrics <- check_metrics(metrics, workflow)
-  has_formula <- has_preprocessor_formula(workflow)
 
   resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
 
