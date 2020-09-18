@@ -1,27 +1,3 @@
-# recipe-oriented helpers
-
-train_recipe <- function(split, workflow, grid) {
-  original_recipe <- workflows::pull_workflow_preprocessor(workflow)
-
-  if (!is.null(grid)) {
-    updated_recipe <- merge(original_recipe, grid)$x[[1]]
-  } else {
-    updated_recipe <- original_recipe
-  }
-
-  workflow <- set_workflow_recipe(workflow, updated_recipe)
-
-  training <- rsample::analysis(split)
-
-  workflow <- .fit_pre(workflow, training)
-
-  # Always reset to the original recipe so `parameters()` can be used on this
-  # object. The prepped updated recipe is stored in the mold.
-  workflow <- set_workflow_recipe(workflow, original_recipe)
-
-  workflow
-}
-
 train_model <- function(workflow, grid, control) {
   original_spec <- workflows::pull_workflow_spec(workflow)
 
@@ -138,6 +114,30 @@ make_rename_arg <- function(grid, model) {
   res
 }
 
+# ------------------------------------------------------------------------------
+# Recipe-oriented helpers
+
+train_recipe <- function(split, workflow, grid) {
+  original_recipe <- workflows::pull_workflow_preprocessor(workflow)
+
+  if (!is.null(grid)) {
+    updated_recipe <- merge(original_recipe, grid)$x[[1]]
+  } else {
+    updated_recipe <- original_recipe
+  }
+
+  workflow <- set_workflow_recipe(workflow, updated_recipe)
+
+  training <- rsample::analysis(split)
+
+  workflow <- .fit_pre(workflow, training)
+
+  # Always reset to the original recipe so `parameters()` can be used on this
+  # object. The prepped updated recipe is stored in the mold.
+  workflow <- set_workflow_recipe(workflow, original_recipe)
+
+  workflow
+}
 
 # ------------------------------------------------------------------------------
 # Formula-oriented helpers
