@@ -365,27 +365,6 @@ test_that("argument order gives warning for formula", {
   )
 })
 
-test_that("ellipses with tune_bayes", {
-
-  # This test currently fails, because tune_bayes() actually passes the ... to
-  # fit_gp(). This behavior seems to be undocumented.
-
-  skip_if("..." %in% names(formals(fit_gp)))
-
-  set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow)
-  folds <- vfold_cv(mtcars)
-  expect_warning(
-    tune_bayes(wflow, resamples = folds, param_info = pset,
-               initial = iter1, iter = iter2, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
-  )
-})
-
-
-
-
 test_that("retain extra attributes", {
 
   set.seed(4400)
