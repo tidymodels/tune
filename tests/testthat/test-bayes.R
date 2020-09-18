@@ -42,6 +42,15 @@ test_that('tune recipe only', {
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
   expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
+
+  expect_error(
+    tune_bayes(wflow, resamples = folds, param_info = pset,
+               initial = iter1, iter = iter2,
+               corr = list(type = "matern", nu = 3/2)),
+    regexp = NA
+  )
+
+
 })
 
 # ------------------------------------------------------------------------------

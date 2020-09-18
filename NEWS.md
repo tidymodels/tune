@@ -12,6 +12,7 @@
 
 * Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)
 
+* Allow `...` to pass options from `tune_bayes()` to `GPfit::GP_fit()`. 
 
 # tune 0.1.1
 

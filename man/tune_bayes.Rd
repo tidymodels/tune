@@ -36,7 +36,7 @@ tune_bayes(object, ...)
 \arguments{
 \item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.}
 
-\item{...}{Not currently used.}
+\item{...}{Options to pass to \code{\link[GPfit:GP_fit]{GPfit::GP_fit()}} (mostly for the \code{corr} argument).}
 
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
