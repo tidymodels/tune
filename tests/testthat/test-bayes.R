@@ -42,6 +42,15 @@ test_that('tune recipe only', {
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
   expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
+
+  expect_error(
+    tune_bayes(wflow, resamples = folds, param_info = pset,
+               initial = iter1, iter = iter2,
+               corr = list(type = "matern", nu = 3/2)),
+    regexp = NA
+  )
+
+
 })
 
 # ------------------------------------------------------------------------------
@@ -355,27 +364,6 @@ test_that("argument order gives warning for formula", {
     "is deprecated as of lifecycle"
   )
 })
-
-test_that("ellipses with tune_bayes", {
-
-  # This test currently fails, because tune_bayes() actually passes the ... to
-  # fit_gp(). This behavior seems to be undocumented.
-
-  skip_if("..." %in% names(formals(fit_gp)))
-
-  set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow)
-  folds <- vfold_cv(mtcars)
-  expect_warning(
-    tune_bayes(wflow, resamples = folds, param_info = pset,
-               initial = iter1, iter = iter2, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
-  )
-})
-
-
-
 
 test_that("retain extra attributes", {
 
