@@ -3,11 +3,17 @@
 \name{collect_predictions}
 \alias{collect_predictions}
 \alias{collect_metrics}
+\alias{collect_metrics.tune_results}
+\alias{collect_metrics.tune_race}
 \title{Obtain and format results produced by tuning functions}
 \usage{
 collect_predictions(x, summarize = FALSE, parameters = NULL)
 
-collect_metrics(x, summarize = TRUE)
+collect_metrics(x, ...)
+
+\method{collect_metrics}{tune_results}(x, summarize = TRUE, ...)
+
+\method{collect_metrics}{tune_race}(x, summarize = TRUE, ...)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
@@ -22,6 +28,8 @@ types, the method of summarizing predictions is detailed below.}
 used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
 if \code{tune("my_param")} was used).}
+
+\item{...}{Not currently used.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
