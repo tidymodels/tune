@@ -399,8 +399,8 @@ quarterback <- function(x) {
     has_vars && !tune_model ~ "tune_nothing",
     has_rec && !tune_rec && !tune_model ~ "tune_nothing",
 
-    has_rec && tune_rec && tune_model ~ "tune_rec_and_mod",
-    has_rec && tune_rec && !tune_model ~ "tune_rec"
+    has_rec && tune_rec && tune_model ~ "tune_model_and_recipe",
+    has_rec && tune_rec && !tune_model ~ "tune_recipe"
   )
 
   rlang::call2(fn, !!!args)
