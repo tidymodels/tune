@@ -117,14 +117,9 @@ make_rename_arg <- function(grid, model) {
 # ------------------------------------------------------------------------------
 # Recipe-oriented helpers
 
-train_recipe <- function(split, workflow, grid) {
+train_recipe_grid <- function(split, workflow, grid) {
   original_recipe <- workflows::pull_workflow_preprocessor(workflow)
-
-  if (!is.null(grid)) {
-    updated_recipe <- merge(original_recipe, grid)$x[[1]]
-  } else {
-    updated_recipe <- original_recipe
-  }
+  updated_recipe <- merge(original_recipe, grid)$x[[1]]
 
   workflow <- set_workflow_recipe(workflow, updated_recipe)
 
@@ -137,22 +132,6 @@ train_recipe <- function(split, workflow, grid) {
   workflow <- set_workflow_recipe(workflow, original_recipe)
 
   workflow
-}
-
-# ------------------------------------------------------------------------------
-# Formula-oriented helpers
-
-train_formula <- function(split, workflow) {
-  training <- rsample::analysis(split)
-  .fit_pre(workflow, training)
-}
-
-# ------------------------------------------------------------------------------
-# Variables-oriented helpers
-
-train_variables <- function(split, workflow) {
-  training <- rsample::analysis(split)
-  .fit_pre(workflow, training)
 }
 
 # ------------------------------------------------------------------------------

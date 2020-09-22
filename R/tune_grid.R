@@ -391,15 +391,15 @@ quarterback <- function(x) {
   )
 
   fn <- dplyr::case_when(
-    has_form && tune_model ~ "tune_mod_with_formula",
+    has_form && tune_model ~ "tune_model_with_preprocessor",
     has_form && !tune_model ~ "tune_nothing_with_formula",
 
     has_rec && tune_rec && tune_model ~ "tune_rec_and_mod",
     has_rec && tune_rec && !tune_model ~ "tune_rec",
-    has_rec && !tune_rec && tune_model ~ "tune_mod_with_recipe",
+    has_rec && !tune_rec && tune_model ~ "tune_model_with_preprocessor",
     has_rec && !tune_rec && !tune_model ~ "tune_nothing_with_recipe",
 
-    has_vars && tune_model ~ "tune_mod_with_variables",
+    has_vars && tune_model ~ "tune_model_with_preprocessor",
     has_vars && !tune_model ~ "tune_nothing_with_variables"
   )
 
