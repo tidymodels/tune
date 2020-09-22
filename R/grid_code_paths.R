@@ -4,6 +4,30 @@ tune_nothing <- function(resamples, grid, workflow, metrics, control)  {
 
 # ------------------------------------------------------------------------------
 
+tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
+  B <- nrow(resamples)
+
+  `%op%` <- get_operator(control$allow_par, workflow)
+
+  lab_names <- names(labels(resamples$splits[[1]]))
+
+  safely_iter_rec_and_mod <- super_safely_iterate(iter_rec_and_mod)
+
+  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
+
+  results <-
+    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
+    safely_iter_rec_and_mod(rs_iter, resamples, grid, workflow, metrics, control)
+
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
+
+  resamples
+}
+
 iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
@@ -159,20 +183,20 @@ iter_rec_and_mod <- function(rs_iter, resamples, grid, workflow, metrics, contro
   )
 }
 
-tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
+# ------------------------------------------------------------------------------
+
+tune_rec <- function(resamples, grid, workflow, metrics, control) {
   B <- nrow(resamples)
 
   `%op%` <- get_operator(control$allow_par, workflow)
 
-  lab_names <- names(labels(resamples$splits[[1]]))
-
-  safely_iter_rec_and_mod <- super_safely_iterate(iter_rec_and_mod)
+  safely_iter_rec <- super_safely_iterate(iter_rec)
 
   load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
-    safely_iter_rec_and_mod(rs_iter, resamples, grid, workflow, metrics, control)
+    safely_iter_rec(rs_iter, resamples, grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -182,8 +206,6 @@ tune_rec_and_mod <- function(resamples, grid, workflow, metrics, control) {
 
   resamples
 }
-
-# ------------------------------------------------------------------------------
 
 iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   load_pkgs(workflow)
@@ -278,28 +300,6 @@ iter_rec <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     .all_outcome_names = all_outcome_names,
     .notes = .notes
   )
-}
-
-tune_rec <- function(resamples, grid, workflow, metrics, control) {
-  B <- nrow(resamples)
-
-  `%op%` <- get_operator(control$allow_par, workflow)
-
-  safely_iter_rec <- super_safely_iterate(iter_rec)
-
-  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
-
-  results <-
-    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
-    safely_iter_rec(rs_iter, resamples, grid, workflow, metrics, control)
-
-  resamples <- pull_metrics(resamples, results, control)
-  resamples <- pull_notes(resamples, results, control)
-  resamples <- pull_extracts(resamples, results, control)
-  resamples <- pull_predictions(resamples, results, control)
-  resamples <- pull_all_outcome_names(resamples, results)
-
-  resamples
 }
 
 # ------------------------------------------------------------------------------
