@@ -1,12 +1,4 @@
-tune_nothing_with_recipe <- function(resamples, grid, workflow, metrics, control)  {
-  resample_loop(resamples, workflow, metrics, control)
-}
-
-tune_nothing_with_formula <- function(resamples, grid, workflow, metrics, control)  {
-  resample_loop(resamples, workflow, metrics, control)
-}
-
-tune_nothing_with_variables <- function(resamples, grid, workflow, metrics, control)  {
+tune_nothing <- function(resamples, grid, workflow, metrics, control)  {
   resample_loop(resamples, workflow, metrics, control)
 }
 

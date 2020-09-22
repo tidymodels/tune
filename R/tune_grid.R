@@ -395,9 +395,9 @@ quarterback <- function(x) {
     has_vars && tune_model ~ "tune_model_with_preprocessor",
     has_rec && !tune_rec && tune_model ~ "tune_model_with_preprocessor",
 
-    has_form && !tune_model ~ "tune_nothing_with_formula",
-    has_vars && !tune_model ~ "tune_nothing_with_variables",
-    has_rec && !tune_rec && !tune_model ~ "tune_nothing_with_recipe",
+    has_form && !tune_model ~ "tune_nothing",
+    has_vars && !tune_model ~ "tune_nothing",
+    has_rec && !tune_rec && !tune_model ~ "tune_nothing",
 
     has_rec && tune_rec && tune_model ~ "tune_rec_and_mod",
     has_rec && tune_rec && !tune_model ~ "tune_rec"
