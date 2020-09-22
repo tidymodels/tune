@@ -231,13 +231,14 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
 
     # Determine the _minimal_ number of models to fit in order to get
     # predictions on all models.
+    model_spec <- workflows::pull_workflow_spec(workflow)
+    mod_grid_vals <- min_grid(model_spec, mod_grid_vals)
 
-
-    mod_grid_vals <- workflows::pull_workflow_spec(workflow) %>% min_grid(mod_grid_vals)
     num_submodels <- mod_grid_vals %>%
       unnest(.submodels, keep_empty = TRUE) %>%
       pull(.submodels) %>%
       map_int(length)
+
     num_mod <- nrow(mod_grid_vals)
 
     # ------------------------------------------------------------------------
@@ -251,22 +252,21 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
       submd_param <- submd_param$.submodels[[1]]
 
-      submd_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
+      submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
-      mod_id <- paste0(rec_id, "_",
-                       vec_slice(
-                         recipes::names0(nrow(grid), "Model"),
-                         (submd_id - num_submodels[mod_iter]):submd_id
-                       ))
+      mod_id <- vec_slice(
+        recipes::names0(nrow(grid), "Model"),
+        (submodel_id - num_submodels[mod_iter]):submodel_id
+      )
+      mod_id <- paste0(rec_id, "_", mod_id)
 
-      workflow <-
-        catch_and_log_fit(
-          train_model(workflow, fixed_param, control = control_workflow),
-          control,
-          split,
-          mod_msg,
-          notes = .notes
-        )
+      workflow <- catch_and_log_fit(
+        train_model(workflow, fixed_param, control_workflow),
+        control,
+        split,
+        mod_msg,
+        notes = .notes
+      )
 
       # check for parsnip level and model level failure
       if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
@@ -278,23 +278,25 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
 
       all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
-      extracted <-
-        append_extracts(extracted,
-                        workflow,
-                        all_param,
-                        split,
-                        control,
-                        mod_id)
+      extracted <- append_extracts(
+        extracted,
+        workflow,
+        all_param,
+        split,
+        control,
+        mod_id
+      )
 
-      tmp_pred <-
-        catch_and_log(
-          predict_model(split, workflow, all_param, metrics),
-          control,
-          split,
-          paste(mod_msg, "(predictions)"),
-          bad_only = TRUE,
-          notes = .notes
-        )
+      pred_msg <- paste(mod_msg, "(predictions)")
+
+      tmp_pred <- catch_and_log(
+        predict_model(split, workflow, all_param, metrics),
+        control,
+        split,
+        pred_msg,
+        bad_only = TRUE,
+        notes = .notes
+      )
 
       # check for prediction level failure
       if (is_failure(tmp_pred)) {
@@ -305,7 +307,6 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       config_id <- extract_config(workflow, metric_est)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
     } # end model loop
-
   } # end recipe loop
 
   list(
@@ -327,12 +328,13 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
-  split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   all_outcome_names <- list()
   .notes <- NULL
+
+  split <- resamples$splits[[rs_iter]]
 
   num_rec <- nrow(grid)
   original_workflow <- workflow
@@ -359,7 +361,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     }
 
     workflow <- catch_and_log_fit(
-      train_model(workflow, NULL, control = control_workflow),
+      train_model(workflow, NULL, control_workflow),
       control,
       split,
       mod_msg,
@@ -374,15 +376,14 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     # Extract names from the mold
     all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
 
-    extracted <-
-      append_extracts(
-        extracted,
-        workflow,
-        grid[param_iter, ],
-        split,
-        control,
-        rec_id
-      )
+    extracted <- append_extracts(
+      extracted,
+      workflow,
+      param_vals,
+      split,
+      control,
+      rec_id
+    )
 
     pred_msg <- paste(mod_msg, "(predictions)")
 
@@ -403,7 +404,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, rec_id)
     config_id <- extract_config(workflow, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
-  } # recipe parameters
+  } # end recipe loop
 
   list(
     .metrics = metric_est,
