@@ -181,31 +181,17 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
 # ------------------------------------------------------------------------------
 
 resample_loop <- function(resamples, workflow, metrics, control) {
-  B <- nrow(resamples)
-  `%op%` <- get_operator(control$allow_par, workflow)
-  safely_iter_resamples <- super_safely_iterate(iter_resamples)
-
-  results <- foreach::foreach(rs_iter = 1:B,
-                              .packages = required_pkgs(workflow),
-                              .errorhandling = "pass") %op% {
-    safely_iter_resamples(
-      rs_iter = rs_iter,
-      resamples = resamples,
-      grid = NULL,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
-  }
-
-  resamples <- pull_metrics(resamples, results, control)
-  resamples <- pull_notes(resamples, results, control)
-  resamples <- pull_extracts(resamples, results, control)
-  resamples <- pull_predictions(resamples, results, control)
-  resamples <- pull_all_outcome_names(resamples, results)
-
-  resamples
+  tune_grid_loop(
+    resamples = resamples,
+    grid = NULL,
+    workflow = workflow,
+    metrics = metrics,
+    control = control,
+    fn_iter = iter_resamples
+  )
 }
+
+# ------------------------------------------------------------------------------
 
 iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   load_pkgs(workflow)
