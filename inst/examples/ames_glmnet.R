@@ -53,7 +53,7 @@ search_res <-
     resamples = cv_splits,
     initial = ames_glmnet,
     iter = 50,
-    control = ctrl_Bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )
 
 
@@ -65,6 +65,6 @@ more_search_res <-
     initial = search_res,
     metrics = metric_set(rmse, rsq),
     iter = 50,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 5)
+    control = control_bayes(verbose = TRUE, uncertain = 5)
   )
 

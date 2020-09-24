@@ -2,10 +2,11 @@ library(tidymodels)
 library(tune)
 library(AmesHousing)
 library(workflows)
-
+library(doMC)
+registerDoMC(cores=10)
 # ------------------------------------------------------------------------------
 
-ames <- make_ames()
+ames <- make_ames() %>% mutate(Sale_Price = log10(Sale_Price))
 
 # Make sure that you get the same random numbers
 set.seed(4595)
@@ -20,7 +21,6 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 
 ames_rec <-
   recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
   step_other(Neighborhood, threshold = tune())  %>%
   step_dummy(all_nominal()) %>%
@@ -41,7 +41,7 @@ set.seed(4567367)
 ames_set <-
   parameters(ames_wflow) %>%
   update(threshold = threshold(c(0, .2))) %>%
-  update(num_terms = num_terms(c(1, 20)))
+  update(num_terms = num_terms(c(1, 50)))
 
 ames_grid <-
   ames_set %>%
@@ -76,5 +76,17 @@ test <-
     initial = res,
     metrics = metric_set(rmse, rsq),
     iter = 15,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 3)
+    control = control_bayes(verbose = TRUE, uncertain = 3)
+  )
+
+
+library(finetune)
+
+set.seed(13892)
+mars_sa <-
+  tune_sim_anneal(
+    ames_wflow,
+    resamples = cv_splits,
+    param_info = ames_set,
+    iter = 35
   )

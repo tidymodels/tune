@@ -56,5 +56,5 @@ test <-
     initial = initial_grid,
     metrics = metric_set(rmse, rsq),
     iter = 3,
-    control = ctrl_Bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )

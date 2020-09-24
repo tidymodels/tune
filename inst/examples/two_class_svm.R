@@ -49,7 +49,7 @@ svm_search <-
     initial = res,
     metrics = class_only,
     iter = 4,
-    control = ctrl_Bayes(verbose = TRUE, save_pred = TRUE)
+    control = control_bayes(verbose = TRUE, save_pred = TRUE)
   )
 
 
