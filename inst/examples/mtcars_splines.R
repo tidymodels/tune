@@ -15,7 +15,9 @@ base_rec <-
 disp_rec <-
   base_rec %>%
   step_bs(disp, degree = tune(), deg_free = tune()) %>%
-  step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
+  step_bs(wt,
+          degree = tune("wt degree"),
+          deg_free = tune("wt df"))
 
 lm_model <-
   linear_reg(mode = "regression") %>%
@@ -40,7 +42,13 @@ cars_grid <-
   grid_regular(levels = c(3, 2, 3, 2))
 
 
-cars_res <- tune_grid(cars_wflow, resamples = data_folds, grid = cars_grid, control = control_grid(verbose = TRUE, save_pred = TRUE))
+cars_res <-
+  tune_grid(
+    cars_wflow,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control_grid(verbose = TRUE, save_pred = TRUE)
+  )
 
 spline_search <-
   tune_bayes(
@@ -49,7 +57,7 @@ spline_search <-
     param_info = cars_set,
     initial = cars_res,
     iter = 15,
-    control = ctrl_Bayes(verbose = TRUE, save_pred = TRUE)
+    control = control_bayes(verbose = TRUE, save_pred = TRUE)
   )
 
 more_spline_search <-
@@ -59,6 +67,40 @@ more_spline_search <-
     param_info = cars_set,
     initial = spline_search,
     iter = 10,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 10)
+    control = control_bayes(verbose = TRUE, uncertain = 10)
   )
+
+## -----------------------------------------------------------------------------
+
+
+library(finetune)
+set.seed(121)
+res_anova <-
+  tune_race_anova(
+    cars_wflow,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control_race(verbose_elim = TRUE, randomize = TRUE)
+  )
+
+set.seed(121)
+res_bt <-
+  tune_race_win_loss(
+    cars_wflow,
+    resamples = data_folds,
+    grid = cars_grid,
+    control = control_race(verbose_elim = TRUE, randomize = TRUE)
+  )
+
+
+set.seed(121)
+res_sa <-
+  tune_sim_anneal(
+    cars_wflow,
+    resamples = data_folds,
+    param_info = cars_set,
+    iter = 25
+  )
+
+
 

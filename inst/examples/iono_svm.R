@@ -36,7 +36,7 @@ search_res <-
     metrics = roc_vals,
     initial = iono_res_2,
     iter = 15,
-    control = ctrl_Bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )
 
 

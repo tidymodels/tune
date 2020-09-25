@@ -1,0 +1,12 @@
+> message_wrap(text, width = 30)
+Message: A data frame of tuning
+combinations or a positive
+integer. The data frame
+should have columns for each
+parameter being tuned and
+rows for tuning parameter
+candidates. An integer
+denotes the number of
+candidate parameter sets to
+be created automatically.
+

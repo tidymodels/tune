@@ -72,7 +72,7 @@ svm_search <- tune_bayes(svm_wflow, resamples = folds,
                          iter = 15,
                          metrics = kappa_only,
                          param_info = svm_set,
-                         control = ctrl_Bayes(verbose = TRUE))
+                         control = control_bayes(verbose = TRUE))
 
 autoplot(svm_search, type = "performance", metric = "kap")
 
@@ -83,7 +83,7 @@ svm_search_2 <- tune_bayes(svm_wflow, resamples = folds,
                            iter = 15,
                            metrics = kappa_only,
                            param_info = svm_set,
-                           control = ctrl_Bayes(verbose = TRUE))
+                           control = control_bayes(verbose = TRUE))
 
 autoplot(svm_search_2, type = "performance", metric = "kap")
 

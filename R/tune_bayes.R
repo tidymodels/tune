@@ -284,7 +284,7 @@ tune_bayes_workflow <-
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
     if (control$verbose) {
-      message(paste("Optimizing", metrics_name, "using", objective$label))
+      message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
@@ -404,6 +404,7 @@ create_initial_set <- function(param, n = NULL) {
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
+  check_bayes_initial_size(nrow(param), n)
   dials::grid_latin_hypercube(param, size = n)
 }
 
@@ -456,6 +457,16 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dplyr::select(dplyr::one_of(pset$id), mean)
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
+
+  if (nrow(x) <= ncol(x) + 1) {
+    msg <-
+      paste(
+        "The Gaussian process model is being fit using ", ncol(x),
+        "features but only has", nrow(x), "data points to do so. This may cause",
+        "errors or a poor model fit."
+      )
+    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
+  }
 
   opts <- list(...)
   if (any(names(opts) == "trace") && opts$trace) {
