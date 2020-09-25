@@ -686,15 +686,10 @@ reup_rs <- function(resamples, res)  {
 
 ## -----------------------------------------------------------------------------
 
-check_hidden_arg <- function(x, name, value) {
-  if (!any(names(x) == name)) {
-    return(FALSE)
-  }
-  identical(x[[name]], value)
-}
-
 save_gp_results <- function(x, ctrl, i, iter) {
-  check_hidden_arg(ctrl, "save_gp_results", TRUE)
+  if (!ctrl$save_gp_scoring) {
+    return(invisible(NULL))
+  }
 
   nm <- recipes::names0(iter, "gp_candidates_")[i]
   file_name <- paste0(nm, ".RData")
