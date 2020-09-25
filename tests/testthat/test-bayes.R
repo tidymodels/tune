@@ -396,3 +396,50 @@ test_that("retain extra attributes", {
 
 
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('too few starting values', {
+  options(width = 120)
+  # TODO Add specific checks with racing objects once finetune is released
+  expect_silent(tune:::check_bayes_initial_size(5, 30, FALSE))
+
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, FALSE),
+    "5 tuning parameters and 3 grid points were"
+  )
+
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, TRUE),
+    "numerical issues"
+  )
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, TRUE),
+    "With racing"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, FALSE),
+    "request 2+"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, TRUE),
+    "request 2+"
+  )
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, TRUE),
+    "With racing"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, FALSE),
+    "a single grid point was"
+  )
+  expect_error(
+    tune:::check_bayes_initial_size(1, 1, FALSE),
+    "is one tuning parameter"
+  )
+
+})
+

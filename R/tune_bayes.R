@@ -404,6 +404,7 @@ create_initial_set <- function(param, n = NULL) {
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
+  check_bayes_initial_size(nrow(param), n)
   dials::grid_latin_hypercube(param, size = n)
 }
 
@@ -456,6 +457,21 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dplyr::select(dplyr::one_of(pset$id), mean)
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
+
+  if (nrow(x) <= ncol(x) + 1) {
+    msg <-
+      paste(
+        tune_color$symbol$warning("!"),
+        "The Gaussian process model is being fit using ", ncol(x),
+        "features but only has", nrow(x), "data points to do so. This may cause",
+        "errors or a poor model fit."
+      )
+    msg <- strwrap(msg)
+    msg <- purrr::map_chr(msg, ~ tune_color$message$warning(.x))
+    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
+    msg[-1] <- paste0("  ", msg[-1])
+    message(msg)
+  }
 
   opts <- list(...)
   if (any(names(opts) == "trace") && opts$trace) {

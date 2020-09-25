@@ -187,6 +187,44 @@ check_installs <- function(x) {
   }
 }
 
+check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
+  chr_param <-
+    ifelse(num_param == 1,
+           "is one tuning parameter",
+           paste("are", num_param, "tuning parameters"))
+  chr_grid <-
+    ifelse(num_grid == 1,
+           "a single grid point was",
+           paste(num_grid, "grid points were"))
+  msg <- paste0("There ", chr_param, " and ", chr_grid, " requested.")
+  race_msg <-
+    ifelse(race,
+           "With racing, only completely resampled parameters are used.",
+           "")
+  if (num_grid == 1) {
+    rlang::abort(
+      paste(tune_color$symbol$warning("!"), msg, "The GP model request 2+ initial points but there should",
+            "be more initial points than there are tuning paramters.", race_msg)
+    )
+  }
+  if (num_grid < num_param + 1) {
+    msg <-
+      paste(
+        tune_color$symbol$warning("!"),
+        msg,
+        "This is likely to cause numerical issues in the first few",
+        "search iterations.",
+        race_msg
+      )
+    msg <- strwrap(msg)
+    msg <- purrr::map_chr(msg, ~ tune_color$message$warning(.x))
+    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
+    msg[-1] <- paste0("  ", msg[-1])
+    message(msg)
+  }
+  invisible(NULL)
+}
+
 check_param_objects <- function(pset) {
   params <- purrr::map_lgl(pset$object, inherits, "param")
 
@@ -328,14 +366,30 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
     if (!inherits(x, "tune_results")) {
       rlang::abort(bayes_msg)
     }
-
     if (ctrl$save_pred & !any(names(x) == ".predictions")) {
       rlang::abort("`save_pred` can only be used if the initial results saved predictions.")
     }
     if (!is.null(ctrl$extract) & !any(names(x) == ".extracts")) {
       rlang::abort("`extract` can only be used if the initial results has extractions.")
     }
-
+    param_nms <- .get_tune_parameter_names(x)
+    if (inherits(x, "tune_race")) {
+      num_resamples <-
+        x %>%
+        collect_metrics(summarize = FALSE) %>%
+        dplyr::count(.config)
+      max_resamples <- max(num_resamples$n)
+      configs <- num_resamples$.config[num_resamples$n == max_resamples]
+      x <- filter_parameters(x, .config %in% configs)
+      num_grid <- length(configs)
+      x$.order <- NULL
+    } else {
+      num_grid <-
+        collect_metrics(x) %>%
+        dplyr::distinct(!!!rlang::syms(param_nms)) %>%
+        nrow()
+    }
+    check_bayes_initial_size(length(param_nms), num_grid, inherits(x, "tune_race"))
   }
   if (!any(names(x) == ".iter")) {
     x <- x %>% dplyr::mutate(.iter = 0L)
