@@ -1,0 +1,10 @@
+> message_wrap(text, width = 50, prefix = "'grid':", color_text = cli::col_red,
++ color_prefix = cli::col_blue)
+Message: [34m'grid':[39m [31mA data frame of tuning combinations or a[39m
+        [31mpositive integer. The data frame should[39m
+        [31mhave columns for each parameter being[39m
+        [31mtuned and rows for tuning parameter[39m
+        [31mcandidates. An integer denotes the number[39m
+        [31mof candidate parameter sets to be created[39m
+        [31mautomatically.[39m
+

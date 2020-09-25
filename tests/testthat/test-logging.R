@@ -1,4 +1,5 @@
 context("logging")
+library(cli)
 
 # ------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ tb_2 <-
 # ------------------------------------------------------------------------------
 
 test_that('low-level messages', {
-  expect_error(tune:::siren("a", "werewolf"), "`type` should be one of: ")
+  expect_error(tune:::siren("a", "werewolf"), "should be one of")
   expect_message(tune:::siren("bat", "info"), "i")
   expect_message(tune:::siren("bat", "go"), cli::symbol$pointer)
   expect_message(tune:::siren("bat", "danger"), "x")
@@ -210,6 +211,45 @@ test_that('acquisition functions', {
   expect_message(tune:::acq_summarizer(ctrl_t, 1, exp_improve(I)), "Trade-off value: 1")
   expect_message(tune:::acq_summarizer(ctrl_t, 1, prob_improve(I)), "Trade-off value: 1")
 
+})
+
+## -----------------------------------------------------------------------------
+
+test_that('message_wrap', {
+  text <-
+    paste(
+      "A data frame of tuning combinations or a positive integer. The data",
+      "frame should have columns for each parameter being tuned and rows for",
+      "tuning parameter candidates. An integer denotes the number of candidate",
+      "parameter sets to be created automatically.",
+      collapse = ""
+    )
+  verify_output(
+    test_path("message_wrap/width_30.txt"),
+    message_wrap(text, width = 30),
+    crayon = TRUE
+  )
+  verify_output(
+    test_path("message_wrap/width_50_prefix.txt"),
+    message_wrap(text, width = 50, prefix = "'grid':"),
+    crayon = TRUE
+  )
+  verify_output(
+    test_path("message_wrap/width_50_prefix_red_text.txt"),
+    message_wrap(text, width = 50, prefix = "'grid':", color_text = cli::col_red),
+    crayon = TRUE
+  )
+  verify_output(
+    test_path("message_wrap/width_50_prefix_red_text_blue_prefix.txt"),
+    message_wrap(
+      text,
+      width = 50,
+      prefix = "'grid':",
+      color_text = cli::col_red,
+      color_prefix = cli::col_blue
+    ),
+    crayon = TRUE
+  )
 })
 
 

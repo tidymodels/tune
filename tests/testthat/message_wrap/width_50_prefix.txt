@@ -1,0 +1,9 @@
+> message_wrap(text, width = 50, prefix = "'grid':")
+Message: 'grid': A data frame of tuning combinations or a
+        positive integer. The data frame should
+        have columns for each parameter being
+        tuned and rows for tuning parameter
+        candidates. An integer denotes the number
+        of candidate parameter sets to be created
+        automatically.
+

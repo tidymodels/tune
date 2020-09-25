@@ -284,7 +284,7 @@ tune_bayes_workflow <-
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
     if (control$verbose) {
-      message(paste("Optimizing", metrics_name, "using", objective$label))
+      message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
@@ -461,16 +461,11 @@ fit_gp <- function(dat, pset, metric, control, ...) {
   if (nrow(x) <= ncol(x) + 1) {
     msg <-
       paste(
-        tune_color$symbol$warning("!"),
         "The Gaussian process model is being fit using ", ncol(x),
         "features but only has", nrow(x), "data points to do so. This may cause",
         "errors or a poor model fit."
       )
-    msg <- strwrap(msg)
-    msg <- purrr::map_chr(msg, ~ tune_color$message$warning(.x))
-    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
-    msg[-1] <- paste0("  ", msg[-1])
-    message(msg)
+    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
   }
 
   opts <- list(...)

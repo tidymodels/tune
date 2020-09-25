@@ -1,17 +1,68 @@
-# Genneral logging to the screen used in various places.
+# General logging to the screen used in various places.
 # ------------------------------------------------------------------------------
 
-siren <- function(x, type = "info") {
-  types <- c("warning", "go", "danger", "success", "info")
-
-  if (!any(type == types)) {
-    msg <- paste(
-      "`type` should be one of: ",
-      paste0("'", types, "'", collapse = ", ")
-    )
-
-    rlang::abort(msg)
+#' Write a message that respects the line width
+#'
+#' @param x A character string of the message text.
+#' @param width An integer for the width.
+#' @param prefix An optional string to go on the first line of the message.
+#' @param color_text,color_prefix A function (or `NULL`) that is used to color
+#'  the text and/or prefix.
+#' @return The processed text is returned (invisibly) but a message is written.
+#' @examples
+#' library(cli)
+#' Gaiman <-
+#'   paste(
+#'     '"Good point." Bod was pleased with himself, and glad he had thought of',
+#'     'asking the poet for advice. Really, he thought, if you couldn’t trust a',
+#'     'poet to offer sensible advice, who could you trust?',
+#'     collapse = ""
+#'   )
+#' message_wrap(Gaiman)
+#' message_wrap(Gaiman, width = 20, prefix = "-")
+#' message_wrap(Gaiman, width = 30, prefix = "-",
+#'              color_text = cli::col_silver)
+#' message_wrap(Gaiman, width = 30, prefix = "-",
+#'              color_text = cli::style_underline,
+#'              color_prefix = cli::col_green)
+#' @export
+message_wrap <-
+  function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
+  if (!is.character(x) || length(x) > 1) {
+    rlang::abort("'x' should be a single character string.")
   }
+  if (!is.null(color_text) && !is.function(color_text)) {
+    rlang::abort("'color_text' should be null or a function.")
+  }
+  if (!is.null(color_prefix) && !is.function(color_prefix)) {
+    rlang::abort("'color_prefix' should be null or a function.")
+  }
+  n <- nchar(prefix)
+  if (n > 0) {
+    buffer <- paste0(rep(" ", n + 1), collapse = "")
+  } else {
+    buffer <- ""
+  }
+  msg <- strwrap(x, width = width - n - 1)
+  if (!is.null(color_text)) {
+    msg <- purrr::map_chr(msg, ~ color_text(.x))
+  }
+  if (!is.null(color_prefix)) {
+    prefix <- color_prefix(prefix)
+  }
+  msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
+  msg[-1] <- paste0(buffer, msg[-1])
+  if (n > 0) {
+    msg[1] <- paste(prefix, msg[1])
+  }
+  message(msg)
+  invisible(msg)
+}
+
+siren <- function(x, type = "info") {
+  tune_color <- get_tune_colors()
+  types <- names(tune_color$message)
+  type <- match.arg(type, types)
 
   msg <- glue::glue(x)
 
@@ -23,10 +74,6 @@ siren <- function(x, type = "info") {
     type == "info" ~ tune_color$symbol$info("i")
   )
 
-  if (is.na(symb)) {
-    rlang::abort("Internal error: Unknown `type`")
-  }
-
   msg <- dplyr::case_when(
     type == "warning" ~ tune_color$message$warning(msg),
     type == "go" ~  tune_color$message$go(msg),
@@ -34,10 +81,6 @@ siren <- function(x, type = "info") {
     type == "success" ~  tune_color$message$success(msg),
     type == "info" ~ tune_color$message$info(msg)
   )
-
-  if (is.na(msg)) {
-    rlang::abort("Internal error: Unknown `type`")
-  }
 
   message(paste(symb, msg))
 }
@@ -216,8 +259,11 @@ param_msg <- function(control, candidate) {
   }
   candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
-  msg <- glue::glue_collapse(p_chr, width = options()$width - 5, sep = ", ")
-  tune_log(control, split = NULL, task = msg, type = "info")
+  p_chr <- paste0(p_chr, collapse = ", ")
+  message_wrap(p_chr, prefix = "i",
+               color_text = get_tune_colors()$message$info,
+               color_prefix = get_tune_colors()$symbol$info)
+  invisible(NULL)
 }
 
 

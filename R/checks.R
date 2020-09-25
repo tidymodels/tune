@@ -210,17 +210,12 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
   if (num_grid < num_param + 1) {
     msg <-
       paste(
-        tune_color$symbol$warning("!"),
         msg,
         "This is likely to cause numerical issues in the first few",
         "search iterations.",
         race_msg
       )
-    msg <- strwrap(msg)
-    msg <- purrr::map_chr(msg, ~ tune_color$message$warning(.x))
-    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
-    msg[-1] <- paste0("  ", msg[-1])
-    message(msg)
+    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
   }
   invisible(NULL)
 }
