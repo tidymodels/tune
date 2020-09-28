@@ -90,7 +90,7 @@ test_that('GP scoring', {
     colnames(svm_scores),
     c('cost', '%^*#', 'scale_factor', '.mean', '.sd')
   )
-  expect_equal(nrow(svm_scores), 20^3)
+  expect_equal(nrow(svm_scores), 20)
 
 })
 
