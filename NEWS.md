@@ -12,6 +12,11 @@
 
 * Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)
 
+* Allow `...` to pass options from `tune_bayes()` to `GPfit::GP_fit()`. 
+
+* Additional checks are done for the initial grid that is given to `tune_bayes()`. If the initial grid is small relative to the number of model terms, a warning is issued. If the grid is a single point, an error occurs. (#269)
+
+* Formatting of some messages created by `tune_bayes()` now respect the width and wrap lines using the new `message_wrap()` function. 
 
 # tune 0.1.1
 

@@ -78,7 +78,7 @@ nn_search <- tune_bayes(nn_wflow, resamples = val_split,
                         metrics = roc_set,
                         param_info = nn_set,
                         objective = exp_improve(foo),
-                        control = ctrl_Bayes(verbose = TRUE))
+                        control = control_bayes(verbose = TRUE))
 
 autoplot(nn_search, type = "performance", metric = "roc_auc")
 
@@ -89,7 +89,7 @@ nn_search_2 <- tune_bayes(nn_wflow, resamples = val_split,
                            iter = 15,
                            metrics = roc_set,
                            param_info = nn_set,
-                           control = ctrl_Bayes(verbose = TRUE))
+                           control = control_bayes(verbose = TRUE))
 
 
 autoplot(nn_search_2, type = "performance", metric = "roc_auc")

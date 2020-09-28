@@ -34,7 +34,10 @@ chi_wflow <-
 
 chi_param <-
   parameters(chi_wflow) %>%
-  update(threshold = threshold(c(.8, .99)))
+  update(
+    threshold = threshold(c(.8, .99)),
+    dist_power = dist_power(c(1, 2)),
+    neighbors = neighbors(c(1, 50)))
 
 chi_grid <-
   chi_param %>%
@@ -49,10 +52,7 @@ res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = c
 #   geom_point() + geom_line() +
 #   facet_wrap(~threshold, scales = "free_x")
 
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
-  slice(1)
+show_best(res, metric = "rmse")
 
 set.seed(354)
 knn_search <-
@@ -63,8 +63,33 @@ knn_search <-
     initial = res,
     metrics = metric_set(rmse),
     iter = 20,
-    control = ctrl_Bayes(verbose = TRUE, uncertain = 5),
-    trace = TRUE
+    control = control_bayes(verbose = TRUE, uncertain = 5)
   )
 
 autoplot(knn_search, type = "performance")
+
+
+## -----------------------------------------------------------------------------
+
+
+library(finetune)
+set.seed(121)
+res_anova <-
+  tune_race_anova(
+    chi_wflow,
+    resamples = data_folds,
+    grid = chi_grid,
+    control = control_race(verbose_elim = TRUE, randomize = TRUE)
+  )
+
+
+set.seed(354)
+knn_sa <-
+  tune_sim_anneal(
+    chi_wflow,
+    resamples = data_folds,
+    param_info = chi_param,
+    initial = 4,
+    metrics = metric_set(rmse),
+    iter = 50
+  )

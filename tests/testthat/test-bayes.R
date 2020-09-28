@@ -42,6 +42,15 @@ test_that('tune recipe only', {
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
   expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
+
+  expect_error(
+    tune_bayes(wflow, resamples = folds, param_info = pset,
+               initial = iter1, iter = iter2,
+               corr = list(type = "matern", nu = 3/2)),
+    regexp = NA
+  )
+
+
 })
 
 # ------------------------------------------------------------------------------
@@ -356,24 +365,6 @@ test_that("argument order gives warning for formula", {
   )
 })
 
-test_that("ellipses with tune_bayes", {
-
-  skip_if("..." %in% names(formals(fit_gp)))
-
-  set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow)
-  folds <- vfold_cv(mtcars)
-  expect_warning(
-    tune_bayes(wflow, resamples = folds, param_info = pset,
-               initial = iter1, iter = iter2, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
-  )
-})
-
-
-
-
 test_that("retain extra attributes and saved GP candidates", {
 
   set.seed(4400)
@@ -410,3 +401,50 @@ test_that("retain extra attributes and saved GP candidates", {
 
 
 })
+
+# ------------------------------------------------------------------------------
+
+test_that('too few starting values', {
+  options(width = 120)
+  # TODO Add specific checks with racing objects once finetune is released
+  expect_silent(tune:::check_bayes_initial_size(5, 30, FALSE))
+
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, FALSE),
+    "5 tuning parameters and 3 grid points were"
+  )
+
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, TRUE),
+    "numerical issues"
+  )
+  expect_message(
+    tune:::check_bayes_initial_size(5, 3, TRUE),
+    "With racing"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, FALSE),
+    "request 2+"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, TRUE),
+    "request 2+"
+  )
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, TRUE),
+    "With racing"
+  )
+
+  expect_error(
+    tune:::check_bayes_initial_size(5, 1, FALSE),
+    "a single grid point was"
+  )
+  expect_error(
+    tune:::check_bayes_initial_size(1, 1, FALSE),
+    "is one tuning parameter"
+  )
+
+})
+

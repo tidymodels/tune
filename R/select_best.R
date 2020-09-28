@@ -56,6 +56,10 @@
 #' }
 #' @export
 show_best <- function(x, metric = NULL, n = 5, ...) {
+  is_a_race <- inherits(x, "tune_race")
+  if (is_a_race) {
+    x <- dplyr::select(x, -.order)
+  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -64,6 +68,9 @@ show_best <- function(x, metric = NULL, n = 5, ...) {
   }
   maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
+  if (is_a_race) {
+    summary_res <- dplyr::filter(summary_res, n == nrow(x))
+  }
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
     metric <- metrics
@@ -119,6 +126,10 @@ select_best <- function(x, metric = NULL, ...) {
 #' @export
 #' @rdname show_best
 select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
+  is_a_race <- inherits(x, "tune_race")
+  if (is_a_race) {
+    x <- dplyr::select(x, -.order)
+  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -134,6 +145,11 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+
+  if (is_a_race) {
+    res <- dplyr::filter(res, n == nrow(x))
+  }
+
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
@@ -151,7 +167,14 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
                     .loss = (mean - best_metric)/best_metric * 100)
   }
 
-  res <- dplyr::arrange(res, !!!dots)
+  res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    var_nm <- rlang::eval_tidy(dots)
+    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    msg <- paste0("Could not sort results by '", var_nm, "'.")
+    rlang::abort(msg)
+  }
+
   # discard models more complex than the best then rank by loss
   best_index <- which(res$.loss == 0)
   res %>%
@@ -164,6 +187,10 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err <- function(x, ..., metric = NULL) {
+  is_a_race <- inherits(x, "tune_race")
+  if (is_a_race) {
+    x <- dplyr::select(x, -.order)
+  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -178,6 +205,11 @@ select_by_one_std_err <- function(x, ..., metric = NULL) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+
+  if (is_a_race) {
+    res <- dplyr::filter(res, n == nrow(x))
+  }
+
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
@@ -202,7 +234,13 @@ select_by_one_std_err <- function(x, ..., metric = NULL) {
       dplyr::filter(mean <= .bound)
   }
 
-  res <- dplyr::arrange(res, !!!dots)
+  res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    var_nm <- rlang::eval_tidy(dots)
+    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    msg <- paste0("Could not sort results by '", var_nm, "'.")
+    rlang::abort(msg)
+  }
   res %>% dplyr::slice(1)
 }
 

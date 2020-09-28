@@ -115,7 +115,7 @@ search_res <-
     iter = 20,
     metrics = cls,
     objective = exp_improve(trade_decay),
-    control = ctrl_Bayes(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
+    control = control_bayes(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
   )
 
 print(warnings())

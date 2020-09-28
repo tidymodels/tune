@@ -79,7 +79,7 @@ text_search <-
     param_info = text_set,
     objective = exp_improve(decr_trade_off),
     iter = 50,
-    control = ctrl_Bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )
 
 

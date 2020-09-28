@@ -68,5 +68,5 @@ search_res <-
     initial = initial_grid,,
     objective = exp_improve(decr_trade_off),
     iter = 25,
-    control = ctrl_Bayes(verbose = TRUE)
+    control = control_bayes(verbose = TRUE)
   )
