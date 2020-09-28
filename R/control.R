@@ -93,8 +93,8 @@ control_resamples <- control_grid
 #'   loaded (by namespace) during parallel processing.
 #' @param save_workflow A logical for whether the workflow should be appended
 #'  to the output as an attribute.
-#' @param save_gp_scoring A logical to save the intermediate scores of
-#'  candidate parameters for each iteration of the search. These are saved to
+#' @param save_gp_scoring A logical to save the intermediate Gaussian process
+#'   models for each iteration of the search. These are saved to
 #'  `tempdir()` with names `gp_candidates_{i}.RData` where `i` is the iteration.
 #'  These results are deleted when the R session ends. This option is only
 #'  useful for teaching purposes.
