@@ -476,9 +476,9 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 }
 
 
-pred_gp <- function(object, pset, size = 5000, current, control) {
+pred_gp <- function(object, pset, size = 100, current, control) {
   pred_grid <-
-    dials::grid_regular(pset, levels = 100) %>%
+    dials::grid_regular(pset, levels = size) %>%
     dplyr::distinct() %>%
     dplyr::anti_join(current, by = pset$id)
 
