@@ -382,7 +382,7 @@ test_that("retain extra attributes and saved GP candidates", {
   folds <- vfold_cv(mtcars)
   ctrl <- control_bayes(save_gp_scoring = TRUE)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                    initial = iter1, iter = iter2)
+                    initial = iter1, iter = iter2, control = ctrl)
 
   att <- attributes(res)
   att_names <- names(att)
