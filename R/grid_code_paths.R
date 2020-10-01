@@ -44,6 +44,8 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
+  event_level <- control$event_level
+
   split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
   extracted <- NULL
@@ -146,7 +148,7 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
+    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, mod_id)
     config_id <- extract_config(workflow, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
@@ -169,6 +171,8 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
+
+  event_level <- control$event_level
 
   metric_est <- NULL
   extracted <- NULL
@@ -303,7 +307,7 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
         next
       }
 
-      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, mod_id)
+      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, mod_id)
       config_id <- extract_config(workflow, metric_est)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
     } # end model loop
@@ -327,6 +331,8 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
+
+  event_level <- control$event_level
 
   metric_est <- NULL
   extracted <- NULL
@@ -401,7 +407,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
-    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, rec_id)
+    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, rec_id)
     config_id <- extract_config(workflow, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end recipe loop

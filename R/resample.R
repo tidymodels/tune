@@ -201,6 +201,8 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
+  event_level <- control$event_level
+
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
@@ -282,7 +284,7 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split)
+  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split, event_level)
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(
