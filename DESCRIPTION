@@ -24,7 +24,7 @@ Imports:
     glue,
     cli (>= 2.0.0),
     crayon,
-    yardstick,
+    yardstick (>= 0.0.7),
     rsample (>= 0.0.7.9000),
     tidyr,
     GPfit,
