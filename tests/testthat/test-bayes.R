@@ -365,14 +365,15 @@ test_that("argument order gives warning for formula", {
   )
 })
 
-test_that("retain extra attributes", {
+test_that("retain extra attributes and saved GP candidates", {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
+  ctrl <- control_bayes(save_gp_scoring = TRUE)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                    initial = iter1, iter = iter2)
+                    initial = iter1, iter = iter2, control = ctrl)
 
   att <- attributes(res)
   att_names <- names(att)
@@ -384,6 +385,10 @@ test_that("retain extra attributes", {
   expect_true(att$outcomes == "mpg")
   expect_true(inherits(att$parameters, "parameters"))
   expect_true(inherits(att$metrics, "metric_set"))
+
+  files <- list.files(path = tempdir(), pattern = "^gp_candidates")
+  expect_true(length(files) == iter2)
+
 
   expect_message(
     res2 <- tune_bayes(wflow, resamples = folds, param_info = pset,

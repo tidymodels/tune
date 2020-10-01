@@ -13,7 +13,8 @@ control_bayes(
   save_pred = FALSE,
   time_limit = NA,
   pkgs = NULL,
-  save_workflow = FALSE
+  save_workflow = FALSE,
+  save_gp_scoring = FALSE
 )
 }
 \arguments{
@@ -51,6 +52,12 @@ loaded (by namespace) during parallel processing.}
 
 \item{save_workflow}{A logical for whether the workflow should be appended
 to the output as an attribute.}
+
+\item{save_gp_scoring}{A logical to save the intermediate Gaussian process
+models for each iteration of the search. These are saved to
+\code{tempdir()} with names \verb{gp_candidates_\{i\}.RData} where \code{i} is the iteration.
+These results are deleted when the R session ends. This option is only
+useful for teaching purposes.}
 }
 \description{
 Control aspects of the Bayesian search process

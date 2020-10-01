@@ -309,6 +309,9 @@ tune_bayes_workflow <-
           notes = .notes
         )
 
+
+      save_gp_results(gp_mod, param_info, control, i, iter)
+
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
@@ -479,11 +482,16 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 }
 
 
-pred_gp <- function(object, pset, size = 5000, current, control) {
+pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   pred_grid <-
     dials::grid_latin_hypercube(pset, size = size) %>%
-    dplyr::distinct() %>%
-    dplyr::anti_join(current, by = pset$id)
+    dplyr::distinct()
+
+  if (!is.null(current)) {
+    pred_grid <-
+      pred_grid %>%
+      dplyr::anti_join(current, by = pset$id)
+  }
 
   if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
     if (nrow(pred_grid) == 0) {
@@ -685,4 +693,20 @@ reup_rs <- function(resamples, res)  {
 
   class(res) <- unique(c("tune_results", class(res)))
   res
+}
+
+## -----------------------------------------------------------------------------
+
+save_gp_results <- function(x, pset, ctrl, i, iter) {
+  if (!ctrl$save_gp_scoring) {
+    return(invisible(NULL))
+  }
+
+  nm <- recipes::names0(iter, "gp_candidates_")[i]
+  file_name <- paste0(nm, ".RData")
+  res <- try(save(x, pset, i, file = file.path(tempdir(), file_name)), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    rlang::warn(paste("Could not save GP results:", as.character(res)))
+  }
+  invisible(res)
 }

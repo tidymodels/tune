@@ -92,7 +92,12 @@ control_resamples <- control_grid
 #' @param pkgs An optional character string of R package names that should be
 #'   loaded (by namespace) during parallel processing.
 #' @param save_workflow A logical for whether the workflow should be appended
-#' to the output as an attribute.
+#'  to the output as an attribute.
+#' @param save_gp_scoring A logical to save the intermediate Gaussian process
+#'   models for each iteration of the search. These are saved to
+#'  `tempdir()` with names `gp_candidates_{i}.RData` where `i` is the iteration.
+#'  These results are deleted when the R session ends. This option is only
+#'  useful for teaching purposes.
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
@@ -123,11 +128,13 @@ control_bayes <-
            save_pred = FALSE,
            time_limit = NA,
            pkgs = NULL,
-           save_workflow = FALSE) {
+           save_workflow = FALSE,
+           save_gp_scoring = FALSE) {
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
     val_class_and_single(save_pred, "logical", "control_bayes()")
+    val_class_and_single(save_gp_scoring, "logical", "control_bayes()")
     val_class_and_single(save_workflow, "logical", "control_bayes()")
     val_class_and_single(no_improve, c("numeric", "integer"), "control_bayes()")
     val_class_and_single(uncertain, c("numeric", "integer"), "control_bayes()")
@@ -152,7 +159,8 @@ control_bayes <-
         save_pred = save_pred,
         time_limit = time_limit,
         pkgs = pkgs,
-        save_workflow = save_workflow
+        save_workflow = save_workflow,
+        save_gp_scoring = save_gp_scoring
       )
 
     class(res) <- "control_bayes"
