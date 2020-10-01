@@ -30,13 +30,15 @@
 #' @export
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
-                         pkgs = NULL, save_workflow = FALSE) {
+                         pkgs = NULL, save_workflow = FALSE,
+                         event_level = "first") {
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
   val_class_and_single(allow_par, "logical", "control_grid()")
   val_class_and_single(save_pred, "logical", "control_grid()")
   val_class_and_single(save_workflow, "logical", "control_grid()")
+  val_class_and_single(event_level, "character", "control_grid()")
   val_class_or_null(pkgs, "character", "control_grid()")
   val_class_or_null(extract, "function", "control_grid()")
 
@@ -46,7 +48,8 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
               extract = extract,
               save_pred = save_pred,
               pkgs = pkgs,
-              save_workflow = save_workflow)
+              save_workflow = save_workflow,
+              event_level = event_level)
 
   class(res) <- c("control_grid", "control_resamples")
   res
@@ -98,6 +101,11 @@ control_resamples <- control_grid
 #'  `tempdir()` with names `gp_candidates_{i}.RData` where `i` is the iteration.
 #'  These results are deleted when the R session ends. This option is only
 #'  useful for teaching purposes.
+#' @param event_level A single string containing either `"first"` or `"second"`.
+#'   This argument is passed on to yardstick metric functions when any type
+#'   of class prediction is made, and specifies which level of the outcome
+#'   is considered the "event".
+#'
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
@@ -129,7 +137,8 @@ control_bayes <-
            time_limit = NA,
            pkgs = NULL,
            save_workflow = FALSE,
-           save_gp_scoring = FALSE) {
+           save_gp_scoring = FALSE,
+           event_level = "first") {
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
@@ -142,6 +151,7 @@ control_bayes <-
     val_class_or_null(extract, "function", "control_bayes()")
     val_class_and_single(time_limit, c("logical", "numeric"), "control_bayes()")
     val_class_or_null(pkgs, "character", "control_bayes()")
+    val_class_and_single(event_level, "character", "control_bayes()")
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_alert_warning(
@@ -160,7 +170,8 @@ control_bayes <-
         time_limit = time_limit,
         pkgs = pkgs,
         save_workflow = save_workflow,
-        save_gp_scoring = save_gp_scoring
+        save_gp_scoring = save_gp_scoring,
+        event_level = event_level
       )
 
     class(res) <- "control_bayes"
