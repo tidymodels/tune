@@ -350,7 +350,11 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
       grid = x,
       metrics = metrics,
       param_info = pset,
-      control = control_grid(extract = ctrl$extract, save_pred = ctrl$save_pred)
+      control = control_grid(
+        extract = ctrl$extract,
+        save_pred = ctrl$save_pred,
+        event_level = ctrl$event_level
+      )
     )
 
     if (ctrl$verbose) {
