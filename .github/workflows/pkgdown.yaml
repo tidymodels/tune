@@ -35,6 +35,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_github("tidyverse/tidytemplate")
           remotes::install_cran("tidymodels")
+          remotes::install_cran("doMC")
           remotes::install_cran("textrecipes")
           remotes::install_cran("textfeatures")
           install.packages("pkgdown")
