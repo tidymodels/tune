@@ -16,9 +16,8 @@ knitr::opts_chunk$set(
 )
 options(digits = 3)
 library(tidymodels)
-library(tune)
-library(workflows)
 theme_set(theme_bw())
+doParallel::registerDoParallel()
 ```
 
 ## Introduction 
@@ -29,13 +28,13 @@ As an example, let's model the Ames housing data:
 
 ```{r startup}
 library(tidymodels)
-library(tune)
-library(AmesHousing)
 
-ames <- make_ames()
+data(ames)
 
 set.seed(4595)
-data_split <- initial_split(ames, strata = "Sale_Price")
+data_split <- ames %>%
+  mutate(Sale_Price = log10(Sale_Price)) %>%
+  initial_split(strata = Sale_Price)
 ames_train <- training(data_split)
 ames_test  <- testing(data_split)
 ```
@@ -50,7 +49,6 @@ ames_train %>%
   ggplot(aes(x = value, Sale_Price)) + 
   geom_point(alpha = .2) + 
   geom_smooth(se = FALSE) + 
-  scale_y_log10() +
   facet_wrap(~ predictor, scales = "free_x")
 ```
 
@@ -60,8 +58,8 @@ We can tag these parameters for optimization using the `tune()` function:
 
 ```{r tag-rec}
 ames_rec <- 
-  recipe(Sale_Price ~ Longitude + Latitude, data = ames_train) %>% 
-  step_log(Sale_Price, base = 10) %>% 
+  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
+  step_log(Gr_Liv_Area, base = 10) %>% 
   step_ns(Longitude, Latitude, deg_free = tune())
 ```
 
@@ -75,8 +73,8 @@ To accomplish this, individual `step_ns()` terms can be added to the recipe for 
 
 ```{r tag-rec-d}
 ames_rec <- 
-  recipe(Sale_Price ~ Longitude + Latitude, data = ames_train) %>% 
-  step_log(Sale_Price, base = 10) %>% 
+  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
+  step_log(Gr_Liv_Area, base = 10) %>% 
   step_ns(Longitude, deg_free = tune("long df")) %>% 
   step_ns(Latitude,  deg_free = tune("lat df"))
 ```
@@ -153,7 +151,7 @@ As mentioned above, a resampling specification is also needed. The  Ames data se
 
 ```{r folds}
 set.seed(2453)
-cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
+cv_splits <- vfold_cv(ames_train, v = 10, strata = Sale_Price)
 ```
 
 The root mean squared error will be used to measure performance (and this is the default for regression problems).

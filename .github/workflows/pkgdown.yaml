@@ -37,6 +37,7 @@ jobs:
           remotes::install_cran("tidymodels")
           remotes::install_cran("doMC")
           remotes::install_cran("glmnet")
+          remotes::install_cran("doParallel")
           remotes::install_cran("textrecipes")
           remotes::install_cran("textfeatures")
           install.packages("pkgdown")
