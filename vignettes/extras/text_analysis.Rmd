@@ -1,8 +1,8 @@
 ---
-title: "Text Analysis Example"
+title: "Tuning Text Analysis"
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Text Analysis Example}
+  %\VignetteIndexEntry{Tuning Text Analysis}
 output:
   knitr:::html_vignette:
     toc: yes
@@ -18,7 +18,6 @@ options(digits = 3)
 library(tidymodels)
 library(textrecipes)
 library(textfeatures)
-doParallel::registerDoParallel()
 
 data("small_fine_foods")
 num_prod <- length(unique(training_data$product))
@@ -167,12 +166,12 @@ glmnet_vars <- function(x) {
   tibble(penalty = mod$lambda, num_vars = mod$df)
 }
 
-ctrl <- control_grid(extract = glmnet_vars)
+ctrl <- control_grid(extract = glmnet_vars, verbose = TRUE)
 ```
 
 Finally, let's run the grid search:
 
-```{r grid-search, cache = TRUE}
+```{r grid-search}
 roc_scores <- metric_set(roc_auc)
 
 set.seed(1559)
@@ -252,7 +251,7 @@ trade_off_decay <- function(iter) {
 
 Using these values, let's run the search:
 
-```{r search, cache = TRUE}
+```{r search}
 set.seed(12)
 five_star_search <-
   tune_bayes(
