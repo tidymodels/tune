@@ -12,8 +12,7 @@ output:
 knitr::opts_chunk$set(
   digits = 3,
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
 options(digits = 3)
 library(tidymodels)
