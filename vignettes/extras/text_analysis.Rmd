@@ -18,8 +18,7 @@ options(digits = 3)
 library(tidymodels)
 library(textrecipes)
 library(textfeatures)
-library(doMC)
-registerDoMC(cores = 2)
+doParallel::registerDoParallel()
 
 data("small_fine_foods")
 num_prod <- length(unique(training_data$product))
@@ -266,6 +265,8 @@ five_star_search <-
     objective = exp_improve(trade_off_decay),
     control = control_bayes(verbose = TRUE)
   )
+
+five_star_search
 ```
 
 The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge^[Sorry, pun intended.] where good performance can be achieved. Using more iterations would probably result in the search finding better results. 
