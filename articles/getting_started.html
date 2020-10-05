@@ -662,7 +662,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>A simple R model formula could have been used here, such as <code>log10(Sale_Price) ~ Longitude + Latitude</code>. A recipe is not required.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>A simple R model formula could have been used here, such as <code>Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude</code>. A recipe is not required.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p><code>tune</code> has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the <code>metrics</code> option.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>One of the tuning parameters (<code>weight_func</code>) is categorical and, by default, has 10 unique values. The model used to predict new test parameters is a Gaussian process model, and this can become slow to fit when the number of tuning parameters is large or when a categorical parameter generates many dummy variables. We’ve reduced the number of categories for this parameter to speed things up a bit.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>

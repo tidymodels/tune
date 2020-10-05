@@ -295,7 +295,9 @@
     metrics <span class="op">=</span> <span class="va">roc_scores</span>,
     objective <span class="op">=</span> <span class="fu"><a href="../../reference/prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="va">trade_off_decay</span><span class="op">)</span>,
     control <span class="op">=</span> <span class="fu"><a href="../../reference/control_bayes.html">control_bayes</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">)</span></pre></div>
+  <span class="op">)</span>
+
+<span class="va">five_star_search</span></pre></div>
 <p>The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> where good performance can be achieved. Using more iterations would probably result in the search finding better results.</p>
 <p>A plot of model performance versus the search iterations:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit">
