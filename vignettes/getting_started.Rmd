@@ -156,7 +156,7 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = Sale_Price)
 
 The root mean squared error will be used to measure performance (and this is the default for regression problems).
 
-Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `log10(Sale_Price) ~ Longitude + Latitude`. A recipe is not required.]:
+Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude`. A recipe is not required.]:
 
 ```{r grid-search, cache = TRUE}
 ames_res <- tune_grid(lm_mod, ames_rec, resamples = cv_splits, grid = spline_grid)
