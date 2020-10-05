@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Text Analysis Example • tune</title>
+<title>Tuning Text Analysis • tune</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../../apple-touch-icon.png">
@@ -19,7 +19,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../../pkgdown.css" rel="stylesheet">
 <script src="../../pkgdown.js"></script><link href="../../tidyverse-2.css" rel="stylesheet">
 <!--optional theme--><link href="../../tidymodels.css" rel="stylesheet">
-<meta property="og:title" content="Text Analysis Example">
+<meta property="og:title" content="Tuning Text Analysis">
 <meta property="og:description" content="tune">
 <meta property="og:image" content="https://tune.tidymodels.org/logo.png">
 <meta name="twitter:card" content="summary">
@@ -108,7 +108,7 @@
       </header><script src="text_analysis_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Text Analysis Example</h1>
+      <h1 data-toc-skip>Tuning Text Analysis</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/master/vignettes/extras/text_analysis.Rmd"><code>vignettes/extras/text_analysis.Rmd</code></a></small>
@@ -161,8 +161,6 @@
 <span class="op">}</span></pre></div>
 <p>The recipe is:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># uses the devel version of textrecipes</span>
-<span class="co"># devtools::install_github("tidymodels/textrecipes")</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/textrecipes">textrecipes</a></span><span class="op">)</span>
 
 <span class="va">pre_proc</span> <span class="op">&lt;-</span>
@@ -228,7 +226,7 @@
   <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>penalty <span class="op">=</span> <span class="va">mod</span><span class="op">$</span><span class="va">lambda</span>, num_vars <span class="op">=</span> <span class="va">mod</span><span class="op">$</span><span class="va">df</span><span class="op">)</span>
 <span class="op">}</span>
 
-<span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/control_grid.html">control_grid</a></span><span class="op">(</span>extract <span class="op">=</span> <span class="va">glmnet_vars</span><span class="op">)</span></pre></div>
+<span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/control_grid.html">control_grid</a></span><span class="op">(</span>extract <span class="op">=</span> <span class="va">glmnet_vars</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
 <p>Finally, let’s run the grid search:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="va">roc_scores</span> <span class="op">&lt;-</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span><span class="op">)</span>
@@ -248,7 +246,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">five_star_glmnet</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></pre></div>
 <p>There is definitely an effect due to the number of features used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. The profiles with mixture values greater than zero had steep drop-offs in performance. What’s that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p>It’s clear from the panels at least 4096 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.</p>
+<p>The panel with at least 4096 features shows that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.</p>
 <p>We’ll come back to the extracted <code>glmnet</code> components at the end of this example.</p>
 </div>
 <div id="directed-search" class="section level2">
