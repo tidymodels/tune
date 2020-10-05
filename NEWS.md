@@ -8,6 +8,8 @@
 
 ## Other Changes
 
+* tune now supports setting the `event_level` option from yardstick through the control objects (i.e. `control_grid(event_level = "second")`) (#240, #249).
+
 * tune now supports workflows created with the new `workflows::add_variables()` preprocessor.
 
 * Better control the random number streams in parallel for `tune_grid()` and `fit_resamples()` (#11)

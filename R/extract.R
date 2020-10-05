@@ -139,11 +139,11 @@ pull_notes <- function(resamples, res, control) {
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, metrics, split, .config = NULL) {
+append_metrics <- function(collection, predictions, workflow, metrics, split, event_level, .config = NULL) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
-  tmp_est <- estimate_metrics(predictions, metrics, workflow)
+  tmp_est <- estimate_metrics(predictions, metrics, workflow, event_level)
   tmp_est <- cbind(tmp_est, labels(split))
   if (!rlang::is_null(.config)) {
     tmp_est <- cbind(tmp_est, .config)

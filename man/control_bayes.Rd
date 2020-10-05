@@ -14,7 +14,8 @@ control_bayes(
   time_limit = NA,
   pkgs = NULL,
   save_workflow = FALSE,
-  save_gp_scoring = FALSE
+  save_gp_scoring = FALSE,
+  event_level = "first"
 )
 }
 \arguments{
@@ -58,6 +59,11 @@ models for each iteration of the search. These are saved to
 \code{tempdir()} with names \verb{gp_candidates_\{i\}.RData} where \code{i} is the iteration.
 These results are deleted when the R session ends. This option is only
 useful for teaching purposes.}
+
+\item{event_level}{A single string containing either \code{"first"} or \code{"second"}.
+This argument is passed on to yardstick metric functions when any type
+of class prediction is made, and specifies which level of the outcome
+is considered the "event".}
 }
 \description{
 Control aspects of the Bayesian search process

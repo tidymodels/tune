@@ -620,8 +620,12 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = control_grid(verbose = FALSE, extract = control$extract,
-                               save_pred = control$save_pred)
+        control = control_grid(
+          verbose = FALSE,
+          extract = control$extract,
+          save_pred = control$save_pred,
+          event_level = control$event_level
+        )
       ),
       silent = TRUE
     )

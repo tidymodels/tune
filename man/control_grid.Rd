@@ -11,7 +11,8 @@ control_grid(
   extract = NULL,
   save_pred = FALSE,
   pkgs = NULL,
-  save_workflow = FALSE
+  save_workflow = FALSE,
+  event_level = "first"
 )
 
 control_resamples(
@@ -20,7 +21,8 @@ control_resamples(
   extract = NULL,
   save_pred = FALSE,
   pkgs = NULL,
-  save_workflow = FALSE
+  save_workflow = FALSE,
+  event_level = "first"
 )
 }
 \arguments{
@@ -45,6 +47,11 @@ loaded (by namespace) during parallel processing.}
 
 \item{save_workflow}{A logical for whether the workflow should be appended
 to the output as an attribute.}
+
+\item{event_level}{A single string containing either \code{"first"} or \code{"second"}.
+This argument is passed on to yardstick metric functions when any type
+of class prediction is made, and specifies which level of the outcome
+is considered the "event".}
 }
 \description{
 Control aspects of the grid search process
