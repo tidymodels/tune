@@ -12,7 +12,8 @@ output:
 knitr::opts_chunk$set(
   digits = 3,
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 options(digits = 3)
 library(tidymodels)
@@ -88,8 +89,6 @@ binary_hash <- function(x) {
 The recipe is:
 
 ```{r text-rec}
-# uses the devel version of textrecipes
-# devtools::install_github("tidymodels/textrecipes")
 library(textrecipes)
 
 pre_proc <-
@@ -199,7 +198,7 @@ autoplot(five_star_glmnet, metric = "roc_auc")
 
 There is definitely an effect due to the number of features used^[This is a small sample of the overall data set. When more data are used, a larger feature set is optimal.]. The profiles with mixture values greater than zero had steep drop-offs in performance. What's that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model^[See the last section below for more details.].  
 
-It's clear from the panels at least 4096 features that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.  
+The panel with at least 4096 features shows that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.  
 
 We'll come back to the extracted `glmnet` components at the end of this example. 
 

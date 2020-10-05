@@ -35,6 +35,7 @@ jobs:
           remotes::install_deps(dependencies = TRUE)
           remotes::install_github("tidyverse/tidytemplate")
           remotes::install_cran("tidymodels")
+          remotes::install_cran("sessioninfo")
           remotes::install_cran("glmnet")
           remotes::install_cran("kknn")
           remotes::install_cran("doParallel")
