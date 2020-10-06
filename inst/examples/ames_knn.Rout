@@ -20,12 +20,12 @@ Type 'q()' to quit R.
 > library(tidymodels)
 ── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──
 ✔ broom     0.7.0          ✔ recipes   0.1.13    
-✔ dials     0.0.8          ✔ rsample   0.0.7     
-✔ dplyr     1.0.1          ✔ tibble    3.0.3     
-✔ ggplot2   3.3.2          ✔ tidyr     1.1.0     
+✔ dials     0.0.9.9000     ✔ rsample   0.0.8.9000
+✔ dplyr     1.0.2          ✔ tibble    3.0.3     
+✔ ggplot2   3.3.2          ✔ tidyr     1.1.2     
 ✔ infer     0.5.3          ✔ tune      0.1.1.9000
-✔ modeldata 0.0.2          ✔ workflows 0.1.2     
-✔ parsnip   0.1.2.9000     ✔ yardstick 0.0.7     
+✔ modeldata 0.0.2          ✔ workflows 0.2.0.9000
+✔ parsnip   0.1.3          ✔ yardstick 0.0.7     
 ✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
@@ -110,6 +110,19 @@ Loading required package: parallel
 +     initial = ames_grid_search,
 +     iter = 15
 +   )
+! The Gaussian process model is being fit using 14 features but only has 10
+  data points to do so. This may cause errors or a poor model fit.
+! The Gaussian process model is being fit using 14 features but only has 11
+  data points to do so. This may cause errors or a poor model fit.
+! The Gaussian process model is being fit using 14 features but only has 12
+  data points to do so. This may cause errors or a poor model fit.
+! The Gaussian process model is being fit using 14 features but only has 13
+  data points to do so. This may cause errors or a poor model fit.
+! The Gaussian process model is being fit using 14 features but only has 14
+  data points to do so. This may cause errors or a poor model fit.
+! Gaussian process model: did not converge in 10 iterations
+! The Gaussian process model is being fit using 14 features but only has 15
+  data points to do so. This may cause errors or a poor model fit.
 ! Gaussian process model: did not converge in 10 iterations
 ! Gaussian process model: did not converge in 10 iterations
 ! No improvement for 10 iterations; returning current results.
@@ -128,4 +141,4 @@ Loading required package: parallel
 > 
 > proc.time()
     user   system  elapsed 
-5434.534   99.299 1828.111 
+5307.707   72.241 1651.075 
