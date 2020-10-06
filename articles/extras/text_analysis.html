@@ -129,7 +129,21 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org">tidymodels</a></span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"small_fine_foods"</span><span class="op">)</span>
-<span class="va">training_data</span></pre></div>
+<span class="va">training_data</span>
+<span class="co">#&gt; # A tibble: 4,000 x 3</span>
+<span class="co">#&gt;    product    review                                                       score</span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;                                                        &lt;fct&gt;</span>
+<span class="co">#&gt;  1 B000J0LSBG "this stuff is  not stuffing  its  not good at all  save yo… other</span>
+<span class="co">#&gt;  2 B000EYLDYE "I absolutely LOVE this dried fruit.  LOVE IT.  Whenever I … great</span>
+<span class="co">#&gt;  3 B0026LIO9A "GREAT DEAL, CONVENIENT TOO.  Much cheaper than WalMart and… great</span>
+<span class="co">#&gt;  4 B00473P8SK "Great flavor, we go through a ton of this sauce! I discove… great</span>
+<span class="co">#&gt;  5 B001SAWTNM "This is excellent salsa/hot sauce, but you can get it for … great</span>
+<span class="co">#&gt;  6 B000FAG90U "Again, this is the best dogfood out there.  One suggestion… great</span>
+<span class="co">#&gt;  7 B006BXTCEK "The box I received was filled with teas, hot chocolates, a… other</span>
+<span class="co">#&gt;  8 B002GWH5OY "This is delicious coffee which compares favorably with muc… great</span>
+<span class="co">#&gt;  9 B003R0MFYY "Don't let these little tiny cans fool you.  They pack a lo… great</span>
+<span class="co">#&gt; 10 B001EO5ZXI "One of the nicest, smoothest cup of chai I've made. Nice m… great</span>
+<span class="co">#&gt; # … with 3,990 more rows</span></pre></div>
 <p>The idea is to process the text data into features and use these features to predict whether the review was five-star or not.</p>
 <div id="recipe-and-model-specifications" class="section level2">
 <h2 class="hasAnchor">
@@ -151,7 +165,9 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mkearney/textfeatures">textfeatures</a></span><span class="op">)</span>
 
 <span class="va">basics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="fu">textfeatures</span><span class="fu">:::</span><span class="va"><a href="https://rdrr.io/pkg/textfeatures/man/count_functions.html">count_functions</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">basics</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">basics</span><span class="op">)</span>
+<span class="co">#&gt; [1] "n_words"    "n_uq_words" "n_charS"    "n_uq_charS" "n_digits"  </span>
+<span class="co">#&gt; [6] "n_hashtags"</span></pre></div>
 <p>Also, the implementation of feature hashes does not produce binary values. This small function will help convert the scores to values of -1, 0, or 1:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
 <span class="va">binary_hash</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
@@ -234,126 +250,207 @@
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1559</span><span class="op">)</span>
 <span class="va">five_star_glmnet</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="../../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lr_mod</span>, <span class="va">pre_proc</span>, resamples <span class="op">=</span> <span class="va">folds</span>, grid <span class="op">=</span> <span class="va">five_star_grid</span>, 
-            metrics <span class="op">=</span> <span class="va">roc_scores</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></pre></div>
-<p>This took a while to complete. What did the results look like? Let’s get the resampling estimates of the area under the ROC curve for each tuning parameter:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">grid_roc</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="../../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">five_star_glmnet</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span><span class="op">)</span>
-<span class="va">grid_roc</span></pre></div>
-<p>The best results had a fairly high penalty value and focused on the ridge penalty (i.e. no feature selection via the lasso’s L1 penalty). The best solutions also used the largest number of hashing features.</p>
-<p>What was the relationship between performance and the tuning parameters?</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">five_star_glmnet</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></pre></div>
-<p>There is definitely an effect due to the number of features used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. The profiles with mixture values greater than zero had steep drop-offs in performance. What’s that about? Those are cases where the lasso penalty is removing too many (and perhaps all) features from the model<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p>The panel with at least 4096 features shows that there are several parameter combinations that have roughly equivalent performance. A case could be made to choose a larger mixture value and less of a penalty to select a more simplistic model that contains fewer predictors. If more experimentation were conducted, a largest set of features should also be considered.</p>
-<p>We’ll come back to the extracted <code>glmnet</code> components at the end of this example.</p>
-</div>
-<div id="directed-search" class="section level2">
-<h2 class="hasAnchor">
-<a href="#directed-search" class="anchor"></a>Directed Search</h2>
-<p>What if we had started with Bayesian optimization? Would a good set of conditions have been found more efficiently?</p>
-<p>Let’s pretend that we haven’t seen the grid search results. We’ll initialize the Gaussian process model with five tuning parameter combinations chosen with a space-filling design.</p>
-<p>It might be good to use a custom <code>dials</code> object for the number of hash terms. The default object, <code><a href="https://dials.tidymodels.org/reference/num_comp.html">num_terms()</a></code>, uses a linear range and tries to set the upper bound of the parameter using the data. Instead, let’s create a parameter set, change the scale to be log2, and define the same range as was used in grid search.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="va">hash_range</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/num_comp.html">num_terms</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">12</span><span class="op">)</span>, trans <span class="op">=</span> <span class="fu">log2_trans</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></pre></div>
-<p>To use this, we have to merge the recipe and <code>parsnip</code> model object into a workflow:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/workflows">workflows</a></span><span class="op">)</span>
-<span class="va">five_star_wflow</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://workflows.tidymodels.org//reference/workflow.html">workflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_recipe.html">add_recipe</a></span><span class="op">(</span><span class="va">pre_proc</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_model.html">add_model</a></span><span class="op">(</span><span class="va">lr_mod</span><span class="op">)</span></pre></div>
-<p>Then we can extract and manipulate the corresponding parameter set:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="va">five_star_set</span> <span class="op">&lt;-</span>
-  <span class="va">five_star_wflow</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/update.html">update</a></span><span class="op">(</span>
-    num_terms <span class="op">=</span> <span class="va">hash_range</span>, 
-    penalty <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/penalty.html">penalty</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,
-    mixture <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/mixture.html">mixture</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span>
-    <span class="op">)</span></pre></div>
-<p>This is passed to the search function via the <code>param_info</code> argument.</p>
-<p>Finally, the initial rounds of search can be biased more towards exploration of the parameter space (as opposed to staying near the current best results). If expected improvement is used as the acquisition function, the trade-off value can be slowly moved from exploration to exploitation over iterations<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. <code>tune</code> has a built-in function called <code><a href="../../reference/expo_decay.html">expo_decay()</a></code> that can help accomplish this:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
-<span class="va">trade_off_decay</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">iter</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../../reference/expo_decay.html">expo_decay</a></span><span class="op">(</span><span class="va">iter</span>, start_val <span class="op">=</span> <span class="fl">.01</span>, limit_val <span class="op">=</span> <span class="fl">0</span>, slope <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span>
-<span class="op">}</span></pre></div>
-<p>Using these values, let’s run the search:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">12</span><span class="op">)</span>
-<span class="va">five_star_search</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../../reference/tune_bayes.html">tune_bayes</a></span><span class="op">(</span>
-    <span class="va">five_star_wflow</span>, 
-    resamples <span class="op">=</span> <span class="va">folds</span>,
-    param_info <span class="op">=</span> <span class="va">five_star_set</span>,
-    initial <span class="op">=</span> <span class="fl">5</span>,
-    iter <span class="op">=</span> <span class="fl">30</span>,
-    metrics <span class="op">=</span> <span class="va">roc_scores</span>,
-    objective <span class="op">=</span> <span class="fu"><a href="../../reference/prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="va">trade_off_decay</span><span class="op">)</span>,
-    control <span class="op">=</span> <span class="fu"><a href="../../reference/control_bayes.html">control_bayes</a></span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-  <span class="op">)</span>
+            metrics <span class="op">=</span> <span class="va">roc_scores</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span>
+<span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span>
+<span class="co">#&gt; Loading required package: Matrix</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'Matrix'</span>
+<span class="co">#&gt; The following objects are masked from 'package:tidyr':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     expand, pack, unpack</span>
+<span class="co">#&gt; Loaded glmnet 4.0-2</span>
+<span class="co">#&gt; i Fold01: recipe 1/3</span>
+<span class="co">#&gt; x Fold01: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold01: recipe 2/3</span>
+<span class="co">#&gt; x Fold01: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold01: recipe 3/3</span>
+<span class="co">#&gt; x Fold01: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold02: recipe 1/3</span>
+<span class="co">#&gt; x Fold02: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold02: recipe 2/3</span>
+<span class="co">#&gt; x Fold02: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold02: recipe 3/3</span>
+<span class="co">#&gt; x Fold02: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold03: recipe 1/3</span>
+<span class="co">#&gt; x Fold03: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold03: recipe 2/3</span>
+<span class="co">#&gt; x Fold03: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold03: recipe 3/3</span>
+<span class="co">#&gt; x Fold03: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold04: recipe 1/3</span>
+<span class="co">#&gt; x Fold04: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold04: recipe 2/3</span>
+<span class="co">#&gt; x Fold04: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold04: recipe 3/3</span>
+<span class="co">#&gt; x Fold04: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold05: recipe 1/3</span>
+<span class="co">#&gt; x Fold05: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold05: recipe 2/3</span>
+<span class="co">#&gt; x Fold05: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold05: recipe 3/3</span>
+<span class="co">#&gt; x Fold05: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold06: recipe 1/3</span>
+<span class="co">#&gt; x Fold06: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold06: recipe 2/3</span>
+<span class="co">#&gt; x Fold06: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold06: recipe 3/3</span>
+<span class="co">#&gt; x Fold06: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold07: recipe 1/3</span>
+<span class="co">#&gt; x Fold07: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold07: recipe 2/3</span>
+<span class="co">#&gt; x Fold07: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold07: recipe 3/3</span>
+<span class="co">#&gt; x Fold07: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold08: recipe 1/3</span>
+<span class="co">#&gt; x Fold08: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold08: recipe 2/3</span>
+<span class="co">#&gt; x Fold08: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold08: recipe 3/3</span>
+<span class="co">#&gt; x Fold08: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold09: recipe 1/3</span>
+<span class="co">#&gt; x Fold09: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold09: recipe 2/3</span>
+<span class="co">#&gt; x Fold09: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold09: recipe 3/3</span>
+<span class="co">#&gt; x Fold09: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold10: recipe 1/3</span>
+<span class="co">#&gt; x Fold10: recipe 1/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold10: recipe 2/3</span>
+<span class="co">#&gt; x Fold10: recipe 2/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; i Fold10: recipe 3/3</span>
+<span class="co">#&gt; x Fold10: recipe 3/3: Error in loadNamespace(name): there is no package called 'st...</span>
+<span class="co">#&gt; Warning: All models failed in tune_grid(). See the `.notes` column.</span>
 
-<span class="va">five_star_search</span></pre></div>
-<p>The results show some improvement over the initial set. One issue is that so many settings are sub-optimal (as shown in the figure above for grid search) so there are poor results periodically. There are regions where the penalty parameter becomes too large and all of the predictors are removed from the model. These regions are also dependent on the number of terms. There is a fairly narrow ridge<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> where good performance can be achieved. Using more iterations would probably result in the search finding better results.</p>
-<p>A plot of model performance versus the search iterations:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">five_star_search</span>, type <span class="op">=</span> <span class="st">"performance"</span><span class="op">)</span></pre></div>
-<p>What would we do if we knew about the grid search results? In this case, we would restrict the range for the number of hash features to be larger (especially with more data). We might also restrict the penalty and mixture parameters to have a more restricted upper bound.</p>
-</div>
-<div id="extracted-results" class="section level2">
-<h2 class="hasAnchor">
-<a href="#extracted-results" class="anchor"></a>Extracted Results</h2>
-<p>Jumping back to the grid search results, let’s examine the results of our <code>extract</code> function. For each <em>fitted model</em>, a tibble was saved that has the relationship between the number of predictors and the penalty value. Let’s look at these results for the best model:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
-<span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/show_best.html">select_best</a></span><span class="op">(</span><span class="va">five_star_glmnet</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span>
-<span class="va">params</span></pre></div>
-<p>Recall that we saved the <code>glmnet</code> results in a tibble. The column <code>five_star_glmnet$.extracts</code> is a list of tibbles. As an example, the first element of the list is:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
-<span class="va">five_star_glmnet</span><span class="op">$</span><span class="va">.extracts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></pre></div>
-<p>More nested tibbles! Let’s unnest <code>five_star_glmnet$.extracts</code>:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
-<span class="va">extracted</span> <span class="op">&lt;-</span> 
-  <span class="va">five_star_glmnet</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">id</span>, <span class="va">.extracts</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">.extracts</span><span class="op">)</span>
-<span class="va">extracted</span></pre></div>
-<p>One thing to realize here is that <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> <a href="optimizations.html">may not fit all of the models</a> that are evaluated. In this case, for each value of <code>mixture</code> and <code>num_terms</code>, the model is fit overall <em>all</em> penalty values<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. To select the best parameter set, we can exclude the <code>penalty</code> column in <code>extracted</code>:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
-<span class="va">extracted</span> <span class="op">&lt;-</span> 
-  <span class="va">extracted</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">penalty</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">params</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"num_terms"</span>, <span class="st">"mixture"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="co"># Now remove it from the final results</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">penalty</span><span class="op">)</span>
-<span class="va">extracted</span></pre></div>
-<p>Now we can get at the results that we want using another <code>unnest</code>:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit">
-<span class="va">extracted</span> <span class="op">&lt;-</span> 
-  <span class="va">extracted</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.extracts</span><span class="op">)</span> <span class="co"># &lt;- these contain a `penalty` column</span>
-<span class="va">extracted</span></pre></div>
-<p>Let’s look at a plot of these results (per resample):</p>
-<div class="sourceCode" id="cb23"><pre class="downlit">
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">extracted</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">penalty</span>, y <span class="op">=</span> <span class="va">num_vars</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>group <span class="op">=</span> <span class="va">id</span>, col <span class="op">=</span> <span class="va">id</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ylab</a></span><span class="op">(</span><span class="st">"Number of retained predictors"</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span>  <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"mixture = "</span>, <span class="va">params</span><span class="op">$</span><span class="va">mixture</span>, <span class="st">"and"</span>, <span class="va">params</span><span class="op">$</span><span class="va">num_terms</span>, <span class="st">"features"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></pre></div>
-<p>These results might help guide the range of the <code>penalty</code> value if more optimization was conducted.</p>
-</div>
-<div class="footnotes">
-<hr>
-<ol>
-<li id="fn1"><p>This is a small sample of the overall data set. When more data are used, a larger feature set is optimal.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>See the last section below for more details.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>See the vignette on <a href="../acquisition_functions.html">acquisition functions</a> for more details.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li id="fn4"><p>Sorry, pun intended.<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>This is a feature of this particular model and is not generally true for other engines.<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
-</ol>
+<span class="va">five_star_glmnet</span>
+<span class="co">#&gt; Warning: This tuning result has notes. Example notes on model fitting include:</span>
+<span class="co">#&gt; recipe 2/3: Error in loadNamespace(name): there is no package called 'stopwords'</span>
+<span class="co">#&gt; recipe 1/3: Error in loadNamespace(name): there is no package called 'stopwords'</span>
+<span class="co">#&gt; recipe 2/3: Error in loadNamespace(name): there is no package called 'stopwords'</span>
+<span class="co">#&gt; # Tuning results</span>
+<span class="co">#&gt; # 10-fold cross-validation </span>
+<span class="co">#&gt; # A tibble: 10 x 5</span>
+<span class="co">#&gt;    splits             id     .metrics .notes           .extracts</span>
+<span class="co">#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;   &lt;list&gt;           &lt;list&gt;   </span>
+<span class="co">#&gt;  1 &lt;split [3.6K/400]&gt; Fold01 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  2 &lt;split [3.6K/400]&gt; Fold02 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  3 &lt;split [3.6K/400]&gt; Fold03 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  4 &lt;split [3.6K/400]&gt; Fold04 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  5 &lt;split [3.6K/400]&gt; Fold05 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  6 &lt;split [3.6K/400]&gt; Fold06 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  7 &lt;split [3.6K/400]&gt; Fold07 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  8 &lt;split [3.6K/400]&gt; Fold08 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt;  9 &lt;split [3.6K/400]&gt; Fold09 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;   </span>
+<span class="co">#&gt; 10 &lt;split [3.6K/400]&gt; Fold10 &lt;NULL&gt;   &lt;tibble [3 × 1]&gt; &lt;NULL&gt;</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit">
+<span class="fu">sessioninfo</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/sessioninfo/man/session_info.html">session_info</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt;  setting  value                       </span>
+<span class="co">#&gt;  version  R version 4.0.2 (2020-06-22)</span>
+<span class="co">#&gt;  os       macOS Catalina 10.15.6      </span>
+<span class="co">#&gt;  system   x86_64, darwin17.0          </span>
+<span class="co">#&gt;  ui       X11                         </span>
+<span class="co">#&gt;  language (EN)                        </span>
+<span class="co">#&gt;  collate  en_US.UTF-8                 </span>
+<span class="co">#&gt;  ctype    en_US.UTF-8                 </span>
+<span class="co">#&gt;  tz       UTC                         </span>
+<span class="co">#&gt;  date     2020-10-06                  </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt;  package      * version    date       lib source                               </span>
+<span class="co">#&gt;  assertthat     0.2.1      2019-03-21 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  backports      1.1.10     2020-09-15 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  broom        * 0.7.1      2020-10-02 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  class          7.3-17     2020-04-26 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  cli            2.0.2      2020-02-28 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  codetools      0.2-16     2018-12-24 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  colorspace     1.4-1      2019-03-18 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  crayon         1.3.4      2017-09-16 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  desc           1.2.0      2018-05-01 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  dials        * 0.0.9.9000 2020-10-05 [1] Github (tidymodels/dials@2b79300)    </span>
+<span class="co">#&gt;  DiceDesign     1.8-1      2019-07-31 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  digest         0.6.25     2020-02-23 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  dplyr        * 1.0.2      2020-08-18 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  ellipsis       0.3.1      2020-05-15 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  evaluate       0.14       2019-05-28 [1] CRAN (R 4.0.1)                       </span>
+<span class="co">#&gt;  fansi          0.4.1      2020-01-08 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  foreach        1.5.0      2020-03-30 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  fs             1.5.0      2020-07-31 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  furrr          0.1.0      2018-05-16 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  future         1.19.1     2020-09-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  generics       0.0.2      2018-11-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  ggplot2      * 3.3.2      2020-06-19 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  glmnet       * 4.0-2      2020-06-16 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  globals        0.13.0     2020-09-17 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  glue           1.4.2      2020-08-27 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  gower          0.2.2      2020-06-23 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  GPfit          1.0-8      2019-02-08 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  gtable         0.3.0      2019-03-25 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  hardhat        0.1.4      2020-07-02 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  htmltools      0.5.0      2020-06-16 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  infer        * 0.5.3      2020-07-14 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  ipred          0.9-9      2019-04-28 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  iterators      1.0.12     2019-07-26 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  knitr          1.30       2020-09-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  lattice        0.20-41    2020-04-02 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  lava           1.6.8      2020-09-26 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  lhs            1.1.1      2020-10-05 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  lifecycle      0.2.0      2020-03-06 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  listenv        0.8.0      2019-12-05 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  lubridate      1.7.9      2020-06-08 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  magrittr       1.5        2014-11-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  MASS           7.3-51.6   2020-04-26 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  Matrix       * 1.2-18     2019-11-27 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  memoise        1.1.0      2017-04-21 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  modeldata    * 0.0.2      2020-06-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  munsell        0.5.0      2018-06-12 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  nnet           7.3-14     2020-04-26 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  parsnip      * 0.1.3      2020-08-04 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  pillar         1.4.6      2020-07-10 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  pkgconfig      2.0.3      2019-09-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  pkgdown        1.6.1      2020-09-12 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  plyr           1.8.6      2020-03-03 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  pROC           1.16.2     2020-03-19 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  prodlim        2019.11.13 2019-11-17 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  purrr        * 0.3.4      2020-04-17 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  R6             2.4.1      2019-11-12 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  ragg           0.4.0      2020-10-05 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  Rcpp           1.0.5      2020-07-06 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  recipes      * 0.1.13     2020-06-23 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  rlang          0.4.7      2020-07-09 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  rmarkdown      2.4        2020-09-30 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  rpart          4.1-15     2019-04-12 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  rprojroot      1.3-2      2018-01-03 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  rsample      * 0.0.8.9000 2020-10-05 [1] Github (tidymodels/rsample@ae99c86)  </span>
+<span class="co">#&gt;  rstudioapi     0.11       2020-02-07 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  scales       * 1.1.1      2020-05-11 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  sessioninfo    1.1.1      2018-11-05 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  shape          1.4.5      2020-09-13 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  SnowballC      0.7.0      2020-04-01 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  stringi        1.5.3      2020-09-09 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  stringr        1.4.0      2019-02-10 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  survival       3.1-12     2020-04-10 [2] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  systemfonts    0.3.2      2020-09-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  textfeatures * 0.3.3      2019-09-03 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  textrecipes  * 0.3.0      2020-07-08 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  textshaping    0.1.1      2020-09-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tibble       * 3.0.3      2020-07-10 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tidymodels   * 0.1.1      2020-07-14 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tidyr        * 1.1.2      2020-08-27 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tidyselect     1.1.0      2020-05-11 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  timeDate       3043.102   2018-02-21 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tokenizers     0.2.1      2018-03-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  tune         * 0.1.1.9000 2020-10-06 [1] local                                </span>
+<span class="co">#&gt;  utf8           1.1.4      2018-05-24 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  vctrs          0.3.4      2020-08-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  withr          2.3.0      2020-09-22 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  workflows    * 0.2.0.9000 2020-10-05 [1] Github (tidymodels/workflows@40482ae)</span>
+<span class="co">#&gt;  xfun           0.18       2020-09-29 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  yaml           2.2.1      2020-02-01 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt;  yardstick    * 0.0.7      2020-07-13 [1] CRAN (R 4.0.2)                       </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; [1] /Users/runner/work/_temp/Library</span>
+<span class="co">#&gt; [2] /Library/Frameworks/R.framework/Versions/4.0/Resources/library</span>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/knit_exit.html">knit_exit</a></span><span class="op">(</span><span class="op">)</span></pre></div>
 </div>
   </div>
 
