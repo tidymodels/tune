@@ -12,13 +12,14 @@ output:
 knitr::opts_chunk$set(
   digits = 3,
   collapse = TRUE,
-  comment = "#>",
-  eval = TRUE
+  comment = "#>"
 )
 options(digits = 3)
 library(tidymodels)
 library(textrecipes)
 library(textfeatures)
+
+doParallel::registerDoParallel()
 
 data("small_fine_foods")
 num_prod <- length(unique(training_data$product))
@@ -179,11 +180,6 @@ five_star_glmnet <-
             metrics = roc_scores, control = ctrl)
 
 five_star_glmnet
-```
-
-```{r}
-sessioninfo::session_info()
-knitr::knit_exit()
 ```
 
 This took a while to complete. What did the results look like? Let's get the resampling estimates of the area under the ROC curve for each tuning parameter:
