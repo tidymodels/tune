@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   digits = 3,
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = TRUE
 )
 options(digits = 3)
 library(tidymodels)
@@ -177,6 +177,13 @@ set.seed(1559)
 five_star_glmnet <- 
   tune_grid(lr_mod, pre_proc, resamples = folds, grid = five_star_grid, 
             metrics = roc_scores, control = ctrl)
+
+five_star_glmnet
+```
+
+```{r}
+sessioninfo::session_info()
+knitr::knit_exit()
 ```
 
 This took a while to complete. What did the results look like? Let's get the resampling estimates of the area under the ROC curve for each tuning parameter:

@@ -290,8 +290,3 @@ collect_metrics(knn_search) %>%
 ```
 
 With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe. 
-
-```{r session}
-sessioninfo::session_info()
-```
-
