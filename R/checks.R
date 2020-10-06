@@ -46,12 +46,12 @@ check_grid <- function(x, object, pset = NULL) {
     }
 
     grid_distinct <- distinct(x)
-    if (!identical(x, grid_distinct)) {
+    if (!identical(nrow(grid_distinct), nrow(x))) {
       rlang::warn(
         "Duplicate rows in grid of tuning combinations found and removed."
       )
-      x <- grid_distinct
     }
+    x <- grid_distinct
 
     tune_tbl <- tune_args(object)
     tune_params <- tune_tbl$id

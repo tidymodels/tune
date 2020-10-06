@@ -31,6 +31,8 @@ test_that('grid objects', {
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
 
+  expect_silent(tune:::check_grid(grid_1, chi_wflow))
+
   expect_warning(tune:::check_grid(rbind(grid_1, grid_1), chi_wflow),
                  "Duplicate rows in grid of tuning combinations")
 
@@ -49,6 +51,16 @@ test_that('grid objects', {
   # For issue #56
   grid_3 <- as.data.frame(grid_1)
   expect_equal(tune:::check_grid(grid_3, chi_wflow), grid_1)
+
+  # For weird attributes
+  grid_4 <- expand.grid(
+    penalty = 1:10, mixture = 12, imputation = 1:2,
+    threshold = 1:2, deg_free = 2:3, degree = 9:10
+  )
+  expect_equal(tune:::check_grid(grid_4, chi_wflow),
+               as_tibble(vctrs::data_frame(grid_4)))
+
+  expect_silent(tune:::check_grid(grid_4, chi_wflow))
 })
 
 test_that("Unknown `grid` columns are caught", {
