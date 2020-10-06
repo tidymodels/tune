@@ -20,12 +20,12 @@ Type 'q()' to quit R.
 > library(tidymodels)
 ── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──
 ✔ broom     0.7.0          ✔ recipes   0.1.13    
-✔ dials     0.0.8          ✔ rsample   0.0.7     
-✔ dplyr     1.0.1          ✔ tibble    3.0.3     
-✔ ggplot2   3.3.2          ✔ tidyr     1.1.0     
+✔ dials     0.0.9.9000     ✔ rsample   0.0.8.9000
+✔ dplyr     1.0.2          ✔ tibble    3.0.3     
+✔ ggplot2   3.3.2          ✔ tidyr     1.1.2     
 ✔ infer     0.5.3          ✔ tune      0.1.1.9000
-✔ modeldata 0.0.2          ✔ workflows 0.1.2     
-✔ parsnip   0.1.2.9000     ✔ yardstick 0.0.7     
+✔ modeldata 0.0.2          ✔ workflows 0.2.0.9000
+✔ parsnip   0.1.3          ✔ yardstick 0.0.7     
 ✔ purrr     0.3.4          
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
@@ -109,31 +109,29 @@ The following object is masked from ‘package:dplyr’:
 +   tune_grid(mt_spln_lm,
 +             resamples = folds,
 +             control = g_ctrl)
-! Fold1: recipe  3/10: 'df' was too small; have used 3
-! Fold1: recipe 10/10, model 1/1 (predictions): prediction from a rank-deficient ...
+! Fold1: recipe  9/10: 'df' was too small; have used 3
 ! Fold2: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  3/10: 'df' was too small; have used 3
 ! Fold2: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
+! Fold2: recipe  9/10: 'df' was too small; have used 3
 ! Fold2: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold2: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold3: recipe  3/10: 'df' was too small; have used 3
-! Fold3: recipe 10/10, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold4: recipe  3/10: 'df' was too small; have used 3
+! Fold3: recipe  9/10: 'df' was too small; have used 3
+! Fold4: recipe  9/10: 'df' was too small; have used 3
 ! Fold5: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  3/10: 'df' was too small; have used 3
 ! Fold5: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
+! Fold5: recipe  9/10: 'df' was too small; have used 3
 ! Fold5: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 ! Fold5: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
 > 
@@ -160,9 +158,12 @@ The following object is masked from ‘package:dplyr’:
 ! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold1: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold1: recipe 1/1: 'df' was too small; have used 3
+! Fold2: recipe 1/1: 'df' was too small; have used 3
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold3: recipe 1/1: 'df' was too small; have used 3
+! Fold4: recipe 1/1: 'df' was too small; have used 3
+! Fold5: recipe 1/1: 'df' was too small; have used 3
 ! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
@@ -207,14 +208,14 @@ The following object is masked from ‘package:dplyr’:
 ! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold1: recipe 1/1: 'df' was too small; have used 3
 ! Fold2: recipe 1/1: 'df' was too small; have used 3
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold3: recipe 1/1: 'df' was too small; have used 3
 ! Fold4: recipe 1/1: 'df' was too small; have used 3
 ! Fold5: recipe 1/1: 'df' was too small; have used 3
+! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
@@ -241,16 +242,17 @@ The following object is masked from ‘package:dplyr’:
 ! Fold5: recipe 2/4, model 2/2 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 3/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 4/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! The Gaussian process model is being fit using 12 features but only has 5
+  data points to do so. This may cause errors or a poor model fit.
 ! Gaussian process model: did not converge in 10 iterations
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
 ! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! The Gaussian process model is being fit using 12 features but only has 6
+  data points to do so. This may cause errors or a poor model fit.
+! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! The Gaussian process model is being fit using 12 features but only has 7
+  data points to do so. This may cause errors or a poor model fit.
 ! Fold1: recipe 1/1: 'df' was too small; have used 3
 ! Fold2: recipe 1/1: 'df' was too small; have used 3
 ! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
@@ -335,6 +337,8 @@ The following object is masked from ‘package:dplyr’:
 +                 "accuracy",
 +                 control_bayes()
 +   )
+! The Gaussian process model is being fit using 12 features but only has 10
+  data points to do so. This may cause errors or a poor model fit.
 > 
 > saveRDS(
 +   knn_results,
@@ -407,6 +411,21 @@ The following object is masked from ‘package:dplyr’:
 +     metrics = class_only,
 +     control = control_grid(save_pred = TRUE)
 +   )
+
+Attaching package: ‘kernlab’
+
+The following object is masked from ‘package:purrr’:
+
+    cross
+
+The following object is masked from ‘package:ggplot2’:
+
+    alpha
+
+The following object is masked from ‘package:scales’:
+
+    alpha
+
 > 
 > saveRDS(
 +   svm_results,
@@ -841,10 +860,6 @@ The following object is masked from ‘package:dplyr’:
 ! Fold1: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
 ! Fold2: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
 ! Fold2: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 1/1, model 1/1 (predictions): prediction from a rank-deficient fi...
 > 
 > saveRDS(
 +   lm_bayes,
@@ -866,82 +881,82 @@ The following object is masked from ‘package:dplyr’:
  collate  en_US.UTF-8                 
  ctype    en_US.UTF-8                 
  tz       America/Denver              
- date     2020-08-07                  
+ date     2020-10-06                  
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package     * version    date       lib source                             
- assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.0.0)                     
- backports     1.1.8      2020-06-17 [1] CRAN (R 4.0.0)                     
- broom       * 0.7.0      2020-07-09 [1] CRAN (R 4.0.0)                     
- class         7.3-17     2020-04-26 [1] CRAN (R 4.0.2)                     
- cli           2.0.2      2020-02-28 [1] CRAN (R 4.0.0)                     
- codetools     0.2-16     2018-12-24 [1] CRAN (R 4.0.2)                     
- colorspace    1.4-1      2019-03-18 [1] CRAN (R 4.0.0)                     
- crayon        1.3.4      2017-09-16 [1] CRAN (R 4.0.0)                     
- dials       * 0.0.8      2020-07-08 [1] CRAN (R 4.0.2)                     
- DiceDesign    1.8-1      2019-07-31 [1] CRAN (R 4.0.0)                     
- digest        0.6.25     2020-02-23 [1] CRAN (R 4.0.0)                     
- dplyr       * 1.0.1      2020-07-31 [1] CRAN (R 4.0.2)                     
- ellipsis      0.3.1      2020-05-15 [1] CRAN (R 4.0.0)                     
- fansi         0.4.1      2020-01-08 [1] CRAN (R 4.0.0)                     
- foreach       1.5.0      2020-03-30 [1] CRAN (R 4.0.0)                     
- furrr         0.1.0      2018-05-16 [1] CRAN (R 4.0.0)                     
- future        1.18.0     2020-07-09 [1] CRAN (R 4.0.0)                     
- generics      0.0.2      2018-11-29 [1] CRAN (R 4.0.0)                     
- ggplot2     * 3.3.2      2020-06-19 [1] CRAN (R 4.0.0)                     
- globals       0.12.5     2019-12-07 [1] CRAN (R 4.0.0)                     
- glue          1.4.1      2020-05-13 [1] CRAN (R 4.0.0)                     
- gower         0.2.2      2020-06-23 [1] CRAN (R 4.0.0)                     
- GPfit         1.0-8      2019-02-08 [1] CRAN (R 4.0.0)                     
- gtable        0.3.0      2019-03-25 [1] CRAN (R 4.0.0)                     
- hardhat       0.1.4.9000 2020-07-03 [1] Github (tidymodels/hardhat@e726cfa)
- igraph        1.2.5      2020-03-19 [1] CRAN (R 4.0.0)                     
- infer       * 0.5.3      2020-07-14 [1] CRAN (R 4.0.0)                     
- ipred         0.9-9      2019-04-28 [1] CRAN (R 4.0.0)                     
- iterators     1.0.12     2019-07-26 [1] CRAN (R 4.0.0)                     
- kernlab       0.9-29     2019-11-12 [1] CRAN (R 4.0.0)                     
- kknn        * 1.3.1      2016-03-26 [1] CRAN (R 4.0.0)                     
- lattice       0.20-41    2020-04-02 [1] CRAN (R 4.0.2)                     
- lava          1.6.7      2020-03-05 [1] CRAN (R 4.0.0)                     
- lhs           1.0.2      2020-04-13 [1] CRAN (R 4.0.0)                     
- lifecycle     0.2.0      2020-03-06 [1] CRAN (R 4.0.0)                     
- listenv       0.8.0      2019-12-05 [1] CRAN (R 4.0.0)                     
- lubridate     1.7.9      2020-06-08 [1] CRAN (R 4.0.0)                     
- magrittr      1.5.0.9000 2020-08-04 [1] Github (tidyverse/magrittr@ba52096)
- MASS          7.3-51.6   2020-04-26 [1] CRAN (R 4.0.2)                     
- Matrix        1.2-18     2019-11-27 [1] CRAN (R 4.0.2)                     
- modeldata   * 0.0.2      2020-06-22 [1] CRAN (R 4.0.0)                     
- munsell       0.5.0      2018-06-12 [1] CRAN (R 4.0.0)                     
- nnet          7.3-14     2020-04-26 [1] CRAN (R 4.0.2)                     
- parsnip     * 0.1.2.9000 2020-07-30 [1] local                              
- pillar        1.4.6      2020-07-10 [1] CRAN (R 4.0.0)                     
- pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.0.0)                     
- plyr          1.8.6      2020-03-03 [1] CRAN (R 4.0.0)                     
- pROC          1.16.2     2020-03-19 [1] CRAN (R 4.0.0)                     
- prodlim       2019.11.13 2019-11-17 [1] CRAN (R 4.0.0)                     
- purrr       * 0.3.4      2020-04-17 [1] CRAN (R 4.0.0)                     
- R6            2.4.1      2019-11-12 [1] CRAN (R 4.0.0)                     
- Rcpp          1.0.5      2020-07-06 [1] CRAN (R 4.0.0)                     
- recipes     * 0.1.13     2020-06-23 [1] CRAN (R 4.0.0)                     
- rlang         0.4.7      2020-07-09 [1] CRAN (R 4.0.0)                     
- rpart         4.1-15     2019-04-12 [1] CRAN (R 4.0.2)                     
- rsample     * 0.0.7      2020-06-04 [1] CRAN (R 4.0.0)                     
- rstudioapi    0.11       2020-02-07 [1] CRAN (R 4.0.0)                     
- scales      * 1.1.1      2020-05-11 [1] CRAN (R 4.0.0)                     
- sessioninfo * 1.1.1      2018-11-05 [1] CRAN (R 4.0.0)                     
- survival      3.2-3      2020-06-13 [1] CRAN (R 4.0.1)                     
- testthat    * 2.3.2      2020-03-02 [1] CRAN (R 4.0.0)                     
- tibble      * 3.0.3      2020-07-10 [1] CRAN (R 4.0.2)                     
- tidymodels  * 0.1.1      2020-07-14 [1] CRAN (R 4.0.0)                     
- tidyr       * 1.1.0      2020-05-20 [1] CRAN (R 4.0.0)                     
- tidyselect    1.1.0      2020-05-11 [1] CRAN (R 4.0.0)                     
- timeDate      3043.102   2018-02-21 [1] CRAN (R 4.0.0)                     
- tune        * 0.1.1.9000 2020-08-07 [1] local                              
- utf8          1.1.4      2018-05-24 [1] CRAN (R 4.0.0)                     
- vctrs         0.3.2      2020-07-15 [1] CRAN (R 4.0.2)                     
- withr         2.2.0      2020-04-20 [1] CRAN (R 4.0.0)                     
- workflows   * 0.1.2      2020-07-07 [1] CRAN (R 4.0.2)                     
- yardstick   * 0.0.7      2020-07-13 [1] CRAN (R 4.0.0)                     
+ package     * version    date       lib source                               
+ assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.0.0)                       
+ backports     1.1.10     2020-09-15 [1] CRAN (R 4.0.2)                       
+ broom       * 0.7.0      2020-07-09 [1] CRAN (R 4.0.0)                       
+ class         7.3-17     2020-04-26 [1] CRAN (R 4.0.2)                       
+ cli           2.0.2      2020-02-28 [1] CRAN (R 4.0.0)                       
+ codetools     0.2-16     2018-12-24 [1] CRAN (R 4.0.2)                       
+ colorspace    1.4-1      2019-03-18 [1] CRAN (R 4.0.0)                       
+ crayon        1.3.4.9000 2020-09-19 [1] Github (r-lib/crayon@6b3f0c6)        
+ dials       * 0.0.9.9000 2020-10-05 [1] Github (tidymodels/dials@2b79300)    
+ DiceDesign    1.8-1      2019-07-31 [1] CRAN (R 4.0.0)                       
+ digest        0.6.25     2020-02-23 [1] CRAN (R 4.0.0)                       
+ dplyr       * 1.0.2      2020-08-18 [1] CRAN (R 4.0.2)                       
+ ellipsis      0.3.1      2020-05-15 [1] CRAN (R 4.0.0)                       
+ fansi         0.4.1      2020-01-08 [1] CRAN (R 4.0.0)                       
+ foreach       1.5.0      2020-03-30 [1] CRAN (R 4.0.0)                       
+ furrr         0.1.0      2018-05-16 [1] CRAN (R 4.0.0)                       
+ future        1.19.1     2020-09-22 [1] CRAN (R 4.0.2)                       
+ generics      0.0.2      2018-11-29 [1] CRAN (R 4.0.0)                       
+ ggplot2     * 3.3.2      2020-06-19 [1] CRAN (R 4.0.0)                       
+ globals       0.13.0     2020-09-17 [1] CRAN (R 4.0.2)                       
+ glue          1.4.2      2020-08-27 [1] CRAN (R 4.0.2)                       
+ gower         0.2.2      2020-06-23 [1] CRAN (R 4.0.0)                       
+ GPfit         1.0-8      2019-02-08 [1] CRAN (R 4.0.0)                       
+ gtable        0.3.0      2019-03-25 [1] CRAN (R 4.0.0)                       
+ hardhat       0.1.4      2020-07-02 [1] CRAN (R 4.0.2)                       
+ igraph        1.2.5      2020-03-19 [1] CRAN (R 4.0.0)                       
+ infer       * 0.5.3      2020-07-14 [1] CRAN (R 4.0.0)                       
+ ipred         0.9-9      2019-04-28 [1] CRAN (R 4.0.0)                       
+ iterators     1.0.12     2019-07-26 [1] CRAN (R 4.0.0)                       
+ kernlab     * 0.9-29     2019-11-12 [1] CRAN (R 4.0.0)                       
+ kknn        * 1.3.1      2016-03-26 [1] CRAN (R 4.0.0)                       
+ lattice       0.20-41    2020-04-02 [1] CRAN (R 4.0.2)                       
+ lava          1.6.8      2020-09-26 [1] CRAN (R 4.0.2)                       
+ lhs           1.1.0      2020-09-29 [1] CRAN (R 4.0.2)                       
+ lifecycle     0.2.0      2020-03-06 [1] CRAN (R 4.0.0)                       
+ listenv       0.8.0      2019-12-05 [1] CRAN (R 4.0.0)                       
+ lubridate     1.7.9      2020-06-08 [1] CRAN (R 4.0.0)                       
+ magrittr      1.5.0.9000 2020-09-27 [1] Github (tidyverse/magrittr@0221e18)  
+ MASS          7.3-53     2020-09-09 [1] CRAN (R 4.0.2)                       
+ Matrix        1.2-18     2019-11-27 [1] CRAN (R 4.0.2)                       
+ modeldata   * 0.0.2      2020-06-22 [1] CRAN (R 4.0.0)                       
+ munsell       0.5.0      2018-06-12 [1] CRAN (R 4.0.0)                       
+ nnet          7.3-14     2020-04-26 [1] CRAN (R 4.0.2)                       
+ parsnip     * 0.1.3      2020-08-04 [1] CRAN (R 4.0.2)                       
+ pillar        1.4.6      2020-07-10 [1] CRAN (R 4.0.0)                       
+ pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.0.0)                       
+ plyr          1.8.6      2020-03-03 [1] CRAN (R 4.0.0)                       
+ pROC          1.16.2     2020-03-19 [1] CRAN (R 4.0.0)                       
+ prodlim       2019.11.13 2019-11-17 [1] CRAN (R 4.0.0)                       
+ purrr       * 0.3.4      2020-04-17 [1] CRAN (R 4.0.0)                       
+ R6            2.4.1      2019-11-12 [1] CRAN (R 4.0.0)                       
+ Rcpp          1.0.5      2020-07-06 [1] CRAN (R 4.0.0)                       
+ recipes     * 0.1.13     2020-06-23 [1] CRAN (R 4.0.2)                       
+ rlang         0.4.7      2020-07-09 [1] CRAN (R 4.0.0)                       
+ rpart         4.1-15     2019-04-12 [1] CRAN (R 4.0.2)                       
+ rsample     * 0.0.8.9000 2020-10-05 [1] Github (tidymodels/rsample@ae99c86)  
+ rstudioapi    0.11       2020-02-07 [1] CRAN (R 4.0.0)                       
+ scales      * 1.1.1      2020-05-11 [1] CRAN (R 4.0.0)                       
+ sessioninfo * 1.1.1      2018-11-05 [1] CRAN (R 4.0.0)                       
+ survival      3.2-3      2020-06-13 [1] CRAN (R 4.0.1)                       
+ testthat    * 2.3.2      2020-03-02 [1] CRAN (R 4.0.0)                       
+ tibble      * 3.0.3      2020-07-10 [1] CRAN (R 4.0.2)                       
+ tidymodels  * 0.1.1      2020-07-14 [1] CRAN (R 4.0.2)                       
+ tidyr       * 1.1.2      2020-08-27 [1] CRAN (R 4.0.2)                       
+ tidyselect    1.1.0      2020-05-11 [1] CRAN (R 4.0.0)                       
+ timeDate      3043.102   2018-02-21 [1] CRAN (R 4.0.0)                       
+ tune        * 0.1.1.9000 2020-10-06 [1] local                                
+ utf8          1.1.4      2018-05-24 [1] CRAN (R 4.0.0)                       
+ vctrs         0.3.4      2020-08-29 [1] CRAN (R 4.0.2)                       
+ withr         2.3.0      2020-09-22 [1] CRAN (R 4.0.2)                       
+ workflows   * 0.2.0.9000 2020-10-05 [1] Github (tidymodels/workflows@40482ae)
+ yardstick   * 0.0.7      2020-07-13 [1] CRAN (R 4.0.0)                       
 
 [1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library
 > 
@@ -950,4 +965,4 @@ The following object is masked from ‘package:dplyr’:
 + }
 > proc.time()
     user   system  elapsed 
-1578.929   16.494 1611.034 
+1469.417    6.036 1479.245 
