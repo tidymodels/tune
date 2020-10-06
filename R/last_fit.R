@@ -136,6 +136,7 @@ last_fit_workflow <- function(object, split, metrics) {
       control = ctrl
     )
   res$.workflow <- res$.extracts[[1]][[1]]
+  res$.workflow[[1]]$trained <- TRUE
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
   class(res) <- unique(class(res))
