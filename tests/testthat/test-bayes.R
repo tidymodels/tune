@@ -28,20 +28,27 @@ iterT <- iter1 + iter2
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
-
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
+  control <- control_bayes(extract = identity)
+
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                    initial = iter1, iter = iter2)
-  expect_equal(unique(res$id), folds$id)
+                    initial = iter1, iter = iter2, control = control)
   res_est <- collect_metrics(res)
+  res_workflow <- res$.extracts[[1]]$.extracts[[1]]
+
+  # Ensure tunable parameters in recipe are finalized
+  num_comp <- res_workflow$pre$actions$recipe$recipe$steps[[2]]$num_comp
+
+  expect_equal(unique(res$id), folds$id)
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
   expect_equal(sum(res_est$.metric == "rsq"), iterT)
   expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
+  expect_false(identical(num_comp, expr(tune())))
 
   expect_error(
     tune_bayes(wflow, resamples = folds, param_info = pset,
@@ -49,8 +56,6 @@ test_that('tune recipe only', {
                corr = list(type = "matern", nu = 3/2)),
     regexp = NA
   )
-
-
 })
 
 # ------------------------------------------------------------------------------

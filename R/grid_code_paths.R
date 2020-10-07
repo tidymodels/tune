@@ -46,12 +46,14 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
 
   event_level <- control$event_level
 
-  split <- resamples$splits[[rs_iter]]
   metric_est <- NULL
   extracted <- NULL
   pred_vals <- NULL
   all_outcome_names <- list()
   .notes <- NULL
+
+  params <- dials::parameters(workflow)
+  param_names <- params[["id"]]
 
   # ----------------------------------------------------------------------------
 
@@ -99,7 +101,6 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
   for (mod_iter in 1:num_mod) {
     workflow <- original_workflow
 
-    param_val <- mod_grid_vals[mod_iter, ]
     submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
     mod_id <- vec_slice(
@@ -107,8 +108,11 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       (submodel_id - num_submodels[mod_iter]):submodel_id
     )
 
+    param_val <- mod_grid_vals[mod_iter, ]
+    workflow <- finalize_workflow_spec(workflow, param_val)
+
     workflow <- catch_and_log_fit(
-      train_model(workflow, param_val, control_workflow),
+      .fit_model(workflow, control_workflow),
       control,
       split,
       mod_msg,
@@ -121,7 +125,8 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
     }
 
     # Extract names from the mold
-    all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+    outcome_names <- outcome_names(workflow)
+    all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
 
     extracted <- append_extracts(
       extracted,
@@ -148,8 +153,18 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       next
     }
 
-    metric_est  <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, mod_id)
-    config_id <- extract_config(workflow, metric_est)
+    metric_est <- append_metrics(
+      collection = metric_est,
+      predictions = tmp_pred,
+      metrics = metrics,
+      param_names = param_names,
+      outcome_name = outcome_names,
+      event_level = event_level,
+      split = split,
+      .config = mod_id
+    )
+
+    config_id <- extract_config(param_names, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
@@ -180,14 +195,13 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
   all_outcome_names <- list()
   .notes <- NULL
 
-  split <- resamples$splits[[rs_iter]]
+  params <- dials::parameters(workflow)
+  param_names <- params[["id"]]
 
-  model_param <-
-    dials::parameters(workflow) %>%
+  model_param <- params %>%
     dplyr::filter(source == "model_spec") %>%
     dplyr::pull(id)
-  rec_param <-
-    dials::parameters(workflow) %>%
+  rec_param <- params %>%
     dplyr::filter(source == "recipe") %>%
     dplyr::pull(id)
 
@@ -196,6 +210,9 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
   } else {
     rec_grid <- tidyr::nest(grid, !!!model_param)
   }
+
+  split <- resamples$splits[[rs_iter]]
+  training <- rsample::analysis(split)
 
   # --------------------------------------------------------------------------
 
@@ -214,8 +231,10 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
 
+    workflow <- finalize_workflow_recipe(workflow, rec_grid_vals)
+
     workflow <- catch_and_log(
-      train_recipe_grid(split, workflow, rec_grid_vals),
+      .fit_pre(workflow, training),
       control,
       split,
       rec_msg,
@@ -252,10 +271,6 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
     for (mod_iter in 1:num_mod) {
       workflow <- original_prepped_workflow
 
-      fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
-      submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
-      submd_param <- submd_param$.submodels[[1]]
-
       submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
       mod_id <- vec_slice(
@@ -264,8 +279,14 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       )
       mod_id <- paste0(rec_id, "_", mod_id)
 
+      fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
+      submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
+      submd_param <- submd_param$.submodels[[1]]
+
+      workflow <- finalize_workflow_spec(workflow, fixed_param)
+
       workflow <- catch_and_log_fit(
-        train_model(workflow, fixed_param, control_workflow),
+        .fit_model(workflow, control_workflow),
         control,
         split,
         mod_msg,
@@ -278,7 +299,8 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       }
 
       # Extract names from the mold
-      all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+      outcome_names <- outcome_names(workflow)
+      all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
 
       all_param <- dplyr::bind_cols(rec_grid_vals, mod_grid_vals[mod_iter, ])
 
@@ -307,8 +329,18 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
         next
       }
 
-      metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, mod_id)
-      config_id <- extract_config(workflow, metric_est)
+      metric_est <- append_metrics(
+        collection = metric_est,
+        predictions = tmp_pred,
+        metrics = metrics,
+        param_names = param_names,
+        outcome_name = outcome_names,
+        event_level = event_level,
+        split = split,
+        .config = mod_id
+      )
+
+      config_id <- extract_config(param_names, metric_est)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
     } # end model loop
   } # end recipe loop
@@ -340,7 +372,11 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   all_outcome_names <- list()
   .notes <- NULL
 
+  params <- dials::parameters(workflow)
+  param_names <- params[["id"]]
+
   split <- resamples$splits[[rs_iter]]
+  training <- rsample::analysis(split)
 
   num_rec <- nrow(grid)
   original_workflow <- workflow
@@ -348,13 +384,15 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   for (param_iter in 1:num_rec) {
     workflow <- original_workflow
 
-    param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
     rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), param_iter)
 
+    param_vals <- grid[param_iter, ]
+    workflow <- finalize_workflow_recipe(workflow, param_vals)
+
     workflow <- catch_and_log(
-      train_recipe_grid(split, workflow, param_vals),
+      .fit_pre(workflow, training),
       control,
       split,
       rec_msg,
@@ -367,7 +405,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     }
 
     workflow <- catch_and_log_fit(
-      train_model(workflow, NULL, control_workflow),
+      .fit_model(workflow, control_workflow),
       control,
       split,
       mod_msg,
@@ -380,7 +418,8 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     }
 
     # Extract names from the mold
-    all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+    outcome_names <- outcome_names(workflow)
+    all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
 
     extracted <- append_extracts(
       extracted,
@@ -407,8 +446,18 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       next
     }
 
-    metric_est <- append_metrics(metric_est, tmp_pred, workflow, metrics, split, event_level, rec_id)
-    config_id <- extract_config(workflow, metric_est)
+    metric_est <- append_metrics(
+      collection = metric_est,
+      predictions = tmp_pred,
+      metrics = metrics,
+      param_names = param_names,
+      outcome_name = outcome_names,
+      event_level = event_level,
+      split = split,
+      .config = rec_id
+    )
+
+    config_id <- extract_config(param_names, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end recipe loop
 

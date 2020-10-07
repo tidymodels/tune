@@ -209,6 +209,8 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   all_outcome_names <- list()
   .notes <- NULL
 
+  param_names <- character()
+
   split <- resamples$splits[[rs_iter]]
   training <- rsample::analysis(split)
 
@@ -233,7 +235,7 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   }
 
   workflow <- catch_and_log_fit(
-    train_model(workflow, grid = NULL, control = control_workflow),
+    .fit_model(workflow, control_workflow),
     control,
     split,
     "model",
@@ -254,7 +256,8 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   }
 
   # Extract names from the mold
-  all_outcome_names <- append_outcome_names(all_outcome_names, workflow)
+  outcome_names <- outcome_names(workflow)
+  all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
 
   # Dummy tbl with no columns but the correct number of rows to `bind_cols()`
   # against in `append_extracts()`
@@ -284,7 +287,16 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
     return(out)
   }
 
-  metric_est <- append_metrics(metric_est, predictions, workflow, metrics, split, event_level)
+  metric_est <- append_metrics(
+    collection = metric_est,
+    predictions = predictions,
+    metrics = metrics,
+    param_names = param_names,
+    outcome_name = outcome_names,
+    event_level = event_level,
+    split = split
+  )
+
   pred_vals <- append_predictions(pred_vals, predictions, split, control)
 
   list(

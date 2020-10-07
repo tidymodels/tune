@@ -22,37 +22,52 @@ svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 # ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
-
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  control <- control_grid(extract = identity)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
   res_est <- collect_metrics(res)
+  res_workflow <- res$.extracts[[1]]$.extracts[[1]]
+
+  # Ensure tunable parameters in recipe are finalized
+  num_comp <- res_workflow$pre$actions$recipe$recipe$steps[[2]]$num_comp
+
+  expect_equal(res$id, folds$id)
   expect_equal(nrow(res_est), nrow(grid) * 2)
   expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
   expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_false(identical(num_comp, expr(tune())))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe)', {
-
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
-  expect_equal(res$id, folds$id)
+  control <- control_grid(extract = identity)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
   res_est <- collect_metrics(res)
+  res_workflow <- res$.extracts[[1]]$.extracts[[1]]
+
+  # Ensure tunable parameters in spec are finalized
+  cost_quo <- res_workflow$fit$fit$spec$args$cost
+  cost <- quo_get_expr(cost_quo)
+
+  expect_equal(res$id, folds$id)
   expect_equal(nrow(res_est), nrow(grid) * 2)
   expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
   expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_false(identical(cost, expr(tune())))
 })
 
 # ------------------------------------------------------------------------------
@@ -106,23 +121,35 @@ test_that('tune model only (with recipe, multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
-
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
-  res <- tune_grid(wflow, resamples = folds, grid = grid)
+  control <- control_grid(extract = identity)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
+  res_est <- collect_metrics(res)
+  res_workflow <- res$.extracts[[1]]$.extracts[[1]]
+
+  # Ensure tunable parameters in spec are finalized
+  cost_quo <- res_workflow$fit$fit$spec$args$cost
+  cost <- quo_get_expr(cost_quo)
+
+  # Ensure tunable parameters in recipe are finalized
+  num_comp <- res_workflow$pre$actions$recipe$recipe$steps[[2]]$num_comp
+
   expect_equal(res$id, folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
     c("cost", "num_comp", ".metric", ".estimator", ".estimate", ".config")
   )
-  res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), nrow(grid) * 2)
   expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
   expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+  expect_false(identical(cost, expr(tune())))
+  expect_false(identical(num_comp, expr(tune())))
 })
 
 # ------------------------------------------------------------------------------

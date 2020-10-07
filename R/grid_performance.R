@@ -26,7 +26,7 @@ metrics_info <- function(x) {
   res
 }
 
-estimate_metrics <- function(dat, metric, workflow, event_level) {
+estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level) {
   if (inherits(dat, "try-error")) {
     return(NULL)
   }
@@ -35,34 +35,30 @@ estimate_metrics <- function(dat, metric, workflow, event_level) {
   type_info <- metrics_info(metric)
   types <- unique(type_info$type)
 
-  outcome <- outcome_names(workflow)
-
-  if (length(outcome) > 1L) {
+  if (length(outcome_name) > 1L) {
     rlang::abort(paste0(
       "Internal error: Multiple outcomes are not ",
       "supported in `estimate_metrics()`."
     ))
   }
 
-  param_names <- dials::parameters(workflow)$id
-
   if (all(types == "numeric")) {
-    estimate_reg(dat, metric, param_names, outcome)
+    estimate_reg(dat, metric, param_names, outcome_name)
   } else if (all(types == "class" | types == "prob")) {
-    estimate_class_prob(dat, metric, param_names, outcome, types, event_level)
+    estimate_class_prob(dat, metric, param_names, outcome_name, types, event_level)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
 }
 
-estimate_reg <- function(dat, metric, params, outcome) {
+estimate_reg <- function(dat, metric, param_names, outcome_name) {
   dat %>%
-    dplyr::group_by(!!!rlang::syms(params)) %>%
-    metric(estimate = .pred, truth = !!sym(outcome))
+    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+    metric(estimate = .pred, truth = !!sym(outcome_name))
 }
 
-estimate_class_prob <- function(dat, metric, params, outcome, types, event_level) {
-  truth <- sym(outcome)
+estimate_class_prob <- function(dat, metric, param_names, outcome_name, types, event_level) {
+  truth <- sym(outcome_name)
 
   estimate <- NULL
   if (any(types == "class")) {
@@ -71,7 +67,7 @@ estimate_class_prob <- function(dat, metric, params, outcome, types, event_level
 
   probs <- NULL
   if (any(types == "prob")) {
-    levels <- levels(dat[[outcome]])
+    levels <- levels(dat[[outcome_name]])
     probs <- paste0(".pred_", levels)
 
     # Special case binary class prob metrics,
@@ -88,7 +84,7 @@ estimate_class_prob <- function(dat, metric, params, outcome, types, event_level
   }
 
   dat %>%
-    dplyr::group_by(!!!rlang::syms(params)) %>%
+    dplyr::group_by(!!!rlang::syms(param_names)) %>%
     metric(
       truth = !!truth,
       estimate = !!estimate,
