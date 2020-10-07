@@ -49,6 +49,7 @@ test_that('tune recipe only', {
   expect_equal(dplyr::n_distinct(res_est$.config), iterT)
   expect_equal(res_est$n, rep(10, iterT * 2))
   expect_false(identical(num_comp, expr(tune())))
+  expect_true(res_workflow$trained)
 
   expect_error(
     tune_bayes(wflow, resamples = folds, param_info = pset,
