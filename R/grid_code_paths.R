@@ -101,7 +101,6 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
   for (mod_iter in 1:num_mod) {
     workflow <- original_workflow
 
-    param_val <- mod_grid_vals[mod_iter, ]
     submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
     mod_id <- vec_slice(
@@ -109,8 +108,11 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       (submodel_id - num_submodels[mod_iter]):submodel_id
     )
 
+    param_val <- mod_grid_vals[mod_iter, ]
+    workflow <- finalize_workflow_spec(workflow, param_val)
+
     workflow <- catch_and_log_fit(
-      train_model(workflow, param_val, control_workflow),
+      .fit_model(workflow, control_workflow),
       control,
       split,
       mod_msg,
@@ -162,7 +164,7 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       .config = mod_id
     )
 
-    config_id <- extract_config(workflow, metric_est)
+    config_id <- extract_config(param_names, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end model loop
 
@@ -210,6 +212,7 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
   }
 
   split <- resamples$splits[[rs_iter]]
+  training <- rsample::analysis(split)
 
   # --------------------------------------------------------------------------
 
@@ -228,8 +231,10 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       dplyr::slice(rec_iter) %>%
       dplyr::select(-data)
 
+    workflow <- finalize_workflow_recipe(workflow, rec_grid_vals)
+
     workflow <- catch_and_log(
-      train_recipe_grid(split, workflow, rec_grid_vals),
+      .fit_pre(workflow, training),
       control,
       split,
       rec_msg,
@@ -266,10 +271,6 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
     for (mod_iter in 1:num_mod) {
       workflow <- original_prepped_workflow
 
-      fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
-      submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
-      submd_param <- submd_param$.submodels[[1]]
-
       submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
       mod_id <- vec_slice(
@@ -278,8 +279,14 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
       )
       mod_id <- paste0(rec_id, "_", mod_id)
 
+      fixed_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(-.submodels)
+      submd_param <- mod_grid_vals %>% dplyr::slice(mod_iter) %>% dplyr::select(.submodels)
+      submd_param <- submd_param$.submodels[[1]]
+
+      workflow <- finalize_workflow_spec(workflow, fixed_param)
+
       workflow <- catch_and_log_fit(
-        train_model(workflow, fixed_param, control_workflow),
+        .fit_model(workflow, control_workflow),
         control,
         split,
         mod_msg,
@@ -333,7 +340,7 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
         .config = mod_id
       )
 
-      config_id <- extract_config(workflow, metric_est)
+      config_id <- extract_config(param_names, metric_est)
       pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
     } # end model loop
   } # end recipe loop
@@ -369,6 +376,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   param_names <- params[["id"]]
 
   split <- resamples$splits[[rs_iter]]
+  training <- rsample::analysis(split)
 
   num_rec <- nrow(grid)
   original_workflow <- workflow
@@ -376,13 +384,15 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
   for (param_iter in 1:num_rec) {
     workflow <- original_workflow
 
-    param_vals <- grid[param_iter, ]
     rec_msg <- paste0("recipe ", format(1:num_rec)[param_iter], "/", num_rec)
     mod_msg <- paste0(rec_msg, ", model 1/1")
     rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), param_iter)
 
+    param_vals <- grid[param_iter, ]
+    workflow <- finalize_workflow_recipe(workflow, param_vals)
+
     workflow <- catch_and_log(
-      train_recipe_grid(split, workflow, param_vals),
+      .fit_pre(workflow, training),
       control,
       split,
       rec_msg,
@@ -395,7 +405,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     }
 
     workflow <- catch_and_log_fit(
-      train_model(workflow, NULL, control_workflow),
+      .fit_model(workflow, control_workflow),
       control,
       split,
       mod_msg,
@@ -447,7 +457,7 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
       .config = rec_id
     )
 
-    config_id <- extract_config(workflow, metric_est)
+    config_id <- extract_config(param_names, metric_est)
     pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
   } # end recipe loop
 

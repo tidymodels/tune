@@ -210,8 +210,8 @@ append_outcome_names <- function(all_outcome_names, outcome_names) {
   c(all_outcome_names, list(outcome_names))
 }
 
-extract_config <- function(workflow, metrics) {
-  param_names <- c(dials::parameters(workflow)$id, ".config")
+extract_config <- function(param_names, metrics) {
+  param_names <- c(param_names, ".config")
   idx <- vctrs::vec_unique_loc(metrics[param_names])
   metrics[idx, param_names]
 }

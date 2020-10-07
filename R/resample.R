@@ -235,7 +235,7 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
   }
 
   workflow <- catch_and_log_fit(
-    train_model(workflow, grid = NULL, control = control_workflow),
+    .fit_model(workflow, control_workflow),
     control,
     split,
     "model",

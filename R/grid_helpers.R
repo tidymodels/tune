@@ -1,23 +1,3 @@
-train_model <- function(workflow, grid, control) {
-  original_spec <- workflows::pull_workflow_spec(workflow)
-
-  if (!is.null(grid)) {
-    updated_spec <- merge(original_spec, grid)$x[[1]]
-  } else {
-    updated_spec <- original_spec
-  }
-
-  workflow <- set_workflow_spec(workflow, updated_spec)
-
-  workflow <- .fit_model(workflow, control)
-
-  # Always reset to the original spec so `parameters()` can be used on this
-  # object. The fit model is stored in `workflow$fit$fit`
-  workflow <- set_workflow_spec(workflow, original_spec)
-
-  workflow
-}
-
 predict_model <- function(split, workflow, grid, metrics) {
   model <- workflows::pull_workflow_fit(workflow)
 
@@ -115,23 +95,17 @@ make_rename_arg <- function(grid, model) {
 }
 
 # ------------------------------------------------------------------------------
-# Recipe-oriented helpers
 
-train_recipe_grid <- function(split, workflow, grid) {
-  original_recipe <- workflows::pull_workflow_preprocessor(workflow)
-  updated_recipe <- merge(original_recipe, grid)$x[[1]]
+finalize_workflow_spec <- function(workflow, grid) {
+  spec <- workflows::pull_workflow_spec(workflow)
+  spec <- merge(spec, grid)$x[[1]]
+  set_workflow_spec(workflow, spec)
+}
 
-  workflow <- set_workflow_recipe(workflow, updated_recipe)
-
-  training <- rsample::analysis(split)
-
-  workflow <- .fit_pre(workflow, training)
-
-  # Always reset to the original recipe so `parameters()` can be used on this
-  # object. The prepped updated recipe is stored in the mold.
-  workflow <- set_workflow_recipe(workflow, original_recipe)
-
-  workflow
+finalize_workflow_recipe <- function(workflow, grid) {
+  recipe <- workflows::pull_workflow_preprocessor(workflow)
+  recipe <- merge(recipe, grid)$x[[1]]
+  set_workflow_recipe(workflow, recipe)
 }
 
 # ------------------------------------------------------------------------------
