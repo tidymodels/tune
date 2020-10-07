@@ -116,6 +116,25 @@ test_that("can use `fit_resamples()` with a workflow - formula", {
   expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
+test_that("extracted workflow is finalized", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  workflow <- workflow() %>%
+    add_variables(mpg, c(cyl, disp)) %>%
+    add_model(lin_mod)
+
+  control <- control_resamples(extract = identity)
+
+  result <- fit_resamples(workflow, folds, control = control)
+  result_workflow <- result$.extracts[[1]]$.extracts[[1]]
+
+  expect_true(result_workflow$trained)
+})
+
 # ------------------------------------------------------------------------------
 # Error capture
 

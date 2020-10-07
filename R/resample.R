@@ -255,6 +255,8 @@ iter_resamples <- function(rs_iter, resamples, workflow, metrics, control) {
     return(out)
   }
 
+  workflow <- .fit_finalize(workflow)
+
   # Extract names from the mold
   outcome_names <- outcome_names(workflow)
   all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
