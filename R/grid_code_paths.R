@@ -124,6 +124,8 @@ iter_model_with_preprocessor <- function(rs_iter, resamples, grid, workflow, met
       next
     }
 
+    workflow <- .fit_finalize(workflow)
+
     # Extract names from the mold
     outcome_names <- outcome_names(workflow)
     all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
@@ -298,6 +300,8 @@ iter_model_and_recipe <- function(rs_iter, resamples, grid, workflow, metrics, c
         next
       }
 
+      workflow <- .fit_finalize(workflow)
+
       # Extract names from the mold
       outcome_names <- outcome_names(workflow)
       all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
@@ -416,6 +420,8 @@ iter_recipe <- function(rs_iter, resamples, grid, workflow, metrics, control) {
     if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
       next
     }
+
+    workflow <- .fit_finalize(workflow)
 
     # Extract names from the mold
     outcome_names <- outcome_names(workflow)

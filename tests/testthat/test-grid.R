@@ -42,6 +42,7 @@ test_that('tune recipe only', {
   expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
   expect_false(identical(num_comp, expr(tune())))
+  expect_true(res_workflow$trained)
 })
 
 # ------------------------------------------------------------------------------
@@ -68,6 +69,7 @@ test_that('tune model only (with recipe)', {
   expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
   expect_false(identical(cost, expr(tune())))
+  expect_true(res_workflow$trained)
 })
 
 # ------------------------------------------------------------------------------
@@ -150,6 +152,7 @@ test_that('tune model and recipe', {
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
   expect_false(identical(cost, expr(tune())))
   expect_false(identical(num_comp, expr(tune())))
+  expect_true(res_workflow$trained)
 })
 
 # ------------------------------------------------------------------------------
