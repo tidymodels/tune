@@ -241,8 +241,7 @@
 <p>The root mean squared error will be used to measure performance (and this is the default for regression problems).</p>
 <p>Using these objects, <code><a href="../reference/tune_grid.html">tune_grid()</a></code> can be used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Duplicate rows in grid of tuning combinations found and removed.</span></pre></div>
+<span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></pre></div>
 <p>The object is similar to the <code>rsample</code> object but with one or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit">
 <span class="va">ames_res</span>
