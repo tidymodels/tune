@@ -139,15 +139,32 @@ pull_notes <- function(resamples, res, control) {
 
 # ------------------------------------------------------------------------------
 
-append_metrics <- function(collection, predictions, workflow, metrics, split, event_level, .config = NULL) {
+append_metrics <- function(collection,
+                           predictions,
+                           metrics,
+                           param_names,
+                           outcome_name,
+                           event_level,
+                           split,
+                           .config = NULL) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
-  tmp_est <- estimate_metrics(predictions, metrics, workflow, event_level)
+
+  tmp_est <- estimate_metrics(
+    dat = predictions,
+    metric = metrics,
+    param_names = param_names,
+    outcome_name = outcome_name,
+    event_level = event_level
+  )
+
   tmp_est <- cbind(tmp_est, labels(split))
+
   if (!rlang::is_null(.config)) {
     tmp_est <- cbind(tmp_est, .config)
   }
+
   dplyr::bind_rows(collection, tmp_est)
 }
 
@@ -189,10 +206,8 @@ append_extracts <- function(collection, workflow, param, split, ctrl, .config = 
   dplyr::bind_rows(collection, extracts)
 }
 
-append_outcome_names <- function(all_outcome_names, workflow) {
-  outcome_names <- outcome_names(workflow)
-  outcome_names <- list(outcome_names)
-  c(all_outcome_names, outcome_names)
+append_outcome_names <- function(all_outcome_names, outcome_names) {
+  c(all_outcome_names, list(outcome_names))
 }
 
 extract_config <- function(workflow, metrics) {
