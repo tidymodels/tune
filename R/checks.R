@@ -30,7 +30,7 @@ check_grid <- function(x, object, pset = NULL) {
     msg <- paste0(
       "No tuning parameters have been detected, ",
       "performance will be evaluated using the resamples with no tuning. ",
-      "Did you want to [tune()] your model parameters?"
+      "Did you want to [tune()] parameters?"
     )
     rlang::warn(msg)
     return(x)
