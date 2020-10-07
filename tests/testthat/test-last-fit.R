@@ -18,6 +18,7 @@ test_that("formula method", {
   expect_equivalent(coef(extract_model(res$.workflow[[1]])), coef(lm_fit))
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
+  expect_true(res$.workflow[[1]]$trained)
   expect_equal(nrow(predict(res$.workflow[[1]], testing(split))), nrow(testing(split)))
 })
 
@@ -28,6 +29,7 @@ test_that("recipe method", {
   expect_equivalent(sort(coef(extract_model(res$.workflow[[1]]))), sort(coef(lm_fit)))
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
+  expect_true(res$.workflow[[1]]$trained)
   expect_equal(nrow(predict(res$.workflow[[1]], testing(split))), nrow(testing(split)))
 })
 
