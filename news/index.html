@@ -172,6 +172,7 @@
 <h2 class="hasAnchor">
 <a href="#other-changes" class="anchor"></a>Other Changes</h2>
 <ul>
+<li><p><code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> can now be called on the workflow returned from <code><a href="../reference/last_fit.html">last_fit()</a></code> (<a href='https://github.com/tidymodels/tune/issues/294'>#294</a>, <a href='https://github.com/tidymodels/tune/issues/295'>#295</a>, <a href='https://github.com/tidymodels/tune/issues/296'>#296</a>).</p></li>
 <li><p>tune now supports setting the <code>event_level</code> option from yardstick through the control objects (i.e. <code><a href="../reference/control_grid.html">control_grid(event_level = "second")</a></code>) (<a href='https://github.com/tidymodels/tune/issues/240'>#240</a>, <a href='https://github.com/tidymodels/tune/issues/249'>#249</a>).</p></li>
 <li><p>tune now supports workflows created with the new <code><a href="https://workflows.tidymodels.org//reference/add_variables.html">workflows::add_variables()</a></code> preprocessor.</p></li>
 <li><p>Better control the random number streams in parallel for <code><a href="../reference/tune_grid.html">tune_grid()</a></code> and <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> (<a href='https://github.com/tidymodels/tune/issues/11'>#11</a>)</p></li>
