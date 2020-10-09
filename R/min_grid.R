@@ -13,7 +13,13 @@
 #' list column with the parameter combinations used for prediction.
 #' @keywords internal
 #' @examples
-#' # No ability to exploit submodels:
+#' library(dplyr)
+#' library(dials)
+#' library(parsnip)
+#'
+#' ## -----------------------------------------------------------------------------
+#' ## No ability to exploit submodels:
+#'
 #' svm_spec <-
 #'   svm_poly(cost = tune(), degree = tune()) %>%
 #'   set_engine("kernlab") %>%
@@ -26,7 +32,8 @@
 #'
 #' min_grid(svm_spec, svm_grid)
 #'
-#' # Can use submodels
+#' ## -----------------------------------------------------------------------------
+#' ## Can use submodels
 #'
 #' xgb_spec <-
 #'   boost_tree(trees = tune(), min_n = tune()) %>%
