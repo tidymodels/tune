@@ -249,12 +249,10 @@ no_penalty <- function(x, nm) {
 # ------------------------------------------------------------------------------
 # logistic regression
 
-
 #' @export
 #' @export min_grid.logistic_reg
 #' @rdname min_grid
 min_grid.logistic_reg <- min_grid.linear_reg
-
 
 # ------------------------------------------------------------------------------
 # mars
@@ -306,4 +304,12 @@ min_grid.rule_fit <- fit_max_value
 #' @export min_grid.pls
 #' @rdname min_grid
 min_grid.pls <- fit_max_value
+
+## -----------------------------------------------------------------------------
+## poissonreg package
+
+#' @export
+#' @export min_grid.poisson_reg
+#' @rdname min_grid
+min_grid.poisson_reg <- fit_max_value
 

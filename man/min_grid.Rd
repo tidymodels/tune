@@ -14,6 +14,7 @@
 \alias{min_grid.C5_rules}
 \alias{min_grid.rule_fit}
 \alias{min_grid.pls}
+\alias{min_grid.poisson_reg}
 \title{Determine the minimum set of model fits}
 \usage{
 min_grid(x, grid, ...)
@@ -41,6 +42,8 @@ fit_max_value(x, grid, ...)
 \method{min_grid}{rule_fit}(x, grid, ...)
 
 \method{min_grid}{pls}(x, grid, ...)
+
+\method{min_grid}{poisson_reg}(x, grid, ...)
 }
 \arguments{
 \item{x}{A model specification.}
