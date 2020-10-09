@@ -22,10 +22,11 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter)
   load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
+  n_grid <- nrow(grid)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
-    fn_iter_safely(rs_iter, resamples, grid_info, grid, workflow, metrics, control)
+    fn_iter_safely(rs_iter, resamples, grid_info, n_grid, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -41,7 +42,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter)
 iter_model_with_preprocessor <- function(rs_iter,
                                          resamples,
                                          grid_info,
-                                         grid,
+                                         n_grid,
                                          workflow,
                                          metrics,
                                          control) {
@@ -114,7 +115,7 @@ iter_model_with_preprocessor <- function(rs_iter,
     submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
     mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
     mod_id <- vec_slice(
-      recipes::names0(nrow(grid), "Model"),
+      recipes::names0(n_grid, "Model"),
       (submodel_id - num_submodels[mod_iter]):submodel_id
     )
 
@@ -197,7 +198,7 @@ iter_model_with_preprocessor <- function(rs_iter,
 iter_model_and_recipe <- function(rs_iter,
                                   resamples,
                                   grid_info,
-                                  grid,
+                                  n_grid,
                                   workflow,
                                   metrics,
                                   control) {
@@ -276,7 +277,7 @@ iter_model_and_recipe <- function(rs_iter,
       submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
       mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
       mod_id <- vec_slice(
-        recipes::names0(nrow(grid), "Model"),
+        recipes::names0(n_grid, "Model"),
         (submodel_id - num_submodels[mod_iter]):submodel_id
       )
       mod_id <- paste0(rec_id, "_", mod_id)
@@ -363,7 +364,7 @@ iter_model_and_recipe <- function(rs_iter,
 iter_recipe <- function(rs_iter,
                         resamples,
                         grid_info,
-                        grid,
+                        n_grid,
                         workflow,
                         metrics,
                         control) {
@@ -497,17 +498,17 @@ super_safely_iterate_impl <- function(fn,
                                       rs_iter,
                                       resamples,
                                       grid_info,
-                                      grid,
+                                      n_grid,
                                       workflow,
                                       metrics,
                                       control) {
   safely_iterate <- super_safely(fn)
 
   # Differentiate [fit_resamples()] from [tune_grid()]
-  if (is.null(grid)) {
+  if (is.null(grid_info)) {
     result <- safely_iterate(rs_iter, resamples, workflow, metrics, control)
   } else {
-    result <- safely_iterate(rs_iter, resamples, grid_info, grid, workflow, metrics, control)
+    result <- safely_iterate(rs_iter, resamples, grid_info, n_grid, workflow, metrics, control)
   }
 
   error <- result$error
