@@ -185,13 +185,9 @@ append_predictions <- function(collection, predictions, split, control, .config 
   dplyr::bind_rows(collection, predictions)
 }
 
-append_extracts <- function(collection, workflow, param, split, ctrl, .config = NULL) {
-  if (any(names(param) == ".submodels")) {
-    param <- param %>% dplyr::select(-.submodels)
-  }
-
+append_extracts <- function(collection, workflow, grid, split, ctrl, .config = NULL) {
   extracts <-
-    param %>%
+    grid %>%
     dplyr::bind_cols(labels(split)) %>%
     mutate(
       .extracts = list(
