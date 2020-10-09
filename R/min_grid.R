@@ -1,14 +1,51 @@
 #' Determine the minimum set of model fits
 #'
-#' `min_grid` determines exactly what models should be fit in order to
+#' `min_grid()` determines exactly what models should be fit in order to
 #'  evaluate the entire set of tuning parameter combinations. This is for
 #'  internal use only and the API may change in the near future.
+#'
+#' `fit_max_value()` can be used in other packages to implement a `min_grid()`
+#' method.
 #' @param x A model specification.
 #' @param grid A tibble with tuning parameter combinations.
 #' @param ... Not currently used.
 #' @return A tibble with the minimum tuning parameters to fit and an additional
 #' list column with the parameter combinations used for prediction.
 #' @keywords internal
+#' @examples
+#' library(dplyr)
+#' library(dials)
+#' library(parsnip)
+#'
+#' ## -----------------------------------------------------------------------------
+#' ## No ability to exploit submodels:
+#'
+#' svm_spec <-
+#'   svm_poly(cost = tune(), degree = tune()) %>%
+#'   set_engine("kernlab") %>%
+#'   set_mode("regression")
+#'
+#' svm_grid <-
+#'   svm_spec %>%
+#'   parameters() %>%
+#'   grid_regular(levels = 3)
+#'
+#' min_grid(svm_spec, svm_grid)
+#'
+#' ## -----------------------------------------------------------------------------
+#' ## Can use submodels
+#'
+#' xgb_spec <-
+#'   boost_tree(trees = tune(), min_n = tune()) %>%
+#'   set_engine("xgboost") %>%
+#'   set_mode("regression")
+#'
+#' xgb_grid <-
+#'   xgb_spec %>%
+#'   parameters() %>%
+#'   grid_regular(levels = 3)
+#'
+#' min_grid(xgb_spec, xgb_grid)
 #' @export
 min_grid <- function(x, grid, ...) {
   # x is a `model_spec` object from parsnip
@@ -139,6 +176,8 @@ submod_and_others <- function(grid, fixed_args) {
 # fit value should be the maximum (e.g. fit the largest number of boosting
 # iterations and use muti_predict() for the others)
 # Assumes a single sub-model parameter
+#' @export
+#' @rdname min_grid
 fit_max_value <- function(x, grid, ...) {
   gr_nms <- names(grid)
   param_info <- get_submodel_info(x)
@@ -210,12 +249,10 @@ no_penalty <- function(x, nm) {
 # ------------------------------------------------------------------------------
 # logistic regression
 
-
 #' @export
 #' @export min_grid.logistic_reg
 #' @rdname min_grid
 min_grid.logistic_reg <- min_grid.linear_reg
-
 
 # ------------------------------------------------------------------------------
 # mars
@@ -241,3 +278,38 @@ min_grid.multinom_reg <- min_grid.linear_reg
 #' @export min_grid.nearest_neighbor
 #' @rdname min_grid
 min_grid.nearest_neighbor <- fit_max_value
+
+## -----------------------------------------------------------------------------
+## rules package
+
+#' @export
+#' @export min_grid.cubist_rules
+#' @rdname min_grid
+min_grid.cubist_rules <- fit_max_value
+
+#' @export
+#' @export min_grid.C5_rules
+#' @rdname min_grid
+min_grid.C5_rules <- fit_max_value
+
+#' @export
+#' @export min_grid.rule_fit
+#' @rdname min_grid
+min_grid.rule_fit <- fit_max_value
+
+## -----------------------------------------------------------------------------
+## plsmod package
+
+#' @export
+#' @export min_grid.pls
+#' @rdname min_grid
+min_grid.pls <- fit_max_value
+
+## -----------------------------------------------------------------------------
+## poissonreg package
+
+#' @export
+#' @export min_grid.poisson_reg
+#' @rdname min_grid
+min_grid.poisson_reg <- fit_max_value
+

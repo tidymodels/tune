@@ -3,17 +3,25 @@
 \name{min_grid}
 \alias{min_grid}
 \alias{min_grid.model_spec}
+\alias{fit_max_value}
 \alias{min_grid.boost_tree}
 \alias{min_grid.linear_reg}
 \alias{min_grid.logistic_reg}
 \alias{min_grid.mars}
 \alias{min_grid.multinom_reg}
 \alias{min_grid.nearest_neighbor}
+\alias{min_grid.cubist_rules}
+\alias{min_grid.C5_rules}
+\alias{min_grid.rule_fit}
+\alias{min_grid.pls}
+\alias{min_grid.poisson_reg}
 \title{Determine the minimum set of model fits}
 \usage{
 min_grid(x, grid, ...)
 
 \method{min_grid}{model_spec}(x, grid, ...)
+
+fit_max_value(x, grid, ...)
 
 \method{min_grid}{boost_tree}(x, grid, ...)
 
@@ -26,6 +34,16 @@ min_grid(x, grid, ...)
 \method{min_grid}{multinom_reg}(x, grid, ...)
 
 \method{min_grid}{nearest_neighbor}(x, grid, ...)
+
+\method{min_grid}{cubist_rules}(x, grid, ...)
+
+\method{min_grid}{C5_rules}(x, grid, ...)
+
+\method{min_grid}{rule_fit}(x, grid, ...)
+
+\method{min_grid}{pls}(x, grid, ...)
+
+\method{min_grid}{poisson_reg}(x, grid, ...)
 }
 \arguments{
 \item{x}{A model specification.}
@@ -39,8 +57,47 @@ A tibble with the minimum tuning parameters to fit and an additional
 list column with the parameter combinations used for prediction.
 }
 \description{
-\code{min_grid} determines exactly what models should be fit in order to
+\code{min_grid()} determines exactly what models should be fit in order to
 evaluate the entire set of tuning parameter combinations. This is for
 internal use only and the API may change in the near future.
+}
+\details{
+\code{fit_max_value()} can be used in other packages to implement a \code{min_grid()}
+method.
+}
+\examples{
+library(dplyr)
+library(dials)
+library(parsnip)
+
+## -----------------------------------------------------------------------------
+## No ability to exploit submodels:
+
+svm_spec <-
+  svm_poly(cost = tune(), degree = tune()) \%>\%
+  set_engine("kernlab") \%>\%
+  set_mode("regression")
+
+svm_grid <-
+  svm_spec \%>\%
+  parameters() \%>\%
+  grid_regular(levels = 3)
+
+min_grid(svm_spec, svm_grid)
+
+## -----------------------------------------------------------------------------
+## Can use submodels
+
+xgb_spec <-
+  boost_tree(trees = tune(), min_n = tune()) \%>\%
+  set_engine("xgboost") \%>\%
+  set_mode("regression")
+
+xgb_grid <-
+  xgb_spec \%>\%
+  parameters() \%>\%
+  grid_regular(levels = 3)
+
+min_grid(xgb_spec, xgb_grid)
 }
 \keyword{internal}
