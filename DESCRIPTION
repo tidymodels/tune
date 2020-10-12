@@ -33,7 +33,8 @@ Imports:
     workflows (>= 0.2.0.9000),
     hardhat (>= 0.1.0),
     lifecycle,
-    vctrs (>= 0.3.0)
+    vctrs (>= 0.3.0),
+    tidyselect (>= 1.1.0)
 Suggests: 
     testthat,
     knitr,

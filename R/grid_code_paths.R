@@ -120,7 +120,7 @@ iter_model_with_preprocessor <- function(rs_iter,
     )
 
     grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
-    grid_model_iter <- dplyr::select(grid_info_model_iter, dplyr::all_of(model_param_names))
+    grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
     submodels_iter <- dplyr::pull(grid_info_model_iter, ".submodels")[[1L]]
 
     workflow <- finalize_workflow_spec(workflow, grid_model_iter)
@@ -240,7 +240,7 @@ iter_model_and_recipe <- function(rs_iter,
     rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), rec_iter)
 
     grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
-    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, dplyr::all_of(recipe_param_names))
+    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
 
     workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
 
@@ -283,7 +283,7 @@ iter_model_and_recipe <- function(rs_iter,
       mod_id <- paste0(rec_id, "_", mod_id)
 
       grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
-      grid_model_iter <- dplyr::select(grid_info_model_iter, dplyr::all_of(model_param_names))
+      grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
       submodels_iter <- dplyr::pull(grid_info_model_iter, ".submodels")[[1]]
 
       workflow <- finalize_workflow_spec(workflow, grid_model_iter)
@@ -403,7 +403,7 @@ iter_recipe <- function(rs_iter,
     rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), rec_iter)
 
     grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
-    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, dplyr::all_of(recipe_param_names))
+    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
 
     workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
 

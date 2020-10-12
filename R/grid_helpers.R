@@ -41,7 +41,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
           eval_tidy(mp_call) %>%
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
-          cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
+          cbind(dplyr::select(grid, -tidyselect::all_of(submod_param)), row.names = NULL) %>%
           # go back to user-defined name
           dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
@@ -163,9 +163,9 @@ compute_grid_info_model <- function(workflow,
   out <- add_iter_model(out)
 
   if (tidyr_new_interface()) {
-    out <- tidyr::nest(out, data = c(.iter_model, dplyr::all_of(parameter_names_model), .submodels))
+    out <- tidyr::nest(out, data = c(.iter_model, tidyselect::all_of(parameter_names_model), .submodels))
   } else {
-    out <- tidyr::nest(out, c(.iter_model, dplyr::all_of(parameter_names_model), .submodels))
+    out <- tidyr::nest(out, c(.iter_model, tidyselect::all_of(parameter_names_model), .submodels))
   }
 
   out
@@ -180,9 +180,9 @@ compute_grid_info_model_and_recipe <- function(workflow,
 
   # Nest model parameters, keep recipe parameters outside
   if (tidyr_new_interface()) {
-    out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
+    out <- tidyr::nest(grid, data = tidyselect::all_of(parameter_names_model))
   } else {
-    out <- tidyr::nest(grid, dplyr::all_of(parameter_names_model))
+    out <- tidyr::nest(grid, tidyselect::all_of(parameter_names_model))
   }
 
   spec <- workflows::pull_workflow_spec(workflow)
