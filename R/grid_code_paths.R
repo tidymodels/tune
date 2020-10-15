@@ -22,11 +22,10 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter)
   load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
-  n_grid <- nrow(grid)
 
   results <-
     foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
-    fn_iter_safely(rs_iter, resamples, grid_info, n_grid, workflow, metrics, control)
+    fn_iter_safely(rs_iter, resamples, grid_info, workflow, metrics, control)
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -42,7 +41,6 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter)
 iter_model_with_preprocessor <- function(rs_iter,
                                          resamples,
                                          grid_info,
-                                         n_grid,
                                          workflow,
                                          metrics,
                                          control) {
@@ -100,11 +98,6 @@ iter_model_with_preprocessor <- function(rs_iter,
 
   num_mod <- nrow(grid_info_model)
 
-  num_submodels <- grid_info_model %>%
-    unnest(.submodels, keep_empty = TRUE) %>%
-    pull(.submodels) %>%
-    lengths()
-
   # ----------------------------------------------------------------------------
 
   original_workflow <- workflow
@@ -112,16 +105,11 @@ iter_model_with_preprocessor <- function(rs_iter,
   for (mod_iter in 1:num_mod) {
     workflow <- original_workflow
 
-    submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
-    mod_msg <- paste0("model ", format(1:num_mod)[mod_iter], "/", num_mod)
-    mod_id <- vec_slice(
-      recipes::names0(n_grid, "Model"),
-      (submodel_id - num_submodels[mod_iter]):submodel_id
-    )
-
     grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
     grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
-    submodels_iter <- dplyr::pull(grid_info_model_iter, ".submodels")[[1L]]
+    submodels_iter <- grid_info_model_iter[[".submodels"]][[1L]]
+    msg_model_iter <- grid_info_model_iter[[".msg_model"]]
+    config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
 
     workflow <- finalize_workflow_spec(workflow, grid_model_iter)
 
@@ -129,7 +117,7 @@ iter_model_with_preprocessor <- function(rs_iter,
       .fit_model(workflow, control_workflow),
       control,
       split,
-      mod_msg,
+      msg_model_iter,
       notes = .notes
     )
 
@@ -150,16 +138,16 @@ iter_model_with_preprocessor <- function(rs_iter,
       grid_model_iter,
       split,
       control,
-      mod_id
+      config_iter
     )
 
-    pred_msg <- paste(mod_msg, "(predictions)")
+    msg_pred_iter <- paste(msg_model_iter, "(predictions)")
 
     tmp_pred <- catch_and_log(
       predict_model(split, workflow, grid_model_iter, metrics, submodels_iter),
       control,
       split,
-      pred_msg,
+      msg_pred_iter,
       bad_only = TRUE,
       notes = .notes
     )
@@ -177,7 +165,7 @@ iter_model_with_preprocessor <- function(rs_iter,
       outcome_name = outcome_names,
       event_level = event_level,
       split = split,
-      .config = mod_id
+      .config = config_iter
     )
 
     config_id <- extract_config(param_names, metric_est)
@@ -198,7 +186,6 @@ iter_model_with_preprocessor <- function(rs_iter,
 iter_model_and_recipe <- function(rs_iter,
                                   resamples,
                                   grid_info,
-                                  n_grid,
                                   workflow,
                                   metrics,
                                   control) {
@@ -236,11 +223,9 @@ iter_model_and_recipe <- function(rs_iter,
   for (rec_iter in 1:num_rec) {
     workflow <- original_workflow
 
-    rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
-    rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), rec_iter)
-
     grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
     grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
+    msg_preprocessor_iter <- grid_info_recipe_iter[[".msg_preprocessor"]]
 
     workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
 
@@ -248,7 +233,7 @@ iter_model_and_recipe <- function(rs_iter,
       .fit_pre(workflow, training),
       control,
       split,
-      rec_msg,
+      msg_preprocessor_iter,
       notes = .notes
     )
 
@@ -259,13 +244,7 @@ iter_model_and_recipe <- function(rs_iter,
     # --------------------------------------------------------------------------
 
     grid_info_model <- grid_info_recipe_iter[["data"]][[1]]
-
     num_mod <- nrow(grid_info_model)
-
-    num_submodels <- grid_info_model %>%
-      unnest(.submodels, keep_empty = TRUE) %>%
-      pull(.submodels) %>%
-      lengths()
 
     # ------------------------------------------------------------------------
 
@@ -274,17 +253,11 @@ iter_model_and_recipe <- function(rs_iter,
     for (mod_iter in 1:num_mod) {
       workflow <- original_prepped_workflow
 
-      submodel_id <- mod_iter + sum(vec_slice(num_submodels, 1:mod_iter))
-      mod_msg <- paste0(rec_msg, ", model ", format(1:num_mod)[mod_iter], "/", num_mod)
-      mod_id <- vec_slice(
-        recipes::names0(n_grid, "Model"),
-        (submodel_id - num_submodels[mod_iter]):submodel_id
-      )
-      mod_id <- paste0(rec_id, "_", mod_id)
-
       grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
       grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
-      submodels_iter <- dplyr::pull(grid_info_model_iter, ".submodels")[[1]]
+      submodels_iter <- grid_info_model_iter[[".submodels"]][[1]]
+      msg_model_iter <- grid_info_model_iter[[".msg_model"]]
+      config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
 
       workflow <- finalize_workflow_spec(workflow, grid_model_iter)
 
@@ -292,7 +265,7 @@ iter_model_and_recipe <- function(rs_iter,
         .fit_model(workflow, control_workflow),
         control,
         split,
-        mod_msg,
+        msg_model_iter,
         notes = .notes
       )
 
@@ -315,16 +288,16 @@ iter_model_and_recipe <- function(rs_iter,
         grid_iter,
         split,
         control,
-        mod_id
+        config_iter
       )
 
-      pred_msg <- paste(mod_msg, "(predictions)")
+      msg_pred_iter <- paste(msg_model_iter, "(predictions)")
 
       tmp_pred <- catch_and_log(
         predict_model(split, workflow, grid_iter, metrics, submodels_iter),
         control,
         split,
-        pred_msg,
+        msg_pred_iter,
         bad_only = TRUE,
         notes = .notes
       )
@@ -342,7 +315,7 @@ iter_model_and_recipe <- function(rs_iter,
         outcome_name = outcome_names,
         event_level = event_level,
         split = split,
-        .config = mod_id
+        .config = config_iter
       )
 
       config_id <- extract_config(param_names, metric_est)
@@ -364,7 +337,6 @@ iter_model_and_recipe <- function(rs_iter,
 iter_recipe <- function(rs_iter,
                         resamples,
                         grid_info,
-                        n_grid,
                         workflow,
                         metrics,
                         control) {
@@ -398,12 +370,9 @@ iter_recipe <- function(rs_iter,
   for (rec_iter in 1:num_rec) {
     workflow <- original_workflow
 
-    rec_msg <- paste0("recipe ", format(1:num_rec)[rec_iter], "/", num_rec)
-    mod_msg <- paste0(rec_msg, ", model 1/1")
-    rec_id <- vec_slice(recipes::names0(num_rec, "Recipe"), rec_iter)
-
     grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
     grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
+    msg_preprocessor_iter <- grid_info_recipe_iter[[".msg_preprocessor"]]
 
     workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
 
@@ -411,7 +380,7 @@ iter_recipe <- function(rs_iter,
       .fit_pre(workflow, training),
       control,
       split,
-      rec_msg,
+      msg_preprocessor_iter,
       notes = .notes
     )
 
@@ -420,11 +389,19 @@ iter_recipe <- function(rs_iter,
       next
     }
 
+    grid_info_model <- grid_info_recipe_iter[["data"]][[1]]
+    num_mod <- nrow(grid_info_model)
+    mod_iter <- 1L
+
+    grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
+    msg_model_iter <- grid_info_model_iter[[".msg_model"]]
+    config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
+
     workflow <- catch_and_log_fit(
       .fit_model(workflow, control_workflow),
       control,
       split,
-      mod_msg,
+      msg_model_iter,
       notes = .notes
     )
 
@@ -445,16 +422,16 @@ iter_recipe <- function(rs_iter,
       grid_recipe_iter,
       split,
       control,
-      rec_id
+      config_iter
     )
 
-    pred_msg <- paste(mod_msg, "(predictions)")
+    msg_pred_iter <- paste(msg_model_iter, "(predictions)")
 
     tmp_pred <- catch_and_log(
       predict_model(split, workflow, grid_recipe_iter, metrics),
       control,
       split,
-      pred_msg,
+      msg_pred_iter,
       bad_only = TRUE,
       notes = .notes
     )
@@ -472,7 +449,7 @@ iter_recipe <- function(rs_iter,
       outcome_name = outcome_names,
       event_level = event_level,
       split = split,
-      .config = rec_id
+      .config = config_iter
     )
 
     config_id <- extract_config(param_names, metric_est)
@@ -498,7 +475,6 @@ super_safely_iterate_impl <- function(fn,
                                       rs_iter,
                                       resamples,
                                       grid_info,
-                                      n_grid,
                                       workflow,
                                       metrics,
                                       control) {
@@ -508,7 +484,7 @@ super_safely_iterate_impl <- function(fn,
   if (is.null(grid_info)) {
     result <- safely_iterate(rs_iter, resamples, workflow, metrics, control)
   } else {
-    result <- safely_iterate(rs_iter, resamples, grid_info, n_grid, workflow, metrics, control)
+    result <- safely_iterate(rs_iter, resamples, grid_info, workflow, metrics, control)
   }
 
   error <- result$error
