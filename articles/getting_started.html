@@ -264,36 +264,36 @@
 <div class="sourceCode" id="cb15"><pre class="downlit">
 <span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 162 x 6</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config </span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1         2        2 rmse    standard       0.115 Recipe01</span>
-<span class="co">#&gt;  2         2        2 rsq     standard       0.625 Recipe01</span>
-<span class="co">#&gt;  3         4        2 rmse    standard       0.115 Recipe02</span>
-<span class="co">#&gt;  4         4        2 rsq     standard       0.624 Recipe02</span>
-<span class="co">#&gt;  5         6        2 rmse    standard       0.113 Recipe03</span>
-<span class="co">#&gt;  6         6        2 rsq     standard       0.633 Recipe03</span>
-<span class="co">#&gt;  7         8        2 rmse    standard       0.113 Recipe04</span>
-<span class="co">#&gt;  8         8        2 rsq     standard       0.638 Recipe04</span>
-<span class="co">#&gt;  9        10        2 rmse    standard       0.113 Recipe05</span>
-<span class="co">#&gt; 10        10        2 rsq     standard       0.637 Recipe05</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config              </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                </span>
+<span class="co">#&gt;  1         2        2 rmse    standard       0.115 Preprocessor01_Model1</span>
+<span class="co">#&gt;  2         2        2 rsq     standard       0.625 Preprocessor01_Model1</span>
+<span class="co">#&gt;  3         4        2 rmse    standard       0.115 Preprocessor02_Model1</span>
+<span class="co">#&gt;  4         4        2 rsq     standard       0.624 Preprocessor02_Model1</span>
+<span class="co">#&gt;  5         6        2 rmse    standard       0.113 Preprocessor03_Model1</span>
+<span class="co">#&gt;  6         6        2 rsq     standard       0.633 Preprocessor03_Model1</span>
+<span class="co">#&gt;  7         8        2 rmse    standard       0.113 Preprocessor04_Model1</span>
+<span class="co">#&gt;  8         8        2 rsq     standard       0.638 Preprocessor04_Model1</span>
+<span class="co">#&gt;  9        10        2 rmse    standard       0.113 Preprocessor05_Model1</span>
+<span class="co">#&gt; 10        10        2 rsq     standard       0.637 Preprocessor05_Model1</span>
 <span class="co">#&gt; # … with 152 more rows</span></pre></div>
 <p>To get the average metric value for each parameter combination, <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit">
 <span class="va">estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">ames_res</span><span class="op">)</span>
 <span class="va">estimates</span>
 <span class="co">#&gt; # A tibble: 162 x 8</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err .config </span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1         2        2 rmse    standard   0.102    10 0.00243 Recipe01</span>
-<span class="co">#&gt;  2         2        2 rsq     standard   0.674    10 0.0109  Recipe01</span>
-<span class="co">#&gt;  3         4        2 rmse    standard   0.102    10 0.00242 Recipe02</span>
-<span class="co">#&gt;  4         4        2 rsq     standard   0.675    10 0.0108  Recipe02</span>
-<span class="co">#&gt;  5         6        2 rmse    standard   0.101    10 0.00241 Recipe03</span>
-<span class="co">#&gt;  6         6        2 rsq     standard   0.681    10 0.0105  Recipe03</span>
-<span class="co">#&gt;  7         8        2 rmse    standard   0.100    10 0.00246 Recipe04</span>
-<span class="co">#&gt;  8         8        2 rsq     standard   0.685    10 0.0110  Recipe04</span>
-<span class="co">#&gt;  9        10        2 rmse    standard   0.100    10 0.00243 Recipe05</span>
-<span class="co">#&gt; 10        10        2 rsq     standard   0.685    10 0.0107  Recipe05</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err .config            </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;              </span>
+<span class="co">#&gt;  1         2        2 rmse    standard   0.102    10 0.00243 Preprocessor01_Mod…</span>
+<span class="co">#&gt;  2         2        2 rsq     standard   0.674    10 0.0109  Preprocessor01_Mod…</span>
+<span class="co">#&gt;  3         4        2 rmse    standard   0.102    10 0.00242 Preprocessor02_Mod…</span>
+<span class="co">#&gt;  4         4        2 rsq     standard   0.675    10 0.0108  Preprocessor02_Mod…</span>
+<span class="co">#&gt;  5         6        2 rmse    standard   0.101    10 0.00241 Preprocessor03_Mod…</span>
+<span class="co">#&gt;  6         6        2 rsq     standard   0.681    10 0.0105  Preprocessor03_Mod…</span>
+<span class="co">#&gt;  7         8        2 rmse    standard   0.100    10 0.00246 Preprocessor04_Mod…</span>
+<span class="co">#&gt;  8         8        2 rsq     standard   0.685    10 0.0110  Preprocessor04_Mod…</span>
+<span class="co">#&gt;  9        10        2 rmse    standard   0.100    10 0.00243 Preprocessor05_Mod…</span>
+<span class="co">#&gt; 10        10        2 rsq     standard   0.685    10 0.0107  Preprocessor05_Mod…</span>
 <span class="co">#&gt; # … with 152 more rows</span></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10 resamples. The best RMSE values corresponded to:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit">
@@ -303,18 +303,18 @@
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>
 <span class="va">rmse_vals</span>
 <span class="co">#&gt; # A tibble: 81 x 8</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config </span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;   </span>
-<span class="co">#&gt;  1        16       12 rmse    standard   0.0961    10 0.00226 Recipe53</span>
-<span class="co">#&gt;  2        16       18 rmse    standard   0.0961    10 0.00228 Recipe80</span>
-<span class="co">#&gt;  3        16        8 rmse    standard   0.0962    10 0.00223 Recipe35</span>
-<span class="co">#&gt;  4        16       10 rmse    standard   0.0962    10 0.00225 Recipe44</span>
-<span class="co">#&gt;  5        18       12 rmse    standard   0.0963    10 0.00234 Recipe54</span>
-<span class="co">#&gt;  6        12       12 rmse    standard   0.0963    10 0.00235 Recipe51</span>
-<span class="co">#&gt;  7        16       16 rmse    standard   0.0963    10 0.00224 Recipe71</span>
-<span class="co">#&gt;  8        18       18 rmse    standard   0.0963    10 0.00235 Recipe81</span>
-<span class="co">#&gt;  9        14       12 rmse    standard   0.0963    10 0.00234 Recipe52</span>
-<span class="co">#&gt; 10        16       14 rmse    standard   0.0963    10 0.00221 Recipe62</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config           </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;             </span>
+<span class="co">#&gt;  1        16       12 rmse    standard   0.0961    10 0.00226 Preprocessor53_Mo…</span>
+<span class="co">#&gt;  2        16       18 rmse    standard   0.0961    10 0.00228 Preprocessor80_Mo…</span>
+<span class="co">#&gt;  3        16        8 rmse    standard   0.0962    10 0.00223 Preprocessor35_Mo…</span>
+<span class="co">#&gt;  4        16       10 rmse    standard   0.0962    10 0.00225 Preprocessor44_Mo…</span>
+<span class="co">#&gt;  5        18       12 rmse    standard   0.0963    10 0.00234 Preprocessor54_Mo…</span>
+<span class="co">#&gt;  6        12       12 rmse    standard   0.0963    10 0.00235 Preprocessor51_Mo…</span>
+<span class="co">#&gt;  7        16       16 rmse    standard   0.0963    10 0.00224 Preprocessor71_Mo…</span>
+<span class="co">#&gt;  8        18       18 rmse    standard   0.0963    10 0.00235 Preprocessor81_Mo…</span>
+<span class="co">#&gt;  9        14       12 rmse    standard   0.0963    10 0.00234 Preprocessor52_Mo…</span>
+<span class="co">#&gt; 10        16       14 rmse    standard   0.0963    10 0.00221 Preprocessor62_Mo…</span>
 <span class="co">#&gt; # … with 71 more rows</span></pre></div>
 <p>Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE?</p>
 <div class="sourceCode" id="cb18"><pre class="downlit">

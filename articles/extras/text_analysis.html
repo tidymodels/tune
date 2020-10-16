@@ -284,16 +284,16 @@
 <span class="co">#&gt; # A tibble: 300 x 9</span>
 <span class="co">#&gt;    penalty mixture num_terms .metric .estimator  mean     n std_err .config     </span>
 <span class="co">#&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;       </span>
-<span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753 Recipe3_Mod…</span>
-<span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776 Recipe3_Mod…</span>
-<span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781 Recipe3_Mod…</span>
-<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00794 Recipe3_Mod…</span>
-<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00790 Recipe3_Mod…</span>
-<span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805 Recipe3_Mod…</span>
-<span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810 Recipe3_Mod…</span>
-<span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803 Recipe3_Mod…</span>
-<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00812 Recipe3_Mod…</span>
-<span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808 Recipe3_Mod…</span>
+<span class="co">#&gt;  1 0.0379     0.25      4096 roc_auc binary     0.816    10 0.00753 Preprocesso…</span>
+<span class="co">#&gt;  2 0.0183     0.5       4096 roc_auc binary     0.814    10 0.00776 Preprocesso…</span>
+<span class="co">#&gt;  3 0.0127     0.75      4096 roc_auc binary     0.814    10 0.00781 Preprocesso…</span>
+<span class="co">#&gt;  4 0.00886    1         4096 roc_auc binary     0.813    10 0.00794 Preprocesso…</span>
+<span class="co">#&gt;  5 0.0264     0.25      4096 roc_auc binary     0.813    10 0.00790 Preprocesso…</span>
+<span class="co">#&gt;  6 0.0546     0.25      4096 roc_auc binary     0.811    10 0.00805 Preprocesso…</span>
+<span class="co">#&gt;  7 0.0127     0.5       4096 roc_auc binary     0.811    10 0.00810 Preprocesso…</span>
+<span class="co">#&gt;  8 0.00886    0.75      4096 roc_auc binary     0.810    10 0.00803 Preprocesso…</span>
+<span class="co">#&gt;  9 0.0264     0.5       4096 roc_auc binary     0.810    10 0.00812 Preprocesso…</span>
+<span class="co">#&gt; 10 0.0127     1         4096 roc_auc binary     0.810    10 0.00808 Preprocesso…</span>
 <span class="co">#&gt; # … with 290 more rows</span></pre></div>
 <p>The best results had a fairly high penalty value and focused on the ridge penalty (i.e. no feature selection via the lasso’s L1 penalty). The best solutions also used the largest number of hashing features.</p>
 <p>What was the relationship between performance and the tuning parameters?</p>
@@ -778,25 +778,25 @@
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../../reference/show_best.html">select_best</a></span><span class="op">(</span><span class="va">five_star_glmnet</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span>
 <span class="va">params</span>
 <span class="co">#&gt; # A tibble: 1 x 4</span>
-<span class="co">#&gt;   penalty mixture num_terms .config         </span>
-<span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;           </span>
-<span class="co">#&gt; 1  0.0379    0.25      4096 Recipe3_Model031</span></pre></div>
+<span class="co">#&gt;   penalty mixture num_terms .config               </span>
+<span class="co">#&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                 </span>
+<span class="co">#&gt; 1  0.0379    0.25      4096 Preprocessor3_Model031</span></pre></div>
 <p>Recall that we saved the <code>glmnet</code> results in a tibble. The column <code>five_star_glmnet$.extracts</code> is a list of tibbles. As an example, the first element of the list is:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit">
 <span class="va">five_star_glmnet</span><span class="op">$</span><span class="va">.extracts</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 300 x 5</span>
-<span class="co">#&gt;    num_terms penalty mixture .extracts          .config         </span>
-<span class="co">#&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;           </span>
-<span class="co">#&gt;  1       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model001</span>
-<span class="co">#&gt;  2       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model002</span>
-<span class="co">#&gt;  3       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model003</span>
-<span class="co">#&gt;  4       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model004</span>
-<span class="co">#&gt;  5       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model005</span>
-<span class="co">#&gt;  6       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model006</span>
-<span class="co">#&gt;  7       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model007</span>
-<span class="co">#&gt;  8       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model008</span>
-<span class="co">#&gt;  9       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model009</span>
-<span class="co">#&gt; 10       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model010</span>
+<span class="co">#&gt;    num_terms penalty mixture .extracts          .config               </span>
+<span class="co">#&gt;        &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;                 </span>
+<span class="co">#&gt;  1       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model001</span>
+<span class="co">#&gt;  2       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model002</span>
+<span class="co">#&gt;  3       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model003</span>
+<span class="co">#&gt;  4       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model004</span>
+<span class="co">#&gt;  5       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model005</span>
+<span class="co">#&gt;  6       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model006</span>
+<span class="co">#&gt;  7       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model007</span>
+<span class="co">#&gt;  8       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model008</span>
+<span class="co">#&gt;  9       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model009</span>
+<span class="co">#&gt; 10       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model010</span>
 <span class="co">#&gt; # … with 290 more rows</span></pre></div>
 <p>More nested tibbles! Let’s unnest <code>five_star_glmnet$.extracts</code>:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit">
@@ -807,18 +807,18 @@
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="va">.extracts</span><span class="op">)</span>
 <span class="va">extracted</span>
 <span class="co">#&gt; # A tibble: 3,000 x 6</span>
-<span class="co">#&gt;    id     num_terms penalty mixture .extracts          .config         </span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;           </span>
-<span class="co">#&gt;  1 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model001</span>
-<span class="co">#&gt;  2 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model002</span>
-<span class="co">#&gt;  3 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model003</span>
-<span class="co">#&gt;  4 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model004</span>
-<span class="co">#&gt;  5 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model005</span>
-<span class="co">#&gt;  6 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model006</span>
-<span class="co">#&gt;  7 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model007</span>
-<span class="co">#&gt;  8 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model008</span>
-<span class="co">#&gt;  9 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model009</span>
-<span class="co">#&gt; 10 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Recipe1_Model010</span>
+<span class="co">#&gt;    id     num_terms penalty mixture .extracts          .config               </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;                 </span>
+<span class="co">#&gt;  1 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model001</span>
+<span class="co">#&gt;  2 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model002</span>
+<span class="co">#&gt;  3 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model003</span>
+<span class="co">#&gt;  4 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model004</span>
+<span class="co">#&gt;  5 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model005</span>
+<span class="co">#&gt;  6 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model006</span>
+<span class="co">#&gt;  7 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model007</span>
+<span class="co">#&gt;  8 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model008</span>
+<span class="co">#&gt;  9 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model009</span>
+<span class="co">#&gt; 10 Fold01       256       1       0 &lt;tibble [100 × 2]&gt; Preprocessor1_Model010</span>
 <span class="co">#&gt; # … with 2,990 more rows</span></pre></div>
 <p>One thing to realize here is that <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> <a href="optimizations.html">may not fit all of the models</a> that are evaluated. In this case, for each value of <code>mixture</code> and <code>num_terms</code>, the model is fit overall <em>all</em> penalty values<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>. To select the best parameter set, we can exclude the <code>penalty</code> column in <code>extracted</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit">
@@ -830,18 +830,18 @@
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">penalty</span><span class="op">)</span>
 <span class="va">extracted</span>
 <span class="co">#&gt; # A tibble: 200 x 6</span>
-<span class="co">#&gt;    id     num_terms mixture .extracts          .config.x        .config.y       </span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;chr&gt;            &lt;chr&gt;           </span>
-<span class="co">#&gt;  1 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  2 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model022 Recipe3_Model031</span>
-<span class="co">#&gt;  3 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model023 Recipe3_Model031</span>
-<span class="co">#&gt;  4 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model024 Recipe3_Model031</span>
-<span class="co">#&gt;  5 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model025 Recipe3_Model031</span>
-<span class="co">#&gt;  6 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model026 Recipe3_Model031</span>
-<span class="co">#&gt;  7 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model027 Recipe3_Model031</span>
-<span class="co">#&gt;  8 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model028 Recipe3_Model031</span>
-<span class="co">#&gt;  9 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model029 Recipe3_Model031</span>
-<span class="co">#&gt; 10 Fold01      4096    0.25 &lt;tibble [100 × 2]&gt; Recipe3_Model030 Recipe3_Model031</span>
+<span class="co">#&gt;    id     num_terms mixture .extracts       .config.x          .config.y        </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;list&gt;          &lt;chr&gt;              &lt;chr&gt;            </span>
+<span class="co">#&gt;  1 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  2 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  3 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  4 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  5 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  6 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  7 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  8 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  9 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
+<span class="co">#&gt; 10 Fold01      4096    0.25 &lt;tibble [100 ×… Preprocessor3_Mod… Preprocessor3_Mo…</span>
 <span class="co">#&gt; # … with 190 more rows</span></pre></div>
 <p>Now we can get at the results that we want using another <code>unnest</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit">
@@ -850,18 +850,18 @@
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span>col <span class="op">=</span> <span class="va">.extracts</span><span class="op">)</span> <span class="co"># &lt;- these contain a `penalty` column</span>
 <span class="va">extracted</span>
 <span class="co">#&gt; # A tibble: 20,000 x 7</span>
-<span class="co">#&gt;    id     num_terms mixture penalty num_vars .config.x        .config.y       </span>
-<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;           </span>
-<span class="co">#&gt;  1 Fold01      4096    0.25   0.360        0 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  2 Fold01      4096    0.25   0.344        1 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  3 Fold01      4096    0.25   0.328        2 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  4 Fold01      4096    0.25   0.313        2 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  5 Fold01      4096    0.25   0.299        3 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  6 Fold01      4096    0.25   0.286        3 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  7 Fold01      4096    0.25   0.273        4 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  8 Fold01      4096    0.25   0.260        5 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt;  9 Fold01      4096    0.25   0.248        7 Recipe3_Model021 Recipe3_Model031</span>
-<span class="co">#&gt; 10 Fold01      4096    0.25   0.237        7 Recipe3_Model021 Recipe3_Model031</span>
+<span class="co">#&gt;    id     num_terms mixture penalty num_vars .config.x         .config.y        </span>
+<span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;            </span>
+<span class="co">#&gt;  1 Fold01      4096    0.25   0.360        0 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  2 Fold01      4096    0.25   0.344        1 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  3 Fold01      4096    0.25   0.328        2 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  4 Fold01      4096    0.25   0.313        2 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  5 Fold01      4096    0.25   0.299        3 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  6 Fold01      4096    0.25   0.286        3 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  7 Fold01      4096    0.25   0.273        4 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  8 Fold01      4096    0.25   0.260        5 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt;  9 Fold01      4096    0.25   0.248        7 Preprocessor3_Mo… Preprocessor3_Mo…</span>
+<span class="co">#&gt; 10 Fold01      4096    0.25   0.237        7 Preprocessor3_Mo… Preprocessor3_Mo…</span>
 <span class="co">#&gt; # … with 19,990 more rows</span></pre></div>
 <p>Let’s look at a plot of these results (per resample):</p>
 <div class="sourceCode" id="cb23"><pre class="downlit">
