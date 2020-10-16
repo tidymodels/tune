@@ -124,7 +124,12 @@ fit_resamples.model_spec <- function(object,
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  resample_workflow(wflow, resamples, metrics, control)
+  fit_resamples(
+    wflow,
+    resamples = resamples,
+    metrics = metrics,
+    control = control
+  )
 }
 
 
@@ -144,46 +149,27 @@ fit_resamples.workflow <- function(object,
 # ------------------------------------------------------------------------------
 
 resample_workflow <- function(workflow, resamples, metrics, control) {
-  check_rset(resamples)
-  check_workflow(workflow)
-  metrics <- check_metrics(metrics, workflow)
-
-  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
-
-  # Save rset attributes, then fall back to a bare tibble
-  rset_info <- pull_rset_attributes(resamples)
-  resamples <- new_bare_tibble(resamples)
-
   # `NULL` is the signal that we have no grid to tune with
   grid <- NULL
+  pset <- NULL
 
-  resamples <- tune_grid_loop(
+  out <- tune_grid_workflow(
+    workflow = workflow,
     resamples = resamples,
     grid = grid,
-    workflow = workflow,
     metrics = metrics,
+    pset = pset,
     control = control
   )
 
-  if (is_cataclysmic(resamples)) {
-    rlang::warn(
-      "All models failed in [fit_resamples()]. See the `.notes` column."
-    )
-  }
-
-  outcomes <- reduce_all_outcome_names(resamples)
-  resamples[[".all_outcome_names"]] <- NULL
-
-  workflow_output <- set_workflow(workflow, control)
-
-  resamples <- dplyr::select(resamples, -.seed)
+  attributes <- attributes(out)
 
   new_resample_results(
-    x = resamples,
-    parameters = parameters(workflow),
-    metrics = metrics,
-    outcomes = outcomes,
-    rset_info = rset_info,
-    workflow = workflow_output
+    x = out,
+    parameters = attributes$parameters,
+    metrics = attributes$metrics,
+    outcomes = attributes$outcomes,
+    rset_info = attributes$rset_info,
+    workflow = attributes$workflow
   )
 }

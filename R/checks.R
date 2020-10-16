@@ -22,6 +22,11 @@ check_rset <- function(x) {
 grid_msg <- "`grid` should be a positive integer or a data frame."
 
 check_grid <- function(grid, workflow, pset = NULL) {
+  # `NULL` grid is the signal that we are using `fit_resamples()`
+  if (is.null(grid)) {
+    return(grid)
+  }
+
   if (is.null(pset)) {
     pset <- dials::parameters(workflow)
   }
@@ -36,10 +41,6 @@ check_grid <- function(grid, workflow, pset = NULL) {
 
     # Return `NULL` as the new `grid`, like what is used in `fit_resamples()`
     return(NULL)
-  }
-
-  if (is.null(grid)) {
-    rlang::abort(grid_msg)
   }
 
   if (!is.numeric(grid)) {

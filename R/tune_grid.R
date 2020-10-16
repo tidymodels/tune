@@ -293,12 +293,12 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  tune_grid_workflow(
+  tune_grid(
     wflow,
     resamples = resamples,
+    param_info = param_info,
     grid = grid,
     metrics = metrics,
-    pset = param_info,
     control = control
   )
 }
@@ -309,6 +309,12 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
 
   empty_ellipses(...)
+
+  # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
+  # used when no tuning is required
+  if (is.null(grid)) {
+    rlang::abort(grid_msg)
+  }
 
   tune_grid_workflow(
     object,
@@ -362,13 +368,13 @@ tune_grid_workflow <- function(workflow,
   )
 
   if (is_cataclysmic(resamples)) {
-    rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
+    rlang::warn("All models failed. See the `.notes` column.")
   }
 
   outcomes <- reduce_all_outcome_names(resamples)
   resamples[[".all_outcome_names"]] <- NULL
 
-  workflow_output <- set_workflow(workflow, control)
+  workflow <- set_workflow(workflow, control)
 
   resamples <- resamples %>% dplyr::select(-.seed)
 
@@ -378,7 +384,7 @@ tune_grid_workflow <- function(workflow,
     metrics = metrics,
     outcomes = outcomes,
     rset_info = rset_info,
-    workflow = workflow_output
+    workflow = workflow
   )
 }
 
