@@ -65,6 +65,15 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   tibble::as_tibble(res)
 }
 
+forge_from_workflow <- function(split, workflow) {
+  new_data <- rsample::assessment(split)
+
+  blueprint <- workflow$pre$mold$blueprint
+  forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
+
+  forged
+}
+
 make_submod_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model
   real_name <-
@@ -88,16 +97,32 @@ make_rename_arg <- function(grid, model, submodels) {
 
 # ------------------------------------------------------------------------------
 
-finalize_workflow_spec <- function(workflow, grid) {
+finalize_workflow_spec <- function(workflow, grid_model) {
+  # Already finalized, nothing to tune
+  if (ncol(grid_model) == 0L) {
+    return(workflow)
+  }
+
   spec <- workflows::pull_workflow_spec(workflow)
-  spec <- merge(spec, grid)$x[[1]]
-  set_workflow_spec(workflow, spec)
+  spec <- merge(spec, grid_model)$x[[1]]
+
+  workflow <- set_workflow_spec(workflow, spec)
+
+  workflow
 }
 
-finalize_workflow_recipe <- function(workflow, grid) {
+finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
+  # Already finalized, nothing to tune
+  if (ncol(grid_preprocessor) == 0L) {
+    return(workflow)
+  }
+
   recipe <- workflows::pull_workflow_preprocessor(workflow)
-  recipe <- merge(recipe, grid)$x[[1]]
-  set_workflow_recipe(workflow, recipe)
+  recipe <- merge(recipe, grid_preprocessor)$x[[1]]
+
+  workflow <- set_workflow_recipe(workflow, recipe)
+
+  workflow
 }
 
 # ------------------------------------------------------------------------------
@@ -105,7 +130,8 @@ finalize_workflow_recipe <- function(workflow, grid) {
 compute_grid_info <- function(workflow, grid) {
   # For `fit_resamples()`
   if (is.null(grid)) {
-    return(NULL)
+    out <- new_grid_info_resamples()
+    return(out)
   }
 
   grid <- tibble::as_tibble(grid)
@@ -132,6 +158,36 @@ compute_grid_info <- function(workflow, grid) {
   }
 }
 
+new_grid_info_resamples <- function() {
+  msgs_preprocessor <- new_msgs_preprocessor(
+    i = 1L,
+    n = 1L
+  )
+
+  msgs_model <- new_msgs_model(
+    i = 1L,
+    n = 1L,
+    msgs_preprocessor = msgs_preprocessor
+  )
+
+  iter_config <- list("Preprocessor1_Model1")
+
+  data <- tibble::tibble(
+    .iter_model = 1L,
+    .iter_config = iter_config,
+    .msg_model = msgs_model,
+    .submodels = list(list())
+  )
+
+  out <- tibble::tibble(
+    .iter_recipe = 1L,
+    .msg_preprocessor = msgs_preprocessor,
+    data = list(data)
+  )
+
+  out
+}
+
 compute_grid_info_recipe <- function(workflow,
                                      grid,
                                      parameters_model,
@@ -144,10 +200,17 @@ compute_grid_info_recipe <- function(workflow,
   n_preprocessors <- nrow(out)
 
   # preprocessor <i>/<n>
-  msgs_preprocessor <- paste0("preprocessor ", out[[".iter_recipe"]], "/", n_preprocessors)
+  msgs_preprocessor <- new_msgs_preprocessor(
+    i = out[[".iter_recipe"]],
+    n = n_preprocessors
+  )
 
   # preprocessor <i>/<n>, model 1/1
-  msgs_model <- paste0(msgs_preprocessor, ", model 1/1")
+  msgs_model <- new_msgs_model(
+    i = 1L,
+    n = 1L,
+    msgs_preprocessor = msgs_preprocessor
+  )
 
   # Preprocessor<i>_Model1
   ids <- format_with_padding(seq_len(n_preprocessors))
@@ -158,8 +221,12 @@ compute_grid_info_recipe <- function(workflow,
   out <- tibble::add_column(out, .iter_config = iter_configs, .after = ".iter_model")
   out <- tibble::add_column(out, .msg_model = msgs_model, .after = ".iter_config")
 
+  # Manually add .submodels column, which will always have empty lists
+  .submodels <- rep_len(list(list()), n_preprocessors)
+  out <- tibble::add_column(out, .submodels = .submodels, .after = ".msg_model")
+
   cols <- rlang::expr(
-    c(.iter_model, .iter_config, .msg_model)
+    c(.iter_model, .iter_config, .msg_model, .submodels)
   )
 
   if (tidyr_new_interface()) {
@@ -186,10 +253,15 @@ compute_grid_info_model <- function(workflow,
   n_fit_models <- nrow(out)
 
   # preprocessor 1/1
-  msgs_preprocessor <- rep("preprocessor 1/1", times = n_fit_models)
+  msgs_preprocessor <- new_msgs_preprocessor(i = 1L, n = 1L)
+  msgs_preprocessor <- rep(msgs_preprocessor, times = n_fit_models)
 
   # preprocessor 1/1, model <i_fit>/<n_fit>
-  msgs_model <- paste0(msgs_preprocessor, ", model ", seq_len(n_fit_models), "/", n_fit_models)
+  msgs_model <- new_msgs_model(
+    i = seq_len(n_fit_models),
+    n = n_fit_models,
+    msgs_preprocessor = msgs_preprocessor
+  )
 
   # Preprocessor1_Model<i>
   iter_configs <- compute_config_ids(out, "Preprocessor1")
@@ -239,7 +311,10 @@ compute_grid_info_model_and_recipe <- function(workflow,
   n_preprocessors <- nrow(out)
 
   # preprocessor <i_pre>/<n_pre>
-  msgs_preprocessor <- paste0("preprocessor ", out[[".iter_recipe"]], "/", n_preprocessors)
+  msgs_preprocessor <- new_msgs_preprocessor(
+    i = out[[".iter_recipe"]],
+    n = n_preprocessors
+  )
 
   out <- tibble::add_column(.data = out, .msg_preprocessor = msgs_preprocessor, .after = ".iter_recipe")
 
@@ -257,7 +332,11 @@ compute_grid_info_model_and_recipe <- function(workflow,
     id_preprocessor <- ids_preprocessor[[i]]
 
     # preprocessor <i_pre>/<n_pre>, model <i_mod>/<n_mod>
-    msgs_model <- paste0(msg_preprocessor, ", model ", model_grid[[".iter_model"]], "/", n_fit_models)
+    msgs_model <- new_msgs_model(
+      i = model_grid[[".iter_model"]],
+      n = n_fit_models,
+      msgs_preprocessor = msg_preprocessor
+    )
 
     # Preprocessor<i_pre>_Model<i>
     iter_configs <- compute_config_ids(model_grid, id_preprocessor)
@@ -271,6 +350,13 @@ compute_grid_info_model_and_recipe <- function(workflow,
   out[["data"]] <- model_grids
 
   out
+}
+
+new_msgs_preprocessor <- function(i, n) {
+  paste0("preprocessor ", i, "/", n)
+}
+new_msgs_model <- function(i, n, msgs_preprocessor) {
+  paste0(msgs_preprocessor, ", model ", i, "/", n)
 }
 
 add_iter_recipe <- function(data) {

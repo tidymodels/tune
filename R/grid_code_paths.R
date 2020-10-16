@@ -1,31 +1,41 @@
 tune_nothing <- function(resamples, grid, workflow, metrics, control)  {
-  resample_loop(resamples, workflow, metrics, control)
+  tune_grid_loop(resamples, NULL, workflow, metrics, control)
 }
-
 tune_model_with_preprocessor <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control, iter_model_with_preprocessor)
+  tune_grid_loop(resamples, grid, workflow, metrics, control)
 }
 tune_model_and_recipe <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control, iter_model_and_recipe)
+  tune_grid_loop(resamples, grid, workflow, metrics, control)
 }
 tune_recipe <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control, iter_recipe)
+  tune_grid_loop(resamples, grid, workflow, metrics, control)
 }
 
-tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter) {
-  B <- nrow(resamples)
+tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
+  n_resamples <- nrow(resamples)
 
   `%op%` <- get_operator(control$allow_par, workflow)
 
-  fn_iter_safely <- super_safely_iterate(fn_iter)
+  tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
 
   load_pkgs <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
 
-  results <-
-    foreach::foreach(rs_iter = 1:B, .packages = load_pkgs, .errorhandling = "pass") %op%
-    fn_iter_safely(rs_iter, resamples, grid_info, workflow, metrics, control)
+  results <- foreach::foreach(
+    iteration = seq_len(n_resamples),
+    .packages = load_pkgs,
+    .errorhandling = "pass"
+  ) %op% {
+    tune_grid_loop_iter_safely(
+      iteration = iteration,
+      resamples = resamples,
+      grid_info = grid_info,
+      workflow = workflow,
+      metrics = metrics,
+      control = control
+    )
+  }
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -38,203 +48,70 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, fn_iter)
 
 # ------------------------------------------------------------------------------
 
-iter_model_with_preprocessor <- function(rs_iter,
-                                         resamples,
-                                         grid_info,
-                                         workflow,
-                                         metrics,
-                                         control) {
+tune_grid_loop_iter <- function(iteration,
+                                resamples,
+                                grid_info,
+                                workflow,
+                                metrics,
+                                control) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
-  set.seed(resamples$.seed[[rs_iter]])
+  set.seed(resamples$.seed[[iteration]])
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
 
   event_level <- control$event_level
 
-  metric_est <- NULL
-  extracted <- NULL
-  pred_vals <- NULL
-  all_outcome_names <- list()
-  .notes <- NULL
+  out_metrics <- NULL
+  out_extracts <- NULL
+  out_predictions <- NULL
+  out_all_outcome_names <- list()
+  out_notes <- NULL
 
   params <- dials::parameters(workflow)
   model_params <- dplyr::filter(params, source == "model_spec")
+  preprocessor_params <- dplyr::filter(params, source == "recipe")
 
   param_names <- dplyr::pull(params, "id")
   model_param_names <- dplyr::pull(model_params, "id")
+  preprocessor_param_names <- dplyr::pull(preprocessor_params, "id")
 
-  # ----------------------------------------------------------------------------
-
-  split <- resamples$splits[[rs_iter]]
+  split <- resamples$splits[[iteration]]
   training <- rsample::analysis(split)
 
-  workflow <- catch_and_log(
-    .fit_pre(workflow, training),
-    control,
-    split,
-    "preprocessor",
-    notes = .notes
-  )
-
-  # check for failure
-  if (is_failure(workflow)) {
-    out <- list(
-      .metrics = metric_est,
-      .extracts = extracted,
-      .predictions = pred_vals,
-      .all_outcome_names = all_outcome_names,
-      .notes = .notes
-    )
-
-    return(out)
-  }
-
   # ----------------------------------------------------------------------------
+  # Preprocessor loop
 
-  # No recipe to tune, jump straight to model parameter info
-  grid_info_model <- grid_info[["data"]][[1]]
+  n_preprocessors <- nrow(grid_info)
+  workflow_original <- workflow
 
-  num_mod <- nrow(grid_info_model)
+  for (i in seq_len(n_preprocessors)) {
+    workflow <- workflow_original
 
-  # ----------------------------------------------------------------------------
-
-  original_workflow <- workflow
-
-  for (mod_iter in 1:num_mod) {
-    workflow <- original_workflow
-
-    grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
-    grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
-    submodels_iter <- grid_info_model_iter[[".submodels"]][[1L]]
-    msg_model_iter <- grid_info_model_iter[[".msg_model"]]
-    config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
-
-    workflow <- finalize_workflow_spec(workflow, grid_model_iter)
-
-    workflow <- catch_and_log_fit(
-      .fit_model(workflow, control_workflow),
-      control,
-      split,
-      msg_model_iter,
-      notes = .notes
+    iter_grid_info <- dplyr::filter(
+      .data = grid_info,
+      .iter_recipe == i
     )
 
-    # check for parsnip level and model level failure
-    if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
-      next
-    }
-
-    workflow <- .fit_finalize(workflow)
-
-    # Extract names from the mold
-    outcome_names <- outcome_names(workflow)
-    all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
-
-    extracted <- append_extracts(
-      extracted,
-      workflow,
-      grid_model_iter,
-      split,
-      control,
-      config_iter
+    iter_grid_preprocessor <- dplyr::select(
+      .data = iter_grid_info,
+      tidyselect::all_of(preprocessor_param_names)
     )
 
-    msg_pred_iter <- paste(msg_model_iter, "(predictions)")
+    iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]]
 
-    tmp_pred <- catch_and_log(
-      predict_model(split, workflow, grid_model_iter, metrics, submodels_iter),
-      control,
-      split,
-      msg_pred_iter,
-      bad_only = TRUE,
-      notes = .notes
+    workflow <- finalize_workflow_preprocessor(
+      workflow = workflow,
+      grid_preprocessor = iter_grid_preprocessor
     )
-
-    # check for prediction level failure
-    if (is_failure(tmp_pred)) {
-      next
-    }
-
-    metric_est <- append_metrics(
-      collection = metric_est,
-      predictions = tmp_pred,
-      metrics = metrics,
-      param_names = param_names,
-      outcome_name = outcome_names,
-      event_level = event_level,
-      split = split,
-      .config = config_iter
-    )
-
-    config_id <- extract_config(param_names, metric_est)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
-  } # end model loop
-
-  list(
-    .metrics = metric_est,
-    .extracts = extracted,
-    .predictions = pred_vals,
-    .all_outcome_names = all_outcome_names,
-    .notes = .notes
-  )
-}
-
-# ------------------------------------------------------------------------------
-
-iter_model_and_recipe <- function(rs_iter,
-                                  resamples,
-                                  grid_info,
-                                  workflow,
-                                  metrics,
-                                  control) {
-  load_pkgs(workflow)
-  load_namespace(control$pkgs)
-  set.seed(resamples$.seed[[rs_iter]])
-
-  control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
-  control_workflow <- control_workflow(control_parsnip = control_parsnip)
-
-  event_level <- control$event_level
-
-  metric_est <- NULL
-  extracted <- NULL
-  pred_vals <- NULL
-  all_outcome_names <- list()
-  .notes <- NULL
-
-  params <- dials::parameters(workflow)
-  model_params <- dplyr::filter(params, source == "model_spec")
-  recipe_params <- dplyr::filter(params, source == "recipe")
-
-  param_names <- dplyr::pull(params, "id")
-  model_param_names <- dplyr::pull(model_params, "id")
-  recipe_param_names <- dplyr::pull(recipe_params, "id")
-
-  split <- resamples$splits[[rs_iter]]
-  training <- rsample::analysis(split)
-
-  # --------------------------------------------------------------------------
-
-  num_rec <- nrow(grid_info)
-  original_workflow <- workflow
-
-  for (rec_iter in 1:num_rec) {
-    workflow <- original_workflow
-
-    grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
-    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
-    msg_preprocessor_iter <- grid_info_recipe_iter[[".msg_preprocessor"]]
-
-    workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
 
     workflow <- catch_and_log(
-      .fit_pre(workflow, training),
+      .expr = .fit_pre(workflow, training),
       control,
       split,
-      msg_preprocessor_iter,
-      notes = .notes
+      iter_msg_preprocessor,
+      notes = out_notes
     )
 
     if (is_failure(workflow)) {
@@ -242,226 +119,124 @@ iter_model_and_recipe <- function(rs_iter,
     }
 
     # --------------------------------------------------------------------------
+    # Model loop
 
-    grid_info_model <- grid_info_recipe_iter[["data"]][[1]]
-    num_mod <- nrow(grid_info_model)
+    iter_grid_info_models <- iter_grid_info[["data"]][[1L]]
+    n_models <- nrow(iter_grid_info_models)
 
-    # ------------------------------------------------------------------------
+    workflow_preprocessed <- workflow
 
-    original_prepped_workflow <- workflow
+    for (i in seq_len(n_models)) {
+      workflow <- workflow_preprocessed
 
-    for (mod_iter in 1:num_mod) {
-      workflow <- original_prepped_workflow
-
-      grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
-      grid_model_iter <- dplyr::select(grid_info_model_iter, tidyselect::all_of(model_param_names))
-      submodels_iter <- grid_info_model_iter[[".submodels"]][[1]]
-      msg_model_iter <- grid_info_model_iter[[".msg_model"]]
-      config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
-
-      workflow <- finalize_workflow_spec(workflow, grid_model_iter)
-
-      workflow <- catch_and_log_fit(
-        .fit_model(workflow, control_workflow),
-        control,
-        split,
-        msg_model_iter,
-        notes = .notes
+      iter_grid_info_model <- dplyr::filter(
+        .data = iter_grid_info_models,
+        .iter_model == i
       )
 
-      # check for parsnip level and model level failure
+      iter_grid_model <- dplyr::select(
+        .data = iter_grid_info_model,
+        tidyselect::all_of(model_param_names)
+      )
+
+      iter_submodels <- iter_grid_info_model[[".submodels"]][[1L]]
+      iter_msg_model <- iter_grid_info_model[[".msg_model"]]
+      iter_config <- iter_grid_info_model[[".iter_config"]][[1L]]
+
+      workflow <- finalize_workflow_spec(workflow, iter_grid_model)
+
+      workflow <- catch_and_log_fit(
+        expr = .fit_model(workflow, control_workflow),
+        control,
+        split,
+        iter_msg_model,
+        notes = out_notes
+      )
+
+      # Check for parsnip level and model level failure
       if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
         next
       }
 
       workflow <- .fit_finalize(workflow)
 
-      # Extract names from the mold
+      # Extract outcome names from the hardhat mold
       outcome_names <- outcome_names(workflow)
-      all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
 
-      grid_iter <- dplyr::bind_cols(grid_recipe_iter, grid_model_iter)
-
-      extracted <- append_extracts(
-        extracted,
-        workflow,
-        grid_iter,
-        split,
-        control,
-        config_iter
+      out_all_outcome_names <- append_outcome_names(
+        all_outcome_names = out_all_outcome_names,
+        outcome_names = outcome_names
       )
 
-      msg_pred_iter <- paste(msg_model_iter, "(predictions)")
+      # FIXME: I think this might be wrong? Doesn't use submodel parameters,
+      # so `extracts` column doesn't list the correct parameters.
+      iter_grid <- dplyr::bind_cols(
+        iter_grid_preprocessor,
+        iter_grid_model
+      )
 
-      tmp_pred <- catch_and_log(
-        predict_model(split, workflow, grid_iter, metrics, submodels_iter),
+      # FIXME: bind_cols() drops number of rows with zero col data frames
+      # because of a bug with vec_cbind()
+      # https://github.com/r-lib/vctrs/issues/1281
+      if (ncol(iter_grid_preprocessor) == 0L && ncol(iter_grid_model) == 0L) {
+        nrow <- nrow(iter_grid_model)
+        iter_grid <- tibble::new_tibble(x = list(), nrow = nrow)
+      }
+
+      out_extracts <- append_extracts(
+        collection = out_extracts,
+        workflow = workflow,
+        grid = iter_grid,
+        split = split,
+        ctrl = control,
+        .config = iter_config
+      )
+
+      iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
+
+      iter_predictions <- catch_and_log(
+        predict_model(split, workflow, iter_grid, metrics, iter_submodels),
         control,
         split,
-        msg_pred_iter,
+        iter_msg_predictions,
         bad_only = TRUE,
-        notes = .notes
+        notes = out_notes
       )
 
-      # check for prediction level failure
-      if (is_failure(tmp_pred)) {
+      # Check for prediction level failure
+      if (is_failure(iter_predictions)) {
         next
       }
 
-      metric_est <- append_metrics(
-        collection = metric_est,
-        predictions = tmp_pred,
+      out_metrics <- append_metrics(
+        collection = out_metrics,
+        predictions = iter_predictions,
         metrics = metrics,
         param_names = param_names,
         outcome_name = outcome_names,
         event_level = event_level,
         split = split,
-        .config = config_iter
+        .config = iter_config
       )
 
-      config_id <- extract_config(param_names, metric_est)
-      pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
-    } # end model loop
-  } # end recipe loop
+      iter_config_metrics <- extract_metrics_config(param_names, out_metrics)
+
+      out_predictions <- append_predictions(
+        collection = out_predictions,
+        predictions = iter_predictions,
+        split = split,
+        control = control,
+        .config = iter_config_metrics
+      )
+    } # model loop
+  } # preprocessor loop
 
   list(
-    .metrics = metric_est,
-    .extracts = extracted,
-    .predictions = pred_vals,
-    .all_outcome_names = all_outcome_names,
-    .notes = .notes
-  )
-}
-
-# ------------------------------------------------------------------------------
-
-iter_recipe <- function(rs_iter,
-                        resamples,
-                        grid_info,
-                        workflow,
-                        metrics,
-                        control) {
-  load_pkgs(workflow)
-  load_namespace(control$pkgs)
-  set.seed(resamples$.seed[[rs_iter]])
-
-  control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
-  control_workflow <- control_workflow(control_parsnip = control_parsnip)
-
-  event_level <- control$event_level
-
-  metric_est <- NULL
-  extracted <- NULL
-  pred_vals <- NULL
-  all_outcome_names <- list()
-  .notes <- NULL
-
-  params <- dials::parameters(workflow)
-  recipe_params <- dplyr::filter(params, source == "recipe")
-
-  param_names <- dplyr::pull(params, "id")
-  recipe_param_names <- dplyr::pull(recipe_params, "id")
-
-  split <- resamples$splits[[rs_iter]]
-  training <- rsample::analysis(split)
-
-  num_rec <- nrow(grid_info)
-  original_workflow <- workflow
-
-  for (rec_iter in 1:num_rec) {
-    workflow <- original_workflow
-
-    grid_info_recipe_iter <- dplyr::filter(grid_info, .iter_recipe == rec_iter)
-    grid_recipe_iter <- dplyr::select(grid_info_recipe_iter, tidyselect::all_of(recipe_param_names))
-    msg_preprocessor_iter <- grid_info_recipe_iter[[".msg_preprocessor"]]
-
-    workflow <- finalize_workflow_recipe(workflow, grid_recipe_iter)
-
-    workflow <- catch_and_log(
-      .fit_pre(workflow, training),
-      control,
-      split,
-      msg_preprocessor_iter,
-      notes = .notes
-    )
-
-    # check for recipe failure
-    if (is_failure(workflow)) {
-      next
-    }
-
-    grid_info_model <- grid_info_recipe_iter[["data"]][[1]]
-    num_mod <- nrow(grid_info_model)
-    mod_iter <- 1L
-
-    grid_info_model_iter <- dplyr::filter(grid_info_model, .iter_model == mod_iter)
-    msg_model_iter <- grid_info_model_iter[[".msg_model"]]
-    config_iter <- grid_info_model_iter[[".iter_config"]][[1L]]
-
-    workflow <- catch_and_log_fit(
-      .fit_model(workflow, control_workflow),
-      control,
-      split,
-      msg_model_iter,
-      notes = .notes
-    )
-
-    # check for parsnip level and model level failure
-    if (is_failure(workflow) || is_failure(workflow$fit$fit$fit)) {
-      next
-    }
-
-    workflow <- .fit_finalize(workflow)
-
-    # Extract names from the mold
-    outcome_names <- outcome_names(workflow)
-    all_outcome_names <- append_outcome_names(all_outcome_names, outcome_names)
-
-    extracted <- append_extracts(
-      extracted,
-      workflow,
-      grid_recipe_iter,
-      split,
-      control,
-      config_iter
-    )
-
-    msg_pred_iter <- paste(msg_model_iter, "(predictions)")
-
-    tmp_pred <- catch_and_log(
-      predict_model(split, workflow, grid_recipe_iter, metrics),
-      control,
-      split,
-      msg_pred_iter,
-      bad_only = TRUE,
-      notes = .notes
-    )
-
-    # check for prediction level failure
-    if (is_failure(tmp_pred)) {
-      next
-    }
-
-    metric_est <- append_metrics(
-      collection = metric_est,
-      predictions = tmp_pred,
-      metrics = metrics,
-      param_names = param_names,
-      outcome_name = outcome_names,
-      event_level = event_level,
-      split = split,
-      .config = config_iter
-    )
-
-    config_id <- extract_config(param_names, metric_est)
-    pred_vals <- append_predictions(pred_vals, tmp_pred, split, control, config_id)
-  } # end recipe loop
-
-  list(
-    .metrics = metric_est,
-    .extracts = extracted,
-    .predictions = pred_vals,
-    .all_outcome_names = all_outcome_names,
-    .notes = .notes
+    .metrics = out_metrics,
+    .extracts = out_extracts,
+    .predictions = out_predictions,
+    .all_outcome_names = out_all_outcome_names,
+    .notes = out_notes
   )
 }
 
@@ -472,7 +247,7 @@ super_safely_iterate <- function(fn) {
 }
 
 super_safely_iterate_impl <- function(fn,
-                                      rs_iter,
+                                      iteration,
                                       resamples,
                                       grid_info,
                                       workflow,
@@ -480,12 +255,14 @@ super_safely_iterate_impl <- function(fn,
                                       control) {
   safely_iterate <- super_safely(fn)
 
-  # Differentiate [fit_resamples()] from [tune_grid()]
-  if (is.null(grid_info)) {
-    result <- safely_iterate(rs_iter, resamples, workflow, metrics, control)
-  } else {
-    result <- safely_iterate(rs_iter, resamples, grid_info, workflow, metrics, control)
-  }
+  result <- safely_iterate(
+    iteration,
+    resamples,
+    grid_info,
+    workflow,
+    metrics,
+    control
+  )
 
   error <- result$error
   warnings <- result$warnings
@@ -507,7 +284,7 @@ super_safely_iterate_impl <- function(fn,
 
   problems <- list(res = res, signals = warnings)
 
-  split <- resamples$splits[[rs_iter]]
+  split <- resamples$splits[[iteration]]
 
   notes <- log_problems(notes, control, split, "internal", problems)
 

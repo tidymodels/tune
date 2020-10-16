@@ -206,10 +206,10 @@ append_outcome_names <- function(all_outcome_names, outcome_names) {
   c(all_outcome_names, list(outcome_names))
 }
 
-extract_config <- function(param_names, metrics) {
-  param_names <- c(param_names, ".config")
-  idx <- vctrs::vec_unique_loc(metrics[param_names])
-  metrics[idx, param_names]
+extract_metrics_config <- function(param_names, metrics) {
+  metrics_config_names <- c(param_names, ".config")
+  out <- metrics[metrics_config_names]
+  vec_unique(out)
 }
 
 #' Convenience functions to extract model or recipe
