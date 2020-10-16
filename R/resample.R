@@ -154,9 +154,12 @@ resample_workflow <- function(workflow, resamples, metrics, control) {
   rset_info <- pull_rset_attributes(resamples)
   resamples <- new_bare_tibble(resamples)
 
+  # `NULL` is the signal that we have no grid to tune with
+  grid <- NULL
+
   resamples <- tune_grid_loop(
     resamples = resamples,
-    grid = NULL,
+    grid = grid,
     workflow = workflow,
     metrics = metrics,
     control = control

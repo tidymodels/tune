@@ -1,16 +1,3 @@
-tune_nothing <- function(resamples, grid, workflow, metrics, control)  {
-  tune_grid_loop(resamples, NULL, workflow, metrics, control)
-}
-tune_model_with_preprocessor <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control)
-}
-tune_model_and_recipe <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control)
-}
-tune_recipe <- function(resamples, grid, workflow, metrics, control) {
-  tune_grid_loop(resamples, grid, workflow, metrics, control)
-}
-
 tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
   n_resamples <- nrow(resamples)
 
