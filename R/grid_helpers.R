@@ -127,6 +127,45 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
 
 # ------------------------------------------------------------------------------
 
+# For any type of tuning, and for fit-resamples, we generate a unified
+# grid-info object which is a tibble with two levels:
+#
+# - The outer level has to do with preprocessor iteration. Really this only
+#   applies to recipes, as they are the only preprocessor type that can be
+#   tuned. Each row is a unique recipe parameter combination that needs to
+#   be fit.
+# - The inner level is in the `$data` column, and has to do with the models
+#   that get fit per recipe. It has been "minified" by `min_grid()`, and each
+#   row corresponds to a single model parameter combination that has to be
+#   fit. The `$.submodels` column contains all of the submodels that this
+#   parameter combination can predict on.
+#
+# `compute_grid_info()` returns a tibble with the following columns:
+# .iter_preprocessor:
+#   An integer vector of the current preprocessor iteration.
+# .msg_preprocessor:
+#   The message that is printed as we fit this preprocessor iteration.
+# <preprocessor-tuning-columns>:
+#   Zero or more columns outlining the recipes tuning parameter combinations.
+# data:
+#   A list column containing tibbles that outline how to tune the models that
+#   match this preprocessor.
+#
+# The `$data` columns is a list-column of tibbles with the following structure:
+# .iter_model:
+#   An integer vector of the current model iteration.
+# .iter_config:
+#   A list column of character vectors containing `"Preprocessor<i>_Model<j>"`
+#   to describe exactly which iteration we are on. Each submodel is treated
+#   as its own unique model here, and has its own id.
+# .msg_model:
+#   The message that is printed as we fit this model iteration.
+# <model-tuning-columns>:
+#   Zero or more columns outlining the model tuning parameter combinations.
+# .submodels:
+#   A list column of lists. Each element contains zero of more submodels that
+#   this particular parameter combination can predict for.
+#
 compute_grid_info <- function(workflow, grid) {
   # For `fit_resamples()`
   if (is.null(grid)) {
@@ -158,6 +197,9 @@ compute_grid_info <- function(workflow, grid) {
   }
 }
 
+# This generates a "dummy" grid_info object that has the same
+# structure as a grid-info object with no tunable recipe parameters
+# and no tunable model parameters.
 new_grid_info_resamples <- function() {
   msgs_preprocessor <- new_msgs_preprocessor(
     i = 1L,
