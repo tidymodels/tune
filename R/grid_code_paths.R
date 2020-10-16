@@ -78,7 +78,7 @@ tune_grid_loop_iter <- function(iteration,
 
     iter_grid_info <- dplyr::filter(
       .data = grid_info,
-      .iter_recipe == i
+      .iter_preprocessor == i
     )
 
     iter_grid_preprocessor <- dplyr::select(
