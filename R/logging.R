@@ -144,7 +144,7 @@ catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tune_log(..., type = "info")
   tmp <- catcher(.expr)
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
-  assign(".notes", new_notes, envir = parent.frame())
+  assign("out_notes", new_notes, envir = parent.frame())
   tmp$res
 }
 
@@ -159,7 +159,7 @@ catch_and_log_fit <- function(expr, ..., notes) {
     result_parsnip <- list(res = result, signals = list())
 
     new_notes <- log_problems(notes, ..., result_parsnip)
-    assign(".notes", new_notes, envir = parent.frame())
+    assign("out_notes", new_notes, envir = parent.frame())
     return(result)
   }
 
@@ -176,12 +176,12 @@ catch_and_log_fit <- function(expr, ..., notes) {
     result_fit <- list(res = fit, signals = list())
 
     new_notes <- log_problems(notes, ..., result_fit)
-    assign(".notes", new_notes, envir = parent.frame())
+    assign("out_notes", new_notes, envir = parent.frame())
     return(result)
   }
 
   new_notes <- log_problems(notes, ..., caught)
-  assign(".notes", new_notes, envir = parent.frame())
+  assign("out_notes", new_notes, envir = parent.frame())
 
   result
 }

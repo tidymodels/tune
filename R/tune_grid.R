@@ -293,12 +293,12 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  tune_grid_workflow(
+  tune_grid(
     wflow,
     resamples = resamples,
+    param_info = param_info,
     grid = grid,
     metrics = metrics,
-    pset = param_info,
     control = control
   )
 }
@@ -309,6 +309,12 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
 
   empty_ellipses(...)
+
+  # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
+  # used when no tuning is required
+  if (is.null(grid)) {
+    rlang::abort(grid_msg)
+  }
 
   tune_grid_workflow(
     object,
@@ -322,90 +328,67 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(object,
+tune_grid_workflow <- function(workflow,
                                resamples,
                                grid = 10,
                                metrics = NULL,
                                pset = NULL,
                                control = control_grid()) {
   check_rset(resamples)
-  metrics <- check_metrics(metrics, object)
-  pset <-
-    check_parameters(object,
-                     pset = pset,
-                     data = resamples$splits[[1]]$data,
-                     grid_names = names(grid))
-  check_workflow(object, pset = pset)
+
+  metrics <- check_metrics(metrics, workflow)
+
+  pset <- check_parameters(
+    workflow = workflow,
+    pset = pset,
+    data = resamples$splits[[1]]$data,
+    grid_names = names(grid)
+  )
+
+  check_workflow(workflow, pset = pset)
 
   resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
 
-  grid <- check_grid(grid, object, pset)
+  grid <- check_grid(
+    grid = grid,
+    workflow = workflow,
+    pset = pset
+  )
 
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
   resamples <- new_bare_tibble(resamples)
 
-  code_path <- quarterback(object)
-
-  resamples <- rlang::eval_tidy(code_path)
+  resamples <- tune_grid_loop(
+    resamples = resamples,
+    grid = grid,
+    workflow = workflow,
+    metrics = metrics,
+    control = control
+  )
 
   if (is_cataclysmic(resamples)) {
-    rlang::warn("All models failed in tune_grid(). See the `.notes` column.")
+    rlang::warn("All models failed. See the `.notes` column.")
   }
 
   outcomes <- reduce_all_outcome_names(resamples)
   resamples[[".all_outcome_names"]] <- NULL
 
-  workflow_output <- set_workflow(object, control)
+  workflow <- set_workflow(workflow, control)
 
   resamples <- resamples %>% dplyr::select(-.seed)
+
   new_tune_results(
     x = resamples,
     parameters = pset,
     metrics = metrics,
     outcomes = outcomes,
     rset_info = rset_info,
-    workflow = workflow_output
+    workflow = workflow
   )
 }
 
 # ------------------------------------------------------------------------------
-
-quarterback <- function(x) {
-  y <- dials::parameters(x)
-  sources <- unique(y$source)
-
-  has_form <- has_preprocessor_formula(x)
-  has_rec <- has_preprocessor_recipe(x)
-  has_vars <- has_preprocessor_variables(x)
-
-  tune_rec <- has_rec && any(sources == "recipe")
-  tune_model <- any(sources == "model_spec")
-
-  args <- list(
-    resamples = expr(resamples),
-    grid = expr(grid),
-    workflow = expr(object),
-    metrics = expr(metrics),
-    control = expr(control)
-  )
-
-  fn <- dplyr::case_when(
-    has_form && tune_model ~ "tune_model_with_preprocessor",
-    has_vars && tune_model ~ "tune_model_with_preprocessor",
-    has_rec && !tune_rec && tune_model ~ "tune_model_with_preprocessor",
-
-    has_form && !tune_model ~ "tune_nothing",
-    has_vars && !tune_model ~ "tune_nothing",
-    has_rec && !tune_rec && !tune_model ~ "tune_nothing",
-
-    has_rec && tune_rec && tune_model ~ "tune_model_and_recipe",
-    has_rec && tune_rec && !tune_model ~ "tune_recipe"
-  )
-
-  rlang::call2(fn, !!!args)
-}
-
 
 #' @export
 #' @keywords internal

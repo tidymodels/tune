@@ -38,7 +38,7 @@ test_that("collect metrics of last fit", {
   res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
   met <- collect_metrics(res)
   expect_true(inherits(met, "tbl_df"))
-  expect_equal(names(met), c(".metric", ".estimator", ".estimate"))
+  expect_equal(names(met), c(".metric", ".estimator", ".estimate", ".config"))
 })
 
 

@@ -176,12 +176,19 @@ append_predictions <- function(collection, predictions, split, control, .config 
     return(collection)
   }
 
-  predictions <- cbind(predictions, labels(split))
+  predictions <- vec_cbind(predictions, labels(split))
+
   if (!rlang::is_null(.config)) {
-    predictions <- inner_join(
-      predictions, .config, by = setdiff(names(.config), ".config")
-      )
+    by <- setdiff(names(.config), ".config")
+
+    if (length(by) == 0L) {
+      # Nothing to tune, just bind on config
+      predictions <- vec_cbind(predictions, .config)
+    } else{
+      predictions <- dplyr::inner_join(predictions, .config, by = by)
+    }
   }
+
   dplyr::bind_rows(collection, predictions)
 }
 
@@ -206,10 +213,10 @@ append_outcome_names <- function(all_outcome_names, outcome_names) {
   c(all_outcome_names, list(outcome_names))
 }
 
-extract_config <- function(param_names, metrics) {
-  param_names <- c(param_names, ".config")
-  idx <- vctrs::vec_unique_loc(metrics[param_names])
-  metrics[idx, param_names]
+extract_metrics_config <- function(param_names, metrics) {
+  metrics_config_names <- c(param_names, ".config")
+  out <- metrics[metrics_config_names]
+  vec_unique(out)
 }
 
 #' Convenience functions to extract model or recipe

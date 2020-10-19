@@ -21,9 +21,14 @@ check_rset <- function(x) {
 
 grid_msg <- "`grid` should be a positive integer or a data frame."
 
-check_grid <- function(x, object, pset = NULL) {
+check_grid <- function(grid, workflow, pset = NULL) {
+  # `NULL` grid is the signal that we are using `fit_resamples()`
+  if (is.null(grid)) {
+    return(grid)
+  }
+
   if (is.null(pset)) {
-    pset <- dials::parameters(object)
+    pset <- dials::parameters(workflow)
   }
 
   if (nrow(pset) == 0L) {
@@ -33,33 +38,31 @@ check_grid <- function(x, object, pset = NULL) {
       "Did you want to [tune()] parameters?"
     )
     rlang::warn(msg)
-    return(x)
+
+    # Return `NULL` as the new `grid`, like what is used in `fit_resamples()`
+    return(NULL)
   }
 
-  if (is.null(x)) {
-    rlang::abort(grid_msg)
-  }
-
-  if (!is.numeric(x)) {
-    if (!is.data.frame(x)) {
+  if (!is.numeric(grid)) {
+    if (!is.data.frame(grid)) {
       rlang::abort(grid_msg)
     }
 
-    grid_distinct <- distinct(x)
-    if (!identical(nrow(grid_distinct), nrow(x))) {
+    grid_distinct <- distinct(grid)
+    if (!identical(nrow(grid_distinct), nrow(grid))) {
       rlang::warn(
         "Duplicate rows in grid of tuning combinations found and removed."
       )
     }
-    x <- grid_distinct
+    grid <- grid_distinct
 
-    tune_tbl <- tune_args(object)
+    tune_tbl <- tune_args(workflow)
     tune_params <- tune_tbl$id
 
     # when called from [tune_bayes()]
     tune_params <- tune_params[tune_params != ".iter"]
 
-    grid_params <- names(x)
+    grid_params <- names(grid)
 
     extra_grid_params <- setdiff(grid_params, tune_params)
     extra_tune_params <- setdiff(tune_params, grid_params)
@@ -88,21 +91,21 @@ check_grid <- function(x, object, pset = NULL) {
       rlang::abort(msg)
     }
   } else {
-    x <- as.integer(x[1])
-    if (x < 1) {
+    grid <- as.integer(grid[1])
+    if (grid < 1) {
       rlang::abort(grid_msg)
     }
-    check_workflow(object, pset = pset, check_dials = TRUE)
+    check_workflow(workflow, pset = pset, check_dials = TRUE)
 
-    x <- dials::grid_latin_hypercube(pset, size = x)
-    x <- dplyr::distinct(x)
+    grid <- dials::grid_latin_hypercube(pset, size = grid)
+    grid <- dplyr::distinct(grid)
   }
 
-  if (!tibble::is_tibble(x)) {
-    x <- tibble::as_tibble(x)
+  if (!tibble::is_tibble(grid)) {
+    grid <- tibble::as_tibble(grid)
   }
 
-  x
+  grid
 }
 
 needs_finalization <- function(x, nms = character(0)) {
@@ -117,15 +120,15 @@ needs_finalization <- function(x, nms = character(0)) {
   any(dials::has_unknowns(x$object))
 }
 
-check_parameters <- function(object, pset = NULL, data, grid_names = character(0)) {
+check_parameters <- function(workflow, pset = NULL, data, grid_names = character(0)) {
   if (is.null(pset)) {
-    pset <- parameters(object)
+    pset <- parameters(workflow)
   }
   unk <- purrr::map_lgl(pset$object, dials::has_unknowns)
   if (!any(unk)) {
     return(pset)
   }
-  tune_param <- tune_args(object)
+  tune_param <- tune_args(workflow)
   tune_recipe <- tune_param$id[tune_param$source == "recipe"]
   tune_recipe <- length(tune_recipe) > 0
 
@@ -149,7 +152,7 @@ check_parameters <- function(object, pset = NULL, data, grid_names = character(0
 
     tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
 
-    x <- workflows::.fit_pre(object, data)$pre$mold$predictors
+    x <- workflows::.fit_pre(workflow, data)$pre$mold$predictors
     pset$object <- purrr::map(pset$object, dials::finalize, x = x)
   }
   pset
