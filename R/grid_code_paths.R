@@ -64,6 +64,26 @@ tune_grid_loop_iter <- function(iteration,
   model_param_names <- dplyr::pull(model_params, "id")
   preprocessor_param_names <- dplyr::pull(preprocessor_params, "id")
 
+  # Model related grid-info columns
+  cols <- rlang::expr(
+    c(
+      .iter_model,
+      .iter_config,
+      .msg_model,
+      tidyselect::all_of(model_param_names),
+      .submodels
+    )
+  )
+
+  # Nest grid_info:
+  # - Preprocessor info in the outer level
+  # - Model info in the inner level
+  if (tidyr_new_interface()) {
+    grid_info <- tidyr::nest(grid_info, data = !!cols)
+  } else {
+    grid_info <- tidyr::nest(grid_info, !!cols)
+  }
+
   split <- resamples$splits[[iteration]]
   training <- rsample::analysis(split)
 
