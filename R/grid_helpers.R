@@ -128,17 +128,20 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
 # ------------------------------------------------------------------------------
 
 # For any type of tuning, and for fit-resamples, we generate a unified
-# grid-info object which is a tibble with two levels:
+# grid-info object which is a tibble with two layers of information:
 #
 # - The outer level has to do with preprocessor iteration. Really this only
 #   applies to recipes, as they are the only preprocessor type that can be
-#   tuned. Each row is a unique recipe parameter combination that needs to
-#   be fit.
-# - The inner level is in the `$data` column, and has to do with the models
-#   that get fit per recipe. It has been "minified" by `min_grid()`, and each
-#   row corresponds to a single model parameter combination that has to be
-#   fit. The `$.submodels` column contains all of the submodels that this
-#   parameter combination can predict on.
+#   tuned. These correspond to columns starting at `.iter_preprocessor` and
+#   going through the last preprocessor tuning parameter.
+# - The inner level has to do with the models that get fit per preprocessor.
+#   It corresponds to the columns starting at `.iter_model` and going through
+#   `.submodels`. This has been "minified" by `min_grid()`. The `$.submodels`
+#   column contains all of the submodels that this parameter combination can
+#   predict on.
+#
+# A single row of this tibble corresponds to a unique hyperparameter combination
+# across both the preprocessor and model that has to be fit.
 #
 # `compute_grid_info()` returns a tibble with the following columns:
 # .iter_preprocessor:
@@ -147,13 +150,9 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
 #   The message that is printed as we fit this preprocessor iteration.
 # <preprocessor-tuning-columns>:
 #   Zero or more columns outlining the recipes tuning parameter combinations.
-# data:
-#   A list column containing tibbles that outline how to tune the models that
-#   match this preprocessor.
-#
-# The `$data` columns is a list-column of tibbles with the following structure:
 # .iter_model:
-#   An integer vector of the current model iteration.
+#   An integer vector of the current model iteration within the current
+#   `.iter_preprocessor` iteration.
 # .iter_config:
 #   A list column of character vectors containing `"Preprocessor<i>_Model<j>"`
 #   to describe exactly which iteration we are on. Each submodel is treated
@@ -214,17 +213,13 @@ new_grid_info_resamples <- function() {
 
   iter_config <- list("Preprocessor1_Model1")
 
-  data <- tibble::tibble(
+  out <- tibble::tibble(
+    .iter_preprocessor = 1L,
+    .msg_preprocessor = msgs_preprocessor,
     .iter_model = 1L,
     .iter_config = iter_config,
     .msg_model = msgs_model,
     .submodels = list(list())
-  )
-
-  out <- tibble::tibble(
-    .iter_preprocessor = 1L,
-    .msg_preprocessor = msgs_preprocessor,
-    data = list(data)
   )
 
   out
@@ -235,14 +230,17 @@ compute_grid_info_preprocessor <- function(workflow,
                                            parameters_model) {
   out <- grid
 
-  out <- add_iter_preprocessor(out)
-  out <- dplyr::mutate(out, .iter_model = 1L)
-
   n_preprocessors <- nrow(out)
+  seq_preprocessors <- seq_len(n_preprocessors)
+
+  # Preprocessor<i>_Model1
+  ids <- format_with_padding(seq_preprocessors)
+  iter_configs <- paste0("Preprocessor", ids, "_Model1")
+  iter_configs <- as.list(iter_configs)
 
   # preprocessor <i>/<n>
   msgs_preprocessor <- new_msgs_preprocessor(
-    i = out[[".iter_preprocessor"]],
+    i = seq_preprocessors,
     n = n_preprocessors
   )
 
@@ -253,15 +251,26 @@ compute_grid_info_preprocessor <- function(workflow,
     msgs_preprocessor = msgs_preprocessor
   )
 
-  # Preprocessor<i>_Model1
-  ids <- format_with_padding(seq_len(n_preprocessors))
-  iter_configs <- paste0("Preprocessor", ids, "_Model1")
-  iter_configs <- as.list(iter_configs)
+  # Manually add .submodels column, which will always have empty lists
+  submodels <- rep_len(list(list()), n_preprocessors)
+
+  out <- tibble::add_column(
+    .data = out,
+    .iter_preprocessor = seq_preprocessors,
+    .before = 1L
+  )
 
   out <- tibble::add_column(
     .data = out,
     .msg_preprocessor = msgs_preprocessor,
     .after = ".iter_preprocessor"
+  )
+
+  # Add at the end
+  out <- tibble::add_column(
+    .data = out,
+    .iter_model = 1L,
+    .after = NULL
   )
 
   out <- tibble::add_column(
@@ -276,19 +285,11 @@ compute_grid_info_preprocessor <- function(workflow,
     .after = ".iter_config"
   )
 
-  # Manually add .submodels column, which will always have empty lists
-  .submodels <- rep_len(list(list()), n_preprocessors)
-  out <- tibble::add_column(out, .submodels = .submodels, .after = ".msg_model")
-
-  cols <- rlang::expr(
-    c(.iter_model, .iter_config, .msg_model, .submodels)
+  out <- tibble::add_column(
+    .data = out,
+    .submodels = submodels,
+    .after = ".msg_model"
   )
-
-  if (tidyr_new_interface()) {
-    out <- tidyr::nest(out, data = !!cols)
-  } else {
-    out <- tidyr::nest(out, !!cols)
-  }
 
   out
 }
@@ -301,10 +302,8 @@ compute_grid_info_model <- function(workflow,
 
   parameter_names_model <- parameters_model[["id"]]
 
-  out <- dplyr::mutate(out, .iter_preprocessor = 1L)
-  out <- add_iter_model(out)
-
   n_fit_models <- nrow(out)
+  seq_fit_models <- seq_len(n_fit_models)
 
   # preprocessor 1/1
   msgs_preprocessor <- new_msgs_preprocessor(i = 1L, n = 1L)
@@ -312,7 +311,7 @@ compute_grid_info_model <- function(workflow,
 
   # preprocessor 1/1, model <i_fit>/<n_fit>
   msgs_model <- new_msgs_model(
-    i = seq_len(n_fit_models),
+    i = seq_fit_models,
     n = n_fit_models,
     msgs_preprocessor = msgs_preprocessor
   )
@@ -320,19 +319,35 @@ compute_grid_info_model <- function(workflow,
   # Preprocessor1_Model<i>
   iter_configs <- compute_config_ids(out, "Preprocessor1")
 
-  out <- tibble::add_column(out, .msg_preprocessor = msgs_preprocessor, .after = ".iter_preprocessor")
-  out <- tibble::add_column(out, .iter_config = iter_configs, .after = ".iter_model")
-  out <- tibble::add_column(out, .msg_model = msgs_model, .after = ".iter_config")
-
-  cols <- rlang::expr(
-    c(.iter_model, .iter_config, .msg_model, tidyselect::all_of(parameter_names_model), .submodels)
+  out <- tibble::add_column(
+    .data = out,
+    .iter_preprocessor = 1L,
+    .before = 1L
   )
 
-  if (tidyr_new_interface()) {
-    out <- tidyr::nest(out, data = !!cols)
-  } else {
-    out <- tidyr::nest(out, !!cols)
-  }
+  out <- tibble::add_column(
+    .data = out,
+    .msg_preprocessor = msgs_preprocessor,
+    .after = ".iter_preprocessor"
+  )
+
+  out <- tibble::add_column(
+    .data = out,
+    .iter_model = seq_fit_models,
+    .after = ".msg_preprocessor"
+  )
+
+  out <- tibble::add_column(
+    .data = out,
+    .iter_config = iter_configs,
+    .after = ".iter_model"
+  )
+
+  out <- tibble::add_column(
+    .data = out,
+    .msg_model = msgs_model,
+    .after = ".iter_config"
+  )
 
   out
 }
@@ -349,23 +364,19 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
     out <- tidyr::nest(grid, tidyselect::all_of(parameter_names_model))
   }
 
-  spec <- workflows::pull_workflow_spec(workflow)
-
-  # Minify model grids
-  out$data <- purrr::map(out$data, min_grid, x = spec)
-
-  # Add model iteration
-  out$data <- purrr::map(out$data, add_iter_model)
-
-  # Add preprocessor iteration
-  out <- add_iter_preprocessor(out)
-
   n_preprocessors <- nrow(out)
+  seq_preprocessors <- seq_len(n_preprocessors)
 
   # preprocessor <i_pre>/<n_pre>
   msgs_preprocessor <- new_msgs_preprocessor(
-    i = out[[".iter_preprocessor"]],
+    i = seq_preprocessors,
     n = n_preprocessors
+  )
+
+  out <- tibble::add_column(
+    .data = out,
+    .iter_preprocessor = seq_preprocessors,
+    .before = 1L
   )
 
   out <- tibble::add_column(
@@ -374,28 +385,39 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
     .after = ".iter_preprocessor"
   )
 
-  ids_preprocessor <- format_with_padding(seq_len(n_preprocessors))
+  spec <- workflows::pull_workflow_spec(workflow)
+
+  ids_preprocessor <- format_with_padding(seq_preprocessors)
   ids_preprocessor <- paste0("Preprocessor", ids_preprocessor)
 
   model_grids <- out[["data"]]
 
-  for (i in seq_len(n_preprocessors)) {
+  for (i in seq_preprocessors) {
     model_grid <- model_grids[[i]]
 
+    model_grid <- min_grid(spec, model_grid)
+
     n_fit_models <- nrow(model_grid)
+    seq_fit_models <- seq_len(n_fit_models)
 
     msg_preprocessor <- msgs_preprocessor[[i]]
     id_preprocessor <- ids_preprocessor[[i]]
 
     # preprocessor <i_pre>/<n_pre>, model <i_mod>/<n_mod>
     msgs_model <- new_msgs_model(
-      i = model_grid[[".iter_model"]],
+      i = seq_fit_models,
       n = n_fit_models,
       msgs_preprocessor = msg_preprocessor
     )
 
     # Preprocessor<i_pre>_Model<i>
     iter_configs <- compute_config_ids(model_grid, id_preprocessor)
+
+    model_grid <- tibble::add_column(
+      .data  = model_grid,
+      .iter_model = seq_fit_models,
+      .before = 1L
+    )
 
     model_grid <- tibble::add_column(
       .data = model_grid,
@@ -414,6 +436,9 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
 
   out[["data"]] <- model_grids
 
+  # Unnest to match other grid-info generators
+  out <- tidyr::unnest(out, data)
+
   out
 }
 
@@ -422,13 +447,6 @@ new_msgs_preprocessor <- function(i, n) {
 }
 new_msgs_model <- function(i, n, msgs_preprocessor) {
   paste0(msgs_preprocessor, ", model ", i, "/", n)
-}
-
-add_iter_preprocessor <- function(data) {
-  tibble::rowid_to_column(data, var = ".iter_preprocessor")
-}
-add_iter_model <- function(data) {
-  tibble::rowid_to_column(data, var = ".iter_model")
 }
 
 # c(1, 10) -> c("01", "10")
