@@ -175,6 +175,30 @@ test_that('tune model and recipe (multi-predict)', {
 
 # ------------------------------------------------------------------------------
 
+test_that('tune model and recipe (parallel_over = "everything")', {
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  grid <- grid_regular(pset, levels = 3)
+  folds <- vfold_cv(mtcars)
+  control <- control_grid(extract = identity, parallel_over = "everything")
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
+  res_est <- collect_metrics(res)
+
+  expect_equal(res$id, folds$id)
+  expect_equal(
+    colnames(res$.metrics[[1]]),
+    c("cost", "num_comp", ".metric", ".estimator", ".estimate", ".config")
+  )
+  expect_equal(nrow(res_est), nrow(grid) * 2)
+  expect_equal(sum(res_est$.metric == "rmse"), nrow(grid))
+  expect_equal(sum(res_est$.metric == "rsq"), nrow(grid))
+  expect_equal(res_est$n, rep(10, nrow(grid) * 2))
+})
+
+# ------------------------------------------------------------------------------
+
 test_that("tune recipe only - failure in recipe is caught elegantly", {
 
   set.seed(7898)

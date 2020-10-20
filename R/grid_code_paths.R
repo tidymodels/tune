@@ -14,9 +14,9 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
   n_grid_info <- nrow(grid_info)
   rows <- seq_len(n_grid_info)
 
-  parallel_method <- control$parallel_method %||% "outer"
+  parallel_over <- control$parallel_over
 
-  if (identical(parallel_method, "outer")) {
+  if (identical(parallel_over, "resamples")) {
     results <- foreach::foreach(
       iteration = iterations,
       .packages = packages,
@@ -31,7 +31,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
         control = control
       )
     }
-  } else if (identical(parallel_method, "flat")) {
+  } else if (identical(parallel_over, "everything")) {
     results <- foreach::foreach(
       iteration = iterations,
       .packages = packages,
@@ -55,7 +55,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
         )
       }
   } else {
-    rlang::abort("Internal error: Invalid `parallel_method`.")
+    rlang::abort("Internal error: Invalid `parallel_over`.")
   }
 
   resamples <- pull_metrics(resamples, results, control)

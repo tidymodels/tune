@@ -8,6 +8,8 @@
 
 ## Other Changes
 
+* New `parallel_over` control argument to adjust the parallel processing method that tune uses.
+
 * The `.config` column that appears in the returned tibble from tuning and fitting resamples has changed slightly. It is now always of the form `"Preprocessor<i>_Model<j>"`.
 
 * `predict()` can now be called on the workflow returned from `last_fit()` (#294, #295, #296).
