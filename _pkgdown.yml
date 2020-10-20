@@ -50,15 +50,15 @@ navbar:
   - text: "Articles"
     menu:
     - text: Grid Search
-      href: articles/grid.html
+      href: https://www.tidymodels.org/learn/work/tune-svm/
     - text: Acquisition Functions
       href: articles/acquisition_functions.html
     - text: Bayesian Optimization of Classification Model
-      href: articles/extras/svm_classification.html
+      href: https://www.tidymodels.org/learn/work/bayes-opt/
     - text: Optimizations and Parallel Processing
       href: articles/extras/optimizations.html
     - text: Text Analysis Example
-      href: articles/extras/text_analysis.html
+      href: https://www.tidymodels.org/learn/work/tune-text/
   - text: Reference
     href: reference/index.html
   - text: News
