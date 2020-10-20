@@ -1,27 +1,61 @@
 tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
-  n_resamples <- nrow(resamples)
-
   `%op%` <- get_operator(control$allow_par, workflow)
+  `%:%` <- foreach::`%:%`
 
   tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
 
-  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
+  packages <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
 
-  results <- foreach::foreach(
-    iteration = seq_len(n_resamples),
-    .packages = load_pkgs,
-    .errorhandling = "pass"
-  ) %op% {
-    tune_grid_loop_iter_safely(
-      iteration = iteration,
-      resamples = resamples,
-      grid_info = grid_info,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
+  n_resamples <- nrow(resamples)
+  iterations <- seq_len(n_resamples)
+
+  n_grid_info <- nrow(grid_info)
+  rows <- seq_len(n_grid_info)
+
+  parallel_over <- control$parallel_over
+
+  if (identical(parallel_over, "resamples")) {
+    results <- foreach::foreach(
+      iteration = iterations,
+      .packages = packages,
+      .errorhandling = "pass"
+    ) %op% {
+      tune_grid_loop_iter_safely(
+        iteration = iteration,
+        resamples = resamples,
+        grid_info = grid_info,
+        workflow = workflow,
+        metrics = metrics,
+        control = control
+      )
+    }
+  } else if (identical(parallel_over, "everything")) {
+    results <- foreach::foreach(
+      iteration = iterations,
+      .packages = packages,
+      .errorhandling = "pass"
+    ) %:%
+      foreach::foreach(
+        row = rows,
+        .packages = packages,
+        .errorhandling = "pass",
+        .combine = iter_combine
+      ) %op% {
+        grid_info_row <- vec_slice(grid_info, row)
+
+        tune_grid_loop_iter_safely(
+          iteration = iteration,
+          resamples = resamples,
+          grid_info = grid_info_row,
+          workflow = workflow,
+          metrics = metrics,
+          control = control
+        )
+      }
+  } else {
+    rlang::abort("Internal error: Invalid `parallel_over`.")
   }
 
   resamples <- pull_metrics(resamples, results, control)
@@ -31,6 +65,35 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
+}
+
+# ------------------------------------------------------------------------------
+
+# Combine results from individual hyperparameter combination iterations.
+# For use by `flat` parallel method to return something to the outer parallel
+# loop that looks identical to the `outer` parallel method
+iter_combine <- function(...) {
+  results <- list(...)
+
+  metrics <- purrr::map(results, ~.x[[".metrics"]])
+  extracts <- purrr::map(results, ~.x[[".extracts"]])
+  predictions <- purrr::map(results, ~.x[[".predictions"]])
+  all_outcome_names <- purrr::map(results, ~.x[[".all_outcome_names"]])
+  notes <- purrr::map(results, ~.x[[".notes"]])
+
+  metrics <- vec_c(!!!metrics)
+  extracts <- vec_c(!!!extracts)
+  predictions <- vec_c(!!!predictions)
+  all_outcome_names <- vec_c(!!!all_outcome_names)
+  notes <- vec_c(!!!notes)
+
+  list(
+    .metrics = metrics,
+    .extracts = extracts,
+    .predictions = predictions,
+    .all_outcome_names = all_outcome_names,
+    .notes = notes
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -90,15 +153,16 @@ tune_grid_loop_iter <- function(iteration,
   # ----------------------------------------------------------------------------
   # Preprocessor loop
 
-  n_preprocessors <- nrow(grid_info)
+  iter_preprocessors <- grid_info[[".iter_preprocessor"]]
+
   workflow_original <- workflow
 
-  for (i in seq_len(n_preprocessors)) {
+  for (iter_preprocessor in iter_preprocessors) {
     workflow <- workflow_original
 
     iter_grid_info <- dplyr::filter(
       .data = grid_info,
-      .iter_preprocessor == i
+      .iter_preprocessor == iter_preprocessor
     )
 
     iter_grid_preprocessor <- dplyr::select(
@@ -129,16 +193,16 @@ tune_grid_loop_iter <- function(iteration,
     # Model loop
 
     iter_grid_info_models <- iter_grid_info[["data"]][[1L]]
-    n_models <- nrow(iter_grid_info_models)
+    iter_models <- iter_grid_info_models[[".iter_model"]]
 
     workflow_preprocessed <- workflow
 
-    for (i in seq_len(n_models)) {
+    for (iter_model in iter_models) {
       workflow <- workflow_preprocessed
 
       iter_grid_info_model <- dplyr::filter(
         .data = iter_grid_info_models,
-        .iter_model == i
+        .iter_model == iter_model
       )
 
       iter_grid_model <- dplyr::select(
