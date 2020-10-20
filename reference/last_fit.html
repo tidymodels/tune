@@ -239,11 +239,11 @@ the test data.</p>
 #&gt; </span><span style='color: #555555;'>1</span><span> </span><span style='color: #555555;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #555555;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #555555;'>&lt;tibble [0 </span><span>… </span><span style='color: #555555;'>&lt;tibble [8 × </span><span>… </span><span style='color: #555555;'>&lt;workflo</span><span>…</div><div class='input'>
 <span class='co'># test set results</span>
 <span class='va'>spline_res</span><span class='op'>$</span><span class='va'>.metrics</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 3</span><span>
-#&gt;   .metric .estimator .estimate
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard       5.74 
-#&gt; </span><span style='color: #555555;'>2</span><span> rsq     standard       0.503</div><div class='input'>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 2 x 4</span><span>
+#&gt;   .metric .estimator .estimate .config             
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>               
+#&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard       5.74  Preprocessor1_Model1
+#&gt; </span><span style='color: #555555;'>2</span><span> rsq     standard       0.503 Preprocessor1_Model1</div><div class='input'>
 <span class='co'># or use a workflow</span>
 
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/workflows'>workflows</a></span><span class='op'>)</span>
