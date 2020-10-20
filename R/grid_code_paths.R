@@ -90,15 +90,16 @@ tune_grid_loop_iter <- function(iteration,
   # ----------------------------------------------------------------------------
   # Preprocessor loop
 
-  n_preprocessors <- nrow(grid_info)
+  iter_preprocessors <- grid_info[[".iter_preprocessor"]]
+
   workflow_original <- workflow
 
-  for (i in seq_len(n_preprocessors)) {
+  for (iter_preprocessor in iter_preprocessors) {
     workflow <- workflow_original
 
     iter_grid_info <- dplyr::filter(
       .data = grid_info,
-      .iter_preprocessor == i
+      .iter_preprocessor == iter_preprocessor
     )
 
     iter_grid_preprocessor <- dplyr::select(
@@ -129,16 +130,16 @@ tune_grid_loop_iter <- function(iteration,
     # Model loop
 
     iter_grid_info_models <- iter_grid_info[["data"]][[1L]]
-    n_models <- nrow(iter_grid_info_models)
+    iter_models <- iter_grid_info_models[[".iter_model"]]
 
     workflow_preprocessed <- workflow
 
-    for (i in seq_len(n_models)) {
+    for (iter_model in iter_models) {
       workflow <- workflow_preprocessed
 
       iter_grid_info_model <- dplyr::filter(
         .data = iter_grid_info_models,
-        .iter_model == i
+        .iter_model == iter_model
       )
 
       iter_grid_model <- dplyr::select(
