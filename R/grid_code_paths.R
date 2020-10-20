@@ -1,27 +1,61 @@
 tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
-  n_resamples <- nrow(resamples)
-
   `%op%` <- get_operator(control$allow_par, workflow)
+  `%:%` <- foreach::`%:%`
 
   tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
 
-  load_pkgs <- c(control$pkgs, required_pkgs(workflow))
+  packages <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
 
-  results <- foreach::foreach(
-    iteration = seq_len(n_resamples),
-    .packages = load_pkgs,
-    .errorhandling = "pass"
-  ) %op% {
-    tune_grid_loop_iter_safely(
-      iteration = iteration,
-      resamples = resamples,
-      grid_info = grid_info,
-      workflow = workflow,
-      metrics = metrics,
-      control = control
-    )
+  n_resamples <- nrow(resamples)
+  iterations <- seq_len(n_resamples)
+
+  n_grid_info <- nrow(grid_info)
+  rows <- seq_len(n_grid_info)
+
+  parallel_method <- control$parallel_method %||% "outer"
+
+  if (identical(parallel_method, "outer")) {
+    results <- foreach::foreach(
+      iteration = iterations,
+      .packages = packages,
+      .errorhandling = "pass"
+    ) %op% {
+      tune_grid_loop_iter_safely(
+        iteration = iteration,
+        resamples = resamples,
+        grid_info = grid_info,
+        workflow = workflow,
+        metrics = metrics,
+        control = control
+      )
+    }
+  } else if (identical(parallel_method, "flat")) {
+    results <- foreach::foreach(
+      iteration = iterations,
+      .packages = packages,
+      .errorhandling = "pass"
+    ) %:%
+      foreach::foreach(
+        row = rows,
+        .packages = packages,
+        .errorhandling = "pass",
+        .combine = iter_combine
+      ) %op% {
+        grid_info_row <- vec_slice(grid_info, row)
+
+        tune_grid_loop_iter_safely(
+          iteration = iteration,
+          resamples = resamples,
+          grid_info = grid_info_row,
+          workflow = workflow,
+          metrics = metrics,
+          control = control
+        )
+      }
+  } else {
+    rlang::abort("Internal error: Invalid `parallel_method`.")
   }
 
   resamples <- pull_metrics(resamples, results, control)
@@ -31,6 +65,35 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
   resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
+}
+
+# ------------------------------------------------------------------------------
+
+# Combine results from individual hyperparameter combination iterations.
+# For use by `flat` parallel method to return something to the outer parallel
+# loop that looks identical to the `outer` parallel method
+iter_combine <- function(...) {
+  results <- list(...)
+
+  metrics <- purrr::map(results, ~.x[[".metrics"]])
+  extracts <- purrr::map(results, ~.x[[".extracts"]])
+  predictions <- purrr::map(results, ~.x[[".predictions"]])
+  all_outcome_names <- purrr::map(results, ~.x[[".all_outcome_names"]])
+  notes <- purrr::map(results, ~.x[[".notes"]])
+
+  metrics <- vec_c(!!!metrics)
+  extracts <- vec_c(!!!extracts)
+  predictions <- vec_c(!!!predictions)
+  all_outcome_names <- vec_c(!!!all_outcome_names)
+  notes <- vec_c(!!!notes)
+
+  list(
+    .metrics = metrics,
+    .extracts = extracts,
+    .predictions = predictions,
+    .all_outcome_names = all_outcome_names,
+    .notes = notes
+  )
 }
 
 # ------------------------------------------------------------------------------
