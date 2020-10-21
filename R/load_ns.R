@@ -59,7 +59,8 @@ load_namespace <- function(x) {
 ## -----------------------------------------------------------------------------
 
 infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr",
-                "tibble", "dials", "rsample")
+                "tibble", "dials", "rsample", "workflows", "tidyr", "rlang",
+                "vctrs")
 
 #' Determine packages required by objects
 #'

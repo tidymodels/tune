@@ -43,7 +43,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
         .errorhandling = "pass",
         .combine = iter_combine
       ) %op% {
-        grid_info_row <- vec_slice(grid_info, row)
+        grid_info_row <- vctrs::vec_slice(grid_info, row)
 
         tune_grid_loop_iter_safely(
           iteration = iteration,
