@@ -95,7 +95,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9001</span>
         </div>
       </div>
     </div>
@@ -173,7 +173,8 @@
   pkgs <span class='op'>=</span> <span class='cn'>NULL</span>,
   save_workflow <span class='op'>=</span> <span class='cn'>FALSE</span>,
   save_gp_scoring <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  event_level <span class='op'>=</span> <span class='st'>"first"</span>
+  event_level <span class='op'>=</span> <span class='st'>"first"</span>,
+  parallel_over <span class='op'>=</span> <span class='st'>"resamples"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -246,6 +247,20 @@ useful for teaching purposes.</p></td>
 This argument is passed on to yardstick metric functions when any type
 of class prediction is made, and specifies which level of the outcome
 is considered the "event".</p></td>
+    </tr>
+    <tr>
+      <th>parallel_over</th>
+      <td><p>A single string containing either <code>"resamples"</code> or
+<code>"everything"</code> describing how to use parallel processing.</p>
+<p>If <code>"resamples"</code>, then tuning will be performed in parallel over resamples
+alone. Within each resample, the preprocessor (i.e. recipe or formula) is
+processed once, and is then reused across all models that need to be fit.</p>
+<p>If <code>"everything"</code>, then tuning will be performed in parallel at two levels.
+An outer parallel loop will iterate over resamples. Additionally, an
+inner parallel loop will iterate over all unique combinations of
+preprocessor and model tuning parameters for that specific resample. This
+will result in the preprocessor being re-processed multiple times, but
+can be faster if that processing is extremely fast.</p></td>
     </tr>
     </table>
 

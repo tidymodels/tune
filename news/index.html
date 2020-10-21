@@ -94,7 +94,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1.9001</span>
         </div>
       </div>
     </div>
@@ -172,6 +172,7 @@
 <h2 class="hasAnchor">
 <a href="#other-changes" class="anchor"></a>Other Changes</h2>
 <ul>
+<li><p>New <code>parallel_over</code> control argument to adjust the parallel processing method that tune uses.</p></li>
 <li><p>The <code>.config</code> column that appears in the returned tibble from tuning and fitting resamples has changed slightly. It is now always of the form <code>"Preprocessor&lt;i&gt;_Model&lt;j&gt;"</code>.</p></li>
 <li><p><code><a href="https://rdrr.io/r/stats/predict.html">predict()</a></code> can now be called on the workflow returned from <code><a href="../reference/last_fit.html">last_fit()</a></code> (<a href='https://github.com/tidymodels/tune/issues/294'>#294</a>, <a href='https://github.com/tidymodels/tune/issues/295'>#295</a>, <a href='https://github.com/tidymodels/tune/issues/296'>#296</a>).</p></li>
 <li><p>tune now supports setting the <code>event_level</code> option from yardstick through the control objects (i.e. <code><a href="../reference/control_grid.html">control_grid(event_level = "second")</a></code>) (<a href='https://github.com/tidymodels/tune/issues/240'>#240</a>, <a href='https://github.com/tidymodels/tune/issues/249'>#249</a>).</p></li>
