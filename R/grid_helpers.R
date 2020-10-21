@@ -12,7 +12,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
     msg <- paste0("Some assessment set rows are not available at ",
                   "prediction time. ")
 
-    if (names(workflow$pre$actions) == "recipe") {
+    if (has_preprocessor_recipe(workflow)) {
       msg <- paste0(
         msg,
         "Consider using `skip = TRUE` on any recipe steps that remove rows ",
