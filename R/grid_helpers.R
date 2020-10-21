@@ -25,7 +25,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
       )
     }
 
-    rlang::abort(paste0(msg))
+    rlang::abort(msg)
   }
 
   # Determine the type of prediction that is required
