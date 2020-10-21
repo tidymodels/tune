@@ -8,6 +8,12 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
 
   orig_rows <- as.integer(split, data = "assessment")
 
+  if (length(orig_rows) != nrow(x_vals)) {
+    rlang::abort(paste0("Some assessment set rows are not available at ",
+                        "prediction time. Did your preprocessing steps ",
+                        "filter or remove rows?"))
+  }
+
   # Determine the type of prediction that is required
   type_info <- metrics_info(metrics)
   types <- unique(type_info$type)
