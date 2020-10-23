@@ -67,19 +67,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/grid.html">Grid Search</a>
+      <a href="https://www.tidymodels.org/learn/work/tune-svm/">Grid Search</a>
     </li>
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
-      <a href="../articles/extras/svm_classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="https://www.tidymodels.org/learn/work/bayes-opt/">Bayesian Optimization of Classification Model</a>
     </li>
     <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
     </li>
     <li>
-      <a href="../articles/extras/text_analysis.html">Text Analysis Example</a>
+      <a href="https://www.tidymodels.org/learn/work/tune-text/">Text Analysis Example</a>
     </li>
   </ul>
 </li>
@@ -105,7 +105,8 @@
 
       
 
-      </header><script src="getting_started_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="getting_started_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="getting_started_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="getting_started_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Getting Started with tune</h1>
@@ -241,7 +242,22 @@
 <p>The root mean squared error will be used to measure performance (and this is the default for regression problems).</p>
 <p>Using these objects, <code><a href="../reference/tune_grid.html">tune_grid()</a></code> can be used<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></pre></div>
+<span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'rlang'</span>
+<span class="co">#&gt; The following objects are masked from 'package:purrr':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     %@%, as_function, flatten, flatten_chr, flatten_dbl, flatten_int,</span>
+<span class="co">#&gt;     flatten_lgl, flatten_raw, invoke, list_along, modify, prepend,</span>
+<span class="co">#&gt;     splice</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'vctrs'</span>
+<span class="co">#&gt; The following object is masked from 'package:tibble':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     data_frame</span>
+<span class="co">#&gt; The following object is masked from 'package:dplyr':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     data_frame</span></pre></div>
 <p>The object is similar to the <code>rsample</code> object but with one or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit">
 <span class="va">ames_res</span>

@@ -100,15 +100,6 @@
     <loc>https://tune.tidymodels.org/articles/extras/optimizations.html</loc>
   </url>
   <url>
-    <loc>https://tune.tidymodels.org/articles/extras/svm_classification.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/extras/text_analysis.html</loc>
-  </url>
-  <url>
     <loc>https://tune.tidymodels.org/articles/getting_started.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/grid.html</loc>
   </url>
 </urlset>

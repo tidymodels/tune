@@ -112,19 +112,19 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/grid.html">Grid Search</a>
+      <a href="https://www.tidymodels.org/learn/work/tune-svm/">Grid Search</a>
     </li>
     <li>
       <a href="../articles/acquisition_functions.html">Acquisition Functions</a>
     </li>
     <li>
-      <a href="../articles/extras/svm_classification.html">Bayesian Optimization of Classification Model</a>
+      <a href="https://www.tidymodels.org/learn/work/bayes-opt/">Bayesian Optimization of Classification Model</a>
     </li>
     <li>
       <a href="../articles/extras/optimizations.html">Optimizations and Parallel Processing</a>
     </li>
     <li>
-      <a href="../articles/extras/text_analysis.html">Text Analysis Example</a>
+      <a href="https://www.tidymodels.org/learn/work/tune-text/">Text Analysis Example</a>
     </li>
   </ul>
 </li>
@@ -324,7 +324,17 @@ summarize.</p>
 #&gt; <span class='message'>Use the argument `event_level = "second"` to alter this as needed.</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: scales</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘scales’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:purrr’:</span>
 #&gt; <span class='message'></span>
-#&gt; <span class='message'>    discard</span></div><div class='input'>
+#&gt; <span class='message'>    discard</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘rlang’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:purrr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    %@%, as_function, flatten, flatten_chr, flatten_dbl, flatten_int,</span>
+#&gt; <span class='message'>    flatten_lgl, flatten_raw, invoke, list_along, modify, prepend,</span>
+#&gt; <span class='message'>    splice</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘vctrs’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:tibble’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    data_frame</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:dplyr’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    data_frame</span></div><div class='input'>
 <span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 384 x 7</span><span>
 #&gt;    id      id2   .pred  .row    df   mpg .config             

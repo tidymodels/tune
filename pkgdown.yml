@@ -4,11 +4,8 @@ pkgdown_sha: ~
 articles:
   acquisition_functions: acquisition_functions.html
   extras/optimizations: optimizations.html
-  extras/svm_classification: svm_classification.html
-  extras/text_analysis: text_analysis.html
   getting_started: getting_started.html
-  grid: grid.html
-last_built: 2020-10-20T21:38Z
+last_built: 2020-10-23T16:25Z
 urls:
   reference: https://tune.tidymodels.org/reference
   article: https://tune.tidymodels.org/articles
