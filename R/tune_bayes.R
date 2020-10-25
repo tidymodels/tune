@@ -253,7 +253,8 @@ tune_bayes_workflow <-
     }
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
-    unsummarized <- check_initial(initial, param_info, object, resamples, metrics, control)
+    unsummarized <- check_initial(initial, param_info, object, resamples,
+                                  metrics, control, checks = "bayes")
 
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
@@ -402,12 +403,14 @@ tune_bayes_workflow <-
     )
   }
 
-create_initial_set <- function(param, n = NULL) {
+create_initial_set <- function(param, n = NULL, checks) {
   check_param_objects(param)
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
-  check_bayes_initial_size(nrow(param), n)
+  if (any(checks == "bayes")) {
+    check_bayes_initial_size(nrow(param), n)
+  }
   dials::grid_latin_hypercube(param, size = n)
 }
 

@@ -431,12 +431,12 @@ test_that('too few starting values', {
 
   expect_error(
     tune:::check_bayes_initial_size(5, 1, FALSE),
-    "request 2+"
+    "requires 2+"
   )
 
   expect_error(
     tune:::check_bayes_initial_size(5, 1, TRUE),
-    "request 2+"
+    "requires 2+"
   )
   expect_error(
     tune:::check_bayes_initial_size(5, 1, TRUE),
