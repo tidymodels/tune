@@ -8,6 +8,26 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
 
   orig_rows <- as.integer(split, data = "assessment")
 
+  if (length(orig_rows) != nrow(x_vals)) {
+    msg <- paste0("Some assessment set rows are not available at ",
+                  "prediction time. ")
+
+    if (has_preprocessor_recipe(workflow)) {
+      msg <- paste0(
+        msg,
+        "Consider using `skip = TRUE` on any recipe steps that remove rows ",
+        "to avoid calling them on the assessment set."
+      )
+    } else {
+      msg <- paste0(
+        msg,
+        "Did your preprocessing steps filter or remove rows?"
+      )
+    }
+
+    rlang::abort(msg)
+  }
+
   # Determine the type of prediction that is required
   type_info <- metrics_info(metrics)
   types <- unique(type_info$type)
