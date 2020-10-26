@@ -551,7 +551,7 @@ update_score_card <- function(info, iter, results, control) {
     is_better <- current_val < info$best_val
   }
 
-  if (is_better) {
+  if (!is.na(is_better) & is_better) {
     info$last_impr <- 0
     info$best_val <- current_val
     info$best_iter <- iter
