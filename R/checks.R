@@ -183,8 +183,8 @@ check_installs <- function(x) {
     is_inst <- purrr::map_lgl(deps, is_installed)
     if (any(!is_inst)) {
       stop("Some package installs are required: ",
-        paste0("'", deps[!is_inst], "'", collapse = ", "),
-        call. = FALSE
+           paste0("'", deps[!is_inst], "'", collapse = ", "),
+           call. = FALSE
       )
     }
   }
@@ -206,7 +206,8 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
            "")
   if (num_grid == 1) {
     rlang::abort(
-      paste(tune_color$symbol$warning("!"), msg, "The GP model request 2+ initial points but there should",
+      paste(tune_color$symbol$warning("!"), msg,
+            "The GP model requires 2+ initial points but there should",
             "be more initial points than there are tuning paramters.", race_msg)
     )
   }
@@ -335,12 +336,12 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "grid") {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
   }
   if (is.numeric(x)) {
-    x <- create_initial_set(pset, n = x)
+    x <- create_initial_set(pset, n = x, checks = checks)
     if (ctrl$verbose) {
       message()
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
@@ -391,7 +392,10 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl) {
         dplyr::distinct(!!!rlang::syms(param_nms)) %>%
         nrow()
     }
-    check_bayes_initial_size(length(param_nms), num_grid, inherits(x, "tune_race"))
+    if (any(checks == "bayes")) {
+      check_bayes_initial_size(length(param_nms), num_grid,
+                               race = inherits(x, "tune_race"))
+    }
   }
   if (!any(names(x) == ".iter")) {
     x <- x %>% dplyr::mutate(.iter = 0L)
