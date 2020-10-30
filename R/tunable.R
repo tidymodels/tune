@@ -47,10 +47,6 @@
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   tunable()
 #' }
-#' @export
-tunable <- function(x, ...) {
-  UseMethod("tunable")
-}
 
 #' @rdname tunable
 #' @export
