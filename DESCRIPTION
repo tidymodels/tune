@@ -34,7 +34,8 @@ Imports:
     hardhat (>= 0.1.0),
     lifecycle,
     vctrs (>= 0.3.0),
-    tidyselect (>= 1.1.0)
+    tidyselect (>= 1.1.0),
+    generics
 Suggests: 
     testthat,
     knitr,
@@ -52,4 +53,5 @@ Language: en-US
 Remotes:
     tidymodels/rsample,
     tidymodels/workflows,
-    tidymodels/dials
+    tidymodels/dials,
+    r-lib/generics
