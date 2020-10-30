@@ -23,7 +23,6 @@ Imports:
     ggplot2,
     glue,
     cli (>= 2.0.0),
-    crayon,
     yardstick (>= 0.0.7),
     rsample (>= 0.0.7.9000),
     tidyr,

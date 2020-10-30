@@ -192,7 +192,7 @@ log_best <- function(control, iter, info, digits = 4) {
   }
 
   message("")
-  message(cli::rule(left = crayon::bold(paste("Iteration", iter))))
+  message(cli::rule(left = bold(paste("Iteration", iter))))
   message("")
 
   msg <-
@@ -246,9 +246,9 @@ log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits =
   }
 
   if (bst_iter == max_iter) {
-    msg <- paste0(crayon::red(cli::symbol$heart), msg)
+    msg <- paste0(red(cli::symbol$heart), msg)
   } else {
-    msg <- paste0(crayon::silver(cli::symbol$circle_cross), msg)
+    msg <- paste0(silver(cli::symbol$circle_cross), msg)
   }
   message(msg)
 }

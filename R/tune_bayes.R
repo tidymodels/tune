@@ -526,7 +526,7 @@ pick_candidate <- function(results, info, control) {
     results <- results %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
   } else {
     if (control$verbose) {
-      msg <- paste(crayon::blue(cli::symbol$circle_question_mark), "Uncertainty sample")
+      msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
       message(msg)
     }
     results <-
