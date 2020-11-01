@@ -82,6 +82,9 @@ siren <- function(x, type = "info") {
     type == "info" ~ tune_color$message$info(msg)
   )
 
+  if (inherits(msg, "character")) {
+    msg <- as.character(msg)
+  }
   message(paste(symb, msg))
 }
 

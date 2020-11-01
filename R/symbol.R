@@ -16,18 +16,16 @@ tune_symbol_ascii <- list(
 
 ## -----------------------------------------------------------------------------
 
-# To remove the crayon dependency, use the cli analogs. However, these
-# produce ansi_string objects and some of our logging code needs
-# the character values.
-yellow <- function(...) as.character(cli::col_yellow(...))
-black  <- function(...) as.character(cli::col_black(...))
-white  <- function(...) as.character(cli::col_white(...))
-red    <- function(...) as.character(cli::col_red(...))
-yellow <- function(...) as.character(cli::col_yellow(...))
-green  <- function(...) as.character(cli::col_green(...))
-blue   <- function(...) as.character(cli::col_blue(...))
-silver <- function(...) as.character(cli::col_silver(...))
-bold   <- function(...) as.character(cli::style_bold(...))
+# To remove the crayon dependency, use the cli analogs.
+yellow <- function(...) cli::col_yellow(...)
+black  <- function(...) cli::col_black(...)
+white  <- function(...) cli::col_white(...)
+red    <- function(...) cli::col_red(...)
+yellow <- function(...) cli::col_yellow(...)
+green  <- function(...) cli::col_green(...)
+blue   <- function(...) cli::col_blue(...)
+silver <- function(...) cli::col_silver(...)
+bold   <- function(...) cli::style_bold(...)
 
 # ------------------------------------------------------------------------------
 
