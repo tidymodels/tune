@@ -64,12 +64,6 @@ mod_type <- function(.mod) class(.mod)[class(.mod) != "model_spec"][1]
 
 #' @rdname tunable
 #' @export
-tunable.step <- function(x, ...) {
-  no_param
-}
-
-#' @rdname tunable
-#' @export
 tunable.model_spec <- function(x, ...) {
   mod_env <- rlang::ns_env("parsnip")$parsnip
 
