@@ -4,12 +4,12 @@ test_that("Light mode / default `tune_color`s work", {
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    crayon::black("hi")
+    black("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    crayon::black("hi")
+    black("hi")
   )
 })
 
@@ -19,12 +19,12 @@ test_that("Dark mode `tune_color`s work", {
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    crayon::white("hi")
+    white("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    crayon::white("hi")
+    white("hi")
   )
 })
 
@@ -34,11 +34,11 @@ test_that("`tune_color` falls back to light mode with back `tidymodels.dark` opt
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    crayon::black("hi")
+    black("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    crayon::black("hi")
+    black("hi")
   )
 })
