@@ -3,7 +3,6 @@
 \docType{data}
 \name{no_param}
 \alias{no_param}
-\alias{tunable.step}
 \alias{tunable.model_spec}
 \alias{tunable.step_embed}
 \alias{tunable.step_umap}
@@ -28,8 +27,6 @@ An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) w
 }
 \usage{
 no_param
-
-\method{tunable}{step}(x, ...)
 
 \method{tunable}{model_spec}(x, ...)
 

@@ -7,6 +7,7 @@
 \alias{autoplot}
 \alias{required_pkgs}
 \alias{tunable}
+\alias{min_grid}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -16,7 +17,7 @@ below to see their documentation.
 \describe{
   \item{dials}{\code{\link[dials]{parameters}}}
 
-  \item{generics}{\code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}}
+  \item{generics}{\code{\link[generics]{min_grid}}, \code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 }}
