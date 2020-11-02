@@ -50,17 +50,17 @@ test_that("ellipses with last_fit", {
   )
 })
 
-test_that("argument order gives warnings for recipe/formula", {
+test_that("argument order gives errors for recipe/formula", {
   rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  expect_warning(
+  expect_error(
     last_fit(rec, lin_mod, split),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
-  expect_warning(
+  expect_error(
     last_fit(f, lin_mod, split),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })

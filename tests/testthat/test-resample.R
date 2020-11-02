@@ -322,7 +322,7 @@ test_that("ellipses with fit_resamples", {
   )
 })
 
-test_that("argument order gives warnings for recipe/formula", {
+test_that("argument order gives errors for recipe/formula", {
   set.seed(6735)
   folds <- vfold_cv(mtcars, v = 2)
 
@@ -333,13 +333,13 @@ test_that("argument order gives warnings for recipe/formula", {
   lin_mod <- linear_reg() %>%
     set_engine("lm")
 
-  expect_warning(
+  expect_error(
     fit_resamples(rec, lin_mod, folds),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
-  expect_warning(
+  expect_error(
     fit_resamples(mpg ~ ., lin_mod, folds),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })
 

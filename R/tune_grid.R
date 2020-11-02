@@ -245,34 +245,6 @@ tune_grid.default <- function(object, ...) {
 }
 
 #' @export
-tune_grid.recipe <- function(object, model, resamples, ..., param_info = NULL,
-                             grid = 10, metrics = NULL, control = control_grid()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "tune_grid.recipe()",
-                            details = deprecate_msg(match.call(), "tune_grid"))
-  empty_ellipses(...)
-
-  tune_grid(model, preprocessor = object, resamples = resamples,
-            param_info = param_info, grid = grid,
-            metrics = metrics, control = control)
-}
-
-#' @export
-tune_grid.formula <- function(formula, model, resamples, ..., param_info = NULL,
-                              grid = 10, metrics = NULL, control = control_grid()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "tune_grid.formula()",
-                            details = deprecate_msg(match.call(), "tune_grid"))
-  empty_ellipses(...)
-
-  tune_grid(model, preprocessor = formula, resamples = resamples,
-            param_info = param_info, grid = grid,
-            metrics = metrics, control = control)
-}
-
-#' @export
 #' @rdname tune_grid
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,

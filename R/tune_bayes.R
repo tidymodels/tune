@@ -141,50 +141,6 @@ tune_bayes.default <- function(object, ...) {
 }
 
 #' @export
-tune_bayes.recipe <- function(object,
-                              model,
-                              resamples,
-                              ...,
-                              iter = 10,
-                              param_info = NULL,
-                              metrics = NULL,
-                              objective = exp_improve(),
-                              initial = 5,
-                              control = control_bayes()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "tune_bayes.recipe()",
-                            details = deprecate_msg(match.call(), "tune_bayes"))
-
-  tune_bayes(model, preprocessor = object, resamples = resamples,
-             iter = iter, param_info = param_info,
-             metrics = metrics, objective = objective,
-             initial = initial, control = control, ...)
-}
-
-#' @export
-tune_bayes.formula <- function(formula,
-                               model,
-                               resamples,
-                               ...,
-                               iter = 10,
-                               param_info = NULL,
-                               metrics = NULL,
-                               objective = exp_improve(),
-                               initial = 5,
-                               control = control_bayes()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "tune_bayes.formula()",
-                            details = deprecate_msg(match.call(), "tune_bayes"))
-
-  tune_bayes(model, preprocessor = formula, resamples = resamples,
-             iter = iter, param_info = param_info,
-             metrics = metrics, objective = objective,
-             initial = initial, control = control, ...)
-}
-
-#' @export
 #' @rdname tune_bayes
 tune_bayes.model_spec <- function(object,
                                   preprocessor,

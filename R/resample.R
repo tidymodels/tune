@@ -67,40 +67,6 @@ fit_resamples.default <- function(object, ...) {
 }
 
 #' @export
-fit_resamples.recipe <- function(object,
-                                 model,
-                                 resamples,
-                                 ...,
-                                 metrics = NULL,
-                                 control = control_resamples()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "fit_resamples.recipe()",
-                            details = deprecate_msg(match.call(), "fit_resamples"))
-  empty_ellipses(...)
-
-  fit_resamples(model, preprocessor = object, resamples = resamples,
-                metrics = metrics, control = control)
-}
-
-#' @export
-fit_resamples.formula <- function(formula,
-                                  model,
-                                  resamples,
-                                  ...,
-                                  metrics = NULL,
-                                  control = control_resamples()) {
-
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "fit_resamples.formula()",
-                            details = deprecate_msg(match.call(), "fit_resamples"))
-  empty_ellipses(...)
-
-  fit_resamples(model, preprocessor = formula, resamples = resamples,
-                metrics = metrics, control = control)
-}
-
-#' @export
 #' @rdname fit_resamples
 fit_resamples.model_spec <- function(object,
                                      preprocessor,

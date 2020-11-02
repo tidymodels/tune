@@ -98,8 +98,9 @@ spline_rec <-
 
 grid <- tibble(df = 3:6)
 
-resampled <- tune_grid(spline_rec, lm_mod, resamples = car_folds,
-                       control = ctrl, grid = grid)
+resampled <-
+lm_mod \%>\%
+tune_grid(spline_rec, resamples = car_folds, control = ctrl, grid = grid)
 
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
