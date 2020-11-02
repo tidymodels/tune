@@ -46,13 +46,6 @@
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
-#' @export
-min_grid <- function(x, grid, ...) {
-  # x is a `model_spec` object from parsnip
-  # grid is a tibble of tuning parameter values with names
-  #  matching the parameter names.
-  UseMethod("min_grid")
-}
 
 # As an example, if we fit a boosted tree  model and tune over
 # trees = 1:20 and min_n = c(20, 30)
@@ -86,6 +79,9 @@ min_grid <- function(x, grid, ...) {
 #'@export
 #'@rdname min_grid
 min_grid.model_spec <- function(x, grid, ...) {
+  # x is a `model_spec` object from parsnip
+  # grid is a tibble of tuning parameter values with names
+  #  matching the parameter names.
   blank_submodels(grid)
 }
 
