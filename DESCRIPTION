@@ -35,7 +35,7 @@ Imports:
     lifecycle,
     vctrs (>= 0.3.0),
     tidyselect (>= 1.1.0),
-    generics
+    generics (>= 0.1.0)
 Suggests: 
     testthat,
     knitr,
