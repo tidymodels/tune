@@ -16,8 +16,14 @@ test_that('model package lookup', {
 # ------------------------------------------------------------------------------
 
 test_that('determine foreach operator', {
-  expect_equal(tune:::get_operator(object = chi_wflow), foreach::`%do%`)
-  expect_equal(tune:::get_operator(FALSE, chi_wflow), foreach::`%do%`)
+  expect_equal(
+    tune:::get_operator(object = chi_wflow, resamples = vfold_cv(mtcars), grid = mtcars[1:2,]),
+    foreach::`%do%`
+  )
+  expect_equal(
+    tune:::get_operator(FALSE, chi_wflow, resamples = vfold_cv(mtcars), grid = mtcars[1:2,]),
+    foreach::`%do%`
+  )
 })
 
 # ------------------------------------------------------------------------------
@@ -114,3 +120,25 @@ test_that('required package lists', {
   expect_equal(required_pkgs(chi_wflow, FALSE), "glmnet")
 
 })
+
+
+## -----------------------------------------------------------------------------
+
+
+test_that('determine if a single model fit is requested', {
+
+  expect_true(tune:::single_model(NULL))
+  expect_true(tune:::single_model(mtcars[1,]))
+  expect_true(tune:::single_model(mtcars[0,]))
+  expect_true(
+    tune:::single_model(mtcars %>% as_tibble() %>% dplyr::slice(1) %>%
+                   mutate(.submodels = list(list())))
+  )
+
+  expect_false(tune:::single_model(mtcars))
+  expect_false(tune:::single_model(mtcars %>% as_tibble() %>% dplyr::slice(1) %>%
+                                     mutate(.submodels = list(1:10)))
+  )
+
+})
+

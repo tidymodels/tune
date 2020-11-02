@@ -378,8 +378,11 @@ test_that("retain extra attributes and saved GP candidates", {
   pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
   ctrl <- control_bayes(save_gp_scoring = TRUE)
-  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                    initial = iter1, iter = iter2, control = ctrl)
+  suppressMessages({
+    set.seed(1)
+    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                      initial = 4, iter = iter2, control = ctrl)
+  })
 
   att <- attributes(res)
   att_names <- names(att)
@@ -396,10 +399,12 @@ test_that("retain extra attributes and saved GP candidates", {
   expect_true(length(files) == iter2)
 
 
-  expect_message(
+  expect_message({
+    set.seed(1)
     res2 <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                       initial = iter1, iter = iter2,
-                       control = control_bayes(save_workflow = TRUE)),
+                       initial = 4, iter = iter2,
+                       control = control_bayes(save_workflow = TRUE))
+    },
     "being saved contains a recipe, which is"
   )
   expect_null(attr(res, "workflow"))

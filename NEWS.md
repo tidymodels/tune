@@ -4,7 +4,7 @@
 
 * Fixed an issue where recipe tuning parameters could be randomly matched to the tuning grid incorrectly (#316).
 
-* `last_fit()` no longer accidentally adjusts the random seed (#264).
+* `last_fit()` no longer accidentally adjusts the random seed (#264) and will use sequential processing ()
 
 * Fixed two bugs in the acquisition function calculations.
 
@@ -34,7 +34,7 @@
 
 * `autoplot.tune_results()` now requires objects made by version 0.1.0 or higher of tune. 
 
-* `tune` objects no longer keep the `rset` class that they have from the `resamples` argument. 
+* tune objects no longer keep the `rset` class that they have from the `resamples` argument. 
 
 ## Other Changes
 
@@ -46,7 +46,7 @@
 
 * In other plotting news, `coord_obs_pred()` has been included for regression models. When plotting the observed and predicted values from a model, this forces the x- and y-axis to be the same range and uses an aspect ratio of 1. 
 
-* The outcome names are saved in an attribute called `outcomes` to objects with class `tune_results`. Also, several accessor functions (named `.get_tune_*()) were added to more easily access such attributes.  
+* The outcome names are saved in an attribute called `outcomes` to objects with class `tune_results`. Also, several accessor functions (named `.get_tune_*()`) were added to more easily access such attributes.  
 
 * `conf_mat_resampled()` computes the average confusion matrix across resampling statistics for a single model.  
 
@@ -54,7 +54,7 @@
 
 * `filter_parameters()` can trim the `.metrics` column of unwanted results (as well as columns `.predictions` and `.extracts`) from `tune_*` objects. 
 
-* In concert with `dials` > 0.0.7, tuning engine-specific arguments is possible. Many known engine-specific tuning parameters and handled automatically. 
+* In concert with dials > 0.0.7, tuning engine-specific arguments is possible. Many known engine-specific tuning parameters and handled automatically. 
 
 * If a grid is given, parameters do not need to be finalized to be used in the `tune_*()` functions. 
 

@@ -67,7 +67,12 @@ An outer parallel loop will iterate over resamples. Additionally, an
 inner parallel loop will iterate over all unique combinations of
 preprocessor and model tuning parameters for that specific resample. This
 will result in the preprocessor being re-processed multiple times, but
-can be faster if that processing is extremely fast.}
+can be faster if that processing is extremely fast.
+
+However, if a single resample is used (e.g., a validation set) and
+\code{parallel_over = "resamples"}, this option is changed to "everything" (with
+a message). This happens at the time of execution (rather than in
+the control function).}
 }
 \description{
 Control aspects of the grid search process

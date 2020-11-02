@@ -64,3 +64,27 @@ test_that("argument order gives warnings for recipe/formula", {
     "is deprecated as of lifecycle"
   )
 })
+
+test_that("same results of last_fit() and fit()", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+
+  rf <- rand_forest(mtry = 2, trees = 5) %>%
+    set_engine("randomForest") %>%
+    set_mode("regression")
+  wflow <- workflow() %>% add_model(rf) %>% add_formula(mpg ~ .)
+  set.seed(23598723)
+  split <- initial_split(mtcars)
+
+  set.seed(1)
+  lf_obj <- last_fit(wflow, split = split)
+
+  set.seed(1)
+  r_obj <- fit(wflow, data = analysis(split))
+  r_pred <- predict(r_obj, assessment(split))
+  expect_equal(
+    lf_obj$.predictions[[1]]$.pred,
+    r_pred$.pred
+  )
+
+})

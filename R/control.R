@@ -122,6 +122,11 @@ control_resamples <- control_grid
 #'   will result in the preprocessor being re-processed multiple times, but
 #'   can be faster if that processing is extremely fast.
 #'
+#'   However, if a single resample is used (e.g., a validation set) and
+#'   `parallel_over = "resamples"`, this option is changed to "everything" (with
+#'   a message). This happens at the time of execution (rather than in
+#'   the control function).
+#'
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
