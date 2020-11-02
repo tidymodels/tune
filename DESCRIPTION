@@ -50,8 +50,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
-Remotes:
-    tidymodels/rsample,
-    tidymodels/workflows,
-    tidymodels/dials,
-    r-lib/generics
