@@ -347,13 +347,16 @@ tune_grid_workflow <- function(workflow,
 
   check_workflow(workflow, pset = pset)
 
-  resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
+  if (nrow(resamples) > 1 & !single_model(grid)) {
+    resamples <- dplyr::mutate(resamples, .seed = sample.int(10^5, nrow(resamples)))
+  }
 
   grid <- check_grid(
     grid = grid,
     workflow = workflow,
     pset = pset
   )
+
 
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
@@ -376,7 +379,9 @@ tune_grid_workflow <- function(workflow,
 
   workflow <- set_workflow(workflow, control)
 
-  resamples <- resamples %>% dplyr::select(-.seed)
+  if (any(names(resamples) == ".seed")) {
+    resamples <- resamples %>% dplyr::select(-.seed)
+  }
 
   new_tune_results(
     x = resamples,

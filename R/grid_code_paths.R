@@ -1,5 +1,13 @@
 tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
-  `%op%` <- get_operator(control$allow_par, workflow)
+
+  # perhaps change the resampling scheme
+  if (nrow(resamples) == 1 & !single_model(grid)) {
+    parallel_over <- parallel_scheme(control, resamples)
+  } else {
+    parallel_over <- control$parallel_over
+  }
+
+  `%op%` <- get_operator(control$allow_par, workflow, resamples, grid)
   `%:%` <- foreach::`%:%`
 
   tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
@@ -14,7 +22,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
   n_grid_info <- nrow(grid_info)
   rows <- seq_len(n_grid_info)
 
-  parallel_over <- control$parallel_over
+
 
   if (identical(parallel_over, "resamples")) {
     results <- foreach::foreach(
@@ -104,9 +112,18 @@ tune_grid_loop_iter <- function(iteration,
                                 workflow,
                                 metrics,
                                 control) {
+
+  # In case of `last_fit()`, don't change the random number stream from what
+  # is in the main R process. Otherwise, set the seed to make the results
+  # reproducible in sequence and in parallel.
+  multi_task <- nrow(resamples) > 1 & !single_model(grid_info)
+  if (multi_task) {
+    set.seed(resamples$.seed[[iteration]])
+  }
+
   load_pkgs(workflow)
   load_namespace(control$pkgs)
-  set.seed(resamples$.seed[[iteration]])
+
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
