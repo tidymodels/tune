@@ -51,8 +51,6 @@
 
   # lazily register autoplot
   s3_register("ggplot2::autoplot", "tune_results")
-  # register tunable + required_pkgs
-  maybe_register_S3_methods(ns)
 
   if (dplyr_pre_1.0.0()) {
     vctrs::s3_register("dplyr::mutate", "tune_results", method = mutate_tune_results)
@@ -81,35 +79,5 @@
     vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
   }
 }
-
-# This package has specific methods for the `tunable()` and `required_pkgs()`
-# generic. That generic is defined in the `generics` package. As of R 4.0, we need to register them.
-maybe_register_S3_methods <- function(ns) {
-
-  names <- names(ns)
-
-  # ----------------------------------------------------------------------------
-
-  tunable_names <- grep("^tunable.",  names, fixed = TRUE, value = TRUE)
-  tunable_classes <- gsub("tunable.", "", tunable_names)
-
-  for (i in seq_along(tunable_names)) {
-    class <- tunable_classes[[i]]
-    vctrs::s3_register("generics::tunable", class)
-  }
-
-  # ----------------------------------------------------------------------------
-
-  req_pkgs_names <- grep("^required_pkgs\\.", names, value = TRUE)
-  req_pkgs_classes <- gsub("required_pkgs.", "", req_pkgs_names)
-
-  for (i in seq_along(req_pkgs_names)) {
-    class <- req_pkgs_classes[[i]]
-    vctrs::s3_register("generics::required_pkgs", class)
-  }
-
-  invisible()
-}
-
 
 # nocov end
