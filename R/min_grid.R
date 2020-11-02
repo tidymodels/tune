@@ -76,8 +76,8 @@
 # where there are multiple columns with the same name (maybe the results of
 # a recipe) and so on.
 
-#'@export
-#'@rdname min_grid
+#' @export
+#' @rdname min_grid
 min_grid.model_spec <- function(x, grid, ...) {
   # x is a `model_spec` object from parsnip
   # grid is a tibble of tuning parameter values with names

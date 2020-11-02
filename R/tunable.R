@@ -47,21 +47,7 @@
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   tunable()
 #' }
-
-#' @rdname tunable
-#' @export
-no_param <-
-  tibble::tibble(
-    name = NA_character_,
-    call_info = list(),
-    source = NA_character_,
-    component = NA_character_,
-    component_id = NA_character_
-  )
-
-step_type <- function(.step) class(.step)[class(.step) != "step"][1]
-mod_type <- function(.mod) class(.mod)[class(.mod) != "model_spec"][1]
-
+#'
 #' @rdname tunable
 #' @export
 tunable.model_spec <- function(x, ...) {
@@ -103,126 +89,23 @@ tunable.model_spec <- function(x, ...) {
 
 # ------------------------------------------------------------------------------
 
-#' @rdname tunable
 #' @export
-tunable.step_embed <- function(x, ...) {
-  tibble::tibble(
-    name = c("num_terms", "hidden_units"),
-    call_info = list(
-      list(pkg = "dials", fun = "num_terms"),
-      list(pkg = "dials", fun = "hidden_units")
-    ),
-    source = "recipe",
-    component = "step_embed",
-    component_id = x$id
-  )
+#' @rdname tunable
+tunable.workflow <- function(x, ...) {
+  model <- workflows::pull_workflow_spec(x)
+  param_data <- tunable(model)
+
+  if (has_preprocessor_recipe(x)) {
+    recipe <- workflows::pull_workflow_preprocessor(x)
+    recipe_param_data <- tunable(recipe)
+
+    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
+  }
+
+  param_data
 }
 
-#' @rdname tunable
-#' @export
-tunable.step_umap <- function(x, ...) {
-  tibble::tibble(
-    name = c("neighbors", "num_comp", "min_dist", "learn_rate", "epochs"),
-    call_info = list(
-      list(pkg = "dials", fun = "neighbors"),
-      list(pkg = "dials", fun = "num_comp"),
-      list(pkg = "dials", fun = "min_dist"),
-      list(pkg = "dials", fun = "learn_rate"),
-      list(pkg = "dials", fun = "epochs")
-    ),
-    source = "recipe",
-    component = "step_umap",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_woe <- function(x, ...) {
-  tibble::tibble(
-    name = c("Laplace"),
-    call_info = list(
-      list(pkg = "dials", fun = "Laplace")
-    ),
-    source = "recipe",
-    component = "step_woe",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_texthash <- function(x, ...) {
-  tibble::tibble(
-    name = c("signed", "num_terms"),
-    call_info = list(
-      list(pkg = "dials", fun = "signed_hash"),
-      list(pkg = "dials", fun = "num_hash", range = c(8, 12))
-    ),
-    source = "recipe",
-    component = "step_texthash",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_tf <- function(x, ...) {
-  tibble::tibble(
-    name = c("weight_scheme", "num_terms"),
-    call_info = list(
-      list(pkg = "dials", fun = "weight_scheme"),
-      list(pkg = "dials", fun = "weight")
-    ),
-    source = "recipe",
-    component = "step_tf",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_tokenfilter <- function(x, ...) {
-  tibble::tibble(
-    name = c("max_times", "min_times", "max_tokens"),
-    call_info = list(
-      list(pkg = "dials", fun = "max_times"),
-      list(pkg = "dials", fun = "min_times"),
-      list(pkg = "dials", fun = "max_tokens")
-    ),
-    source = "recipe",
-    component = "step_tokenfilter",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_tokenize <- function(x, ...) {
-  tibble::tibble(
-    name = c("token"),
-    call_info = list(
-      list(pkg = "dials", fun = "token")
-    ),
-    source = "recipe",
-    component = "step_tokenize",
-    component_id = x$id
-  )
-}
-
-#' @rdname tunable
-#' @export
-tunable.step_ngram <- function(x, ...) {
-  tibble::tibble(
-    name = c("num_tokens"),
-    call_info = list(
-      list(pkg = "dials", fun = "num_tokens", range = c(1, 3))
-    ),
-    source = "recipe",
-    component = "step_ngram",
-    component_id = x$id
-  )
-}
+# ------------------------------------------------------------------------------
 
 #' @rdname tunable
 #' @export
@@ -240,23 +123,22 @@ tunable.recipe <- function(x, ...) {
 
 # ------------------------------------------------------------------------------
 
-#' @export
 #' @rdname tunable
-tunable.workflow <- function(x, ...) {
-  model <- workflows::pull_workflow_spec(x)
-  param_data <- tunable(model)
+#' @export
+no_param <-
+  tibble::tibble(
+    name = NA_character_,
+    call_info = list(),
+    source = NA_character_,
+    component = NA_character_,
+    component_id = NA_character_
+  )
 
-  if (has_preprocessor_recipe(x)) {
-    recipe <- workflows::pull_workflow_preprocessor(x)
-    recipe_param_data <- tunable(recipe)
+step_type <- function(.step) class(.step)[class(.step) != "step"][1]
+mod_type <- function(.mod) class(.mod)[class(.mod) != "model_spec"][1]
 
-    param_data <- dplyr::bind_rows(param_data, recipe_param_data)
-  }
+# ------------------------------------------------------------------------------
 
-  param_data
-}
-
-## -----------------------------------------------------------------------------
 
 add_engine_parameters <- function(pset, engines) {
   is_engine_param <- pset$name %in% engines$name
@@ -268,7 +150,6 @@ add_engine_parameters <- function(pset, engines) {
   }
   pset
 }
-
 
 c5_tree_engine_args <-
   tibble::tibble(
@@ -428,4 +309,127 @@ tunable.decision_tree <- function(x, ...) {
     res <- add_engine_parameters(res, c5_tree_engine_args)
   }
   res
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname tunable
+#' @export
+tunable.step_embed <- function(x, ...) {
+  tibble::tibble(
+    name = c("num_terms", "hidden_units"),
+    call_info = list(
+      list(pkg = "dials", fun = "num_terms"),
+      list(pkg = "dials", fun = "hidden_units")
+    ),
+    source = "recipe",
+    component = "step_embed",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_umap <- function(x, ...) {
+  tibble::tibble(
+    name = c("neighbors", "num_comp", "min_dist", "learn_rate", "epochs"),
+    call_info = list(
+      list(pkg = "dials", fun = "neighbors"),
+      list(pkg = "dials", fun = "num_comp"),
+      list(pkg = "dials", fun = "min_dist"),
+      list(pkg = "dials", fun = "learn_rate"),
+      list(pkg = "dials", fun = "epochs")
+    ),
+    source = "recipe",
+    component = "step_umap",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_woe <- function(x, ...) {
+  tibble::tibble(
+    name = c("Laplace"),
+    call_info = list(
+      list(pkg = "dials", fun = "Laplace")
+    ),
+    source = "recipe",
+    component = "step_woe",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_texthash <- function(x, ...) {
+  tibble::tibble(
+    name = c("signed", "num_terms"),
+    call_info = list(
+      list(pkg = "dials", fun = "signed_hash"),
+      list(pkg = "dials", fun = "num_hash", range = c(8, 12))
+    ),
+    source = "recipe",
+    component = "step_texthash",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_tf <- function(x, ...) {
+  tibble::tibble(
+    name = c("weight_scheme", "num_terms"),
+    call_info = list(
+      list(pkg = "dials", fun = "weight_scheme"),
+      list(pkg = "dials", fun = "weight")
+    ),
+    source = "recipe",
+    component = "step_tf",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_tokenfilter <- function(x, ...) {
+  tibble::tibble(
+    name = c("max_times", "min_times", "max_tokens"),
+    call_info = list(
+      list(pkg = "dials", fun = "max_times"),
+      list(pkg = "dials", fun = "min_times"),
+      list(pkg = "dials", fun = "max_tokens")
+    ),
+    source = "recipe",
+    component = "step_tokenfilter",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_tokenize <- function(x, ...) {
+  tibble::tibble(
+    name = c("token"),
+    call_info = list(
+      list(pkg = "dials", fun = "token")
+    ),
+    source = "recipe",
+    component = "step_tokenize",
+    component_id = x$id
+  )
+}
+
+#' @rdname tunable
+#' @export
+tunable.step_ngram <- function(x, ...) {
+  tibble::tibble(
+    name = c("num_tokens"),
+    call_info = list(
+      list(pkg = "dials", fun = "num_tokens", range = c(1, 3))
+    ),
+    source = "recipe",
+    component = "step_ngram",
+    component_id = x$id
+  )
 }
