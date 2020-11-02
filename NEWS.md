@@ -2,6 +2,8 @@
 
 ## Bug Fixes
 
+* Fixed an issue where recipe tuning parameters could be randomly matched to the tuning grid incorrectly (#316).
+
 * `last_fit()` no longer accidentally adjusts the random seed (#264).
 
 * Fixed two bugs in the acquisition function calculations.

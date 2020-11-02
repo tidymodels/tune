@@ -69,7 +69,8 @@ finalize_recipe <- function(x, parameters) {
 
   parameters <- parameters[names(parameters) %in% pset$id]
   parameters <- parameters[pset$id]
-  pset <- split(pset, pset$component_id)
+  split <- vec_split(pset, pset$component_id)
+  pset <- split[["val"]]
   for (i in seq_along(pset)) {
     x <- complete_steps(parameters[[i]], pset[[i]], x)
   }
