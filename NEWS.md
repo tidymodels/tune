@@ -28,6 +28,8 @@
 
 * Formatting of some messages created by `tune_bayes()` now respect the width and wrap lines using the new `message_wrap()` function. 
 
+* `tune` functions (`tune_grid()`, `tune_bayes()`, etc) will now error if a model specification or model workflow are given as the first argument (the soft deprecation period is over). 
+
 # tune 0.1.1
 
 ## Breaking Changes

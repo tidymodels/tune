@@ -350,17 +350,17 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   )
 })
 
-test_that("argument order gives warning for recipes", {
-  expect_warning(
+test_that("argument order gives errors for recipes", {
+  expect_error(
     tune_grid(rec_tune_1, lm_mod, vfold_cv(mtcars, v = 2)),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })
 
-test_that("argument order gives warning for formula", {
-  expect_warning(
+test_that("argument order gives errors for formula", {
+  expect_error(
     tune_grid(mpg ~ ., lm_mod, vfold_cv(mtcars, v = 2)),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })
 

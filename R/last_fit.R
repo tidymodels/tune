@@ -63,33 +63,11 @@ last_fit <- function(object, ...) {
 
 #' @export
 last_fit.default <- function(object, ...) {
-  empty_ellipses(...)
   msg <- paste0(
     "The first argument to [last_fit()] should be either ",
     "a model or workflow."
   )
   rlang::abort(msg)
-}
-
-#' @export
-last_fit.recipe <- function(object, model, split, ..., metrics = NULL) {
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "last_fit.recipe()",
-                            details = deprecate_msg(match.call(), "last_fit"))
-  empty_ellipses(...)
-
-  last_fit(model, preprocessor = object, split = split, metrics = metrics)
-
-}
-
-#' @export
-last_fit.formula <- function(formula, model, split, ..., metrics = NULL) {
-  lifecycle::deprecate_soft("0.1.0",
-                            what = "last_fit.formula()",
-                            details = deprecate_msg(match.call(), "last_fit"))
-  empty_ellipses(...)
-
-  last_fit(model, preprocessor = formula, split = split, metrics = metrics)
 }
 
 #' @export

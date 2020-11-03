@@ -354,20 +354,20 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives warning for recipes", {
-  expect_warning(
+  expect_error(
     tune_bayes(rec_tune_1, model = lm_mod, resamples = vfold_cv(mtcars, v = 2),
                param_info = dials::parameters(rec_tune_1),
                iter = iter1, initial = iter2),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })
 
 test_that("argument order gives warning for formula", {
-  expect_warning(
+  expect_error(
     tune_bayes(mpg ~ ., svm_mod, resamples = vfold_cv(mtcars, v = 2),
                param_info = dials::parameters(svm_mod),
                initial = iter1, iter = iter2),
-    "is deprecated as of lifecycle"
+    "should be either a model or workflow"
   )
 })
 
