@@ -5,9 +5,9 @@
 get_operator <- function(allow = TRUE, object, resamples, grid) {
   is_par <- foreach::getDoParWorkers() > 1
   pkgs <- required_pkgs(object)
-  blacklist <- c("keras", "rJava")
-  if (is_par & allow && any(pkgs %in% blacklist)) {
-    pkgs <- pkgs[pkgs %in% blacklist]
+  no_parallel <- c("keras", "rJava")
+  if (is_par & allow && any(pkgs %in% no_parallel)) {
+    pkgs <- pkgs[pkgs %in% no_parallel]
     msg <- paste0("'", pkgs, "'", collapse = ", ")
     msg <- paste("Some required packages prohibit parallel processing: ", msg)
     cli::cli_alert_warning(msg)
