@@ -313,14 +313,10 @@ summarize.</p>
 
 <span class='va'>grid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>df <span class='op'>=</span> <span class='fl'>3</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>)</span>
 
-<span class='va'>resampled</span> <span class='op'>&lt;-</span> <span class='fu'><a href='tune_grid.html'>tune_grid</a></span><span class='op'>(</span><span class='va'>spline_rec</span>, <span class='va'>lm_mod</span>, resamples <span class='op'>=</span> <span class='va'>car_folds</span>,
-                       control <span class='op'>=</span> <span class='va'>ctrl</span>, grid <span class='op'>=</span> <span class='va'>grid</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `tune_grid.recipe()` is deprecated as of lifecycle 0.1.0.</span>
-#&gt; <span class='warning'>The first argument to `tune_grid()` should be either a model or a workflow. In the future, you can use:</span>
-#&gt; <span class='warning'>tune_grid(lm_mod, spline_rec, resamples = car_folds, grid = grid, </span>
-#&gt; <span class='warning'>    control = ctrl)</span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>This warning is displayed once every 8 hours.</span><span></span>
-#&gt; <span class='warning'></span><span style='color: #555555;'>Call `lifecycle::last_warnings()` to see where this warning was generated.</span><span></span></div><div class='output co'>#&gt; <span class='message'>For binary classification, the first factor level is assumed to be the event.</span>
+<span class='va'>resampled</span> <span class='op'>&lt;-</span>
+<span class='va'>lm_mod</span> <span class='op'>%&gt;%</span>
+<span class='fu'><a href='tune_grid.html'>tune_grid</a></span><span class='op'>(</span><span class='va'>spline_rec</span>, resamples <span class='op'>=</span> <span class='va'>car_folds</span>, control <span class='op'>=</span> <span class='va'>ctrl</span>, grid <span class='op'>=</span> <span class='va'>grid</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>For binary classification, the first factor level is assumed to be the event.</span>
 #&gt; <span class='message'>Use the argument `event_level = "second"` to alter this as needed.</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: scales</span></div><div class='output co'>#&gt; <span class='message'></span>
 #&gt; <span class='message'>Attaching package: ‘scales’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:purrr’:</span>
 #&gt; <span class='message'></span>
