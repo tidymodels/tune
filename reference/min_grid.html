@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Determine the minimum set of model fits — min_grid • tune</title>
+<title>Determine the minimum set of model fits — min_grid.model_spec • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -49,7 +49,7 @@
 
 
 
-<meta property="og:title" content="Determine the minimum set of model fits — min_grid" />
+<meta property="og:title" content="Determine the minimum set of model fits — min_grid.model_spec" />
 <meta property="og:description" content="min_grid() determines exactly what models should be fit in order to
 evaluate the entire set of tuning parameter combinations. This is for
 internal use only and the API may change in the near future." />
@@ -161,50 +161,48 @@ internal use only and the API may change in the near future." />
     </div>
 
     <div class="ref-description">
-    <p><code>min_grid()</code> determines exactly what models should be fit in order to
+    <p><code><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid()</a></code> determines exactly what models should be fit in order to
 evaluate the entire set of tuning parameter combinations. This is for
 internal use only and the API may change in the near future.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='co'># S3 method for model_spec</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='co'># S3 method for model_spec</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='fu'>fit_max_value</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for boost_tree</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for linear_reg</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for logistic_reg</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for mars</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for multinom_reg</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for nearest_neighbor</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for cubist_rules</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for C5_rules</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rule_fit</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for pls</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for poisson_reg</span>
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -229,7 +227,7 @@ internal use only and the API may change in the near future.</p>
 list column with the parameter combinations used for prediction.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>fit_max_value()</code> can be used in other packages to implement a <code>min_grid()</code>
+    <p><code>fit_max_value()</code> can be used in other packages to implement a <code><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid()</a></code>
 method.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -250,7 +248,7 @@ method.</p>
   <span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://dials.tidymodels.org/reference/grid_regular.html'>grid_regular</a></span><span class='op'>(</span>levels <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>svm_spec</span>, <span class='va'>svm_grid</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>svm_spec</span>, <span class='va'>svm_grid</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 9 x 3</span><span>
 #&gt;        cost degree .submodels
 #&gt;       </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>    
@@ -276,13 +274,14 @@ method.</p>
   <span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://dials.tidymodels.org/reference/grid_regular.html'>grid_regular</a></span><span class='op'>(</span>levels <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 
-<span class='fu'>min_grid</span><span class='op'>(</span><span class='va'>xgb_spec</span>, <span class='va'>xgb_grid</span><span class='op'>)</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></span><span class='op'>(</span><span class='va'>xgb_spec</span>, <span class='va'>xgb_grid</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 3 x 3</span><span>
 #&gt;   trees min_n .submodels      
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;list&gt;</span><span>          
 #&gt; </span><span style='color: #555555;'>1</span><span>  </span><span style='text-decoration: underline;'>2</span><span>000     2 </span><span style='color: #555555;'>&lt;named list [1]&gt;</span><span>
 #&gt; </span><span style='color: #555555;'>2</span><span>  </span><span style='text-decoration: underline;'>2</span><span>000    21 </span><span style='color: #555555;'>&lt;named list [1]&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>3</span><span>  </span><span style='text-decoration: underline;'>2</span><span>000    40 </span><span style='color: #555555;'>&lt;named list [1]&gt;</span><span></div></span></pre>
+#&gt; </span><span style='color: #555555;'>3</span><span>  </span><span style='text-decoration: underline;'>2</span><span>000    40 </span><span style='color: #555555;'>&lt;named list [1]&gt;</span><span></div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
