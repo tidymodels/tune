@@ -1,3 +1,33 @@
+# As an example, if we fit a boosted tree  model and tune over
+# trees = 1:20 and min_n = c(20, 30)
+# we should only have to fit two models:
+#
+#   trees = 20 & min_n = 20
+#   trees = 20 & min_n = 30
+#
+# The logic related to how this "mini grid" gets made is model-specific.
+#
+# To get the full set of predictions, we need to know, for each of these two
+# models, what values of num_terms to give to the multi_predict() function.
+#
+# The current idea is to have a list column of the extra models for prediction.
+# For the example above:
+#
+#   # A tibble: 2 x 3
+#     trees min_n .submodels
+#     <dbl> <dbl> <list>
+#   1    20    20 <named list [1]>
+#   2    20    30 <named list [1]>
+#
+# and the .submodels would both be
+#
+#  list(trees = 1:19)
+#
+# There are a lot of other things to consider in future versions like grids
+# where there are multiple columns with the same name (maybe the results of
+# a recipe) and so on.
+
+
 #' Determine the minimum set of model fits
 #'
 #' `min_grid()` determines exactly what models should be fit in order to
@@ -46,46 +76,13 @@
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
+#'
 #' @export
-min_grid <- function(x, grid, ...) {
+#' @rdname min_grid
+min_grid.model_spec <- function(x, grid, ...) {
   # x is a `model_spec` object from parsnip
   # grid is a tibble of tuning parameter values with names
   #  matching the parameter names.
-  UseMethod("min_grid")
-}
-
-# As an example, if we fit a boosted tree  model and tune over
-# trees = 1:20 and min_n = c(20, 30)
-# we should only have to fit two models:
-#
-#   trees = 20 & min_n = 20
-#   trees = 20 & min_n = 30
-#
-# The logic related to how this "mini grid" gets made is model-specific.
-#
-# To get the full set of predictions, we need to know, for each of these two
-# models, what values of num_terms to give to the multi_predict() function.
-#
-# The current idea is to have a list column of the extra models for prediction.
-# For the example above:
-#
-#   # A tibble: 2 x 3
-#     trees min_n .submodels
-#     <dbl> <dbl> <list>
-#   1    20    20 <named list [1]>
-#   2    20    30 <named list [1]>
-#
-# and the .submodels would both be
-#
-#  list(trees = 1:19)
-#
-# There are a lot of other things to consider in future versions like grids
-# where there are multiple columns with the same name (maybe the results of
-# a recipe) and so on.
-
-#'@export
-#'@rdname min_grid
-min_grid.model_spec <- function(x, grid, ...) {
   blank_submodels(grid)
 }
 

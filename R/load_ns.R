@@ -67,11 +67,6 @@ infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr",
 #' @param x An object.
 #' @return A character string.
 #' @keywords internal
-#' @export
-required_pkgs <- function(x, ...) {
-  UseMethod("required_pkgs")
-}
-
 #' @rdname required_pkgs
 #' @export
 required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
