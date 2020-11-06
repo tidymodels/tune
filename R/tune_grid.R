@@ -380,7 +380,7 @@ tune_grid_workflow <- function(workflow,
   workflow <- set_workflow(workflow, control)
 
   if (any(names(resamples) == ".seed")) {
-    resamples <- resamples %>% dplyr::select(-.seed)
+    resamples <- dplyr::select(resamples, -.seed)
   }
 
   new_tune_results(
