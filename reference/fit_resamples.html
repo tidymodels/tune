@@ -342,7 +342,7 @@ grid has a separate R object associated with it.</p>
 #&gt; </span><span style='color: #555555;'>1</span><span> rmse    standard    3.11     5   0.168 Preprocessor1_Model1</div><div class='input'>
 <span class='co'># You can also wrap up a preprocessor and a model into a workflow, and</span>
 <span class='co'># supply that to `fit_resamples()` instead. Here, a workflows "variables"</span>
-<span class='co'># preprocessor is used, which lets you supply terms using tidyselect.</span>
+<span class='co'># preprocessor is used, which lets you supply terms using dplyr selectors.</span>
 <span class='co'># The variables are used as-is, no preprocessing is done to them.</span>
 <span class='va'>wf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://workflows.tidymodels.org//reference/workflow.html'>workflow</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://workflows.tidymodels.org//reference/add_variables.html'>add_variables</a></span><span class='op'>(</span>outcomes <span class='op'>=</span> <span class='va'>mpg</span>, predictors <span class='op'>=</span> <span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
