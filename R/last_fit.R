@@ -103,16 +103,22 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL) {
 last_fit_workflow <- function(object, split, metrics) {
   extr <- function(x)
     x
-  ctrl <- control_resamples(save_pred = TRUE, extract = extr)
+  control <- control_resamples(save_pred = TRUE, extract = extr)
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
-  res <-
-    fit_resamples(
-      object,
-      resamples = resamples,
-      metrics = metrics,
-      control = ctrl
-    )
+
+  # Turn off seed generation to ensure `last_fit()` and workflows `fit()`
+  # are reproducible
+  rng <- FALSE
+
+  res <- resample_workflow(
+    workflow = object,
+    resamples = resamples,
+    metrics = metrics,
+    control = control,
+    rng = rng
+  )
+
   res$.workflow <- res$.extracts[[1]][[1]]
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
