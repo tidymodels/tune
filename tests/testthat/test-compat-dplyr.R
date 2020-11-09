@@ -187,7 +187,7 @@ test_that("right_join() can keep tune_results class if tune_results structure is
       y_names <- c(y_names, x_names[col_equals_dot_iter(x_names)])
     }
 
-    y <- mutate(select(x, tidyselect::all_of(y_names)), x = 1)
+    y <- mutate(select(x, dplyr::all_of(y_names)), x = 1)
     expect_s3_class_tune_results(right_join(x, y, by = y_names))
   }
 })

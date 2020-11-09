@@ -133,7 +133,7 @@ tune_grid_loop_iter <- function(iteration,
       .iter_model,
       .iter_config,
       .msg_model,
-      tidyselect::all_of(model_param_names),
+      dplyr::all_of(model_param_names),
       .submodels
     )
   )
@@ -167,7 +167,7 @@ tune_grid_loop_iter <- function(iteration,
 
     iter_grid_preprocessor <- dplyr::select(
       .data = iter_grid_info,
-      tidyselect::all_of(preprocessor_param_names)
+      dplyr::all_of(preprocessor_param_names)
     )
 
     iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]]
@@ -207,7 +207,7 @@ tune_grid_loop_iter <- function(iteration,
 
       iter_grid_model <- dplyr::select(
         .data = iter_grid_info_model,
-        tidyselect::all_of(model_param_names)
+        dplyr::all_of(model_param_names)
       )
 
       iter_submodels <- iter_grid_info_model[[".submodels"]][[1L]]
