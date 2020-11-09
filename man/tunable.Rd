@@ -10,14 +10,6 @@
 \alias{tunable.rand_forest}
 \alias{tunable.mars}
 \alias{tunable.decision_tree}
-\alias{tunable.step_embed}
-\alias{tunable.step_umap}
-\alias{tunable.step_woe}
-\alias{tunable.step_texthash}
-\alias{tunable.step_tf}
-\alias{tunable.step_tokenfilter}
-\alias{tunable.step_tokenize}
-\alias{tunable.step_ngram}
 \title{Find recommended methods for generating parameter values}
 \usage{
 \method{tunable}{model_spec}(x, ...)
@@ -37,22 +29,6 @@
 \method{tunable}{mars}(x, ...)
 
 \method{tunable}{decision_tree}(x, ...)
-
-\method{tunable}{step_embed}(x, ...)
-
-\method{tunable}{step_umap}(x, ...)
-
-\method{tunable}{step_woe}(x, ...)
-
-\method{tunable}{step_texthash}(x, ...)
-
-\method{tunable}{step_tf}(x, ...)
-
-\method{tunable}{step_tokenfilter}(x, ...)
-
-\method{tunable}{step_tokenize}(x, ...)
-
-\method{tunable}{step_ngram}(x, ...)
 }
 \arguments{
 \item{x}{An object, such as a workflow or \code{parsnip} model
