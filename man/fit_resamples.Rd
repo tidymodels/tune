@@ -162,7 +162,7 @@ show_best(spline_res, metric = "rmse")
 
 # You can also wrap up a preprocessor and a model into a workflow, and
 # supply that to `fit_resamples()` instead. Here, a workflows "variables"
-# preprocessor is used, which lets you supply terms using tidyselect.
+# preprocessor is used, which lets you supply terms using dplyr selectors.
 # The variables are used as-is, no preprocessing is done to them.
 wf <- workflow() \%>\%
   add_variables(outcomes = mpg, predictors = everything()) \%>\%

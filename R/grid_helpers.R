@@ -61,7 +61,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
           eval_tidy(mp_call) %>%
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
-          cbind(dplyr::select(grid, -tidyselect::all_of(submod_param)), row.names = NULL) %>%
+          cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
           # go back to user-defined name
           dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
@@ -379,9 +379,9 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
 
   # Nest model parameters, keep preprocessor parameters outside
   if (tidyr_new_interface()) {
-    out <- tidyr::nest(grid, data = tidyselect::all_of(parameter_names_model))
+    out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
   } else {
-    out <- tidyr::nest(grid, tidyselect::all_of(parameter_names_model))
+    out <- tidyr::nest(grid, dplyr::all_of(parameter_names_model))
   }
 
   n_preprocessors <- nrow(out)

@@ -5,14 +5,14 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/tidymodels/tune/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/tune/actions)
+[![R-CMD-check](https://github.com/tidymodels/tune/workflows/R-CMD-check/badge.svg)](https://github.com/tidymodels/tune/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/tidymodels/tune/branch/master/graph/badge.svg)](https://codecov.io/gh/tidymodels/tune?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/tune)](https://CRAN.R-project.org/package=tune)
+
 <!-- badges: end -->
 
 ## Overview
