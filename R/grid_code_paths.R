@@ -1,4 +1,4 @@
-tune_grid_loop <- function(resamples, grid, workflow, metrics, control, seeds) {
+tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
@@ -15,6 +15,12 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, seeds) {
   rows <- seq_len(n_grid_info)
 
   parallel_over <- control$parallel_over
+
+  if (rng) {
+    seeds <- sample.int(10^5, nrow(resamples))
+  } else {
+    seeds <- NULL
+  }
 
   if (identical(parallel_over, "resamples")) {
     results <- foreach::foreach(

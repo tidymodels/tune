@@ -320,12 +320,6 @@ tune_grid_workflow <- function(workflow,
 
   check_workflow(workflow, pset = pset)
 
-  if (rng) {
-    seeds <- sample.int(10^5, nrow(resamples))
-  } else {
-    seeds <- NULL
-  }
-
   grid <- check_grid(
     grid = grid,
     workflow = workflow,
@@ -342,7 +336,7 @@ tune_grid_workflow <- function(workflow,
     workflow = workflow,
     metrics = metrics,
     control = control,
-    seeds = seeds
+    rng = rng
   )
 
   if (is_cataclysmic(resamples)) {
