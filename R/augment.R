@@ -25,6 +25,13 @@
 #' For objects created by `last_fit()`, the test set data and predictions are
 #' returned.
 #'
+#' Unlike other `augment()` methods, the predicted values for regression models
+#' are in a column called `.pred` instead of `.fitted` (to be consistent with
+#' other tidymodels conventions).
+#'
+#' For regression problems, an additional `.resid` column is added to the
+#' results.
+#'
 #' @export
 augment.tune_results <- function(x, parameters = NULL, ...) {
   dots <- rlang::list2(...)
@@ -47,7 +54,8 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
   }
 
   pred <- collect_predictions(x, summarize = TRUE, parameters = parameters)
-  merge_pred(x$splits[[1]]$data, pred)
+  y_nm <- .get_tune_outcome_names(x)
+  merge_pred(x$splits[[1]]$data, pred, y_nm)
 }
 
 #' @rdname augment.tune_results
@@ -63,7 +71,8 @@ augment.resample_results <- function(x, ...) {
   }
 
   pred <- collect_predictions(x, summarize = TRUE)
-  merge_pred(x$splits[[1]]$data, pred)
+  y_nm <- .get_tune_outcome_names(x)
+  merge_pred(x$splits[[1]]$data, pred, y_nm)
 }
 
 
@@ -82,12 +91,14 @@ augment.last_fit <- function(x, ...) {
 
   pred <- collect_predictions(x, summarize = TRUE)
   pred$.row <- 1:nrow(pred)
-  merge_pred(rsample::assessment(x$splits[[1]]), pred)
+  y_nm <- .get_tune_outcome_names(x)
+  merge_pred(rsample::assessment(x$splits[[1]]), pred, y_nm)
 }
 
-merge_pred <- function(dat, pred) {
+merge_pred <- function(dat, pred, y) {
+  pred_cols <- grep("^\\.pred", names(pred), value = TRUE)
   pred <- pred[order(pred$.row),]
-  pred <- pred[, c(".row", grep("^\\.pred", names(pred), value = TRUE))]
+  pred <- pred[, c(".row", pred_cols)]
   if (nrow(pred) != nrow(dat)) {
     rlang::warn(
       paste("The orginal data had", nrow(dat), "rows but there were",
@@ -97,5 +108,8 @@ merge_pred <- function(dat, pred) {
   dat$.row <- 1:nrow(dat)
   dat <- dplyr::left_join(dat, pred, by = ".row")
   dat$.row <- NULL
+  if (all(pred_cols == ".pred")) {
+    dat$.resid <- dat[[y]] - dat$.pred
+  }
   dat
 }

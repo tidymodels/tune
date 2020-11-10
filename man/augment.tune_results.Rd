@@ -42,4 +42,11 @@ issued.
 
 For objects created by \code{last_fit()}, the test set data and predictions are
 returned.
+
+Unlike other \code{augment()} methods, the predicted values for regression models
+are in a column called \code{.pred} instead of \code{.fitted} (to be consistent with
+other tidymodels conventions).
+
+For regression problems, an additional \code{.resid} column is added to the
+results.
 }
