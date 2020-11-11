@@ -1,4 +1,4 @@
-tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
+tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
@@ -16,6 +16,12 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
 
   parallel_over <- control$parallel_over
 
+  if (rng) {
+    seeds <- sample.int(10^5, nrow(resamples))
+  } else {
+    seeds <- NULL
+  }
+
   if (identical(parallel_over, "resamples")) {
     results <- foreach::foreach(
       iteration = iterations,
@@ -28,7 +34,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
         grid_info = grid_info,
         workflow = workflow,
         metrics = metrics,
-        control = control
+        control = control,
+        seeds = seeds
       )
     }
   } else if (identical(parallel_over, "everything")) {
@@ -51,7 +58,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control) {
           grid_info = grid_info_row,
           workflow = workflow,
           metrics = metrics,
-          control = control
+          control = control,
+          seeds = seeds
         )
       }
   } else {
@@ -103,10 +111,15 @@ tune_grid_loop_iter <- function(iteration,
                                 grid_info,
                                 workflow,
                                 metrics,
-                                control) {
+                                control,
+                                seeds) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
-  set.seed(resamples$.seed[[iteration]])
+
+  # After package loading to avoid potential package RNG manipulation
+  if (!is.null(seeds)) {
+    set.seed(seeds[[iteration]])
+  }
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
   control_workflow <- control_workflow(control_parsnip = control_parsnip)
@@ -323,7 +336,8 @@ super_safely_iterate_impl <- function(fn,
                                       grid_info,
                                       workflow,
                                       metrics,
-                                      control) {
+                                      control,
+                                      seeds) {
   safely_iterate <- super_safely(fn)
 
   result <- safely_iterate(
@@ -332,7 +346,8 @@ super_safely_iterate_impl <- function(fn,
     grid_info,
     workflow,
     metrics,
-    control
+    control,
+    seeds
   )
 
   error <- result$error
