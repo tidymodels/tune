@@ -304,7 +304,9 @@ plot_marginals <- function(x, metric = NULL) {
   # ----------------------------------------------------------------------------
   # Collect and filter resampling results
 
-  x <- estimate_tune_results(x)
+  is_race <- inherits(x, "tune_race")
+
+  x <- collect_metrics(x)
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
@@ -364,7 +366,8 @@ plot_marginals <- function(x, metric = NULL) {
 
   x <-
     x %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, .metric) %>%
+    dplyr::rename(`# resamples` = n) %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
     tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
 
   # ----------------------------------------------------------------------------
@@ -372,10 +375,21 @@ plot_marginals <- function(x, metric = NULL) {
   p <- ggplot(x, aes(x = value, y = mean))
 
   if (length(chr_param_cols) > 0) {
-    p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
-    p <- p + ggplot2::labs(color = chr_param_cols)
+    if (is_race) {
+      p <- p + geom_point(aes(col = !!sym(chr_param_cols), alpha = `# resamples`, size = resamples))
+      p <- p + ggplot2::labs(color = chr_param_cols)
+    } else {
+      p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
+      p <- p + ggplot2::labs(color = chr_param_cols)
+    }
+
   } else {
-    p <- p + geom_point(alpha = .7)
+    if (is_race) {
+      p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
+    } else {
+      p <- p + geom_point(alpha = .7)
+    }
+
   }
 
   if (length(unique(x$.metric)) > 1) {
@@ -410,6 +424,8 @@ plot_marginals <- function(x, metric = NULL) {
 
 plot_regular_grid <- function(x, metric = NULL, ...) {
   # Collect and filter resampling results
+
+  is_race <- inherits(x, "tune_race")
 
   dat <- collect_metrics(x)
   if (!is.null(metric)) {
@@ -482,7 +498,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   dat <-
     dat %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, .metric) %>%
+    dplyr::rename(`# resamples` = n) %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
     tidyr::pivot_longer(cols = dplyr::one_of(x_col))
 
   # ------------------------------------------------------------------------------
@@ -531,7 +548,12 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     }
   }
 
-  p <- p + geom_point(size = 1)
+  if (is_race) {
+    p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
+  } else {
+    p <- p + geom_point(size = 1)
+  }
+
 
   if (multi_metrics) {
     p <- p + ylab("")

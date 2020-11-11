@@ -15,7 +15,7 @@
 #' @param x The results of [tune_grid()] or [tune_bayes()].
 #' @param metric A character value for the metric that will be used to sort
 #'  the models. (See
-#'  \url{https://tidymodels.github.io/yardstick/articles/metric-types.html} for
+#'  \url{https://yardstick.tidymodels.org/articles/metric-types.html} for
 #'  more details). Not required if a single metric exists in `x`. If there are
 #'  multiple metric and none are given, the first in the metric set is used (and
 #'  a warning is issued).

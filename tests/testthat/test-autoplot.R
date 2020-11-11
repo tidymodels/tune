@@ -14,7 +14,7 @@ load(test_path("test_objects.RData"))
 test_that("two quantitative predictor marginal plot",{
   p <- autoplot(svm_results)
   expect_is(p, "ggplot")
-  expect_equal(names(p$data), c('mean', '.metric', 'name', 'value'))
+  expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$y, "")
@@ -30,7 +30,7 @@ test_that("two quantitative predictor and one qualitative marginal plot",{
   expect_is(p, "ggplot")
   expect_equal(
     names(p$data),
-    c('Distance Weighting Function', 'mean', '.metric', 'name', 'value')
+    c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -54,7 +54,7 @@ test_that("not marginal plot with grid search",{
 test_that("marginal plot labels and transformations - irregular grid",{
   p <- autoplot(svm_results)
   expect_is(p, "ggplot")
-  expect_equal(names(p$data), c('mean', '.metric', 'name', 'value'))
+  expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$y, "")
@@ -85,7 +85,7 @@ test_that("marginal plot for iterative search",{
   expect_is(p, "ggplot")
   expect_equal(
     names(p$data),
-    c('Distance Weighting Function', 'mean', '.metric', 'name', 'value')
+    c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -138,7 +138,7 @@ test_that("regular grid plot",{
   expect_is(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+    c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -153,7 +153,7 @@ test_that("regular grid plot",{
   expect_is(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("degree", "wt df", "wt degree", "mean", ".metric", "name", "value")
+    c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -168,7 +168,7 @@ test_that("regular grid plot",{
   expect_is(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("%^*#", "Scale Factor",  "mean", ".metric", "name", "value")
+    c("%^*#", "Scale Factor",  "mean", '# resamples', ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
