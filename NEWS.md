@@ -2,6 +2,8 @@
 
 ## Bug Fixes
 
+* `last_fit()` and `workflows::fit()` will now give identical results for the same workflow when the underlying model uses random number generation (#300).
+
 * Fixed an issue where recipe tuning parameters could be randomly matched to the tuning grid incorrectly (#316).
 
 * `last_fit()` no longer accidentally adjusts the random seed (#264).
