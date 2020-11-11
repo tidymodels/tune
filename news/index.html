@@ -164,6 +164,7 @@
 <h2 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug Fixes</h2>
 <ul>
+<li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> and <code>workflows::fit()</code> will now give identical results for the same workflow when the underlying model uses random number generation (<a href='https://github.com/tidymodels/tune/issues/300'>#300</a>).</p></li>
 <li><p>Fixed an issue where recipe tuning parameters could be randomly matched to the tuning grid incorrectly (<a href='https://github.com/tidymodels/tune/issues/316'>#316</a>).</p></li>
 <li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> no longer accidentally adjusts the random seed (<a href='https://github.com/tidymodels/tune/issues/264'>#264</a>).</p></li>
 <li><p>Fixed two bugs in the acquisition function calculations.</p></li>
