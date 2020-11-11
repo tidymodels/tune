@@ -366,8 +366,8 @@ plot_marginals <- function(x, metric = NULL) {
 
   x <-
     x %>%
-    dplyr::rename(resamples = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, resamples, .metric) %>%
+    dplyr::rename(`# resamples` = n) %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
     tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
 
   # ----------------------------------------------------------------------------
@@ -376,7 +376,7 @@ plot_marginals <- function(x, metric = NULL) {
 
   if (length(chr_param_cols) > 0) {
     if (is_race) {
-      p <- p + geom_point(aes(col = !!sym(chr_param_cols), alpha = resamples, size = resamples))
+      p <- p + geom_point(aes(col = !!sym(chr_param_cols), alpha = `# resamples`, size = resamples))
       p <- p + ggplot2::labs(color = chr_param_cols)
     } else {
       p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
@@ -385,7 +385,7 @@ plot_marginals <- function(x, metric = NULL) {
 
   } else {
     if (is_race) {
-      p <- p + geom_point(aes(alpha = resamples, size = resamples))
+      p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
     } else {
       p <- p + geom_point(alpha = .7)
     }
@@ -498,8 +498,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
 
   dat <-
     dat %>%
-    dplyr::rename(resamples = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, resamples, .metric) %>%
+    dplyr::rename(`# resamples` = n) %>%
+    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
     tidyr::pivot_longer(cols = dplyr::one_of(x_col))
 
   # ------------------------------------------------------------------------------
@@ -549,7 +549,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   }
 
   if (is_race) {
-    p <- p + geom_point(aes(alpha = resamples, size = resamples))
+    p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
   } else {
     p <- p + geom_point(size = 1)
   }
