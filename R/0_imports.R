@@ -31,16 +31,6 @@
 
 # ------------------------------------------------------------------------------
 
-#' @importFrom dials parameters
-#' @export
-dials::parameters
-
-#' @importFrom ggplot2 autoplot
-#' @export
-ggplot2::autoplot
-
-# ------------------------------------------------------------------------------
-
 utils::globalVariables(
   c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
