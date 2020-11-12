@@ -11,7 +11,7 @@
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
 #' objects only). If `NULL`, `select_best(x)` will be used.
 #' @param ... Not currently used.
-#' @return A data frame with one or more additional columns with model
+#' @return A data frame with one or more additional columns for model
 #' predictions.
 #'
 #' @details
