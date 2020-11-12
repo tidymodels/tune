@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Objects exported from other packages — reexports • tune</title>
+<title>Augment data with holdout predictions — augment.tune_results • tune</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -49,17 +49,10 @@
 
 
 
-<meta property="og:title" content="Objects exported from other packages — reexports" />
-<meta property="og:description" content="These objects are imported from other packages. Follow the links
-below to see their documentation.
-
-  dialsparameters
-
-  genericsaugment, min_grid, required_pkgs, tunable
-
-  ggplot2autoplot
-
-" />
+<meta property="og:title" content="Augment data with holdout predictions — augment.tune_results" />
+<meta property="og:description" content="For tune objects that use resampling, these augment() methods will add
+one or more columns for the hold-out predictions (i.e. from the assessment
+set(s))." />
 <meta property="og:image" content="https://tune.tidymodels.org/logo.png" />
 <meta name="twitter:card" content="summary" />
 
@@ -162,26 +155,66 @@ below to see their documentation.
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Objects exported from other packages</h1>
-    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/reexports.R'><code>R/reexports.R</code></a></small>
-    <div class="hidden name"><code>reexports.Rd</code></div>
+    <h1>Augment data with holdout predictions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/tidymodels/tune/blob/master/R/augment.R'><code>R/augment.R</code></a></small>
+    <div class="hidden name"><code>augment.tune_results.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>These objects are imported from other packages. Follow the links
-below to see their documentation.</p>
-<dl>
-  <dt>dials</dt><dd><p><code><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></code></p></dd>
-
-  <dt>generics</dt><dd><p><code><a href='https://generics.r-lib.org/reference/augment.html'>augment</a></code>, <code><a href='https://generics.r-lib.org/reference/min_grid.html'>min_grid</a></code>, <code><a href='https://generics.r-lib.org/reference/required_pkgs.html'>required_pkgs</a></code>, <code><a href='https://generics.r-lib.org/reference/tunable.html'>tunable</a></code></p></dd>
-
-  <dt>ggplot2</dt><dd><p><code><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></code></p></dd>
-
-</dl>
+    <p>For <code>tune</code> objects that use resampling, these <code><a href='https://generics.r-lib.org/reference/augment.html'>augment()</a></code> methods will add
+one or more columns for the hold-out predictions (i.e. from the assessment
+set(s)).</p>
     </div>
 
+    <pre class="usage"><span class='co'># S3 method for tune_results</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/augment.html'>augment</a></span><span class='op'>(</span><span class='va'>x</span>, parameters <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
+<span class='co'># S3 method for resample_results</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/augment.html'>augment</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
+<span class='co'># S3 method for last_fit</span>
+<span class='fu'><a href='https://generics.r-lib.org/reference/augment.html'>augment</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An object resulting from one of the <code>tune_*()</code> functions,
+<code><a href='fit_resamples.html'>fit_resamples()</a></code>, or <code><a href='last_fit.html'>last_fit()</a></code>. The control specifications for these
+objects should have used the option <code>save_pred = TRUE</code>.</p></td>
+    </tr>
+    <tr>
+      <th>parameters</th>
+      <td><p>A data frame with a single row that indicates what
+tuning parameters should be used to generate the predictions (for <code>tune_*()</code>
+objects only). If <code>NULL</code>, <code><a href='show_best.html'>select_best(x)</a></code> will be used.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Not currently used.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data frame with one or more additional columns with model
+predictions.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>For some resampling methods where some rows are replicated in multiple
+assessment sets, the prediction columns will be averages of the holdout
+results. Also, for these methods, it is possible that all rows of the
+original data do not have holdout predictions. For example, a single
+bootstrap resample. In this case, all rows are return and a warning is
+issued.</p>
+<p>For objects created by <code><a href='last_fit.html'>last_fit()</a></code>, the test set data and predictions are
+returned.</p>
+<p>Unlike other <code><a href='https://generics.r-lib.org/reference/augment.html'>augment()</a></code> methods, the predicted values for regression models
+are in a column called <code>.pred</code> instead of <code>.fitted</code> (to be consistent with
+other tidymodels conventions).</p>
+<p>For regression problems, an additional <code>.resid</code> column is added to the
+results.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

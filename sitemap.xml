@@ -4,6 +4,9 @@
     <loc>https://tune.tidymodels.org/index.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/augment.tune_results.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/autoplot.tune_results.html</loc>
   </url>
   <url>
