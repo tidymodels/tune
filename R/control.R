@@ -32,7 +32,7 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
                          pkgs = NULL, save_workflow = FALSE,
                          event_level = "first",
-                         parallel_over = "resamples") {
+                         parallel_over = NULL) {
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
@@ -109,7 +109,9 @@ control_resamples <- control_grid
 #'   of class prediction is made, and specifies which level of the outcome
 #'   is considered the "event".
 #' @param parallel_over A single string containing either `"resamples"` or
-#'   `"everything"` describing how to use parallel processing.
+#'   `"everything"` describing how to use parallel processing. Alternatively,
+#'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
+#'   automatically.
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is
@@ -121,6 +123,9 @@ control_resamples <- control_grid
 #'   preprocessor and model tuning parameters for that specific resample. This
 #'   will result in the preprocessor being re-processed multiple times, but
 #'   can be faster if that processing is extremely fast.
+#'
+#'   If `NULL`, chooses `"resamples"` if there are more than one resample,
+#'   otherwise chooses `"everything"` to attempt to maximize core utilization.
 #'
 #' @details
 #'
@@ -155,7 +160,7 @@ control_bayes <-
            save_workflow = FALSE,
            save_gp_scoring = FALSE,
            event_level = "first",
-           parallel_over = "resamples") {
+           parallel_over = NULL) {
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
@@ -205,7 +210,12 @@ print.control_bayes <- function(x, ...) {
 # ------------------------------------------------------------------------------
 
 val_parallel_over <- function(parallel_over, where) {
+  if (is.null(parallel_over)) {
+    return(invisible(NULL))
+  }
+
   val_class_and_single(parallel_over, "character", where)
   rlang::arg_match0(parallel_over, c("resamples", "everything"), "parallel_over")
+
   invisible(NULL)
 }
