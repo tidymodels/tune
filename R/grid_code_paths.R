@@ -15,6 +15,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   rows <- seq_len(n_grid_info)
 
   parallel_over <- control$parallel_over
+  parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
 
   if (rng) {
     seeds <- sample.int(10^5, nrow(resamples))
@@ -426,4 +427,21 @@ super_safely <- function(fn) {
 
 is_failure <- function(x) {
   inherits(x, "try-error")
+}
+
+parallel_over_finalize <- function(parallel_over, n_resamples) {
+  # Always use user supplied option, even if not as efficient
+  if (!is.null(parallel_over)) {
+    return(parallel_over)
+  }
+
+  # Generally more efficient to parallelize over just resamples,
+  # but if there is only 1 resample we instead parallelize over
+  # "everything" (resamples and the hyperparameter grid) to maximize
+  # core utilization
+  if (n_resamples == 1L) {
+    "everything"
+  } else {
+    "resamples"
+  }
 }
