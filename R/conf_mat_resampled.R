@@ -56,7 +56,7 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
       rlang::abort(
         paste0(
           "It looks like there are ", nrow(param_combos), " tuning parameter ",
-          "combination(s) in the data. Pleasse use the `parameters` ",
+          "combination(s) in the data. Please use the `parameters` ",
           "argument to select one combination of parameters."
         )
       )
