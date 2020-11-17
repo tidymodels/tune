@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 0.1.2
 
 ## Bug Fixes
 

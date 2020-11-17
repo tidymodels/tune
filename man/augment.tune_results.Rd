@@ -24,7 +24,7 @@ objects only). If \code{NULL}, \code{select_best(x)} will be used.}
 \item{...}{Not currently used.}
 }
 \value{
-A data frame with one or more additional columns with model
+A data frame with one or more additional columns for model
 predictions.
 }
 \description{
@@ -33,12 +33,11 @@ one or more columns for the hold-out predictions (i.e. from the assessment
 set(s)).
 }
 \details{
-For some resampling methods where some rows are replicated in multiple
+For some resampling methods where rows may be replicated in multiple
 assessment sets, the prediction columns will be averages of the holdout
 results. Also, for these methods, it is possible that all rows of the
-original data do not have holdout predictions. For example, a single
-bootstrap resample. In this case, all rows are return and a warning is
-issued.
+original data do not have holdout predictions (like a single bootstrap
+resample). In this case, all rows are return and a warning is issued.
 
 For objects created by \code{last_fit()}, the test set data and predictions are
 returned.

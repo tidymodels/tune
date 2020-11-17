@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.1.1.9001
+Version: 0.1.2
 Authors@R: c(
     person(given = "Max", family = "Kuhn", email = "max@rstudio.com", role = c("aut", "cre")),
     person("RStudio", role = "cph"))
@@ -28,9 +28,9 @@ Imports:
     tidyr,
     GPfit,
     foreach,
-    parsnip (>= 0.0.4),
+    parsnip (>= 0.1.4),
     workflows (>= 0.2.1),
-    hardhat (>= 0.1.0),
+    hardhat (>= 0.1.5),
     vctrs (>= 0.3.0),
     generics (>= 0.1.0)
 Suggests: 
@@ -47,5 +47,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
-Remotes:
-    tidymodels/recipes
