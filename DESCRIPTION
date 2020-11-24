@@ -28,6 +28,7 @@ Imports:
     tidyr,
     GPfit,
     foreach,
+    doRNG,
     parsnip (>= 0.1.4),
     workflows (>= 0.2.1),
     hardhat (>= 0.1.5),

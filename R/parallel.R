@@ -16,7 +16,7 @@ get_operator <- function(allow = TRUE, object) {
 
   cond <- allow && is_par
   if (cond) {
-    res <- foreach::`%dopar%`
+    res <- doRNG::`%dorng%`
   } else {
     res <- foreach::`%do%`
   }

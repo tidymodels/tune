@@ -22,6 +22,7 @@
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom foreach foreach getDoParName %dopar%
+#' @importFrom doRNG %dorng%
 
 # ------------------------------------------------------------------------------
 # Only a small number of functions in workflows.
