@@ -2,6 +2,9 @@
 
 # tune 0.1.2
 
+ * `collect_predictions()` was made generic. 
+ 
+ * The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
 ## Bug Fixes
 
 * `last_fit()` and `workflows::fit()` will now give identical results for the same workflow when the underlying model uses random number generation (#300).
