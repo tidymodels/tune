@@ -2,12 +2,18 @@
 % Please edit documentation in R/collect.R
 \name{collect_predictions}
 \alias{collect_predictions}
+\alias{collect_predictions.default}
+\alias{collect_predictions.tune_results}
 \alias{collect_metrics}
 \alias{collect_metrics.tune_results}
 \alias{collect_metrics.tune_race}
 \title{Obtain and format results produced by tuning functions}
 \usage{
-collect_predictions(x, summarize = FALSE, parameters = NULL)
+collect_predictions(x, ...)
+
+\method{collect_predictions}{default}(x, ...)
+
+\method{collect_predictions}{tune_results}(x, summarize = FALSE, parameters = NULL, ...)
 
 collect_metrics(x, ...)
 
@@ -19,6 +25,8 @@ collect_metrics(x, ...)
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
 or \code{\link[=last_fit]{last_fit()}}. For \code{\link[=collect_predictions]{collect_predictions()}}, the control option \code{save_pred = TRUE} should have been used.}
 
+\item{...}{Not currently used.}
+
 \item{summarize}{A logical; should metrics be summarized over resamples
 (\code{TRUE}) or return the values for each individual resample. Note that, if \code{x}
 is created by \code{\link[=last_fit]{last_fit()}}, \code{summarize} has no effect. For the other object
@@ -28,8 +36,6 @@ types, the method of summarizing predictions is detailed below.}
 used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
 if \code{tune("my_param")} was used).}
-
-\item{...}{Not currently used.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the

@@ -270,3 +270,13 @@ tunable.decision_tree <- function(x, ...) {
   res
 }
 
+#' @rdname tunable
+#' @export
+tunable.svm_poly <- function(x, ...) {
+  res <- NextMethod()
+  if (x$engine == "kernlab") {
+    res$call_info[res$name == "degree"] <-
+      list(list(pkg = "dials", fun = "prod_degree", range = c(1L, 3L)))
+  }
+  res
+}

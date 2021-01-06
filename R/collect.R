@@ -83,7 +83,19 @@
 #' collect_predictions(resampled, summarize = TRUE, grid[1,]) %>% arrange(.row)
 #' }
 #' @export
-collect_predictions <- function(x, summarize = FALSE, parameters = NULL) {
+collect_predictions <- function(x, ...) {
+  UseMethod("collect_predictions")
+}
+
+#' @export
+#' @rdname collect_predictions
+collect_predictions.default <- function(x, ...) {
+  rlang::abort("No `collect_predictions()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname collect_predictions
+collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
   if (!inherits(x, "tune_results")) {
     rlang::abort(
       paste0(
