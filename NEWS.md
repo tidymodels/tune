@@ -1,5 +1,7 @@
 # tune (development version)
 
+* The `rsample::pretty()` methods were extended to `tune_results` objects.  
+
 # tune 0.1.2
 
  * `collect_predictions()` was made generic. 

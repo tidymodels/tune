@@ -10,6 +10,7 @@
 \alias{tunable.rand_forest}
 \alias{tunable.mars}
 \alias{tunable.decision_tree}
+\alias{tunable.svm_poly}
 \title{Find recommended methods for generating parameter values}
 \usage{
 \method{tunable}{model_spec}(x, ...)
@@ -29,6 +30,8 @@
 \method{tunable}{mars}(x, ...)
 
 \method{tunable}{decision_tree}(x, ...)
+
+\method{tunable}{svm_poly}(x, ...)
 }
 \arguments{
 \item{x}{An object, such as a workflow or \code{parsnip} model
