@@ -133,3 +133,12 @@ new_bare_tibble <- function(x, ..., class = character()) {
   }
   res
 }
+
+
+# Get a textual summary of the type of resampling
+#' @export
+pretty.tune_results <- function(x, ...) {
+  attr(x, "rset_info")$label
+}
+
+
