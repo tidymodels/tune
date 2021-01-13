@@ -19,7 +19,6 @@ Imports:
     purrr (>= 0.3.2),
     dials (>= 0.0.9),
     recipes (>= 0.1.15),
-    utils,
     ggplot2,
     glue,
     cli (>= 2.0.0),
@@ -34,14 +33,14 @@ Imports:
     vctrs (>= 0.3.0),
     generics (>= 0.1.0)
 Suggests: 
-    testthat,
-    knitr,
     covr,
     kernlab,
-    randomForest,
+    knitr,
     modeldata,
-    xml2,
-    spelling
+    randomForest,
+    spelling,
+    testthat,
+    xml2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

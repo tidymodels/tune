@@ -385,7 +385,8 @@ set_workflow <- function(workflow, control) {
     if (!is.null(workflow$pre$actions$recipe)) {
       rlang::inform(paste0(
         "The workflow being saved contains a recipe, which is ",
-        format(object.size(workflow$pre$actions$recipe), units = "Mb", digits = 2),
+        format(utils::object.size(workflow$pre$actions$recipe),
+               units = "Mb", digits = 2),
         " in memory. If this was not intentional, please set the control ",
         "setting `save_workflow = FALSE`."
       ))

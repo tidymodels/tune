@@ -434,7 +434,9 @@ fit_gp <- function(dat, pset, metric, control, ...) {
   if (any(names(opts) == "trace") && opts$trace) {
     gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
   } else {
-    tmp_output <- capture.output(gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...))
+    tmp_output <- utils::capture.output(
+      gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
+    )
   }
 
   gp_fit
