@@ -123,9 +123,9 @@ reduce_all_outcome_names <- function(resamples) {
 
 ensure_tibble <- function(x) {
   if (is.null(x)) {
-    res <- tibble(.notes = character(0))
+    res <- tibble::tibble(.notes = character(0))
   } else {
-    res <- tibble(.notes = x)
+    res <- tibble::tibble(.notes = x)
   }
   res
 }
