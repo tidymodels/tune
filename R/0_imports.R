@@ -2,13 +2,11 @@
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
 #' @importFrom dplyr last
-#' @importFrom tibble tibble lst is_tibble as_tibble
 #' @importFrom purrr map_int
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
 #' @importFrom rlang is_missing %||%
 #' @importFrom glue glue glue_collapse
-#' @importFrom utils globalVariables capture.output packageVersion object.size
 #' @importFrom dials parameters_constr is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame update
@@ -47,7 +45,7 @@ utils::globalVariables(
 # ------------------------------------------------------------------------------
 
 tidyr_new_interface <- function() {
-  packageVersion("tidyr") > "0.8.99"
+  utils::packageVersion("tidyr") > "0.8.99"
 }
 
 # ------------------------------------------------------------------------------

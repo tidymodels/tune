@@ -89,6 +89,11 @@ forge_from_workflow <- function(split, workflow) {
   new_data <- rsample::assessment(split)
 
   blueprint <- workflow$pre$mold$blueprint
+  if (!rlang::is_installed("hardhat")) {
+    rlang::abort(
+      "Internal error: hardhat should have been installed from the workflows dependency."
+    )
+  }
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
   forged

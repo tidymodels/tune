@@ -128,7 +128,7 @@ submod_only <- function(grid) {
     return(grid)
   }
   nm <- colnames(grid)[1]
-  fit_only <- tibble(nm = max(grid[[nm]], na.rm = TRUE))
+  fit_only <- tibble::tibble(nm = max(grid[[nm]], na.rm = TRUE))
   names(fit_only) <- nm
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
@@ -155,7 +155,7 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::full_join(fit_only, grid, by = fixed_args) %>%
     dplyr::filter(..val != max_val) %>%
     dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(lst(!!subm_nm := ..val))) %>%
+    dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) %>%
     dplyr::ungroup() %>%
     dplyr::full_join(fit_only, by = fixed_args) %>%
     dplyr::rename(!!subm_nm := max_val)
