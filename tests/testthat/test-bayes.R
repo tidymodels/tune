@@ -400,7 +400,7 @@ test_that("retain extra attributes and saved GP candidates", {
     res2 <- tune_bayes(wflow, resamples = folds, param_info = pset,
                        initial = iter1, iter = iter2,
                        control = control_bayes(save_workflow = TRUE)),
-    "being saved contains a recipe, which is"
+    "Gaussian process model"
   )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
