@@ -24,45 +24,49 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   }
 
   if (identical(parallel_over, "resamples")) {
-    results <- foreach::foreach(
-      iteration = iterations,
-      .packages = packages,
-      .errorhandling = "pass"
-    ) %op% {
-      tune_grid_loop_iter_safely(
-        iteration = iteration,
-        resamples = resamples,
-        grid_info = grid_info,
-        workflow = workflow,
-        metrics = metrics,
-        control = control,
-        seeds = seeds
-      )
-    }
-  } else if (identical(parallel_over, "everything")) {
-    results <- foreach::foreach(
-      iteration = iterations,
-      .packages = packages,
-      .errorhandling = "pass"
-    ) %:%
-      foreach::foreach(
-        row = rows,
+    suppressPackageStartupMessages(
+      results <- foreach::foreach(
+        iteration = iterations,
         .packages = packages,
-        .errorhandling = "pass",
-        .combine = iter_combine
+        .errorhandling = "pass"
       ) %op% {
-        grid_info_row <- vctrs::vec_slice(grid_info, row)
-
         tune_grid_loop_iter_safely(
           iteration = iteration,
           resamples = resamples,
-          grid_info = grid_info_row,
+          grid_info = grid_info,
           workflow = workflow,
           metrics = metrics,
           control = control,
           seeds = seeds
         )
       }
+    )
+  } else if (identical(parallel_over, "everything")) {
+    suppressPackageStartupMessages(
+      results <- foreach::foreach(
+        iteration = iterations,
+        .packages = packages,
+        .errorhandling = "pass"
+      ) %:%
+        foreach::foreach(
+          row = rows,
+          .packages = packages,
+          .errorhandling = "pass",
+          .combine = iter_combine
+        ) %op% {
+          grid_info_row <- vctrs::vec_slice(grid_info, row)
+
+          tune_grid_loop_iter_safely(
+            iteration = iteration,
+            resamples = resamples,
+            grid_info = grid_info_row,
+            workflow = workflow,
+            metrics = metrics,
+            control = control,
+            seeds = seeds
+          )
+        }
+    )
   } else {
     rlang::abort("Internal error: Invalid `parallel_over`.")
   }
