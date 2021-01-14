@@ -21,9 +21,14 @@ test_that('recipe with no tunable parameters', {
 test_that('recipe with tunable parameters', {
   spline_info <- tunable(spline_rec)
   check_tunable_tibble(spline_info)
+  if (utils::packageVersion("recipes") <= "0.1.15") {
+    expected_cols <- c('step_knnimpute', 'step_other', 'step_bs', 'step_bs')
+  } else {
+    expected_cols <- c('step_impute_knn', 'step_other', 'step_bs', 'step_bs')
+  }
   expect_equal(
     spline_info$component,
-    c('step_knnimpute', 'step_other', 'step_bs', 'step_bs'),
+    expected_cols
   )
   expect_true(all(spline_info$source == "recipe"))
   nms <- c('neighbors', 'threshold', 'deg_free', 'degree')

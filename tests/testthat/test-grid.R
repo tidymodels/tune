@@ -431,7 +431,7 @@ test_that("retain extra attributes", {
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
   wflow2 <- workflow() %>%
-    add_recipe(recipes::recipe(mpg ~ ., mtcars)) %>%
+    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),])) %>%
     add_model(svm_mod)
   pset2 <- dials::parameters(wflow2)
   grid2 <- grid_regular(pset2, levels = 3)
