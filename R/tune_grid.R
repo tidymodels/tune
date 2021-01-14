@@ -383,7 +383,7 @@ pull_rset_attributes <- function(x) {
 set_workflow <- function(workflow, control) {
   if (control$save_workflow) {
     if (!is.null(workflow$pre$actions$recipe)) {
-      w_size <- object.size(workflow$pre$actions$recipe)
+      w_size <- utils::object.size(workflow$pre$actions$recipe)
       # make 5MB cutoff
       if (w_size/1024^2 > 5) {
         msg <-
