@@ -28,11 +28,11 @@ Imports:
     foreach,
     parsnip (>= 0.1.4),
     workflows (>= 0.2.1),
-    hardhat (>= 0.1.5),
     vctrs (>= 0.3.0),
     generics (>= 0.1.0)
 Suggests: 
     covr,
+    hardhat (>= 0.1.5),
     kernlab,
     knitr,
     modeldata,
