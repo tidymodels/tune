@@ -472,7 +472,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   # ----------------------------------------------------------------------------
 
   if (g > 5) {
-    return(autoplot(x, metric = metric))
+    return(plot_marginals(x, metric))
   }
 
   # ----------------------------------------------------------------------------
