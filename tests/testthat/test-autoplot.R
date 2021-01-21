@@ -224,3 +224,13 @@ test_that("coord_obs_pred",{
 
 
 
+test_that("1D regular grid x labels",{
+  set.seed(1)
+  res <-
+    svm_rbf(cost = tune()) %>% set_engine("kernlab") %>% set_mode("regression") %>%
+    tune_grid(mpg ~ ., resamples = vfold_cv(mtcars, v = 5), grid = 3)
+  expect_equal(autoplot(res)$labels$x, c(cost = "Cost"))
+})
+
+
+

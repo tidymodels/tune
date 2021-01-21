@@ -554,14 +554,16 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     p <- p + geom_point(size = 1)
   }
 
-
   if (multi_metrics) {
     p <- p + ylab("")
   } else {
     dat$.metric[1]
     p <- p + ylab(dat$.metric[1])
   }
-
+  if (nrow(pset) == 1) {
+    x_lab <- pset$object[[1]]$label
+    p <- p + xlab(x_lab)
+  }
 
   if (any(is_num)) {
     p <- p + geom_line()
