@@ -17,16 +17,13 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   parallel_over <- control$parallel_over
   parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
 
-  if (rng) {
-    seeds <- sample.int(10^5, nrow(resamples))
-  } else {
-    seeds <- NULL
-  }
-
   if (identical(parallel_over, "resamples")) {
+    seeds <- generate_seeds(rng, n_resamples)
+
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         iteration = iterations,
+        seed = seeds,
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
@@ -37,11 +34,13 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           workflow = workflow,
           metrics = metrics,
           control = control,
-          seeds = seeds
+          seed = seed
         )
       }
     )
   } else if (identical(parallel_over, "everything")) {
+    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
+
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         iteration = iterations,
@@ -50,6 +49,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
       ) %:%
         foreach::foreach(
           row = rows,
+          seed = slice_seeds(seeds, iteration, n_grid_info),
           .packages = packages,
           .errorhandling = "pass",
           .combine = iter_combine
@@ -63,7 +63,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
             workflow = workflow,
             metrics = metrics,
             control = control,
-            seeds = seeds
+            seed = seed
           )
         }
     )
@@ -117,13 +117,13 @@ tune_grid_loop_iter <- function(iteration,
                                 workflow,
                                 metrics,
                                 control,
-                                seeds) {
+                                seed) {
   load_pkgs(workflow)
   load_namespace(control$pkgs)
 
   # After package loading to avoid potential package RNG manipulation
-  if (!is.null(seeds)) {
-    set.seed(seeds[[iteration]])
+  if (!is.null(seed)) {
+    assign(".Random.seed", seed, envir = globalenv())
   }
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
@@ -342,7 +342,7 @@ super_safely_iterate_impl <- function(fn,
                                       workflow,
                                       metrics,
                                       control,
-                                      seeds) {
+                                      seed) {
   safely_iterate <- super_safely(fn)
 
   result <- safely_iterate(
@@ -352,7 +352,7 @@ super_safely_iterate_impl <- function(fn,
     workflow,
     metrics,
     control,
-    seeds
+    seed
   )
 
   error <- result$error
@@ -448,4 +448,39 @@ parallel_over_finalize <- function(parallel_over, n_resamples) {
   } else {
     "resamples"
   }
+}
+
+# Note:
+# We generate seeds in such a way that each call to `tune_grid_loop_iter()`
+# will get its own unique seed. It sets that seed once at the top of the
+# function call, then runs all the models in that loop iteration.
+generate_seeds <- function(rng, n) {
+  out <- vector("list", length = n)
+
+  if (!rng) {
+    # `NULL` elements are the signal to not fix the random seed
+    return(out)
+  }
+
+  original_algorithms <- RNGkind(kind = "L'Ecuyer-CMRG")
+  original_rng_algorithm <- original_algorithms[[1]]
+
+  on.exit(
+    RNGkind(kind = original_rng_algorithm),
+    add = TRUE
+  )
+
+  seed <- .Random.seed
+
+  for (i in seq_len(n)) {
+    out[[i]] <- seed
+    seed <- parallel::nextRNGStream(seed)
+  }
+
+  out
+}
+
+slice_seeds <- function(x, i, n) {
+  # Slice out the current iteration worth of seeds
+  x[(i - 1L) * n + seq_len(n)]
 }
