@@ -109,3 +109,13 @@ test_that('required package lists', {
   expect_equal(required_pkgs(lm_model, FALSE), "stats")
   expect_equal(required_pkgs(chi_wflow, FALSE), "glmnet")
 })
+
+
+
+# ------------------------------------------------------------------------------
+
+test_that('rsample fingerprinting', {
+  expect_equal(.get_fingerprint(ames_grid_search), "bfb2d02564c955d27ed78316b820e8ff")
+  expect_equal(.get_fingerprint(ames_iter_search), "bfb2d02564c955d27ed78316b820e8ff")
+})
+
