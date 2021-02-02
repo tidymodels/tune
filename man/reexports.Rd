@@ -9,6 +9,7 @@
 \alias{tunable}
 \alias{min_grid}
 \alias{augment}
+\alias{.get_fingerprint}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -21,5 +22,7 @@ below to see their documentation.
   \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{min_grid}}, \code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
+
+  \item{rsample}{\code{\link[rsample:get_fingerprint]{.get_fingerprint}}}
 }}
 

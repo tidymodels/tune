@@ -22,3 +22,7 @@ generics::min_grid
 #' @importFrom generics augment
 #' @export
 generics::augment
+
+#' @importFrom rsample .get_fingerprint
+#' @export
+rsample::.get_fingerprint

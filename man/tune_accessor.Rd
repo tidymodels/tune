@@ -7,6 +7,7 @@
 \alias{.get_tune_metric_names}
 \alias{.get_tune_outcome_names}
 \alias{.get_tune_workflow}
+\alias{.get_fingerprint.tune_results}
 \title{Various accessor functions}
 \usage{
 .get_tune_parameters(x)
@@ -20,6 +21,8 @@
 .get_tune_outcome_names(x)
 
 .get_tune_workflow(x)
+
+\method{.get_fingerprint}{tune_results}(x, ...)
 }
 \arguments{
 \item{x}{An object of class \code{tune_result}.}

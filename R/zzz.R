@@ -49,8 +49,9 @@
     ns
   )
 
-  # lazily register autoplot
+  # lazily register others
   s3_register("ggplot2::autoplot", "tune_results")
+  s3_register("rsample::.get_fingerprint", "tune_results")
 
   if (dplyr_pre_1.0.0()) {
     vctrs::s3_register("dplyr::mutate", "tune_results", method = mutate_tune_results)
