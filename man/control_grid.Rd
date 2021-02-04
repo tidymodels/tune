@@ -72,7 +72,12 @@ will result in the preprocessor being re-processed multiple times, but
 can be faster if that processing is extremely fast.
 
 If \code{NULL}, chooses \code{"resamples"} if there are more than one resample,
-otherwise chooses \code{"everything"} to attempt to maximize core utilization.}
+otherwise chooses \code{"everything"} to attempt to maximize core utilization.
+
+Note that switching between \code{parallel_over} strategies is not guaranteed
+to use the same random number generation schemes. However, re-tuning a
+model using the same \code{parallel_over} strategy is guaranteed to be
+reproducible between runs.}
 }
 \description{
 Control aspects of the grid search process

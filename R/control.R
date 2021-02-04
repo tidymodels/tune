@@ -127,6 +127,11 @@ control_resamples <- control_grid
 #'   If `NULL`, chooses `"resamples"` if there are more than one resample,
 #'   otherwise chooses `"everything"` to attempt to maximize core utilization.
 #'
+#'   Note that switching between `parallel_over` strategies is not guaranteed
+#'   to use the same random number generation schemes. However, re-tuning a
+#'   model using the same `parallel_over` strategy is guaranteed to be
+#'   reproducible between runs.
+#'
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
