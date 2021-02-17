@@ -4,6 +4,8 @@
 
 * Added `pillar` methods for formatting `tune` objects in list columns. 
 
+* A method for `.get_fingerprint()` was added. This helps determine if `tune` objects used the same resamples. 
+
 # tune 0.1.2
 
  * `collect_predictions()` was made generic. 
