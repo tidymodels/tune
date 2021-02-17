@@ -2,6 +2,8 @@
 
 * The `rsample::pretty()` methods were extended to `tune_results` objects.  
 
+* Added `pillar` methods for formatting `tune` objects in list columns. 
+
 # tune 0.1.2
 
  * `collect_predictions()` was made generic. 

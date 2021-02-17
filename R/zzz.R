@@ -79,6 +79,13 @@
     vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
     vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
   }
+
+  if (newer_tibble()) {
+    vctrs::s3_register("tibble::obj_sum", "tune_results")
+    vctrs::s3_register("tibble::obj_sum", "resample_results")
+    vctrs::s3_register("tibble::size_sum", "tune_results")
+    vctrs::s3_register("tibble::size_sum", "resample_results")
+  }
 }
 
 # nocov end

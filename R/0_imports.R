@@ -20,6 +20,8 @@
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom foreach foreach getDoParName %dopar%
+#' @importFrom tibble obj_sum
+
 
 # ------------------------------------------------------------------------------
 # Only a small number of functions in workflows.
@@ -39,7 +41,7 @@ utils::globalVariables(
     ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
     "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
-    ".iter_config", ".msg_model", "# resamples")
+    ".iter_config", ".msg_model", "# resamples", "seed")
   )
 
 # ------------------------------------------------------------------------------
