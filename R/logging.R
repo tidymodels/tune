@@ -14,7 +14,7 @@
 #' Gaiman <-
 #'   paste(
 #'     '"Good point." Bod was pleased with himself, and glad he had thought of',
-#'     'asking the poet for advice. Really, he thought, if you couldn’t trust a',
+#'     'asking the poet for advice. Really, he thought, if you couldn\'t trust a',
 #'     'poet to offer sensible advice, who could you trust?',
 #'     collapse = ""
 #'   )
