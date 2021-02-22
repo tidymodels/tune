@@ -81,10 +81,8 @@
   }
 
   if (newer_tibble()) {
-    vctrs::s3_register("tibble::obj_sum", "tune_results")
-    vctrs::s3_register("tibble::obj_sum", "resample_results")
-    vctrs::s3_register("tibble::size_sum", "tune_results")
-    vctrs::s3_register("tibble::size_sum", "resample_results")
+    vctrs::s3_register("tibble::size_sum", "tune_results", method = size_sum_tune_results)
+    vctrs::s3_register("tibble::size_sum", "resample_results", method = size_sum_tune_results)
   }
 }
 

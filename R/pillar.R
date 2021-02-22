@@ -10,13 +10,9 @@ obj_sum.tune_results <- function(x) {
   res
 }
 
-#' Helpers for pillar formatting
-#' @param x an object
-#' @return A character string.
-#' @export
-#' @keywords internal
-#' @rdname pillar-helpers
-size_sum.tune_results <- function(x) {
+# @export - lazy in .onLoad()
+# also used for resample_results
+size_sum_tune_results <- function(x) {
   ""
 }
 
@@ -31,14 +27,6 @@ obj_sum.resample_results <- function(x) {
   }
   res
 }
-
-#' @export
-#' @keywords internal
-#' @rdname pillar-helpers
-size_sum.resample_results <- function(x) {
-  ""
-}
-
 
 newer_tibble <- function() {
   utils::packageVersion("tibble") >= "3.0.6"
