@@ -1,4 +1,3 @@
-
 #' @export
 obj_sum.tune_results <- function(x) {
   null_metrics <- purrr::map_lgl(x$.metrics, is.null)
@@ -10,12 +9,11 @@ obj_sum.tune_results <- function(x) {
   res
 }
 
-# @export - lazy in .onLoad()
 # also used for resample_results
-size_sum_tune_results <- function(x) {
+#' @export
+size_sum.tune_results <- function(x) {
   ""
 }
-
 
 #' @export
 obj_sum.resample_results <- function(x) {
@@ -28,6 +26,13 @@ obj_sum.resample_results <- function(x) {
   res
 }
 
-newer_tibble <- function() {
-  utils::packageVersion("tibble") >= "3.0.6"
+#' @export
+obj_sum.tune_race <- function(x) {
+  null_metrics <- purrr::map_lgl(x$.metrics, is.null)
+  if (!all(null_metrics)) {
+    res <- "race[+]"
+  } else {
+    res <- "race[x]"
+  }
+  res
 }
