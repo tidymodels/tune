@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools 
-Version: 0.1.3
+Version: 0.1.3.9000
 Authors@R: c(
       person(given = "Max",
              family = "Kuhn",
@@ -52,4 +52,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
-
