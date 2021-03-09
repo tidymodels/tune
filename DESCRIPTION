@@ -53,4 +53,4 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
 Remotes:
-    tidymodels/workflows@feature/required-pkgs
+    tidymodels/workflows
