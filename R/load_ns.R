@@ -59,10 +59,6 @@ load_namespace <- function(x) {
 
 ## -----------------------------------------------------------------------------
 
-infra_pkgs <- c("tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr",
-                "tibble", "dials", "rsample", "workflows", "tidyr", "rlang",
-                "vctrs")
-
 #' Determine packages required by objects
 #'
 #' @param x An object.
@@ -78,23 +74,10 @@ required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
     dplyr::pull(pkg)
   res <- pkg_list[[1]]
   if (infra) {
-    res <- c(infra_pkgs, res)
-  }
-  res <- unique(res)
-  res <- res[length(res) != 0]
-  res
-}
-
-#' @rdname required_pkgs
-#' @export
-required_pkgs.workflow <- function(x, infra = TRUE, ...) {
-  res <- required_pkgs(workflows::pull_workflow_spec(x), infra = FALSE)
-  pp <- workflows::pull_workflow_preprocessor(x)
-  if (inherits(pp, "recipe")) {
-    res_rec <- required_pkgs(pp, infra = FALSE)
-    res <- c(res, res_rec)
-  }
-  if (infra) {
+    infra_pkgs <- c(
+      "tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr", "tibble",
+      "dials", "rsample", "workflows", "tidyr", "rlang", "vctrs"
+    )
     res <- c(infra_pkgs, res)
   }
   res <- unique(res)
