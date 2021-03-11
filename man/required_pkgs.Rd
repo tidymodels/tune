@@ -2,12 +2,9 @@
 % Please edit documentation in R/load_ns.R
 \name{required_pkgs.model_spec}
 \alias{required_pkgs.model_spec}
-\alias{required_pkgs.workflow}
 \title{Determine packages required by objects}
 \usage{
 \method{required_pkgs}{model_spec}(x, infra = TRUE, ...)
-
-\method{required_pkgs}{workflow}(x, infra = TRUE, ...)
 }
 \arguments{
 \item{x}{An object.}
