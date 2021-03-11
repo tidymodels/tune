@@ -1,8 +1,12 @@
 on:
   push:
     branches:
-      - main
       - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
 
 name: pkgdown
 
@@ -49,13 +53,22 @@ jobs:
         run: |
           pak::local_install_dev_deps(upgrade = TRUE)
           pak::pkg_install("pkgdown")
+          pak::pkg_install("tidymodels")
+          pak::pkg_install("kknn")
+          pak::pkg_install("doParallel")
           pak::pkg_install("tidyverse/tidytemplate")
         shell: Rscript {0}
 
       - name: Install package
         run: R CMD INSTALL .
 
-      - name: Build and deploy pkgdown site
+      - name: Build site
+        if: github.event_name == 'pull_request'
+        run: |
+          Rscript -e 'pkgdown::build_site()'
+
+      - name: Deploy package
+        if: github.event_name == 'push'
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"

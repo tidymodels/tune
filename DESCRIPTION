@@ -35,7 +35,7 @@ Imports:
     tibble (>= 3.1.0),
     tidyr,
     vctrs (>= 0.3.0),
-    workflows (>= 0.2.1.9001),
+    workflows (>= 0.2.2),
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
@@ -52,5 +52,3 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
-Remotes:
-    tidymodels/workflows
