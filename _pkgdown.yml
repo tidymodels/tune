@@ -24,6 +24,7 @@ reference:
     - conf_bound
     - starts_with("control")
     - autoplot.tune_results
+    - augment.tune_results
     - coord_obs_pred
     - expo_decay
     - starts_with("collect")
