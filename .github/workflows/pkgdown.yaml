@@ -50,6 +50,7 @@ jobs:
           pak::local_install_dev_deps(upgrade = TRUE)
           pak::pkg_install("pkgdown")
           pak::pkg_install("tidymodels")
+          pak::pkg_install("kknn")
           pak::pkg_install("doParallel")
           pak::pkg_install("tidyverse/tidytemplate")
         shell: Rscript {0}
