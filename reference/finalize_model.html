@@ -96,7 +96,7 @@ update objects with those values." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@ update objects with those values." />
 </li>
         <li>
   <a href="https://github.com/tidymodels/tune/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -206,10 +206,10 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 
 <span class='va'>lowest_rmse</span> <span class='op'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span><span class='op'>(</span><span class='va'>ames_grid_search</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span>
 <span class='va'>lowest_rmse</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 1 x 6</span><span>
-#&gt;       K weight_func dist_power   lon   lat .config         
-#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #555555;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>           
-#&gt; </span><span style='color: #555555;'>1</span><span>    33 triweight        0.511    10     3 Recipe10_Model01</div><div class='input'>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 6</span><span>
+#&gt;       K weight_func dist_power   lon   lat .config              
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    33 triweight        0.511    10     3 Preprocessor10_Model1</div><div class='input'>
 <span class='va'>knn_model</span>
 </div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (regression)
 #&gt; 

@@ -96,7 +96,7 @@ complex objects, such as recipes, model specifications, and workflows." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2.9000</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@ complex objects, such as recipes, model specifications, and workflows." />
 </li>
         <li>
   <a href="https://github.com/tidymodels/tune/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -210,8 +210,7 @@ complex objects, such as recipes, model specifications, and workflows.</p>
 </div><div class='output co'>#&gt; <span class='error'>Error: All columns in a tibble must be vectors.</span>
 #&gt; <span class='error'><span style='color: #BB0000;'>✖</span><span> Column `repos` is NULL.</span>
 #&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> Column `crayon.enabled` is NULL.</span>
-#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> Column `Ncpus` is NULL.</span>
-#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> Column `HTTPUserAgent` is NULL.</span></div><div class='input'>
+#&gt; <span class='error'></span><span style='color: #BB0000;'>✖</span><span> Column `Ncpus` is NULL.</span></div><div class='input'>
 <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"disp df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>wt</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"wt df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
