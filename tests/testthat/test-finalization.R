@@ -2,6 +2,7 @@ context("finalization")
 
 library(parsnip)
 library(recipes)
+library(modeldata)
 
 ## -----------------------------------------------------------------------------
 
@@ -51,3 +52,19 @@ test_that('skip error if grid is supplied', {
 
 })
 
+
+test_that('finalize recipe step with multiple tune parameters', {
+  data(biomass)
+
+  model_spec <- linear_reg() %>%
+    set_engine("lm")
+
+  rec <- recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, data = biomass) %>%
+    step_bs(carbon, hydrogen, deg_free = tune(), degree = tune())
+
+  best <- tibble(deg_free = 2, degree = 1, .config = "Preprocessor1_Model1")
+
+  expect_s3_class(finalize_recipe(rec, best), "recipe")
+  expect_equal(finalize_recipe(rec, best)$steps[[1]]$degree, 1)
+  expect_equal(finalize_recipe(rec, best)$steps[[1]]$deg_free, 2)
+})
