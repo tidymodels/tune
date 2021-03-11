@@ -1,5 +1,8 @@
 # tune (development version)
 
+* Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters
+in an single step.
+
 # tune 0.1.3
 
 * The `rsample::pretty()` methods were extended to `tune_results` objects.  

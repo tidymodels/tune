@@ -72,7 +72,8 @@ finalize_recipe <- function(x, parameters) {
   split <- vec_split(pset, pset$component_id)
   pset <- split[["val"]]
   for (i in seq_along(pset)) {
-    x <- complete_steps(parameters[[i]], pset[[i]], x)
+    pset_params <- parameters[names(parameters) %in% pset[[i]]$id]
+    x <- complete_steps(pset_params, pset[[i]], x)
   }
   x
 }
@@ -113,17 +114,12 @@ check_final_param <- function(x) {
 complete_steps <- function(param, pset, object) {
   # find the corresponding step in the recipe
   step_ids <- purrr::map_chr(object$steps, ~ .x$id)
-  step_index <- which(pset$component_id == step_ids)
-  tmp <- object$steps[[step_index]]
+  step_index <- which(unique(pset$component_id) == step_ids)
+  step_to_update <- object$steps[[step_index]]
 
-  list_para <- list(param)
   names(param) <- pset$name
 
-  tmp <- rlang::exec(update, object = tmp, !!!param)
-  object$steps[[step_index]] <- tmp
+  step_to_update <- rlang::exec(update, object = step_to_update, !!!param)
+  object$steps[[step_index]] <- step_to_update
   object
 }
-
-
-
-
