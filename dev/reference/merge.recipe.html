@@ -200,9 +200,10 @@ names (or their annotations) in the object.</p></td>
 
 <span class='va'>pca_rec</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_knnimpute.html'>step_knnimpute</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_impute_knn.html'>step_knnimpute</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_pca.html'>step_pca</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, num_comp <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
+</div><div class='output co'>#&gt; <span class='warning'>Warning: `step_knnimpute()` was deprecated in recipes 0.1.16.</span>
+#&gt; <span class='warning'>Please use `step_impute_knn()` instead.</span></div><div class='input'>
 <span class='va'>pca_grid</span> <span class='op'>&lt;-</span>
   <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
     <span class='op'>~</span><span class='va'>neighbors</span>, <span class='op'>~</span><span class='va'>num_comp</span>,

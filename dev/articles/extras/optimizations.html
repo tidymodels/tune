@@ -182,13 +182,13 @@
 <p>To evaluate these 350 candidate models, we would have to recompute the same recipe 69 additional times (per resample). Since Isomap is expensive, this is really inefficient.</p>
 <p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:</p>
 <pre><code>## # A tibble: 5 x 2
-##   num_terms data             
-##       &lt;int&gt; &lt;list&gt;           
-## 1         1 &lt;tibble [70 × 2]&gt;
-## 2         3 &lt;tibble [70 × 2]&gt;
-## 3         5 &lt;tibble [70 × 2]&gt;
-## 4         7 &lt;tibble [70 × 2]&gt;
-## 5         9 &lt;tibble [70 × 2]&gt;</code></pre>
+##   num_terms data                 
+##       &lt;int&gt; &lt;list&gt;               
+## 1         1 &lt;tibble[,2] [70 × 2]&gt;
+## 2         3 &lt;tibble[,2] [70 × 2]&gt;
+## 3         5 &lt;tibble[,2] [70 × 2]&gt;
+## 4         7 &lt;tibble[,2] [70 × 2]&gt;
+## 5         9 &lt;tibble[,2] [70 × 2]&gt;</code></pre>
 <p>Only 5 recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with <code>num_terms = 1</code> is created, the model parameters are iteratively tuned:</p>
 <pre><code>## # A tibble: 70 x 2
 ##    neighbors weight_func 
