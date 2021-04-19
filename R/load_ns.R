@@ -56,31 +56,3 @@ load_namespace <- function(x) {
 
   invisible(TRUE)
 }
-
-## -----------------------------------------------------------------------------
-
-#' Determine packages required by objects
-#'
-#' @param x An object.
-#' @return A character string.
-#' @keywords internal
-#' @rdname required_pkgs
-#' @export
-required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
-  mod_name <- class(x)[1]
-  pkg_list <-
-    parsnip::get_from_env(paste0(mod_name, "_pkgs")) %>%
-    dplyr::filter(engine == x$engine) %>%
-    dplyr::pull(pkg)
-  res <- pkg_list[[1]]
-  if (infra) {
-    infra_pkgs <- c(
-      "tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr", "tibble",
-      "dials", "rsample", "workflows", "tidyr", "rlang", "vctrs"
-    )
-    res <- c(infra_pkgs, res)
-  }
-  res <- unique(res)
-  res <- res[length(res) != 0]
-  res
-}

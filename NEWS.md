@@ -3,6 +3,10 @@
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters
 in an single step.
 
+* The automated method for determining tune parameter values for `sample_size` in C5.0 has been changed to `dials::sample_prop()`. 
+
+* A duplicate S3 method for `required_pkgs()` was removed. 
+
 # tune 0.1.3
 
 * The `rsample::pretty()` methods were extended to `tune_results` objects.  
