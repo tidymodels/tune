@@ -2,7 +2,7 @@
 
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters in an single step.
 
-* Changed `conf_mat_resampled()` to return the same type of object as `yardstick::conf_mat()` when `tidy = FALSE`.
+* Changed `conf_mat_resampled()` to return the same type of object as `yardstick::conf_mat()` when `tidy = FALSE` (#370).
 
 # tune 0.1.3
 
