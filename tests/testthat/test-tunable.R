@@ -60,7 +60,10 @@ test_that('model with main and engine parameters', {
            "winnow", "fuzzyThreshold", "bands")
   expect_equal(c5_info$name, nms)
   expect_true(all(purrr::map_lgl(c5_info$call_info[1:3], ~ .x$pkg == "dials")))
-  expect_equal(purrr::map_chr(c5_info$call_info[1:3], ~ .x$fun), nms[1:3])
+  expect_equal(
+    purrr::map_chr(c5_info$call_info[1:3], ~ .x$fun),
+    c("trees", "min_n", "sample_prop")
+  )
   expect_true(sum(purrr::map_lgl(c5_info$call_info, is.null)) == 1)
 })
 

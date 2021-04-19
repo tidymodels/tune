@@ -231,6 +231,8 @@ tunable.boost_tree <- function(x, ...) {
       res <- add_engine_parameters(res, c5_boost_engine_args)
       res$call_info[res$name == "trees"] <-
         list(list(pkg = "dials", fun = "trees", range = c(1, 100)))
+      res$call_info[res$name == "sample_size"] <-
+        list(list(pkg = "dials", fun = "sample_prop"))
     }
   }
   res
