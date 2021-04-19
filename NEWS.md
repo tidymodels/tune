@@ -1,7 +1,8 @@
 # tune (development version)
 
-* Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters
-in an single step.
+* Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters in an single step.
+
+* Changed `conf_mat_resampled()` to return the same type of object as `yardstick::conf_mat()` when `tidy = FALSE`.
 
 # tune 0.1.3
 
@@ -16,6 +17,7 @@ in an single step.
  * `collect_predictions()` was made generic. 
  
  * The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
+
 ## Bug Fixes
 
 * `last_fit()` and `workflows::fit()` will now give identical results for the same workflow when the underlying model uses random number generation (#300).
