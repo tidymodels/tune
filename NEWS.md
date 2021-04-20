@@ -1,7 +1,9 @@
-# tune (development version)
+# tune 0.1.4
 
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters
 in an single step.
+
+* The automatic parameter machinery for `sample_size` with the C5.0 engine was changes to use `dials::sample_prop()`. 
 
 # tune 0.1.3
 
@@ -13,9 +15,9 @@ in an single step.
 
 # tune 0.1.2
 
- * `collect_predictions()` was made generic. 
+* `collect_predictions()` was made generic. 
  
- * The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
+* The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
 ## Bug Fixes
 
 * `last_fit()` and `workflows::fit()` will now give identical results for the same workflow when the underlying model uses random number generation (#300).
