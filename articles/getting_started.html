@@ -50,7 +50,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
         </div>
       </div>
     </div>
@@ -248,18 +248,18 @@
 <span class="co">#&gt; # Tuning results</span>
 <span class="co">#&gt; # 10-fold cross-validation using stratification </span>
 <span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    splits             id     .metrics           .notes          </span>
-<span class="co">#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;             &lt;list&gt;          </span>
-<span class="co">#&gt;  1 &lt;split [1978/221]&gt; Fold01 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [1979/220]&gt; Fold02 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [1979/220]&gt; Fold03 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [1979/220]&gt; Fold04 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [1979/220]&gt; Fold05 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [1979/220]&gt; Fold06 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [1979/220]&gt; Fold07 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [1979/220]&gt; Fold08 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [1979/220]&gt; Fold09 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [1981/218]&gt; Fold10 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></code></pre></div>
+<span class="co">#&gt;    splits             id     .metrics               .notes              </span>
+<span class="co">#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;                 &lt;list&gt;              </span>
+<span class="co">#&gt;  1 &lt;split [1978/221]&gt; Fold01 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  2 &lt;split [1979/220]&gt; Fold02 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  3 &lt;split [1979/220]&gt; Fold03 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  4 &lt;split [1979/220]&gt; Fold04 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  5 &lt;split [1979/220]&gt; Fold05 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  6 &lt;split [1979/220]&gt; Fold06 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  7 &lt;split [1979/220]&gt; Fold07 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  8 &lt;split [1979/220]&gt; Fold08 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt;  9 &lt;split [1979/220]&gt; Fold09 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
+<span class="co">#&gt; 10 &lt;split [1981/218]&gt; Fold10 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span></code></pre></div>
 <p>The <code>.metrics</code> column has all of the holdout performance estimates<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for each parameter combination:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>

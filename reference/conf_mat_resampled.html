@@ -96,7 +96,7 @@ confusion matrix for each resample then averages the cell counts." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
         </div>
       </div>
     </div>
@@ -181,13 +181,14 @@ one tuning parameter combination (if any were used) is allowed here.</p></td>
     </tr>
     <tr>
       <th>tidy</th>
-      <td><p>Should the results come back in a tibble (<code>TRUE</code>) or a matrix.</p></td>
+      <td><p>Should the results come back in a tibble (<code>TRUE</code>) or a <code>conf_mat</code>
+object like <code><a href='https://yardstick.tidymodels.org/reference/conf_mat.html'>yardstick::conf_mat()</a></code> (<code>FALSE</code>)?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble or matrix with the average cell count across resamples.</p>
+    <p>A tibble or <code>conf_mat</code> with the average cell count across resamples.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
@@ -211,9 +212,9 @@ one tuning parameter combination (if any were used) is allowed here.</p></td>
 #&gt; </span><span style='color: #BCBCBC;'>2</span><span> Class1     Class2  25.7
 #&gt; </span><span style='color: #BCBCBC;'>3</span><span> Class2     Class1  21.7
 #&gt; </span><span style='color: #BCBCBC;'>4</span><span> Class2     Class2  92.3</div><div class='input'><span class='fu'>conf_mat_resampled</span><span class='op'>(</span><span class='va'>res</span>, tidy <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;           Class1   Class2
-#&gt; Class1 124.00000 21.66667
-#&gt; Class2  25.66667 92.33333</div></span></pre>
+</div><div class='output co'>#&gt;           Class1    Class2
+#&gt; Class1 124.00000  21.66667
+#&gt; Class2  25.66667  92.33333</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

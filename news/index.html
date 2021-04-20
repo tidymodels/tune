@@ -94,7 +94,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
         </div>
       </div>
     </div>
@@ -156,10 +156,15 @@
       <small>Source: <a href='https://github.com/tidymodels/tune/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="tune-development-version" class="section level1">
-<h1 class="page-header" data-toc-text="development version">
-<a href="#tune-development-version" class="anchor"></a>tune (development version)<small> Unreleased </small>
+    <div id="tune-014" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.4">
+<a href="#tune-014" class="anchor"></a>tune 0.1.4<small> 2021-04-20 </small>
 </h1>
+<ul>
+<li><p>Fixed an issue in <code><a href="../reference/finalize_model.html">finalize_recipe()</a></code> which failed during tuning of recipe steps that contain multiple <code><a href="../reference/tune.html">tune()</a></code> parameters in an single step.</p></li>
+<li><p>Changed <code><a href="../reference/conf_mat_resampled.html">conf_mat_resampled()</a></code> to return the same type of object as <code><a href="https://yardstick.tidymodels.org/reference/conf_mat.html">yardstick::conf_mat()</a></code> when <code>tidy = FALSE</code> (<a href='https://github.com/tidymodels/tune/issues/370'>#370</a>).</p></li>
+<li><p>The automatic parameter machinery for <code>sample_size</code> with the C5.0 engine was changes to use <code><a href="https://dials.tidymodels.org/reference/trees.html">dials::sample_prop()</a></code>.</p></li>
+</ul>
 </div>
     <div id="tune-013" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.3">
@@ -177,15 +182,18 @@
 </h1>
 <ul>
 <li><p><code><a href="../reference/collect_predictions.html">collect_predictions()</a></code> was made generic.</p></li>
-<li>
-<p>The default tuning parameter for the SVM polynomial degree was switched from <code><a href="https://dials.tidymodels.org/reference/degree.html">dials::degree()</a></code> to <code><a href="https://dials.tidymodels.org/reference/degree.html">dials::prod_degree()</a></code> since it must be an integer.</p>
-<h2 id="bug-fixes">Bug Fixes</h2>
-</li>
+<li><p>The default tuning parameter for the SVM polynomial degree was switched from <code><a href="https://dials.tidymodels.org/reference/degree.html">dials::degree()</a></code> to <code><a href="https://dials.tidymodels.org/reference/degree.html">dials::prod_degree()</a></code> since it must be an integer.</p></li>
+</ul>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug Fixes</h2>
+<ul>
 <li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> and <code>workflows::fit()</code> will now give identical results for the same workflow when the underlying model uses random number generation (<a href='https://github.com/tidymodels/tune/issues/300'>#300</a>).</p></li>
 <li><p>Fixed an issue where recipe tuning parameters could be randomly matched to the tuning grid incorrectly (<a href='https://github.com/tidymodels/tune/issues/316'>#316</a>).</p></li>
 <li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> no longer accidentally adjusts the random seed (<a href='https://github.com/tidymodels/tune/issues/264'>#264</a>).</p></li>
 <li><p>Fixed two bugs in the acquisition function calculations.</p></li>
 </ul>
+</div>
 <div id="other-changes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#other-changes" class="anchor"></a>Other Changes</h2>

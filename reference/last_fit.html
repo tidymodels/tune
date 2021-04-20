@@ -97,7 +97,7 @@ the test set." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.3.9001</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
         </div>
       </div>
     </div>
@@ -234,9 +234,9 @@ the test data.</p>
 </div><div class='output co'>#&gt; # Resampling results
 #&gt; # Manual resampling 
 #&gt; <span style='color: #949494;'># A tibble: 1 x 6</span><span>
-#&gt;   splits       id            .metrics      .notes       .predictions   .workflow
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>   
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #949494;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #949494;'>&lt;tibble [0 </span><span>… </span><span style='color: #949494;'>&lt;tibble [8 × </span><span>… </span><span style='color: #949494;'>&lt;workflo</span><span>…</div><div class='input'>
+#&gt;   splits     id          .metrics       .notes        .predictions     .workflow
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [2</span><span>… train/test… </span><span style='color: #949494;'>&lt;tibble[,4] [</span><span>… </span><span style='color: #949494;'>&lt;tibble[,1] </span><span>… </span><span style='color: #949494;'>&lt;tibble[,4] [8 </span><span>… </span><span style='color: #949494;'>&lt;workflo</span><span>…</div><div class='input'>
 <span class='co'># test set results</span>
 <span class='va'>spline_res</span><span class='op'>$</span><span class='va'>.metrics</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
 </div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 4</span><span>
@@ -256,9 +256,9 @@ the test data.</p>
 </div><div class='output co'>#&gt; # Resampling results
 #&gt; # Manual resampling 
 #&gt; </span><span style='color: #949494;'># A tibble: 1 x 6</span><span>
-#&gt;   splits       id            .metrics      .notes       .predictions   .workflow
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>   
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [24/</span><span>… train/test s… </span><span style='color: #949494;'>&lt;tibble [2 ×</span><span>… </span><span style='color: #949494;'>&lt;tibble [0 </span><span>… </span><span style='color: #949494;'>&lt;tibble [8 × </span><span>… </span><span style='color: #949494;'>&lt;workflo</span><span>…</div><div class='input'><span class='co'># }</span>
+#&gt;   splits     id          .metrics       .notes        .predictions     .workflow
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>         </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>   
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> </span><span style='color: #949494;'>&lt;split [2</span><span>… train/test… </span><span style='color: #949494;'>&lt;tibble[,4] [</span><span>… </span><span style='color: #949494;'>&lt;tibble[,1] </span><span>… </span><span style='color: #949494;'>&lt;tibble[,4] [8 </span><span>… </span><span style='color: #949494;'>&lt;workflo</span><span>…</div><div class='input'><span class='co'># }</span>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
