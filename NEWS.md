@@ -1,8 +1,10 @@
-# tune (development version)
+# tune 0.1.4
 
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters in an single step.
 
 * Changed `conf_mat_resampled()` to return the same type of object as `yardstick::conf_mat()` when `tidy = FALSE` (#370).
+
+* The automatic parameter machinery for `sample_size` with the C5.0 engine was changes to use `dials::sample_prop()`. 
 
 # tune 0.1.3
 
@@ -14,9 +16,9 @@
 
 # tune 0.1.2
 
- * `collect_predictions()` was made generic. 
+* `collect_predictions()` was made generic. 
  
- * The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
+* The default tuning parameter for the SVM polynomial degree was switched from `dials::degree()` to `dials::prod_degree()` since it must be an integer. 
 
 ## Bug Fixes
 
