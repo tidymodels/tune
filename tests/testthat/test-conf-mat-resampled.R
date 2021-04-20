@@ -18,7 +18,7 @@ test_that('appropriate return values', {
     cm_2 <- conf_mat_resampled(svm_results, select_best(svm_results, "accuracy"), tidy = FALSE),
     regex = NA
   )
-  expect_true(is.matrix(cm_2))
+  expect_equal(class(cm_2), "conf_mat")
 })
 
 # ------------------------------------------------------------------------------
