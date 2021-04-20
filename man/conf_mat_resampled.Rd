@@ -13,10 +13,11 @@ classification model that was run with \code{control_*(save_pred = TRUE)}.}
 \item{parameters}{A tibble with a single tuning parameter combination. Only
 one tuning parameter combination (if any were used) is allowed here.}
 
-\item{tidy}{Should the results come back in a tibble (\code{TRUE}) or a matrix.}
+\item{tidy}{Should the results come back in a tibble (\code{TRUE}) or a \code{conf_mat}
+object like \code{yardstick::conf_mat()} (\code{FALSE})?}
 }
 \value{
-A tibble or matrix with the average cell count across resamples.
+A tibble or \code{conf_mat} with the average cell count across resamples.
 }
 \description{
 For classification problems, \code{conf_mat_resampled()} computes a separate

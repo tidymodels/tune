@@ -7,8 +7,9 @@
 #' classification model that was run with `control_*(save_pred = TRUE)`.
 #' @param parameters A tibble with a single tuning parameter combination. Only
 #' one tuning parameter combination (if any were used) is allowed here.
-#' @param tidy Should the results come back in a tibble (`TRUE`) or a matrix.
-#' @return A tibble or matrix with the average cell count across resamples.
+#' @param tidy Should the results come back in a tibble (`TRUE`) or a `conf_mat`
+#' object like `yardstick::conf_mat()` (`FALSE`)?
+#' @return A tibble or `conf_mat` with the average cell count across resamples.
 #' @examples
 #' library(parsnip)
 #' library(rsample)
@@ -93,6 +94,7 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
     res <- matrix(res$Freq, ncol = length(lvls))
     colnames(res) <- lvls
     rownames(res) <- lvls
+    res <- as.table(res) %>% yardstick::conf_mat()
   }
   res
 }
