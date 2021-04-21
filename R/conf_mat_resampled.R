@@ -91,7 +91,7 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
 
   if (!tidy) {
     lvls <- levels(res$Prediction)
-    res <- matrix(res$Freq, ncol = length(lvls))
+    res <- matrix(res$Freq, ncol = length(lvls), byrow = TRUE)
     colnames(res) <- lvls
     rownames(res) <- lvls
     res <- as.table(res) %>% yardstick::conf_mat()

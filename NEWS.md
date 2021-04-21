@@ -1,3 +1,7 @@
+# tune (development version)
+
+* The resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` is used (#372)
+
 # tune 0.1.4
 
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters in an single step.

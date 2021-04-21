@@ -19,6 +19,16 @@ test_that('appropriate return values', {
     regex = NA
   )
   expect_equal(class(cm_2), "conf_mat")
+
+  expect_equal(
+    cm_2$table["Class1", "Class2"],
+    cm_1$Freq[cm_1$Prediction == "Class1" & cm_1$Truth == "Class2"]
+  )
+  expect_equal(
+    cm_2$table["Class2", "Class1"],
+    cm_1$Freq[cm_1$Prediction == "Class2" & cm_1$Truth == "Class1"]
+  )
+
 })
 
 # ------------------------------------------------------------------------------
