@@ -1,6 +1,6 @@
 # tune (development version)
 
-* The resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` is used (#372)
+* Fixed a bug where the resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` (#372)
 
 # tune 0.1.4
 
