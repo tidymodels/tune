@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 0.1.5
 
 * Fixed a bug where the resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` (#372)
 
