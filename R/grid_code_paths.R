@@ -20,52 +20,56 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_resamples)
 
-    suppressPackageStartupMessages(
-      results <- foreach::foreach(
-        iteration = iterations,
-        seed = seeds,
-        .packages = packages,
-        .errorhandling = "pass"
-      ) %op% {
-        tune_grid_loop_iter_safely(
-          iteration = iteration,
-          resamples = resamples,
-          grid_info = grid_info,
-          workflow = workflow,
-          metrics = metrics,
-          control = control,
-          seed = seed
-        )
-      }
-    )
-  } else if (identical(parallel_over, "everything")) {
-    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
-
-    suppressPackageStartupMessages(
-      results <- foreach::foreach(
-        iteration = iterations,
-        .packages = packages,
-        .errorhandling = "pass"
-      ) %:%
-        foreach::foreach(
-          row = rows,
-          seed = slice_seeds(seeds, iteration, n_grid_info),
+    do_future_quietly(
+      suppressPackageStartupMessages(
+        results <- foreach::foreach(
+          iteration = iterations,
+          seed = seeds,
           .packages = packages,
-          .errorhandling = "pass",
-          .combine = iter_combine
+          .errorhandling = "pass"
         ) %op% {
-          grid_info_row <- vctrs::vec_slice(grid_info, row)
-
           tune_grid_loop_iter_safely(
             iteration = iteration,
             resamples = resamples,
-            grid_info = grid_info_row,
+            grid_info = grid_info,
             workflow = workflow,
             metrics = metrics,
             control = control,
             seed = seed
           )
         }
+      )
+    )
+  } else if (identical(parallel_over, "everything")) {
+    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
+
+    do_future_quietly(
+      suppressPackageStartupMessages(
+        results <- foreach::foreach(
+          iteration = iterations,
+          .packages = packages,
+          .errorhandling = "pass"
+        ) %:%
+          foreach::foreach(
+            row = rows,
+            seed = slice_seeds(seeds, iteration, n_grid_info),
+            .packages = packages,
+            .errorhandling = "pass",
+            .combine = iter_combine
+          ) %op% {
+            grid_info_row <- vctrs::vec_slice(grid_info, row)
+
+            tune_grid_loop_iter_safely(
+              iteration = iteration,
+              resamples = resamples,
+              grid_info = grid_info_row,
+              workflow = workflow,
+              metrics = metrics,
+              control = control,
+              seed = seed
+            )
+          }
+      )
     )
   } else {
     rlang::abort("Internal error: Invalid `parallel_over`.")
