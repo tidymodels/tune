@@ -17,6 +17,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   parallel_over <- control$parallel_over
   parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
 
+  rlang::local_options(doFuture.rng.onMisuse = "ignore")
+
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_resamples)
 

@@ -4,6 +4,8 @@
 
 * Fixed a bug where the resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` (#372)
 
+* False positive warnings no longer occur when using the `doFuture` package for parallel processing (#377)
+
 # tune 0.1.4
 
 * Fixed an issue in `finalize_recipe()` which failed during tuning of recipe steps that contain multiple `tune()` parameters in an single step.
