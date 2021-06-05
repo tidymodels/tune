@@ -541,12 +541,3 @@ set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }
-
-
-do_future_quietly <- function (code) {
-  old <- options()
-  options(doFuture.rng.onMisuse = "ignore")
-  on.exit(options(old))
-  force(code)
-}
-
