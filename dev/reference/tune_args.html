@@ -97,7 +97,7 @@ are actually tunable." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9001</span>
         </div>
       </div>
     </div>
@@ -224,45 +224,45 @@ the <code>id</code> field reverts to the name of the parameters.</p>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_pca.html'>step_pca</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, num_comp <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: `step_knnimpute()` was deprecated in recipes 0.1.16.</span>
-#&gt; <span class='warning'>Please use `step_impute_knn()` instead.</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span><span>
+#&gt; <span class='warning'>Please use `step_impute_knn()` instead.</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
 #&gt;   name      tunable id        source component       component_id    
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>           
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> neighbors TRUE    neighbors recipe step_impute_knn impute_knn_7ruXy
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> num_comp  TRUE    num_comp  recipe step_pca        pca_64shc       </div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           
+#&gt; <span style='color: #BCBCBC;'>1</span> neighbors TRUE    neighbors recipe step_impute_knn impute_knn_7ruXy
+#&gt; <span style='color: #BCBCBC;'>2</span> num_comp  TRUE    num_comp  recipe step_pca        pca_64shc       </div><div class='input'>
 <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"disp df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>wt</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"wt df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 6</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
 #&gt;   name     tunable id      source component component_id
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>     </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> deg_free TRUE    disp df recipe step_ns   ns_xKIhQ    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> deg_free TRUE    wt df   recipe step_ns   ns_q1wis    </div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'>1</span> deg_free TRUE    disp df recipe step_ns   ns_xKIhQ    
+#&gt; <span style='color: #BCBCBC;'>2</span> deg_free TRUE    wt df   recipe step_ns   ns_q1wis    </div><div class='input'>
 <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_normalize.html'>step_normalize</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 0 x 6</span><span>
-#&gt; </span><span style='color: #949494;'># … with 6 variables: name &lt;chr&gt;, tunable &lt;lgl&gt;, id &lt;chr&gt;, source &lt;chr&gt;,</span><span>
-#&gt; </span><span style='color: #949494;'>#   component &lt;chr&gt;, component_id &lt;chr&gt;</span><span></div><div class='input'>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 0 x 6</span>
+#&gt; <span style='color: #949494;'># … with 6 variables: name &lt;chr&gt;, tunable &lt;lgl&gt;, id &lt;chr&gt;, source &lt;chr&gt;,</span>
+#&gt; <span style='color: #949494;'>#   component &lt;chr&gt;, component_id &lt;chr&gt;</span></div><div class='input'>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
 
 <span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span><span class='op'>(</span>trees <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"xgboost"</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 6</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
 #&gt;   name  tunable id    source     component  component_id
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> trees TRUE    trees model_spec boost_tree </span><span style='color: #BB0000;'>NA</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> min_n TRUE    min_n model_spec boost_tree </span><span style='color: #BB0000;'>NA</span><span>          </div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'>1</span> trees TRUE    trees model_spec boost_tree <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>2</span> min_n TRUE    min_n model_spec boost_tree <span style='color: #BB0000;'>NA</span>          </div><div class='input'>
 <span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span><span class='op'>(</span>trees <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"C5.0"</span>, rules <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 2 x 6</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
 #&gt;   name  tunable id    source     component  component_id
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> trees TRUE    trees model_spec boost_tree </span><span style='color: #BB0000;'>NA</span><span>          
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> min_n TRUE    min_n model_spec boost_tree </span><span style='color: #BB0000;'>NA</span><span>          </div><div class='input'><span class='co'># }</span>
-</div></span></pre>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       
+#&gt; <span style='color: #BCBCBC;'>1</span> trees TRUE    trees model_spec boost_tree <span style='color: #BB0000;'>NA</span>          
+#&gt; <span style='color: #BCBCBC;'>2</span> min_n TRUE    min_n model_spec boost_tree <span style='color: #BB0000;'>NA</span>          </div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

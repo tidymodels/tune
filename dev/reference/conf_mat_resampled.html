@@ -96,7 +96,7 @@ confusion matrix for each resample then averages the cell counts." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9001</span>
         </div>
       </div>
     </div>
@@ -205,16 +205,16 @@ object like <code><a href='https://yardstick.tidymodels.org/reference/conf_mat.h
                 control <span class='op'>=</span> <span class='fu'><a href='control_grid.html'>control_resamples</a></span><span class='op'>(</span>save_pred <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'>conf_mat_resampled</span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 3</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 x 3</span>
 #&gt;   Prediction Truth   Freq
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>      </span><span style='color: #949494;font-style: italic;'>&lt;fct&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> Class1     Class1 124  
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> Class1     Class2  25.7
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> Class2     Class1  21.7
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> Class2     Class2  92.3</div><div class='input'><span class='fu'>conf_mat_resampled</span><span class='op'>(</span><span class='va'>res</span>, tidy <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;fct&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> Class1     Class1 124  
+#&gt; <span style='color: #BCBCBC;'>2</span> Class1     Class2  25.7
+#&gt; <span style='color: #BCBCBC;'>3</span> Class2     Class1  21.7
+#&gt; <span style='color: #BCBCBC;'>4</span> Class2     Class2  92.3</div><div class='input'><span class='fu'>conf_mat_resampled</span><span class='op'>(</span><span class='va'>res</span>, tidy <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;           Class1    Class2
 #&gt; Class1 124.00000  25.66667
-#&gt; Class2  21.66667  92.33333</div></span></pre>
+#&gt; Class2  21.66667  92.33333</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

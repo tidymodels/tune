@@ -94,7 +94,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9001</span>
         </div>
       </div>
     </div>
@@ -166,7 +166,8 @@
 <a href="#tune-015" class="anchor"></a>tune 0.1.5<small> 2021-04-23 </small>
 </h1>
 <ul>
-<li>Fixed a bug where the resampled confusion matrix is transposed when <code>conf_mat_resamped(tidy = FALSE)</code> (<a href='https://github.com/tidymodels/tune/issues/372'>#372</a>)</li>
+<li><p>Fixed a bug where the resampled confusion matrix is transposed when <code>conf_mat_resamped(tidy = FALSE)</code> (<a href='https://github.com/tidymodels/tune/issues/372'>#372</a>)</p></li>
+<li><p>False positive warnings no longer occur when using the <code>doFuture</code> package for parallel processing (<a href='https://github.com/tidymodels/tune/issues/377'>#377</a>)</p></li>
 </ul>
 </div>
     <div id="tune-014" class="section level1">

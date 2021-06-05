@@ -51,7 +51,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9001</span>
         </div>
       </div>
     </div>
@@ -214,16 +214,16 @@
 <span class="co">#&gt; # A tibble: 10 x 2</span>
 <span class="co">#&gt;    `long df` `lat df`</span>
 <span class="co">#&gt;        &lt;int&gt;    &lt;int&gt;</span>
-<span class="co">#&gt;  1         2        9</span>
-<span class="co">#&gt;  2         4        6</span>
-<span class="co">#&gt;  3         5       10</span>
-<span class="co">#&gt;  4         7        4</span>
-<span class="co">#&gt;  5         8        1</span>
-<span class="co">#&gt;  6         7        7</span>
-<span class="co">#&gt;  7        10        6</span>
-<span class="co">#&gt;  8         2        4</span>
-<span class="co">#&gt;  9         3        1</span>
-<span class="co">#&gt; 10         9       10</span></code></pre></div>
+<span class="co">#&gt;  1         6        5</span>
+<span class="co">#&gt;  2         7        1</span>
+<span class="co">#&gt;  3        10        2</span>
+<span class="co">#&gt;  4         3        1</span>
+<span class="co">#&gt;  5         1        9</span>
+<span class="co">#&gt;  6         9        6</span>
+<span class="co">#&gt;  7         1        4</span>
+<span class="co">#&gt;  8         3        7</span>
+<span class="co">#&gt;  9         9       10</span>
+<span class="co">#&gt; 10         5        9</span></code></pre></div>
 <p>Alternately, <code><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid()</a></code> also works to create a regular grid:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">df_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span>, by <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
@@ -249,52 +249,52 @@
 <span class="co">#&gt; # Tuning results</span>
 <span class="co">#&gt; # 10-fold cross-validation using stratification </span>
 <span class="co">#&gt; # A tibble: 10 x 4</span>
-<span class="co">#&gt;    splits             id     .metrics               .notes              </span>
-<span class="co">#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;                 &lt;list&gt;              </span>
-<span class="co">#&gt;  1 &lt;split [1978/221]&gt; Fold01 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  2 &lt;split [1979/220]&gt; Fold02 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  3 &lt;split [1979/220]&gt; Fold03 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  4 &lt;split [1979/220]&gt; Fold04 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  5 &lt;split [1979/220]&gt; Fold05 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  6 &lt;split [1979/220]&gt; Fold06 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  7 &lt;split [1979/220]&gt; Fold07 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  8 &lt;split [1979/220]&gt; Fold08 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt;  9 &lt;split [1979/220]&gt; Fold09 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span>
-<span class="co">#&gt; 10 &lt;split [1981/218]&gt; Fold10 &lt;tibble[,6] [162 × 6]&gt; &lt;tibble[,1] [0 × 1]&gt;</span></code></pre></div>
+<span class="co">#&gt;    splits             id     .metrics           .notes          </span>
+<span class="co">#&gt;    &lt;list&gt;             &lt;chr&gt;  &lt;list&gt;             &lt;list&gt;          </span>
+<span class="co">#&gt;  1 &lt;split [1976/221]&gt; Fold01 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  2 &lt;split [1976/221]&gt; Fold02 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  3 &lt;split [1976/221]&gt; Fold03 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  4 &lt;split [1976/221]&gt; Fold04 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  5 &lt;split [1977/220]&gt; Fold05 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  6 &lt;split [1977/220]&gt; Fold06 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  7 &lt;split [1978/219]&gt; Fold07 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  8 &lt;split [1978/219]&gt; Fold08 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt;  9 &lt;split [1979/218]&gt; Fold09 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span>
+<span class="co">#&gt; 10 &lt;split [1980/217]&gt; Fold10 &lt;tibble [162 × 6]&gt; &lt;tibble [0 × 1]&gt;</span></code></pre></div>
 <p>The <code>.metrics</code> column has all of the holdout performance estimates<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a> for each parameter combination:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; # A tibble: 162 x 6</span>
 <span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config              </span>
 <span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;                </span>
-<span class="co">#&gt;  1         2        2 rmse    standard       0.115 Preprocessor01_Model1</span>
-<span class="co">#&gt;  2         2        2 rsq     standard       0.625 Preprocessor01_Model1</span>
-<span class="co">#&gt;  3         4        2 rmse    standard       0.115 Preprocessor02_Model1</span>
-<span class="co">#&gt;  4         4        2 rsq     standard       0.624 Preprocessor02_Model1</span>
-<span class="co">#&gt;  5         6        2 rmse    standard       0.113 Preprocessor03_Model1</span>
-<span class="co">#&gt;  6         6        2 rsq     standard       0.633 Preprocessor03_Model1</span>
-<span class="co">#&gt;  7         8        2 rmse    standard       0.113 Preprocessor04_Model1</span>
-<span class="co">#&gt;  8         8        2 rsq     standard       0.638 Preprocessor04_Model1</span>
-<span class="co">#&gt;  9        10        2 rmse    standard       0.113 Preprocessor05_Model1</span>
-<span class="co">#&gt; 10        10        2 rsq     standard       0.637 Preprocessor05_Model1</span>
+<span class="co">#&gt;  1         2        2 rmse    standard      0.0985 Preprocessor01_Model1</span>
+<span class="co">#&gt;  2         2        2 rsq     standard      0.683  Preprocessor01_Model1</span>
+<span class="co">#&gt;  3         4        2 rmse    standard      0.0985 Preprocessor02_Model1</span>
+<span class="co">#&gt;  4         4        2 rsq     standard      0.683  Preprocessor02_Model1</span>
+<span class="co">#&gt;  5         6        2 rmse    standard      0.0973 Preprocessor03_Model1</span>
+<span class="co">#&gt;  6         6        2 rsq     standard      0.690  Preprocessor03_Model1</span>
+<span class="co">#&gt;  7         8        2 rmse    standard      0.0962 Preprocessor04_Model1</span>
+<span class="co">#&gt;  8         8        2 rsq     standard      0.697  Preprocessor04_Model1</span>
+<span class="co">#&gt;  9        10        2 rmse    standard      0.0960 Preprocessor05_Model1</span>
+<span class="co">#&gt; 10        10        2 rsq     standard      0.699  Preprocessor05_Model1</span>
 <span class="co">#&gt; # … with 152 more rows</span></code></pre></div>
 <p>To get the average metric value for each parameter combination, <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">ames_res</span><span class="op">)</span>
 <span class="va">estimates</span>
 <span class="co">#&gt; # A tibble: 162 x 8</span>
-<span class="co">#&gt;    `long df` `lat df` .metric .estimator  mean     n std_err .config            </span>
-<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;              </span>
-<span class="co">#&gt;  1         2        2 rmse    standard   0.102    10 0.00243 Preprocessor01_Mod…</span>
-<span class="co">#&gt;  2         2        2 rsq     standard   0.674    10 0.0109  Preprocessor01_Mod…</span>
-<span class="co">#&gt;  3         4        2 rmse    standard   0.102    10 0.00242 Preprocessor02_Mod…</span>
-<span class="co">#&gt;  4         4        2 rsq     standard   0.675    10 0.0108  Preprocessor02_Mod…</span>
-<span class="co">#&gt;  5         6        2 rmse    standard   0.101    10 0.00241 Preprocessor03_Mod…</span>
-<span class="co">#&gt;  6         6        2 rsq     standard   0.681    10 0.0105  Preprocessor03_Mod…</span>
-<span class="co">#&gt;  7         8        2 rmse    standard   0.100    10 0.00246 Preprocessor04_Mod…</span>
-<span class="co">#&gt;  8         8        2 rsq     standard   0.685    10 0.0110  Preprocessor04_Mod…</span>
-<span class="co">#&gt;  9        10        2 rmse    standard   0.100    10 0.00243 Preprocessor05_Mod…</span>
-<span class="co">#&gt; 10        10        2 rsq     standard   0.685    10 0.0107  Preprocessor05_Mod…</span>
+<span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config           </span>
+<span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;             </span>
+<span class="co">#&gt;  1         2        2 rmse    standard   0.100     10 0.00145 Preprocessor01_Mo…</span>
+<span class="co">#&gt;  2         2        2 rsq     standard   0.674     10 0.00777 Preprocessor01_Mo…</span>
+<span class="co">#&gt;  3         4        2 rmse    standard   0.100     10 0.00153 Preprocessor02_Mo…</span>
+<span class="co">#&gt;  4         4        2 rsq     standard   0.675     10 0.00814 Preprocessor02_Mo…</span>
+<span class="co">#&gt;  5         6        2 rmse    standard   0.0994    10 0.00161 Preprocessor03_Mo…</span>
+<span class="co">#&gt;  6         6        2 rsq     standard   0.680     10 0.00885 Preprocessor03_Mo…</span>
+<span class="co">#&gt;  7         8        2 rmse    standard   0.0989    10 0.00159 Preprocessor04_Mo…</span>
+<span class="co">#&gt;  8         8        2 rsq     standard   0.684     10 0.00946 Preprocessor04_Mo…</span>
+<span class="co">#&gt;  9        10        2 rmse    standard   0.0990    10 0.00165 Preprocessor05_Mo…</span>
+<span class="co">#&gt; 10        10        2 rsq     standard   0.683     10 0.0101  Preprocessor05_Mo…</span>
 <span class="co">#&gt; # … with 152 more rows</span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10 resamples. The best RMSE values corresponded to:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -306,16 +306,16 @@
 <span class="co">#&gt; # A tibble: 81 x 8</span>
 <span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config           </span>
 <span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;             </span>
-<span class="co">#&gt;  1        16       12 rmse    standard   0.0961    10 0.00226 Preprocessor53_Mo…</span>
-<span class="co">#&gt;  2        16       18 rmse    standard   0.0961    10 0.00228 Preprocessor80_Mo…</span>
-<span class="co">#&gt;  3        16        8 rmse    standard   0.0962    10 0.00223 Preprocessor35_Mo…</span>
-<span class="co">#&gt;  4        16       10 rmse    standard   0.0962    10 0.00225 Preprocessor44_Mo…</span>
-<span class="co">#&gt;  5        18       12 rmse    standard   0.0963    10 0.00234 Preprocessor54_Mo…</span>
-<span class="co">#&gt;  6        12       12 rmse    standard   0.0963    10 0.00235 Preprocessor51_Mo…</span>
-<span class="co">#&gt;  7        16       16 rmse    standard   0.0963    10 0.00224 Preprocessor71_Mo…</span>
-<span class="co">#&gt;  8        18       18 rmse    standard   0.0963    10 0.00235 Preprocessor81_Mo…</span>
-<span class="co">#&gt;  9        14       12 rmse    standard   0.0963    10 0.00234 Preprocessor52_Mo…</span>
-<span class="co">#&gt; 10        16       14 rmse    standard   0.0963    10 0.00221 Preprocessor62_Mo…</span>
+<span class="co">#&gt;  1        16       12 rmse    standard   0.0948    10 0.00120 Preprocessor53_Mo…</span>
+<span class="co">#&gt;  2        18       12 rmse    standard   0.0948    10 0.00121 Preprocessor54_Mo…</span>
+<span class="co">#&gt;  3        16        8 rmse    standard   0.0949    10 0.00118 Preprocessor35_Mo…</span>
+<span class="co">#&gt;  4        16       10 rmse    standard   0.0949    10 0.00118 Preprocessor44_Mo…</span>
+<span class="co">#&gt;  5        16       18 rmse    standard   0.0949    10 0.00119 Preprocessor80_Mo…</span>
+<span class="co">#&gt;  6        16       16 rmse    standard   0.0949    10 0.00122 Preprocessor71_Mo…</span>
+<span class="co">#&gt;  7        18       10 rmse    standard   0.0949    10 0.00119 Preprocessor45_Mo…</span>
+<span class="co">#&gt;  8        18        8 rmse    standard   0.0949    10 0.00119 Preprocessor36_Mo…</span>
+<span class="co">#&gt;  9        18       18 rmse    standard   0.0950    10 0.00120 Preprocessor81_Mo…</span>
+<span class="co">#&gt; 10        16       14 rmse    standard   0.0950    10 0.00117 Preprocessor62_Mo…</span>
 <span class="co">#&gt; # … with 71 more rows</span></code></pre></div>
 <p>Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE?</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -388,251 +388,156 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 1 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08684 (@iter 0)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08576 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ! The Gaussian process model is being fit using 7 features but only has 5</span>
 <span class="co">#&gt;   data points to do so. This may cause errors or a poor model fit.</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4791 candidates</span>
+<span class="co">#&gt; i Generating 4773 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=5, weight_func=triangular, long df=2, lat df=4</span>
+<span class="co">#&gt; i neighbors=3, weight_func=triangular, long df=2, lat df=18</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08485 (+/-0.00208)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.09449 (+/-0.00136)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 2 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08485 (@iter 1)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08576 (@iter 0)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ! The Gaussian process model is being fit using 7 features but only has 6</span>
 <span class="co">#&gt;   data points to do so. This may cause errors or a poor model fit.</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4762 candidates</span>
+<span class="co">#&gt; i Generating 4769 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=50, weight_func=gaussian, long df=18, lat df=8</span>
+<span class="co">#&gt; i neighbors=10, weight_func=triangular, long df=7, lat df=10</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.09814 (+/-0.00265)</span>
+<span class="co">#&gt; ♥ Newest results:    rmse=0.08265 (+/-0.00208)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 3 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08485 (@iter 1)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ! The Gaussian process model is being fit using 7 features but only has 7</span>
 <span class="co">#&gt;   data points to do so. This may cause errors or a poor model fit.</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4773 candidates</span>
+<span class="co">#&gt; i Generating 4776 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=48, weight_func=rectangular, long df=2, lat df=18</span>
+<span class="co">#&gt; i neighbors=6, weight_func=triangular, long df=6, lat df=18</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.1172 (+/-0.00223)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08724 (+/-0.00175)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 4 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08485 (@iter 1)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ! The Gaussian process model is being fit using 7 features but only has 8</span>
 <span class="co">#&gt;   data points to do so. This may cause errors or a poor model fit.</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4752 candidates</span>
+<span class="co">#&gt; i Generating 4765 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=11, weight_func=triangular, long df=6, lat df=2</span>
+<span class="co">#&gt; i neighbors=44, weight_func=gaussian, long df=7, lat df=2</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08373 (+/-0.00272)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08992 (+/-0.0016)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 5 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08373 (@iter 4)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4782 candidates</span>
+<span class="co">#&gt; i Generating 4787 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=15, weight_func=triangular, long df=3, lat df=2</span>
+<span class="co">#&gt; i neighbors=9, weight_func=triangular, long df=7, lat df=2</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08385 (+/-0.00261)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08438 (+/-0.00148)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 6 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08373 (@iter 4)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4735 candidates</span>
+<span class="co">#&gt; i Generating 4792 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=10, weight_func=gaussian, long df=4, lat df=2</span>
+<span class="co">#&gt; i neighbors=4, weight_func=inv, long df=7, lat df=10</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08459 (+/-0.0029)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08509 (+/-0.00215)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 7 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08373 (@iter 4)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
 <span class="co">#&gt; i Generating 4775 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=13, weight_func=triangular, long df=11, lat df=2</span>
+<span class="co">#&gt; i neighbors=32, weight_func=triangular, long df=7, lat df=8</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08611 (+/-0.00271)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08643 (+/-0.00195)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 8 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08373 (@iter 4)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4766 candidates</span>
+<span class="co">#&gt; i Generating 4769 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=16, weight_func=triangular, long df=6, lat df=3</span>
+<span class="co">#&gt; i neighbors=3, weight_func=rectangular, long df=7, lat df=13</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08357 (+/-0.00247)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08874 (+/-0.00189)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ── Iteration 9 ─────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08357 (@iter 8)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4765 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=4, weight_func=rectangular, long df=4, lat df=3</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08626 (+/-0.00262)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 10 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08357 (@iter 8)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4755 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=17, weight_func=triangular, long df=5, lat df=2</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08463 (+/-0.00276)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 11 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08357 (@iter 8)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4776 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=14, weight_func=triangular, long df=6, lat df=4</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08361 (+/-0.00226)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 12 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08357 (@iter 8)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4777 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=16, weight_func=gaussian, long df=7, lat df=3</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08534 (+/-0.00247)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 13 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08357 (@iter 8)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4774 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=11, weight_func=triangular, long df=5, lat df=3</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08272 (+/-0.00251)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 14 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 13)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4774 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=4, weight_func=triangular, long df=16, lat df=18</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.091 (+/-0.00222)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 15 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 13)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4783 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=3, weight_func=rectangular, long df=6, lat df=10</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08922 (+/-0.00237)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 16 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 13)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4746 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=11, weight_func=triangular, long df=3, lat df=6</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08272 (+/-0.00226)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 17 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 16)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4790 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=10, weight_func=triangular, long df=2, lat df=3</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08341 (+/-0.00236)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 18 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 16)</span>
-<span class="co">#&gt; i Gaussian process model</span>
-<span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4782 candidates</span>
-<span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=10, weight_func=triangular, long df=6, lat df=8</span>
-<span class="co">#&gt; i Estimating performance</span>
-<span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08281 (+/-0.00232)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 19 ────────────────────────────────────────────────────────────────</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08272 (@iter 16)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
 <span class="co">#&gt; i Generating 4771 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=13, weight_func=triangular, long df=4, lat df=7</span>
+<span class="co">#&gt; i neighbors=17, weight_func=inv, long df=7, lat df=9</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ♥ Newest results:    rmse=0.08251 (+/-0.00235)</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08438 (+/-0.0019)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; ── Iteration 20 ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; ── Iteration 10 ────────────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; i Current best:      rmse=0.08251 (@iter 19)</span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
 <span class="co">#&gt; i Gaussian process model</span>
 <span class="co">#&gt; ✓ Gaussian process model</span>
-<span class="co">#&gt; i Generating 4781 candidates</span>
+<span class="co">#&gt; i Generating 4742 candidates</span>
 <span class="co">#&gt; i Predicted candidates</span>
-<span class="co">#&gt; i neighbors=13, weight_func=triangular, long df=4, lat df=9</span>
+<span class="co">#&gt; i neighbors=14, weight_func=triangular, long df=7, lat df=9</span>
 <span class="co">#&gt; i Estimating performance</span>
 <span class="co">#&gt; ✓ Estimating performance</span>
-<span class="co">#&gt; ⓧ Newest results:    rmse=0.08428 (+/-0.00241)</span></code></pre></div>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08311 (+/-0.00202)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Iteration 11 ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
+<span class="co">#&gt; i Gaussian process model</span>
+<span class="co">#&gt; ✓ Gaussian process model</span>
+<span class="co">#&gt; i Generating 4752 candidates</span>
+<span class="co">#&gt; i Predicted candidates</span>
+<span class="co">#&gt; i neighbors=9, weight_func=gaussian, long df=7, lat df=16</span>
+<span class="co">#&gt; i Estimating performance</span>
+<span class="co">#&gt; ✓ Estimating performance</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08704 (+/-0.00225)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; ── Iteration 12 ────────────────────────────────────────────────────────────────</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; i Current best:      rmse=0.08265 (@iter 2)</span>
+<span class="co">#&gt; i Gaussian process model</span>
+<span class="co">#&gt; ✓ Gaussian process model</span>
+<span class="co">#&gt; i Generating 4779 candidates</span>
+<span class="co">#&gt; i Predicted candidates</span>
+<span class="co">#&gt; i neighbors=9, weight_func=triangular, long df=7, lat df=13</span>
+<span class="co">#&gt; i Estimating performance</span>
+<span class="co">#&gt; ✓ Estimating performance</span>
+<span class="co">#&gt; ⓧ Newest results:    rmse=0.08397 (+/-0.002)</span>
+<span class="co">#&gt; ! No improvement for 10 iterations; returning current results.</span></code></pre></div>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">knn_search</span>, type <span class="op">=</span> <span class="st">"performance"</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></code></pre></div>
@@ -642,21 +547,27 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">knn_search</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"rmse"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 25 x 11</span>
+<span class="co">#&gt; # A tibble: 17 x 11</span>
 <span class="co">#&gt;    neighbors weight_func `long df` `lat df` .metric .estimator   mean     n</span>
 <span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;           &lt;int&gt;    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;</span>
-<span class="co">#&gt;  1        13 triangular          4        7 rmse    standard   0.0825    10</span>
-<span class="co">#&gt;  2        11 triangular          3        6 rmse    standard   0.0827    10</span>
-<span class="co">#&gt;  3        11 triangular          5        3 rmse    standard   0.0827    10</span>
-<span class="co">#&gt;  4        10 triangular          6        8 rmse    standard   0.0828    10</span>
-<span class="co">#&gt;  5        10 triangular          2        3 rmse    standard   0.0834    10</span>
-<span class="co">#&gt;  6        16 triangular          6        3 rmse    standard   0.0836    10</span>
-<span class="co">#&gt;  7        14 triangular          6        4 rmse    standard   0.0836    10</span>
-<span class="co">#&gt;  8        11 triangular          6        2 rmse    standard   0.0837    10</span>
-<span class="co">#&gt;  9        15 triangular          3        2 rmse    standard   0.0838    10</span>
-<span class="co">#&gt; 10        13 triangular          4        9 rmse    standard   0.0843    10</span>
-<span class="co">#&gt; # … with 15 more rows, and 3 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;,</span>
-<span class="co">#&gt; #   .iter &lt;int&gt;</span></code></pre></div>
+<span class="co">#&gt;  1        10 triangular          7       10 rmse    standard   0.0827    10</span>
+<span class="co">#&gt;  2        14 triangular          7        9 rmse    standard   0.0831    10</span>
+<span class="co">#&gt;  3         9 triangular          7       13 rmse    standard   0.0840    10</span>
+<span class="co">#&gt;  4        17 inv                 7        9 rmse    standard   0.0844    10</span>
+<span class="co">#&gt;  5         9 triangular          7        2 rmse    standard   0.0844    10</span>
+<span class="co">#&gt;  6         4 inv                 7       10 rmse    standard   0.0851    10</span>
+<span class="co">#&gt;  7         5 triangular          8       14 rmse    standard   0.0858    10</span>
+<span class="co">#&gt;  8        32 triangular          7        8 rmse    standard   0.0864    10</span>
+<span class="co">#&gt;  9         9 gaussian            7       16 rmse    standard   0.0870    10</span>
+<span class="co">#&gt; 10         6 triangular          6       18 rmse    standard   0.0872    10</span>
+<span class="co">#&gt; 11         3 rectangular         7       13 rmse    standard   0.0887    10</span>
+<span class="co">#&gt; 12        36 triangular          9        6 rmse    standard   0.0889    10</span>
+<span class="co">#&gt; 13        44 gaussian            7        2 rmse    standard   0.0899    10</span>
+<span class="co">#&gt; 14        28 inv                16       10 rmse    standard   0.0919    10</span>
+<span class="co">#&gt; 15         3 triangular          2       18 rmse    standard   0.0945    10</span>
+<span class="co">#&gt; 16        18 rectangular        13        3 rmse    standard   0.0947    10</span>
+<span class="co">#&gt; 17        47 inv                 3       16 rmse    standard   0.0978    10</span>
+<span class="co">#&gt; # … with 3 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the nonlinear terms created by the recipe.</p>
 </div>
 <div class="footnotes">
