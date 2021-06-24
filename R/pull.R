@@ -228,6 +228,7 @@ extract_metrics_config <- function(param_names, metrics) {
 #' @return A fitted model.
 #' @export
 extract_model <- function(x) {
-  parsnip_fit <- workflows::pull_workflow_fit(x)
+  parsnip_fit <- extract_fit_parsnip(x)
   model <- parsnip_fit$fit
+  model
 }

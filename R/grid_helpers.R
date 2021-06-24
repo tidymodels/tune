@@ -128,7 +128,7 @@ finalize_workflow_spec <- function(workflow, grid_model) {
     return(workflow)
   }
 
-  spec <- workflows::pull_workflow_spec(workflow)
+  spec <- extract_spec_parsnip(workflow)
   spec <- merge(spec, grid_model)$x[[1]]
 
   workflow <- set_workflow_spec(workflow, spec)
@@ -142,7 +142,7 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
     return(workflow)
   }
 
-  recipe <- workflows::pull_workflow_preprocessor(workflow)
+  recipe <- extract_preprocessor(workflow)
   recipe <- merge(recipe, grid_preprocessor)$x[[1]]
 
   workflow <- set_workflow_recipe(workflow, recipe)
@@ -322,7 +322,7 @@ compute_grid_info_preprocessor <- function(workflow,
 compute_grid_info_model <- function(workflow,
                                     grid,
                                     parameters_model) {
-  spec <- workflows::pull_workflow_spec(workflow)
+  spec <- extract_spec_parsnip(workflow)
   out <- min_grid(spec, grid)
 
   parameter_names_model <- parameters_model[["id"]]
@@ -410,7 +410,7 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
     .after = ".iter_preprocessor"
   )
 
-  spec <- workflows::pull_workflow_spec(workflow)
+  spec <- extract_spec_parsnip(workflow)
 
   ids_preprocessor <- format_with_padding(seq_preprocessors)
   ids_preprocessor <- paste0("Preprocessor", ids_preprocessor)

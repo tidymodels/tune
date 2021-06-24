@@ -12,9 +12,9 @@
 \alias{extract_preprocessor.tune_results}
 \title{Extract elements of \code{tune} objects}
 \usage{
-extract_workflow.last_fit(x, ...)
+\method{extract_workflow}{last_fit}(x, ...)
 
-extract_workflow.tune_results(x, ...)
+\method{extract_workflow}{tune_results}(x, ...)
 
 \method{extract_spec_parsnip}{tune_results}(x, ...)
 

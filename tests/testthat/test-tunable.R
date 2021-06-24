@@ -70,11 +70,6 @@ test_that('model with main and engine parameters', {
 
 test_that('bad model inputs', {
   skip_if_not_installed("parsnip")
-  expect_error(
-    tunable(no_engine),
-    "Please declare an engine first using"
-  )
-
   bad_class <- lm_model
   class(bad_class) <- c("potato", "model_spec")
   expect_error(

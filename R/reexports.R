@@ -50,3 +50,7 @@ hardhat::extract_mold
 #' @importFrom hardhat extract_preprocessor
 #' @export
 hardhat::extract_preprocessor
+#'
+#' @importFrom hardhat extract_workflow
+#' @export
+hardhat::extract_workflow
