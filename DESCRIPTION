@@ -27,6 +27,7 @@ Imports:
     ggplot2,
     glue,
     GPfit,
+    hardhat (>= 0.1.5.9000),
     parsnip (>= 0.1.4),
     purrr (>= 0.3.2),
     recipes (>= 0.1.15),
@@ -39,7 +40,6 @@ Imports:
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
-    hardhat (>= 0.1.5),
     kernlab,
     knitr,
     modeldata,
@@ -52,3 +52,6 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9000
 Language: en-US
+Remotes: 
+    tidymodels/hardhat@feature/extract-generics,
+    tidymodels/workflows@extracts
