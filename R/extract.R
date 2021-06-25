@@ -23,6 +23,10 @@
 #' - `extract_recipe()` returns the recipe. The `estimated` argument specifies
 #'    whether the fitted or original recipe is returned.
 #'
+#' - `extract_workflow()` returns the workflow object if the control option
+#'    `save_workflow = TRUE` was used. The workflow will not have been
+#'    estimated.
+#'
 #' @param x A workflow
 #' @param estimated A logical for whether the original (unfit) recipe or the
 #' fitted recipe should be returned.

@@ -57,6 +57,9 @@ including either the prepped recipe, the formula terms object, or
 variable selectors.
 \item \code{extract_recipe()} returns the recipe. The \code{estimated} argument specifies
 whether the fitted or original recipe is returned.
+\item \code{extract_workflow()} returns the workflow object if the control option
+\code{save_workflow = TRUE} was used. The workflow will not have been
+estimated.
 }
 }
 \details{
