@@ -62,24 +62,21 @@ whether the fitted or original recipe is returned.
 \details{
 These functions supersede \code{extract_model()}.
 
-\strong{NOTE}: If either type of \code{fit} object is extracted, using it outside of
-the workflow for prediction might give incorrect results. Please use
-\code{predict(workflow)} instead of \code{predict(parsnip_fit)} or
-\code{predict(engine_fit)}. In other words:
+Extracting the underlying fit objects can be helpful for describing the
+model via \code{print()}, \code{summarize()}, \code{plot()}, and so on.
 
-\emph{good:}
+However, users should not invoke the \code{predict()} method on an extracted
+model. There may be preprocessing operations that \code{workflows} has executed on
+the data prior to giving it to the model. Bypassing these can lead to errors
+or silently generating incorrect predictions.
 
-\preformatted{
-  object \%>\% extract_workflow() \%>\% predict(new_data)
-}
+\emph{Good}:\if{html}{\out{<div class="r">}}\preformatted{   workflow_fit \%>\% predict(new_data)
+}\if{html}{\out{</div>}}
 
-\emph{bad:}
-
-\preformatted{
-  object \%>\% extract_fit_parsnip() \%>\% predict(new_data)
-  # or
-  object \%>\% extract_fit_engine()) \%>\% predict(new_data)
-}
+\emph{Bad}:\if{html}{\out{<div class="r">}}\preformatted{   workflow_fit \%>\% extract_fit_engine()  \%>\% predict(new_data)
+   # or
+   workflow_fit \%>\% extract_fit_parsnip() \%>\% predict(new_data)
+}\if{html}{\out{</div>}}
 }
 \examples{
 library(recipes)

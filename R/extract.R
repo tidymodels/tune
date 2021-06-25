@@ -30,24 +30,25 @@
 #' @details
 #' These functions supersede `extract_model()`.
 #'
-#' **NOTE**: If either type of `fit` object is extracted, using it outside of
-#' the workflow for prediction might give incorrect results. Please use
-#' `predict(workflow)` instead of `predict(parsnip_fit)` or
-#' `predict(engine_fit)`. In other words:
+#' Extracting the underlying fit objects can be helpful for describing the
+#'  model via `print()`, `summarize()`, `plot()`, and so on.
 #'
-#' *good:*
+#' However, users should not invoke the `predict()` method on an extracted
+#'  model. There may be preprocessing operations that `workflows` has executed on
+#'  the data prior to giving it to the model. Bypassing these can lead to errors
+#'  or silently generating incorrect predictions.
 #'
-#' \preformatted{
-#'   object \%>\% extract_workflow() \%>\% predict(new_data)
-#' }
+#' *Good*:
+#' ```r
+#'    workflow_fit %>% predict(new_data)
+#' ```
 #'
-#' *bad:*
-#'
-#' \preformatted{
-#'   object \%>\% extract_fit_parsnip() \%>\% predict(new_data)
-#'   # or
-#'   object \%>\% extract_fit_engine()) \%>\% predict(new_data)
-#' }
+#' *Bad*:
+#' ```r
+#'    workflow_fit %>% extract_fit_engine()  %>% predict(new_data)
+#'    # or
+#'    workflow_fit %>% extract_fit_parsnip() %>% predict(new_data)
+#' ```
 #' @return
 #' The extracted value from the `tune` object, `x`, as described in the
 #' description section.

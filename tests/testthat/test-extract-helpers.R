@@ -1,3 +1,4 @@
+context("extract functions")
 
 
 lm_spec <- linear_reg()
