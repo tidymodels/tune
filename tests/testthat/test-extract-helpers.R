@@ -1,7 +1,8 @@
 context("extract functions")
 
+library(parsnip)
 
-lm_spec <- linear_reg()
+lm_spec <- linear_reg() %>% set_engine("lm")
 lm_prn_fit <- fit(lm_spec, mpg ~ ., data = mtcars)
 lm_wflow <-
   workflow() %>%
