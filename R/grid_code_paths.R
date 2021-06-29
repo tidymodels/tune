@@ -2,6 +2,12 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
+  current_rng_kind <- RNGkind()[[1]]
+  on.exit(
+    RNGkind(kind = current_rng_kind),
+    add = TRUE
+  )
+
   tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
 
   packages <- c(control$pkgs, required_pkgs(workflow))
