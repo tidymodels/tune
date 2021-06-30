@@ -1,7 +1,7 @@
 #' Extract elements of `tune` objects
 #'
 #' @description
-#' These functions extract various elements from a workflow object. If they do
+#' These functions extract various elements from a tune object. If they do
 #' not exist yet, an error is thrown.
 #'
 #' - `extract_preprocessor()` returns the formula, recipe, or variable
@@ -146,4 +146,3 @@ extract_mold.tune_results <- function(x, ...) {
 extract_preprocessor.tune_results <- function(x, ...) {
   extract_preprocessor(extract_workflow(x))
 }
-
