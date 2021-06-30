@@ -41,7 +41,7 @@ The extracted value from the \code{tune} object, \code{x}, as described in the
 description section.
 }
 \description{
-These functions extract various elements from a workflow object. If they do
+These functions extract various elements from a tune object. If they do
 not exist yet, an error is thrown.
 \itemize{
 \item \code{extract_preprocessor()} returns the formula, recipe, or variable
@@ -64,23 +64,6 @@ estimated.
 }
 \details{
 These functions supersede \code{extract_model()}.
-
-Extracting the underlying engine fit can be helpful for describing the
-model (via \code{print()}, \code{summary()}, \code{plot()}, etc.) or for variable
-importance/explainers.
-
-However, users should not invoke the \code{predict()} method on an extracted
-model. There may be preprocessing operations that \code{workflows} has executed on
-the data prior to giving it to the model. Bypassing these can lead to errors
-or silently generating incorrect predictions.
-
-\emph{Good}:\if{html}{\out{<div class="r">}}\preformatted{   workflow_fit \%>\% predict(new_data)
-}\if{html}{\out{</div>}}
-
-\emph{Bad}:\if{html}{\out{<div class="r">}}\preformatted{   workflow_fit \%>\% extract_fit_engine()  \%>\% predict(new_data)
-   # or
-   workflow_fit \%>\% extract_fit_parsnip() \%>\% predict(new_data)
-}\if{html}{\out{</div>}}
 }
 \examples{
 library(recipes)

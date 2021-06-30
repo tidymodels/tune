@@ -33,27 +33,6 @@
 #' @param ... Not currently used.
 #' @details
 #' These functions supersede `extract_model()`.
-#'
-#' Extracting the underlying engine fit can be helpful for describing the
-#'  model (via `print()`, `summary()`, `plot()`, etc.) or for variable
-#'  importance/explainers.
-#'
-#' However, users should not invoke the `predict()` method on an extracted
-#'  model. There may be preprocessing operations that `workflows` has executed on
-#'  the data prior to giving it to the model. Bypassing these can lead to errors
-#'  or silently generating incorrect predictions.
-#'
-#' *Good*:
-#' ```r
-#'    workflow_fit %>% predict(new_data)
-#' ```
-#'
-#' *Bad*:
-#' ```r
-#'    workflow_fit %>% extract_fit_engine()  %>% predict(new_data)
-#'    # or
-#'    workflow_fit %>% extract_fit_parsnip() %>% predict(new_data)
-#' ```
 #' @return
 #' The extracted value from the `tune` object, `x`, as described in the
 #' description section.
