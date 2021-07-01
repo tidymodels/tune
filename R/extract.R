@@ -27,14 +27,14 @@
 #'    `save_workflow = TRUE` was used. The workflow will only have been
 #'    estimated for objects produced by [last_fit()].
 #'
-#' @param x A workflow
+#' @param x A `tune_results` object.
 #' @param estimated A logical for whether the original (unfit) recipe or the
 #' fitted recipe should be returned.
 #' @param ... Not currently used.
 #' @details
 #' These functions supersede `extract_model()`.
 #' @return
-#' The extracted value from the `tune` object, `x`, as described in the
+#' The extracted value from the `tune` tune_results, `x`, as described in the
 #' description section.
 #'
 #' @name extract-tune
@@ -99,8 +99,23 @@ extract_spec_parsnip.tune_results <- function(x, ...) {
 #' @export
 #' @rdname extract-tune
 extract_recipe.tune_results <- function(x, ..., estimated = TRUE) {
+  check_empty_dots(...)
+  if (!rlang::is_bool(estimated)) {
+    rlang::abort("`estimated` must be a single `TRUE` or `FALSE`.")
+  }
   extract_recipe(extract_workflow(x), estimated = estimated)
 }
+check_empty_dots <- function(...) {
+  opts <- list(...)
+  if (any(names(opts) == "estimated")) {
+    rlang::abort("'estimated' should be a named argument.")
+  }
+  if (length(opts) > 0) {
+    rlang::abort("'...' are not used in this function.")
+  }
+  invisible(NULL)
+}
+
 
 #' @export
 #' @rdname extract-tune

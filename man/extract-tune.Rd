@@ -18,7 +18,7 @@
 
 \method{extract_spec_parsnip}{tune_results}(x, ...)
 
-\method{extract_recipe}{tune_results}(x, estimated = TRUE, ...)
+\method{extract_recipe}{tune_results}(x, ..., estimated = TRUE)
 
 \method{extract_fit_parsnip}{tune_results}(x, ...)
 
@@ -29,7 +29,7 @@
 \method{extract_preprocessor}{tune_results}(x, ...)
 }
 \arguments{
-\item{x}{A workflow}
+\item{x}{A \code{tune_results} object.}
 
 \item{...}{Not currently used.}
 
@@ -37,7 +37,7 @@
 fitted recipe should be returned.}
 }
 \value{
-The extracted value from the \code{tune} object, \code{x}, as described in the
+The extracted value from the \code{tune} tune_results, \code{x}, as described in the
 description section.
 }
 \description{
@@ -50,7 +50,7 @@ expressions used for preprocessing.
 \item \code{extract_fit_parsnip()} returns the parsnip model fit object.
 \item \code{extract_fit_engine()} returns the engine specific fit embedded within
 a parsnip model fit. For example, when using \code{\link[parsnip:linear_reg]{parsnip::linear_reg()}}
-with the \code{"lm"} engine, this would return the underlying \code{lm} object.
+with the \code{"lm"} engine, this returns the underlying \code{lm} object.
 \item \code{extract_mold()} returns the preprocessed "mold" object returned
 from \code{\link[hardhat:mold]{hardhat::mold()}}. It contains information about the preprocessing,
 including either the prepped recipe, the formula terms object, or
@@ -84,7 +84,7 @@ spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 extract_preprocessor(spline_res)
 
 # The `spec` is the parsnip spec before it has been fit.
-# The `fit` is the fit parsnip model.
+# The `fit` is the fitted parsnip model.
 extract_spec_parsnip(spline_res)
 extract_fit_parsnip(spline_res)
 extract_fit_engine(spline_res)

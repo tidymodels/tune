@@ -219,7 +219,11 @@ extract_metrics_config <- function(param_names, metrics) {
   vec_unique(out)
 }
 
-#' Convenience functions to extract model (DEPRECATED)
+#' Convenience functions to extract model
+#'
+#' `r lifecycle::badge("soft-deprecated")`
+#'
+#' Use [extract_fit_engine()] instead of `extract_model()`.
 #'
 #' When extracting the fitted results, the workflow is easily accessible. If
 #' there is only interest in the model, this functions can be used
@@ -228,6 +232,9 @@ extract_metrics_config <- function(param_names, metrics) {
 #' @return A fitted model.
 #' @export
 extract_model <- function(x) {
+  lifecycle::deprecate_soft("0.1.6",
+                            "extract_model()",
+                            "extract_fit_engine()")
   parsnip_fit <- extract_fit_parsnip(x)
   model <- parsnip_fit$fit
   model

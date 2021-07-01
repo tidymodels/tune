@@ -2,7 +2,7 @@
 % Please edit documentation in R/pull.R
 \name{extract_model}
 \alias{extract_model}
-\title{Convenience functions to extract model (DEPRECATED)}
+\title{Convenience functions to extract model}
 \usage{
 extract_model(x)
 }
@@ -13,6 +13,11 @@ extract_model(x)
 A fitted model.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
+}
+\details{
+Use \code{\link[=extract_fit_engine]{extract_fit_engine()}} instead of \code{extract_model()}.
+
 When extracting the fitted results, the workflow is easily accessible. If
 there is only interest in the model, this functions can be used
 as a shortcut
