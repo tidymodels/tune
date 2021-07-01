@@ -58,8 +58,8 @@ variable selectors.
 \item \code{extract_recipe()} returns the recipe. The \code{estimated} argument specifies
 whether the fitted or original recipe is returned.
 \item \code{extract_workflow()} returns the workflow object if the control option
-\code{save_workflow = TRUE} was used. The workflow will not have been
-estimated.
+\code{save_workflow = TRUE} was used. The workflow will only have been
+estimated for objects produced by \code{\link[=last_fit]{last_fit()}}.
 }
 }
 \details{
