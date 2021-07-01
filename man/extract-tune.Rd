@@ -41,7 +41,7 @@ The extracted value from the \code{tune} object, \code{x}, as described in the
 description section.
 }
 \description{
-These functions extract various elements from a workflow object. If they do
+These functions extract various elements from a tune object. If they do
 not exist yet, an error is thrown.
 \itemize{
 \item \code{extract_preprocessor()} returns the formula, recipe, or variable
@@ -58,8 +58,8 @@ variable selectors.
 \item \code{extract_recipe()} returns the recipe. The \code{estimated} argument specifies
 whether the fitted or original recipe is returned.
 \item \code{extract_workflow()} returns the workflow object if the control option
-\code{save_workflow = TRUE} was used. The workflow will not have been
-estimated.
+\code{save_workflow = TRUE} was used. The workflow will only have been
+estimated for objects produced by \code{\link[=last_fit]{last_fit()}}.
 }
 }
 \details{
