@@ -13,7 +13,7 @@
 #'
 #' - `extract_fit_engine()` returns the engine specific fit embedded within
 #'   a parsnip model fit. For example, when using [parsnip::linear_reg()]
-#'   with the `"lm"` engine, this would return the underlying `lm` object.
+#'   with the `"lm"` engine, this returns the underlying `lm` object.
 #'
 #' - `extract_mold()` returns the preprocessed "mold" object returned
 #'   from [hardhat::mold()]. It contains information about the preprocessing,
@@ -50,7 +50,7 @@
 #'
 #' *Bad*:
 #' ```r
-#'    workflow_fit %>% extract_fit_engine()  %>% predict(new_data)
+#'    workflow_fit %>% extract_fit_engine() %>% predict(new_data)
 #'    # or
 #'    workflow_fit %>% extract_fit_parsnip() %>% predict(new_data)
 #' ```
@@ -78,7 +78,7 @@
 #' extract_preprocessor(spline_res)
 #'
 #' # The `spec` is the parsnip spec before it has been fit.
-#' # The `fit` is the fit parsnip model.
+#' # The `fit` is the fitted parsnip model.
 #' extract_spec_parsnip(spline_res)
 #' extract_fit_parsnip(spline_res)
 #' extract_fit_engine(spline_res)
@@ -119,7 +119,7 @@ extract_spec_parsnip.tune_results <- function(x, ...) {
 
 #' @export
 #' @rdname extract-tune
-extract_recipe.tune_results <- function(x, estimated = TRUE, ...) {
+extract_recipe.tune_results <- function(x, ..., estimated = TRUE) {
   extract_recipe(extract_workflow(x), estimated = estimated)
 }
 
