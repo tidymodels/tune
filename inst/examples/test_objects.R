@@ -29,7 +29,7 @@ knn_mod_two <-
 
 get_coefs  <- function(x) {
   x %>%
-    pull_workflow_fit() %>%
+    extract_fit_parsnip() %>%
     tidy()
 }
 

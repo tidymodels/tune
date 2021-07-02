@@ -125,7 +125,7 @@ and/or the model: \code{\link[=extract_recipe]{extract_recipe()}} and \code{\lin
 
 As an example, if there is interest in getting each model back, one could use:
 \preformatted{
-  extract = function (x) extract_model(x)
+  extract = function (x) extract_fit_parsnip(x)
 }
 
 Note that the function given to the \code{extract} argument is evaluated on
