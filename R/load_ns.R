@@ -13,7 +13,7 @@ load_pkgs <- function(x, ...) {
 
 #' @export
 load_pkgs.character <- function(x, ...) {
-  load_namespace(x)
+  withr::with_preserve_seed(load_namespace(x))
 }
 
 #' @export

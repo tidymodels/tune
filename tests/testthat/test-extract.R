@@ -28,6 +28,7 @@ test_that('tune recipe only', {
   extr_1_1 <- function(x) {
     extract_recipe(x) %>% tidy(number = 2)
   }
+  before_kind <- RNGkind()[[1]]
   expect_error(
     res_1_1 <-
       workflow() %>%
@@ -36,6 +37,8 @@ test_that('tune recipe only', {
       tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1)),
     NA
   )
+  after_kind <- RNGkind()[[1]]
+  expect_equal(before_kind, after_kind)
   expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
 
   expect_true(all(names(extract_1_1) == c("num_comp", ".extracts", ".config")))
