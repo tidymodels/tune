@@ -2,6 +2,8 @@
 
 * When using `load_pkgs()`, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user's previous value (#389). 
 
+* New `extract_*()` functions have been added that supersede many of the the existing `pull_*()` functions. This is part of a larger move across the tidymodels packages towards a family of generic `extract_*()` functions. Many `pull_*()` functions have been soft-deprecated, and will eventually be removed. (#378)
+
 # tune 0.1.5
 
 * Fixed a bug where the resampled confusion matrix is transposed when `conf_mat_resamped(tidy = FALSE)` (#372)
