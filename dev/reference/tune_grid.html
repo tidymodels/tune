@@ -418,11 +418,11 @@ grid has a separate R object associated with it.</p>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 x 8</span>
 #&gt;    disp    wt .metric .estimator  mean     n std_err .config              
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                
-#&gt; <span style='color: #BCBCBC;'>1</span>     3     2 rmse    standard    2.69     5   0.256 Preprocessor02_Model1
-#&gt; <span style='color: #BCBCBC;'>2</span>     3     3 rmse    standard    3.12     5   0.337 Preprocessor06_Model1
-#&gt; <span style='color: #BCBCBC;'>3</span>     3     4 rmse    standard    3.38     5   0.222 Preprocessor10_Model1
-#&gt; <span style='color: #BCBCBC;'>4</span>     2     2 rmse    standard    3.38     5   0.164 Preprocessor01_Model1
-#&gt; <span style='color: #BCBCBC;'>5</span>     2     3 rmse    standard    3.61     5   0.372 Preprocessor05_Model1</div><div class='input'>
+#&gt; <span style='color: #BCBCBC;'>1</span>     3     2 rmse    standard    2.54     5   0.207 Preprocessor02_Model1
+#&gt; <span style='color: #BCBCBC;'>2</span>     3     3 rmse    standard    2.64     5   0.234 Preprocessor06_Model1
+#&gt; <span style='color: #BCBCBC;'>3</span>     4     3 rmse    standard    2.82     5   0.456 Preprocessor07_Model1
+#&gt; <span style='color: #BCBCBC;'>4</span>     4     2 rmse    standard    2.93     5   0.489 Preprocessor03_Model1
+#&gt; <span style='color: #BCBCBC;'>5</span>     4     4 rmse    standard    3.01     5   0.475 Preprocessor11_Model1</div><div class='input'>
 <span class='co'># ---------------------------------------------------------------------------</span>
 
 <span class='co'># tune model parameters only (example requires the `kernlab` package)</span>
@@ -452,13 +452,13 @@ grid has a separate R object associated with it.</p>
 #&gt; <span style='color: #BCBCBC;'>5</span> <span style='color: #949494;'>&lt;split [26/6]&gt;</span> Fold5 <span style='color: #949494;'>&lt;tibble [14 × 6]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></div><div class='input'>
 <span class='fu'><a href='show_best.html'>show_best</a></span><span class='op'>(</span><span class='va'>svm_res</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 x 8</span>
-#&gt;      cost   rbf_sigma .metric .estimator  mean     n std_err .config            
-#&gt;     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>              
-#&gt; <span style='color: #BCBCBC;'>1</span> 3.33    0.002<span style='text-decoration: underline;'>11</span>     rmse    standard    3.17     5   0.570 Preprocessor1_Mode…
-#&gt; <span style='color: #BCBCBC;'>2</span> 0.006<span style='text-decoration: underline;'>40</span> 0.162       rmse    standard    5.90     5   0.706 Preprocessor1_Mode…
-#&gt; <span style='color: #BCBCBC;'>3</span> 0.643   0.000<span style='text-decoration: underline;'>062</span>6   rmse    standard    5.95     5   0.710 Preprocessor1_Mode…
-#&gt; <span style='color: #BCBCBC;'>4</span> 0.243   0.000<span style='text-decoration: underline;'>000</span>613 rmse    standard    6.00     5   0.709 Preprocessor1_Mode…
-#&gt; <span style='color: #BCBCBC;'>5</span> 0.023<span style='text-decoration: underline;'>6</span>  0.000<span style='text-decoration: underline;'>003</span>67  rmse    standard    6.00     5   0.709 Preprocessor1_Mode…</div><div class='input'>
+#&gt;       cost   rbf_sigma .metric .estimator  mean     n std_err .config           
+#&gt;      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>      <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             
+#&gt; <span style='color: #BCBCBC;'>1</span>  0.304   0.117       rmse    standard    3.91     5   0.652 Preprocessor1_Mod…
+#&gt; <span style='color: #BCBCBC;'>2</span>  4.53    0.000<span style='text-decoration: underline;'>420</span>    rmse    standard    4.13     5   0.741 Preprocessor1_Mod…
+#&gt; <span style='color: #BCBCBC;'>3</span>  0.002<span style='text-decoration: underline;'>47</span> 0.009<span style='text-decoration: underline;'>31</span>     rmse    standard    5.94     5   0.966 Preprocessor1_Mod…
+#&gt; <span style='color: #BCBCBC;'>4</span> 23.2     0.000<span style='text-decoration: underline;'>000</span>684 rmse    standard    5.94     5   0.967 Preprocessor1_Mod…
+#&gt; <span style='color: #BCBCBC;'>5</span>  0.012<span style='text-decoration: underline;'>6</span>  0.000<span style='text-decoration: underline;'>002</span>39  rmse    standard    5.96     5   0.970 Preprocessor1_Mod…</div><div class='input'>
 <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/autoplot.html'>autoplot</a></span><span class='op'>(</span><span class='va'>svm_res</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span> <span class='op'>+</span>
   <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_x_log10</a></span><span class='op'>(</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='warning'>Warning: NaNs produced</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Transformation introduced infinite values in continuous x-axis</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Removed 12 rows containing missing values (geom_point).</span></div><div class='img'><img src='tune_grid-1.png' alt='' width='768' height='552' /></div><div class='input'>

@@ -294,9 +294,9 @@ description section.</p>
 #&gt; 
 #&gt; Coefficients:
 #&gt; (Intercept)          cyl           hp         drat           wt         qsec  
-#&gt;    3.543425     2.061709    -0.008018     0.932096    -4.700860     0.935636  
+#&gt;   23.087028     0.326218     0.005969    -0.009576    -0.902839     0.185826  
 #&gt;          vs           am         gear         carb    disp_ns_1    disp_ns_2  
-#&gt;    1.053248    -0.942407     1.932864    -0.477392   -15.305563    -1.806417  
+#&gt;    1.492756     4.101555     0.174875    -1.278962   -15.149506    -4.905087  
 #&gt; </div><div class='input'><span class='fu'><a href='https://rdrr.io/pkg/hardhat/man/hardhat-extract.html'>extract_fit_engine</a></span><span class='op'>(</span><span class='va'>spline_res</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; 
 #&gt; Call:
@@ -304,9 +304,9 @@ description section.</p>
 #&gt; 
 #&gt; Coefficients:
 #&gt; (Intercept)          cyl           hp         drat           wt         qsec  
-#&gt;    3.543425     2.061709    -0.008018     0.932096    -4.700860     0.935636  
+#&gt;   23.087028     0.326218     0.005969    -0.009576    -0.902839     0.185826  
 #&gt;          vs           am         gear         carb    disp_ns_1    disp_ns_2  
-#&gt;    1.053248    -0.942407     1.932864    -0.477392   -15.305563    -1.806417  
+#&gt;    1.492756     4.101555     0.174875    -1.278962   -15.149506    -4.905087  
 #&gt; </div><div class='input'>
 <span class='co'># The mold is returned from `hardhat::mold()`, and contains the</span>
 <span class='co'># predictors, outcomes, and information about the preprocessing</span>
@@ -316,32 +316,32 @@ description section.</p>
 #&gt; <span style='color: #949494;'># A tibble: 24 x 11</span>
 #&gt;      cyl    hp  drat    wt  qsec    vs    am  gear  carb disp_ns_1 disp_ns_2
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span>     8   245  3.73  3.84  15.4     0     0     3     4    0.528     0.170 
-#&gt; <span style='color: #BCBCBC;'> 2</span>     8   180  3.07  3.73  17.6     0     0     3     3    0.575    -<span style='color: #BB0000;'>0.110</span> 
-#&gt; <span style='color: #BCBCBC;'> 3</span>     6   110  3.9   2.88  17.0     0     1     4     4    0.370    -<span style='color: #BB0000;'>0.199</span> 
-#&gt; <span style='color: #BCBCBC;'> 4</span>     8   150  3.15  3.44  17.3     0     0     3     2    0.570    -<span style='color: #BB0000;'>0.019</span><span style='color: #BB0000; text-decoration: underline;'>1</span>
-#&gt; <span style='color: #BCBCBC;'> 5</span>     8   335  3.54  3.57  14.6     0     1     5     8    0.571    -<span style='color: #BB0000;'>0.029</span><span style='color: #BB0000; text-decoration: underline;'>8</span>
-#&gt; <span style='color: #BCBCBC;'> 6</span>     4    95  3.92  3.15  22.9     1     0     4     2    0.300    -<span style='color: #BB0000;'>0.168</span> 
-#&gt; <span style='color: #BCBCBC;'> 7</span>     8   245  3.21  3.57  15.8     0     0     3     4    0.514     0.217 
-#&gt; <span style='color: #BCBCBC;'> 8</span>     4    66  4.08  2.2   19.5     1     1     4     1    0.034<span style='text-decoration: underline;'>3</span>   -<span style='color: #BB0000;'>0.020</span><span style='color: #BB0000; text-decoration: underline;'>3</span>
-#&gt; <span style='color: #BCBCBC;'> 9</span>     4    62  3.69  3.19  20       1     0     4     2    0.322    -<span style='color: #BB0000;'>0.178</span> 
-#&gt; <span style='color: #BCBCBC;'>10</span>     8   180  3.07  4.07  17.4     0     0     3     3    0.575    -<span style='color: #BB0000;'>0.110</span> 
+#&gt; <span style='color: #BCBCBC;'> 1</span>     8   205  2.93  5.25  18.0     0     0     3     4    0.341     0.774 
+#&gt; <span style='color: #BCBCBC;'> 2</span>     4    95  3.92  3.15  22.9     1     0     4     2    0.260    -<span style='color: #BB0000;'>0.165</span> 
+#&gt; <span style='color: #BCBCBC;'> 3</span>     6   175  3.62  2.77  15.5     0     1     5     6    0.274    -<span style='color: #BB0000;'>0.173</span> 
+#&gt; <span style='color: #BCBCBC;'> 4</span>     8   245  3.73  3.84  15.4     0     0     3     4    0.554     0.066<span style='text-decoration: underline;'>3</span>
+#&gt; <span style='color: #BCBCBC;'> 5</span>     4    52  4.93  1.62  18.5     1     1     4     2    0.017<span style='text-decoration: underline;'>7</span>   -<span style='color: #BB0000;'>0.011</span><span style='color: #BB0000; text-decoration: underline;'>7</span>
+#&gt; <span style='color: #BCBCBC;'> 6</span>     8   180  3.07  3.78  18       0     0     3     3    0.571    -<span style='color: #BB0000;'>0.197</span> 
+#&gt; <span style='color: #BCBCBC;'> 7</span>     8   215  3     5.42  17.8     0     0     3     4    0.366     0.698 
+#&gt; <span style='color: #BCBCBC;'> 8</span>     8   175  3.15  3.44  17.0     0     0     3     2    0.542     0.115 
+#&gt; <span style='color: #BCBCBC;'> 9</span>     8   180  3.07  4.07  17.4     0     0     3     3    0.571    -<span style='color: #BB0000;'>0.197</span> 
+#&gt; <span style='color: #BCBCBC;'>10</span>     6   110  3.9   2.88  17.0     0     1     4     4    0.324    -<span style='color: #BB0000;'>0.200</span> 
 #&gt; <span style='color: #949494;'># … with 14 more rows</span>
 #&gt; 
 #&gt; $outcomes
 #&gt; <span style='color: #949494;'># A tibble: 24 x 1</span>
 #&gt;      mpg
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span>  13.3
-#&gt; <span style='color: #BCBCBC;'> 2</span>  17.3
-#&gt; <span style='color: #BCBCBC;'> 3</span>  21  
-#&gt; <span style='color: #BCBCBC;'> 4</span>  15.2
-#&gt; <span style='color: #BCBCBC;'> 5</span>  15  
-#&gt; <span style='color: #BCBCBC;'> 6</span>  22.8
-#&gt; <span style='color: #BCBCBC;'> 7</span>  14.3
-#&gt; <span style='color: #BCBCBC;'> 8</span>  32.4
-#&gt; <span style='color: #BCBCBC;'> 9</span>  24.4
-#&gt; <span style='color: #BCBCBC;'>10</span>  16.4
+#&gt; <span style='color: #BCBCBC;'> 1</span>  10.4
+#&gt; <span style='color: #BCBCBC;'> 2</span>  22.8
+#&gt; <span style='color: #BCBCBC;'> 3</span>  19.7
+#&gt; <span style='color: #BCBCBC;'> 4</span>  13.3
+#&gt; <span style='color: #BCBCBC;'> 5</span>  30.4
+#&gt; <span style='color: #BCBCBC;'> 6</span>  15.2
+#&gt; <span style='color: #BCBCBC;'> 7</span>  10.4
+#&gt; <span style='color: #BCBCBC;'> 8</span>  18.7
+#&gt; <span style='color: #BCBCBC;'> 9</span>  16.4
+#&gt; <span style='color: #BCBCBC;'>10</span>  21  
 #&gt; <span style='color: #949494;'># … with 14 more rows</span>
 #&gt; 
 #&gt; $blueprint

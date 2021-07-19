@@ -160,6 +160,9 @@
 <h1 class="page-header" data-toc-text="development version">
 <a href="#tune-development-version" class="anchor"></a>tune (development version)<small> Unreleased </small>
 </h1>
+<ul>
+<li>When using <code><a href="../reference/load_pkgs.html">load_pkgs()</a></code>, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user’s previous value (<a href='https://github.com/tidymodels/tune/issues/389'>#389</a>).</li>
+</ul>
 </div>
     <div id="tune-015" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.5">
