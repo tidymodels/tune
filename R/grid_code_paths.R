@@ -2,12 +2,6 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
-  current_rng_kind <- RNGkind()[[1]]
-  on.exit(
-    RNGkind(kind = current_rng_kind),
-    add = TRUE
-  )
-
   tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
 
   packages <- c(control$pkgs, required_pkgs(workflow))
@@ -131,7 +125,11 @@ tune_grid_loop_iter <- function(iteration,
 
   # After package loading to avoid potential package RNG manipulation
   if (!is.null(seed)) {
+    # `assign()`-ing the random seed alters the `kind` type to L'Ecuyer-CMRG,
+    # so we have to ensure it is restored on exit
+    old_kind <- RNGkind()[[1]]
     assign(".Random.seed", seed, envir = globalenv())
+    on.exit(RNGkind(kind = old_kind), add = TRUE)
   }
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
