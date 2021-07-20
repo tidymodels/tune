@@ -161,7 +161,8 @@
 <a href="#tune-development-version" class="anchor"></a>tune (development version)<small> Unreleased </small>
 </h1>
 <ul>
-<li>When using <code><a href="../reference/load_pkgs.html">load_pkgs()</a></code>, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user’s previous value (<a href='https://github.com/tidymodels/tune/issues/389'>#389</a>).</li>
+<li><p>When using <code><a href="../reference/load_pkgs.html">load_pkgs()</a></code>, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user’s previous value (<a href='https://github.com/tidymodels/tune/issues/389'>#389</a>).</p></li>
+<li><p>New <code>extract_*()</code> functions have been added that supersede many of the the existing <code>pull_*()</code> functions. This is part of a larger move across the tidymodels packages towards a family of generic <code>extract_*()</code> functions. Many <code>pull_*()</code> functions have been soft-deprecated, and will eventually be removed. (<a href='https://github.com/tidymodels/tune/issues/378'>#378</a>)</p></li>
 </ul>
 </div>
     <div id="tune-015" class="section level1">
