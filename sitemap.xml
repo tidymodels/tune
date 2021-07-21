@@ -34,7 +34,10 @@
     <loc>https://tune.tidymodels.org/reference/expo_decay.html</loc>
   </url>
   <url>
-    <loc>https://tune.tidymodels.org/reference/extract_recipe.html</loc>
+    <loc>https://tune.tidymodels.org/reference/extract-tune.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/extract_model.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/filter_parameters.html</loc>

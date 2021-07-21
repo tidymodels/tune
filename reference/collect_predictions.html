@@ -95,7 +95,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
         </div>
       </div>
     </div>
@@ -251,46 +251,46 @@ summarize.</p>
 #&gt; </div><div class='input'>
 <span class='co'># Summarized over resamples</span>
 <span class='fu'>collect_metrics</span><span class='op'>(</span><span class='va'>ames_grid_search</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 20 x 11</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 20 x 11</span>
 #&gt;        K weight_func  dist_power   lon   lat .metric .estimator   mean     n
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>             </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>    35 optimal           1.32      8     1 rmse    standard   0.078</span><span style='text-decoration: underline;'>5</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    35 optimal           1.32      8     1 rsq     standard   0.823     10
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    35 rank              1.29      3    13 rmse    standard   0.080</span><span style='text-decoration: underline;'>9</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    35 rank              1.29      3    13 rsq     standard   0.814     10
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>    21 cos               0.626     1     4 rmse    standard   0.074</span><span style='text-decoration: underline;'>6</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    21 cos               0.626     1     4 rsq     standard   0.836     10
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>     4 biweight          0.311     8     4 rmse    standard   0.077</span><span style='text-decoration: underline;'>7</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>     4 biweight          0.311     8     4 rsq     standard   0.814     10
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>    32 triangular        0.165     9    15 rmse    standard   0.077</span><span style='text-decoration: underline;'>0</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>    32 triangular        0.165     9    15 rsq     standard   0.826     10
-#&gt; </span><span style='color: #BCBCBC;'>11</span><span>     3 rank              1.86     10    15 rmse    standard   0.087</span><span style='text-decoration: underline;'>5</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>12</span><span>     3 rank              1.86     10    15 rsq     standard   0.762     10
-#&gt; </span><span style='color: #BCBCBC;'>13</span><span>    40 triangular        0.167    11     7 rmse    standard   0.077</span><span style='text-decoration: underline;'>8</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>14</span><span>    40 triangular        0.167    11     7 rsq     standard   0.822     10
-#&gt; </span><span style='color: #BCBCBC;'>15</span><span>    12 epanechnikov      1.53      4     7 rmse    standard   0.077</span><span style='text-decoration: underline;'>4</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>16</span><span>    12 epanechnikov      1.53      4     7 rsq     standard   0.820     10
-#&gt; </span><span style='color: #BCBCBC;'>17</span><span>     5 rank              0.411     2     7 rmse    standard   0.074</span><span style='text-decoration: underline;'>0</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>18</span><span>     5 rank              0.411     2     7 rsq     standard   0.833     10
-#&gt; </span><span style='color: #BCBCBC;'>19</span><span>    33 triweight         0.511    10     3 rmse    standard   0.072</span><span style='text-decoration: underline;'>8</span><span>    10
-#&gt; </span><span style='color: #BCBCBC;'>20</span><span>    33 triweight         0.511    10     3 rsq     standard   0.842     10
-#&gt; </span><span style='color: #949494;'># … with 2 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>             <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>    35 optimal           1.32      8     1 rmse    standard   0.078<span style='text-decoration: underline;'>5</span>    10
+#&gt; <span style='color: #BCBCBC;'> 2</span>    35 optimal           1.32      8     1 rsq     standard   0.823     10
+#&gt; <span style='color: #BCBCBC;'> 3</span>    35 rank              1.29      3    13 rmse    standard   0.080<span style='text-decoration: underline;'>9</span>    10
+#&gt; <span style='color: #BCBCBC;'> 4</span>    35 rank              1.29      3    13 rsq     standard   0.814     10
+#&gt; <span style='color: #BCBCBC;'> 5</span>    21 cos               0.626     1     4 rmse    standard   0.074<span style='text-decoration: underline;'>6</span>    10
+#&gt; <span style='color: #BCBCBC;'> 6</span>    21 cos               0.626     1     4 rsq     standard   0.836     10
+#&gt; <span style='color: #BCBCBC;'> 7</span>     4 biweight          0.311     8     4 rmse    standard   0.077<span style='text-decoration: underline;'>7</span>    10
+#&gt; <span style='color: #BCBCBC;'> 8</span>     4 biweight          0.311     8     4 rsq     standard   0.814     10
+#&gt; <span style='color: #BCBCBC;'> 9</span>    32 triangular        0.165     9    15 rmse    standard   0.077<span style='text-decoration: underline;'>0</span>    10
+#&gt; <span style='color: #BCBCBC;'>10</span>    32 triangular        0.165     9    15 rsq     standard   0.826     10
+#&gt; <span style='color: #BCBCBC;'>11</span>     3 rank              1.86     10    15 rmse    standard   0.087<span style='text-decoration: underline;'>5</span>    10
+#&gt; <span style='color: #BCBCBC;'>12</span>     3 rank              1.86     10    15 rsq     standard   0.762     10
+#&gt; <span style='color: #BCBCBC;'>13</span>    40 triangular        0.167    11     7 rmse    standard   0.077<span style='text-decoration: underline;'>8</span>    10
+#&gt; <span style='color: #BCBCBC;'>14</span>    40 triangular        0.167    11     7 rsq     standard   0.822     10
+#&gt; <span style='color: #BCBCBC;'>15</span>    12 epanechnikov      1.53      4     7 rmse    standard   0.077<span style='text-decoration: underline;'>4</span>    10
+#&gt; <span style='color: #BCBCBC;'>16</span>    12 epanechnikov      1.53      4     7 rsq     standard   0.820     10
+#&gt; <span style='color: #BCBCBC;'>17</span>     5 rank              0.411     2     7 rmse    standard   0.074<span style='text-decoration: underline;'>0</span>    10
+#&gt; <span style='color: #BCBCBC;'>18</span>     5 rank              0.411     2     7 rsq     standard   0.833     10
+#&gt; <span style='color: #BCBCBC;'>19</span>    33 triweight         0.511    10     3 rmse    standard   0.072<span style='text-decoration: underline;'>8</span>    10
+#&gt; <span style='color: #BCBCBC;'>20</span>    33 triweight         0.511    10     3 rsq     standard   0.842     10
+#&gt; <span style='color: #949494;'># … with 2 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;</span></div><div class='input'>
 <span class='co'># Per-resample values</span>
 <span class='fu'>collect_metrics</span><span class='op'>(</span><span class='va'>ames_grid_search</span>, summarize <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 200 x 10</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 200 x 10</span>
 #&gt;    id         K weight_func dist_power   lon   lat .metric .estimator .estimate
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>          </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> Fold01    35 optimal           1.32     8     1 rmse    standard      0.085</span><span style='text-decoration: underline;'>9</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> Fold01    35 optimal           1.32     8     1 rsq     standard      0.810 
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> Fold02    35 optimal           1.32     8     1 rmse    standard      0.072</span><span style='text-decoration: underline;'>2</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> Fold02    35 optimal           1.32     8     1 rsq     standard      0.845 
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> Fold03    35 optimal           1.32     8     1 rmse    standard      0.066</span><span style='text-decoration: underline;'>1</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> Fold03    35 optimal           1.32     8     1 rsq     standard      0.842 
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> Fold04    35 optimal           1.32     8     1 rmse    standard      0.074</span><span style='text-decoration: underline;'>1</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> Fold04    35 optimal           1.32     8     1 rsq     standard      0.847 
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> Fold05    35 optimal           1.32     8     1 rmse    standard      0.096</span><span style='text-decoration: underline;'>4</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> Fold05    35 optimal           1.32     8     1 rsq     standard      0.731 
-#&gt; </span><span style='color: #949494;'># … with 190 more rows, and 1 more variable: .config &lt;chr&gt;</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> Fold01    35 optimal           1.32     8     1 rmse    standard      0.085<span style='text-decoration: underline;'>9</span>
+#&gt; <span style='color: #BCBCBC;'> 2</span> Fold01    35 optimal           1.32     8     1 rsq     standard      0.810 
+#&gt; <span style='color: #BCBCBC;'> 3</span> Fold02    35 optimal           1.32     8     1 rmse    standard      0.072<span style='text-decoration: underline;'>2</span>
+#&gt; <span style='color: #BCBCBC;'> 4</span> Fold02    35 optimal           1.32     8     1 rsq     standard      0.845 
+#&gt; <span style='color: #BCBCBC;'> 5</span> Fold03    35 optimal           1.32     8     1 rmse    standard      0.066<span style='text-decoration: underline;'>1</span>
+#&gt; <span style='color: #BCBCBC;'> 6</span> Fold03    35 optimal           1.32     8     1 rsq     standard      0.842 
+#&gt; <span style='color: #BCBCBC;'> 7</span> Fold04    35 optimal           1.32     8     1 rmse    standard      0.074<span style='text-decoration: underline;'>1</span>
+#&gt; <span style='color: #BCBCBC;'> 8</span> Fold04    35 optimal           1.32     8     1 rsq     standard      0.847 
+#&gt; <span style='color: #BCBCBC;'> 9</span> Fold05    35 optimal           1.32     8     1 rmse    standard      0.096<span style='text-decoration: underline;'>4</span>
+#&gt; <span style='color: #BCBCBC;'>10</span> Fold05    35 optimal           1.32     8     1 rsq     standard      0.731 
+#&gt; <span style='color: #949494;'># … with 190 more rows, and 1 more variable: .config &lt;chr&gt;</span></div><div class='input'>
 
 <span class='co'># ---------------------------------------------------------------------------</span>
 
@@ -324,49 +324,49 @@ summarize.</p>
 <span class='fu'><a href='tune_grid.html'>tune_grid</a></span><span class='op'>(</span><span class='va'>spline_rec</span>, resamples <span class='op'>=</span> <span class='va'>car_folds</span>, control <span class='op'>=</span> <span class='va'>ctrl</span>, grid <span class='op'>=</span> <span class='va'>grid</span><span class='op'>)</span>
 
 <span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 384 x 7</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 384 x 7</span>
 #&gt;    id      id2   .pred  .row    df   mpg .config             
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>               
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> Repeat1 Fold2  16.5     1     3    21 Preprocessor1_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> Repeat2 Fold1  19.0     1     3    21 Preprocessor1_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> Repeat3 Fold1  20.0     1     3    21 Preprocessor1_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> Repeat1 Fold2  15.1     1     4    21 Preprocessor2_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> Repeat2 Fold1  17.7     1     4    21 Preprocessor2_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> Repeat3 Fold1  20.1     1     4    21 Preprocessor2_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> Repeat1 Fold2  17.9     1     5    21 Preprocessor3_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> Repeat2 Fold1  18.3     1     5    21 Preprocessor3_Model1
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> Repeat3 Fold1  20.4     1     5    21 Preprocessor3_Model1
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> Repeat1 Fold2  15.1     1     6    21 Preprocessor4_Model1
-#&gt; </span><span style='color: #949494;'># … with 374 more rows</span><span></div><div class='input'><span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 128 x 5</span><span>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               
+#&gt; <span style='color: #BCBCBC;'> 1</span> Repeat1 Fold2  16.5     1     3    21 Preprocessor1_Model1
+#&gt; <span style='color: #BCBCBC;'> 2</span> Repeat2 Fold1  19.0     1     3    21 Preprocessor1_Model1
+#&gt; <span style='color: #BCBCBC;'> 3</span> Repeat3 Fold1  20.0     1     3    21 Preprocessor1_Model1
+#&gt; <span style='color: #BCBCBC;'> 4</span> Repeat1 Fold2  15.1     1     4    21 Preprocessor2_Model1
+#&gt; <span style='color: #BCBCBC;'> 5</span> Repeat2 Fold1  17.7     1     4    21 Preprocessor2_Model1
+#&gt; <span style='color: #BCBCBC;'> 6</span> Repeat3 Fold1  20.1     1     4    21 Preprocessor2_Model1
+#&gt; <span style='color: #BCBCBC;'> 7</span> Repeat1 Fold2  17.9     1     5    21 Preprocessor3_Model1
+#&gt; <span style='color: #BCBCBC;'> 8</span> Repeat2 Fold1  18.3     1     5    21 Preprocessor3_Model1
+#&gt; <span style='color: #BCBCBC;'> 9</span> Repeat3 Fold1  20.4     1     5    21 Preprocessor3_Model1
+#&gt; <span style='color: #BCBCBC;'>10</span> Repeat1 Fold2  15.1     1     6    21 Preprocessor4_Model1
+#&gt; <span style='color: #949494;'># … with 374 more rows</span></div><div class='input'><span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 128 x 5</span>
 #&gt;     .row    df   mpg .config              .pred
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>     1     3  21   Preprocessor1_Model1  18.5
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>     1     4  21   Preprocessor2_Model1  17.6
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>     1     5  21   Preprocessor3_Model1  18.9
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>     1     6  21   Preprocessor4_Model1  16.7
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>     2     3  21   Preprocessor1_Model1  19.4
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>     2     4  21   Preprocessor2_Model1  19.0
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>     2     5  21   Preprocessor3_Model1  18.7
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>     2     6  21   Preprocessor4_Model1  16.4
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>     3     3  22.8 Preprocessor1_Model1  31.8
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>     3     4  22.8 Preprocessor2_Model1  23.8
-#&gt; </span><span style='color: #949494;'># … with 118 more rows</span><span></div><div class='input'><span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>grid</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 32 x 5</span><span>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     1     3  21   Preprocessor1_Model1  18.5
+#&gt; <span style='color: #BCBCBC;'> 2</span>     1     4  21   Preprocessor2_Model1  17.6
+#&gt; <span style='color: #BCBCBC;'> 3</span>     1     5  21   Preprocessor3_Model1  18.9
+#&gt; <span style='color: #BCBCBC;'> 4</span>     1     6  21   Preprocessor4_Model1  16.7
+#&gt; <span style='color: #BCBCBC;'> 5</span>     2     3  21   Preprocessor1_Model1  19.4
+#&gt; <span style='color: #BCBCBC;'> 6</span>     2     4  21   Preprocessor2_Model1  19.0
+#&gt; <span style='color: #BCBCBC;'> 7</span>     2     5  21   Preprocessor3_Model1  18.7
+#&gt; <span style='color: #BCBCBC;'> 8</span>     2     6  21   Preprocessor4_Model1  16.4
+#&gt; <span style='color: #BCBCBC;'> 9</span>     3     3  22.8 Preprocessor1_Model1  31.8
+#&gt; <span style='color: #BCBCBC;'>10</span>     3     4  22.8 Preprocessor2_Model1  23.8
+#&gt; <span style='color: #949494;'># … with 118 more rows</span></div><div class='input'><span class='fu'>collect_predictions</span><span class='op'>(</span><span class='va'>resampled</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>grid</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/arrange.html'>arrange</a></span><span class='op'>(</span><span class='va'>.row</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 32 x 5</span>
 #&gt;     .row    df   mpg .config              .pred
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>     1     3  21   Preprocessor1_Model1  18.5
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>     2     3  21   Preprocessor1_Model1  19.4
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>     3     3  22.8 Preprocessor1_Model1  31.8
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>     4     3  21.4 Preprocessor1_Model1  20.2
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>     5     3  18.7 Preprocessor1_Model1  18.4
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>     6     3  18.1 Preprocessor1_Model1  20.6
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>     7     3  14.3 Preprocessor1_Model1  13.5
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>     8     3  24.4 Preprocessor1_Model1  19.2
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>     9     3  22.8 Preprocessor1_Model1  34.8
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>    10     3  19.2 Preprocessor1_Model1  16.6
-#&gt; </span><span style='color: #949494;'># … with 22 more rows</span><span></div><div class='input'><span class='co'># }</span>
-</div></span></pre>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     1     3  21   Preprocessor1_Model1  18.5
+#&gt; <span style='color: #BCBCBC;'> 2</span>     2     3  21   Preprocessor1_Model1  19.4
+#&gt; <span style='color: #BCBCBC;'> 3</span>     3     3  22.8 Preprocessor1_Model1  31.8
+#&gt; <span style='color: #BCBCBC;'> 4</span>     4     3  21.4 Preprocessor1_Model1  20.2
+#&gt; <span style='color: #BCBCBC;'> 5</span>     5     3  18.7 Preprocessor1_Model1  18.4
+#&gt; <span style='color: #BCBCBC;'> 6</span>     6     3  18.1 Preprocessor1_Model1  20.6
+#&gt; <span style='color: #BCBCBC;'> 7</span>     7     3  14.3 Preprocessor1_Model1  13.5
+#&gt; <span style='color: #BCBCBC;'> 8</span>     8     3  24.4 Preprocessor1_Model1  19.2
+#&gt; <span style='color: #BCBCBC;'> 9</span>     9     3  22.8 Preprocessor1_Model1  34.8
+#&gt; <span style='color: #BCBCBC;'>10</span>    10     3  19.2 Preprocessor1_Model1  16.6
+#&gt; <span style='color: #949494;'># … with 22 more rows</span></div><div class='input'><span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -95,7 +95,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
         </div>
       </div>
     </div>
@@ -259,35 +259,35 @@ using some <code>rsample</code> functions on them will cause issues.</p>
 <span class='va'>ames_grid_search</span>
 </div><div class='output co'>#&gt; # Tuning results
 #&gt; # 10-fold cross-validation using stratification 
-#&gt; <span style='color: #949494;'># A tibble: 10 x 4</span><span>
-#&gt;    splits           id     .metrics              .notes              
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>              
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> </span><span style='color: #949494;'>&lt;split [1978/0]&gt;</span><span> Fold01 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold02 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold03 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold04 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold05 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> </span><span style='color: #949494;'>&lt;split [1979/1]&gt;</span><span> Fold06 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #949494;'>&lt;split [1979/1]&gt;</span><span> Fold07 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold08 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold09 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> </span><span style='color: #949494;'>&lt;split [1981/0]&gt;</span><span> Fold10 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span></div><div class='input'><span class='va'>ames_iter_search</span>
+#&gt; <span style='color: #949494;'># A tibble: 10 x 4</span>
+#&gt;    splits           id     .metrics          .notes          
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>          
+#&gt; <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></div><div class='input'><span class='va'>ames_iter_search</span>
 </div><div class='output co'>#&gt; # Tuning results
 #&gt; # 10-fold cross-validation using stratification 
-#&gt; </span><span style='color: #949494;'># A tibble: 110 x 5</span><span>
-#&gt;    splits           id     .metrics              .notes               .iter
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>           </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>                </span><span style='color: #949494;font-style: italic;'>&lt;list&gt;</span><span>               </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> </span><span style='color: #949494;'>&lt;split [1978/0]&gt;</span><span> Fold01 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold02 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold03 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold04 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold05 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> </span><span style='color: #949494;'>&lt;split [1979/1]&gt;</span><span> Fold06 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> </span><span style='color: #949494;'>&lt;split [1979/1]&gt;</span><span> Fold07 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold08 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> </span><span style='color: #949494;'>&lt;split [1979/0]&gt;</span><span> Fold09 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> </span><span style='color: #949494;'>&lt;split [1981/0]&gt;</span><span> Fold10 </span><span style='color: #949494;'>&lt;tibble[,9] [20 × 9]&gt;</span><span> </span><span style='color: #949494;'>&lt;tibble[,1] [0 × 1]&gt;</span><span>     0
-#&gt; </span><span style='color: #949494;'># … with 100 more rows</span><span></div></span></pre>
+#&gt; <span style='color: #949494;'># A tibble: 110 x 5</span>
+#&gt;    splits           id     .metrics          .notes           .iter
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
+#&gt; <span style='color: #949494;'># … with 100 more rows</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

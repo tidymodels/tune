@@ -96,7 +96,7 @@ update objects with those values." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+          <span class="version version-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
         </div>
       </div>
     </div>
@@ -206,10 +206,10 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 
 <span class='va'>lowest_rmse</span> <span class='op'>&lt;-</span> <span class='fu'><a href='show_best.html'>select_best</a></span><span class='op'>(</span><span class='va'>ames_grid_search</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span>
 <span class='va'>lowest_rmse</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 6</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 6</span>
 #&gt;       K weight_func dist_power   lon   lat .config              
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>                
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>    33 triweight        0.511    10     3 Preprocessor10_Model1</div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                
+#&gt; <span style='color: #BCBCBC;'>1</span>    33 triweight        0.511    10     3 Preprocessor10_Model1</div><div class='input'>
 <span class='va'>knn_model</span>
 </div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (regression)
 #&gt; 
@@ -229,7 +229,7 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></td>
 #&gt; 
 #&gt; Computational engine: kknn 
 #&gt; </div><div class='input'><span class='co'># }</span>
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
