@@ -20,7 +20,7 @@
 #'
 #' pca_rec <-
 #'   recipe(mpg ~ ., data = mtcars) %>%
-#'   step_knnimpute(all_predictors(), neighbors = tune()) %>%
+#'   step_impute_knn(all_predictors(), neighbors = tune()) %>%
 #'   step_pca(all_predictors(), num_comp = tune())
 #'
 #' pca_grid <-
