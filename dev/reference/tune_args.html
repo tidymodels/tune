@@ -97,7 +97,7 @@ are actually tunable." />
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.5.9001</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9000</span>
         </div>
       </div>
     </div>
@@ -220,11 +220,10 @@ the <code>id</code> field reverts to the name of the parameters.</p>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span>
 
 <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_impute_knn.html'>step_knnimpute</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_impute_knn.html'>step_impute_knn</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_pca.html'>step_pca</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, num_comp <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
   <span class='fu'>tune_args</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: `step_knnimpute()` was deprecated in recipes 0.1.16.</span>
-#&gt; <span class='warning'>Please use `step_impute_knn()` instead.</span></div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 x 6</span>
 #&gt;   name      tunable id        source component       component_id    
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>           
 #&gt; <span style='color: #BCBCBC;'>1</span> neighbors TRUE    neighbors recipe step_impute_knn impute_knn_4Psoc
