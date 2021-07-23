@@ -1,6 +1,6 @@
 # tune (development version)
 
-* Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (#396).
+* Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (#384, #396).
 
 # tune 0.1.6
 
