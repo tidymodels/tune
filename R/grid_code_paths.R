@@ -2,8 +2,6 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
-  tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
-
   packages <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
@@ -29,6 +27,12 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
+        # Extract internal function from tune namespace
+        tune_grid_loop_iter_safely <- utils::getFromNamespace(
+          x = "tune_grid_loop_iter_safely",
+          ns = "tune"
+        )
+
         tune_grid_loop_iter_safely(
           iteration = iteration,
           resamples = resamples,
@@ -56,6 +60,12 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           .errorhandling = "pass",
           .combine = iter_combine
         ) %op% {
+          # Extract internal function from tune namespace
+          tune_grid_loop_iter_safely <- utils::getFromNamespace(
+            x = "tune_grid_loop_iter_safely",
+            ns = "tune"
+          )
+
           grid_info_row <- vctrs::vec_slice(grid_info, row)
 
           tune_grid_loop_iter_safely(
@@ -337,21 +347,16 @@ tune_grid_loop_iter <- function(iteration,
 
 # ------------------------------------------------------------------------------
 
-super_safely_iterate <- function(fn) {
-  purrr::partial(.f = super_safely_iterate_impl, fn = fn)
-}
+tune_grid_loop_iter_safely <- function(iteration,
+                                       resamples,
+                                       grid_info,
+                                       workflow,
+                                       metrics,
+                                       control,
+                                       seed) {
+  tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
-super_safely_iterate_impl <- function(fn,
-                                      iteration,
-                                      resamples,
-                                      grid_info,
-                                      workflow,
-                                      metrics,
-                                      control,
-                                      seed) {
-  safely_iterate <- super_safely(fn)
-
-  result <- safely_iterate(
+  result <- tune_grid_loop_iter_wrapper(
     iteration,
     resamples,
     grid_info,

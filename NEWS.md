@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (#396).
+
 # tune 0.1.6
 
 * When using `load_pkgs()`, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user's previous value (#389). 
