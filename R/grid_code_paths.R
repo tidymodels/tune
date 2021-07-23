@@ -12,6 +12,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   n_grid_info <- nrow(grid_info)
   rows <- seq_len(n_grid_info)
 
+  splits <- resamples$splits
+
   parallel_over <- control$parallel_over
   parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
 
@@ -22,7 +24,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 
     suppressPackageStartupMessages(
       results <- foreach::foreach(
-        iteration = iterations,
+        split = splits,
         seed = seeds,
         .packages = packages,
         .errorhandling = "pass"
@@ -34,8 +36,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         )
 
         tune_grid_loop_iter_safely(
-          iteration = iteration,
-          resamples = resamples,
+          split = split,
           grid_info = grid_info,
           workflow = workflow,
           metrics = metrics,
@@ -50,6 +51,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         iteration = iterations,
+        split = splits,
         .packages = packages,
         .errorhandling = "pass"
       ) %:%
@@ -69,8 +71,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           grid_info_row <- vctrs::vec_slice(grid_info, row)
 
           tune_grid_loop_iter_safely(
-            iteration = iteration,
-            resamples = resamples,
+            split = split,
             grid_info = grid_info_row,
             workflow = workflow,
             metrics = metrics,
@@ -123,8 +124,7 @@ iter_combine <- function(...) {
 
 # ------------------------------------------------------------------------------
 
-tune_grid_loop_iter <- function(iteration,
-                                resamples,
+tune_grid_loop_iter <- function(split,
                                 grid_info,
                                 workflow,
                                 metrics,
@@ -181,7 +181,6 @@ tune_grid_loop_iter <- function(iteration,
     grid_info <- tidyr::nest(grid_info, !!cols)
   }
 
-  split <- resamples$splits[[iteration]]
   training <- rsample::analysis(split)
 
   # ----------------------------------------------------------------------------
@@ -347,8 +346,7 @@ tune_grid_loop_iter <- function(iteration,
 
 # ------------------------------------------------------------------------------
 
-tune_grid_loop_iter_safely <- function(iteration,
-                                       resamples,
+tune_grid_loop_iter_safely <- function(split,
                                        grid_info,
                                        workflow,
                                        metrics,
@@ -357,8 +355,7 @@ tune_grid_loop_iter_safely <- function(iteration,
   tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
   result <- tune_grid_loop_iter_wrapper(
-    iteration,
-    resamples,
+    split,
     grid_info,
     workflow,
     metrics,
@@ -385,8 +382,6 @@ tune_grid_loop_iter_safely <- function(iteration,
   }
 
   problems <- list(res = res, signals = warnings)
-
-  split <- resamples$splits[[iteration]]
 
   notes <- log_problems(notes, control, split, "internal", problems)
 
