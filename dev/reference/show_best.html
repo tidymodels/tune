@@ -230,7 +230,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"example_ames_knn"</span><span class='op'>)</span>
 
 <span class='fu'>show_best</span><span class='op'>(</span><span class='va'>ames_iter_search</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 x 12</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5 × 12</span>
 #&gt;       K weight_func dist_power   lon   lat .metric .estimator   mean     n
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
 #&gt; <span style='color: #BCBCBC;'>1</span>    33 triweight        0.511    10     3 rmse    standard   0.072<span style='text-decoration: underline;'>8</span>    10
@@ -240,7 +240,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 #&gt; <span style='color: #BCBCBC;'>5</span>    19 inv              0.117     1     4 rmse    standard   0.075<span style='text-decoration: underline;'>8</span>    10
 #&gt; <span style='color: #949494;'># … with 3 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></div><div class='input'>
 <span class='fu'>select_best</span><span class='op'>(</span><span class='va'>ames_iter_search</span>, metric <span class='op'>=</span> <span class='st'>"rsq"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 6</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span>
 #&gt;       K weight_func dist_power   lon   lat .config              
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>                
 #&gt; <span style='color: #BCBCBC;'>1</span>    33 triweight        0.511    10     3 Preprocessor10_Model1</div><div class='input'>
@@ -250,7 +250,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class='co'># (corresponding to the most complex model).</span>
 
 <span class='fu'>select_by_one_std_err</span><span class='op'>(</span><span class='va'>ames_grid_search</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>K</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 13</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 13</span>
 #&gt;       K weight_func dist_power   lon   lat .metric .estimator   mean     n
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
 #&gt; <span style='color: #BCBCBC;'>1</span>    33 triweight        0.511    10     3 rmse    standard   0.072<span style='text-decoration: underline;'>8</span>    10
@@ -259,7 +259,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class='co'># Now find the least complex model that has no more than a 5% loss of RMSE:</span>
 <span class='fu'>select_by_pct_loss</span><span class='op'>(</span><span class='va'>ames_grid_search</span>, metric <span class='op'>=</span> <span class='st'>"rmse"</span>,
                    limit <span class='op'>=</span> <span class='fl'>5</span>, <span class='fu'><a href='https://dplyr.tidyverse.org/reference/desc.html'>desc</a></span><span class='op'>(</span><span class='va'>K</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 x 13</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 1 × 13</span>
 #&gt;       K weight_func dist_power   lon   lat .metric .estimator   mean     n
 #&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
 #&gt; <span style='color: #BCBCBC;'>1</span>    33 triweight        0.511    10     3 rmse    standard   0.072<span style='text-decoration: underline;'>8</span>    10

@@ -165,7 +165,7 @@
   <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html">grid_regular</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">num_terms</span>, <span class="va">neighbors</span>, <span class="va">weight_func</span><span class="op">)</span>
 <span class="va">grid</span> </code></pre></div>
-<pre><code>## # A tibble: 350 x 3
+<pre><code>## # A tibble: 350 × 3
 ##    num_terms neighbors weight_func 
 ##        &lt;int&gt;     &lt;int&gt; &lt;chr&gt;       
 ##  1         1         1 biweight    
@@ -181,7 +181,7 @@
 ## # … with 340 more rows</code></pre>
 <p>To evaluate these 350 candidate models, we would have to recompute the same recipe 69 additional times (per resample). Since Isomap is expensive, this is really inefficient.</p>
 <p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:</p>
-<pre><code>## # A tibble: 5 x 2
+<pre><code>## # A tibble: 5 × 2
 ##   num_terms data             
 ##       &lt;int&gt; &lt;list&gt;           
 ## 1         1 &lt;tibble [70 × 2]&gt;
@@ -190,7 +190,7 @@
 ## 4         7 &lt;tibble [70 × 2]&gt;
 ## 5         9 &lt;tibble [70 × 2]&gt;</code></pre>
 <p>Only 5 recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with <code>num_terms = 1</code> is created, the model parameters are iteratively tuned:</p>
-<pre><code>## # A tibble: 70 x 2
+<pre><code>## # A tibble: 70 × 2
 ##    neighbors weight_func 
 ##        &lt;int&gt; &lt;chr&gt;       
 ##  1         1 biweight    
