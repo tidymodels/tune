@@ -71,7 +71,7 @@
 #'  predictors. In this case, the default tuning parameter object requires an
 #'  upper range. [dials::finalize()] can be used to derive the data-dependent
 #'  parameters. Otherwise, a parameter set can be created (via
-#'  [dials::parameters()] and the `dials` `update()` function can be used to
+#'  [dials::parameters()]) and the `dials` `update()` function can be used to
 #'  change the values. This updated parameter set can be passed to the function
 #'  via the `param_info` argument.
 #'

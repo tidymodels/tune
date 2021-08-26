@@ -64,7 +64,7 @@ ames_rec <-
   step_ns(Longitude, Latitude, deg_free = tune())
 ```
 
-The package can detect these values and optimize them. 
+The package can detect these parameters and optimize them. 
 
 However, based on the plot above, the potential _amount_ of non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude.  The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.  
 
@@ -80,7 +80,7 @@ ames_rec <-
   step_ns(Latitude,  deg_free = tune("lat df"))
 ```
 
-The function `dials::parameters()` that can detect and collect the parameters that have been flagged for tuning:
+The function `dials::parameters()` can detect and collect the parameters that have been flagged for tuning:
 
 ```{r p-set}
 parameters(ames_rec)
@@ -92,7 +92,7 @@ The `dials` package has default ranges for many parameters. The generic paramete
 deg_free()
 ```
 
-but there is a `dials` function that is more appropriate for splines:
+However, there is a `dials` function that is more appropriate for splines:
 
 ```{r sdf}
 spline_degree()
@@ -121,7 +121,7 @@ Grid search uses a pre-defined set of candidate parameters and evaluates these u
  
  * A resampling scheme that can be used to appropriately measure performance (which could be a simple validation set). 
 
-To make the grid, a data frame is needed with column names matching the "id" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
+To make the grid, a data frame is needed with column names matching the "identifier" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
 
 ```{r sf-grid}
 spline_grid <- grid_max_entropy(ames_param, size = 10)
@@ -148,7 +148,7 @@ lm_mod <- linear_reg() %>% set_engine("lm")
 
 No tuning parameters here. 
 
-As mentioned above, a resampling specification is also needed. The  Ames data set are large enough to use simple 10-fold cross-validation:
+As mentioned above, a resampling specification is also needed. The Ames data set is large enough to use simple 10-fold cross-validation:
 
 ```{r folds}
 set.seed(2453)
@@ -255,7 +255,7 @@ knn_param <-
   )
 ```
 
-This parameter collection can be passed to the grid functions via the `param_info` arguments. 
+This parameter collection can be used with the grid functions or with `tune_grid()` via the `param_info` argument. 
 
 Instead of using grid search, an iterative method called [Bayesian optimization](http://krasserm.github.io/2018/03/21/bayesian-optimization/) can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.
 
