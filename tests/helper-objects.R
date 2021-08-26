@@ -48,7 +48,7 @@ lm_model <-
 no_engine <- linear_reg()
 
 weird_annotation <-
-  boost_tree(mode = "regression", trees = tune("$^%&#!")) %>%
+  boost_tree(mode = "classification", trees = tune("$^%&#!")) %>%
   set_engine("C5.0", rules = TRUE, noGlobalPruning = TRUE)
 
 glmn <- linear_reg(penalty = tune(), mixture = tune()) %>% set_engine("glmnet")

@@ -146,7 +146,7 @@
 #'
 #' As an example, if there is interest in getting each model back, one could use:
 #' \preformatted{
-#'   extract = function (x) extract_model(x)
+#'   extract = function (x) extract_fit_parsnip(x)
 #' }
 #'
 #' Note that the function given to the `extract` argument is evaluated on

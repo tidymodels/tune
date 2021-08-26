@@ -41,10 +41,10 @@ outcome_names.recipe <- function(x, ...) {
 #' @rdname outcome_names
 outcome_names.workflow <- function(x, ...) {
   if (!is.null(x$fit$fit)) {
-    y_vals <- workflows::pull_workflow_mold(x)$outcomes
+    y_vals <- extract_mold(x)$outcomes
     res <- colnames(y_vals)
   } else {
-    preprocessor <- workflows::pull_workflow_preprocessor(x)
+    preprocessor <- extract_preprocessor(x)
     res <- outcome_names(preprocessor)
   }
   res

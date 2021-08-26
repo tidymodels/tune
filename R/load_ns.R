@@ -13,7 +13,7 @@ load_pkgs <- function(x, ...) {
 
 #' @export
 load_pkgs.character <- function(x, ...) {
-  load_namespace(x)
+  withr::with_preserve_seed(load_namespace(x))
 }
 
 #' @export
@@ -24,7 +24,7 @@ load_pkgs.model_spec <- function(x, ...) {
 
 #' @export
 load_pkgs.workflow <- function(x, ...) {
-  load_pkgs.model_spec(workflows::pull_workflow_spec(x))
+  load_pkgs.model_spec(extract_spec_parsnip(x))
 }
 
 full_load <- c("kknn", "earth")

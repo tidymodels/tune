@@ -2,8 +2,6 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   `%op%` <- get_operator(control$allow_par, workflow)
   `%:%` <- foreach::`%:%`
 
-  tune_grid_loop_iter_safely <- super_safely_iterate(tune_grid_loop_iter)
-
   packages <- c(control$pkgs, required_pkgs(workflow))
 
   grid_info <- compute_grid_info(workflow, grid)
@@ -14,22 +12,31 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   n_grid_info <- nrow(grid_info)
   rows <- seq_len(n_grid_info)
 
+  splits <- resamples$splits
+
   parallel_over <- control$parallel_over
   parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
+
+  rlang::local_options(doFuture.rng.onMisuse = "ignore")
 
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_resamples)
 
     suppressPackageStartupMessages(
       results <- foreach::foreach(
-        iteration = iterations,
+        split = splits,
         seed = seeds,
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
+        # Extract internal function from tune namespace
+        tune_grid_loop_iter_safely <- utils::getFromNamespace(
+          x = "tune_grid_loop_iter_safely",
+          ns = "tune"
+        )
+
         tune_grid_loop_iter_safely(
-          iteration = iteration,
-          resamples = resamples,
+          split = split,
           grid_info = grid_info,
           workflow = workflow,
           metrics = metrics,
@@ -44,6 +51,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         iteration = iterations,
+        split = splits,
         .packages = packages,
         .errorhandling = "pass"
       ) %:%
@@ -54,11 +62,16 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           .errorhandling = "pass",
           .combine = iter_combine
         ) %op% {
+          # Extract internal function from tune namespace
+          tune_grid_loop_iter_safely <- utils::getFromNamespace(
+            x = "tune_grid_loop_iter_safely",
+            ns = "tune"
+          )
+
           grid_info_row <- vctrs::vec_slice(grid_info, row)
 
           tune_grid_loop_iter_safely(
-            iteration = iteration,
-            resamples = resamples,
+            split = split,
             grid_info = grid_info_row,
             workflow = workflow,
             metrics = metrics,
@@ -111,8 +124,7 @@ iter_combine <- function(...) {
 
 # ------------------------------------------------------------------------------
 
-tune_grid_loop_iter <- function(iteration,
-                                resamples,
+tune_grid_loop_iter <- function(split,
                                 grid_info,
                                 workflow,
                                 metrics,
@@ -123,7 +135,11 @@ tune_grid_loop_iter <- function(iteration,
 
   # After package loading to avoid potential package RNG manipulation
   if (!is.null(seed)) {
+    # `assign()`-ing the random seed alters the `kind` type to L'Ecuyer-CMRG,
+    # so we have to ensure it is restored on exit
+    old_kind <- RNGkind()[[1]]
     assign(".Random.seed", seed, envir = globalenv())
+    on.exit(RNGkind(kind = old_kind), add = TRUE)
   }
 
   control_parsnip <- parsnip::control_parsnip(verbosity = 0, catch = TRUE)
@@ -165,7 +181,6 @@ tune_grid_loop_iter <- function(iteration,
     grid_info <- tidyr::nest(grid_info, !!cols)
   }
 
-  split <- resamples$splits[[iteration]]
   training <- rsample::analysis(split)
 
   # ----------------------------------------------------------------------------
@@ -331,23 +346,16 @@ tune_grid_loop_iter <- function(iteration,
 
 # ------------------------------------------------------------------------------
 
-super_safely_iterate <- function(fn) {
-  purrr::partial(.f = super_safely_iterate_impl, fn = fn)
-}
+tune_grid_loop_iter_safely <- function(split,
+                                       grid_info,
+                                       workflow,
+                                       metrics,
+                                       control,
+                                       seed) {
+  tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
-super_safely_iterate_impl <- function(fn,
-                                      iteration,
-                                      resamples,
-                                      grid_info,
-                                      workflow,
-                                      metrics,
-                                      control,
-                                      seed) {
-  safely_iterate <- super_safely(fn)
-
-  result <- safely_iterate(
-    iteration,
-    resamples,
+  result <- tune_grid_loop_iter_wrapper(
+    split,
     grid_info,
     workflow,
     metrics,
@@ -374,8 +382,6 @@ super_safely_iterate_impl <- function(fn,
   }
 
   problems <- list(res = res, signals = warnings)
-
-  split <- resamples$splits[[iteration]]
 
   notes <- log_problems(notes, control, split, "internal", problems)
 

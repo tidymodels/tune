@@ -271,7 +271,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     }
   }
 
-  mod <- workflows::pull_workflow_spec(x)
+  mod <- extract_spec_parsnip(x)
   check_installs(mod)
 
   invisible(NULL)
@@ -282,7 +282,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 #' @rdname empty_ellipses
 #' @param object A `workflow` object.
 check_metrics <- function(x, object) {
-  mode <- workflows::pull_workflow_spec(object)$mode
+  mode <- extract_spec_parsnip(object)$mode
 
   if (is.null(x)) {
     switch(

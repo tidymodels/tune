@@ -1,19 +1,19 @@
 Package: tune
-Title: Tidy Tuning Tools 
-Version: 0.1.5.9000
-Authors@R: c(
-      person(given = "Max",
+Title: Tidy Tuning Tools
+Version: 0.1.6.9000
+Authors@R: 
+    c(person(given = "Max",
              family = "Kuhn",
              role = c("aut", "cre"),
              email = "max@rstudio.com",
              comment = c(ORCID = "0000-0003-2402-136X")),
       person(given = "RStudio",
-             role = "cph")
-      )
-Description: The ability to tune models is important. 'tune' contains functions and
-    classes to be used in conjunction with other 'tidymodels' packages for 
-    finding reasonable values of hyper-parameters in models, pre-processing
-    methods, and post-processing steps. 
+             role = "cph"))
+Description: The ability to tune models is important. 'tune' contains
+    functions and classes to be used in conjunction with other
+    'tidymodels' packages for finding reasonable values of
+    hyper-parameters in models, pre-processing methods, and
+    post-processing steps.
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/tune, https://tune.tidymodels.org
 Depends:
@@ -23,10 +23,12 @@ Imports:
     dials (>= 0.0.9),
     dplyr (>= 1.0.0),
     foreach,
-    generics (>= 0.1.0),    
+    generics (>= 0.1.0),
     ggplot2,
     glue,
     GPfit,
+    hardhat (>= 0.1.6),
+    lifecycle (>= 1.0.0),
     parsnip (>= 0.1.4),
     purrr (>= 0.3.2),
     recipes (>= 0.1.15),
@@ -35,11 +37,11 @@ Imports:
     tibble (>= 3.1.0),
     tidyr,
     vctrs (>= 0.3.0),
-    workflows (>= 0.2.2),
+    withr,
+    workflows (>= 0.2.3),
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
-    hardhat (>= 0.1.5),
     kernlab,
     knitr,
     modeldata,
@@ -48,7 +50,7 @@ Suggests:
     testthat,
     xml2
 Encoding: UTF-8
+Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1.9001
-Language: en-US

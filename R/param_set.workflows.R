@@ -11,7 +11,7 @@
 #' library(recipes)
 #'
 #' recipe(mpg ~ ., data = mtcars) %>%
-#'   step_knnimpute(all_predictors(), neighbors = tune()) %>%
+#'   step_impute_knn(all_predictors(), neighbors = tune()) %>%
 #'   step_pca(all_predictors(), num_comp = tune()) %>%
 #'   dials::parameters()
 #'
@@ -40,11 +40,11 @@
 #' @keywords internal
 #' @export
 parameters.workflow <- function(x, ...) {
-  model <- workflows::pull_workflow_spec(x)
+  model <- extract_spec_parsnip(x)
   param_data <- dials::parameters(model)
 
   if (has_preprocessor_recipe(x)) {
-    recipe <- workflows::pull_workflow_preprocessor(x)
+    recipe <- extract_preprocessor(x)
     recipe_param_data <- dials::parameters(recipe)
 
     param_data <- dplyr::bind_rows(param_data, recipe_param_data)
