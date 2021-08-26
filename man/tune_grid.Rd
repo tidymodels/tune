@@ -109,7 +109,7 @@ data. For example, \code{mtry} in random forest models depends on the number of
 predictors. In this case, the default tuning parameter object requires an
 upper range. \code{\link[dials:finalize]{dials::finalize()}} can be used to derive the data-dependent
 parameters. Otherwise, a parameter set can be created (via
-\code{\link[dials:parameters]{dials::parameters()}} and the \code{dials} \code{update()} function can be used to
+\code{\link[dials:parameters]{dials::parameters()}}) and the \code{dials} \code{update()} function can be used to
 change the values. This updated parameter set can be passed to the function
 via the \code{param_info} argument.
 }
