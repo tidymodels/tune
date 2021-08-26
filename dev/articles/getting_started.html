@@ -154,7 +154,7 @@
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html">step_ns</a></span><span class="op">(</span><span class="va">Longitude</span>, <span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="../reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>The package can detect these values and optimize them.</p>
+<p>The package can detect these parameters and optimize them.</p>
 <p>However, based on the plot above, the potential <em>amount</em> of non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude. The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.</p>
 <p>To accomplish this, individual <code><a href="https://recipes.tidymodels.org/reference/step_ns.html">step_ns()</a></code> terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can’t tell the difference between the two <code>deg_free</code> parameters.</p>
 <p><code><a href="../reference/tune.html">tune()</a></code> has an option to provide a text annotation so that each tuning parameter has a unique identifier:</p>
@@ -164,7 +164,7 @@
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html">step_log</a></span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html">step_ns</a></span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="../reference/tune.html">tune</a></span><span class="op">(</span><span class="st">"long df"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html">step_ns</a></span><span class="op">(</span><span class="va">Latitude</span>,  deg_free <span class="op">=</span> <span class="fu"><a href="../reference/tune.html">tune</a></span><span class="op">(</span><span class="st">"lat df"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>The function <code><a href="https://dials.tidymodels.org/reference/parameters.html">dials::parameters()</a></code> that can detect and collect the parameters that have been flagged for tuning:</p>
+<p>The function <code><a href="https://dials.tidymodels.org/reference/parameters.html">dials::parameters()</a></code> can detect and collect the parameters that have been flagged for tuning:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html">parameters</a></span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span>
 <span class="co">#&gt; Collection of 2 parameters for tuning</span>
@@ -177,7 +177,7 @@
 <code class="sourceCode R"><span class="fu"><a href="https://dials.tidymodels.org/reference/deg_free.html">deg_free</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Degrees of Freedom (quantitative)</span>
 <span class="co">#&gt; Range: [1, 5]</span></code></pre></div>
-<p>but there is a <code>dials</code> function that is more appropriate for splines:</p>
+<p>However, there is a <code>dials</code> function that is more appropriate for splines:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html">spline_degree</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; Piecewise Polynomial Degree (quantitative)</span>
@@ -207,7 +207,7 @@
 <li><p>One or more performance metrics for quantifying how well the model works.</p></li>
 <li><p>A resampling scheme that can be used to appropriately measure performance (which could be a simple validation set).</p></li>
 </ul>
-<p>To make the grid, a data frame is needed with column names matching the “id” column above. There are several <code>dials</code> functions to created grids (named <code>grid_*</code>). For example, a space-filling design can be created by:</p>
+<p>To make the grid, a data frame is needed with column names matching the “identifier” column above. There are several <code>dials</code> functions to created grids (named <code>grid_*</code>). For example, a space-filling design can be created by:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">spline_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_max_entropy.html">grid_max_entropy</a></span><span class="op">(</span><span class="va">ames_param</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 <span class="va">spline_grid</span>
@@ -235,7 +235,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></code></pre></div>
 <p>No tuning parameters here.</p>
-<p>As mentioned above, a resampling specification is also needed. The Ames data set are large enough to use simple 10-fold cross-validation:</p>
+<p>As mentioned above, a resampling specification is also needed. The Ames data set is large enough to use simple 10-fold cross-validation:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2453</span><span class="op">)</span>
 <span class="va">cv_splits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html">vfold_cv</a></span><span class="op">(</span><span class="va">ames_train</span>, v <span class="op">=</span> <span class="fl">10</span>, strata <span class="op">=</span> <span class="va">Sale_Price</span><span class="op">)</span></code></pre></div>
@@ -366,7 +366,7 @@
     neighbors <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/neighbors.html">neighbors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,
     weight_func <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/weight_func.html">weight_func</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"rectangular"</span>, <span class="st">"inv"</span>, <span class="st">"gaussian"</span>, <span class="st">"triangular"</span><span class="op">)</span><span class="op">)</span>
   <span class="op">)</span></code></pre></div>
-<p>This parameter collection can be passed to the grid functions via the <code>param_info</code> arguments.</p>
+<p>This parameter collection can be used with the grid functions or with <code><a href="../reference/tune_grid.html">tune_grid()</a></code> via the <code>param_info</code> argument.</p>
 <p>Instead of using grid search, an iterative method called <a href="http://krasserm.github.io/2018/03/21/bayesian-optimization/">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
 <p>Although no grid is required, the process requires a few additional pieces of information:</p>
 <ul>
