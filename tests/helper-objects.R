@@ -6,10 +6,10 @@ library(workflows)
 library(dplyr)
 library(tidyr)
 library(kernlab)
-library(dials)
+library(modeldata)
 library(yardstick)
 
-data("Chicago", package = "dials")
+data("Chicago")
 
 # ------------------------------------------------------------------------------
 
