@@ -18,7 +18,7 @@ spline_rec <-
   step_date(date) %>%
   step_holiday(date) %>%
   step_rm(date, ends_with("away")) %>%
-  step_knnimpute(all_predictors(), neighbors = tune("imputation")) %>%
+  step_impute_knn(all_predictors(), neighbors = tune("imputation")) %>%
   step_other(all_nominal(), threshold = tune()) %>%
   step_dummy(all_nominal()) %>%
   step_normalize(all_predictors()) %>%

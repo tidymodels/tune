@@ -31,7 +31,7 @@ Imports:
     lifecycle (>= 1.0.0),
     parsnip (>= 0.1.4),
     purrr (>= 0.3.2),
-    recipes (>= 0.1.15),
+    recipes (>= 0.1.16),
     rlang (>= 0.4.0),
     rsample (>= 0.0.9),
     tibble (>= 3.1.0),
