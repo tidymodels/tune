@@ -134,6 +134,23 @@ c5_tree_engine_args <-
 c5_boost_engine_args <- c5_tree_engine_args
 c5_boost_engine_args$component <- "boost_tree"
 
+xgboost_engine_args <-
+  tibble::tibble(
+    name = c(
+      "alpha",
+      "lambda",
+      "scale_pos_weight"
+    ),
+    call_info = list(
+      list(pkg = "dials", fun = "penalty_L1"),
+      list(pkg = "dials", fun = "penalty_L2"),
+      list(pkg = "dials", fun = "scale_pos_weight")
+    ),
+    source = "model_spec",
+    component = "boost_tree",
+    component_id = "engine"
+  )
+
 ranger_engine_args <-
   tibble::tibble(
     name = c(
@@ -224,6 +241,7 @@ tunable.multinomial_reg <- function(x, ...) {
 tunable.boost_tree <- function(x, ...) {
   res <- NextMethod()
   if (x$engine == "xgboost") {
+    res <- add_engine_parameters(res, xgboost_engine_args)
     res$call_info[res$name == "sample_size"] <-
       list(list(pkg = "dials", fun = "sample_prop"))
   } else {

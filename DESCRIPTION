@@ -20,7 +20,7 @@ Depends:
     R (>= 2.10)
 Imports:
     cli (>= 2.0.0),
-    dials (>= 0.0.9),
+    dials (>= 0.0.10),
     dplyr (>= 1.0.0),
     foreach,
     generics (>= 0.1.0),
