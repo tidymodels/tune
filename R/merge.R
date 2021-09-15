@@ -77,6 +77,13 @@ merge.model_spec <- function(x, y, ...) {
   merger(x, y, ...)
 }
 
+#' @export
+#' @rdname merge.step
+merge.step <- function(x, y, ...) {
+  x[[names(y)]] <- setNames(y, NULL)
+  x
+}
+
 update_model <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset %>% dplyr::filter(id == i & source == "model_spec")
@@ -104,7 +111,8 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
       idx <- which(step_id == param_info$component_id)
       # check index
       # should use the contructor but maybe dangerous/difficult
-      object$steps[[ idx ]][[param_info$name]] <- grid[[i]]
+      par <- setNames(grid[[i]], param_info$name)
+      object$steps[[ idx ]] <- merge(object$steps[[ idx ]], par)
     }
   }
   object
