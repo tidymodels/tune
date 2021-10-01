@@ -23,7 +23,7 @@ Imports:
     dials (>= 0.0.10),
     dplyr (>= 1.0.0),
     foreach,
-    generics (>= 0.1.0),
+    generics (>= 0.1.0.9000),
     ggplot2,
     glue,
     GPfit,
@@ -54,3 +54,5 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Remotes: 
+    hfrick/generics@tune_args
