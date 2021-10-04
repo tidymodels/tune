@@ -119,21 +119,29 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- purrr::map_chr(wrn, ~ .x$message)
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
-    wrn_msg <- paste0(loc, ": ", wrn_msg)
 
-    notes <- c(notes, wrn_msg)
+    wrn_msg <- tibble::tibble(location = loc, type = "warning", note = wrn_msg)
 
-    wrn_msg <- glue::glue_collapse(wrn_msg, width = options()$width - 5)
+    notes <- dplyr::bind_rows(notes, wrn_msg)
+
+    wrn_msg <- glue::glue_collapse(
+      paste0(loc, ": ", wrn_msg$note),
+      width = options()$width - 5
+    )
     tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
     err_msg <- as.character(attr(res$res,"condition"))
     err_msg <- gsub("\n$", "", err_msg)
-    err_msg <- paste0(loc, ": ", err_msg)
 
-    notes <- c(notes, err_msg)
+    err_msg <- tibble::tibble(location = loc, type = "error", note = err_msg)
 
-    err_msg <- glue::glue_collapse(err_msg, width = options()$width - 5)
+    notes <- dplyr::bind_rows(notes, err_msg)
+
+    err_msg <- glue::glue_collapse(
+      paste0(loc, ": ", err_msg$note),
+      width = options()$width - 5
+    )
     tune_log(control2, split, err_msg, type = "danger")
   } else {
     if (!bad_only) {
