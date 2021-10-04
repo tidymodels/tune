@@ -1,5 +1,6 @@
 #' @export
 print.tune_results <- function(x, ...) {
+  cl <- match.call()
   if (inherits(x, "resample_results")) {
     cat("# Resampling results\n")
   } else {
@@ -16,6 +17,8 @@ print.tune_results <- function(x, ...) {
   }
 
   print(tibble::as_tibble(x), ...)
+
+  summarize_notes(x)
 }
 
 # `tune_results` have been changed to no longer inherit from `rset`,
@@ -41,10 +44,18 @@ print_compat_tune_results_label <- function(x) {
   cat("#", label, "\n")
 }
 
+
+has_notes <- function(x) {
+  if (is.null(x)) {
+    return(0L)
+  }
+  nrow(x)
+}
+
 summarize_notes <- function(x) {
-  num_notes <- sum(purrr::map_int(x$.notes, nrow))
+  num_notes <- sum(purrr::map_int(x$.notes, has_notes))
   if (num_notes == 0) {
-    return(invivible(NULL))
+    return(invisible(NULL))
   }
   notes <-
     x %>%
@@ -57,12 +68,16 @@ summarize_notes <- function(x) {
     tidyr::unnest(data) %>%
     dplyr::mutate(
       note = gsub("(Error:)", "", note),
-      note = substr(note, 1, max_note_nchar),
+      note = glue::glue_collapse(note, width = 0.85 * getOption("width")),
       note = gsub("\n", " ", note, fixed = TRUE),
-      pre = ifelse(type == "error", "Error(s) x", "Warning(s) x"),
+      pre = ifelse(type == "error", "  - Error(s) x", "  - Warning(s) x"),
       note = paste0(pre, n, ": ", note)
       )
-  by_type
+  cat("\nThere were issues with some computations:\n\n")
+  cat(by_type$note)
+  cat("\n\nUse `collect_notes(object)` for more information.\n")
+  invisible(NULL)
+
 }
 
 

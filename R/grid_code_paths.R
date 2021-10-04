@@ -151,7 +151,8 @@ tune_grid_loop_iter <- function(split,
   out_extracts <- NULL
   out_predictions <- NULL
   out_all_outcome_names <- list()
-  out_notes <- NULL
+  out_notes <-
+    tibble::tibble(location = character(0), type = character(0), note = character(0))
 
   params <- dials::parameters(workflow)
   model_params <- dplyr::filter(params, source == "model_spec")

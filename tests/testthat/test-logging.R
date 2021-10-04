@@ -51,54 +51,26 @@ test_that('tune_log', {
 
 test_that('log issues', {
 
-  note_1 <- "note 1"
+  note_1 <- tibble::tibble(location = "Roshar", type = "Alethi", note = "I'm a stick")
+  note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
+
   expect_message(
     expect_equal(
       tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
-      c("note 1", 'toledo: Error in log(\"a\"): non-numeric argument to mathematical function')
+      dplyr::bind_rows(note_1, note_2)
     ),
     "non-numeric argument to mathematical function"
   )
 
-  note_2 <- NULL
-  expect_silent(tune:::log_problems(note_2, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
+  expect_silent(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
 
-  note_3 <- NULL
+  note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
   expect_message(
     expect_equal(
-      tune:::log_problems(note_3, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
-      "toledo: NaNs produced"
+      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
+      dplyr::bind_rows(note_1, note_3)
     ),
-    'Fold01: toledo: NaNs produced'
-  )
-
-  note_4 <- NULL
-  expect_message(
-    expect_equal(
-      tune:::log_problems(note_4, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
-      "toledo: NaNs produced"
-    ),
-    '!', fixed = TRUE
-  )
-
-  expect_message(
-    expect_equal(
-      tune:::log_problems(note_4, ctrl_f, NULL, "toledo", res_1, bad_only = FALSE),
-      "toledo: Error in log(\"a\"): non-numeric argument to mathematical function"
-    ),
-    "(?!.*Fold)", perl = TRUE
-  )
-
-  expect_message(
-    expect_equal(
-      tune:::log_problems(note_4, ctrl_f, NULL, "toledo", res_3, bad_only = FALSE),
-      "toledo: NaNs produced"
-    ),
-    "(?!.*Fold)", perl = TRUE
-  )
-
-  expect_silent(
-    tune:::log_problems(note_4, ctrl_f, rs, "toledo", res_2, bad_only = FALSE)
+    'NaNs produced'
   )
 
 })
