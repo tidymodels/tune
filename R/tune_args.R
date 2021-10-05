@@ -1,9 +1,3 @@
-#' Determine arguments tagged for tuning
-#' @importFrom generics tune_args
-#' @keywords internal
-#' @name tune_args
-#' @export
-generics::tune_args
 
 #' @export
 #' @rdname tune_args

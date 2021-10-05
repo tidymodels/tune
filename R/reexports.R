@@ -15,6 +15,10 @@ generics::required_pkgs
 #' @export
 generics::tunable
 
+#' @importFrom generics tune_args
+#' @export
+generics::tune_args
+
 #' @importFrom generics min_grid
 #' @export
 generics::min_grid
