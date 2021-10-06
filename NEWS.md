@@ -2,7 +2,7 @@
 
 * The `.notes` column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes. 
 
-* `collect_notes()` can be used to gather any notes to a tibble. 
+* `collect_notes()` can be used to gather any notes to a tibble. (#363)
 
 * Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (#384, #396).
 
