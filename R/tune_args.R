@@ -1,63 +1,5 @@
-#' Determine arguments tagged for tuning
-#'
-#' [tune_args()] takes a model specification or a recipe and returns a tibble
-#'  of information on all possible tunable arguments and whether or not they
-#'  are actually tunable.
-#'
-#' The `source` column is determined differently depending on whether a `model_spec`
-#'  or a `recipe` is used (with additional detail on the type).
-#'
-#' The `id` field has any identifier that was passed to [tune()] (e.g.
-#'  `tune("some note")`). If not additional detail was used in that function,
-#'  the `id` field reverts to the name of the parameters.
-#'
-#' @param object A `model_spec`, `recipe`, `workflow` or other object.
-#' @param full A single logical. Should all possible tunable parameters be
-#' returned? If `FALSE`, then only the parameters that
-#' are actually tunable are returned.
-#'
-#' @param ... Not currently used.
-#'
-#' @return A tibble with columns for the parameter name (`name`), whether it
-#' contains _any_ tunable value (`tune`), the `id` for the parameter (`id`),
-#' and the information on where the parameter was located (`source`).
-#'
-#' @keywords internal
-#' @examples
-#' \donttest{
-#' library(recipes)
-#'
-#' recipe(mpg ~ ., data = mtcars) %>%
-#'   step_impute_knn(all_predictors(), neighbors = tune()) %>%
-#'   step_pca(all_predictors(), num_comp = tune()) %>%
-#'   tune_args()
-#'
-#' recipe(mpg ~ ., data = mtcars) %>%
-#'   step_ns(disp, deg_free = tune("disp df")) %>%
-#'   step_ns(wt, deg_free = tune("wt df")) %>%
-#'   tune_args()
-#'
-#' recipe(mpg ~ ., data = mtcars) %>%
-#'   step_normalize(all_predictors()) %>%
-#'   tune_args()
-#'
-#' library(parsnip)
-#'
-#' boost_tree(trees = tune(), min_n = tune()) %>%
-#'   set_engine("xgboost") %>%
-#'   tune_args()
-#'
-#' boost_tree(trees = tune(), min_n = tune()) %>%
-#'   set_engine("C5.0", rules = TRUE) %>%
-#'   tune_args()
-#' }
-#' @export
-tune_args <- function(object, ...) {
-  UseMethod("tune_args")
-}
 
 #' @export
-#' @rdname tune_args
 tune_args.model_spec <- function(object, full = FALSE, ...) {
 
   # use the model_spec top level class as the id
@@ -98,7 +40,6 @@ convert_args <- function(x) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.recipe <- function(object, full = FALSE, ...) {
 
   steps <- object$steps
@@ -120,7 +61,6 @@ tune_args.recipe <- function(object, full = FALSE, ...) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.step <- function(object, full = FALSE, ...) {
 
   step_id <- object$id
@@ -151,13 +91,11 @@ tune_args.step <- function(object, full = FALSE, ...) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.check <- tune_args.step
 
 # ------------------------------------------------------------------------------
 
 #' @export
-#' @rdname tune_args
 tune_args.workflow <- function(object, ...) {
   model <- extract_spec_parsnip(object)
 

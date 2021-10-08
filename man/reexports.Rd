@@ -7,6 +7,7 @@
 \alias{autoplot}
 \alias{required_pkgs}
 \alias{tunable}
+\alias{tune_args}
 \alias{min_grid}
 \alias{augment}
 \alias{.get_fingerprint}
@@ -26,7 +27,7 @@ below to see their documentation.
 \describe{
   \item{dials}{\code{\link[dials]{parameters}}}
 
-  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{min_grid}}, \code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}}
+  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{min_grid}}, \code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}, \code{\link[generics]{tune_args}}}
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
