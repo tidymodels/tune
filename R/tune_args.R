@@ -1,6 +1,5 @@
 
 #' @export
-#' @rdname tune_args
 tune_args.model_spec <- function(object, full = FALSE, ...) {
 
   # use the model_spec top level class as the id
@@ -41,7 +40,6 @@ convert_args <- function(x) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.recipe <- function(object, full = FALSE, ...) {
 
   steps <- object$steps
@@ -63,7 +61,6 @@ tune_args.recipe <- function(object, full = FALSE, ...) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.step <- function(object, full = FALSE, ...) {
 
   step_id <- object$id
@@ -94,13 +91,11 @@ tune_args.step <- function(object, full = FALSE, ...) {
 }
 
 #' @export
-#' @rdname tune_args
 tune_args.check <- tune_args.step
 
 # ------------------------------------------------------------------------------
 
 #' @export
-#' @rdname tune_args
 tune_args.workflow <- function(object, ...) {
   model <- extract_spec_parsnip(object)
 
