@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.1.6.9000
+Version: 0.1.6.9001
 Authors@R: 
     c(person(given = "Max",
              family = "Kuhn",
