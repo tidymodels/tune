@@ -42,8 +42,6 @@ reference:
     contents:
     - merge.recipe
     - parameters.workflow
-    - tunable
-    - tune_args
     - message_wrap
 
 navbar:
