@@ -245,7 +245,9 @@ tune_bayes_workflow <-
     }
 
     for (i in (1:iter) + score_card$overall_iter) {
-      .notes <- character(0)
+      .notes <-
+        tibble::tibble(location = character(0), type = character(0), note = character(0))
+
       log_best(control, i, score_card)
 
       check_time(start_time, control$time_limit)
@@ -265,7 +267,6 @@ tune_bayes_workflow <-
           "Gaussian process model",
           notes = .notes
         )
-
 
       save_gp_results(gp_mod, param_info, control, i, iter)
 

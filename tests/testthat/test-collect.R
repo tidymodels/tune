@@ -141,3 +141,47 @@ test_that("classification class and prob predictions, averaged", {
   expect_equal(.pred_Class2, res_subset$.pred_Class2)
   expect_equal(.pred_class,  res_subset$.pred_class)
 })
+
+# ------------------------------------------------------------------------------
+
+test_that("collecting notes", {
+  mtcars2 <- mtcars %>% mutate(wt2 = wt)
+  set.seed(1)
+  flds <- bootstraps(mtcars2, times = 2)
+
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
+
+  lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
+
+  expect_message(
+    lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds),
+    "rank-deficient"
+  )
+  expect_output(
+    print(lm_splines),
+    "There were issues with some computations"
+  )
+  nts <- collect_notes(lm_splines)
+  expect_true(all(nts$type == "warning"))
+  expect_true(all(grepl("rank", nts$note)))
+  expect_equal(names(nts), c("id", "location", "type", "note"))
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(1)
+  split <- initial_split(mtcars2)
+
+  expect_message(
+    lst <- last_fit(lin_mod, mpg ~ ., split),
+    "rank-deficient"
+  )
+  expect_output(
+    print(lst),
+    "There were issues with some computations"
+  )
+  nts <- collect_notes(lst)
+  expect_true(all(nts$type == "warning"))
+  expect_true(all(grepl("rank", nts$note)))
+  expect_equal(names(nts), c("location", "type", "note"))
+})

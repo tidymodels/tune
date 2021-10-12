@@ -156,7 +156,7 @@ test_that("failure in recipe is caught elegantly", {
   )
 
   notes <- result$.notes
-  note <- notes[[1]]$.notes
+  note <- notes[[1]]$note
 
   extract <- result$.extracts
   predictions <- result$.predictions
@@ -164,7 +164,7 @@ test_that("failure in recipe is caught elegantly", {
   expect_length(notes, 2L)
 
   # Known failure in the recipe
-  expect_true(any(grepl("preprocessor", note)))
+  expect_true(any(grepl("args", note)))
 
   expect_equivalent(extract, list(NULL, NULL))
   expect_equivalent(predictions, list(NULL, NULL))
@@ -189,7 +189,7 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
   )
 
   notes <- result$.notes
-  note <- notes[[1]]$.notes
+  note <- notes[[1]]$note
 
   extract <- result$.extracts
   predictions <- result$.predictions
@@ -197,7 +197,7 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
   expect_length(notes, 2L)
 
   # Known failure in the variables part
-  expect_true(any(grepl("preprocessor", note)))
+  expect_true(any(grepl("foobar", note)))
 
   expect_equivalent(extract, list(NULL, NULL))
   expect_equivalent(predictions, list(NULL, NULL))
@@ -220,7 +220,7 @@ test_that("classification models generate correct error message", {
   )
 
   notes <- result$.notes
-  note <- notes[[1]]$.notes
+  note <- notes[[1]]$note
 
   extract <- result$.extracts
   predictions <- result$.predictions

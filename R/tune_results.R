@@ -1,29 +1,6 @@
 #' @export
 print.tune_results <- function(x, ...) {
-  total_notes <- sum(purrr::map_int(x$.notes, nrow)) > 0
-  if (total_notes > 0) {
-    max_note_nchar <- 500
-    note_samples <-
-      x %>%
-      dplyr::select(.notes) %>%
-      tidyr::unnest(.notes) %>%
-      dplyr::mutate(
-        note = dplyr::row_number(),
-        .notes = substr(.notes, 1, max_note_nchar)
-      )
-
-    note_samples <-
-      note_samples %>%
-      dplyr::sample_n(min(3, nrow(note_samples))) %>%
-      dplyr::arrange(note) %>%
-      dplyr::pull(.notes)
-
-    print_notes <- glue::glue("This tuning result has notes. ",
-                              "Example notes on model fitting include:\n",
-                              glue::glue_collapse(note_samples, sep = "\n"))
-    rlang::warn(print_notes)
-  }
-
+  cl <- match.call()
   if (inherits(x, "resample_results")) {
     cat("# Resampling results\n")
   } else {
@@ -40,6 +17,8 @@ print.tune_results <- function(x, ...) {
   }
 
   print(tibble::as_tibble(x), ...)
+
+  summarize_notes(x)
 }
 
 # `tune_results` have been changed to no longer inherit from `rset`,
@@ -64,6 +43,43 @@ print_compat_tune_results_label <- function(x) {
 
   cat("#", label, "\n")
 }
+
+
+has_notes <- function(x) {
+  if (is.null(x)) {
+    return(0L)
+  }
+  nrow(x)
+}
+
+summarize_notes <- function(x) {
+  num_notes <- sum(purrr::map_int(x$.notes, has_notes))
+  if (num_notes == 0) {
+    return(invisible(NULL))
+  }
+  notes <-
+    x %>%
+    dplyr::select(dplyr::starts_with("id"), .notes) %>%
+    tidyr::unnest(cols = .notes)
+  by_type <-
+    notes %>%
+    dplyr::group_nest(type) %>%
+    dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) %>%
+    tidyr::unnest(data) %>%
+    dplyr::mutate(
+      note = gsub("(Error:)", "", note),
+      note = glue::glue_collapse(note, width = 0.85 * getOption("width")),
+      note = gsub("\n", " ", note, fixed = TRUE),
+      pre = ifelse(type == "error", "  - Error(s) x", "  - Warning(s) x"),
+      note = paste0(pre, n, ": ", note)
+      )
+  cat("\nThere were issues with some computations:\n\n")
+  cat(by_type$note)
+  cat("\n\nUse `collect_notes(object)` for more information.\n")
+  invisible(NULL)
+
+}
+
 
 # ------------------------------------------------------------------------------
 

@@ -253,7 +253,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   )
 
   notes <- cars_res$.notes
-  note <- notes[[1]]$.notes
+  note <- notes[[1]]$note
 
   extract <- cars_res$.extracts[[1]]
 
@@ -335,7 +335,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   )
 
   notes <- cars_res$.notes
-  note <- notes[[1]]$.notes
+  note <- notes[[1]]$note
 
   extract <- cars_res$.extracts[[1]]
   prediction <- cars_res$.predictions[[1]]

@@ -131,9 +131,7 @@ ensure_tibble <- function(x) {
 }
 
 pull_notes <- function(resamples, res, control) {
-  notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
-  notes <- purrr::map(notes, ensure_tibble)
-  resamples$.notes <- notes
+  resamples$.notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
   resamples
 }
 

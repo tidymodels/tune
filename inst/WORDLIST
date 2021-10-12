@@ -28,6 +28,7 @@ plaintext
 pre
 preprocessed
 preprocessor
+PSOCK
 reprex
 RBF
 RNGkind
@@ -41,4 +42,5 @@ unnest
 unsummarized
 Wadsworth
 wiggliness
+xgboost
 Yeo

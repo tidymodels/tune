@@ -42,6 +42,10 @@
 #'  determined from the summarized probability estimates (so that they match).
 #'  If only hard class predictions are in the results, then the mode is used to
 #'  summarize.
+#'
+#' [collect_notes()] returns a tibble with columns for the resampling
+#' indicators, the location (preprocessor, model, etc.), type (error or warning),
+#' and the notes.
 #' @examples
 #' \donttest{
 #' data("example_ames_knn")
@@ -407,4 +411,30 @@ estimate_tune_results <- function(x, ...) {
   }
   x
 }
+
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname collect_predictions
+collect_notes <- function(x, ...) {
+  UseMethod("collect_notes")
+}
+
+#' @export
+collect_notes.default <- function(x, ...) {
+  rlang::abort("No `collect_notes()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname collect_predictions
+collect_notes.tune_results <- function(x, ...) {
+  if (inherits(x, "last_fit")) {
+    return(x$.notes[[1]])
+  }
+
+  x %>%
+    dplyr::select(dplyr::starts_with("id"), dplyr::any_of(".iter"), .notes) %>%
+    tidyr::unnest(cols = .notes)
+}
+
 
