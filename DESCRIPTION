@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.1.6.9000
+Version: 0.1.6.9001
 Authors@R: 
     c(person(given = "Max",
              family = "Kuhn",
@@ -29,16 +29,16 @@ Imports:
     GPfit,
     hardhat (>= 0.1.6),
     lifecycle (>= 1.0.0),
-    parsnip (>= 0.1.4),
+    parsnip (>= 0.1.7.9000),
     purrr (>= 0.3.2),
-    recipes (>= 0.1.16),
+    recipes (>= 0.1.17.9000),
     rlang (>= 0.4.0),
     rsample (>= 0.0.9),
     tibble (>= 3.1.0),
     tidyr,
     vctrs (>= 0.3.0),
     withr,
-    workflows (>= 0.2.3),
+    workflows (>= 0.2.3.9000),
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
@@ -55,4 +55,6 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Remotes: 
-    r-lib/generics
+    tidymodels/recipes,
+    tidymodels/parsnip,
+    tidymodels/workflows
