@@ -51,7 +51,7 @@
         <a class="navbar-brand" href="../../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9001</span>
         </div>
       </div>
     </div>
@@ -153,7 +153,7 @@
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html">recipe</a></span><span class="op">(</span><span class="va">ridership</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Chicago</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_nominal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_isomap.html">step_isomap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_terms <span class="op">=</span> <span class="fu"><a href="../../reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## 3 packages are needed for this step and are not installed. (dimRed, RSpectra, RANN). Start a clean R session then run: install.packages(c("dimRed", "RSpectra", "RANN"))</code></pre>
+<pre><code>## 2 packages are needed for this step and are not installed. (RSpectra, RANN). Start a clean R session then run: install.packages(c("RSpectra", "RANN"))</code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">knn_mod</span> <span class="op">&lt;-</span> 
   <span class="fu"><a href="https://parsnip.tidymodels.org/reference/nearest_neighbor.html">nearest_neighbor</a></span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fu"><a href="../../reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span>, weight_func <span class="op">=</span> <span class="fu"><a href="../../reference/tune.html">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 

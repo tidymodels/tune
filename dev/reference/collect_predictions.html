@@ -95,7 +95,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9000</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9001</span>
         </div>
       </div>
     </div>
@@ -176,7 +176,12 @@
 <span class='fu'>collect_metrics</span><span class='op'>(</span><span class='va'>x</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for tune_race</span>
-<span class='fu'>collect_metrics</span><span class='op'>(</span><span class='va'>x</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+<span class='fu'>collect_metrics</span><span class='op'>(</span><span class='va'>x</span>, summarize <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='fu'>collect_notes</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for tune_results</span>
+<span class='fu'>collect_notes</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -234,6 +239,9 @@ add to one. If hard class predictions also exist in the data, then these are
 determined from the summarized probability estimates (so that they match).
 If only hard class predictions are in the results, then the mode is used to
 summarize.</p>
+<p><code>collect_notes()</code> returns a tibble with columns for the resampling
+indicators, the location (preprocessor, model, etc.), type (error or warning),
+and the notes.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
