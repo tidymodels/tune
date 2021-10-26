@@ -49,6 +49,7 @@ Suggests:
     spelling,
     testthat,
     xml2
+Config/Needs/website: dimRed, kknn, tidymodels, tidyverse/tidytemplate
 Encoding: UTF-8
 Language: en-US
 LazyData: true
