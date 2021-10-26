@@ -49,8 +49,15 @@ Suggests:
     spelling,
     testthat,
     xml2
-Config/Needs/website: dimRed, doParallel, kknn, tidymodels, tidymodels/recipes, 
-    tidymodels/parsnip, tidymodels/workflows, tidyverse/tidytemplate
+Config/Needs/website: 
+    dimRed, 
+    doParallel,
+    kknn,
+    tidymodels, 
+    tidymodels/parsnip, 
+    tidymodels/recipes, 
+    tidymodels/workflows, 
+    tidyverse/tidytemplate
 Encoding: UTF-8
 Language: en-US
 LazyData: true
