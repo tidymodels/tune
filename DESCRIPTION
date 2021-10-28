@@ -1,14 +1,11 @@
 Package: tune
 Title: Tidy Tuning Tools
 Version: 0.1.6.9001
-Authors@R: 
-    c(person(given = "Max",
-             family = "Kuhn",
-             role = c("aut", "cre"),
-             email = "max@rstudio.com",
-             comment = c(ORCID = "0000-0003-2402-136X")),
-      person(given = "RStudio",
-             role = "cph"))
+Authors@R: c(
+    person("Max", "Kuhn", , "max@rstudio.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-2402-136X")),
+    person("RStudio", role = "cph")
+  )
 Description: The ability to tune models is important. 'tune' contains
     functions and classes to be used in conjunction with other
     'tidymodels' packages for finding reasonable values of
@@ -49,12 +46,14 @@ Suggests:
     spelling,
     testthat,
     xml2
+Remotes: 
+    tidymodels/parsnip,
+    tidymodels/recipes,
+    tidymodels/workflows
+Config/Needs/website: 
+    tidyverse/tidytemplate
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Remotes: 
-    tidymodels/recipes,
-    tidymodels/parsnip,
-    tidymodels/workflows
