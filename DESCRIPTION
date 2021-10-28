@@ -50,7 +50,10 @@ Remotes:
     tidymodels/parsnip,
     tidymodels/recipes,
     tidymodels/workflows
-Config/Needs/website: 
+Config/Needs/website:
+    tidymodels,
+    kknn,
+    doParallel,
     tidyverse/tidytemplate
 Encoding: UTF-8
 Language: en-US
