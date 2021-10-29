@@ -51,6 +51,7 @@ Remotes:
     tidymodels/recipes,
     tidymodels/workflows
 Config/Needs/website:
+    pkgdown,
     tidymodels/tidymodels,
     kknn,
     doParallel,
