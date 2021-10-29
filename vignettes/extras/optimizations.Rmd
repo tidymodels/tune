@@ -38,9 +38,9 @@ The same feature does not exist for recipes though.
 
 When tuning a recipe and a model, it makes sense to avoid _recreating_ the recipe for each model. 
 
-For example, suppose that [Isomap multi-dimensional scaling](https://en.wikipedia.org/wiki/Isomap) is used to pre-process the data prior to tuning a K-nearest neighbor  regression:
+For example, suppose that [Isomap multi-dimensional scaling](https://en.wikipedia.org/wiki/Isomap) is used to pre-process the data prior to tuning a K-nearest neighbor regression:
 
-```{r isomap, message=FALSE}
+```{r isomap, results="hide"}
 data(Chicago)
 iso_rec <- 
   recipe(ridership ~ ., data = Chicago) %>% 
@@ -51,7 +51,11 @@ knn_mod <-
   nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
   set_engine("kknn") %>% 
   set_mode("regression")
+```
 
+With the following grid:
+
+```{r}
 grid <- 
   parameters(num_terms(c(1, 9)), neighbors(), weight_func()) %>% 
   grid_regular(levels = c(5, 10, 7)) %>% 
@@ -59,7 +63,7 @@ grid <-
 grid 
 ```
 
-To evaluate these `r nrow(grid)` candidate models, we would have to recompute the same recipe 69 additional times (per resample). Since Isomap is expensive, this is really inefficient. 
+To evaluate these `r nrow(grid)` candidate models, we would have to compute the same recipe 70 times _per resample_. Since Isomap is expensive, this is really inefficient. 
 
 `tune_grid()` determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:
 
