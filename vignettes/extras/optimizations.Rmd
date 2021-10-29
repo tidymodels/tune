@@ -26,7 +26,7 @@ library(tidymodels)
 methods("multi_predict")
 
 # There are arguments for the parameter(s) that can create multiple predictions.
-# For xgboost, `trees` are cheep to evaluate: 
+# For xgboost, `trees` are cheap to evaluate: 
 parsnip:::multi_predict._xgb.Booster %>% 
   formals() %>% 
   names()
@@ -40,7 +40,7 @@ When tuning a recipe and a model, it makes sense to avoid _recreating_ the recip
 
 For example, suppose that [Isomap multi-dimensional scaling](https://en.wikipedia.org/wiki/Isomap) is used to pre-process the data prior to tuning a K-nearest neighbor  regression:
 
-```{r isomap}
+```{r isomap, message=FALSE}
 data(Chicago)
 iso_rec <- 
   recipe(ridership ~ ., data = Chicago) %>% 

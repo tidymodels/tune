@@ -52,7 +52,7 @@ Remotes:
     tidymodels/workflows
 Config/Needs/website:
     pkgdown,
-    tidymodels/tidymodels,
+    tidymodels,
     kknn,
     doParallel,
     tidyverse/tidytemplate
