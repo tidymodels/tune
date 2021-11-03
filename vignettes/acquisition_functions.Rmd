@@ -6,6 +6,11 @@ vignette: >
 output:
   knitr:::html_vignette:
     toc: yes
+resource_files:
+  - figures/initial.svg
+  - figures/iter_1.svg
+  - figures/iter_20.svg  
+  - figures/trade_off_20.svg     
 ---
   
 ```{r setup, include=FALSE}
