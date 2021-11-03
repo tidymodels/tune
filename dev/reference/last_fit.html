@@ -215,51 +215,54 @@ would be to fit using the entire training set and verify performance using
 the test data.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rsample.tidymodels.org'>rsample</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>6735</span><span class='op'>)</span>
-<span class='va'>tr_te_split</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rsample.tidymodels.org/reference/initial_split.html'>initial_split</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span>
-
-<span class='va'>spline_rec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span>
-
-<span class='va'>lin_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"lm"</span><span class='op'>)</span>
-
-<span class='va'>spline_res</span> <span class='op'>&lt;-</span> <span class='fu'>last_fit</span><span class='op'>(</span><span class='va'>lin_mod</span>, <span class='va'>spline_rec</span>, split <span class='op'>=</span> <span class='va'>tr_te_split</span><span class='op'>)</span>
-<span class='va'>spline_res</span>
-</div><div class='output co'>#&gt; # Resampling results
-#&gt; # Manual resampling 
-#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span>
-#&gt;   splits         id               .metrics         .notes .predictions .workflow
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   
-#&gt; <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;split [24/8]&gt;</span> train/test split <span style='color: #949494;'>&lt;tibble [2 × 4]&gt;</span> <span style='color: #949494;'>&lt;tibb</span>… <span style='color: #949494;'>&lt;tibble [8 </span>… <span style='color: #949494;'>&lt;workflo</span>…</div><div class='input'>
-<span class='co'># test set results</span>
-<span class='va'>spline_res</span><span class='op'>$</span><span class='va'>.metrics</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 2 × 4</span>
-#&gt;   .metric .estimator .estimate .config             
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               
-#&gt; <span style='color: #BCBCBC;'>1</span> rmse    standard       3.80  Preprocessor1_Model1
-#&gt; <span style='color: #BCBCBC;'>2</span> rsq     standard       0.729 Preprocessor1_Model1</div><div class='input'>
-<span class='co'># or use a workflow</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/workflows'>workflows</a></span><span class='op'>)</span>
-<span class='va'>spline_wfl</span> <span class='op'>&lt;-</span>
- <span class='fu'><a href='https://workflows.tidymodels.org//reference/workflow.html'>workflow</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://workflows.tidymodels.org//reference/add_recipe.html'>add_recipe</a></span><span class='op'>(</span><span class='va'>spline_rec</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
- <span class='fu'><a href='https://workflows.tidymodels.org//reference/add_model.html'>add_model</a></span><span class='op'>(</span><span class='va'>lin_mod</span><span class='op'>)</span>
-
-<span class='fu'>last_fit</span><span class='op'>(</span><span class='va'>spline_wfl</span>, split <span class='op'>=</span> <span class='va'>tr_te_split</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # Resampling results
-#&gt; # Manual resampling 
-#&gt; <span style='color: #949494;'># A tibble: 1 × 6</span>
-#&gt;   splits         id               .metrics         .notes .predictions .workflow
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   
-#&gt; <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;split [24/8]&gt;</span> train/test split <span style='color: #949494;'>&lt;tibble [2 × 4]&gt;</span> <span style='color: #949494;'>&lt;tibb</span>… <span style='color: #949494;'>&lt;tibble [8 </span>… <span style='color: #949494;'>&lt;workflo</span>…</div><div class='input'><span class='co'># }</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://rsample.tidymodels.org'>rsample</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>6735</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>tr_te_split</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rsample.tidymodels.org/reference/initial_split.html'>initial_split</a></span><span class='op'>(</span><span class='va'>mtcars</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>spline_rec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>lin_mod</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://parsnip.tidymodels.org/reference/linear_reg.html'>linear_reg</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"lm"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>spline_res</span> <span class='op'>&lt;-</span> <span class='fu'>last_fit</span><span class='op'>(</span><span class='va'>lin_mod</span>, <span class='va'>spline_rec</span>, split <span class='op'>=</span> <span class='va'>tr_te_split</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>spline_res</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Resampling results</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Manual resampling </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 × 6</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   splits         id               .metrics         .notes .predictions .workflow</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;split [24/8]&gt;</span> train/test split <span style='color: #949494;'>&lt;tibble [2 × 4]&gt;</span> <span style='color: #949494;'>&lt;tibb</span>… <span style='color: #949494;'>&lt;tibble [8 </span>… <span style='color: #949494;'>&lt;workflo</span>…</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># test set results</span></span>
+<span class='r-in'><span class='va'>spline_res</span><span class='op'>$</span><span class='va'>.metrics</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 2 × 4</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   .metric .estimator .estimate .config             </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>          <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>               </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> rmse    standard       3.80  Preprocessor1_Model1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> rsq     standard       0.729 Preprocessor1_Model1</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># or use a workflow</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/workflows'>workflows</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>spline_wfl</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'> <span class='fu'><a href='https://workflows.tidymodels.org//reference/workflow.html'>workflow</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'> <span class='fu'><a href='https://workflows.tidymodels.org//reference/add_recipe.html'>add_recipe</a></span><span class='op'>(</span><span class='va'>spline_rec</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'> <span class='fu'><a href='https://workflows.tidymodels.org//reference/add_model.html'>add_model</a></span><span class='op'>(</span><span class='va'>lin_mod</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>last_fit</span><span class='op'>(</span><span class='va'>spline_wfl</span>, split <span class='op'>=</span> <span class='va'>tr_te_split</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Resampling results</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Manual resampling </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 1 × 6</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   splits         id               .metrics         .notes .predictions .workflow</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>         <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;split [24/8]&gt;</span> train/test split <span style='color: #949494;'>&lt;tibble [2 × 4]&gt;</span> <span style='color: #949494;'>&lt;tibb</span>… <span style='color: #949494;'>&lt;tibble [8 </span>… <span style='color: #949494;'>&lt;workflo</span>…</span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

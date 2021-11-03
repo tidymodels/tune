@@ -194,76 +194,81 @@ names (or their annotations) in the object.</p></td>
     <p>A tibble with a column <code>x</code> that has as many rows as were in <code>y</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tibble.tidyverse.org/'>tibble</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span>
-
-<span class='va'>pca_rec</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_impute_knn.html'>step_impute_knn</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_pca.html'>step_pca</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, num_comp <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>pca_grid</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
-    <span class='op'>~</span><span class='va'>neighbors</span>, <span class='op'>~</span><span class='va'>num_comp</span>,
-             <span class='fl'>1</span>,         <span class='fl'>1</span>,
-             <span class='fl'>5</span>,         <span class='fl'>1</span>,
-             <span class='fl'>1</span>,         <span class='fl'>2</span>,
-             <span class='fl'>5</span>,         <span class='fl'>2</span>
-  <span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>pca_rec</span>, <span class='va'>pca_grid</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 × 1</span>
-#&gt;   x       
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>  
-#&gt; <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>4</span> <span style='color: #949494;'>&lt;recipe&gt;</span></div><div class='input'>
-<span class='va'>spline_rec</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"disp df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>wt</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"wt df"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>spline_grid</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span>
-    <span class='op'>~</span><span class='st'>"disp df"</span>, <span class='op'>~</span> <span class='st'>"wt df"</span>,
-    <span class='fl'>3</span>,         <span class='fl'>3</span>,
-    <span class='fl'>5</span>,         <span class='fl'>3</span>,
-    <span class='fl'>3</span>,         <span class='fl'>5</span>,
-    <span class='fl'>5</span>,         <span class='fl'>5</span>
-  <span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>pca_rec</span>, <span class='va'>pca_grid</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 4 × 1</span>
-#&gt;   x       
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>  
-#&gt; <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;recipe&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>4</span> <span style='color: #949494;'>&lt;recipe&gt;</span></div><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dials.tidymodels.org'>dials</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hpc_data</span>, pacakge <span class='op'>=</span> <span class='st'>"modeldata"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘hpc_data’ not found</span></div><div class='output co'>#&gt; <span class='warning'>Warning: data set ‘modeldata’ not found</span></div><div class='input'>
-<span class='va'>xgb_mod</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span><span class='op'>(</span>trees <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"xgboost"</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>254</span><span class='op'>)</span>
-<span class='va'>xgb_grid</span> <span class='op'>&lt;-</span>
-  <span class='fu'>dials</span><span class='fu'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='va'>xgb_mod</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://dials.tidymodels.org/reference/finalize.html'>finalize</a></span><span class='op'>(</span><span class='va'>hpc_data</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://dials.tidymodels.org/reference/grid_max_entropy.html'>grid_max_entropy</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>xgb_mod</span>, <span class='va'>xgb_grid</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 3 × 1</span>
-#&gt;   x        
-#&gt;   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   
-#&gt; <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span></div><div class='input'><span class='co'># }</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tibble.tidyverse.org/'>tibble</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/recipes'>recipes</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>pca_rec</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_impute_knn.html'>step_impute_knn</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_pca.html'>step_pca</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span>, num_comp <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>pca_grid</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='op'>~</span><span class='va'>neighbors</span>, <span class='op'>~</span><span class='va'>num_comp</span>,</span>
+<span class='r-in'>             <span class='fl'>1</span>,         <span class='fl'>1</span>,</span>
+<span class='r-in'>             <span class='fl'>5</span>,         <span class='fl'>1</span>,</span>
+<span class='r-in'>             <span class='fl'>1</span>,         <span class='fl'>2</span>,</span>
+<span class='r-in'>             <span class='fl'>5</span>,         <span class='fl'>2</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>pca_rec</span>, <span class='va'>pca_grid</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 4 × 1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   x       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>4</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>spline_rec</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>mpg</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>mtcars</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>disp</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"disp df"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>wt</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"wt df"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>spline_grid</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://tibble.tidyverse.org/reference/tribble.html'>tribble</a></span><span class='op'>(</span></span>
+<span class='r-in'>    <span class='op'>~</span><span class='st'>"disp df"</span>, <span class='op'>~</span> <span class='st'>"wt df"</span>,</span>
+<span class='r-in'>    <span class='fl'>3</span>,         <span class='fl'>3</span>,</span>
+<span class='r-in'>    <span class='fl'>5</span>,         <span class='fl'>3</span>,</span>
+<span class='r-in'>    <span class='fl'>3</span>,         <span class='fl'>5</span>,</span>
+<span class='r-in'>    <span class='fl'>5</span>,         <span class='fl'>5</span></span>
+<span class='r-in'>  <span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>pca_rec</span>, <span class='va'>pca_grid</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 4 × 1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   x       </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>4</span> <span style='color: #949494;'>&lt;recipe&gt;</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://dials.tidymodels.org'>dials</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>hpc_data</span>, pacakge <span class='op'>=</span> <span class='st'>"modeldata"</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>data set ‘hpc_data’ not found</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>data set ‘modeldata’ not found</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>xgb_mod</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/boost_tree.html'>boost_tree</a></span><span class='op'>(</span>trees <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>, min_n <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"xgboost"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>254</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>xgb_grid</span> <span class='op'>&lt;-</span></span>
+<span class='r-in'>  <span class='fu'>dials</span><span class='fu'>::</span><span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='va'>xgb_mod</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://dials.tidymodels.org/reference/finalize.html'>finalize</a></span><span class='op'>(</span><span class='va'>hpc_data</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span class='r-in'>  <span class='fu'><a href='https://dials.tidymodels.org/reference/grid_max_entropy.html'>grid_max_entropy</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/merge.html'>merge</a></span><span class='op'>(</span><span class='va'>xgb_mod</span>, <span class='va'>xgb_grid</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 3 × 1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   x        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>   </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>1</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>2</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>3</span> <span style='color: #949494;'>&lt;spec[?]&gt;</span></span>
+<span class='r-in'><span class='co'># }</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

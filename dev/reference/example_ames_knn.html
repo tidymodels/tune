@@ -179,7 +179,7 @@ predictor set that included natural spline transformations of
 the <code>Longitude</code> and <code>Latitude</code> predictors. The code used to
 generate these examples was:</p><pre><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidymodels.tidymodels.org'>tidymodels</a></span><span class='op'>)</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>AmesHousing</span><span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/topepo/AmesHousing'>AmesHousing</a></span><span class='op'>)</span>
 
 <span class='co'># ------------------------------------------------------------------------------</span>
 
@@ -196,13 +196,13 @@ generate these examples was:</p><pre><span class='kw'><a href='https://rdrr.io/r
 <span class='co'># ------------------------------------------------------------------------------</span>
 
 <span class='va'>ames_rec</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>Sale_Price</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>ames_train</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>Sale_Price</span>, base <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_YeoJohnson.html'>step_YeoJohnson</a></span><span class='op'>(</span><span class='va'>Lot_Area</span>, <span class='va'>Gr_Liv_Area</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_other.html'>step_other</a></span><span class='op'>(</span><span class='va'>Neighborhood</span>, threshold <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>  <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_dummy.html'>step_dummy</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_nominal</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_zv.html'>step_zv</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>Longitude</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"lon"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/recipe.html'>recipe</a></span><span class='op'>(</span><span class='va'>Sale_Price</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>ames_train</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_log.html'>step_log</a></span><span class='op'>(</span><span class='va'>Sale_Price</span>, base <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_YeoJohnson.html'>step_YeoJohnson</a></span><span class='op'>(</span><span class='va'>Lot_Area</span>, <span class='va'>Gr_Liv_Area</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_other.html'>step_other</a></span><span class='op'>(</span><span class='va'>Neighborhood</span>, threshold <span class='op'>=</span> <span class='fl'>.1</span><span class='op'>)</span>  <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_dummy.html'>step_dummy</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_nominal</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_zv.html'>step_zv</a></span><span class='op'>(</span><span class='fu'><a href='https://recipes.tidymodels.org/reference/has_role.html'>all_predictors</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>Longitude</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"lon"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://recipes.tidymodels.org/reference/step_ns.html'>step_ns</a></span><span class='op'>(</span><span class='va'>Latitude</span>, deg_free <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"lat"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='va'>knn_model</span> <span class='op'>&lt;-</span>
@@ -211,21 +211,21 @@ generate these examples was:</p><pre><span class='kw'><a href='https://rdrr.io/r
     neighbors <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='st'>"K"</span><span class='op'>)</span>,
     weight_func <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>,
     dist_power <span class='op'>=</span> <span class='fu'><a href='tune.html'>tune</a></span><span class='op'>(</span><span class='op'>)</span>
-  <span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://parsnip.tidymodels.org/reference/set_engine.html'>set_engine</a></span><span class='op'>(</span><span class='st'>"kknn"</span><span class='op'>)</span>
 
 <span class='va'>ames_wflow</span> <span class='op'>&lt;-</span>
-  <span class='fu'>workflow</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>add_recipe</span><span class='op'>(</span><span class='va'>ames_rec</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'>workflow</span><span class='op'>(</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
+  <span class='fu'>add_recipe</span><span class='op'>(</span><span class='va'>ames_rec</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'>add_model</span><span class='op'>(</span><span class='va'>knn_model</span><span class='op'>)</span>
 
 <span class='va'>ames_set</span> <span class='op'>&lt;-</span>
-  <span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='va'>ames_wflow</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fu'><a href='https://dials.tidymodels.org/reference/parameters.html'>parameters</a></span><span class='op'>(</span><span class='va'>ames_wflow</span><span class='op'>)</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span>K <span class='op'>=</span> <span class='fu'>neighbors</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>7014</span><span class='op'>)</span>
 <span class='va'>ames_grid</span> <span class='op'>&lt;-</span>
-  <span class='va'>ames_set</span> <span class='op'>%&gt;%</span>
+  <span class='va'>ames_set</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span>
   <span class='fu'>grid_max_entropy</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='va'>ames_grid_search</span> <span class='op'>&lt;-</span>
@@ -254,40 +254,42 @@ This doesn't affect how we use these objects in examples but be advised that
 using some <code>rsample</code> functions on them will cause issues.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span>
-
-<span class='va'>ames_grid_search</span>
-</div><div class='output co'>#&gt; # Tuning results
-#&gt; # 10-fold cross-validation using stratification 
-#&gt; <span style='color: #949494;'># A tibble: 10 × 4</span>
-#&gt;    splits           id     .metrics          .notes          
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>          
-#&gt; <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>
-#&gt; <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></div><div class='input'><span class='va'>ames_iter_search</span>
-</div><div class='output co'>#&gt; # Tuning results
-#&gt; # 10-fold cross-validation using stratification 
-#&gt; <span style='color: #949494;'># A tibble: 110 × 5</span>
-#&gt;    splits           id     .metrics          .notes           .iter
-#&gt;    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0
-#&gt; <span style='color: #949494;'># … with 100 more rows</span></div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/tidymodels/tune'>tune</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>ames_grid_search</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Tuning results</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # 10-fold cross-validation using stratification </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 10 × 4</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    splits           id     .metrics          .notes          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>          </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span></span>
+<span class='r-in'><span class='va'>ames_iter_search</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # Tuning results</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> # 10-fold cross-validation using stratification </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 110 × 5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    splits           id     .metrics          .notes           .iter</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>            <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>           <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span> <span style='color: #949494;'>&lt;split [1978/0]&gt;</span> Fold01 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold02 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold03 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold04 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold05 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold06 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span> <span style='color: #949494;'>&lt;split [1979/1]&gt;</span> Fold07 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold08 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span> <span style='color: #949494;'>&lt;split [1979/0]&gt;</span> Fold09 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span> <span style='color: #949494;'>&lt;split [1981/0]&gt;</span> Fold10 <span style='color: #949494;'>&lt;tibble [20 × 9]&gt;</span> <span style='color: #949494;'>&lt;tibble [0 × 1]&gt;</span>     0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># … with 100 more rows</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

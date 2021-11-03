@@ -183,27 +183,31 @@ the user wants a note associated with the parameter.</p></td>
     <div class='dont-index'><p><code><a href='tune_grid.html'>tune_grid()</a></code>, <code><a href='tune_bayes.html'>tune_bayes()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tune()</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "call"</div><div class='input'><span class='fu'>tune</span><span class='op'>(</span><span class='st'>"your name here"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; tune("your name here")</div><div class='input'>
-<span class='co'># How `tune()` is used in practice:</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://parsnip.tidymodels.org/reference/nearest_neighbor.html'>nearest_neighbor</a></span><span class='op'>(</span>
-  neighbors <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='st'>"K"</span><span class='op'>)</span>,
-  weight_func <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span>,
-  dist_power <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; K-Nearest Neighbor Model Specification (unknown)
-#&gt; 
-#&gt; Main Arguments:
-#&gt;   neighbors = tune("K")
-#&gt;   weight_func = tune()
-#&gt;   dist_power = tune()
-#&gt; 
-#&gt; Computational engine: kknn 
-#&gt; </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tune()</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "call"</span>
+<span class='r-in'><span class='fu'>tune</span><span class='op'>(</span><span class='st'>"your name here"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> tune("your name here")</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># How `tune()` is used in practice:</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://parsnip.tidymodels.org'>parsnip</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://parsnip.tidymodels.org/reference/nearest_neighbor.html'>nearest_neighbor</a></span><span class='op'>(</span></span>
+<span class='r-in'>  neighbors <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='st'>"K"</span><span class='op'>)</span>,</span>
+<span class='r-in'>  weight_func <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span>,</span>
+<span class='r-in'>  dist_power <span class='op'>=</span> <span class='fu'>tune</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> K-Nearest Neighbor Model Specification (unknown)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Main Arguments:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   neighbors = tune("K")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   weight_func = tune()</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   dist_power = tune()</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Computational engine: kknn </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
