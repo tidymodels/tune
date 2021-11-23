@@ -1,6 +1,13 @@
 #' Control aspects of the grid search process
 #'
 #' @inheritParams control_bayes
+#' @param verbose A logical for logging results as they are generated. Despite
+#'   this argument, warnings and errors are always shown. When running in
+#'   parallel, almost all of the logging will not be seen. This is dependent on
+#'   the backend package and technology being used. If using a dark IDE
+#'   theme, some logging messages might be hard to see. If this is the case,
+#'   try setting the `tidymodels.dark` option with
+#'   `options(tidymodels.dark = TRUE)` to print lighter colors.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
 #'
