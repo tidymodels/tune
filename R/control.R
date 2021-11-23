@@ -72,12 +72,11 @@ control_resamples <- control_grid
 
 #' Control aspects of the Bayesian search process
 #'
-#' @param verbose A logical for logging results as they are generated. Despite
-#'   this argument, warnings and errors are always shown. However, when running
-#'   in parallel, almost all of the logging will not be seen. This is dependent
-#'   on the backend package and technology being used. If using a dark IDE
-#'   theme, some logging messages might be hard to see. If this is the case,
-#'   try setting the `tidymodels.dark` option with
+#' @param verbose A logical for logging results (other than warnings and errors,
+#'   which are always shown) as they are generated during training in a single
+#'   R process. When using most parallel backends, this argument typically will
+#'   not result in any logging. If using a dark IDE theme, some logging messages
+#'   might be hard to see; try setting the `tidymodels.dark` option with
 #'   `options(tidymodels.dark = TRUE)` to print lighter colors.
 #' @param no_improve The integer cutoff for the number of iterations without
 #'   better results.
