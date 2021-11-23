@@ -454,3 +454,53 @@ test_that('too few starting values', {
 
 })
 
+# ------------------------------------------------------------------------------
+
+test_that('missing performance values', {
+  data(ames, package = "modeldata")
+
+  mod <- decision_tree(cost_complexity = tune()) %>% set_mode("regression")
+
+  set.seed(1)
+  folds <- validation_split(ames, prop = .9)
+
+  expect_message(
+    expect_error({
+      set.seed(2)
+      res <-
+        mod %>%
+        tune_bayes(
+          Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+            Latitude + Longitude,
+          resamples = folds,
+          initial = 3,
+          metrics = metric_set(rsq),
+          param_info = parameters(cost_complexity(c(-2, 0)))
+        )
+
+    },
+    regexp = NA
+    ),
+    regexp = "removed before fitting the Gaussian"
+  )
+
+  expect_message(
+    expect_error({
+      set.seed(2)
+      res_fail <-
+        mod %>%
+        tune_bayes(
+          Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+            Latitude + Longitude,
+          resamples = folds,
+          initial = 5,
+          metrics = metric_set(rsq),
+          param_info = parameters(cost_complexity(c(0.5, 0)))
+        )
+    },
+    regexp = NA
+    ),
+    regexp = "Gaussian process model cannot be"
+  )
+
+})

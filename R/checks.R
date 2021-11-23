@@ -478,3 +478,54 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
+
+
+# Check the data going into the GP. If there are all missing values, fail. If some
+# are missing, remove them and send a warning. If all metrics are the same, fail.
+check_gp_data <- function(x) {
+  met <- x$.metric[[1]]
+
+  miss_y <- sum(is.na(x$mean))
+  if (miss_y > 0) {
+
+    if (miss_y == nrow(x)) {
+      msg <- cli::pluralize(
+        "All of the {met} estimatess where missing. The Gaussian process model cannot be fit to the data."
+      )
+      message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
+    } else {
+      msg <- cli::pluralize(
+        "For the {met} estimates, {miss_y} {?value was/values were} found and removed before fitting the Gaussian process model."
+      )
+      message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
+    }
+
+    x <- x[!is.na(x$mean),]
+  }
+
+  n_uni <- length(unique(x$mean))
+  if (n_uni == 1) {
+    msg <- glue::glue(
+    'All of the {met} values were identical. The Gaussian process model cannot
+     be fit to the data. Try expanding the range of the tuning parameters.'
+     )
+    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
+  }
+
+  x
+}
+
+# If the current GP failed, use a previous one if it exists
+check_gp_failure <- function(current, prev) {
+  if (inherits(current, "GP")) {
+    return(current)
+  }
+
+  # first model failed or all previous models failed
+  if (is.null(prev) || inherits(prev, "try-error")) {
+    rlang::abort("Gaussian process model was not fit.")
+  }
+
+  # return prev model
+  prev
+}

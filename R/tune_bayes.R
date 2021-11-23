@@ -244,6 +244,8 @@ tune_bayes_workflow <-
       message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
+    gp_mod <- NULL
+
     for (i in (1:iter) + score_card$overall_iter) {
       .notes <-
         tibble::tibble(location = character(0), type = character(0), note = character(0))
@@ -252,6 +254,7 @@ tune_bayes_workflow <-
 
       check_time(start_time, control$time_limit)
 
+      prev_gp_mod <- gp_mod
       set.seed(control$seed[1] + i)
       gp_mod <-
         catch_and_log(
@@ -267,6 +270,8 @@ tune_bayes_workflow <-
           "Gaussian process model",
           notes = .notes
         )
+
+      gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
 
       save_gp_results(gp_mod, param_info, control, i, iter)
 
@@ -414,14 +419,16 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
+
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
+    check_gp_data() %>%
     dplyr::select(dplyr::one_of(pset$id), mean)
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
-  if (nrow(x) <= ncol(x) + 1) {
+  if (nrow(x) <= ncol(x) + 1 & nrow(x) > 0) {
     msg <-
       paste(
         "The Gaussian process model is being fit using ", ncol(x),
@@ -442,7 +449,6 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 
   gp_fit
 }
-
 
 pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   pred_grid <-
