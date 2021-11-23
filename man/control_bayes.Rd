@@ -21,7 +21,9 @@ control_bayes(
 }
 \arguments{
 \item{verbose}{A logical for logging results as they are generated. Despite
-this argument, warnings and errors are always shown. If using a dark IDE
+this argument, warnings and errors are always shown. However, when running
+in parallel, almost all of the logging will not be seen. This is dependent
+on the backend package and technology being used. If using a dark IDE
 theme, some logging messages might be hard to see. If this is the case,
 try setting the \code{tidymodels.dark} option with
 \code{options(tidymodels.dark = TRUE)} to print lighter colors.}
