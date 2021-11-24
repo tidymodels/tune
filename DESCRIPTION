@@ -47,9 +47,9 @@ Suggests:
     testthat,
     xml2
 Remotes: 
-    tidymodels/parsnip@tunable,
+    tidymodels/parsnip,
     tidymodels/recipes,
-    tidymodels/workflows@tunable
+    tidymodels/workflows
 Config/Needs/website:
     pkgdown,
     tidymodels,
