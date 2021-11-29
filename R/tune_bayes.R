@@ -428,7 +428,7 @@ fit_gp <- function(dat, pset, metric, control, ...) {
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
-  if (nrow(x) <= ncol(x) + 1 & nrow(x) > 0) {
+  if (nrow(x) <= ncol(x) + 1 && nrow(x) > 0) {
     msg <-
       paste(
         "The Gaussian process model is being fit using ", ncol(x),

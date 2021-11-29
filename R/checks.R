@@ -490,7 +490,7 @@ check_gp_data <- function(x) {
 
     if (miss_y == nrow(x)) {
       msg <- cli::pluralize(
-        "All of the {met} estimatess where missing. The Gaussian process model cannot be fit to the data."
+        "All of the {met} estimates were missing. The Gaussian process model cannot be fit to the data."
       )
       message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
     } else {
