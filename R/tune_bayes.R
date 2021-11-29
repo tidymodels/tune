@@ -244,7 +244,7 @@ tune_bayes_workflow <-
       message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
-    gp_mod <- NULL
+    prev_gp_mod <- NULL
 
     for (i in (1:iter) + score_card$overall_iter) {
       .notes <-
@@ -254,7 +254,6 @@ tune_bayes_workflow <-
 
       check_time(start_time, control$time_limit)
 
-      prev_gp_mod <- gp_mod
       set.seed(control$seed[1] + i)
       gp_mod <-
         catch_and_log(
@@ -347,6 +346,7 @@ tune_bayes_workflow <-
         )
         break
       }
+      prev_gp_mod <- gp_mod
       check_time(start_time, control$time_limit)
     }
 

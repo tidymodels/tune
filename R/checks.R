@@ -485,7 +485,7 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
 check_gp_data <- function(x) {
   met <- x$.metric[[1]]
 
-  miss_y <- sum(is.na(x$mean))
+  miss_y <- sum(is.nan(x$mean))
   if (miss_y > 0) {
 
     if (miss_y == nrow(x)) {
@@ -495,7 +495,7 @@ check_gp_data <- function(x) {
       message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
     } else {
       msg <- cli::pluralize(
-        "For the {met} estimates, {miss_y} {?value was/values were} found and removed before fitting the Gaussian process model."
+        "For the {met} estimates, {miss_y} missing {?value was/values were} found and removed before fitting the Gaussian process model."
       )
       message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
     }
