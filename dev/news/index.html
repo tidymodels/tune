@@ -165,6 +165,7 @@
 <li><p><code><a href="../reference/collect_predictions.html">collect_notes()</a></code> can be used to gather any notes to a tibble. (<a href='https://github.com/tidymodels/tune/issues/363'>#363</a>)</p></li>
 <li><p>Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (<a href='https://github.com/tidymodels/tune/issues/384'>#384</a>, <a href='https://github.com/tidymodels/tune/issues/396'>#396</a>).</p></li>
 <li><p>The engine arguments for xgboost <code>alpha</code>, <code>lambda</code>, and <code>scale_pos_weight</code> are now tunable.</p></li>
+<li><p>When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (<a href='https://github.com/tidymodels/tune/issues/432'>#432</a>)</p></li>
 </ul>
 </div>
     <div id="tune-016" class="section level1">
