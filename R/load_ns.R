@@ -4,10 +4,11 @@
 #' processing since the different parallel backends handle the package
 #' environments differently.
 #' @param x A character vector of packages.
+#' @param infra Should base tidymodels packages be loaded as well?
 #' @return An invisible NULL.
 #' @keywords internal
 #' @export
-load_pkgs <- function(x, ...) {
+load_pkgs <- function(x, infra = TRUE, ...) {
   UseMethod("load_pkgs")
 }
 
@@ -17,14 +18,17 @@ load_pkgs.character <- function(x, ...) {
 }
 
 #' @export
-load_pkgs.model_spec <- function(x, ...) {
+load_pkgs.model_spec <- function(x, infra = TRUE, ...) {
   pkgs <- required_pkgs(x)
+  if (infra) {
+    pkgs <- c(infra_pkgs, pkgs)
+  }
   load_namespace(unique(pkgs))
 }
 
 #' @export
-load_pkgs.workflow <- function(x, ...) {
-  load_pkgs.model_spec(extract_spec_parsnip(x))
+load_pkgs.workflow <- function(x, infra = TRUE, ...) {
+  load_pkgs.model_spec(extract_spec_parsnip(x), infra = infra)
 }
 
 full_load <- c("kknn", "earth")
@@ -57,30 +61,7 @@ load_namespace <- function(x) {
   invisible(TRUE)
 }
 
-## -----------------------------------------------------------------------------
-
-#' Determine packages required by objects
-#'
-#' @param x An object.
-#' @return A character string.
-#' @keywords internal
-#' @rdname required_pkgs
-#' @export
-required_pkgs.model_spec <- function(x, infra = TRUE, ...) {
-  mod_name <- class(x)[1]
-  pkg_list <-
-    parsnip::get_from_env(paste0(mod_name, "_pkgs")) %>%
-    dplyr::filter(engine == x$engine) %>%
-    dplyr::pull(pkg)
-  res <- pkg_list[[1]]
-  if (infra) {
-    infra_pkgs <- c(
-      "tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr", "tibble",
-      "dials", "rsample", "workflows", "tidyr", "rlang", "vctrs"
-    )
-    res <- c(infra_pkgs, res)
-  }
-  res <- unique(res)
-  res <- res[length(res) != 0]
-  res
-}
+infra_pkgs <- c(
+  "tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr", "tibble",
+  "dials", "rsample", "workflows", "tidyr", "rlang", "vctrs"
+)

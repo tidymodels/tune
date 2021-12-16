@@ -4,10 +4,12 @@
 \alias{load_pkgs}
 \title{Quietly load package namespace}
 \usage{
-load_pkgs(x, ...)
+load_pkgs(x, infra = TRUE, ...)
 }
 \arguments{
 \item{x}{A character vector of packages.}
+
+\item{infra}{Should base tidymodels packages be loaded as well?}
 }
 \value{
 An invisible NULL.

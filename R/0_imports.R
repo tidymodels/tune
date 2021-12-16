@@ -13,7 +13,7 @@
 #' @importFrom yardstick rsq rmse accuracy roc_auc
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit
-#' @importFrom parsnip get_from_env
+#' @importFrom parsnip get_from_env required_pkgs
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
 #' @importFrom ggplot2 facet_grid geom_line aes_string aes_
