@@ -2,6 +2,7 @@ context("augment")
 
 library(parsnip)
 library(rsample)
+library(dials)
 
 data(two_class_dat, package = "modeldata")
 
