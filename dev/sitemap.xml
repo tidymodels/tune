@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://tune.tidymodels.org/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/CONTRIBUTING.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/articles/acquisition_functions.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/articles/extras/optimizations.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/articles/getting_started.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/authors.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/news/index.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/augment.tune_results.html</loc>
@@ -49,6 +79,9 @@
     <loc>https://tune.tidymodels.org/reference/fit_resamples.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/last_fit.html</loc>
   </url>
   <url>
@@ -76,9 +109,6 @@
     <loc>https://tune.tidymodels.org/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>https://tune.tidymodels.org/reference/required_pkgs.html</loc>
-  </url>
-  <url>
     <loc>https://tune.tidymodels.org/reference/show_best.html</loc>
   </url>
   <url>
@@ -92,14 +122,5 @@
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/tune_grid.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/acquisition_functions.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/extras/optimizations.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/getting_started.html</loc>
   </url>
 </urlset>
