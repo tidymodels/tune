@@ -7,14 +7,6 @@ load(test_path("test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 
-test_that('model package lookup', {
-  mod_obj <- extract_spec_parsnip(chi_wflow)
-  expect_equal(tune::required_pkgs(mod_obj, FALSE), "glmnet")
-})
-
-
-# ------------------------------------------------------------------------------
-
 test_that('determine foreach operator', {
   expect_equal(tune:::get_operator(object = chi_wflow), foreach::`%do%`)
   expect_equal(tune:::get_operator(FALSE, chi_wflow), foreach::`%do%`)
@@ -104,13 +96,6 @@ test_that('accessor functions', {
   attr(mt_knn_bo, "parameters") <- NULL
   expect_equal(.get_tune_parameters(mt_knn_bo), tibble::tibble())
 })
-
-test_that('required package lists', {
-  expect_equal(required_pkgs(lm_model, FALSE), "stats")
-  expect_equal(required_pkgs(chi_wflow, FALSE), "glmnet")
-})
-
-
 
 # ------------------------------------------------------------------------------
 
