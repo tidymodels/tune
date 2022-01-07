@@ -11,6 +11,10 @@ ggplot2::autoplot
 #' @export
 generics::required_pkgs
 
+#' @importFrom hardhat tune
+#' @export
+hardhat::tune
+
 #' @importFrom generics tunable
 #' @export
 generics::tunable
