@@ -47,7 +47,7 @@ Suggests:
     testthat,
     xml2
 Remotes: 
-    tidymodels/hardhat@add-tune,
+    tidymodels/hardhat,
     tidymodels/parsnip,
     tidymodels/recipes,
     tidymodels/workflows
