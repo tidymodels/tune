@@ -88,6 +88,7 @@
 <li><p>Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (<a href="https://github.com/tidymodels/tune/issues/384" class="external-link">#384</a>, <a href="https://github.com/tidymodels/tune/issues/396" class="external-link">#396</a>).</p></li>
 <li><p>The engine arguments for xgboost <code>alpha</code>, <code>lambda</code>, and <code>scale_pos_weight</code> are now tunable.</p></li>
 <li><p>When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (<a href="https://github.com/tidymodels/tune/issues/432" class="external-link">#432</a>)</p></li>
+<li><p>Moved <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code> from tune to hardhat (<a href="https://github.com/tidymodels/tune/issues/442" class="external-link">#442</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.6" id="tune-016">tune 0.1.6<small>2021-07-21</small><a class="anchor" aria-label="anchor" href="#tune-016"></a></h2>
@@ -101,7 +102,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.4" id="tune-014">tune 0.1.4<small>2021-04-20</small><a class="anchor" aria-label="anchor" href="#tune-014"></a></h2>
-<ul><li><p>Fixed an issue in <code><a href="../reference/finalize_model.html">finalize_recipe()</a></code> which failed during tuning of recipe steps that contain multiple <code><a href="../reference/tune.html">tune()</a></code> parameters in an single step.</p></li>
+<ul><li><p>Fixed an issue in <code><a href="../reference/finalize_model.html">finalize_recipe()</a></code> which failed during tuning of recipe steps that contain multiple <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code> parameters in an single step.</p></li>
 <li><p>Changed <code><a href="../reference/conf_mat_resampled.html">conf_mat_resampled()</a></code> to return the same type of object as <code><a href="https://yardstick.tidymodels.org/reference/conf_mat.html" class="external-link">yardstick::conf_mat()</a></code> when <code>tidy = FALSE</code> (<a href="https://github.com/tidymodels/tune/issues/370" class="external-link">#370</a>).</p></li>
 <li><p>The automatic parameter machinery for <code>sample_size</code> with the C5.0 engine was changes to use <code><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">dials::sample_prop()</a></code>.</p></li>
 </ul></div>
