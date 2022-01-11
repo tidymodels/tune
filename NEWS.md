@@ -10,7 +10,7 @@
 
 * When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (#432)
 
-* Moved `tune()` from tune to hardhat.
+* Moved `tune()` from tune to hardhat (#442).
 
 # tune 0.1.6
 
