@@ -10,6 +10,8 @@
 
 * When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (#432)
 
+* Moved `tune()` from tune to hardhat (#442).
+
 # tune 0.1.6
 
 * When using `load_pkgs()`, packages that use random numbers on start-up do not affect the state of the RNG. We also added more control of the RNGkind to make it consistent with the user's previous value (#389). 

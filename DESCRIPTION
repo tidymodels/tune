@@ -24,7 +24,7 @@ Imports:
     ggplot2,
     glue,
     GPfit,
-    hardhat (>= 0.1.6),
+    hardhat (>= 0.1.6.9001),
     lifecycle (>= 1.0.0),
     parsnip (>= 0.1.7.9003),
     purrr (>= 0.3.2),
@@ -47,6 +47,7 @@ Suggests:
     testthat,
     xml2
 Remotes: 
+    tidymodels/hardhat,
     tidymodels/parsnip,
     tidymodels/recipes,
     tidymodels/workflows
