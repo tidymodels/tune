@@ -62,3 +62,7 @@ hardhat::extract_preprocessor
 #' @importFrom hardhat extract_workflow
 #' @export
 hardhat::extract_workflow
+#'
+#' @importFrom hardhat extract_parameter_set_dials
+#' @export
+hardhat::extract_parameter_set_dials

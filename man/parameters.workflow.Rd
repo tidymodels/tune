@@ -21,6 +21,10 @@
 A parameter set object
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+These methods have been deprecated in favor of \code{extract_parameter_set_dials()}.
+
 These methods extend the generic \code{\link[dials:parameters]{dials::parameters()}} to work with more
 complex objects, such as recipes, model specifications, and workflows.
 }
@@ -56,5 +60,40 @@ boost_tree(trees = tune(), min_n = tune()) \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   dials::parameters()
 }
+
+# ->
+
+\donttest{
+library(tibble)
+library(recipes)
+
+recipe(mpg ~ ., data = mtcars) \%>\%
+  step_impute_knn(all_predictors(), neighbors = tune()) \%>\%
+  step_pca(all_predictors(), num_comp = tune()) \%>\%
+  extract_parameter_set_dials()
+
+ # A peak under the hood
+ tibble::as_tibble(.Last.value)
+
+recipe(mpg ~ ., data = mtcars) \%>\%
+  step_ns(disp, deg_free = tune("disp df")) \%>\%
+  step_ns(wt, deg_free = tune("wt df")) \%>\%
+  extract_parameter_set_dials()
+
+recipe(mpg ~ ., data = mtcars) \%>\%
+  step_normalize(all_predictors()) \%>\%
+  extract_parameter_set_dials()
+
+library(parsnip)
+
+boost_tree(trees = tune(), min_n = tune()) \%>\%
+  set_engine("xgboost") \%>\%
+  extract_parameter_set_dials()
+
+boost_tree(trees = tune(), min_n = tune()) \%>\%
+  set_engine("C5.0", rules = TRUE) \%>\%
+  extract_parameter_set_dials()
+}
+
 }
 \keyword{internal}

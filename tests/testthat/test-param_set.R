@@ -7,18 +7,24 @@ source(test_path("../helper-objects.R"))
 # ------------------------------------------------------------------------------
 
 test_that('recipe with no steps', {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   bare_info <- dials::parameters(bare_rec)
   check_param_set_tibble(bare_info)
   expect_equal(nrow(bare_info), 0)
 })
 
 test_that('recipe with no tunable parameters', {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   rm_info <- dials::parameters(rm_rec)
   check_param_set_tibble(rm_info)
   expect_equal(nrow(rm_info), 0)
 })
 
 test_that('recipe with tunable parameters', {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   spline_info <- dials::parameters(spline_rec)
   check_param_set_tibble(spline_info)
   expected_cols <- c('step_impute_knn', 'step_other', 'step_bs', 'step_bs')
@@ -42,6 +48,8 @@ test_that('recipe with tunable parameters', {
 # ------------------------------------------------------------------------------
 
 test_that('model with no parameters', {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   skip_if_not_installed("parsnip")
   lm_info <- dials::parameters(lm_model)
   check_param_set_tibble(lm_info)
@@ -49,6 +57,8 @@ test_that('model with no parameters', {
 })
 
 test_that('model with main and engine parameters', {
+  withr::local_options(lifecycle_verbosity = "quiet")
+
   skip_if_not_installed("parsnip")
   c5_info <- dials::parameters(bst_model)
   check_param_set_tibble(c5_info)
