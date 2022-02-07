@@ -3,7 +3,7 @@
 #' @description
 #' `r lifecycle::badge("deprecated")`
 #'
-#' These methods have been deprecated in favor of `extract_parameter_set_dials()`.
+#' These methods have been deprecated in favor of [extract_parameter_set_dials()].
 #'
 #' These methods extend the generic [dials::parameters()] to work with more
 #' complex objects, such as recipes, model specifications, and workflows.
