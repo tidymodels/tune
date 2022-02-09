@@ -83,7 +83,7 @@ test_that("bad inputs",{
   )
   expect_error(
     filter_parameters(svm_reg_results, tibble(soup = 1)),
-    class = "dplyr_error"
+    "must be a logical"
   )
   expect_error(
     filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1/3)),
