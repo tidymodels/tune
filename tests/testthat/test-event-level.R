@@ -1,19 +1,19 @@
 test_that("`event_level` is passed through in tune_grid()", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("randomForest")
+  skip_if_not_installed("kernlab")
 
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50,]
 
-  spec <- parsnip::rand_forest(mode = "classification", trees = tune()) %>%
-    parsnip::set_engine("randomForest")
+  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
+    parsnip::set_engine("kernlab")
 
   control <- control_grid(event_level = "second", save_pred = TRUE)
   resamples <- rsample::bootstraps(dat, times = 1)
   set <- yardstick::metric_set(yardstick::roc_auc, yardstick::sens)
-  grid <- tibble::tibble(trees = 2L)
+  grid <- tibble::tibble(cost = 2L)
 
   result <- tune_grid(
     spec,
@@ -46,15 +46,15 @@ test_that("`event_level` is passed through in tune_grid()", {
 
 test_that("`event_level` is passed through in fit_resamples()", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("randomForest")
+  skip_if_not_installed("kernlab")
 
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50,]
 
-  spec <- parsnip::rand_forest(mode = "classification", trees = 2) %>%
-    parsnip::set_engine("randomForest")
+  spec <- parsnip::svm_linear(mode = "classification", cost = 2) %>%
+    parsnip::set_engine("kernlab")
 
   control <- control_resamples(event_level = "second", save_pred = TRUE)
   resamples <- rsample::bootstraps(dat, times = 1)
@@ -90,15 +90,15 @@ test_that("`event_level` is passed through in fit_resamples()", {
 
 test_that("`event_level` is passed through in tune_bayes()", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("randomForest")
+  skip_if_not_installed("kernlab")
 
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50,]
 
-  spec <- parsnip::rand_forest(mode = "classification", trees = tune()) %>%
-    parsnip::set_engine("randomForest")
+  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
+    parsnip::set_engine("kernlab")
 
   control_grid <- control_grid(save_pred = TRUE)
   control <- control_bayes(event_level = "second", save_pred = TRUE)
