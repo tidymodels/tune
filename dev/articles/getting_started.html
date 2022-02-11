@@ -53,7 +53,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org" class="external-link">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9002</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9003</span>
         </div>
       </div>
     </div>
@@ -169,6 +169,8 @@
 <p>The function <code><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">dials::parameters()</a></code> can detect and collect the parameters that have been flagged for tuning:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span>
+<span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span>
+<span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span>
 <span class="co">#&gt; Collection of 2 parameters for tuning</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  identifier     type    object</span>
@@ -193,6 +195,8 @@
     `long df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="op">)</span>, 
     `lat df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="op">)</span>
   <span class="op">)</span>
+<span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span>
+<span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span>
 <span class="va">ames_param</span>
 <span class="co">#&gt; Collection of 2 parameters for tuning</span>
 <span class="co">#&gt; </span>
@@ -367,7 +371,9 @@
     `lat df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span><span class="op">)</span><span class="op">)</span>,
     neighbors <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/neighbors.html" class="external-link">neighbors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,
     weight_func <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/weight_func.html" class="external-link">weight_func</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rectangular"</span>, <span class="st">"inv"</span>, <span class="st">"gaussian"</span>, <span class="st">"triangular"</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">)</span></code></pre></div>
+  <span class="op">)</span>
+<span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span>
+<span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span></code></pre></div>
 <p>This parameter collection can be used with the grid functions or with <code><a href="../reference/tune_grid.html">tune_grid()</a></code> via the <code>param_info</code> argument.</p>
 <p>Instead of using grid search, an iterative method called <a href="http://krasserm.github.io/2018/03/21/bayesian-optimization/" class="external-link">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
 <p>Although no grid is required, the process requires a few additional pieces of information:</p>

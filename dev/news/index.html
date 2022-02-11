@@ -26,7 +26,7 @@
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org" class="external-link">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9002</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9003</span>
         </div>
       </div>
     </div>
@@ -89,6 +89,7 @@
 <li><p>The engine arguments for xgboost <code>alpha</code>, <code>lambda</code>, and <code>scale_pos_weight</code> are now tunable.</p></li>
 <li><p>When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (<a href="https://github.com/tidymodels/tune/issues/432" class="external-link">#432</a>)</p></li>
 <li><p>Moved <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code> from tune to hardhat (<a href="https://github.com/tidymodels/tune/issues/442" class="external-link">#442</a>).</p></li>
+<li><p>The <code><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters()</a></code> methods for <code>recipe</code>, <code>model_spec</code>, and <code>workflow</code> objects have been soft-deprecated in favor of <code><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials()</a></code> methods (<a href="https://github.com/tidymodels/tune/issues/428" class="external-link">#428</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.6" id="tune-016">tune 0.1.6<small>2021-07-21</small><a class="anchor" aria-label="anchor" href="#tune-016"></a></h2>

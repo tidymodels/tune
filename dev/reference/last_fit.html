@@ -28,7 +28,7 @@ the test set."><meta property="og:image" content="https://tune.tidymodels.org/lo
         <a class="navbar-brand" href="../index.html">tune</a>
         <div class="info hidden-xs hidden-sm">
           <span class="partof">part of <a href="https://tidymodels.org" class="external-link">tidymodels</a></span>
-          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9002</span>
+          <span class="version version-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.1.6.9003</span>
         </div>
       </div>
     </div>
@@ -151,9 +151,9 @@ the test data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Resampling results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Manual resampling </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id               .metrics         .notes .predictions .workflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [24/8]&gt;</span> train/test split <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibb</span>… <span style="color: #949494;">&lt;tibble [8 </span>… <span style="color: #949494;">&lt;workflo</span>…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id               .metrics .notes   .predictions     .workflow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [24/8]&gt;</span> train/test split &lt;tibble&gt; &lt;tibble&gt; <span style="color: #949494;">&lt;tibble [8 × 4]&gt;</span> <span style="color: #949494;">&lt;workflow&gt;</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># test set results</span></span>
 <span class="r-in"><span class="va">spline_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -175,9 +175,9 @@ the test data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Resampling results</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Manual resampling </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id               .metrics         .notes .predictions .workflow</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [24/8]&gt;</span> train/test split <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibb</span>… <span style="color: #949494;">&lt;tibble [8 </span>… <span style="color: #949494;">&lt;workflo</span>…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id               .metrics .notes   .predictions     .workflow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [24/8]&gt;</span> train/test split &lt;tibble&gt; &lt;tibble&gt; <span style="color: #949494;">&lt;tibble [8 × 4]&gt;</span> <span style="color: #949494;">&lt;workflow&gt;</span></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
