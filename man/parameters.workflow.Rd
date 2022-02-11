@@ -21,6 +21,10 @@
 A parameter set object
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+These methods have been deprecated in favor of \code{\link[=extract_parameter_set_dials]{extract_parameter_set_dials()}}.
+
 These methods extend the generic \code{\link[dials:parameters]{dials::parameters()}} to work with more
 complex objects, such as recipes, model specifications, and workflows.
 }
@@ -56,5 +60,6 @@ boost_tree(trees = tune(), min_n = tune()) \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   dials::parameters()
 }
+
 }
 \keyword{internal}
