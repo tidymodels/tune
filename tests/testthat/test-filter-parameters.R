@@ -82,8 +82,7 @@ test_that("bad inputs",{
     "There are no columns in"
   )
   expect_error(
-    filter_parameters(svm_reg_results, tibble(soup = 1)),
-    "must be a logical"
+    filter_parameters(svm_reg_results, tibble(soup = 1))
   )
   expect_error(
     filter_parameters(svm_reg_results, parameters = tibble(`%^*#` = 1/3)),
