@@ -7,7 +7,6 @@ library(dials)
 data(two_class_dat, package = "modeldata")
 
 lr_spec <- logistic_reg() %>% set_engine("glm")
-rf_spec <- rand_forest(trees = 20, min_n = tune()) %>% set_engine("randomForest") %>% set_mode("regression")
 
 set.seed(1)
 bt1 <- bootstraps(two_class_dat, times = 30)
@@ -54,9 +53,15 @@ test_that("augment fit_resamples", {
 # ------------------------------------------------------------------------------
 
 test_that("augment tune_grid", {
+  skip_if_not_installed("kernlab")
+
+  svm_spec <- parsnip::svm_linear(cost = tune(), margin = 0.1) %>%
+    set_engine("kernlab") %>%
+    set_mode("regression")
+
   set.seed(1)
-  fit_1 <- tune_grid(rf_spec, mpg ~ ., cv1, grid = data.frame(min_n = 4:6),
-                         control = control_grid(save_pred = TRUE))
+  fit_1 <- tune_grid(svm_spec, mpg ~ ., cv1, grid = data.frame(cost = 1:3),
+                     control = control_grid(save_pred = TRUE))
   aug_1 <- augment(fit_1)
   expect_true(nrow(aug_1) == nrow(mtcars))
   expect_equal(aug_1[["wt"]], mtcars[["wt"]])
@@ -64,21 +69,21 @@ test_that("augment tune_grid", {
   expect_true(sum(names(aug_1) == ".pred")  == 1)
   expect_true(sum(names(aug_1) == ".resid")  == 1)
 
-  aug_2 <- augment(fit_1, parameters = data.frame(min_n = 6))
+  aug_2 <- augment(fit_1, parameters = data.frame(cost = 3))
   expect_true(any(abs(aug_1$.pred - aug_2$.pred) > 1))
 
   expect_error(
-    augment(fit_1, parameters = list(min_n = 6)),
+    augment(fit_1, parameters = list(cost = 3)),
     "should be a single row data frame"
   )
 
   expect_error(
-    augment(fit_1, parameters = data.frame(min_n = 5:6)),
+    augment(fit_1, parameters = data.frame(cost = 3:4)),
     "should be a single row data frame"
   )
 
   expect_error(
-    augment(fit_1, min_n = 6),
+    augment(fit_1, cost = 4),
     "The only two arguments for"
   )
 
@@ -86,8 +91,8 @@ test_that("augment tune_grid", {
 
   suppressMessages({
     set.seed(1)
-    fit_2 <- tune_bayes(rf_spec, mpg ~ ., cv1, initial = fit_1, iter = 2,
-                        param_info = parameters(min_n(c(2, 10))),
+    fit_2 <- tune_bayes(svm_spec, mpg ~ ., cv1, initial = fit_1, iter = 2,
+                        param_info = parameters(cost(c(-10, 5))),
                         control = control_bayes(save_pred = TRUE))
   })
   aug_3 <- augment(fit_2)
@@ -96,7 +101,6 @@ test_that("augment tune_grid", {
   expect_true(sum(!is.na(aug_3$.pred)) == nrow(mtcars))
   expect_true(sum(names(aug_3) == ".pred")  == 1)
   expect_true(sum(names(aug_3) == ".resid")  == 1)
-
 
 })
 

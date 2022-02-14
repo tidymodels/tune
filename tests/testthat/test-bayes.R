@@ -19,8 +19,6 @@ lm_mod <- linear_reg() %>% set_engine("lm")
 
 svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 
-rf_mod <- rand_forest(mode = "regression", mtry = tune()) %>% set_engine("randomForest")
-
 iter1 <- 2
 iter2 <- 2
 iterT <- iter1 + iter2
@@ -30,7 +28,7 @@ iterT <- iter1 + iter2
 test_that('tune recipe only', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
   control <- control_bayes(extract = identity)
 
@@ -141,7 +139,7 @@ test_that('tune model and recipe', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 3)))
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
                     initial = iter1, iter = iter2)
@@ -166,50 +164,12 @@ test_that('tune model and recipe (multi-predict)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 2))
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
                     initial = iter1, iter = iter2)
   expect_equal(unique(res$id), folds$id)
-  res_est <- collect_metrics(res)
-  expect_equal(nrow(res_est), iterT * 2)
-  expect_equal(sum(res_est$.metric == "rmse"), iterT)
-  expect_equal(sum(res_est$.metric == "rsq"), iterT)
-  expect_equal(dplyr::n_distinct(res_est$.config), iterT)
-  expect_equal(res_est$n, rep(10, iterT * 2))
-})
-
-# ------------------------------------------------------------------------------
-
-test_that('tune recipe and model, which has_unknowns', {
-
-  # This test needs a tuning parameter object with default 'unknown' parameter
-  # values (e.g., mtry).
-
-  skip_if_not_installed("randomForest")
-
-  set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(rf_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(3, 5)),
-                                              mtry = mtry(c(1, 3)))
-  expect_true(
-    any(
-      vapply(
-        dials::parameters(wflow)$object,
-        dials::has_unknowns,
-        FUN.VALUE = TRUE
-      )
-    )
-  )
-  folds <- vfold_cv(mtcars)
-  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                    initial = iter1, iter = iter2)
-  expect_equal(unique(res$id), folds$id)
-  expect_equal(
-    colnames(res$.metrics[[1]]),
-    c("mtry", "num_comp", ".metric", ".estimator", ".estimate", ".config")
-  )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), iterT * 2)
   expect_equal(sum(res_est$.metric == "rmse"), iterT)
@@ -375,7 +335,7 @@ test_that("retain extra attributes and saved GP candidates", {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 5)))
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
   ctrl <- control_bayes(save_gp_scoring = TRUE)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
@@ -475,7 +435,7 @@ test_that('missing performance values', {
           resamples = folds,
           initial = 3,
           metrics = metric_set(rsq),
-          param_info = parameters(cost_complexity(c(-2, 0)))
+          param_info = parameters(dials::cost_complexity(c(-2, 0)))
         )
 
     },
@@ -495,7 +455,7 @@ test_that('missing performance values', {
           resamples = folds,
           initial = 5,
           metrics = metric_set(rsq),
-          param_info = parameters(cost_complexity(c(0.5, 0)))
+          param_info = parameters(dials::cost_complexity(c(0.5, 0)))
         )
     },
     regexp = NA

@@ -42,7 +42,6 @@ Suggests:
     kernlab,
     knitr,
     modeldata,
-    randomForest,
     spelling,
     testthat,
     xml2
