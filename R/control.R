@@ -31,6 +31,7 @@
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
                          pkgs = NULL, save_workflow = FALSE,
+                         elapsed = FALSE,
                          event_level = "first",
                          parallel_over = NULL) {
   # add options for  seeds per resample
@@ -39,6 +40,7 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_class_and_single(allow_par, "logical", "control_grid()")
   val_class_and_single(save_pred, "logical", "control_grid()")
   val_class_and_single(save_workflow, "logical", "control_grid()")
+  val_class_and_single(elapsed, "logical", "control_grid()")
   val_class_and_single(event_level, "character", "control_grid()")
   val_class_or_null(pkgs, "character", "control_grid()")
   val_class_or_null(extract, "function", "control_grid()")
@@ -49,6 +51,7 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
               allow_par = allow_par,
               extract = extract,
               save_pred = save_pred,
+              elapsed = elapsed,
               pkgs = pkgs,
               save_workflow = save_workflow,
               event_level = event_level,
@@ -100,6 +103,8 @@ control_resamples <- control_grid
 #'   loaded (by namespace) during parallel processing.
 #' @param save_workflow A logical for whether the workflow should be appended
 #'  to the output as an attribute.
+#' @param elapsed A logical for whether a `.elapsed` column to be added to the
+#'   output. The column will show the time the model fit took in seconds.
 #' @param save_gp_scoring A logical to save the intermediate Gaussian process
 #'   models for each iteration of the search. These are saved to
 #'  `tempdir()` with names `gp_candidates_{i}.RData` where `i` is the iteration.
@@ -164,6 +169,7 @@ control_bayes <-
            time_limit = NA,
            pkgs = NULL,
            save_workflow = FALSE,
+           elapsed = FALSE,
            save_gp_scoring = FALSE,
            event_level = "first",
            parallel_over = NULL) {
@@ -173,6 +179,7 @@ control_bayes <-
     val_class_and_single(save_pred, "logical", "control_bayes()")
     val_class_and_single(save_gp_scoring, "logical", "control_bayes()")
     val_class_and_single(save_workflow, "logical", "control_bayes()")
+    val_class_and_single(elapsed, "logical", "control_grid()")
     val_class_and_single(no_improve, c("numeric", "integer"), "control_bayes()")
     val_class_and_single(uncertain, c("numeric", "integer"), "control_bayes()")
     val_class_and_single(seed, c("numeric", "integer"), "control_bayes()")
@@ -199,6 +206,7 @@ control_bayes <-
         time_limit = time_limit,
         pkgs = pkgs,
         save_workflow = save_workflow,
+        elapsed = elapsed,
         save_gp_scoring = save_gp_scoring,
         event_level = event_level,
         parallel_over = parallel_over

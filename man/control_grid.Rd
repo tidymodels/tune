@@ -12,6 +12,7 @@ control_grid(
   save_pred = FALSE,
   pkgs = NULL,
   save_workflow = FALSE,
+  elapsed = FALSE,
   event_level = "first",
   parallel_over = NULL
 )
@@ -23,6 +24,7 @@ control_resamples(
   save_pred = FALSE,
   pkgs = NULL,
   save_workflow = FALSE,
+  elapsed = FALSE,
   event_level = "first",
   parallel_over = NULL
 )
@@ -50,6 +52,9 @@ loaded (by namespace) during parallel processing.}
 
 \item{save_workflow}{A logical for whether the workflow should be appended
 to the output as an attribute.}
+
+\item{elapsed}{A logical for whether a \code{.elapsed} column to be added to the
+output. The column will show the time the model fit took in seconds.}
 
 \item{event_level}{A single string containing either \code{"first"} or \code{"second"}.
 This argument is passed on to yardstick metric functions when any type

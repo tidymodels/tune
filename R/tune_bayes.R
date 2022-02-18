@@ -592,7 +592,8 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
           verbose = FALSE,
           extract = control$extract,
           save_pred = control$save_pred,
-          event_level = control$event_level
+          event_level = control$event_level,
+          elapsed = control$elapsed
         )
       ),
       silent = TRUE

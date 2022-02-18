@@ -135,6 +135,12 @@ pull_notes <- function(resamples, res, control) {
   resamples
 }
 
+pull_elapsed <- function(resamples, res, control) {
+  if (control$elapsed)
+    resamples$.elapsed <- purrr::map_dbl(res, ~ purrr::pluck(.x, ".elapsed")[["elapsed"]])
+  resamples
+}
+
 # ------------------------------------------------------------------------------
 
 append_metrics <- function(collection,

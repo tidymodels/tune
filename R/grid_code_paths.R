@@ -86,6 +86,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_elapsed(resamples, results, control)
   resamples <- pull_extracts(resamples, results, control)
   resamples <- pull_predictions(resamples, results, control)
   resamples <- pull_all_outcome_names(resamples, results)
@@ -355,14 +356,19 @@ tune_grid_loop_iter_safely <- function(split,
                                        seed) {
   tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
-  result <- tune_grid_loop_iter_wrapper(
-    split,
-    grid_info,
-    workflow,
-    metrics,
-    control,
-    seed
+  elapsed <- system.time(
+    result <- tune_grid_loop_iter_wrapper(
+      split,
+      grid_info,
+      workflow,
+      metrics,
+      control,
+      seed
+    )
   )
+
+  # Update with elapsed time
+  result$result[[".elapsed"]] <- elapsed
 
   error <- result$error
   warnings <- result$warnings

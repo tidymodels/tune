@@ -14,6 +14,7 @@ control_bayes(
   time_limit = NA,
   pkgs = NULL,
   save_workflow = FALSE,
+  elapsed = FALSE,
   save_gp_scoring = FALSE,
   event_level = "first",
   parallel_over = NULL
@@ -55,6 +56,9 @@ loaded (by namespace) during parallel processing.}
 
 \item{save_workflow}{A logical for whether the workflow should be appended
 to the output as an attribute.}
+
+\item{elapsed}{A logical for whether a \code{.elapsed} column to be added to the
+output. The column will show the time the model fit took in seconds.}
 
 \item{save_gp_scoring}{A logical to save the intermediate Gaussian process
 models for each iteration of the search. These are saved to
