@@ -443,3 +443,22 @@ test_that("retain extra attributes", {
   )
 })
 
+
+test_that('elapsed argument in control_bayes', {
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  grid <- grid_regular(pset, levels = 3)
+  folds <- vfold_cv(mtcars)
+  control <- control_grid(elapsed = FALSE)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
+
+  expect_null(res[[".elapsed"]])
+
+  control <- control_grid(elapsed = TRUE)
+
+  res <- tune_grid(wflow, resamples = folds, grid = grid, control = control)
+
+  expect_true(is.numeric(res$.elapsed))
+})

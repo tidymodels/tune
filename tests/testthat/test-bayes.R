@@ -464,3 +464,25 @@ test_that('missing performance values', {
   )
 
 })
+
+test_that('elapsed argument in control_bayes', {
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  folds <- vfold_cv(mtcars)
+
+  control <- control_bayes(elapsed = FALSE)
+
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2, control = control)
+
+  expect_null(res[[".elapsed"]])
+
+  control <- control_bayes(elapsed = TRUE)
+
+  res <- tune_bayes(wflow, resamples = folds, param_info = pset,
+                    initial = iter1, iter = iter2, control = control)
+
+  expect_true(is.numeric(res$.elapsed))
+  expect_true(all(is.na(res$.elapsed[res$.iter == 0])))
+})
