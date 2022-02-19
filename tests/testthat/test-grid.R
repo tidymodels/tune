@@ -24,7 +24,7 @@ svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>% set_engine("kernlab")
 test_that('tune recipe only', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   control <- control_grid(extract = identity)
@@ -50,7 +50,7 @@ test_that('tune recipe only', {
 test_that('tune model only (with recipe)', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   control <- control_grid(extract = identity)
@@ -81,7 +81,7 @@ test_that('tune model only (with variables)', {
     add_variables(mpg, everything()) %>%
     add_model(svm_mod)
 
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   grid <- grid_regular(pset, levels = 3)
 
   folds <- vfold_cv(mtcars)
@@ -104,7 +104,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
@@ -125,7 +125,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 test_that('tune model and recipe', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   control <- control_grid(extract = identity)
@@ -161,7 +161,7 @@ test_that('tune model and recipe (multi-predict)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(2, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 2))
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
@@ -178,7 +178,7 @@ test_that('tune model and recipe (multi-predict)', {
 test_that('tune model and recipe (parallel_over = "everything")', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = num_comp(c(1, 3)))
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   control <- control_grid(extract = identity, parallel_over = "everything")
@@ -391,7 +391,7 @@ test_that("retain extra attributes", {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
@@ -409,7 +409,7 @@ test_that("retain extra attributes", {
 
   set.seed(4400)
   wflow <- workflow() %>% add_formula(mpg ~ .) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   grid <- grid_regular(pset, levels = 3)
   folds <- vfold_cv(mtcars)
   res <- tune_grid(wflow, resamples = folds, grid = grid)
@@ -433,7 +433,7 @@ test_that("retain extra attributes", {
   wflow2 <- workflow() %>%
     add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),])) %>%
     add_model(svm_mod)
-  pset2 <- dials::parameters(wflow2)
+  pset2 <- extract_parameter_set_dials(wflow2)
   grid2 <- grid_regular(pset2, levels = 3)
 
   expect_message(
