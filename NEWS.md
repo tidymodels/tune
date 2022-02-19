@@ -14,6 +14,7 @@
 
 * The `parameters()` methods for `recipe`, `model_spec`, and `workflow` objects have been soft-deprecated in favor of `extract_parameter_set_dials()` methods (#428).
 
+* Function now error if the wrong `control_*()` is used. (#449)
 
 # tune 0.1.6
 
