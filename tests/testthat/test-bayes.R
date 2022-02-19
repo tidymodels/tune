@@ -414,6 +414,19 @@ test_that('too few starting values', {
 
 })
 
+test_that("error if wrong control function is used", {
+  set.seed(4400)
+  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  folds <- vfold_cv(mtcars)
+  control <- control_grid()
+
+  expect_error(
+    tune_bayes(wflow, resamples = folds, param_info = pset,
+               initial = iter1, iter = iter2, control = control)
+  )
+})
+
 # ------------------------------------------------------------------------------
 
 test_that('missing performance values', {

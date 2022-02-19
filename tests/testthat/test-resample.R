@@ -383,3 +383,17 @@ test_that("retain extra attributes", {
     "being saved contains a recipe, which is"
   )
 })
+
+test_that("error if wrong control function is used", {
+  set.seed(6735)
+  folds <- vfold_cv(mtcars, v = 2)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  expect_error(
+    lin_mod %>%
+      fit_resamples(mpg ~ ., folds, control = control_bayes()),
+    "must be the output created by"
+  )
+})
