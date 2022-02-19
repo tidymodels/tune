@@ -280,6 +280,8 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
 
+  check_control(control, "control_grid")
+
   empty_ellipses(...)
 
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal

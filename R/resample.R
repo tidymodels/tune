@@ -107,6 +107,8 @@ fit_resamples.workflow <- function(object,
                                    metrics = NULL,
                                    control = control_resamples()) {
 
+  check_control(control, "control_resamples")
+
   empty_ellipses(...)
 
   resample_workflow(

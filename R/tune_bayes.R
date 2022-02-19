@@ -194,6 +194,9 @@ tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
            initial = 5, control = control_bayes(), ...) {
+
+    check_control(control, "control_bayes")
+
     start_time <- proc.time()[3]
 
     check_rset(resamples)
