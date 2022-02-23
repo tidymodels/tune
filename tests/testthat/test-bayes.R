@@ -439,7 +439,7 @@ test_that('missing performance values', {
 
   expect_message(
     expect_error({
-      set.seed(2)
+      set.seed(3)
       res <-
         mod %>%
         tune_bayes(
