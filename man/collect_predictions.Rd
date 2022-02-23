@@ -86,7 +86,7 @@ Obtain and format results produced by tuning functions
 \donttest{
 data("example_ames_knn")
 # The parameters for the model:
-parameters(ames_wflow)
+extract_parameter_set_dials(ames_wflow)
 
 # Summarized over resamples
 collect_metrics(ames_grid_search)

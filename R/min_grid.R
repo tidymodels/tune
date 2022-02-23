@@ -57,7 +57,7 @@
 #'
 #' svm_grid <-
 #'   svm_spec %>%
-#'   parameters() %>%
+#'   extract_parameter_set_dials() %>%
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(svm_spec, svm_grid)
@@ -72,7 +72,7 @@
 #'
 #' xgb_grid <-
 #'   xgb_spec %>%
-#'   parameters() %>%
+#'   extract_parameter_set_dials() %>%
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
@@ -110,7 +110,7 @@ get_submodel_info <- function(spec) {
     dplyr::filter(engine == spec$engine) %>%
     dplyr::select(name = parsnip, has_submodel) %>%
     dplyr::full_join(
-      dials::parameters(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
+      hardhat::extract_parameter_set_dials(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
       by = "name"
     ) %>%
     dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%

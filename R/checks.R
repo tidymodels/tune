@@ -28,7 +28,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
   }
 
   if (is.null(pset)) {
-    pset <- dials::parameters(workflow)
+    pset <- hardhat::extract_parameter_set_dials(workflow)
   }
 
   if (nrow(pset) == 0L) {
@@ -122,7 +122,7 @@ needs_finalization <- function(x, nms = character(0)) {
 
 check_parameters <- function(workflow, pset = NULL, data, grid_names = character(0)) {
   if (is.null(pset)) {
-    pset <- parameters(workflow)
+    pset <- hardhat::extract_parameter_set_dials(workflow)
   }
   unk <- purrr::map_lgl(pset$object, dials::has_unknowns)
   if (!any(unk)) {
@@ -256,7 +256,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
   if (check_dials) {
     if (is.null(pset)) {
-      pset <- dials::parameters(x)
+      pset <- hardhat::extract_parameter_set_dials(x)
     }
 
     check_param_objects(pset)

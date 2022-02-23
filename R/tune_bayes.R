@@ -205,7 +205,7 @@ tune_bayes_workflow <-
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
 
     if (is.null(param_info)) {
-      param_info <- dials::parameters(object)
+      param_info <- hardhat::extract_parameter_set_dials(object)
     }
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
