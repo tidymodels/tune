@@ -143,7 +143,7 @@ generate these examples was:</p><div class="sourceCode"><pre><code><span class="
   <span class="fu">add_model</span><span class="op">(</span><span class="va">knn_model</span><span class="op">)</span>
 
 <span class="va">ames_set</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
+  <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>K <span class="op">=</span> <span class="fu">neighbors</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7014</span><span class="op">)</span>

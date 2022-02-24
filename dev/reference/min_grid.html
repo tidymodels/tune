@@ -166,10 +166,8 @@ method.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">svm_grid</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="va">svm_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`parameters.model_spec()` was deprecated in tune 0.1.6.9003.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Please use `hardhat::extract_parameter_set_dials()` instead.</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://generics.r-lib.org/reference/min_grid.html" class="external-link">min_grid</a></span><span class="op">(</span><span class="va">svm_spec</span>, <span class="va">svm_grid</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 9 × 3</span></span>
@@ -195,10 +193,8 @@ method.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">xgb_grid</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="va">xgb_spec</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`parameters.model_spec()` was deprecated in tune 0.1.6.9003.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Please use `hardhat::extract_parameter_set_dials()` instead.</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://generics.r-lib.org/reference/min_grid.html" class="external-link">min_grid</a></span><span class="op">(</span><span class="va">xgb_spec</span>, <span class="va">xgb_grid</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 3</span></span>

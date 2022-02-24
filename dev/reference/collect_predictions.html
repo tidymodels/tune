@@ -165,9 +165,7 @@ and the notes.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ames_knn"</span><span class="op">)</span></span>
 <span class="r-in"><span class="co"># The parameters for the model:</span></span>
-<span class="r-in"><span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`parameters.workflow()` was deprecated in tune 0.1.6.9003.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Please use `hardhat::extract_parameter_set_dials()` instead.</span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Collection of 5 parameters for tuning</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   identifier        type    object</span>
