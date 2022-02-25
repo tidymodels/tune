@@ -35,7 +35,7 @@ finalize_model <- function(x, parameters) {
     stop("`x` should be a parsnip model specification.")
   }
   check_final_param(parameters)
-  pset <- parameters(x)
+  pset <- hardhat::extract_parameter_set_dials(x)
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)
   }
@@ -60,7 +60,7 @@ finalize_recipe <- function(x, parameters) {
   }
   check_final_param(parameters)
   pset <-
-    dials::parameters(x) %>%
+    hardhat::extract_parameter_set_dials(x) %>%
     dplyr::filter(id %in% names(parameters) & source == "recipe")
 
   if (tibble::is_tibble(parameters)) {

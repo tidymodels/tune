@@ -28,7 +28,7 @@ iterT <- iter1 + iter2
 test_that('tune recipe only', {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
   control <- control_bayes(extract = identity)
 
@@ -63,7 +63,7 @@ test_that('tune model only (with recipe)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
                     initial = iter1, iter = iter2)
@@ -85,7 +85,7 @@ test_that('tune model only (with variables)', {
     add_variables(mpg, everything()) %>%
     add_model(svm_mod)
 
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
 
   folds <- vfold_cv(mtcars)
 
@@ -116,7 +116,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow)
+  pset <- extract_parameter_set_dials(wflow)
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
                     initial = iter1, iter = iter2)
@@ -139,7 +139,7 @@ test_that('tune model and recipe', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 3)))
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
                     initial = iter1, iter = iter2)
@@ -164,7 +164,7 @@ test_that('tune model and recipe (multi-predict)', {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 2))
   folds <- vfold_cv(mtcars)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,
@@ -316,7 +316,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 test_that("argument order gives warning for recipes", {
   expect_error(
     tune_bayes(rec_tune_1, model = lm_mod, resamples = vfold_cv(mtcars, v = 2),
-               param_info = dials::parameters(rec_tune_1),
+               param_info = extract_parameter_set_dials(rec_tune_1),
                iter = iter1, initial = iter2),
     "should be either a model or workflow"
   )
@@ -325,7 +325,7 @@ test_that("argument order gives warning for recipes", {
 test_that("argument order gives warning for formula", {
   expect_error(
     tune_bayes(mpg ~ ., svm_mod, resamples = vfold_cv(mtcars, v = 2),
-               param_info = dials::parameters(svm_mod),
+               param_info = extract_parameter_set_dials(svm_mod),
                initial = iter1, iter = iter2),
     "should be either a model or workflow"
   )
@@ -335,7 +335,7 @@ test_that("retain extra attributes and saved GP candidates", {
 
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
   folds <- vfold_cv(mtcars)
   ctrl <- control_bayes(save_gp_scoring = TRUE)
   res <- tune_bayes(wflow, resamples = folds, param_info = pset,

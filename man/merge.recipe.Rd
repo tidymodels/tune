@@ -72,7 +72,7 @@ xgb_mod <-
 
 set.seed(254)
 xgb_grid <-
-  dials::parameters(xgb_mod) \%>\%
+  extract_parameter_set_dials(xgb_mod) \%>\%
   finalize(hpc_data) \%>\%
   grid_max_entropy(size = 3)
 

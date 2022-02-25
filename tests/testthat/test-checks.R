@@ -26,7 +26,7 @@ test_that('grid objects', {
     threshold = 1:10, deg_free = 1:10, degree = 1:10
   )
 
-  set_1 <- dials::parameters(chi_wflow)
+  set_1 <- extract_parameter_set_dials(chi_wflow)
   set_2 <- set_1 %>% update(deg_free = dials::deg_free(c(1, 3)))
 
   expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
@@ -242,7 +242,7 @@ test_that('initial values', {
     add_model(svm_mod) %>%
     add_recipe(recipe(mpg ~ ., data = mtcars))
 
-  grid_1 <- tune:::check_initial(2, dials::parameters(wflow_1), wflow_1,
+  grid_1 <- tune:::check_initial(2, extract_parameter_set_dials(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
                                  control_bayes())
   expect_true(is.data.frame(grid_1))
@@ -251,7 +251,7 @@ test_that('initial values', {
 
   expect_error(
     tune:::check_initial(data.frame(),
-                         dials::parameters(wflow_1), wflow_1,
+                         extract_parameter_set_dials(wflow_1), wflow_1,
                          mtfolds, yardstick::metric_set(yardstick::rsq),
                          control_bayes()),
     "`initial` should be a positive integer or"
@@ -343,7 +343,7 @@ test_that('check parameter finalization', {
     workflow() %>%
     add_recipe(rec) %>%
     add_model(rf1)
-  p3 <- parameters(w3)
+  p3 <- extract_parameter_set_dials(w3)
 
   expect_message(
     expect_error(
@@ -365,7 +365,7 @@ test_that('check parameter finalization', {
   )
 
   p4_a <-
-    parameters(w4) %>%
+    extract_parameter_set_dials(w4) %>%
     update(mtry = dials::mtry(c(1, 10)))
 
   expect_error(

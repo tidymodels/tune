@@ -60,7 +60,7 @@
 #'
 #' set.seed(254)
 #' xgb_grid <-
-#'   dials::parameters(xgb_mod) %>%
+#'   extract_parameter_set_dials(xgb_mod) %>%
 #'   finalize(hpc_data) %>%
 #'   grid_max_entropy(size = 3)
 #'
@@ -115,7 +115,7 @@ merger <- function(x, y, ...) {
   if (!is.data.frame(y)) {
     stop("The second argument should be a data frame.", call. = FALSE)
   }
-  pset <- dials::parameters(x)
+  pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
     res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
