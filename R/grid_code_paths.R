@@ -356,19 +356,19 @@ tune_grid_loop_iter_safely <- function(split,
                                        seed) {
   tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
-  elapsed <- system.time(
-    result <- tune_grid_loop_iter_wrapper(
-      split,
-      grid_info,
-      workflow,
-      metrics,
-      control,
-      seed
-    )
+  time <- proc.time()
+  result <- tune_grid_loop_iter_wrapper(
+    split,
+    grid_info,
+    workflow,
+    metrics,
+    control,
+    seed
   )
+  new.time <- proc.time()
 
   # Update with elapsed time
-  result$result[[".elapsed"]] <- elapsed
+  result$result[[".elapsed"]] <- new.time - time
 
   error <- result$error
   warnings <- result$warnings
