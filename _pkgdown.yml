@@ -1,5 +1,29 @@
 url: https://tune.tidymodels.org/
 
+navbar:
+  components:
+    home: ~
+    tutorials:
+      text: Learn more
+      menu:
+      - text: "Grid Search"
+        href: https://www.tidymodels.org/learn/work/tune-svm/
+      - text: "Bayesian Optimization of Classification Model"
+        href: https://www.tidymodels.org/learn/work/bayes-opt/
+      - text: "Text Analysis Example"
+        href: https://www.tidymodels.org/learn/work/tune-text/
+
+articles:
+- title: Get started
+  contents:
+  - tune
+
+- title: Learn more
+  navbar: ~
+  contents:
+  - acquisition_functions
+  - extras/optimizations
+
 template:
   package: tidytemplate
   bootstrap: 5
@@ -43,27 +67,3 @@ reference:
     - merge.recipe
     - parameters.workflow
     - message_wrap
-
-navbar:
-  left:
-  - text: Getting Started
-    href: articles/getting_started.html
-  - text: "Articles"
-    menu:
-    - text: Grid Search
-      href: https://www.tidymodels.org/learn/work/tune-svm/
-    - text: Acquisition Functions
-      href: articles/acquisition_functions.html
-    - text: Bayesian Optimization of Classification Model
-      href: https://www.tidymodels.org/learn/work/bayes-opt/
-    - text: Optimizations and Parallel Processing
-      href: articles/extras/optimizations.html
-    - text: Text Analysis Example
-      href: https://www.tidymodels.org/learn/work/tune-text/
-  - text: Reference
-    href: reference/index.html
-  - text: News
-    href: news/index.html
-
-
-
