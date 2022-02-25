@@ -1,11 +1,13 @@
 ---
 title: "Optimizations and Parallel Processing"
+output: rmarkdown::html_vignette
+description: |
+  tune attempts to evaluate the candidate models in the shortest amount of 
+  time. This vignette is a summary of those approaches. 
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Grid Search}
-output:
-  knitr:::html_vignette:
-    toc: yes
+  %\VignetteIndexEntry{Optimizations and Parallel Processing}
+  %\VignetteEncoding{UTF-8}
 ---
   
 ```{r setup, include=FALSE}
