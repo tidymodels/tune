@@ -1,13 +1,12 @@
 ---
-title: "Acquisition Functions"
+title: "Acquisition functions"
 output: rmarkdown::html_vignette
 description: |
-  This vignettes describes what acquisition functions are and how they are
-  used to guide how the parameter space should be explored during Bayesian 
-  optimization.
+  What are acquisition functions? Learn how are they used to guide the 
+  exploration of the parameter space during Bayesian optimization.
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Acquisition Functions}
+  %\VignetteIndexEntry{Acquisition functions}
   %\VignetteEncoding{UTF-8}
 resource_files:
   - figures/initial.svg

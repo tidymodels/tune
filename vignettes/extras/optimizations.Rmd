@@ -1,12 +1,11 @@
 ---
-title: "Optimizations and Parallel Processing"
+title: "Optimizations and parallel processing"
 output: rmarkdown::html_vignette
 description: |
-  tune attempts to evaluate the candidate models in the shortest amount of 
-  time. This vignette is a summary of those approaches. 
+  How can we evaluate candidate models in the shortest amount of time?
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Optimizations and Parallel Processing}
+  %\VignetteIndexEntry{Optimizations and parallel processing}
   %\VignetteEncoding{UTF-8}
 ---
   

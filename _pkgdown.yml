@@ -6,23 +6,12 @@ navbar:
     tutorials:
       text: Learn more
       menu:
-      - text: "Grid Search"
+      - text: "Grid search"
         href: https://www.tidymodels.org/learn/work/tune-svm/
-      - text: "Bayesian Optimization of Classification Model"
+      - text: "Bayesian optimization of classification model"
         href: https://www.tidymodels.org/learn/work/bayes-opt/
-      - text: "Text Analysis Example"
+      - text: "Tuning text models"
         href: https://www.tidymodels.org/learn/work/tune-text/
-
-articles:
-- title: Get started
-  contents:
-  - tune
-
-- title: Learn more
-  navbar: ~
-  contents:
-  - acquisition_functions
-  - extras/optimizations
 
 template:
   package: tidytemplate
@@ -42,7 +31,7 @@ figures:
   fig.height: 5.75
 
 reference:
-  - title: User-Facing Functions
+  - title: Functions for tuning
     contents:
     - starts_with("tune")
     - fit_resamples
@@ -62,7 +51,7 @@ reference:
     - coord_obs_pred
     - conf_mat_resampled
     - example_ames_knn
-  - title: Low-Level Functions
+  - title: Developer functions
     contents:
     - merge.recipe
     - parameters.workflow
