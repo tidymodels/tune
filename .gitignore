@@ -6,7 +6,9 @@
 inst/examples/finefoods.txt
 vignettes/extras/text_analysis_cache
 vignettes/getting_started_cache
+vignettes/tune_cache
 vignettes/extras/svm_classification_cache
 vignettes/articles/Classification_cache/*
 R/plots.R
 tests/testthat/Rplots.pdf
+docs

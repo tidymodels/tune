@@ -1,13 +1,15 @@
 ---
-title: "Getting Started with tune"
+title: "Introduction to tune"
+output: rmarkdown::html_vignette
+description: |
+  Start here if this is your first time using tune! You will learn about 
+  basic usage, grid search, and model optimization.
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Getting Started with tune}
-output:
-  knitr:::html_vignette:
-    toc: yes
+  %\VignetteIndexEntry{Introduction to tune}
+  %\VignetteEncoding{UTF-8}
 ---
-  
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   digits = 3,
