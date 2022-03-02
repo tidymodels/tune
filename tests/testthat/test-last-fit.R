@@ -13,7 +13,7 @@ rmse_test <- yardstick::rsq_vec(testing(split) %>% pull(mpg), test_pred)
 test_that("formula method", {
 
   res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
-  expect_equivalent(coef(extract_fit_engine(res$.workflow[[1]])), coef(lm_fit))
+  expect_equal(coef(extract_fit_engine(res$.workflow[[1]])), coef(lm_fit), ignore_attr = TRUE)
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
   expect_true(res$.workflow[[1]]$trained)
@@ -24,7 +24,7 @@ test_that("recipe method", {
 
   rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
   res <- linear_reg() %>% set_engine("lm") %>% last_fit(rec, split)
-  expect_equivalent(sort(coef(extract_fit_engine(res$.workflow[[1]]))), sort(coef(lm_fit)))
+  expect_equal(sort(coef(extract_fit_engine(res$.workflow[[1]]))), sort(coef(lm_fit)), ignore_attr = TRUE)
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
   expect_true(res$.workflow[[1]]$trained)

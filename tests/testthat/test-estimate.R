@@ -17,7 +17,7 @@ compl <-
 options(dplyr.summarise.inform = opt)
 
 test_that('estimate method', {
-  expect_equivalent(
+  expect_equal(
     collect_metrics(rcv_results)[, names(compl)] %>% arrange(.config),
     compl
   )

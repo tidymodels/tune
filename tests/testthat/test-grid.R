@@ -271,8 +271,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   expect_length(notes, 2L)
 
   # recipe failed - no models run
-  expect_equivalent(extracts, list(NULL, NULL))
-  expect_equivalent(predictions, list(NULL, NULL))
+  expect_equal(extracts, list(NULL, NULL))
+  expect_equal(predictions, list(NULL, NULL))
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
@@ -303,8 +303,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
   expect_length(notes, 2L)
 
   # formula failed - no models run
-  expect_equivalent(extracts, list(NULL, NULL))
-  expect_equivalent(predictions, list(NULL, NULL))
+  expect_equal(extracts, list(NULL, NULL))
+  expect_equal(predictions, list(NULL, NULL))
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
