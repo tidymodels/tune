@@ -1,15 +1,3 @@
-library(recipes)
-library(parsnip)
-
-rec_1 <- recipe(mpg ~ ., data = mtcars)
-rec_2 <- recipe(mpg + wt ~ ., data = mtcars)
-rec_3 <- recipe( ~ ., data = mtcars)
-rec_4 <- recipe(mpg ~ ., data = mtcars) %>% step_rm(mpg)
-lm_mod <- linear_reg() %>% set_engine("lm")
-wflow <- workflow() %>% add_model(lm_mod)
-
-## -----------------------------------------------------------------------------
-
 test_that("base R objects", {
   lm_1 <- lm(mpg ~ ., data = mtcars)
   expect_equal(outcome_names(lm_1$terms), "mpg")
@@ -30,23 +18,32 @@ test_that("base R objects", {
 ## -----------------------------------------------------------------------------
 
 test_that("recipes", {
+  rec_1 <- recipes::recipe(mpg ~ ., data = mtcars)
   expect_equal(outcome_names(rec_1), "mpg")
-  expect_equal(outcome_names(prep(rec_1)), "mpg")
+  expect_equal(outcome_names(recipes::prep(rec_1)), "mpg")
 
+  rec_2 <- recipes::recipe(mpg + wt ~ ., data = mtcars)
   expect_equal(outcome_names(rec_2), c("mpg", "wt"))
-  expect_equal(outcome_names(prep(rec_2)), c("mpg", "wt"))
+  expect_equal(outcome_names(recipes::prep(rec_2)), c("mpg", "wt"))
 
+  rec_3 <- recipes::recipe( ~ ., data = mtcars)
   expect_equal(outcome_names(rec_3), character(0))
-  expect_equal(outcome_names(prep(rec_3)), character(0))
+  expect_equal(outcome_names(recipes::prep(rec_3)), character(0))
 
+  rec_4 <- recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_rm(mpg)
   expect_equal(outcome_names(rec_4), "mpg")
-  expect_equal(outcome_names(prep(rec_4)), character(0))
+  expect_equal(outcome_names(recipes::prep(rec_4)), character(0))
 })
 
 
 ## -----------------------------------------------------------------------------
 
 test_that("workflows + recipes", {
+  rec_1 <- recipes::recipe(mpg ~ ., data = mtcars)
+  rec_2 <- recipes::recipe(mpg + wt ~ ., data = mtcars)
+  lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  wflow <- workflow() %>% add_model(lm_mod)
+
   wflow_1 <- wflow %>% add_recipe(rec_1)
   expect_equal(outcome_names(wflow_1), "mpg")
   expect_equal(outcome_names(fit(wflow_1, mtcars)), "mpg")
@@ -60,6 +57,9 @@ test_that("workflows + recipes", {
 ## -----------------------------------------------------------------------------
 
 test_that("workflows + formulas", {
+  lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  wflow <- workflow() %>% add_model(lm_mod)
+
   wflow_1 <- wflow %>% add_formula(mpg ~ .)
   expect_equal(outcome_names(wflow_1), "mpg")
   expect_equal(outcome_names(fit(wflow_1, mtcars)), "mpg")
@@ -76,13 +76,11 @@ test_that("tune_results objects", {
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   res <- lin_mod %>%
     fit_resamples(mpg ~ ., folds) %>%
     outcome_names()
   expect_equal(res, "mpg")
-
 })
-
