@@ -62,12 +62,12 @@ test_that("marginal plot labels and transformations - irregular grid",{
   expect_equal(
     sort(unique(collect_metrics(svm_results)$cost)),
     sort(unique(2^(p$data$value[p$data$name == "Cost (log-2)"]))),
-    tol = 0.001
+    tolerance = 0.001
   )
   expect_equal(
     sort(unique(collect_metrics(svm_results)$scale_factor)),
     sort(unique(10^(p$data$value[p$data$name == "Scale Factor (log-10)"]))),
-    tol = 0.001
+    tolerance = 0.001
   )
 
   p <- autoplot(svm_results, metric = "accuracy")
