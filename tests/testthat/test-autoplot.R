@@ -1,13 +1,6 @@
-source(test_path("../helper-objects.R"))
-knn_results <- readRDS(test_path("knn_results.rds"))
-svm_results <- readRDS(test_path("svm_results.rds"))
-svm_reg_results <- readRDS(test_path("svm_reg_results.rds"))
-rcv_results <- readRDS(test_path("rcv_results.rds"))
-load(test_path("test_objects.RData"))
-
-# ------------------------------------------------------------------------------
-
 test_that("two quantitative predictor marginal plot",{
+  svm_results <- readRDS(test_path("svm_results.rds"))
+
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
@@ -22,6 +15,8 @@ test_that("two quantitative predictor marginal plot",{
 
 
 test_that("two quantitative predictor and one qualitative marginal plot",{
+  knn_results <- readRDS(test_path("knn_results.rds"))
+
   p <- autoplot(knn_results)
   expect_s3_class(p, "ggplot")
   expect_equal(
@@ -36,18 +31,16 @@ test_that("two quantitative predictor and one qualitative marginal plot",{
 })
 
 test_that("not marginal plot with grid search",{
-  expect_error(
-    autoplot(knn_results, type = "performance"),
-    "`type = performance` is only used iterative search results."
-  )
-  expect_error(
-    autoplot(knn_results, type = "parameters"),
-    "`type = parameters` is only used iterative search results."
-  )
+  knn_results <- readRDS(test_path("knn_results.rds"))
+
+  expect_snapshot(error = TRUE, autoplot(knn_results, type = "performance"))
+  expect_snapshot(error = TRUE, autoplot(knn_results, type = "parameters"))
 })
 
 
 test_that("marginal plot labels and transformations - irregular grid",{
+  svm_results <- readRDS(test_path("svm_results.rds"))
+
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
@@ -77,6 +70,8 @@ test_that("marginal plot labels and transformations - irregular grid",{
 # ------------------------------------------------------------------------------
 
 test_that("marginal plot for iterative search",{
+  load(test_path("test_objects.RData"))
+
   p <- autoplot(mt_spln_knn_bo_sep)
   expect_s3_class(p, "ggplot")
   expect_equal(
@@ -95,6 +90,8 @@ test_that("marginal plot for iterative search",{
 
 
 test_that("performance plot for iterative search",{
+  load(test_path("test_objects.RData"))
+
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
   expect_s3_class(p, "ggplot")
   expect_equal(names(p$data),
@@ -116,6 +113,8 @@ test_that("performance plot for iterative search",{
 
 
 test_that("parameter plot for iterative search",{
+  load(test_path("test_objects.RData"))
+
   p <- autoplot(mt_spln_knn_bo_sep, type = "parameters")
   expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('.iter', 'name', 'value'))
@@ -130,6 +129,9 @@ test_that("parameter plot for iterative search",{
 
 
 test_that("regular grid plot",{
+  rcv_results <- readRDS(test_path("rcv_results.rds"))
+  svm_reg_results <- readRDS(test_path("svm_reg_results.rds"))
+
   p <- autoplot(rcv_results)
   expect_s3_class(p, "ggplot")
   expect_equal(
@@ -209,22 +211,16 @@ test_that("coord_obs_pred",{
     ggplot(solubility_test, aes(x = solubility, y = prediction)) +
     geom_abline(lty = 2) +
     geom_point(alpha = 0.5)
-
-  expect_warning(
-    print(p3 + coord_obs_pred()),
-    "Removed 1 rows containing missing values"
-  )
-
-
+  expect_snapshot_warning(print(p3 + coord_obs_pred()))
 })
-
-
 
 test_that("1D regular grid x labels",{
   set.seed(1)
   res <-
-    svm_rbf(cost = tune()) %>% set_engine("kernlab") %>% set_mode("regression") %>%
-    tune_grid(mpg ~ ., resamples = vfold_cv(mtcars, v = 5), grid = 3)
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression") %>%
+    tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 3)
   expect_equal(autoplot(res)$labels$x, c(cost = "Cost"))
 })
 
