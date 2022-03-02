@@ -1,5 +1,3 @@
-context("augment")
-
 library(parsnip)
 library(rsample)
 library(dials)

@@ -1,5 +1,3 @@
-context("`select_best()` and `show_best()`")
-
 # ------------------------------------------------------------------------------
 # library(tidymodels)
 # set.seed(7898)

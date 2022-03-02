@@ -1,5 +1,3 @@
-context("extract functions")
-
 library(parsnip)
 
 lm_spec <- linear_reg() %>% set_engine("lm")

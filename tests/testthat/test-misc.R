@@ -1,7 +1,3 @@
-context("misc functions")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("../helper-objects.R"))
 load(test_path("test_objects.RData"))
 

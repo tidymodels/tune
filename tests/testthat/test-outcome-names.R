@@ -1,7 +1,3 @@
-context("outcome names")
-
-## -----------------------------------------------------------------------------
-
 library(recipes)
 library(parsnip)
 

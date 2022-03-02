@@ -1,7 +1,3 @@
-context("resampling labels")
-
-# ------------------------------------------------------------------------------
-
 test_that("pretty tune objects",{
   expect_equal(
     readRDS(test_path("knn_results.rds")) %>% pretty(),

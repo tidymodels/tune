@@ -1,5 +1,3 @@
-context("collect")
-
 library(recipes)
 data(two_class_dat, package = "modeldata")
 

@@ -1,5 +1,3 @@
-context("finalization")
-
 library(parsnip)
 library(recipes)
 library(modeldata)

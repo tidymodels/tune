@@ -1,7 +1,3 @@
-context("handlers")
-
-# ------------------------------------------------------------------------------
-
 test_that('catch errors', {
   res_1 <- tune:::catcher(log("a"))
   expect_true(class(res_1$res) == "try-error")

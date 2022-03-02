@@ -1,7 +1,3 @@
-context("acquisition functions")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("../helper-objects.R"))
 
 test_res <- tibble::tibble(.mean = 1:10,  .sd = c((1:9)/10, NA_real_))

@@ -1,7 +1,3 @@
-context("resampled confusion matrix")
-
-# ------------------------------------------------------------------------------
-
 load(test_path("test_objects.RData"))
 svm_results <- readRDS(test_path("svm_results.rds"))
 

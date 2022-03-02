@@ -1,7 +1,3 @@
-context("autoplot")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("../helper-objects.R"))
 knn_results <- readRDS(test_path("knn_results.rds"))
 svm_results <- readRDS(test_path("svm_results.rds"))

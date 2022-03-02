@@ -1,7 +1,3 @@
-context("`collect_metrics` methods")
-
-# ------------------------------------------------------------------------------
-
 source(test_path("../helper-objects.R"))
 rcv_results <- readRDS(test_path("rcv_results.rds"))
 
