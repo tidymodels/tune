@@ -1,5 +1,3 @@
-source(test_path("../helper-objects.R"))
-
 check_predictions <- function(split, pred, tune_df) {
 
   assess <- rsample::assessment(split)

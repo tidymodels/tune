@@ -1,5 +1,3 @@
-source(test_path("../helper-objects.R"))
-
 # ------------------------------------------------------------------------------
 
 test_that('boosted tree grid reduction - xgboost', {

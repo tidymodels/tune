@@ -1,5 +1,3 @@
-source(test_path("../helper-objects.R"))
-
 # ------------------------------------------------------------------------------
 
 test_that('parameters.recipe() still works', {

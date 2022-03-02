@@ -47,7 +47,6 @@
 
 rcv_results <- readRDS(test_path("rcv_results.rds"))
 knn_results <- readRDS(test_path("knn_results.rds"))
-source(test_path("../helper-objects.R"))
 
 # ------------------------------------------------------------------------------
 

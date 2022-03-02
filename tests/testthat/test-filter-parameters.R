@@ -1,4 +1,3 @@
-source(test_path("../helper-objects.R"))
 svm_reg_results <- readRDS(test_path("svm_reg_results.rds"))
 load(test_path("test_objects.RData"))
 

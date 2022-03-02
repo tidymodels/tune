@@ -1,7 +1,3 @@
-#source(test_path("../helper-objects.R"))
-
-# ------------------------------------------------------------------------------
-
 rec_tune_1 <-
   recipes::recipe(mpg ~ ., data = mtcars) %>%
   recipes::step_normalize(recipes::all_predictors()) %>%
