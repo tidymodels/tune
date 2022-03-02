@@ -44,7 +44,7 @@ Suggests:
     knitr,
     modeldata,
     spelling,
-    testthat,
+    testthat (>= 3.0.0),
     xml2
 Remotes: 
     tidymodels/hardhat,
@@ -62,3 +62,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3
