@@ -13,7 +13,7 @@ test_that("`fit_resamples()` returns a `resample_result` object", {
   result <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
 
-  expect_is(result, "resample_results")
+  expect_s3_class(result, "resample_results")
 })
 
 test_that("can use `fit_resamples()` with a formula", {

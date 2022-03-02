@@ -193,7 +193,7 @@ test_that('grid control objects', {
   expect_error(control_grid(extract = I), NA)
   expect_error(control_grid(pkgs = NULL), NA)
   expect_error(control_grid(pkgs = letters), NA)
-  expect_is(control_grid(), c("control_grid", "control_resamples"))
+  expect_s3_class(control_grid(), c("control_grid", "control_resamples"))
 })
 
 test_that('Bayes control objects', {
@@ -221,7 +221,7 @@ test_that('Bayes control objects', {
   expect_error(control_bayes(pkgs = NULL), NA)
   expect_error(control_bayes(pkgs = letters), NA)
   expect_error(control_bayes(time_limit = 2), NA)
-  expect_is(control_bayes(), "control_bayes")
+  expect_s3_class(control_bayes(), "control_bayes")
 })
 
 # ------------------------------------------------------------------------------

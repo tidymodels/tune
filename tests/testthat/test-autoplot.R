@@ -9,7 +9,7 @@ load(test_path("test_objects.RData"))
 
 test_that("two quantitative predictor marginal plot",{
   p <- autoplot(svm_results)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -23,7 +23,7 @@ test_that("two quantitative predictor marginal plot",{
 
 test_that("two quantitative predictor and one qualitative marginal plot",{
   p <- autoplot(knn_results)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
     c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
@@ -49,7 +49,7 @@ test_that("not marginal plot with grid search",{
 
 test_that("marginal plot labels and transformations - irregular grid",{
   p <- autoplot(svm_results)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -78,7 +78,7 @@ test_that("marginal plot labels and transformations - irregular grid",{
 
 test_that("marginal plot for iterative search",{
   p <- autoplot(mt_spln_knn_bo_sep)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
     c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
@@ -96,7 +96,7 @@ test_that("marginal plot for iterative search",{
 
 test_that("performance plot for iterative search",{
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(names(p$data),
                c('K', 'weight_func', 'deg_free', '.metric',
                  '.estimator', 'mean', 'n', 'std_err', '.config', '.iter'))
@@ -117,7 +117,7 @@ test_that("performance plot for iterative search",{
 
 test_that("parameter plot for iterative search",{
   p <- autoplot(mt_spln_knn_bo_sep, type = "parameters")
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(names(p$data), c('.iter', 'name', 'value'))
 
   name_vals <- sort(unique(p$data$name))
@@ -131,7 +131,7 @@ test_that("parameter plot for iterative search",{
 
 test_that("regular grid plot",{
   p <- autoplot(rcv_results)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
     c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
@@ -146,7 +146,7 @@ test_that("regular grid plot",{
   expect_equal(p$labels$x, "deg_free")
 
   p <- autoplot(rcv_results, metric = "rmse")
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
     c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
@@ -161,7 +161,7 @@ test_that("regular grid plot",{
   expect_equal(p$labels$x, "deg_free")
 
   p <- autoplot(svm_reg_results)
-  expect_is(p, "ggplot")
+  expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
     c("%^*#", "Scale Factor",  "mean", '# resamples', ".metric", "name", "value")
