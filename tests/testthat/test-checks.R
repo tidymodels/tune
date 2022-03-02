@@ -17,7 +17,7 @@ test_that('rsample objects', {
 
 test_that('grid objects', {
 
-  grid_1 <- tibble(
+  grid_1 <- tibble::tibble(
     penalty = 1:10, mixture = 1:10, imputation = 1:10,
     threshold = 1:10, deg_free = 1:10, degree = 1:10
   )
@@ -54,7 +54,7 @@ test_that('grid objects', {
     threshold = 1:2, deg_free = 2:3, degree = 9:10
   )
   expect_equal(tune:::check_grid(grid_4, chi_wflow),
-               as_tibble(vctrs::data_frame(grid_4)))
+               tibble::as_tibble(vctrs::data_frame(grid_4)))
 
   expect_silent(tune:::check_grid(grid_4, chi_wflow))
 })
@@ -74,7 +74,7 @@ test_that("Unknown `grid` columns are caught", {
   workflow <- add_recipe(workflow, rec)
   workflow <- add_model(workflow, model)
 
-  grid <- tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
+  grid <- tibble::tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
 
   expect_error(
     tune:::check_grid(grid, workflow),
@@ -97,7 +97,7 @@ test_that("Missing required `grid` columns are caught", {
   workflow <- add_recipe(workflow, rec)
   workflow <- add_model(workflow, model)
 
-  grid <- tibble(num_comp = 0.01)
+  grid <- tibble::tibble(num_comp = 0.01)
 
   expect_error(
     tune:::check_grid(grid, workflow),
@@ -229,14 +229,14 @@ test_that('Bayes control objects', {
 test_that('initial values', {
 
   svm_mod <-
-    svm_rbf(cost = tune()) %>%
-    set_engine("kernlab") %>%
-    set_mode("regression")
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression")
 
   wflow_1 <-
     workflow() %>%
     add_model(svm_mod) %>%
-    add_recipe(recipe(mpg ~ ., data = mtcars))
+    add_recipe(recipes::recipe(mpg ~ ., data = mtcars))
 
   grid_1 <- tune:::check_initial(2, extract_parameter_set_dials(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
@@ -290,17 +290,17 @@ test_that('validation helpers', {
 test_that('check parameter finalization', {
 
   rec <-
-    recipe(mpg ~ ., data = mtcars) %>%
-    step_ns(disp, deg_free = 3)
-  rec_tune <- rec %>% step_pca(all_predictors(), num_comp = tune())
+    recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_ns(disp, deg_free = 3)
+  rec_tune <- rec %>% recipes::step_pca(recipes::all_predictors(), num_comp = tune())
   f <- mpg ~ .
   rf1 <-
-    rand_forest(mtry = tune(), min_n  = tune()) %>%
-    set_engine("ranger") %>%
-    set_mode("regression")
+    parsnip::rand_forest(mtry = tune(), min_n  = tune()) %>%
+    parsnip::set_engine("ranger") %>%
+    parsnip::set_mode("regression")
   lm1 <-
-    linear_reg(penalty = tune()) %>%
-    set_engine("glmnet")
+    parsnip::linear_reg(penalty = tune()) %>%
+    parsnip::set_engine("glmnet")
 
   w1 <-
     workflow() %>%
