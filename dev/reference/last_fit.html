@@ -119,7 +119,7 @@ the test data.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://parsnip.tidymodels.org" class="external-link">parsnip</a></span><span class="op">)</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">6735</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">tr_te_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">initial_split</a></span><span class="op">(</span><span class="va">mtcars</span><span class="op">)</span></span>
@@ -151,9 +151,9 @@ the test data.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/workflows" class="external-link">workflows</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="va">spline_wfl</span> <span class="op">&lt;-</span></span>
-<span class="r-in"> <span class="fu"><a href="https://workflows.tidymodels.org//reference/workflow.html" class="external-link">workflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_recipe.html" class="external-link">add_recipe</a></span><span class="op">(</span><span class="va">spline_rec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in"> <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_model.html" class="external-link">add_model</a></span><span class="op">(</span><span class="va">lin_mod</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://workflows.tidymodels.org//reference/workflow.html" class="external-link">workflow</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_recipe.html" class="external-link">add_recipe</a></span><span class="op">(</span><span class="va">spline_rec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://workflows.tidymodels.org//reference/add_model.html" class="external-link">add_model</a></span><span class="op">(</span><span class="va">lin_mod</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">last_fit</span><span class="op">(</span><span class="va">spline_wfl</span>, split <span class="op">=</span> <span class="va">tr_te_split</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # Resampling results</span>
@@ -172,7 +172,7 @@ the test data.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

@@ -241,8 +241,8 @@ argument should be a function with a single argument. The value of the
 argument that is given to the function in each resample is a workflow
 object (see <code><a href="https://workflows.tidymodels.org//reference/workflow.html" class="external-link">workflows::workflow()</a></code> for more information). There are two
 helper functions that can be used to easily pull out the recipe (if any)
-and/or the model: <code><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_recipe()</a></code> and <code><a href="extract_model.html">extract_model()</a></code>.</p>
-<p>As an example, if there is interest in getting each model back, one could use:</p><div class="sourceCode"><pre><code><span class="va">extract</span> <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_fit_parsnip</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+and/or the model: <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_recipe()</a></code> and <code><a href="extract_model.html">extract_model()</a></code>.</p>
+<p>As an example, if there is interest in getting each model back, one could use:</p><div class="sourceCode"><pre><code><span class="va">extract</span> <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_fit_parsnip</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
 every model that is <em>fit</em> (as opposed to every model that is <em>evaluated</em>).
@@ -252,7 +252,7 @@ grid has a separate R object associated with it.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="control_grid.html">control_grid()</a></code>, <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code>, <code><a href="fit_resamples.html">fit_resamples()</a></code>,
+    <div class="dont-index"><p><code><a href="control_grid.html">control_grid()</a></code>, <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code>, <code><a href="fit_resamples.html">fit_resamples()</a></code>,
 <code><a href="autoplot.tune_results.html">autoplot.tune_results()</a></code>, <code><a href="show_best.html">show_best()</a></code>, <code><a href="show_best.html">select_best()</a></code>,
 <code><a href="collect_predictions.html">collect_predictions()</a></code>, <code><a href="collect_predictions.html">collect_metrics()</a></code></p></div>
     </div>
@@ -262,7 +262,7 @@ grid has a separate R object associated with it.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://parsnip.tidymodels.org" class="external-link">parsnip</a></span><span class="op">)</span></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/workflows" class="external-link">workflows</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -277,8 +277,8 @@ grid has a separate R object associated with it.</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">spline_rec</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">disp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"disp"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">wt</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"wt"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">disp</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"disp"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">wt</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"wt"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">lin_mod</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -323,7 +323,7 @@ grid has a separate R object associated with it.</p>
 <span class="r-in">  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">svm_mod</span> <span class="op">&lt;-</span></span>
-<span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/svm_rbf.html" class="external-link">svm_rbf</a></span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/svm_rbf.html" class="external-link">svm_rbf</a></span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kernlab"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -383,7 +383,7 @@ grid has a separate R object associated with it.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

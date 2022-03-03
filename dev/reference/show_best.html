@@ -160,8 +160,11 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .bound &lt;dbl&gt;</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Now find the least complex model that has no more than a 5% loss of RMSE:</span></span>
-<span class="r-in"><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">ames_grid_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span>,</span>
-<span class="r-in">                   limit <span class="op">=</span> <span class="fl">5</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">select_by_pct_loss</span><span class="op">(</span></span>
+<span class="r-in">  <span class="va">ames_grid_search</span>,</span>
+<span class="r-in">  metric <span class="op">=</span> <span class="st">"rmse"</span>,</span>
+<span class="r-in">  limit <span class="op">=</span> <span class="fl">5</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       K weight_func dist_power   lon   lat .metric .estimator   mean     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -178,7 +181,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

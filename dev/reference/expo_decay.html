@@ -96,7 +96,7 @@ sign of the slope controls the direction of decay.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note that, when used with the acquisition functions in <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code>, a wrapper
+    <p>Note that, when used with the acquisition functions in <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code>, a wrapper
 would be required since only the first argument would be evaluated during
 tuning.</p>
     </div>
@@ -110,7 +110,7 @@ tuning.</p>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span class="r-in">  iter <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">40</span>,</span>
-<span class="r-in">  value <span class="op">=</span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span></span>
+<span class="r-in">  value <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span></span>
 <span class="r-in">    <span class="fl">1</span><span class="op">:</span><span class="fl">40</span>,</span>
 <span class="r-in">    <span class="va">expo_decay</span>,</span>
 <span class="r-in">    start_val <span class="op">=</span> <span class="fl">.1</span>,</span>
@@ -118,7 +118,8 @@ tuning.</p>
 <span class="r-in">    slope <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="fl">5</span></span>
 <span class="r-in">  <span class="op">)</span></span>
 <span class="r-in"><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span class="r-in">  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">iter</span>, y <span class="op">=</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_path</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">iter</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span class="r-in">  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_path</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="expo_decay-1.png" alt="" width="768" height="552"></span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
@@ -130,7 +131,7 @@ tuning.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
