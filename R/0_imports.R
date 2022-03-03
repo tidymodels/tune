@@ -1,12 +1,3 @@
-#' @keywords internal
-"_PACKAGE"
-
-## usethis namespace: start
-## usethis namespace: end
-NULL
-
-# ------------------------------------------------------------------------------
-
 #' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when vars
 #' @importFrom dplyr one_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
