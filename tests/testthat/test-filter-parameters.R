@@ -11,7 +11,7 @@ rec_tune_1 <-
 lm_mod <- linear_reg() %>% set_engine("lm")
 
 set.seed(363)
-mt_folds <- vfold_cv(mtcars, v = 3)
+mt_folds <- rsample::vfold_cv(mtcars, v = 3)
 
 extr_rec <- function(x) {
   extract_recipe(x) %>% tidy(number = 2)

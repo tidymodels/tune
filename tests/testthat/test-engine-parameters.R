@@ -1,14 +1,9 @@
-library(parsnip)
-library(dials)
-
-## -----------------------------------------------------------------------------
-
 test_that('check for finalization with engine parameters', {
-  pset_1 <- parameters(mtry(), penalty(), mixture())
+  pset_1 <- parameters(dials::mtry(), dials::penalty(), dials::mixture())
   pset_2 <- pset_1
   pset_2$object[[3]] <- NA
 
-  pset_3 <- parameters(mtry(1:2), penalty(), mixture())
+  pset_3 <- parameters(dials::mtry(1:2), dials::penalty(), dials::mixture())
   pset_4 <- pset_3
   pset_4$object[[3]] <- NA
 
@@ -32,9 +27,9 @@ test_that('tuning with engine parameters with dials objects', {
   skip_if(utils::packageVersion("dials") <= "0.0.7")
 
   rf_mod <-
-    rand_forest(min_n = tune()) %>%
-    set_engine("randomForest", maxnodes = tune()) %>%
-    set_mode("regression")
+    parsnip::rand_forest(min_n = tune()) %>%
+    parsnip::set_engine("randomForest", maxnodes = tune()) %>%
+    parsnip::set_mode("regression")
 
   set.seed(192)
   rs <- rsample::vfold_cv(mtcars)
@@ -69,9 +64,9 @@ test_that('tuning with engine parameters without dials objects', {
   ## ---------------------------------------------------------------------------
 
   rf_mod <-
-    rand_forest(min_n = tune()) %>%
-    set_engine("randomForest", corr.bias = tune()) %>%
-    set_mode("regression")
+    parsnip::rand_forest(min_n = tune()) %>%
+    parsnip::set_engine("randomForest", corr.bias = tune()) %>%
+    parsnip::set_mode("regression")
 
   grid <-
     data.frame(min_n = c(5, 10, 5, 10),

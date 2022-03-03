@@ -29,21 +29,21 @@ test_that('in-line formulas on outcome', {
   w1 <-
     workflow() %>%
     add_formula(log(mpg) ~ .) %>%
-    add_model(linear_reg() %>% set_engine("lm"))
+    add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
   expect_error(
-    f1 <- fit_resamples(w1, resamples = vfold_cv(mtcars)),
+    f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars)),
     regex = NA
   )
   expect_true(inherits(f1, "resample_results"))
 
   w2 <-
     workflow() %>%
-    add_recipe(recipe(mpg ~ ., data = mtcars) %>% step_log(mpg)) %>%
-    add_model(linear_reg() %>% set_engine("lm"))
+    add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_log(mpg)) %>%
+    add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
   expect_error(
-    f2 <- fit_resamples(w2, resamples = vfold_cv(mtcars)),
+    f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars)),
     regex = NA
   )
   expect_true(inherits(f2, "resample_results"))

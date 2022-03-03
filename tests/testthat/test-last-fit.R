@@ -2,37 +2,58 @@
 # ------------------------------------------------------------------------------
 
 set.seed(23598723)
-split <- initial_split(mtcars)
+split <- rsample::initial_split(mtcars)
 
 f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
-lm_fit <- lm(f, data = training(split))
-test_pred <- predict(lm_fit, testing(split))
-rmse_test <- yardstick::rsq_vec(testing(split) %>% pull(mpg), test_pred)
+lm_fit <- lm(f, data = rsample::training(split))
+test_pred <- predict(lm_fit, rsample::testing(split))
+rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
 
 test_that("formula method", {
+  res <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm") %>%
+    last_fit(f, split)
 
-  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
-  expect_equal(coef(extract_fit_engine(res$.workflow[[1]])), coef(lm_fit), ignore_attr = TRUE)
+  expect_equal(
+    coef(extract_fit_engine(res$.workflow[[1]])),
+    coef(lm_fit),
+    ignore_attr = TRUE
+  )
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
   expect_true(res$.workflow[[1]]$trained)
-  expect_equal(nrow(predict(res$.workflow[[1]], testing(split))), nrow(testing(split)))
+  expect_equal(
+    nrow(predict(res$.workflow[[1]], rsample::testing(split))),
+    nrow(rsample::testing(split))
+  )
 })
 
 test_that("recipe method", {
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
-  res <- linear_reg() %>% set_engine("lm") %>% last_fit(rec, split)
-  expect_equal(sort(coef(extract_fit_engine(res$.workflow[[1]]))), sort(coef(lm_fit)), ignore_attr = TRUE)
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_poly(disp)
+  res <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm") %>%
+    last_fit(rec, split)
+  expect_equal(
+    sort(coef(extract_fit_engine(res$.workflow[[1]]))),
+    sort(coef(lm_fit)),
+    ignore_attr = TRUE
+  )
   expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
   expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
   expect_true(res$.workflow[[1]]$trained)
-  expect_equal(nrow(predict(res$.workflow[[1]], testing(split))), nrow(testing(split)))
+  expect_equal(
+    nrow(predict(res$.workflow[[1]], rsample::testing(split))),
+    nrow(rsample::testing(split))
+  )
 })
 
 test_that("collect metrics of last fit", {
 
-  res <- linear_reg() %>% set_engine("lm") %>% last_fit(f, split)
+  res <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm") %>%
+    last_fit(f, split)
   met <- collect_metrics(res)
   expect_true(inherits(met, "tbl_df"))
   expect_equal(names(met), c(".metric", ".estimator", ".estimate", ".config"))
@@ -48,9 +69,9 @@ test_that("ellipses with last_fit", {
 })
 
 test_that("argument order gives errors for recipe/formula", {
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_poly(disp)
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_poly(disp)
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect_error(
     last_fit(rec, lin_mod, split),
@@ -80,8 +101,8 @@ test_that("same results of last_fit() and fit() (#300)", {
   lf_obj <- last_fit(wflow, split = split)
 
   set.seed(1)
-  r_obj <- fit(wflow, data = analysis(split))
-  r_pred <- predict(r_obj, assessment(split))
+  r_obj <- fit(wflow, data = rsample::analysis(split))
+  r_pred <- predict(r_obj, rsample::assessment(split))
 
   expect_equal(
     lf_obj$.predictions[[1]]$.pred,

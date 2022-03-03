@@ -1,4 +1,3 @@
-library(recipes)
 data(two_class_dat, package = "modeldata")
 
 # ------------------------------------------------------------------------------
@@ -6,7 +5,8 @@ data(two_class_dat, package = "modeldata")
 set.seed(6735)
 rep_folds <- rsample::vfold_cv(mtcars, v = 2, repeats = 2)
 
-spline_rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = 3)
+spline_rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_ns(disp, deg_free = 3)
 
 lin_mod <- parsnip::linear_reg() %>%
   parsnip::set_engine("lm")
@@ -145,7 +145,7 @@ test_that("classification class and prob predictions, averaged", {
 test_that("collecting notes", {
   mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
-  flds <- bootstraps(mtcars2, times = 2)
+  flds <- rsample::bootstraps(mtcars2, times = 2)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -168,7 +168,7 @@ test_that("collecting notes", {
   # ----------------------------------------------------------------------------
 
   set.seed(1)
-  split <- initial_split(mtcars2)
+  split <- rsample::initial_split(mtcars2)
 
   expect_message(
     lst <- last_fit(lin_mod, mpg ~ ., split),

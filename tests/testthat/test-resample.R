@@ -3,10 +3,10 @@
 
 test_that("`fit_resamples()` returns a `resample_result` object", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   result <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
@@ -16,10 +16,10 @@ test_that("`fit_resamples()` returns a `resample_result` object", {
 
 test_that("can use `fit_resamples()` with a formula", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect_warning(
     result <- lin_mod %>%
@@ -32,11 +32,11 @@ test_that("can use `fit_resamples()` with a formula", {
 
 test_that("can use `fit_resamples()` with a recipe", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_ns(disp) %>%
-    step_ns(wt)
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_ns(disp) %>%
+    recipes::step_ns(wt)
 
   lin_mod <- linear_reg() %>%
     set_engine("lm")
@@ -56,14 +56,14 @@ test_that("can use `fit_resamples()` with a recipe", {
 
 test_that("can use `fit_resamples()` with a workflow - recipe", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_ns(disp) %>%
-    step_ns(wt)
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_ns(disp) %>%
+    recipes::step_ns(wt)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   workflow <- workflow() %>%
     add_recipe(rec) %>%
@@ -78,10 +78,10 @@ test_that("can use `fit_resamples()` with a workflow - recipe", {
 
 test_that("can use `fit_resamples()` with a workflow - variables", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   workflow <- workflow() %>%
     add_variables(mpg, c(cyl, disp)) %>%
@@ -96,10 +96,10 @@ test_that("can use `fit_resamples()` with a workflow - variables", {
 
 test_that("can use `fit_resamples()` with a workflow - formula", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   workflow <- workflow() %>%
     add_formula(mpg ~ cyl + disp) %>%
@@ -114,10 +114,10 @@ test_that("can use `fit_resamples()` with a workflow - formula", {
 
 test_that("extracted workflow is finalized", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   workflow <- workflow() %>%
     add_variables(mpg, c(cyl, disp)) %>%
@@ -136,13 +136,13 @@ test_that("extracted workflow is finalized", {
 
 test_that("failure in recipe is caught elegantly", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_ns(disp, deg_free = NA_real_)
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_ns(disp, deg_free = NA_real_)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
@@ -168,10 +168,10 @@ test_that("failure in recipe is caught elegantly", {
 
 test_that("failure in variables tidyselect specification is caught elegantly", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   workflow <- workflow() %>%
     add_model(lin_mod) %>%
@@ -201,12 +201,12 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
 
 test_that("classification models generate correct error message", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(vs ~ ., data = mtcars)
+  rec <- recipes::recipe(vs ~ ., data = mtcars)
 
-  log_mod <- logistic_reg() %>%
-    set_engine("glm")
+  log_mod <- parsnip::logistic_reg() %>%
+    parsnip::set_engine("glm")
 
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
@@ -236,10 +236,10 @@ test_that("classification models generate correct error message", {
 
 test_that("`tune_grid()` falls back to `fit_resamples()` - formula", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect <- fit_resamples(lin_mod, mpg ~ ., folds)
 
@@ -253,10 +253,10 @@ test_that("`tune_grid()` falls back to `fit_resamples()` - formula", {
 
 test_that("`tune_grid()` falls back to `fit_resamples()` - workflow variables", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   wf <- workflow() %>%
     add_model(lin_mod) %>%
@@ -274,10 +274,10 @@ test_that("`tune_grid()` falls back to `fit_resamples()` - workflow variables", 
 
 test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
@@ -295,10 +295,10 @@ test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
 
 test_that("cannot autoplot `fit_resamples()` results", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   result <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
@@ -307,10 +307,10 @@ test_that("cannot autoplot `fit_resamples()` results", {
 })
 
 test_that("ellipses with fit_resamples", {
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect_warning(
     lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong"),
@@ -320,14 +320,14 @@ test_that("ellipses with fit_resamples", {
 
 test_that("argument order gives errors for recipe/formula", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_ns(disp) %>%
-    step_ns(wt)
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_ns(disp) %>%
+    recipes::step_ns(wt)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect_error(
     fit_resamples(rec, lin_mod, folds),
@@ -344,10 +344,10 @@ test_that("argument order gives errors for recipe/formula", {
 test_that("retain extra attributes", {
 
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  lin_mod <- linear_reg() %>%
-    set_engine("lm")
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   res <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)

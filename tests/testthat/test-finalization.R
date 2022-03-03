@@ -1,24 +1,20 @@
-library(parsnip)
-library(recipes)
-library(modeldata)
-
-## -----------------------------------------------------------------------------
-
 set.seed(21983)
 rs <- rsample::vfold_cv(mtcars)
 
 mod_1 <-
-  rand_forest(mtry = tune(), trees = 20, min_n = tune()) %>%
-  set_engine("randomForest") %>%
-  set_mode("regression")
+  parsnip::rand_forest(mtry = tune(), trees = 20, min_n = tune()) %>%
+  parsnip::set_engine("randomForest") %>%
+  parsnip::set_mode("regression")
 
 rec_1 <-
-  recipe(mpg ~ ., data = mtcars) %>%
-  step_ns(disp, deg_free = tune())
+  recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_ns(disp, deg_free = tune())
 
 rec_2 <-
-  recipe(mpg ~ ., data = mtcars) %>%
-  step_ns(disp, deg_free = 3)
+  recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_ns(disp, deg_free = 3)
+
+## -----------------------------------------------------------------------------
 
 test_that('cannot finalize with recipe parameters', {
   skip_if_not_installed("randomForest")
@@ -52,13 +48,13 @@ test_that('skip error if grid is supplied', {
 
 
 test_that('finalize recipe step with multiple tune parameters', {
-  data(biomass)
+  data(biomass, package = "modeldata")
 
-  model_spec <- linear_reg() %>%
-    set_engine("lm")
+  model_spec <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
-  rec <- recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, data = biomass) %>%
-    step_bs(carbon, hydrogen, deg_free = tune(), degree = tune())
+  rec <- recipes::recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, data = biomass) %>%
+    recipes::step_bs(carbon, hydrogen, deg_free = tune(), degree = tune())
 
   best <- tibble(deg_free = 2, degree = 1, .config = "Preprocessor1_Model1")
 

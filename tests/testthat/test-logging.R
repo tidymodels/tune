@@ -1,7 +1,3 @@
-library(cli)
-
-# ------------------------------------------------------------------------------
-
 ctrl_t <- control_grid(verbose = TRUE)
 ctrl_f <- control_grid(verbose = FALSE)
 

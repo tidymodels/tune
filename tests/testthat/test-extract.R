@@ -3,18 +3,23 @@ load(test_path("test_objects.RData"))
 # ------------------------------------------------------------------------------
 
 rec_tune_1 <-
-  recipe(mpg ~ ., data = mtcars) %>%
-  step_normalize(all_predictors()) %>%
-  step_pca(all_predictors(), num_comp = tune())
+  recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_normalize(recipes::all_predictors()) %>%
+  recipes::step_pca(recipes::all_predictors(), num_comp = tune())
 
 rec_no_tune_1 <-
-  recipe(mpg ~ ., data = mtcars) %>%
-  step_normalize(all_predictors())
+  recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_normalize(recipes::all_predictors())
 
-lm_mod <- linear_reg() %>% set_engine("lm")
+lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+
+svm_mod <-
+  parsnip::svm_rbf(cost = tune()) %>%
+  parsnip::set_engine("kernlab") %>%
+  parsnip::set_mode("regression")
 
 set.seed(363)
-mt_folds <- vfold_cv(mtcars, v = 5)
+mt_folds <- rsample::vfold_cv(mtcars, v = 5)
 
 # ------------------------------------------------------------------------------
 
@@ -48,7 +53,7 @@ test_that('tune recipe only', {
 test_that('tune model only', {
 
   extr_2_1 <- function(x) {
-    mod <- extract_model(x)
+    mod <- extract_fit_engine(x)
     tibble(index = mod@alphaindex[[1]], estimate = mod@coef[[1]])
   }
 
@@ -118,8 +123,8 @@ test_that('tune model and recipe', {
   set.seed(35)
   grid_3 <-
     extract_parameter_set_dials(wflow_3) %>%
-    update(num_comp = num_comp(c(2, 5))) %>%
-    grid_latin_hypercube(size = 4)
+    update(num_comp = dials::num_comp(c(2, 5))) %>%
+    dials::grid_latin_hypercube(size = 4)
 
   expect_error(
     res_3_1 <- tune_grid(wflow_3, resamples = mt_folds, grid = grid_3,

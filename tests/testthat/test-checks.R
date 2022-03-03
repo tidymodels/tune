@@ -4,11 +4,11 @@ spline_rec <-
   recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
   recipes::step_date(date) %>%
   recipes::step_holiday(date) %>%
-  recipes::step_rm(date, tidyselect::ends_with("away")) %>%
+  recipes::step_rm(date, dplyr::ends_with("away")) %>%
   recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
   recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
   recipes::step_dummy(recipes::all_nominal()) %>%
-  recipes::step_normalize(recipes::all_predictors()) %>%
+  recipes::step_normalize(recipes::all_numeric_predictors()) %>%
   recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
 glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%

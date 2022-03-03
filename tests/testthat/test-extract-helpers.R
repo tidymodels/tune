@@ -1,17 +1,17 @@
-library(parsnip)
 
-lm_spec <- linear_reg() %>% set_engine("lm")
-lm_prn_fit <- fit(lm_spec, mpg ~ ., data = mtcars)
+lm_spec <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+lm_prn_fit <- parsnip::fit(lm_spec, mpg ~ ., data = mtcars)
 lm_wflow <-
   workflow() %>%
   add_model(lm_spec) %>%
   add_formula(mpg ~ .)
-lm_res <- last_fit(lm_wflow, split = initial_split(mtcars))
+lm_res <- last_fit(lm_wflow, split = rsample::initial_split(mtcars))
 lm_rec_wflow <-
   workflow() %>%
   add_model(lm_spec) %>%
-  add_recipe(recipe(mpg ~ ., data = mtcars) %>% step_normalize(all_numeric_predictors()))
-lm_rec_res <- fit_resamples(lm_rec_wflow, resamples = vfold_cv(mtcars, V = 2),
+  add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>%
+               recipes::step_normalize(recipes::all_numeric_predictors()))
+lm_rec_res <- fit_resamples(lm_rec_wflow, resamples = rsample::vfold_cv(mtcars, V = 2),
                             control = control_resamples(save_workflow = TRUE))
 
 
