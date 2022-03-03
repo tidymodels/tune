@@ -27,15 +27,17 @@ svm_mod <-
   parsnip::set_engine("kernlab") %>%
   parsnip::set_mode("classification")
 
-svm_tune <-
-  tune_bayes(
-    svm_mod,
-    Class ~ .,
-    rep_folds_class,
-    initial = 2,
-    iter = 2,
-    control = control_bayes(save_pred = TRUE)
-  )
+suppressMessages(
+  svm_tune <-
+    tune_bayes(
+      svm_mod,
+      Class ~ .,
+      rep_folds_class,
+      initial = 2,
+      iter = 2,
+      control = control_bayes(save_pred = TRUE)
+    )
+)
 
 svm_tune_class <- svm_tune
 svm_tune_class$.predictions <-
@@ -45,11 +47,11 @@ attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
 svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
 
-test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
+# ------------------------------------------------------------------------------
 
-  expect_error(
-    collect_predictions(lm_splines %>% dplyr::select(-.predictions)),
-    "The `.predictions` column does not exist."
+test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
+  expect_snapshot(error = TRUE,
+    collect_predictions(lm_splines %>% dplyr::select(-.predictions))
   )
 })
 
@@ -74,12 +76,9 @@ test_that("`collect_predictions()`, un-averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("bad filter grid", {
-  expect_warning(
-    expect_error(
-      collect_predictions(svm_tune, parameters = tibble(wrong = "value")),
-      "`parameters` should only have columns: 'cost value'"
-    ),
-    "Unknown columns: `cost value`"
+  expect_snapshot(
+    error = TRUE,
+    collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
   )
   expect_true(
     nrow(collect_predictions(svm_tune, parameters = tibble(`cost value` = 1))) == 0
@@ -150,16 +149,11 @@ test_that("collecting notes", {
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
+  expect_snapshot(
+    lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
+  )
+  expect_snapshot(lm_splines)
 
-  expect_message(
-    lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds),
-    "rank-deficient"
-  )
-  expect_output(
-    print(lm_splines),
-    "There were issues with some computations"
-  )
   nts <- collect_notes(lm_splines)
   expect_true(all(nts$type == "warning"))
   expect_true(all(grepl("rank", nts$note)))
@@ -170,14 +164,11 @@ test_that("collecting notes", {
   set.seed(1)
   split <- rsample::initial_split(mtcars2)
 
-  expect_message(
-    lst <- last_fit(lin_mod, mpg ~ ., split),
-    "rank-deficient"
+  expect_snapshot(
+    lst <- last_fit(lin_mod, mpg ~ ., split)
   )
-  expect_output(
-    print(lst),
-    "There were issues with some computations"
-  )
+  expect_snapshot(lst)
+
   nts <- collect_notes(lst)
   expect_true(all(nts$type == "warning"))
   expect_true(all(grepl("rank", nts$note)))
