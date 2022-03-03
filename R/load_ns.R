@@ -49,7 +49,7 @@ load_namespace <- function(x) {
     if (any(!did_load)) {
       bad <- x[!did_load]
       msg <- paste0("'", bad, "'", collapse = ", ")
-      stop(paste("These packages could not be loaded:", msg), call. = FALSE)
+      rlang::abort(paste("These packages could not be loaded:", msg))
     }
   }
 

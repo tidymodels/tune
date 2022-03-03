@@ -669,7 +669,7 @@ check_time <- function(origin, limit) {
   }
   now_time <- proc.time()[3]
   if (now_time - origin >= limit * 60) {
-    stop(paste("The time limit of", limit, "minutes has been reached."), call. = FALSE)
+    rlang::abort(paste("The time limit of", limit, "minutes has been reached."))
   }
   invisible(NULL)
 }

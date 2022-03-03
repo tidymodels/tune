@@ -3,20 +3,18 @@
 #' @rdname empty_ellipses
 check_rset <- function(x) {
   if (!inherits(x, "rset")) {
-    stop("The `resamples` argument should be an 'rset' object, such as the type ",
-      "produced by `vfold_cv()` or other 'rsample' functions.",
-      call. = FALSE
-    )
+    rlang::abort(paste0(
+      "The `resamples` argument should be an 'rset' object, such as the type ",
+      "produced by `vfold_cv()` or other 'rsample' functions."
+    ))
   }
   if (inherits(x, "loo_cv")) {
-    stop("Leave-one-out cross-validation is not currently supported with tune.",
-      call. = FALSE
+    rlang::abort(
+      "Leave-one-out cross-validation is not currently supported with tune."
     )
   }
   if (inherits(x, "nested_cv")) {
-    stop("Nested resampling is not currently supported with tune.",
-      call. = FALSE
-    )
+    rlang::abort("Nested resampling is not currently supported with tune.")
   }
   invisible(NULL)
 }
@@ -184,30 +182,30 @@ check_installs <- function(x) {
   if (length(deps) > 0) {
     is_inst <- purrr::map_lgl(deps, is_installed)
     if (any(!is_inst)) {
-      stop("Some package installs are required: ",
-        paste0("'", deps[!is_inst], "'", collapse = ", "),
-        call. = FALSE
-      )
+      rlang::abort(c("Some package installs are required: ",
+                     paste0("'", deps[!is_inst], "'", collapse = ", ")
+      ))
     }
   }
 }
 
 check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
   chr_param <-
-    ifelse(num_param == 1,
+    ifelse(
+      num_param == 1,
       "is one tuning parameter",
       paste("are", num_param, "tuning parameters")
     )
   chr_grid <-
     ifelse(num_grid == 1,
-      "a single grid point was",
-      paste(num_grid, "grid points were")
+           "a single grid point was",
+           paste(num_grid, "grid points were")
     )
   msg <- paste0("There ", chr_param, " and ", chr_grid, " requested.")
   race_msg <-
     ifelse(race,
-      "With racing, only completely resampled parameters are used.",
-      ""
+           "With racing, only completely resampled parameters are used.",
+           ""
     )
   if (num_grid == 1) {
     rlang::abort(
@@ -293,16 +291,16 @@ check_metrics <- function(x, object) {
 
   if (is.null(x)) {
     switch(mode,
-      regression = {
-        x <- yardstick::metric_set(rmse, rsq)
-      },
-      classification = {
-        x <- yardstick::metric_set(roc_auc, accuracy)
-      },
-      unknown = {
-        rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
-      },
-      rlang::abort("Unknown `mode` for parsnip model.")
+           regression = {
+             x <- yardstick::metric_set(rmse, rsq)
+           },
+           classification = {
+             x <- yardstick::metric_set(roc_auc, accuracy)
+           },
+           unknown = {
+             rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
+           },
+           rlang::abort("Unknown `mode` for parsnip model.")
     )
 
     return(x)
@@ -400,7 +398,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "gr
     }
     if (any(checks == "bayes")) {
       check_bayes_initial_size(length(param_nms), num_grid,
-        race = inherits(x, "tune_race")
+                               race = inherits(x, "tune_race")
       )
     }
   }
@@ -426,7 +424,7 @@ get_objective_name <- function(x, metrics) {
 
 check_direction <- function(x) {
   if (!is.logical(x) || length(x) != 1) {
-    stop("`maximize` should be a single logical.", call. = FALSE)
+    rlang::abort("`maximize` should be a single logical.")
   }
   invisible(NULL)
 }
@@ -434,7 +432,7 @@ check_direction <- function(x) {
 
 check_best <- function(x) {
   if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
-    stop("`best` should be a single, non-missing numeric", call. = FALSE)
+    rlang::abort("`best` should be a single, non-missing numeric.")
   }
   invisible(NULL)
 }

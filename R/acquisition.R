@@ -47,7 +47,7 @@
 #' @export
 prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
-    stop("`trade_off` should be a number or a function.", call. = FALSE)
+    rlang::abort("`trade_off` should be a number or a function.")
   }
 
   lab <- "the probability of improvement"
@@ -55,7 +55,7 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -107,7 +107,7 @@ predict.prob_improve <-
 #' @rdname prob_improve
 exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
-    stop("`trade_off` should be a number or a function.", call. = FALSE)
+    rlang::abort("`trade_off` should be a number or a function.")
   }
 
   lab <- "the expected improvement"
@@ -115,7 +115,7 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -160,13 +160,13 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
 #' @rdname prob_improve
 conf_bound <- function(kappa = 0.1) {
   if (!is.numeric(kappa) & !is_function(kappa)) {
-    stop("`kappa` should be a number or a function.", call. = FALSE)
+    rlang::abort("`kappa` should be a number or a function.")
   }
   lab <- "the confidence bound"
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable kappa values.")
   }
