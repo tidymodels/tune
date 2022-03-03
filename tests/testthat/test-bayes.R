@@ -402,43 +402,31 @@ test_that('missing performance values', {
   set.seed(1)
   folds <- rsample::validation_split(ames, prop = .9)
 
-  expect_message(
-    expect_error({
-      set.seed(2)
-      res <-
-        mod %>%
-        tune_bayes(
-          Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
-            Latitude + Longitude,
-          resamples = folds,
-          initial = 3,
-          metrics = yardstick::metric_set(rsq),
-          param_info = parameters(dials::cost_complexity(c(-2, 0)))
-        )
+  expect_snapshot({
+    set.seed(1)
+    res <-
+      mod %>%
+      tune_bayes(
+        Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+          Latitude + Longitude,
+        resamples = folds,
+        initial = 3,
+        metrics = yardstick::metric_set(rsq),
+        param_info = parameters(dials::cost_complexity(c(-2, 0)))
+      )
+  })
 
-    },
-    regexp = NA
-    ),
-    regexp = "removed before fitting the Gaussian"
-  )
-
-  expect_message(
-    expect_error({
-      set.seed(2)
-      res_fail <-
-        mod %>%
-        tune_bayes(
-          Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
-            Latitude + Longitude,
-          resamples = folds,
-          initial = 5,
-          metrics = yardstick::metric_set(rsq),
-          param_info = parameters(dials::cost_complexity(c(0.5, 0)))
-        )
-    },
-    regexp = NA
-    ),
-    regexp = "Gaussian process model cannot be"
-  )
-
+  expect_snapshot(error = TRUE, {
+    set.seed(2)
+    res_fail <-
+      mod %>%
+      tune_bayes(
+        Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
+          Latitude + Longitude,
+        resamples = folds,
+        initial = 5,
+        metrics = yardstick::metric_set(rsq),
+        param_info = parameters(dials::cost_complexity(c(0.5, 0)))
+      )
+  })
 })
