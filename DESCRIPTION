@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
 BugReports: https://github.com/tidymodels/tune/issues
 Depends:
-    R (>= 2.10)
+    R (>= 3.4)
 Imports:
     cli (>= 2.0.0),
     dials (>= 0.0.10),
