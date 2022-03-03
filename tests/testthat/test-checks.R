@@ -1,3 +1,34 @@
+data("Chicago", package = "modeldata")
+
+spline_rec <-
+  recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+  recipes::step_date(date) %>%
+  recipes::step_holiday(date) %>%
+  recipes::step_rm(date, tidyselect::ends_with("away")) %>%
+  recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+  recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+  recipes::step_dummy(recipes::all_nominal()) %>%
+  recipes::step_normalize(recipes::all_predictors()) %>%
+  recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+
+glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
+  parsnip::set_engine("glmnet")
+
+chi_wflow <-
+  workflows::workflow() %>%
+  workflows::add_recipe(spline_rec) %>%
+  workflows::add_model(glmn)
+
+bare_rec <-
+  recipes::recipe(ridership ~ ., data = head(Chicago))
+
+svm_mod <-
+  parsnip::svm_rbf(cost = tune()) %>%
+  parsnip::set_engine("kernlab") %>%
+  parsnip::set_mode("regression")
+
+mtfolds <- rsample::vfold_cv(mtcars)
+
 svm_results <- readRDS(test_path("svm_results.rds"))
 
 # ------------------------------------------------------------------------------
@@ -8,8 +39,8 @@ test_that('rsample objects', {
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = bootstraps())
   expect_error(tune:::check_rset(obj_cv), regexp = NA)
-  expect_error(tune:::check_rset(obj_loo), regexp = "Leave-one-out")
-  expect_error(tune:::check_rset(obj_nst), regexp = "Nested resampling")
+  expect_snapshot(error = TRUE, tune:::check_rset(obj_loo))
+  expect_snapshot(error = TRUE, tune:::check_rset(obj_nst))
 })
 
 # ------------------------------------------------------------------------------
@@ -28,11 +59,13 @@ test_that('grid objects', {
 
   expect_silent(tune:::check_grid(grid_1, chi_wflow))
 
-  expect_warning(tune:::check_grid(rbind(grid_1, grid_1), chi_wflow),
-                 "Duplicate rows in grid of tuning combinations")
+  expect_snapshot(
+    tune:::check_grid(rbind(grid_1, grid_1), chi_wflow)
+  )
 
-  expect_error(tune:::check_grid(chi_wflow, chi_wflow),
-               "`grid` should be a positive integer or a data frame")
+  expect_snapshot(error = TRUE,
+    tune:::check_grid(chi_wflow, chi_wflow)
+  )
 
   wflow_1 <-
     workflow() %>%
@@ -75,9 +108,8 @@ test_that("Unknown `grid` columns are caught", {
 
   grid <- tibble::tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
 
-  expect_error(
-    tune:::check_grid(grid, workflow),
-    "have not been marked for tuning by `tune[(][)]`: 'other1', 'other2'"
+  expect_snapshot(error = TRUE,
+    tune:::check_grid(grid, workflow)
   )
 })
 
@@ -98,9 +130,8 @@ test_that("Missing required `grid` columns are caught", {
 
   grid <- tibble::tibble(num_comp = 0.01)
 
-  expect_error(
-    tune:::check_grid(grid, workflow),
-    "have been marked for tuning by `tune[(][)]`: 'deg_free'"
+  expect_snapshot(error = TRUE,
+    tune:::check_grid(grid, workflow)
   )
 })
 
@@ -118,24 +149,27 @@ test_that('workflow objects', {
 
   wflow_2 <-
     workflow() %>%
-    add_model(boost_tree(mtry = tune()) %>% set_engine("xgboost")) %>%
+    add_model(parsnip::boost_tree(mtry = tune()) %>% parsnip::set_engine("xgboost")) %>%
     add_recipe(bare_rec)
 
   expect_null(tune:::check_workflow(x = wflow_2))
-  expect_error(tune:::check_workflow(x = wflow_2, check_dials = TRUE),
-               "arguments whose ranges are not finalized")
+  expect_snapshot(error = TRUE,
+    tune:::check_workflow(x = wflow_2, check_dials = TRUE)
+  )
 
   wflow_3 <-
     workflow() %>%
     add_model(glmn)
-  expect_error(tune:::check_workflow(wflow_3),
-               "A formula, recipe, or variables preprocessor is required.")
+  expect_snapshot(error = TRUE,
+    tune:::check_workflow(wflow_3)
+  )
 
   wflow_4 <-
     workflow() %>%
     add_recipe(bare_rec)
-  expect_error(tune:::check_workflow(wflow_4),
-               "A parsnip model is required.")
+  expect_snapshot(error = TRUE,
+    tune:::check_workflow(wflow_4)
+  )
 })
 
 # ------------------------------------------------------------------------------
@@ -145,8 +179,9 @@ test_that('yardstick objects', {
   metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
   metrics_2 <- yardstick::metric_set(yardstick:::rmse)
   expect_true(inherits(metrics_1, "numeric_metric_set"))
-  expect_error(tune:::check_metrics(yardstick::rmse, chi_wflow),
-               "The `metrics` argument should be the results")
+  expect_snapshot(error = TRUE,
+    tune:::check_metrics(yardstick::rmse, chi_wflow)
+  )
   expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
@@ -161,14 +196,12 @@ test_that('metrics must match the parsnip engine', {
   workflow1 <- add_model(workflow(), mod1)
   workflow2 <- add_model(workflow(), mod2)
 
-  expect_error(
-    tune:::check_metrics(metric_set1, workflow1),
-    "The parsnip model has `mode = 'regression'`"
+  expect_snapshot(error = TRUE,
+    tune:::check_metrics(metric_set1, workflow1)
   )
 
-  expect_error(
-    tune:::check_metrics(metric_set2, workflow2),
-    "The parsnip model has `mode = 'classification'`"
+  expect_snapshot(error = TRUE,
+    tune:::check_metrics(metric_set2, workflow2)
   )
 })
 
@@ -177,13 +210,13 @@ test_that('metrics must match the parsnip engine', {
 test_that('grid control objects', {
 
   expect_error(control_grid(), NA)
-  expect_error(control_grid(tomato = 1))
-  expect_error(control_grid(verbose = 1), "Argument 'verbose' should be a single logical")
-  expect_error(control_grid(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
-  expect_error(control_grid(allow_par = 1), "Argument 'allow_par' should be a single logical")
-  expect_error(control_grid(save_pred = "no"), "Argument 'save_pred' should be a single logical")
-  expect_error(control_grid(extract = Inf), "Argument 'extract' should be a function or NULL")
-  expect_error(control_grid(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
+  expect_snapshot(error = TRUE, control_grid(tomato = 1))
+  expect_snapshot(error = TRUE, control_grid(verbose = 1))
+  expect_snapshot(error = TRUE, control_grid(verbose = rep(TRUE, 2)))
+  expect_snapshot(error = TRUE, control_grid(allow_par = 1))
+  expect_snapshot(error = TRUE, control_grid(save_pred = "no"))
+  expect_snapshot(error = TRUE, control_grid(extract = Inf))
+  expect_snapshot(error = TRUE, control_grid(pkgs = Inf))
 
   expect_error(control_grid(verbose = TRUE), NA)
   expect_error(control_grid(allow_par = FALSE), NA)
@@ -198,18 +231,20 @@ test_that('grid control objects', {
 test_that('Bayes control objects', {
 
   expect_error(control_bayes(), NA)
-  expect_error(control_bayes(tomato = 1))
-  expect_error(control_bayes(verbose = 1), "Argument 'verbose' should be a single logical")
-  expect_error(control_bayes(verbose = rep(TRUE, 2)), "Argument 'verbose' should be a single logical")
-  expect_error(control_bayes(no_improve = FALSE), "Argument 'no_improve' should be a single numeric")
-  expect_error(control_bayes(uncertain = FALSE), "Argument 'uncertain' should be a single numeric")
-  expect_error(control_bayes(seed = FALSE), "Argument 'seed' should be a single numeric")
-  expect_error(control_bayes(save_pred = "no"), "Argument 'save_pred' should be a single logical")
-  expect_error(control_bayes(extract = Inf), "Argument 'extract' should be a function or NULL")
-  expect_error(control_bayes(pkgs = Inf), "Argument 'pkgs' should be a character or NULL")
-  expect_error(control_bayes(time_limit = "a"), "Argument 'time_limit' should be a single logical or numeric")
+  expect_snapshot(error = TRUE, control_bayes(tomato = 1))
+  expect_snapshot(error = TRUE, control_bayes(verbose = 1))
+  expect_snapshot(error = TRUE, control_bayes(verbose = rep(TRUE, 2)))
+  expect_snapshot(error = TRUE, control_bayes(no_improve = FALSE))
+  expect_snapshot(error = TRUE, control_bayes(uncertain = FALSE))
+  expect_snapshot(error = TRUE, control_bayes(seed = FALSE))
+  expect_snapshot(error = TRUE, control_bayes(save_pred = "no"))
+  expect_snapshot(error = TRUE, control_bayes(extract = Inf))
+  expect_snapshot(error = TRUE, control_bayes(pkgs = Inf))
+  expect_snapshot(error = TRUE, control_bayes(time_limit = "a"))
 
-  expect_message(control_bayes(no_improve = 2, uncertain = 5), "Uncertainty sample scheduled after 5")
+  expect_snapshot(
+    tmp <- control_bayes(no_improve = 2, uncertain = 5)
+  )
 
   expect_error(control_bayes(verbose = TRUE), NA)
   expect_error(control_bayes(no_improve = 2), NA)
@@ -244,12 +279,11 @@ test_that('initial values', {
   expect_equal(nrow(grid_1), nrow(mtfolds))
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
 
-  expect_error(
+  expect_snapshot(error = TRUE,
     tune:::check_initial(data.frame(),
                          extract_parameter_set_dials(wflow_1), wflow_1,
                          mtfolds, yardstick::metric_set(yardstick::rsq),
-                         control_bayes()),
-    "`initial` should be a positive integer or"
+                         control_bayes())
   )
 })
 
@@ -259,13 +293,13 @@ test_that('initial values', {
 test_that('Acquisition function objects', {
 
   expect_null(tune:::check_direction(FALSE))
-  expect_error(tune:::check_direction(1), "should be a single logical.")
-  expect_error(tune:::check_direction(rep(TRUE, 2)), "should be a single logical.")
+  expect_snapshot(error = TRUE, tune:::check_direction(1))
+  expect_snapshot(error = TRUE, tune:::check_direction(rep(TRUE, 2)))
 
   expect_null(tune:::check_best(1))
-  expect_error(tune:::check_best(FALSE), "should be a single, non-missing numeric")
-  expect_error(tune:::check_best(rep(2, 2)), "should be a single, non-missing numeric")
-  expect_error(tune:::check_best(NA), "should be a single, non-missing numeric")
+  expect_snapshot(error = TRUE, tune:::check_best(FALSE))
+  expect_snapshot(error = TRUE, tune:::check_best(rep(2, 2)))
+  expect_snapshot(error = TRUE, tune:::check_best(NA))
 
 })
 
@@ -306,12 +340,11 @@ test_that('check parameter finalization', {
     add_formula(f) %>%
     add_model(rf1)
 
-  expect_message(
+  expect_snapshot(
     expect_error(
       p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0)),
       regex = NA
-    ),
-    "finalize unknown parameter: mtry"
+    )
   )
   expect_false(any(dials::has_unknowns(p1$object)))
 
@@ -325,12 +358,11 @@ test_that('check parameter finalization', {
     add_recipe(rec) %>%
     add_model(rf1)
 
-  expect_message(
+  expect_snapshot(
     expect_error(
       p2 <- tune:::check_parameters(w2, data = mtcars),
       regex = NA
-    ),
-    "finalize unknown parameter: mtry"
+    )
   )
   expect_false(any(dials::has_unknowns(p2$object)))
 
@@ -340,12 +372,11 @@ test_that('check parameter finalization', {
     add_model(rf1)
   p3 <- extract_parameter_set_dials(w3)
 
-  expect_message(
+  expect_snapshot(
     expect_error(
       p3_a <- tune:::check_parameters(w3, data = mtcars),
       regex = NA
-    ),
-    "finalize unknown parameter: mtry"
+    )
   )
   expect_false(any(dials::has_unknowns(p3_a$object)))
 
@@ -354,9 +385,8 @@ test_that('check parameter finalization', {
     add_recipe(rec_tune) %>%
     add_model(rf1)
 
-  expect_error(
-    tune:::check_parameters(w4, data = mtcars),
-    regex = "to finalize the parameter ranges"
+  expect_snapshot(error = TRUE,
+    tune:::check_parameters(w4, data = mtcars)
   )
 
   p4_a <-
