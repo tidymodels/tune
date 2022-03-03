@@ -7,8 +7,6 @@ test_that("augment fit_resamples", {
 
   set.seed(1)
   bt1 <- rsample::bootstraps(two_class_dat, times = 30)
-  set.seed(1)
-  bt2 <- rsample::bootstraps(two_class_dat, times = 3)
 
   set.seed(1)
   fit_1 <- fit_resamples(lr_spec, Class ~ ., bt1,
@@ -22,6 +20,17 @@ test_that("augment fit_resamples", {
   expect_true(sum(names(aug_1) == ".pred_Class2") == 1)
   expect_true(sum(names(aug_1) == ".resid") == 0)
 
+  expect_snapshot(error = TRUE, augment(fit_1, hey = "you"))
+})
+
+
+test_that("augment fit_resamples", {
+  skip_if(new_rng_snapshots)
+  lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
+
+  set.seed(1)
+  bt2 <- rsample::bootstraps(two_class_dat, times = 3)
+
   set.seed(1)
   fit_2 <- fit_resamples(lr_spec, Class ~ ., bt2,
                          control = control_resamples(save_pred = TRUE))
@@ -33,10 +42,7 @@ test_that("augment fit_resamples", {
   expect_true(sum(names(aug_2) == ".pred_class")  == 1)
   expect_true(sum(names(aug_2) == ".pred_Class1") == 1)
   expect_true(sum(names(aug_2) == ".pred_Class2") == 1)
-
-  expect_snapshot(error = TRUE, augment(fit_1, hey = "you"))
 })
-
 
 # ------------------------------------------------------------------------------
 

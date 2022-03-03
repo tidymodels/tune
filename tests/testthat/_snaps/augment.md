@@ -1,16 +1,16 @@
 # augment fit_resamples
 
     Code
-      aug_2 <- augment(fit_2)
-    Warning <rlang_warning>
-      The orginal data had 791 rows but there were 593 hold-out predictions.
+      augment(fit_1, hey = "you")
+    Error <rlang_error>
+      The only argument for `augment.fit_resamples()` is 'x'. Others were passed: 'hey'
 
 ---
 
     Code
-      augment(fit_1, hey = "you")
-    Error <rlang_error>
-      The only argument for `augment.fit_resamples()` is 'x'. Others were passed: 'hey'
+      aug_2 <- augment(fit_2)
+    Warning <rlang_warning>
+      The orginal data had 791 rows but there were 593 hold-out predictions.
 
 # augment tune_grid
 

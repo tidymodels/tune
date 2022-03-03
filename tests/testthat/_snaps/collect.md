@@ -14,7 +14,7 @@
     Error <rlang_error>
       `parameters` should only have columns: 'cost value'
 
-# collecting notes
+# collecting notes - fit_resamples
 
     Code
       lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
@@ -41,7 +41,7 @@
       
       Use `collect_notes(object)` for more information.
 
----
+# collecting notes - last_fit
 
     Code
       lst <- last_fit(lin_mod, mpg ~ ., split)

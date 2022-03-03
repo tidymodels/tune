@@ -141,7 +141,9 @@ test_that("classification class and prob predictions, averaged", {
 
 # ------------------------------------------------------------------------------
 
-test_that("collecting notes", {
+test_that("collecting notes - fit_resamples", {
+  skip_if(new_rng_snapshots)
+
   mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
   flds <- rsample::bootstraps(mtcars2, times = 2)
@@ -159,10 +161,15 @@ test_that("collecting notes", {
   expect_true(all(grepl("rank", nts$note)))
   expect_equal(names(nts), c("id", "location", "type", "note"))
 
-  # ----------------------------------------------------------------------------
+})
 
+test_that("collecting notes - last_fit", {
+  mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
   split <- rsample::initial_split(mtcars2)
+
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
   expect_snapshot(
     lst <- last_fit(lin_mod, mpg ~ ., split)

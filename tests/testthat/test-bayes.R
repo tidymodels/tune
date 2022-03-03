@@ -394,6 +394,8 @@ test_that('too few starting values', {
 # ------------------------------------------------------------------------------
 
 test_that('missing performance values', {
+  skip_if(new_rng_snapshots)
+
   data(ames, package = "modeldata")
 
   mod <- parsnip::decision_tree(cost_complexity = tune()) %>%
