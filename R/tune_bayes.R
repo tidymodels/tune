@@ -287,9 +287,10 @@ tune_bayes_workflow <-
 
       set.seed(control$seed[1] + i + 1)
       candidates <-
-        pred_gp(gp_mod, param_info,
-                control = control,
-                current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id))
+        pred_gp(
+          gp_mod, param_info,
+          control = control,
+          current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id))
         )
 
       check_time(start_time, control$time_limit)
@@ -299,9 +300,10 @@ tune_bayes_workflow <-
       candidates <-
         dplyr::bind_cols(
           candidates,
-          stats::predict(objective, candidates,
-                         iter = i,
-                         maximize = maximize, score_card$best_val
+          stats::predict(
+            objective, candidates,
+            iter = i,
+            maximize = maximize, score_card$best_val
           )
         )
 
