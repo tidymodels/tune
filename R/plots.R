@@ -101,7 +101,7 @@ autoplot.tune_results <-
         p <- plot_perf_vs_iter(object, metric, width)
       } else {
         if (use_regular_grid_plot(object)) {
-          p <-  plot_regular_grid(object, metric = metric, ...)
+          p <- plot_regular_grid(object, metric = metric, ...)
         } else {
           p <- plot_marginals(object, metric = metric)
         }
@@ -133,8 +133,10 @@ get_param_columns <- function(x) {
     res <- prm$id
   } else {
     dat <- collect_metrics(x)
-    other_names <- c(".metric", ".estimator", "mean", "n",
-                     "std_err", ".iter", ".config")
+    other_names <- c(
+      ".metric", ".estimator", "mean", "n",
+      "std_err", ".iter", ".config"
+    )
     res <- names(dat)[!(names(dat) %in% other_names)]
   }
   res
@@ -162,7 +164,7 @@ is_factorial <- function(x, cutoff = 0.95) {
   vals <- purrr::map(x, unique)
   full_fact <-
     tidyr::crossing(!!!vals) %>%
-    dplyr::full_join(x %>%  dplyr::mutate(..obs = 1), by = names(x))
+    dplyr::full_join(x %>% dplyr::mutate(..obs = 1), by = names(x))
   mean(!is.na(full_fact$..obs)) >= cutoff
 }
 
@@ -182,15 +184,15 @@ is_regular_grid <- function(grid) {
     }
   }
 
-  pct_unique <- purrr::map_int(grid, ~ length(unique(.x)))/num_points
+  pct_unique <- purrr::map_int(grid, ~ length(unique(.x))) / num_points
   max_pct_unique <- max(pct_unique, na.rm = TRUE)
-  np_ratio <- p/num_points
+  np_ratio <- p / num_points
 
   # Derived from simulation data and C5.0 tree
-  if (max_pct_unique >  1/2) res <- FALSE
-  if (max_pct_unique <= 1/2 & max_pct_unique <= 1/6) res <- TRUE
-  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio >  0.05) res <- TRUE
-  if (max_pct_unique <= 1/2 & max_pct_unique >  1/6 & np_ratio <= 0.05) res <- FALSE
+  if (max_pct_unique > 1 / 2) res <- FALSE
+  if (max_pct_unique <= 1 / 2 & max_pct_unique <= 1 / 6) res <- TRUE
+  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio > 0.05) res <- TRUE
+  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio <= 0.05) res <- FALSE
   res
 }
 
@@ -198,7 +200,9 @@ is_regular_grid <- function(grid) {
 use_regular_grid_plot <- function(x) {
   dat <- collect_metrics(x)
   param_cols <- get_param_columns(x)
-  grd <- dat %>% dplyr::select(one_of(param_cols)) %>% distinct()
+  grd <- dat %>%
+    dplyr::select(one_of(param_cols)) %>%
+    distinct()
   is_regular_grid(grd)
 }
 
@@ -206,7 +210,7 @@ use_regular_grid_plot <- function(x) {
 
 plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   if (is.null(width)) {
-    width <- max(x$.iter)/75
+    width <- max(x$.iter) / 75
   }
   x <- estimate_tune_results(x)
   if (!is.null(metric)) {
@@ -235,7 +239,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   }
 
   if (length(unique(x$.metric)) > 1) {
-    p <- p + facet_wrap(~ .metric, scales = "free_y")
+    p <- p + facet_wrap(~.metric, scales = "free_y")
   } else {
     p <- p + ylab(unique(x$.metric))
   }
@@ -265,7 +269,6 @@ plot_param_vs_iter <- function(x) {
     if (!is.null(pobj$trans)) {
       x[[prm]] <- pobj$trans$transform(x[[prm]])
       new_name <- paste0(lab, " (", pobj$trans$name, ")")
-
     } else {
       new_name <- lab
     }
@@ -289,7 +292,7 @@ plot_param_vs_iter <- function(x) {
     geom_point() +
     xlab("Iteration") +
     ylab("") +
-    facet_wrap(~ name, scales = "free_y")
+    facet_wrap(~name, scales = "free_y")
 
   p
 }
@@ -326,7 +329,7 @@ plot_marginals <- function(x, metric = NULL) {
   }
 
   if (any(!is_num)) {
-    num_param_cols <- param_cols[ is_num]
+    num_param_cols <- param_cols[is_num]
     chr_param_cols <- param_cols[!is_num]
     if (length(chr_param_cols) > 1) {
       rlang::abort("Currently cannot autoplot grids with 2+ non-numeric parameters.")
@@ -351,7 +354,6 @@ plot_marginals <- function(x, metric = NULL) {
     if (!is.null(pobj$trans)) {
       x[[prm]] <- pobj$trans$transform(x[[prm]])
       new_name <- paste0(lab, " (", pobj$trans$name, ")")
-
     } else {
       new_name <- lab
     }
@@ -382,22 +384,20 @@ plot_marginals <- function(x, metric = NULL) {
       p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
       p <- p + ggplot2::labs(color = chr_param_cols)
     }
-
   } else {
     if (is_race) {
       p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
     } else {
       p <- p + geom_point(alpha = .7)
     }
-
   }
 
   if (length(unique(x$.metric)) > 1) {
     if (length(num_param_cols) == 1) {
       p <-
         p +
-        facet_wrap(~ .metric, scales = "free_y") +
-        xlab(num_param_cols)  +
+        facet_wrap(~.metric, scales = "free_y") +
+        xlab(num_param_cols) +
         ylab("")
     } else {
       p <-
@@ -408,11 +408,11 @@ plot_marginals <- function(x, metric = NULL) {
     }
   } else {
     if (length(num_param_cols) == 1) {
-      p <- p + xlab(num_param_cols) +  ylab(unique(x$.metric))
+      p <- p + xlab(num_param_cols) + ylab(unique(x$.metric))
     } else {
       p <-
         p +
-        facet_wrap(~ name, scales = "free_x") +
+        facet_wrap(~name, scales = "free_x") +
         xlab("") +
         ylab(unique(x$.metric))
     }
@@ -431,8 +431,10 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   if (!is.null(metric)) {
     dat <- dat %>% dplyr::filter(.metric %in% metric)
     if (nrow(dat) == 0) {
-      rlang::abort(paste0("After filtering for metric '", metric, "', there were ",
-                          "no data points."))
+      rlang::abort(paste0(
+        "After filtering for metric '", metric, "', there were ",
+        "no data points."
+      ))
     }
   }
   dat <- dat %>% dplyr::filter(!is.na(mean))
@@ -453,17 +455,17 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   # Determine which parameter goes on the x-axis and their types
 
   is_num <- purrr::map_lgl(grd, is.numeric)
-  num_param_cols <- param_cols[ is_num]
+  num_param_cols <- param_cols[is_num]
   chr_param_cols <- param_cols[!is_num]
 
   num_values <- purrr::map_int(grd[, num_param_cols], ~ length(unique(.x)))
   num_values <- sort(num_values, decreasing = TRUE)
 
   if (!any(is_num)) {
-    x_col <-  chr_param_cols[1]
+    x_col <- chr_param_cols[1]
     grp_cols <- chr_param_cols[-1]
   } else {
-    x_col <-  names(num_values)[1]
+    x_col <- names(num_values)[1]
     grp_cols <- c(chr_param_cols, names(num_values)[-1])
   }
 
@@ -513,8 +515,10 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       dat[[col_col]] <- format(dat[[col_col]], ...)
     }
     col_col <- rlang::ensym(col_col)
-    p <- ggplot(dat, aes_(x = rlang::expr(value), y = rlang::expr(mean),
-                          col = col_col, group = col_col))
+    p <- ggplot(dat, aes_(
+      x = rlang::expr(value), y = rlang::expr(mean),
+      col = col_col, group = col_col
+    ))
     # Since `col_col` has either the parameter id or the parameter label, use
     # is in the key:
 
@@ -528,23 +532,25 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       facets <- rlang::quos(!!!facets)
       # faceting variables
       if (multi_metrics) {
-        p <- p + facet_grid(rows = vars(.metric), vars(!!!facets),
-                            labeller = ggplot2::labeller(.cols = ggplot2::label_both),
-                            scales = "free_y")
+        p <- p + facet_grid(
+          rows = vars(.metric), vars(!!!facets),
+          labeller = ggplot2::labeller(.cols = ggplot2::label_both),
+          scales = "free_y"
+        )
       } else {
         p <-
           p + facet_wrap(vars(!!!facets),
-                         labeller = ggplot2::labeller(.cols = ggplot2::label_both))
+            labeller = ggplot2::labeller(.cols = ggplot2::label_both)
+          )
       }
     } else if (multi_metrics) {
       p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
     }
-
   } else {
     # Only a single parameter and potentially multiple metrics.
     p <- ggplot(dat, aes(x = value, y = mean))
     if (multi_metrics) {
-      p <- p + facet_wrap(~ .metric, scales = "free_y", ncol = 1)
+      p <- p + facet_wrap(~.metric, scales = "free_y", ncol = 1)
     }
   }
 

@@ -4,8 +4,8 @@
 pred_type <- function(x) {
   cls <- class(x)[class(x) != "function"][1]
   res <- dplyr::case_when(
-    cls == "class_metric"   ~ "class",
-    cls == "prob_metric"    ~ "prob",
+    cls == "class_metric" ~ "class",
+    cls == "prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     TRUE ~ "unknown"
   )

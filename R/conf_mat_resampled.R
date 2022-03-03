@@ -21,8 +21,11 @@
 #' res <-
 #'   logistic_reg() %>%
 #'   set_engine("glm") %>%
-#'   fit_resamples(Class ~ ., resamples = vfold_cv(two_class_dat, v = 3),
-#'                 control = control_resamples(save_pred = TRUE))
+#'   fit_resamples(
+#'     Class ~ .,
+#'     resamples = vfold_cv(two_class_dat, v = 3),
+#'     control = control_resamples(save_pred = TRUE)
+#'   )
 #'
 #' conf_mat_resampled(res)
 #' conf_mat_resampled(res, tidy = FALSE)
@@ -75,7 +78,7 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
     dplyr::group_nest(!!!syms(id_cols)) %>%
     dplyr::mutate(
       conf_mats =
-        purrr::map(data, ~ yardstick::conf_mat(.x, truth = {{truth}}, estimate = .pred_class))
+        purrr::map(data, ~ yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class))
     )
 
   opt <- getOption("dplyr.summarise.inform", default = "FALSE")
@@ -98,4 +101,3 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
   }
   res
 }
-

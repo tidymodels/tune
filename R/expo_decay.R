@@ -22,7 +22,7 @@
 #' library(dplyr)
 #' tibble(
 #'   iter = 1:40,
-#'   value =  map_dbl(
+#'   value = map_dbl(
 #'     1:40,
 #'     expo_decay,
 #'     start_val = .1,
@@ -30,12 +30,12 @@
 #'     slope = 1 / 5
 #'   )
 #' ) %>%
-#'   ggplot(aes(x = iter, y =value)) + geom_path()
+#'   ggplot(aes(x = iter, y = value)) +
+#'   geom_path()
 #' }
 #' @export
-expo_decay <- function(iter, start_val, limit_val, slope = 1/5) {
+expo_decay <- function(iter, start_val, limit_val, slope = 1 / 5) {
   # between 0:1
   unscaled <- 1 - exp(-slope * (iter - 1))
   (unscaled * (limit_val - start_val)) + start_val
 }
-

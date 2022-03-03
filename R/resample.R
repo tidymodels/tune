@@ -74,10 +74,11 @@ fit_resamples.model_spec <- function(object,
                                      ...,
                                      metrics = NULL,
                                      control = control_resamples()) {
-
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste("To tune a model spec, you must preprocess",
-                       "with a formula or recipe"))
+    rlang::abort(paste(
+      "To tune a model spec, you must preprocess",
+      "with a formula or recipe"
+    ))
   }
 
   empty_ellipses(...)
@@ -106,7 +107,6 @@ fit_resamples.workflow <- function(object,
                                    ...,
                                    metrics = NULL,
                                    control = control_resamples()) {
-
   empty_ellipses(...)
 
   resample_workflow(

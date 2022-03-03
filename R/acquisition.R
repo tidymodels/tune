@@ -47,7 +47,7 @@
 #' @export
 prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
-    stop("`trade_off` should be a number or a function.", call. = FALSE)
+    rlang::abort("`trade_off` should be a number or a function.")
   }
 
   lab <- "the probability of improvement"
@@ -55,7 +55,7 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -73,7 +73,7 @@ print.prob_improve <- function(x, ...) {
 
 #' @export
 predict.prob_improve <-
-  function(object, new_data, maximize, iter, best,  ...) {
+  function(object, new_data, maximize, iter, best, ...) {
     check_direction(maximize)
     check_best(best)
 
@@ -90,11 +90,11 @@ predict.prob_improve <-
     if (maximize) {
       new_data <-
         new_data %>%
-        mutate(delta = ((.mean - best - trade_off)/.sd))
+        mutate(delta = ((.mean - best - trade_off) / .sd))
     } else {
       new_data <-
         new_data %>%
-        mutate(delta = ((trade_off + best - .mean )/.sd))
+        mutate(delta = ((trade_off + best - .mean) / .sd))
     }
     new_data %>%
       dplyr::mutate(objective = pnorm(delta)) %>%
@@ -107,7 +107,7 @@ predict.prob_improve <-
 #' @rdname prob_improve
 exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (!is.numeric(trade_off) & !is_function(trade_off)) {
-    stop("`trade_off` should be a number or a function.", call. = FALSE)
+    rlang::abort("`trade_off` should be a number or a function.")
   }
 
   lab <- "the expected improvement"
@@ -115,18 +115,17 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
   res <- list(trade_off = trade_off, eps = eps, label = lab)
   class(res) <- c("exp_improve", "acquisition_function")
   res
-
 }
 
 #' @export
-predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
+predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
   check_direction(maximize)
   check_best(best)
 
@@ -148,7 +147,7 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
   new_data <-
     new_data %>%
     mutate(
-      snr = delta/sd_trunc,
+      snr = delta / sd_trunc,
       z = ifelse(.sd <= object$eps, 0, snr),
       objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
     )
@@ -161,24 +160,23 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
 #' @rdname prob_improve
 conf_bound <- function(kappa = 0.1) {
   if (!is.numeric(kappa) & !is_function(kappa)) {
-    stop("`kappa` should be a number or a function.", call. = FALSE)
+    rlang::abort("`kappa` should be a number or a function.")
   }
   lab <- "the confidence bound"
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
     if (length(farg) == 0) {
-      stop("The `trade_off` function should have at least one argument.", call. = FALSE)
+      rlang::abort("The `trade_off` function should have at least one argument.")
     }
     lab <- paste(lab, "with variable kappa values.")
   }
   res <- list(kappa = kappa, label = lab)
   class(res) <- c("conf_bound", "acquisition_function")
   res
-
 }
 
 #' @export
-predict.conf_bound<- function(object, new_data, maximize, iter, ...) {
+predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
   check_direction(maximize)
 
   if (is.function(object$kappa)) {

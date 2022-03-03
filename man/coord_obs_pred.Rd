@@ -42,5 +42,4 @@ p
 p + coord_fixed()
 
 p + coord_obs_pred()
-
 }

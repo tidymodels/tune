@@ -70,7 +70,7 @@ tune_color_light <- list(
 # ------------------------------------------------------------------------------
 
 # cli:::is_latex_output()
-is_latex_output <- function () {
+is_latex_output <- function() {
   if (!("knitr" %in% loadedNamespaces())) {
     return(FALSE)
   }
@@ -79,7 +79,7 @@ is_latex_output <- function () {
 }
 
 # cli:::is_windows()
-is_windows <- function () {
+is_windows <- function() {
   .Platform$OS.type == "windows"
 }
 
@@ -91,6 +91,3 @@ is_windows <- function () {
 #' @export
 #' @rdname empty_ellipses
 get_tune_colors <- function() tune_color
-
-
-

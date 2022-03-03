@@ -17,6 +17,7 @@ template:
   package: tidytemplate
   bootstrap: 5
   bslib:
+    danger: "#CA225E"
     primary: "#CA225E"
 
   includes:

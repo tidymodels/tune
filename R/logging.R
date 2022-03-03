@@ -14,50 +14,54 @@
 #' Gaiman <-
 #'   paste(
 #'     '"Good point." Bod was pleased with himself, and glad he had thought of',
-#'     'asking the poet for advice. Really, he thought, if you couldn\'t trust a',
-#'     'poet to offer sensible advice, who could you trust?',
+#'     "asking the poet for advice. Really, he thought, if you couldn't trust a",
+#'     "poet to offer sensible advice, who could you trust?",
 #'     collapse = ""
 #'   )
 #' message_wrap(Gaiman)
 #' message_wrap(Gaiman, width = 20, prefix = "-")
-#' message_wrap(Gaiman, width = 30, prefix = "-",
-#'              color_text = cli::col_silver)
-#' message_wrap(Gaiman, width = 30, prefix = "-",
-#'              color_text = cli::style_underline,
-#'              color_prefix = cli::col_green)
+#' message_wrap(Gaiman,
+#'   width = 30, prefix = "-",
+#'   color_text = cli::col_silver
+#' )
+#' message_wrap(Gaiman,
+#'   width = 30, prefix = "-",
+#'   color_text = cli::style_underline,
+#'   color_prefix = cli::col_green
+#' )
 #' @export
 message_wrap <-
   function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
-  if (!is.character(x) || length(x) > 1) {
-    rlang::abort("'x' should be a single character string.")
+    if (!is.character(x) || length(x) > 1) {
+      rlang::abort("'x' should be a single character string.")
+    }
+    if (!is.null(color_text) && !is.function(color_text)) {
+      rlang::abort("'color_text' should be null or a function.")
+    }
+    if (!is.null(color_prefix) && !is.function(color_prefix)) {
+      rlang::abort("'color_prefix' should be null or a function.")
+    }
+    n <- nchar(prefix)
+    if (n > 0) {
+      buffer <- paste0(rep(" ", n + 1), collapse = "")
+    } else {
+      buffer <- ""
+    }
+    msg <- strwrap(x, width = width - n - 1)
+    if (!is.null(color_text)) {
+      msg <- purrr::map_chr(msg, ~ color_text(.x))
+    }
+    if (!is.null(color_prefix)) {
+      prefix <- color_prefix(prefix)
+    }
+    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
+    msg[-1] <- paste0(buffer, msg[-1])
+    if (n > 0) {
+      msg[1] <- paste(prefix, msg[1])
+    }
+    message(msg)
+    invisible(msg)
   }
-  if (!is.null(color_text) && !is.function(color_text)) {
-    rlang::abort("'color_text' should be null or a function.")
-  }
-  if (!is.null(color_prefix) && !is.function(color_prefix)) {
-    rlang::abort("'color_prefix' should be null or a function.")
-  }
-  n <- nchar(prefix)
-  if (n > 0) {
-    buffer <- paste0(rep(" ", n + 1), collapse = "")
-  } else {
-    buffer <- ""
-  }
-  msg <- strwrap(x, width = width - n - 1)
-  if (!is.null(color_text)) {
-    msg <- purrr::map_chr(msg, ~ color_text(.x))
-  }
-  if (!is.null(color_prefix)) {
-    prefix <- color_prefix(prefix)
-  }
-  msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
-  msg[-1] <- paste0(buffer, msg[-1])
-  if (n > 0) {
-    msg[1] <- paste(prefix, msg[1])
-  }
-  message(msg)
-  invisible(msg)
-}
 
 siren <- function(x, type = "info") {
   tune_color <- get_tune_colors()
@@ -76,9 +80,9 @@ siren <- function(x, type = "info") {
 
   msg <- dplyr::case_when(
     type == "warning" ~ tune_color$message$warning(msg),
-    type == "go" ~  tune_color$message$go(msg),
+    type == "go" ~ tune_color$message$go(msg),
     type == "danger" ~ tune_color$message$danger(msg),
-    type == "success" ~  tune_color$message$success(msg),
+    type == "success" ~ tune_color$message$success(msg),
     type == "info" ~ tune_color$message$info(msg)
   )
 
@@ -112,7 +116,7 @@ tune_log <- function(control, split = NULL, task, type = "success") {
 log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
-  control2$verbose = TRUE
+  control2$verbose <- TRUE
 
   wrn <- res$signals
   if (length(wrn) > 0) {
@@ -131,7 +135,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
-    err_msg <- as.character(attr(res$res,"condition"))
+    err_msg <- as.character(attr(res$res, "condition"))
     err_msg <- gsub("\n$", "", err_msg)
 
     err_msg <- tibble::tibble(location = loc, type = "error", note = err_msg)
@@ -248,12 +252,14 @@ log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits =
   bst_val <- x$mean[x$.iter == max_iter]
   bst_se <- x$std_err[x$.iter == max_iter]
   msg <-
-    paste0(" Newest results:\t",
-           objective,
-           "=",
-           signif(bst_val, digits = digits))
+    paste0(
+      " Newest results:\t",
+      objective,
+      "=",
+      signif(bst_val, digits = digits)
+    )
   if (!is.na(bst_se) && bst_se > 0) {
-    msg <- paste0(msg,  " (+/-", signif(bst_se, digits = digits - 1), ")")
+    msg <- paste0(msg, " (+/-", signif(bst_se, digits = digits - 1), ")")
   }
 
   if (bst_iter == max_iter) {
@@ -271,9 +277,11 @@ param_msg <- function(control, candidate) {
   candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
   p_chr <- paste0(p_chr, collapse = ", ")
-  message_wrap(p_chr, prefix = "i",
-               color_text = get_tune_colors()$message$info,
-               color_prefix = get_tune_colors()$symbol$info)
+  message_wrap(p_chr,
+    prefix = "i",
+    color_text = get_tune_colors()$message$info,
+    color_prefix = get_tune_colors()$symbol$info
+  )
   invisible(NULL)
 }
 
@@ -286,9 +294,8 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     val <- paste0("Kappa value: ", signif(objective$kappa(iter), digits = digits))
   } else {
     if (inherits(objective, c("exp_improve", "prob_improve")) &&
-        is.function(objective$trade_off)) {
+      is.function(objective$trade_off)) {
       val <- paste0("Trade-off value: ", signif(objective$trade_off(iter), digits = digits))
-
     } else {
       val <- NULL
     }
