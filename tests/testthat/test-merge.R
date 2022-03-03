@@ -1,5 +1,4 @@
-
-# ------------------------------------------------------------------------------
+data("Chicago", package = "modeldata")
 
 spline_grid <-
   tibble::tribble(
@@ -16,11 +15,21 @@ spline_grid <-
     4L,      0.025,       12L,      1L
   )
 
-bst_grid <- tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
+bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
 # ------------------------------------------------------------------------------
 
 test_that('recipe merges', {
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid),
@@ -45,6 +54,16 @@ test_that('recipe merges', {
 })
 
 test_that('partially recipe merge', {
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid[, -1]),
@@ -69,6 +88,16 @@ test_that('partially recipe merge', {
 })
 
 test_that('umerged recipe merge', {
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   expect_error(
     spline_updated <- merge(spline_rec, bst_grid),
@@ -97,6 +126,9 @@ test_that('umerged recipe merge', {
 
 
 test_that('model spec merges', {
+  bst_model <-
+    parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
+    parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
 
   expect_error(
     bst_updated <- merge(bst_model, bst_grid),
@@ -117,6 +149,9 @@ test_that('model spec merges', {
 })
 
 test_that('partially model spec merge', {
+  bst_model <-
+    parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
+    parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
 
   expect_error(
     bst_updated <- merge(bst_model, bst_grid[, -1]),
@@ -136,6 +171,9 @@ test_that('partially model spec merge', {
 })
 
 test_that('umerged model spec merge', {
+  bst_model <-
+    parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
+    parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
 
   other_grid <- bst_grid
   names(bst_grid) <- letters[1:2]

@@ -3,6 +3,24 @@ load(test_path("test_objects.RData"))
 # ------------------------------------------------------------------------------
 
 test_that('determine foreach operator', {
+  data("Chicago", package = "modeldata")
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+  glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
+    parsnip::set_engine("glmnet")
+  chi_wflow <-
+    workflows::workflow() %>%
+    workflows::add_recipe(spline_rec) %>%
+    workflows::add_model(glmn)
+
   expect_equal(tune:::get_operator(object = chi_wflow), foreach::`%do%`)
   expect_equal(tune:::get_operator(FALSE, chi_wflow), foreach::`%do%`)
 })
