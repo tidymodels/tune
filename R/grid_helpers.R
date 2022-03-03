@@ -9,8 +9,10 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   orig_rows <- as.integer(split, data = "assessment")
 
   if (length(orig_rows) != nrow(x_vals)) {
-    msg <- paste0("Some assessment set rows are not available at ",
-                  "prediction time. ")
+    msg <- paste0(
+      "Some assessment set rows are not available at ",
+      "prediction time. "
+    )
 
     if (has_preprocessor_recipe(workflow)) {
       msg <- paste0(
@@ -439,7 +441,7 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
     iter_configs <- compute_config_ids(model_grid, id_preprocessor)
 
     model_grid <- tibble::add_column(
-      .data  = model_grid,
+      .data = model_grid,
       .iter_model = seq_fit_models,
       .before = 1L
     )

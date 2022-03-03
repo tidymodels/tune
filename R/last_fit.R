@@ -50,9 +50,9 @@
 #'
 #' library(workflows)
 #' spline_wfl <-
-#'  workflow() %>%
-#'  add_recipe(spline_rec) %>%
-#'  add_model(lin_mod)
+#'   workflow() %>%
+#'   add_recipe(spline_rec) %>%
+#'   add_model(lin_mod)
 #'
 #' last_fit(spline_wfl, split = tr_te_split)
 #' }
@@ -73,10 +73,11 @@ last_fit.default <- function(object, ...) {
 #' @export
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL) {
-
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste("To tune a model spec, you must preprocess",
-                       "with a formula or recipe"))
+    rlang::abort(paste(
+      "To tune a model spec, you must preprocess",
+      "with a formula or recipe"
+    ))
   }
 
   empty_ellipses(...)
@@ -101,8 +102,9 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL) {
 }
 
 last_fit_workflow <- function(object, split, metrics) {
-  extr <- function(x)
+  extr <- function(x) {
     x
+  }
   control <- control_resamples(save_pred = TRUE, extract = extr)
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")

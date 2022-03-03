@@ -73,7 +73,7 @@ print.prob_improve <- function(x, ...) {
 
 #' @export
 predict.prob_improve <-
-  function(object, new_data, maximize, iter, best,  ...) {
+  function(object, new_data, maximize, iter, best, ...) {
     check_direction(maximize)
     check_best(best)
 
@@ -90,11 +90,11 @@ predict.prob_improve <-
     if (maximize) {
       new_data <-
         new_data %>%
-        mutate(delta = ((.mean - best - trade_off)/.sd))
+        mutate(delta = ((.mean - best - trade_off) / .sd))
     } else {
       new_data <-
         new_data %>%
-        mutate(delta = ((trade_off + best - .mean )/.sd))
+        mutate(delta = ((trade_off + best - .mean) / .sd))
     }
     new_data %>%
       dplyr::mutate(objective = pnorm(delta)) %>%
@@ -122,11 +122,10 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   res <- list(trade_off = trade_off, eps = eps, label = lab)
   class(res) <- c("exp_improve", "acquisition_function")
   res
-
 }
 
 #' @export
-predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
+predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
   check_direction(maximize)
   check_best(best)
 
@@ -148,7 +147,7 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best,  ...) {
   new_data <-
     new_data %>%
     mutate(
-      snr = delta/sd_trunc,
+      snr = delta / sd_trunc,
       z = ifelse(.sd <= object$eps, 0, snr),
       objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
     )
@@ -174,11 +173,10 @@ conf_bound <- function(kappa = 0.1) {
   res <- list(kappa = kappa, label = lab)
   class(res) <- c("conf_bound", "acquisition_function")
   res
-
 }
 
 #' @export
-predict.conf_bound<- function(object, new_data, maximize, iter, ...) {
+predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
   check_direction(maximize)
 
   if (is.function(object$kappa)) {

@@ -6,9 +6,11 @@ CoordObsPred <-
     ggplot2::CoordFixed,
     setup_panel_params = function(self, scale_x, scale_y, params = list()) {
       # coord limits take precedence over scale limits
-      rngs <- range(self$limits$x %||% scale_x$get_limits(),
-                    self$limits$y %||% scale_y$get_limits(),
-                    na.rm = TRUE)
+      rngs <- range(
+        self$limits$x %||% scale_x$get_limits(),
+        self$limits$y %||% scale_y$get_limits(),
+        na.rm = TRUE
+      )
       self$limits$y <- rngs
       self$limits$x <- rngs
       ggplot2::ggproto_parent(CoordFixed, self)$setup_panel_params(scale_x, scale_y, params)
@@ -47,7 +49,6 @@ CoordObsPred <-
 #' p + coord_fixed()
 #'
 #' p + coord_obs_pred()
-#'
 #' @export
 coord_obs_pred <-
   function(ratio = 1,
@@ -64,4 +65,3 @@ coord_obs_pred <-
       clip = clip
     )
   }
-

@@ -28,7 +28,6 @@
 #' @param workflow The workflow used to fit the iteration results.
 new_iteration_results <- function(x, parameters, metrics, outcomes = character(0),
                                   rset_info, workflow) {
-
   new_tune_results(
     x = x,
     parameters = parameters,

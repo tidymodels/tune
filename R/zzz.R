@@ -11,10 +11,14 @@
     "tune_symbol",
     function() {
       # If `cli.unicode` is set we use that
-      opt <- getOption("cli.unicode",  NULL)
+      opt <- getOption("cli.unicode", NULL)
 
       if (!is.null(opt)) {
-        if (isTRUE(opt)) return(tune_symbol_utf8) else return(tune_symbol_ascii)
+        if (isTRUE(opt)) {
+          return(tune_symbol_utf8)
+        } else {
+          return(tune_symbol_ascii)
+        }
       }
 
       # Otherwise we try to auto-detect
@@ -34,7 +38,7 @@
   makeActiveBinding(
     "tune_color",
     function() {
-      opt <- getOption("tidymodels.dark",  NULL)
+      opt <- getOption("tidymodels.dark", NULL)
 
       if (!is.null(opt)) {
         if (isTRUE(opt)) {
@@ -79,7 +83,6 @@
     vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
     vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
   }
-
 }
 
 # nocov end

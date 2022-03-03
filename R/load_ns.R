@@ -54,8 +54,10 @@ load_namespace <- function(x) {
   }
 
   if (length(x_full) > 0) {
-    purrr::map(x_full,
-               ~ try(suppressPackageStartupMessages(attachNamespace(.x)), silent = TRUE))
+    purrr::map(
+      x_full,
+      ~ try(suppressPackageStartupMessages(attachNamespace(.x)), silent = TRUE)
+    )
   }
 
   invisible(TRUE)

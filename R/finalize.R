@@ -45,7 +45,7 @@ finalize_model <- function(x, parameters) {
   discordant <- dplyr::filter(pset, id != name & id %in% names(parameters))
   if (nrow(discordant) > 0) {
     for (i in 1:nrow(discordant)) {
-      names(parameters)[ names(parameters) == discordant$id[i] ] <-
+      names(parameters)[names(parameters) == discordant$id[i]] <-
         discordant$name[i]
     }
   }

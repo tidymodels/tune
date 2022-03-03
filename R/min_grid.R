@@ -76,7 +76,6 @@
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
-#'
 #' @export
 #' @rdname min_grid
 min_grid.model_spec <- function(x, grid, ...) {
@@ -161,9 +160,11 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
-    dplyr::if_else(!purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
-          min_grid_df$.submodels,
-          purrr::map(1:nrow(min_grid_df), ~list()))
+    dplyr::if_else(
+      !purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
+      min_grid_df$.submodels,
+      purrr::map(1:nrow(min_grid_df), ~ list())
+    )
 
   dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
     dplyr::mutate_if(is.factor, as.character)
@@ -309,4 +310,3 @@ min_grid.pls <- fit_max_value
 #' @export min_grid.poisson_reg
 #' @rdname min_grid
 min_grid.poisson_reg <- fit_max_value
-

@@ -104,7 +104,7 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
       idx <- which(step_id == param_info$component_id)
       # check index
       # should use the contructor but maybe dangerous/difficult
-      object$steps[[ idx ]][[param_info$name]] <- grid[[i]]
+      object$steps[[idx]][[param_info$name]] <- grid[[i]]
     }
   }
   object
@@ -118,7 +118,7 @@ merger <- function(x, y, ...) {
   pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~x))
     return(res)
   }
   grid_name <- colnames(y)
