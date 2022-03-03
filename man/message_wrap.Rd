@@ -33,15 +33,19 @@ library(cli)
 Gaiman <-
   paste(
     '"Good point." Bod was pleased with himself, and glad he had thought of',
-    'asking the poet for advice. Really, he thought, if you couldn\'t trust a',
-    'poet to offer sensible advice, who could you trust?',
+    "asking the poet for advice. Really, he thought, if you couldn't trust a",
+    "poet to offer sensible advice, who could you trust?",
     collapse = ""
   )
 message_wrap(Gaiman)
 message_wrap(Gaiman, width = 20, prefix = "-")
-message_wrap(Gaiman, width = 30, prefix = "-",
-             color_text = cli::col_silver)
-message_wrap(Gaiman, width = 30, prefix = "-",
-             color_text = cli::style_underline,
-             color_prefix = cli::col_green)
+message_wrap(Gaiman,
+  width = 30, prefix = "-",
+  color_text = cli::col_silver
+)
+message_wrap(Gaiman,
+  width = 30, prefix = "-",
+  color_text = cli::style_underline,
+  color_prefix = cli::col_green
+)
 }

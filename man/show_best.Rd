@@ -73,8 +73,11 @@ select_best(ames_iter_search, metric = "rsq")
 select_by_one_std_err(ames_grid_search, metric = "rmse", desc(K))
 
 # Now find the least complex model that has no more than a 5\% loss of RMSE:
-select_by_pct_loss(ames_grid_search, metric = "rmse",
-                   limit = 5, desc(K))
+select_by_pct_loss(
+  ames_grid_search,
+  metric = "rmse",
+  limit = 5, desc(K)
+)
 }
 }
 \references{

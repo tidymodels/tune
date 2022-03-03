@@ -37,7 +37,7 @@ library(ggplot2)
 library(dplyr)
 tibble(
   iter = 1:40,
-  value =  map_dbl(
+  value = map_dbl(
     1:40,
     expo_decay,
     start_val = .1,
@@ -45,6 +45,7 @@ tibble(
     slope = 1 / 5
   )
 ) \%>\%
-  ggplot(aes(x = iter, y =value)) + geom_path()
+  ggplot(aes(x = iter, y = value)) +
+  geom_path()
 }
 }

@@ -38,8 +38,8 @@ recipe(mpg ~ ., data = mtcars) \%>\%
   step_pca(all_predictors(), num_comp = tune()) \%>\%
   dials::parameters()
 
- # A peak under the hood
- tibble::as_tibble(.Last.value)
+# A peak under the hood
+tibble::as_tibble(.Last.value)
 
 recipe(mpg ~ ., data = mtcars) \%>\%
   step_ns(disp, deg_free = tune("disp df")) \%>\%
