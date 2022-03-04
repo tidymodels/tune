@@ -30,24 +30,20 @@ test_that('appropriate return values', {
 # ------------------------------------------------------------------------------
 
 test_that('bad argss', {
-  expect_error(
-    conf_mat_resampled(svm_results),
-    regex = "there are 5 tuning parameter"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(svm_results)
   )
-  expect_error(
-    conf_mat_resampled(mt_knn_bo),
-    regex = "Was this a classification model"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(mt_knn_bo)
   )
   broke_results <- svm_results
   broke_results$.predictions <- NULL
 
-  expect_error(
-    conf_mat_resampled(broke_results),
-    regex = "The function was not run with the"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(broke_results)
   )
-  expect_error(
-    conf_mat_resampled(tibble::as_tibble(svm_results)),
-    regex = "The first argument needs to be an object with class"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(tibble::as_tibble(svm_results))
   )
 
   broke_results <- svm_results
@@ -55,22 +51,19 @@ test_that('bad argss', {
     purrr::map(broke_results$.predictions,
                ~ .x %>% dplyr::select(-.pred_class))
 
-  expect_error(
-    conf_mat_resampled(broke_results),
-    regex = "Cannot find the predicted classes"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(broke_results)
   )
 
   broke_results <- svm_results
   attr(broke_results, "outcomes") <- NULL
 
-  expect_error(
-    conf_mat_resampled(broke_results, select_best(broke_results, "accuracy")),
-    regex = "Cannot determine the proper outcome name"
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(broke_results, select_best(broke_results, "accuracy"))
   )
 
-  expect_error(
-    conf_mat_resampled(svm_results),
-    regex = ""
+  expect_snapshot(error = TRUE,
+    conf_mat_resampled(svm_results)
   )
 })
 
