@@ -255,15 +255,14 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   cars_grid <- tibble(cost = c(0.01, 0.02))
 
-  expect_warning(
+  expect_snapshot(
     cars_res <- tune_grid(
       svm_mod,
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    ),
-    "All models failed"
+    )
   )
 
   notes <- cars_res$.notes
@@ -287,15 +286,14 @@ test_that("tune model only - failure in formula is caught elegantly", {
   cars_grid <- tibble(cost = 0.01)
 
   # these terms don't exist!
-  expect_warning(
+  expect_snapshot(
     cars_res <- tune_grid(
       svm_mod,
       y ~ z,
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    ),
-    "All models failed"
+    )
   )
 
   notes <- cars_res$.notes
@@ -351,16 +349,14 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives errors for recipes", {
-  expect_error(
-    tune_grid(rec_tune_1, lm_mod, rsample::vfold_cv(mtcars, v = 2)),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    tune_grid(rec_tune_1, lm_mod, rsample::vfold_cv(mtcars, v = 2))
   )
 })
 
 test_that("argument order gives errors for formula", {
-  expect_error(
-    tune_grid(mpg ~ ., lm_mod, rsample::vfold_cv(mtcars, v = 2)),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    tune_grid(mpg ~ ., lm_mod, rsample::vfold_cv(mtcars, v = 2))
   )
 })
 
@@ -368,9 +364,8 @@ test_that("ellipses with tune_grid", {
 
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   folds <- rsample::vfold_cv(mtcars)
-  expect_warning(
-    tune_grid(wflow, resamples = folds, grid = 3, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
+  expect_snapshot(
+    tune_grid(wflow, resamples = folds, grid = 3, something = "wrong")
   )
 })
 
