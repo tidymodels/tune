@@ -1,15 +1,13 @@
-
-# ------------------------------------------------------------------------------
-
-set.seed(23598723)
-split <- rsample::initial_split(mtcars)
-
-f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
-lm_fit <- lm(f, data = rsample::training(split))
-test_pred <- predict(lm_fit, rsample::testing(split))
-rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
-
 test_that("formula method", {
+
+  set.seed(23598723)
+  split <- rsample::initial_split(mtcars)
+
+  f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
+  lm_fit <- lm(f, data = rsample::training(split))
+  test_pred <- predict(lm_fit, rsample::testing(split))
+  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
+
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
     last_fit(f, split)
@@ -29,12 +27,20 @@ test_that("formula method", {
 })
 
 test_that("recipe method", {
+  set.seed(23598723)
+  split <- rsample::initial_split(mtcars)
+
+  f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
+  lm_fit <- lm(f, data = rsample::training(split))
+  test_pred <- predict(lm_fit, rsample::testing(split))
+  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_poly(disp)
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
     last_fit(rec, split)
+
   expect_equal(
     sort(coef(extract_fit_engine(res$.workflow[[1]]))),
     sort(coef(lm_fit)),
@@ -50,7 +56,9 @@ test_that("recipe method", {
 })
 
 test_that("collect metrics of last fit", {
-
+  set.seed(23598723)
+  split <- rsample::initial_split(mtcars)
+  f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
     last_fit(f, split)
@@ -61,25 +69,30 @@ test_that("collect metrics of last fit", {
 
 
 test_that("ellipses with last_fit", {
+  set.seed(23598723)
+  split <- rsample::initial_split(mtcars)
+  f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
 
-  expect_warning(
-    linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
+  expect_snapshot(
+    linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong")
   )
 })
 
 test_that("argument order gives errors for recipe/formula", {
+  set.seed(23598723)
+  split <- rsample::initial_split(mtcars)
+
+  f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
+
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_poly(disp)
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  expect_error(
-    last_fit(rec, lin_mod, split),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    last_fit(rec, lin_mod, split)
   )
-  expect_error(
-    last_fit(f, lin_mod, split),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    last_fit(f, lin_mod, split)
   )
 })
 
