@@ -96,6 +96,5 @@ xgb_grid <-
   grid_regular(levels = 3)
 
 min_grid(xgb_spec, xgb_grid)
-
 }
 \keyword{internal}

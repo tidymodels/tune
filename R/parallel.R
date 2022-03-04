@@ -22,4 +22,3 @@ get_operator <- function(allow = TRUE, object) {
   }
   res
 }
-

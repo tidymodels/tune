@@ -29,25 +29,25 @@
 #' # select all combinations using the 'rank' weighting scheme
 #'
 #' ames_grid_search %>%
-#'  collect_metrics()
+#'   collect_metrics()
 #'
 #' filter_parameters(ames_grid_search, weight_func == "rank") %>%
-#'  collect_metrics()
+#'   collect_metrics()
 #'
 #' rank_only <- tibble::tibble(weight_func = "rank")
 #' filter_parameters(ames_grid_search, parameters = rank_only) %>%
-#'  collect_metrics()
+#'   collect_metrics()
 #'
 #' ## -----------------------------------------------------------------------------
 #' # Keep only the results from the numerically best combination
 #'
 #' ames_iter_search %>%
-#'  collect_metrics()
+#'   collect_metrics()
 #'
 #' best_param <- select_best(ames_iter_search, metric = "rmse")
 #' ames_iter_search %>%
-#'  filter_parameters(parameters = best_param) %>%
-#'  collect_metrics()
+#'   filter_parameters(parameters = best_param) %>%
+#'   collect_metrics()
 #' @details
 #' Removing some parameter combinations might affect the results of `autoplot()`
 #' for the object.
@@ -63,7 +63,7 @@ filter_parameters <- function(x, ..., parameters = NULL) {
   x
 }
 
-filter_by_join <- function(x, parameters = NULL, nm = ""){
+filter_by_join <- function(x, parameters = NULL, nm = "") {
   if (is.null(parameters)) {
     return(x)
   }
@@ -71,15 +71,19 @@ filter_by_join <- function(x, parameters = NULL, nm = ""){
   param_names <- .get_tune_parameter_names(x)
   filter_names <- names(parameters)
   filter_names <- filter_names[filter_names != ".config"]
-  if (length(intersect(filter_names, param_names)) == 0){
-    msg <- paste0("There are no columns in 'parameters' that match with ",
-                  as.character(nm))
+  if (length(intersect(filter_names, param_names)) == 0) {
+    msg <- paste0(
+      "There are no columns in 'parameters' that match with ",
+      as.character(nm)
+    )
     rlang::abort(msg)
   }
   extra_names <- setdiff(filter_names, param_names)
   if (length(extra_names) > 0) {
-    msg <- paste0("There are unneeded columns in `parameters` that were ignored: ",
-                  paste0("'", extra_names, "'", collapse = ", "))
+    msg <- paste0(
+      "There are unneeded columns in `parameters` that were ignored: ",
+      paste0("'", extra_names, "'", collapse = ", ")
+    )
     rlang::warn(msg)
     parameters <- parameters[, filter_names %in% param_names]
   }

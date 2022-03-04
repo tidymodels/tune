@@ -10,6 +10,3 @@ catcher <- function(expr) {
   res <- try(withCallingHandlers(warning = add_cond, expr), silent = TRUE)
   list(res = res, signals = signals)
 }
-
-
-

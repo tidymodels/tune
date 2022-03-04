@@ -45,14 +45,16 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_parallel_over(parallel_over, "control_grid()")
 
 
-  res <- list(verbose = verbose,
-              allow_par = allow_par,
-              extract = extract,
-              save_pred = save_pred,
-              pkgs = pkgs,
-              save_workflow = save_workflow,
-              event_level = event_level,
-              parallel_over = parallel_over)
+  res <- list(
+    verbose = verbose,
+    allow_par = allow_par,
+    extract = extract,
+    save_pred = save_pred,
+    pkgs = pkgs,
+    save_workflow = save_workflow,
+    event_level = event_level,
+    parallel_over = parallel_over
+  )
 
   class(res) <- c("control_grid", "control_resamples")
   res

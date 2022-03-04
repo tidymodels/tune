@@ -151,5 +151,3 @@ new_bare_tibble <- function(x, ..., class = character()) {
 pretty.tune_results <- function(x, ...) {
   attr(x, "rset_info")$label
 }
-
-

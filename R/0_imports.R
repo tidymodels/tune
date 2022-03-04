@@ -32,7 +32,8 @@
 # ------------------------------------------------------------------------------
 
 utils::globalVariables(
-  c("engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
+  c(
+    "engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "n", "note", "object", "splits", "grid",
     "resamples", ".iter", "mean", ".submodels", "metrics", "data", ".mean",
@@ -41,8 +42,9 @@ utils::globalVariables(
     ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
     "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
-    ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type")
+    ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type"
   )
+)
 
 # ------------------------------------------------------------------------------
 

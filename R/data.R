@@ -98,6 +98,3 @@
 #' ames_grid_search
 #' ames_iter_search
 NULL
-
-
-

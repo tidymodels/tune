@@ -36,9 +36,11 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
-      paste("The only two arguments for `augment.tune_results()` are",
-            "'x' and 'parameters'. Others were passed:",
-            paste0("'", names(dots), "'", collapse = ", "))
+      paste(
+        "The only two arguments for `augment.tune_results()` are",
+        "'x' and 'parameters'. Others were passed:",
+        paste0("'", names(dots), "'", collapse = ", ")
+      )
     )
   }
 
@@ -63,9 +65,11 @@ augment.resample_results <- function(x, ...) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
-      paste("The only argument for `augment.fit_resamples()` is",
-            "'x'. Others were passed:",
-            paste0("'", names(dots), "'", collapse = ", "))
+      paste(
+        "The only argument for `augment.fit_resamples()` is",
+        "'x'. Others were passed:",
+        paste0("'", names(dots), "'", collapse = ", ")
+      )
     )
   }
 
@@ -82,9 +86,11 @@ augment.last_fit <- function(x, ...) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
-      paste("The only argument for `augment.last_fit()` is",
-            "'x'. Others were passed:",
-            paste0("'", names(dots), "'", collapse = ", "))
+      paste(
+        "The only argument for `augment.last_fit()` is",
+        "'x'. Others were passed:",
+        paste0("'", names(dots), "'", collapse = ", ")
+      )
     )
   }
 
@@ -96,12 +102,14 @@ augment.last_fit <- function(x, ...) {
 
 merge_pred <- function(dat, pred, y) {
   pred_cols <- grep("^\\.pred", names(pred), value = TRUE)
-  pred <- pred[order(pred$.row),]
+  pred <- pred[order(pred$.row), ]
   pred <- pred[, c(".row", pred_cols)]
   if (nrow(pred) != nrow(dat)) {
     rlang::warn(
-      paste("The orginal data had", nrow(dat), "rows but there were",
-            nrow(pred), "hold-out predictions.")
+      paste(
+        "The orginal data had", nrow(dat), "rows but there were",
+        nrow(pred), "hold-out predictions."
+      )
     )
   }
   dat$.row <- 1:nrow(dat)

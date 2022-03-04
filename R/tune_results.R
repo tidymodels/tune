@@ -72,12 +72,11 @@ summarize_notes <- function(x) {
       note = gsub("\n", " ", note, fixed = TRUE),
       pre = ifelse(type == "error", "  - Error(s) x", "  - Warning(s) x"),
       note = paste0(pre, n, ": ", note)
-      )
+    )
   cat("\nThere were issues with some computations:\n\n")
   cat(by_type$note)
   cat("\n\nUse `collect_notes(object)` for more information.\n")
   invisible(NULL)
-
 }
 
 

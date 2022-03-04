@@ -32,7 +32,7 @@
 #' }
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
-    stop("`x` should be a parsnip model specification.")
+    rlang::abort("`x` should be a parsnip model specification.")
   }
   check_final_param(parameters)
   pset <- hardhat::extract_parameter_set_dials(x)
@@ -45,7 +45,7 @@ finalize_model <- function(x, parameters) {
   discordant <- dplyr::filter(pset, id != name & id %in% names(parameters))
   if (nrow(discordant) > 0) {
     for (i in 1:nrow(discordant)) {
-      names(parameters)[ names(parameters) == discordant$id[i] ] <-
+      names(parameters)[names(parameters) == discordant$id[i]] <-
         discordant$name[i]
     }
   }
@@ -56,7 +56,7 @@ finalize_model <- function(x, parameters) {
 #' @rdname finalize_model
 finalize_recipe <- function(x, parameters) {
   if (!inherits(x, "recipe")) {
-    stop("`x` should be a recipe.")
+    rlang::abort("`x` should be a recipe.")
   }
   check_final_param(parameters)
   pset <-
@@ -82,7 +82,7 @@ finalize_recipe <- function(x, parameters) {
 #' @rdname finalize_model
 finalize_workflow <- function(x, parameters) {
   if (!inherits(x, "workflow")) {
-    stop("`x` should be a workflow")
+    rlang::abort("`x` should be a workflow")
   }
   check_final_param(parameters)
 
