@@ -2,14 +2,14 @@
 
     Code
       tune:::check_rset(obj_loo)
-    Error <simpleError>
+    Error <rlang_error>
       Leave-one-out cross-validation is not currently supported with tune.
 
 ---
 
     Code
       tune:::check_rset(obj_nst)
-    Error <simpleError>
+    Error <rlang_error>
       Nested resampling is not currently supported with tune.
 
 # grid objects
@@ -234,36 +234,36 @@
 
     Code
       tune:::check_direction(1)
-    Error <simpleError>
+    Error <rlang_error>
       `maximize` should be a single logical.
 
 ---
 
     Code
       tune:::check_direction(rep(TRUE, 2))
-    Error <simpleError>
+    Error <rlang_error>
       `maximize` should be a single logical.
 
 ---
 
     Code
       tune:::check_best(FALSE)
-    Error <simpleError>
-      `best` should be a single, non-missing numeric
+    Error <rlang_error>
+      `best` should be a single, non-missing numeric.
 
 ---
 
     Code
       tune:::check_best(rep(2, 2))
-    Error <simpleError>
-      `best` should be a single, non-missing numeric
+    Error <rlang_error>
+      `best` should be a single, non-missing numeric.
 
 ---
 
     Code
       tune:::check_best(NA)
-    Error <simpleError>
-      `best` should be a single, non-missing numeric
+    Error <rlang_error>
+      `best` should be a single, non-missing numeric.
 
 # check parameter finalization
 
