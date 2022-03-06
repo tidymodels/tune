@@ -72,7 +72,7 @@ test_that('in-line formulas on outcome', {
 
 test_that('empty ellipses', {
   expect_error(tune:::empty_ellipses(), regexp = NA)
-  expect_warning(tune:::empty_ellipses(a = 1), regexp = ": 'a'")
+  expect_snapshot(tune:::empty_ellipses(a = 1))
 })
 
 # ------------------------------------------------------------------------------
