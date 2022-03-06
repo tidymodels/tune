@@ -1,25 +1,10 @@
-
-# ------------------------------------------------------------------------------
-
-rec_tune_1 <-
-  recipes::recipe(mpg ~ ., data = mtcars) %>%
-  recipes::step_normalize(recipes::all_predictors()) %>%
-  recipes::step_pca(recipes::all_predictors(), num_comp = tune())
-
-rec_no_tune_1 <-
-  recipes::recipe(mpg ~ ., data = mtcars) %>%
-  recipes::step_normalize(recipes::all_predictors())
-
-lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
-
-svm_mod <- parsnip::svm_rbf(mode = "regression", cost = tune()) %>%
-  parsnip::set_engine("kernlab")
-
-# ------------------------------------------------------------------------------
-
 test_that('tune recipe only', {
+  helper_objects <- helper_objects_grid()
+
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$lm_mod)
   pset <- extract_parameter_set_dials(wflow) %>%
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
@@ -45,8 +30,12 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe)', {
+  helper_objects <- helper_objects_grid()
+
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_no_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -72,11 +61,13 @@ test_that('tune model only (with recipe)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with variables)', {
+  helper_objects <- helper_objects_grid()
+
   set.seed(4400)
 
   wflow <- workflow() %>%
     add_variables(mpg, everything()) %>%
-    add_model(svm_mod)
+    add_model(helper_objects$svm_mod)
 
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -98,9 +89,12 @@ test_that('tune model only (with variables)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe, multi-predict)', {
+  helper_objects <- helper_objects_grid()
 
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_no_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -120,8 +114,12 @@ test_that('tune model only (with recipe, multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
+  helper_objects <- helper_objects_grid()
+
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>%
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
@@ -156,9 +154,12 @@ test_that('tune model and recipe', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (multi-predict)', {
+  helper_objects <- helper_objects_grid()
 
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>%
     update(num_comp = dials::num_comp(c(2, 3)))
   grid <- dials::grid_regular(pset, levels = c(3, 2))
@@ -175,8 +176,12 @@ test_that('tune model and recipe (multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (parallel_over = "everything")', {
+  helper_objects <- helper_objects_grid()
+
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>%
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
@@ -200,6 +205,7 @@ test_that('tune model and recipe (parallel_over = "everything")', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
+  helper_objects <- helper_objects_grid()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -245,6 +251,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  helper_objects <- helper_objects_grid()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -257,7 +264,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   expect_snapshot(
     cars_res <- tune_grid(
-      svm_mod,
+      helper_objects$svm_mod,
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
@@ -279,6 +286,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
+  helper_objects <- helper_objects_grid()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -288,7 +296,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
   # these terms don't exist!
   expect_snapshot(
     cars_res <- tune_grid(
-      svm_mod,
+      helper_objects$svm_mod,
       y ~ z,
       resamples = data_folds,
       grid = cars_grid,
@@ -310,6 +318,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
+  helper_objects <- helper_objects_grid()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -322,7 +331,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
   cars_res <- tune_grid(
-    svm_mod,
+    helper_objects$svm_mod,
     preprocessor = rec,
     resamples = data_folds,
     grid = cars_grid,
@@ -349,20 +358,31 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives errors for recipes", {
+  helper_objects <- helper_objects_grid()
+
   expect_snapshot(error = TRUE,
-    tune_grid(rec_tune_1, lm_mod, rsample::vfold_cv(mtcars, v = 2))
+    tune_grid(
+      helper_objects$rec_tune_1,
+      helper_objects$lm_mod,
+      rsample::vfold_cv(mtcars, v = 2)
+    )
   )
 })
 
 test_that("argument order gives errors for formula", {
+  helper_objects <- helper_objects_grid()
+
   expect_snapshot(error = TRUE,
-    tune_grid(mpg ~ ., lm_mod, rsample::vfold_cv(mtcars, v = 2))
+    tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
   )
 })
 
 test_that("ellipses with tune_grid", {
+  helper_objects <- helper_objects_grid()
 
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$lm_mod)
   folds <- rsample::vfold_cv(mtcars)
   expect_snapshot(
     tune_grid(wflow, resamples = folds, grid = 3, something = "wrong")
@@ -383,9 +403,12 @@ test_that("determining the grid type", {
 
 
 test_that("retain extra attributes", {
+  helper_objects <- helper_objects_grid()
 
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_no_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -403,7 +426,9 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$metrics, "metric_set"))
 
   set.seed(4400)
-  wflow <- workflow() %>% add_formula(mpg ~ .) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_formula(mpg ~ .) %>%
+    add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -427,7 +452,7 @@ test_that("retain extra attributes", {
 
   wflow2 <- workflow() %>%
     add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),])) %>%
-    add_model(svm_mod)
+    add_model(helper_objects$svm_mod)
   pset2 <- extract_parameter_set_dials(wflow2)
   grid2 <- dials::grid_regular(pset2, levels = 3)
 

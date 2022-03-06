@@ -1,10 +1,10 @@
 # tune model only - failure in recipe is caught elegantly
 
     Code
-      cars_res <- tune_grid(svm_mod, preprocessor = rec, resamples = data_folds,
-        grid = cars_grid, control = control_grid(extract = function(x) {
-          1
-        }, save_pred = TRUE))
+      cars_res <- tune_grid(helper_objects$svm_mod, preprocessor = rec, resamples = data_folds,
+      grid = cars_grid, control = control_grid(extract = function(x) {
+        1
+      }, save_pred = TRUE))
     Message <simpleMessage>
       x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
       x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
@@ -14,8 +14,8 @@
 # tune model only - failure in formula is caught elegantly
 
     Code
-      cars_res <- tune_grid(svm_mod, y ~ z, resamples = data_folds, grid = cars_grid,
-      control = control_grid(extract = function(x) {
+      cars_res <- tune_grid(helper_objects$svm_mod, y ~ z, resamples = data_folds,
+      grid = cars_grid, control = control_grid(extract = function(x) {
         1
       }, save_pred = TRUE))
     Message <simpleMessage>
@@ -29,14 +29,15 @@
 # argument order gives errors for recipes
 
     Code
-      tune_grid(rec_tune_1, lm_mod, rsample::vfold_cv(mtcars, v = 2))
+      tune_grid(helper_objects$rec_tune_1, helper_objects$lm_mod, rsample::vfold_cv(
+        mtcars, v = 2))
     Error <rlang_error>
       The first argument to [tune_grid()] should be either a model or workflow.
 
 # argument order gives errors for formula
 
     Code
-      tune_grid(mpg ~ ., lm_mod, rsample::vfold_cv(mtcars, v = 2))
+      tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
     Error <rlang_error>
       The first argument to [tune_grid()] should be either a model or workflow.
 
