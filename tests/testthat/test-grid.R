@@ -225,13 +225,15 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
     extract = function(x) 1L
   )
 
-  cars_res <- tune_grid(
-    model,
-    preprocessor = rec,
-    resamples = data_folds,
-    grid = cars_grid,
-    control = control
-  )
+  suppressMessages({
+    cars_res <- tune_grid(
+      model,
+      preprocessor = rec,
+      resamples = data_folds,
+      grid = cars_grid,
+      control = control
+    )
+  })
 
   notes <- cars_res$.notes
   note <- notes[[1]]$note
@@ -330,13 +332,15 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
-  cars_res <- tune_grid(
-    helper_objects$svm_mod,
-    preprocessor = rec,
-    resamples = data_folds,
-    grid = cars_grid,
-    control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-  )
+  suppressMessages({
+    cars_res <- tune_grid(
+      helper_objects$svm_mod,
+      preprocessor = rec,
+      resamples = data_folds,
+      grid = cars_grid,
+      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+    )
+  })
 
   notes <- cars_res$.notes
   note <- notes[[1]]$note
@@ -462,4 +466,3 @@ test_that("retain extra attributes", {
     "being saved contains a recipe, which is"
   )
 })
-
