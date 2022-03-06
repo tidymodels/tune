@@ -1,9 +1,6 @@
-load(test_path("data", "test_objects.RData"))
-svm_results <- readRDS(test_path("data", "svm_results.rds"))
-
-# ------------------------------------------------------------------------------
-
 test_that('appropriate return values', {
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
+
   expect_error(
     cm_1 <- conf_mat_resampled(svm_results, select_best(svm_results, "accuracy")),
     regex = NA
@@ -30,6 +27,9 @@ test_that('appropriate return values', {
 # ------------------------------------------------------------------------------
 
 test_that('bad argss', {
+  load(test_path("data", "test_objects.RData"))
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
+
   expect_snapshot(error = TRUE,
     conf_mat_resampled(svm_results)
   )

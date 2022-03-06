@@ -1,7 +1,5 @@
 rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
-# ------------------------------------------------------------------------------
-
 opt <- getOption("dplyr.summarise.inform", default = "FALSE")
 options(dplyr.summarise.inform = FALSE)
 

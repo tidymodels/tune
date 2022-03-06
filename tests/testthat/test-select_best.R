@@ -45,13 +45,8 @@
 
 # ------------------------------------------------------------------------------
 
-rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
-knn_results <- readRDS(test_path("data", "knn_results.rds"))
-
-# ------------------------------------------------------------------------------
-
-
 test_that("select_best()", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_best(rcv_results, metric = "rmse"))
@@ -94,6 +89,7 @@ test_that("select_best()", {
 
 
 test_that("show_best()", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   rcv_rmse <-
     rcv_results %>%
@@ -121,6 +117,8 @@ test_that("show_best()", {
 })
 
 test_that("one-std error rule", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
@@ -158,6 +156,8 @@ test_that("one-std error rule", {
 
 
 test_that("percent loss", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))

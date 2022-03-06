@@ -1,9 +1,5 @@
-load(test_path("data", "test_objects.RData"))
-
-# ------------------------------------------------------------------------------
-
 test_that("recipe only", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <- collect_metrics(mt_spln_lm_grid) %>%
     dplyr::select(deg_free) %>%
     dplyr::distinct()
@@ -46,7 +42,7 @@ test_that("recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("model only", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <-
     collect_metrics(mt_knn_grid) %>%
     dplyr::select(neighbors) %>%
@@ -91,7 +87,7 @@ test_that("model only", {
 # ------------------------------------------------------------------------------
 
 test_that("model and recipe", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <-
     collect_metrics(mt_spln_knn_grid) %>%
     dplyr::select(deg_free, neighbors) %>%

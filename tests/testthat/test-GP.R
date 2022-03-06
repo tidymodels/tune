@@ -1,14 +1,7 @@
-svm_results <- readRDS(test_path("data", "svm_results.rds"))
-knn_results <- readRDS(test_path("data", "knn_results.rds"))
-knn_set <- readRDS(test_path("data", "knn_set.rds"))
-knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
-knn_gp <- readRDS(test_path("data", "knn_gp.rds"))
-
-svm_set <- attributes(svm_results)$parameters
-
-# ------------------------------------------------------------------------------
-
 test_that('encoding before model', {
+  knn_set <- readRDS(test_path("data", "knn_set.rds"))
+  knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
+
   knn_encoded <- tune:::encode_set(knn_grid, knn_set)
 
   expect_true(all(knn_encoded$K >= 0 & knn_encoded$K <= 1))
@@ -18,10 +11,11 @@ test_that('encoding before model', {
 
 })
 
-
 # ------------------------------------------------------------------------------
 
 test_that('GP fit - svm', {
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
+  svm_set <- attributes(svm_results)$parameters
 
   svm_gp <-
     tune:::fit_gp(collect_metrics(svm_results),
@@ -40,6 +34,7 @@ test_that('GP fit - svm', {
 # ------------------------------------------------------------------------------
 
 test_that('GP fit - knn', {
+  knn_gp <- readRDS(test_path("data", "knn_gp.rds"))
 
   knn_cols <- c(
     'K', 'weight_funcrectangular', 'weight_functriangular',
@@ -56,6 +51,8 @@ test_that('GP fit - knn', {
 # ------------------------------------------------------------------------------
 
 test_that('GP scoring', {
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
+  svm_set <- attributes(svm_results)$parameters
 
   ctrl <- control_bayes()
   curr <-
@@ -86,4 +83,3 @@ test_that('GP scoring', {
   expect_equal(nrow(svm_scores), 20)
 
 })
-

@@ -1,6 +1,3 @@
-load(test_path("data", "test_objects.RData"))
-
-# ------------------------------------------------------------------------------
 
 test_that('tune recipe only', {
   helper_objects <- helper_objects_tune()
@@ -132,6 +129,7 @@ test_that('tune model and recipe', {
 
 
 test_that('check .config in extracts', {
+  load(test_path("data", "test_objects.RData"))
 
   # recipe only
   for (i in 1:nrow(mt_spln_lm_grid)) {
