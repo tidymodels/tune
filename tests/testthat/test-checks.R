@@ -1,40 +1,4 @@
-data("Chicago", package = "modeldata")
-
-spline_rec <-
-  recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
-  recipes::step_date(date) %>%
-  recipes::step_holiday(date) %>%
-  recipes::step_rm(date, dplyr::ends_with("away")) %>%
-  recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
-  recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
-  recipes::step_dummy(recipes::all_nominal()) %>%
-  recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-  recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
-
-glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
-  parsnip::set_engine("glmnet")
-
-chi_wflow <-
-  workflows::workflow() %>%
-  workflows::add_recipe(spline_rec) %>%
-  workflows::add_model(glmn)
-
-bare_rec <-
-  recipes::recipe(ridership ~ ., data = head(Chicago))
-
-svm_mod <-
-  parsnip::svm_rbf(cost = tune()) %>%
-  parsnip::set_engine("kernlab") %>%
-  parsnip::set_mode("regression")
-
-mtfolds <- rsample::vfold_cv(mtcars)
-
-svm_results <- readRDS(test_path("data", "svm_results.rds"))
-
-# ------------------------------------------------------------------------------
-
 test_that('rsample objects', {
-
   obj_cv <- rsample::vfold_cv(mtcars)
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = bootstraps())
@@ -46,6 +10,26 @@ test_that('rsample objects', {
 # ------------------------------------------------------------------------------
 
 test_that('grid objects', {
+  data("Chicago", package = "modeldata")
+
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+
+  glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
+    parsnip::set_engine("glmnet")
+
+  chi_wflow <-
+    workflows::workflow() %>%
+    workflows::add_recipe(spline_rec) %>%
+    workflows::add_model(glmn)
 
   grid_1 <- tibble::tibble(
     penalty = 1:10, mixture = 1:10, imputation = 1:10,
@@ -66,6 +50,14 @@ test_that('grid objects', {
   expect_snapshot(error = TRUE,
     tune:::check_grid(chi_wflow, chi_wflow)
   )
+
+  bare_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago))
+
+  svm_mod <-
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression")
 
   wflow_1 <-
     workflow() %>%
@@ -138,8 +130,16 @@ test_that("Missing required `grid` columns are caught", {
 # ------------------------------------------------------------------------------
 
 test_that('workflow objects', {
-
   skip_if_not_installed("xgboost")
+
+  bare_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago))
+
+  svm_mod <-
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression")
+
   wflow_1 <-
     workflow() %>%
     add_model(svm_mod) %>%
@@ -149,13 +149,18 @@ test_that('workflow objects', {
 
   wflow_2 <-
     workflow() %>%
-    add_model(parsnip::boost_tree(mtry = tune()) %>% parsnip::set_engine("xgboost")) %>%
+    add_model(
+      parsnip::boost_tree(mtry = tune()) %>% parsnip::set_engine("xgboost")
+      ) %>%
     add_recipe(bare_rec)
 
   expect_null(tune:::check_workflow(x = wflow_2))
   expect_snapshot(error = TRUE,
     tune:::check_workflow(x = wflow_2, check_dials = TRUE)
   )
+
+  glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
+    parsnip::set_engine("glmnet")
 
   wflow_3 <-
     workflow() %>%
@@ -175,6 +180,24 @@ test_that('workflow objects', {
 # ------------------------------------------------------------------------------
 
 test_that('yardstick objects', {
+  spline_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
+    recipes::step_date(date) %>%
+    recipes::step_holiday(date) %>%
+    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::step_dummy(recipes::all_nominal()) %>%
+    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+
+  glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
+    parsnip::set_engine("glmnet")
+
+  chi_wflow <-
+    workflows::workflow() %>%
+    workflows::add_recipe(spline_rec) %>%
+    workflows::add_model(glmn)
 
   metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
   metrics_2 <- yardstick::metric_set(yardstick:::rmse)
@@ -261,16 +284,16 @@ test_that('Bayes control objects', {
 # ------------------------------------------------------------------------------
 
 test_that('initial values', {
-
   svm_mod <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%
     parsnip::set_mode("regression")
-
   wflow_1 <-
     workflow() %>%
     add_model(svm_mod) %>%
     add_recipe(recipes::recipe(mpg ~ ., data = mtcars))
+  mtfolds <- rsample::vfold_cv(mtcars)
+
 
   grid_1 <- tune:::check_initial(2, extract_parameter_set_dials(wflow_1), wflow_1,
                                  mtfolds, yardstick::metric_set(yardstick::rsq),
