@@ -1,5 +1,4 @@
-# ------------------------------------------------------------------------------
-# fit_resamples()
+# fit_resamples() --------------------------------------------------------------
 
 test_that("`fit_resamples()` returns a `resample_result` object", {
   set.seed(6735)
@@ -131,8 +130,7 @@ test_that("extracted workflow is finalized", {
   expect_true(result_workflow$trained)
 })
 
-# ------------------------------------------------------------------------------
-# Error capture
+# Error capture ----------------------------------------------------------------
 
 test_that("failure in recipe is caught elegantly", {
   set.seed(6735)
@@ -146,9 +144,8 @@ test_that("failure in recipe is caught elegantly", {
 
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
-  expect_warning(
-    result <- fit_resamples(lin_mod, rec, folds, control = control),
-    "All models failed"
+  expect_snapshot(
+    result <- fit_resamples(lin_mod, rec, folds, control = control)
   )
 
   notes <- result$.notes
@@ -179,9 +176,8 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
 
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
-  expect_warning(
-    result <- fit_resamples(workflow, folds, control = control),
-    "All models failed"
+  expect_snapshot(
+    result <- fit_resamples(workflow, folds, control = control)
   )
 
   notes <- result$.notes
@@ -210,9 +206,8 @@ test_that("classification models generate correct error message", {
 
   control <- control_resamples(extract = function(x) x, save_pred = TRUE)
 
-  expect_warning(
-    result <- fit_resamples(log_mod, rec, folds, control = control),
-    "All models failed"
+  expect_snapshot(
+    result <- fit_resamples(log_mod, rec, folds, control = control)
   )
 
   notes <- result$.notes
@@ -231,8 +226,7 @@ test_that("classification models generate correct error message", {
 })
 
 
-# ------------------------------------------------------------------------------
-# tune_grid() fallback
+# tune_grid() fallback ---------------------------------------------------------
 
 test_that("`tune_grid()` falls back to `fit_resamples()` - formula", {
   set.seed(6735)
@@ -243,9 +237,8 @@ test_that("`tune_grid()` falls back to `fit_resamples()` - formula", {
 
   expect <- fit_resamples(lin_mod, mpg ~ ., folds)
 
-  expect_warning(
-    result <- tune_grid(lin_mod, mpg ~ ., folds),
-    "No tuning parameters have been detected"
+  expect_snapshot(
+    result <- tune_grid(lin_mod, mpg ~ ., folds)
   )
 
   expect_equal(collect_metrics(expect), collect_metrics(result))
@@ -264,9 +257,8 @@ test_that("`tune_grid()` falls back to `fit_resamples()` - workflow variables", 
 
   expect <- fit_resamples(wf, folds)
 
-  expect_warning(
-    result <- tune_grid(wf, folds),
-    "No tuning parameters have been detected"
+  expect_snapshot(
+    result <- tune_grid(wf, folds)
   )
 
   expect_equal(collect_metrics(expect), collect_metrics(result))
@@ -282,16 +274,15 @@ test_that("`tune_grid()` ignores `grid` if there are no tuning parameters", {
   expect <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
 
-  expect_warning(
-    result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds),
-    "No tuning parameters have been detected"
+  expect_snapshot(
+    result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds)
   )
 
   expect_equal(collect_metrics(expect), collect_metrics(result))
 })
 
-# ------------------------------------------------------------------------------
-# autoplot()
+
+# autoplot() -------------------------------------------------------------------
 
 test_that("cannot autoplot `fit_resamples()` results", {
   set.seed(6735)
@@ -303,7 +294,9 @@ test_that("cannot autoplot `fit_resamples()` results", {
   result <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
 
-  expect_error(autoplot(result), "no `autoplot[(][])]` implementation for `resample_results`")
+  expect_snapshot(error = TRUE,
+    autoplot(result)
+  )
 })
 
 test_that("ellipses with fit_resamples", {
@@ -312,9 +305,8 @@ test_that("ellipses with fit_resamples", {
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  expect_warning(
-    lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong"),
-    "The `...` are not used in this function but one or more objects"
+  expect_snapshot(
+    lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong")
   )
 })
 
@@ -329,13 +321,11 @@ test_that("argument order gives errors for recipe/formula", {
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  expect_error(
-    fit_resamples(rec, lin_mod, folds),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    fit_resamples(rec, lin_mod, folds)
   )
-  expect_error(
-    fit_resamples(mpg ~ ., lin_mod, folds),
-    "should be either a model or workflow"
+  expect_snapshot(error = TRUE,
+    fit_resamples(mpg ~ ., lin_mod, folds)
   )
 })
 
@@ -369,13 +359,12 @@ test_that("retain extra attributes", {
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
-  expect_message(
+  expect_snapshot(
     fit_resamples(
       lin_mod,
       recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),]),
       folds,
       control = control_resamples(save_workflow = TRUE)
-    ),
-    "being saved contains a recipe, which is"
+    )
   )
 })
