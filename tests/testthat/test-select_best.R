@@ -40,13 +40,13 @@
 #                       grid = cars_grid,
 #                       control = control_grid(verbose = TRUE, save_pred = TRUE))
 # saveRDS(cars_res,
-#         file = testthat::test_path("rcv_results.rds"),
+#         file = testthat::test_path("data", "rcv_results.rds"),
 #         version = 2, compress = "xz")
 
 # ------------------------------------------------------------------------------
 
-rcv_results <- readRDS(test_path("rcv_results.rds"))
-knn_results <- readRDS(test_path("knn_results.rds"))
+rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
 # ------------------------------------------------------------------------------
 

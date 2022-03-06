@@ -1,4 +1,4 @@
-rcv_results <- readRDS(test_path("rcv_results.rds"))
+rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
 # ------------------------------------------------------------------------------
 

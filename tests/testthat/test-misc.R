@@ -1,4 +1,4 @@
-load(test_path("test_objects.RData"))
+load(test_path("data", "test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 

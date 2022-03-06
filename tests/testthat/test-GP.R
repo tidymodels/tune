@@ -1,8 +1,8 @@
-svm_results <- readRDS(test_path("svm_results.rds"))
-knn_results <- readRDS(test_path("knn_results.rds"))
-knn_set <- readRDS(test_path("knn_set.rds"))
-knn_grid <- readRDS(test_path("knn_grid.rds"))
-knn_gp <- readRDS(test_path("knn_gp.rds"))
+svm_results <- readRDS(test_path("data", "svm_results.rds"))
+knn_results <- readRDS(test_path("data", "knn_results.rds"))
+knn_set <- readRDS(test_path("data", "knn_set.rds"))
+knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
+knn_gp <- readRDS(test_path("data", "knn_gp.rds"))
 
 svm_set <- attributes(svm_results)$parameters
 

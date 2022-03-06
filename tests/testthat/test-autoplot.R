@@ -1,5 +1,5 @@
 test_that("two quantitative predictor marginal plot",{
-  svm_results <- readRDS(test_path("svm_results.rds"))
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
@@ -15,7 +15,7 @@ test_that("two quantitative predictor marginal plot",{
 
 
 test_that("two quantitative predictor and one qualitative marginal plot",{
-  knn_results <- readRDS(test_path("knn_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   p <- autoplot(knn_results)
   expect_s3_class(p, "ggplot")
@@ -31,7 +31,7 @@ test_that("two quantitative predictor and one qualitative marginal plot",{
 })
 
 test_that("not marginal plot with grid search",{
-  knn_results <- readRDS(test_path("knn_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_snapshot(error = TRUE, autoplot(knn_results, type = "performance"))
   expect_snapshot(error = TRUE, autoplot(knn_results, type = "parameters"))
@@ -39,7 +39,7 @@ test_that("not marginal plot with grid search",{
 
 
 test_that("marginal plot labels and transformations - irregular grid",{
-  svm_results <- readRDS(test_path("svm_results.rds"))
+  svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
@@ -70,7 +70,7 @@ test_that("marginal plot labels and transformations - irregular grid",{
 # ------------------------------------------------------------------------------
 
 test_that("marginal plot for iterative search",{
-  load(test_path("test_objects.RData"))
+  load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep)
   expect_s3_class(p, "ggplot")
@@ -90,7 +90,7 @@ test_that("marginal plot for iterative search",{
 
 
 test_that("performance plot for iterative search",{
-  load(test_path("test_objects.RData"))
+  load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
   expect_s3_class(p, "ggplot")
@@ -113,7 +113,7 @@ test_that("performance plot for iterative search",{
 
 
 test_that("parameter plot for iterative search",{
-  load(test_path("test_objects.RData"))
+  load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep, type = "parameters")
   expect_s3_class(p, "ggplot")
@@ -129,8 +129,8 @@ test_that("parameter plot for iterative search",{
 
 
 test_that("regular grid plot",{
-  rcv_results <- readRDS(test_path("rcv_results.rds"))
-  svm_reg_results <- readRDS(test_path("svm_reg_results.rds"))
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+  svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
   p <- autoplot(rcv_results)
   expect_s3_class(p, "ggplot")

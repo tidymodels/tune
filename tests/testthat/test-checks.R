@@ -29,7 +29,7 @@ svm_mod <-
 
 mtfolds <- rsample::vfold_cv(mtcars)
 
-svm_results <- readRDS(test_path("svm_results.rds"))
+svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
 # ------------------------------------------------------------------------------
 

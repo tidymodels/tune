@@ -1,5 +1,5 @@
-load(test_path("test_objects.RData"))
-svm_results <- readRDS(test_path("svm_results.rds"))
+load(test_path("data", "test_objects.RData"))
+svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
 # ------------------------------------------------------------------------------
 
