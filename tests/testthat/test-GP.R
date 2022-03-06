@@ -1,7 +1,3 @@
-library(dplyr)
-
-# ------------------------------------------------------------------------------
-
 svm_results <- readRDS(test_path("svm_results.rds"))
 knn_results <- readRDS(test_path("knn_results.rds"))
 knn_set <- readRDS(test_path("knn_set.rds"))

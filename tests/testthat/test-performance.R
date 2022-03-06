@@ -1,8 +1,4 @@
-
-# ------------------------------------------------------------------------------
-
 test_that('prediction types', {
-
   expect_equal(tune:::pred_type(accuracy), "class")
   expect_equal(tune:::pred_type(roc_auc), "prob")
   expect_equal(tune:::pred_type(rsq), "numeric")
@@ -36,5 +32,3 @@ test_that("metric information", {
     )
   )
 })
-
-

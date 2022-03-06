@@ -1,25 +1,5 @@
-data("Chicago", package = "modeldata")
-
-spline_grid <-
-  tibble::tribble(
-    ~imputation, ~threshold, ~deg_free, ~degree,
-    3L,      0.088,       14L,      1L,
-    6L,      0.058,        8L,      1L,
-    8L,      0.051,       14L,      1L,
-    9L,      0.007,       10L,      1L,
-    1L,      0.032,       15L,      2L,
-    8L,      0.018,        9L,      2L,
-    1L,      0.036,        5L,      1L,
-   10L,        0.1,       10L,      2L,
-    9L,      0.094,       12L,      1L,
-    4L,      0.025,       12L,      1L
-  )
-
-bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
-
-# ------------------------------------------------------------------------------
-
 test_that('recipe merges', {
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -30,6 +10,20 @@ test_that('recipe merges', {
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
     recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+  spline_grid <-
+    tibble::tribble(
+      ~imputation, ~threshold, ~deg_free, ~degree,
+      3L,      0.088,       14L,      1L,
+      6L,      0.058,        8L,      1L,
+      8L,      0.051,       14L,      1L,
+      9L,      0.007,       10L,      1L,
+      1L,      0.032,       15L,      2L,
+      8L,      0.018,        9L,      2L,
+      1L,      0.036,        5L,      1L,
+      10L,        0.1,       10L,      2L,
+      9L,      0.094,       12L,      1L,
+      4L,      0.025,       12L,      1L
+    )
 
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid),
@@ -54,6 +48,7 @@ test_that('recipe merges', {
 })
 
 test_that('partially recipe merge', {
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -64,6 +59,20 @@ test_that('partially recipe merge', {
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
     recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+  spline_grid <-
+    tibble::tribble(
+      ~imputation, ~threshold, ~deg_free, ~degree,
+      3L,      0.088,       14L,      1L,
+      6L,      0.058,        8L,      1L,
+      8L,      0.051,       14L,      1L,
+      9L,      0.007,       10L,      1L,
+      1L,      0.032,       15L,      2L,
+      8L,      0.018,        9L,      2L,
+      1L,      0.036,        5L,      1L,
+      10L,        0.1,       10L,      2L,
+      9L,      0.094,       12L,      1L,
+      4L,      0.025,       12L,      1L
+    )
 
   expect_error(
     spline_updated <- merge(spline_rec, spline_grid[, -1]),
@@ -88,6 +97,7 @@ test_that('partially recipe merge', {
 })
 
 test_that('umerged recipe merge', {
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -98,6 +108,7 @@ test_that('umerged recipe merge', {
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
     recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+  bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
   expect_error(
     spline_updated <- merge(spline_rec, bst_grid),
@@ -129,6 +140,7 @@ test_that('model spec merges', {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
+  bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
   expect_error(
     bst_updated <- merge(bst_model, bst_grid),
@@ -152,6 +164,7 @@ test_that('partially model spec merge', {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
+  bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
   expect_error(
     bst_updated <- merge(bst_model, bst_grid[, -1]),
@@ -174,6 +187,7 @@ test_that('umerged model spec merge', {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
+  bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
   other_grid <- bst_grid
   names(bst_grid) <- letters[1:2]

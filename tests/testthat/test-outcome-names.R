@@ -46,11 +46,11 @@ test_that("workflows + recipes", {
 
   wflow_1 <- wflow %>% add_recipe(rec_1)
   expect_equal(outcome_names(wflow_1), "mpg")
-  expect_equal(outcome_names(fit(wflow_1, mtcars)), "mpg")
+  expect_equal(outcome_names(parsnip::fit(wflow_1, mtcars)), "mpg")
 
   wflow_2 <- wflow %>% add_recipe(rec_2)
   expect_equal(outcome_names(wflow_2), c("mpg", "wt"))
-  expect_equal(outcome_names(fit(wflow_2, mtcars)), c("mpg", "wt"))
+  expect_equal(outcome_names(parsnip::fit(wflow_2, mtcars)), c("mpg", "wt"))
 })
 
 
@@ -62,11 +62,11 @@ test_that("workflows + formulas", {
 
   wflow_1 <- wflow %>% add_formula(mpg ~ .)
   expect_equal(outcome_names(wflow_1), "mpg")
-  expect_equal(outcome_names(fit(wflow_1, mtcars)), "mpg")
+  expect_equal(outcome_names(parsnip::fit(wflow_1, mtcars)), "mpg")
 
   wflow_2 <- wflow %>% add_formula(mpg + wt ~ .)
   expect_equal(outcome_names(wflow_2), c("mpg", "wt"))
-  expect_equal(outcome_names(fit(wflow_2, mtcars)), c("mpg", "wt"))
+  expect_equal(outcome_names(parsnip::fit(wflow_2, mtcars)), c("mpg", "wt"))
 })
 
 
