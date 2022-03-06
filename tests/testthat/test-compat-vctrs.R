@@ -48,15 +48,20 @@ test_that("vec_cast() is working", {
     df <- as.data.frame(tbl)
 
     # tune_results-tune_results
-    expect_error(vec_cast(x, x), class = "vctrs_error_incompatible_type")
+    expect_snapshot(
+      error = TRUE,
+      vec_cast(x, x)
+      )
 
     # tune_results-tbl_df
     expect_identical(vec_cast(x, tbl), tbl)
-    expect_error(vec_cast(tbl, x), class = "vctrs_error_incompatible_type")
+    expect_snapshot(error = TRUE,
+                    vec_cast(tbl, x))
 
     # tune_results-df
     expect_identical(vec_cast(x, df), df)
-    expect_error(vec_cast(df, x), class = "vctrs_error_incompatible_type")
+    expect_snapshot(error = TRUE,
+                    vec_cast(df, x))
   }
 })
 
@@ -106,7 +111,7 @@ test_that("vec_rbind() returns a bare tibble", {
     expect_identical(vec_rbind(x, tbl), vec_rbind(tbl, tbl))
 
     expect_s3_class_bare_tibble(vec_rbind(x))
-    expect_s3_class_bare_tibble(vec_cbind(x, x))
+    expect_s3_class_bare_tibble(vec_cbind(x, x)) %>% suppressMessages()
   }
 })
 
@@ -115,10 +120,10 @@ test_that("vec_cbind() returns a bare tibble", {
     tbl <- new_bare_tibble(x)
 
     expect_identical(vec_cbind(x), vec_cbind(tbl))
-    expect_identical(vec_cbind(x, x), vec_cbind(tbl, tbl))
-    expect_identical(vec_cbind(x, tbl), vec_cbind(tbl, tbl))
+    expect_identical(vec_cbind(x, x), vec_cbind(tbl, tbl)) %>% suppressMessages()
+    expect_identical(vec_cbind(x, tbl), vec_cbind(tbl, tbl)) %>% suppressMessages()
 
     expect_s3_class_bare_tibble(vec_cbind(x))
-    expect_s3_class_bare_tibble(vec_cbind(x, x))
+    expect_s3_class_bare_tibble(vec_cbind(x, x)) %>% suppressMessages()
   }
 })
