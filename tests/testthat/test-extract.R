@@ -2,28 +2,10 @@ load(test_path("data", "test_objects.RData"))
 
 # ------------------------------------------------------------------------------
 
-rec_tune_1 <-
-  recipes::recipe(mpg ~ ., data = mtcars) %>%
-  recipes::step_normalize(recipes::all_predictors()) %>%
-  recipes::step_pca(recipes::all_predictors(), num_comp = tune())
-
-rec_no_tune_1 <-
-  recipes::recipe(mpg ~ ., data = mtcars) %>%
-  recipes::step_normalize(recipes::all_predictors())
-
-lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
-
-svm_mod <-
-  parsnip::svm_rbf(cost = tune()) %>%
-  parsnip::set_engine("kernlab") %>%
-  parsnip::set_mode("regression")
-
-set.seed(363)
-mt_folds <- rsample::vfold_cv(mtcars, v = 5)
-
-# ------------------------------------------------------------------------------
-
 test_that('tune recipe only', {
+  helper_objects <- helper_objects_tune()
+  set.seed(363)
+  mt_folds <- rsample::vfold_cv(mtcars, v = 5)
 
   extr_1_1 <- function(x) {
     extract_recipe(x) %>% tidy(number = 2)
@@ -32,8 +14,8 @@ test_that('tune recipe only', {
   expect_error(
     res_1_1 <-
       workflow() %>%
-      add_recipe(rec_tune_1) %>%
-      add_model(lm_mod) %>%
+      add_recipe(helper_objects$rec_tune_1) %>%
+      add_model(helper_objects$lm_mod) %>%
       tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1)),
     NA
   )
@@ -51,6 +33,9 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only', {
+  helper_objects <- helper_objects_tune()
+  set.seed(363)
+  mt_folds <- rsample::vfold_cv(mtcars, v = 5)
 
   extr_2_1 <- function(x) {
     mod <- extract_fit_engine(x)
@@ -60,8 +45,8 @@ test_that('tune model only', {
   expect_error(
     res_2_1 <-
       workflow() %>%
-      add_recipe(rec_no_tune_1) %>%
-      add_model(svm_mod) %>%
+      add_recipe(helper_objects$rec_no_tune_1) %>%
+      add_model(helper_objects$svm_mod) %>%
       tune_grid(
         resamples = mt_folds,
         grid = 2,
@@ -88,8 +73,8 @@ test_that('tune model only', {
   expect_error(
     res_2_2 <-
       workflow() %>%
-      add_recipe(rec_tune_1) %>%
-      add_model(lm_mod) %>%
+      add_recipe(helper_objects$rec_tune_1) %>%
+      add_model(helper_objects$lm_mod) %>%
       tune_grid(
         resamples = mt_folds,
         grid = 2,
@@ -111,6 +96,9 @@ test_that('tune model only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
+  helper_objects <- helper_objects_tune()
+  set.seed(363)
+  mt_folds <- rsample::vfold_cv(mtcars, v = 5)
 
   extr_3_1 <- function(x) {
     x
@@ -118,8 +106,8 @@ test_that('tune model and recipe', {
 
   wflow_3 <-
     workflow() %>%
-    add_recipe(rec_tune_1) %>%
-    add_model(svm_mod)
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$svm_mod)
   set.seed(35)
   grid_3 <-
     extract_parameter_set_dials(wflow_3) %>%

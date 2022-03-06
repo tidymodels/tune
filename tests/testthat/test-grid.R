@@ -1,5 +1,5 @@
 test_that('tune recipe only', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -30,7 +30,7 @@ test_that('tune recipe only', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe)', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -61,7 +61,7 @@ test_that('tune model only (with recipe)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with variables)', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
 
@@ -89,7 +89,7 @@ test_that('tune model only (with variables)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model only (with recipe, multi-predict)', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -114,7 +114,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -154,7 +154,7 @@ test_that('tune model and recipe', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (multi-predict)', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -176,7 +176,7 @@ test_that('tune model and recipe (multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (parallel_over = "everything")', {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -205,7 +205,7 @@ test_that('tune model and recipe (parallel_over = "everything")', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -253,7 +253,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -288,7 +288,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -320,7 +320,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
@@ -362,7 +362,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives errors for recipes", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE,
     tune_grid(
@@ -374,7 +374,7 @@ test_that("argument order gives errors for recipes", {
 })
 
 test_that("argument order gives errors for formula", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE,
     tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
@@ -382,7 +382,7 @@ test_that("argument order gives errors for formula", {
 })
 
 test_that("ellipses with tune_grid", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   wflow <- workflow() %>%
     add_recipe(helper_objects$rec_tune_1) %>%
@@ -407,7 +407,7 @@ test_that("determining the grid type", {
 
 
 test_that("retain extra attributes", {
-  helper_objects <- helper_objects_grid()
+  helper_objects <- helper_objects_tune()
 
   set.seed(4400)
   wflow <- workflow() %>%
