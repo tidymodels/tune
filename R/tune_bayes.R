@@ -152,10 +152,11 @@ tune_bayes.model_spec <- function(object,
                                   objective = exp_improve(),
                                   initial = 5,
                                   control = control_bayes()) {
-
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste("To tune a model spec, you must preprocess",
-                       "with a formula or recipe"))
+    rlang::abort(paste(
+      "To tune a model spec, you must preprocess",
+      "with a formula or recipe"
+    ))
   }
 
   wflow <- add_model(workflow(), object)
@@ -166,9 +167,12 @@ tune_bayes.model_spec <- function(object,
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  tune_bayes_workflow(wflow, resamples = resamples, iter = iter, param_info = param_info,
-                      metrics = metrics, objective = objective, initial = initial,
-                      control = control, ...)
+  tune_bayes_workflow(
+    wflow,
+    resamples = resamples, iter = iter, param_info = param_info,
+    metrics = metrics, objective = objective, initial = initial,
+    control = control, ...
+  )
 }
 
 
@@ -184,10 +188,12 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes()) {
-
-    tune_bayes_workflow(object, resamples = resamples, iter = iter, param_info = param_info,
-                        metrics = metrics, objective = objective, initial = initial,
-                        control = control, ...)
+    tune_bayes_workflow(
+      object,
+      resamples = resamples, iter = iter, param_info = param_info,
+      metrics = metrics, objective = objective, initial = initial,
+      control = control, ...
+    )
   }
 
 tune_bayes_workflow <-
@@ -205,12 +211,15 @@ tune_bayes_workflow <-
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
 
     if (is.null(param_info)) {
-      param_info <- dials::parameters(object)
+      param_info <- hardhat::extract_parameter_set_dials(object)
     }
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
 
-    unsummarized <- check_initial(initial, param_info, object, resamples,
-                                  metrics, control, checks = "bayes")
+    unsummarized <- check_initial(
+      initial, param_info, object, resamples,
+      metrics, control,
+      checks = "bayes"
+    )
 
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
@@ -278,17 +287,25 @@ tune_bayes_workflow <-
 
       set.seed(control$seed[1] + i + 1)
       candidates <-
-        pred_gp(gp_mod, param_info, control = control,
-                current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id)))
+        pred_gp(
+          gp_mod, param_info,
+          control = control,
+          current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id))
+        )
 
       check_time(start_time, control$time_limit)
 
       acq_summarizer(control, iter = i, objective = objective)
 
       candidates <-
-        dplyr::bind_cols(candidates,
-                         stats::predict(objective, candidates, iter = i,
-                                        maximize = maximize, score_card$best_val))
+        dplyr::bind_cols(
+          candidates,
+          stats::predict(
+            objective, candidates,
+            iter = i,
+            maximize = maximize, score_card$best_val
+          )
+        )
 
       check_time(start_time, control$time_limit)
 
@@ -322,7 +339,7 @@ tune_bayes_workflow <-
           tmp_res[[".metrics"]],
           ~ dplyr::mutate(., .config = paste0("Iter", i))
         )
-        if(control$save_pred) {
+        if (control$save_pred) {
           tmp_res[[".predictions"]] <- purrr::map(
             tmp_res[[".predictions"]],
             ~ dplyr::mutate(., .config = paste0("Iter", i))
@@ -394,8 +411,8 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   if (any(has_trans)) {
     idx <- which(has_trans)
     for (i in idx) {
-      x[[ pset$id[i] ]] <-
-        dials::value_transform(pset$object[[i]], x[[ pset$id[i] ]])
+      x[[pset$id[i]]] <-
+        dials::value_transform(pset$object[[i]], x[[pset$id[i]]])
     }
   }
 
@@ -417,13 +434,12 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   }
 
   if (as_matrix) {
-    x <- stats::model.matrix(~ .  + 0, data = x)
+    x <- stats::model.matrix(~ . + 0, data = x)
   }
   x
 }
 
 fit_gp <- function(dat, pset, metric, control, ...) {
-
   dat <-
     dat %>%
     dplyr::filter(.metric == metric) %>%
@@ -473,12 +489,15 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       msg <- paste(msg, as.character(object))
     }
     tune_log(control, split = NULL, task = msg, type = "warning")
-    return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd =  NA_real_))
+    return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
   }
 
-  tune_log(control, split = NULL,
-           task = paste("Generating", nrow(pred_grid), "candidates"),
-           type = "info")
+  tune_log(
+    control,
+    split = NULL,
+    task = paste("Generating", nrow(pred_grid), "candidates"),
+    type = "info"
+  )
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
@@ -492,7 +511,9 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 
 pick_candidate <- function(results, info, control) {
   if (info$uncertainty < control$uncertain) {
-    results <- results %>% dplyr::arrange(dplyr::desc(objective)) %>% dplyr::slice(1)
+    results <- results %>%
+      dplyr::arrange(dplyr::desc(objective)) %>%
+      dplyr::slice(1)
   } else {
     if (control$verbose) {
       msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
@@ -604,8 +625,11 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
     )
 
   if (inherits(tmp_res, "try-error")) {
-    tune_log(control, split = NULL, task = "Couldn't estimate performance",
-             type = "danger")
+    tune_log(
+      control,
+      split = NULL, task = "Couldn't estimate performance",
+      type = "danger"
+    )
   } else {
     all_bad <- is_cataclysmic(tmp_res)
     if (all_bad) {
@@ -614,8 +638,11 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
       tune_log(control, split = NULL, task = msg, type = "danger")
       tmp_res <- simpleError(msg)
     } else {
-      tune_log(control, split = NULL, task = "Estimating performance",
-               type = "success")
+      tune_log(
+        control,
+        split = NULL, task = "Estimating performance",
+        type = "success"
+      )
     }
   }
   tmp_res
@@ -625,8 +652,10 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
 is_cataclysmic <- function(x) {
   is_err <- purrr::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
   if (any(!is_err)) {
-    is_good <- purrr::map_lgl(x$.metrics[!is_err],
-                              ~ tibble::is_tibble(.x) && nrow(.x) > 0)
+    is_good <- purrr::map_lgl(
+      x$.metrics[!is_err],
+      ~ tibble::is_tibble(.x) && nrow(.x) > 0
+    )
     is_err[!is_err] <- !is_good
   }
   all(is_err)
@@ -645,7 +674,7 @@ check_time <- function(origin, limit) {
   }
   now_time <- proc.time()[3]
   if (now_time - origin >= limit * 60) {
-    stop(paste("The time limit of", limit, "minutes has been reached."), call. = FALSE)
+    rlang::abort(paste("The time limit of", limit, "minutes has been reached."))
   }
   invisible(NULL)
 }
@@ -654,7 +683,7 @@ check_time <- function(origin, limit) {
 # base's setTimeLimit().
 
 # Make sure that rset object attributes are kept once joined
-reup_rs <- function(resamples, res)  {
+reup_rs <- function(resamples, res) {
   sort_cols <- grep("^id", names(resamples), value = TRUE)
   if (any(names(res) == ".iter")) {
     sort_cols <- c(".iter", sort_cols)

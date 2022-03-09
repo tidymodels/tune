@@ -50,7 +50,7 @@
 #' \donttest{
 #' data("example_ames_knn")
 #' # The parameters for the model:
-#' parameters(ames_wflow)
+#' extract_parameter_set_dials(ames_wflow)
 #'
 #' # Summarized over resamples
 #' collect_metrics(ames_grid_search)
@@ -67,7 +67,7 @@
 #' library(recipes)
 #' library(tibble)
 #'
-#' lm_mod <-linear_reg() %>% set_engine("lm")
+#' lm_mod <- linear_reg() %>% set_engine("lm")
 #' set.seed(93599150)
 #' car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
 #' ctrl <- control_resamples(save_pred = TRUE)
@@ -79,12 +79,12 @@
 #' grid <- tibble(df = 3:6)
 #'
 #' resampled <-
-#' lm_mod %>%
-#' tune_grid(spline_rec, resamples = car_folds, control = ctrl, grid = grid)
+#'   lm_mod %>%
+#'   tune_grid(spline_rec, resamples = car_folds, control = ctrl, grid = grid)
 #'
 #' collect_predictions(resampled) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE) %>% arrange(.row)
-#' collect_predictions(resampled, summarize = TRUE, grid[1,]) %>% arrange(.row)
+#' collect_predictions(resampled, summarize = TRUE, grid[1, ]) %>% arrange(.row)
 #' }
 #' @export
 collect_predictions <- function(x, ...) {
@@ -142,8 +142,10 @@ filter_predictions <- function(x, parameters) {
     rlang::warn(
       paste(
         strwrap(
-          paste("The object is missing some attributes; it is probably from",
-                "an earlier version of `tune`. The predictions can't be filtered." ),
+          paste(
+            "The object is missing some attributes; it is probably from",
+            "an earlier version of `tune`. The predictions can't be filtered."
+          ),
           prefix = ""
         ),
         collapse = "\n"
@@ -157,8 +159,10 @@ filter_predictions <- function(x, parameters) {
   parameters <- dplyr::select(parameters, dplyr::one_of(param_names))
   if (ncol(parameters) != length(param_names)) {
     rlang::abort(
-      paste0("`parameters` should only have columns: ",
-             paste0("'", param_names, "'", collapse = ", "))
+      paste0(
+        "`parameters` should only have columns: ",
+        paste0("'", param_names, "'", collapse = ", ")
+      )
     )
   }
   x$.predictions <-
@@ -182,8 +186,10 @@ numeric_summarize <- function(x) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(dplyr::vars(dplyr::starts_with(".pred")),
-                        ~ mean(., na.rm = TRUE))
+    dplyr::summarise_at(
+      dplyr::vars(dplyr::starts_with(".pred")),
+      ~ mean(., na.rm = TRUE)
+    )
   x
 }
 
@@ -205,8 +211,10 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(dplyr::vars(dplyr::starts_with(".pred_")),
-                        ~ mean(., na.rm = TRUE)) %>%
+    dplyr::summarise_at(
+      dplyr::vars(dplyr::starts_with(".pred_")),
+      ~ mean(., na.rm = TRUE)
+    ) %>%
     ungroup()
 
   # In case the class probabilities do not add up to 1 after averaging
@@ -226,7 +234,7 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::full_join(totals, by = group_cols) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ ./.totals) %>%
+    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ . / .totals) %>%
     dplyr::select(-.totals)
 
   # If we started with hard class predictions, recompute them based on the
@@ -281,12 +289,14 @@ average_predictions <- function(x, grid = NULL) {
     grid <- dplyr::select(grid, dplyr::one_of(param_names))
     if (ncol(grid) != length(param_names)) {
       rlang::abort(
-        paste0("`grid` should only have columns: ",
-               paste0("'", param_names, "'", collapse = ", "))
+        paste0(
+          "`grid` should only have columns: ",
+          paste0("'", param_names, "'", collapse = ", ")
+        )
       )
     }
     x$.predictions <-
-      purrr::map(x$.predictions, dplyr::inner_join, grid, by  = param_names)
+      purrr::map(x$.predictions, dplyr::inner_join, grid, by = param_names)
   }
 
   x <-
@@ -385,8 +395,10 @@ estimate_tune_results <- function(x, ...) {
   x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
 
   all_col <- names(x)
-  excl_cols <- c(".metric", ".estimator", ".estimate", "splits", ".notes",
-                 grep("^id", all_col, value = TRUE), ".predictions", ".extracts")
+  excl_cols <- c(
+    ".metric", ".estimator", ".estimate", "splits", ".notes",
+    grep("^id", all_col, value = TRUE), ".predictions", ".extracts"
+  )
   param_names <- all_col[!(all_col %in% excl_cols)]
   x <- x %>%
     tibble::as_tibble() %>%
@@ -394,7 +406,7 @@ estimate_tune_results <- function(x, ...) {
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
-      std_err = sd(.estimate, na.rm = TRUE)/sqrt(n)
+      std_err = sd(.estimate, na.rm = TRUE) / sqrt(n)
     ) %>%
     dplyr::ungroup()
 
@@ -436,5 +448,3 @@ collect_notes.tune_results <- function(x, ...) {
     dplyr::select(dplyr::starts_with("id"), dplyr::any_of(".iter"), .notes) %>%
     tidyr::unnest(cols = .notes)
 }
-
-

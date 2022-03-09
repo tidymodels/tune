@@ -249,10 +249,11 @@ tune_grid.default <- function(object, ...) {
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
                                  control = control_grid()) {
-
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste("To tune a model spec, you must preprocess",
-                       "with a formula or recipe"))
+    rlang::abort(paste(
+      "To tune a model spec, you must preprocess",
+      "with a formula or recipe"
+    ))
   }
 
   empty_ellipses(...)
@@ -279,7 +280,6 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
-
   empty_ellipses(...)
 
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
@@ -385,7 +385,7 @@ set_workflow <- function(workflow, control) {
     if (!is.null(workflow$pre$actions$recipe)) {
       w_size <- utils::object.size(workflow$pre$actions$recipe)
       # make 5MB cutoff
-      if (w_size/1024^2 > 5) {
+      if (w_size / 1024^2 > 5) {
         msg <-
           paste0(
             "The workflow being saved contains a recipe, which is ",

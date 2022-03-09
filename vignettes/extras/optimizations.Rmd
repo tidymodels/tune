@@ -1,11 +1,12 @@
 ---
-title: "Optimizations and Parallel Processing"
+title: "Optimizations and parallel processing"
+output: rmarkdown::html_vignette
+description: |
+  How can we evaluate candidate models in the shortest amount of time?
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{Grid Search}
-output:
-  knitr:::html_vignette:
-    toc: yes
+  %\VignetteIndexEntry{Optimizations and parallel processing}
+  %\VignetteEncoding{UTF-8}
 ---
   
 ```{r setup, include=FALSE}

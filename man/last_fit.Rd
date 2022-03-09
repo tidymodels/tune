@@ -67,9 +67,9 @@ spline_res$.metrics[[1]]
 
 library(workflows)
 spline_wfl <-
- workflow() \%>\%
- add_recipe(spline_rec) \%>\%
- add_model(lin_mod)
+  workflow() \%>\%
+  add_recipe(spline_rec) \%>\%
+  add_model(lin_mod)
 
 last_fit(spline_wfl, split = tr_te_split)
 }

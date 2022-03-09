@@ -62,7 +62,7 @@ ames_wflow <-
   add_model(knn_model)
 
 ames_set <-
-  parameters(ames_wflow) \%>\%
+  extract_parameter_set_dials(ames_wflow) \%>\%
   update(K = neighbors(c(1, 50)))
 
 set.seed(7014)

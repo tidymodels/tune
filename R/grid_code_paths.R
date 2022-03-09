@@ -102,11 +102,11 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 iter_combine <- function(...) {
   results <- list(...)
 
-  metrics <- purrr::map(results, ~.x[[".metrics"]])
-  extracts <- purrr::map(results, ~.x[[".extracts"]])
-  predictions <- purrr::map(results, ~.x[[".predictions"]])
-  all_outcome_names <- purrr::map(results, ~.x[[".all_outcome_names"]])
-  notes <- purrr::map(results, ~.x[[".notes"]])
+  metrics <- purrr::map(results, ~ .x[[".metrics"]])
+  extracts <- purrr::map(results, ~ .x[[".extracts"]])
+  predictions <- purrr::map(results, ~ .x[[".predictions"]])
+  all_outcome_names <- purrr::map(results, ~ .x[[".all_outcome_names"]])
+  notes <- purrr::map(results, ~ .x[[".notes"]])
 
   metrics <- vec_c(!!!metrics)
   extracts <- vec_c(!!!extracts)
@@ -155,7 +155,7 @@ tune_grid_loop_iter <- function(split,
   out_notes <-
     tibble::tibble(location = character(0), type = character(0), note = character(0))
 
-  params <- dials::parameters(workflow)
+  params <- hardhat::extract_parameter_set_dials(workflow)
   model_params <- dplyr::filter(params, source == "model_spec")
   preprocessor_params <- dplyr::filter(params, source == "recipe")
 

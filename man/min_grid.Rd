@@ -77,7 +77,7 @@ svm_spec <-
 
 svm_grid <-
   svm_spec \%>\%
-  parameters() \%>\%
+  extract_parameter_set_dials() \%>\%
   grid_regular(levels = 3)
 
 min_grid(svm_spec, svm_grid)
@@ -92,10 +92,9 @@ xgb_spec <-
 
 xgb_grid <-
   xgb_spec \%>\%
-  parameters() \%>\%
+  extract_parameter_set_dials() \%>\%
   grid_regular(levels = 3)
 
 min_grid(xgb_spec, xgb_grid)
-
 }
 \keyword{internal}

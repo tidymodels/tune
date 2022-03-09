@@ -46,7 +46,6 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_class_or_null(extract, "function", "control_grid()")
   val_parallel_over(parallel_over, "control_grid()")
 
-
   res <- list(verbose = verbose,
               allow_par = allow_par,
               extract = extract,

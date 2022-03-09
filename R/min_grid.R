@@ -57,7 +57,7 @@
 #'
 #' svm_grid <-
 #'   svm_spec %>%
-#'   parameters() %>%
+#'   extract_parameter_set_dials() %>%
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(svm_spec, svm_grid)
@@ -72,11 +72,10 @@
 #'
 #' xgb_grid <-
 #'   xgb_spec %>%
-#'   parameters() %>%
+#'   extract_parameter_set_dials() %>%
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
-#'
 #' @export
 #' @rdname min_grid
 min_grid.model_spec <- function(x, grid, ...) {
@@ -103,14 +102,14 @@ get_fixed_args <- function(info) {
 
 get_submodel_info <- function(spec) {
   if (is.null(spec$engine)) {
-    stop("Please set the model's engine.", call. = FALSE)
+    rlang::abort("Please set the model's engine.")
   }
   param_info <-
     get_from_env(paste0(class(spec)[1], "_args")) %>%
     dplyr::filter(engine == spec$engine) %>%
     dplyr::select(name = parsnip, has_submodel) %>%
     dplyr::full_join(
-      dials::parameters(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
+      hardhat::extract_parameter_set_dials(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
       by = "name"
     ) %>%
     dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%
@@ -161,9 +160,11 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
-    dplyr::if_else(!purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
-          min_grid_df$.submodels,
-          purrr::map(1:nrow(min_grid_df), ~list()))
+    dplyr::if_else(
+      !purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
+      min_grid_df$.submodels,
+      purrr::map(1:nrow(min_grid_df), ~ list())
+    )
 
   dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
     dplyr::mutate_if(is.factor, as.character)
@@ -238,7 +239,7 @@ min_grid.linear_reg <- function(x, grid, ...) {
 
 no_penalty <- function(x, nm) {
   if (length(nm) == 0 || all(colnames(x) != nm)) {
-    stop("At least one penalty value is required for glmnet.", call. = FALSE)
+    rlang::abort("At least one penalty value is required for glmnet.")
   }
   invisible(NULL)
 }
@@ -309,4 +310,3 @@ min_grid.pls <- fit_max_value
 #' @export min_grid.poisson_reg
 #' @rdname min_grid
 min_grid.poisson_reg <- fit_max_value
-
