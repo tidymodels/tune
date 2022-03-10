@@ -1,4 +1,4 @@
-test_that('low-level messages', {
+test_that("low-level messages", {
   expect_snapshot(
     error = TRUE,
     tune:::siren("a", "werewolf")
@@ -12,7 +12,7 @@ test_that('low-level messages', {
   expect_snapshot(tune:::siren("bat", "success"))
 })
 
-test_that('tune_log', {
+test_that("tune_log", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
   rs <- rsample::vfold_cv(mtcars)$splits[[1]]
@@ -25,7 +25,7 @@ test_that('tune_log', {
   expect_snapshot(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"))
 })
 
-test_that('log issues', {
+test_that("log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
 
   rs <- rsample::vfold_cv(mtcars)$splits[[1]]
@@ -56,7 +56,7 @@ test_that('log issues', {
 })
 
 
-test_that('catch and log issues', {
+test_that("catch and log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
   rs <- rsample::vfold_cv(mtcars)$splits[[1]]
   null <- NULL
@@ -81,17 +81,24 @@ test_that('catch and log issues', {
   expect_true(is.nan(out_6))
 })
 
-test_that('logging iterations', {
+test_that("logging iterations", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
-  sc_1 <- list(best_val = 7, best_iter = 2, last_impr = 3, uncertainty = 0,
-               overall_iter = 1, metrics = .8, max = FALSE)
+  sc_1 <- list(
+    best_val = 7,
+    best_iter = 2,
+    last_impr = 3,
+    uncertainty = 0,
+    overall_iter = 1,
+    metrics = .8,
+    max = FALSE
+  )
 
   expect_snapshot(tune:::log_best(ctrl_t, 10, sc_1))
   expect_silent(tune:::log_best(ctrl_f, 10, sc_1))
 })
 
-test_that('logging search info', {
+test_that("logging search info", {
   ctrl_t <- control_grid(verbose = TRUE)
   tb_1 <- tibble::tibble(.mean = 1:3)
 
@@ -102,12 +109,11 @@ test_that('logging search info', {
   )
   expect_snapshot(
     error = TRUE,
-      tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+    tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
   )
-
 })
 
-test_that('current results', {
+test_that("current results", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
   tb_2 <-
@@ -115,7 +121,7 @@ test_that('current results', {
       .metric = rep(letters[1:2], each = 4),
       mean = 1:8,
       .iter = 1:8,
-      std_err = (1:8)/10
+      std_err = (1:8) / 10
     )
 
   expect_snapshot(
@@ -134,7 +140,7 @@ test_that('current results', {
 })
 
 
-test_that('show parameters', {
+test_that("show parameters", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
 
@@ -143,7 +149,7 @@ test_that('show parameters', {
 })
 
 
-test_that('acquisition functions', {
+test_that("acquisition functions", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
 
@@ -153,12 +159,11 @@ test_that('acquisition functions', {
   expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, conf_bound(I)))
   expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, exp_improve(I)))
   expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, prob_improve(I)))
-
 })
 
 ## -----------------------------------------------------------------------------
 
-test_that('message_wrap', {
+test_that("message_wrap", {
   text <-
     paste(
       "A data frame of tuning combinations or a positive integer. The data",
@@ -194,5 +199,3 @@ test_that('message_wrap', {
     crayon = TRUE
   )
 })
-
-

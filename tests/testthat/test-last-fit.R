@@ -1,5 +1,4 @@
 test_that("formula method", {
-
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
 
@@ -88,12 +87,12 @@ test_that("argument order gives errors for recipe/formula", {
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     last_fit(rec, lin_mod, split)
-  )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     last_fit(f, lin_mod, split)
-  )
+  })
 })
 
 test_that("same results of last_fit() and fit() (#300)", {

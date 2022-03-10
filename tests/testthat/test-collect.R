@@ -41,8 +41,10 @@ suppressMessages(
 
 svm_tune_class <- svm_tune
 svm_tune_class$.predictions <-
-  purrr::map(svm_tune_class$.predictions,
-             ~ .x %>% dplyr::select(-.pred_Class1,-.pred_Class2))
+  purrr::map(
+    svm_tune_class$.predictions,
+    ~ .x %>% dplyr::select(-.pred_Class1, -.pred_Class2)
+  )
 attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
 svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
@@ -50,9 +52,9 @@ svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
 # ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     collect_predictions(lm_splines %>% dplyr::select(-.predictions))
-  )
+  })
 })
 
 # ------------------------------------------------------------------------------
@@ -61,16 +63,20 @@ test_that("`collect_predictions()`, un-averaged", {
   res <- collect_predictions(lm_splines)
   exp_res <-
     unnest(lm_splines %>% dplyr::select(.predictions, starts_with("id")),
-           cols = c(.predictions)) %>% dplyr::select(one_of(names(res)))
- expect_equal(res, exp_res)
+      cols = c(.predictions)
+    ) %>% dplyr::select(one_of(names(res)))
+  expect_equal(res, exp_res)
 
- res <- collect_predictions(svm_tune)
- exp_res <-
-   unnest(svm_tune %>% dplyr::select(.predictions, starts_with("id"), .iter),
-          cols = c(.predictions)) %>% dplyr::select(one_of(names(res)))
- res_subset <- collect_predictions(svm_tune, parameters = svm_grd[1,])
- exp_res_subset <- dplyr::filter(exp_res, `cost value` == svm_grd$`cost value`[[1]])
- expect_equal(res_subset, exp_res_subset)
+  res <- collect_predictions(svm_tune)
+  exp_res <-
+    unnest(
+      svm_tune %>% dplyr::select(.predictions, starts_with("id"), .iter),
+      cols = c(.predictions)
+    ) %>%
+    dplyr::select(one_of(names(res)))
+  res_subset <- collect_predictions(svm_tune, parameters = svm_grd[1, ])
+  exp_res_subset <- dplyr::filter(exp_res, `cost value` == svm_grd$`cost value`[[1]])
+  expect_equal(res_subset, exp_res_subset)
 })
 
 # ------------------------------------------------------------------------------
@@ -113,7 +119,7 @@ test_that("classification class predictions, averaged", {
   mode_val <- names(sort(table(all_res_subset$.pred_class)))[2]
   exp_val <- factor(mode_val, levels = levels(all_res_subset$Class))
   res_subset <-
-    dplyr::filter(res, .row == 5 &  `cost value` == svm_grd$`cost value`[1])
+    dplyr::filter(res, .row == 5 & `cost value` == svm_grd$`cost value`[1])
   expect_equal(exp_val, res_subset$.pred_class)
 })
 
@@ -133,10 +139,10 @@ test_that("classification class and prob predictions, averaged", {
   .pred_class <- ifelse(.pred_Class2 > .pred_Class1, "Class2", "Class1")
   .pred_class <- factor(.pred_class, levels = levels(all_res_subset$Class))
   res_subset <-
-    dplyr::filter(res, .row == 5 &  `cost value` == svm_grd$`cost value`[1])
+    dplyr::filter(res, .row == 5 & `cost value` == svm_grd$`cost value`[1])
   expect_equal(.pred_Class1, res_subset$.pred_Class1)
   expect_equal(.pred_Class2, res_subset$.pred_Class2)
-  expect_equal(.pred_class,  res_subset$.pred_class)
+  expect_equal(.pred_class, res_subset$.pred_class)
 })
 
 # ------------------------------------------------------------------------------
@@ -160,7 +166,6 @@ test_that("collecting notes - fit_resamples", {
   expect_true(all(nts$type == "warning"))
   expect_true(all(grepl("rank", nts$note)))
   expect_equal(names(nts), c("id", "location", "type", "note"))
-
 })
 
 test_that("collecting notes - last_fit", {

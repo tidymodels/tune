@@ -11,7 +11,7 @@ test_that("base R objects", {
   f_2 <- cbind(mpg, wt) ~ .
   expect_equal(outcome_names(f_2), c("mpg", "wt"))
 
-  f_3 <-  ~ .
+  f_3 <- ~.
   expect_equal(outcome_names(f_3), character(0))
 })
 
@@ -26,7 +26,7 @@ test_that("recipes", {
   expect_equal(outcome_names(rec_2), c("mpg", "wt"))
   expect_equal(outcome_names(recipes::prep(rec_2)), c("mpg", "wt"))
 
-  rec_3 <- recipes::recipe( ~ ., data = mtcars)
+  rec_3 <- recipes::recipe(~., data = mtcars)
   expect_equal(outcome_names(rec_3), character(0))
   expect_equal(outcome_names(recipes::prep(rec_3)), character(0))
 

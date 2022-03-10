@@ -1,4 +1,4 @@
-test_that('cannot finalize with recipe parameters', {
+test_that("cannot finalize with recipe parameters", {
   skip_if_not_installed("randomForest")
 
   set.seed(21983)
@@ -17,9 +17,9 @@ test_that('cannot finalize with recipe parameters', {
     recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_ns(disp, deg_free = 3)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     mod_1 %>% tune_grid(rec_1, resamples = rs, grid = 3)
-  )
+  })
 
   set.seed(987323)
   expect_error(
@@ -29,7 +29,7 @@ test_that('cannot finalize with recipe parameters', {
 })
 
 
-test_that('skip error if grid is supplied', {
+test_that("skip error if grid is supplied", {
   skip_if_not_installed("randomForest")
 
   set.seed(21983)
@@ -44,18 +44,17 @@ test_that('skip error if grid is supplied', {
     recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_ns(disp, deg_free = tune())
 
-  grid <- tibble::tibble(mtry = 1:3, deg_free = c(3, 3, 4), min_n = c(5,4,6))
+  grid <- tibble::tibble(mtry = 1:3, deg_free = c(3, 3, 4), min_n = c(5, 4, 6))
 
   set.seed(987323)
   expect_error(
     mod_1 %>% tune_grid(rec_1, resamples = rs, grid = grid),
     regex = NA
   )
-
 })
 
 
-test_that('finalize recipe step with multiple tune parameters', {
+test_that("finalize recipe step with multiple tune parameters", {
   data(biomass, package = "modeldata")
 
   model_spec <- parsnip::linear_reg() %>%

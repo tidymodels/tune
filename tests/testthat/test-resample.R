@@ -294,9 +294,9 @@ test_that("cannot autoplot `fit_resamples()` results", {
   result <- lin_mod %>%
     fit_resamples(mpg ~ ., folds)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     autoplot(result)
-  )
+  })
 })
 
 test_that("ellipses with fit_resamples", {
@@ -321,18 +321,17 @@ test_that("argument order gives errors for recipe/formula", {
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     fit_resamples(rec, lin_mod, folds)
-  )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     fit_resamples(mpg ~ ., lin_mod, folds)
-  )
+  })
 })
 
 
 
 test_that("retain extra attributes", {
-
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -354,15 +353,18 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$metrics, "metric_set"))
 
   res2 <- lin_mod %>%
-    fit_resamples(mpg ~ ., folds,
-                  control = control_resamples(save_workflow = TRUE))
+    fit_resamples(
+      mpg ~ .,
+      folds,
+      control = control_resamples(save_workflow = TRUE)
+    )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
   expect_snapshot(
     fit_resamples(
       lin_mod,
-      recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),]),
+      recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ]),
       folds,
       control = control_resamples(save_workflow = TRUE)
     )

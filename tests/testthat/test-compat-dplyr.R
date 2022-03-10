@@ -16,7 +16,7 @@ test_that("dplyr_reconstruct() returns a tune_results subclass if `x` retains tu
 test_that("dplyr_reconstruct() returns bare tibble if `x` loses tune_results structure", {
   for (x in helper_tune_results) {
     col <- x[1]
-    row <- x[0,]
+    row <- x[0, ]
 
     expect_s3_class_bare_tibble(dplyr_reconstruct(col, x))
     expect_s3_class_bare_tibble(dplyr_reconstruct(row, x))
@@ -261,7 +261,7 @@ test_that("semi_join() can lose tune_results class if rows are removed", {
 
 test_that("nest_join() can keep tune_results class if tune_results structure is intact", {
   for (x in helper_tune_results) {
-    y <- mutate(x, foo =  "bar")
+    y <- mutate(x, foo = "bar")
     expect_s3_class_tune_results(nest_join(x, y, by = names(x)))
   }
 })
@@ -299,4 +299,3 @@ test_that("bind_cols() drops the class with new rows", {
   x <- helper_tune_results$apparent
   expect_s3_class_bare_tibble(bind_cols(x, tibble(x = 1:2)))
 })
-

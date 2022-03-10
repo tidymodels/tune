@@ -18,16 +18,24 @@ iterT <- iter1 + iter2
 
 # ------------------------------------------------------------------------------
 
-test_that('tune recipe only', {
+test_that("tune recipe only", {
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
+  wflow <- workflow() %>%
+    add_recipe(rec_tune_1) %>%
+    add_model(lm_mod)
   pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
   folds <- rsample::vfold_cv(mtcars)
   control <- control_bayes(extract = identity)
 
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2, control = control)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = control
+    )
   })
   res_est <- collect_metrics(res)
   res_workflow <- res$.extracts[[1]]$.extracts[[1]]
@@ -46,9 +54,14 @@ test_that('tune recipe only', {
 
   expect_error(
     suppressMessages(
-      tune_bayes(wflow, resamples = folds, param_info = pset,
-                 initial = iter1, iter = iter2,
-                 corr = list(type = "matern", nu = 3/2))
+      tune_bayes(
+        wflow,
+        resamples = folds,
+        param_info = pset,
+        initial = iter1,
+        iter = iter2,
+        corr = list(type = "matern", nu = 3 / 2)
+      )
     ),
     regexp = NA
   )
@@ -56,15 +69,21 @@ test_that('tune recipe only', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with recipe)', {
-
+test_that("tune model only (with recipe)", {
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(rec_no_tune_1) %>%
+    add_model(svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2
+    )
   })
 
   expect_equal(unique(res$id), folds$id)
@@ -78,7 +97,7 @@ test_that('tune model only (with recipe)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with variables)', {
+test_that("tune model only (with variables)", {
   set.seed(4400)
 
   wflow <- workflow() %>%
@@ -112,17 +131,23 @@ test_that('tune model only (with variables)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with recipe, multi-predict)', {
-
+test_that("tune model only (with recipe, multi-predict)", {
   skip_if_not(has_multi_predict())
 
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_no_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(rec_no_tune_1) %>%
+    add_model(svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2
+    )
   })
 
   expect_equal(unique(res$id), folds$id)
@@ -140,15 +165,21 @@ test_that('tune model only (with recipe, multi-predict)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model and recipe', {
-
+test_that("tune model and recipe", {
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(rec_tune_1) %>%
+    add_model(svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 3)))
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2
+    )
   })
 
   expect_equal(unique(res$id), folds$id)
@@ -166,18 +197,24 @@ test_that('tune model and recipe', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model and recipe (multi-predict)', {
-
+test_that("tune model and recipe (multi-predict)", {
   skip_if_not(has_multi_predict())
 
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(svm_mod)
+  wflow <- workflow() %>%
+    add_recipe(rec_tune_1) %>%
+    add_model(svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
   grid <- grid_regular(pset, levels = c(3, 2))
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2
+    )
   })
 
   expect_equal(unique(res$id), folds$id)
@@ -192,7 +229,6 @@ test_that('tune model and recipe (multi-predict)', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
-
   skip("test is not implemented for tune_bayes()")
 
   # With tune_grid() this tests for NA values in the grid.
@@ -243,7 +279,6 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
-
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -251,17 +286,16 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_bs(disp, deg_free = NA_real_)
 
-  expect_snapshot(error = TRUE,
-      cars_res <- tune_bayes(
-        svm_mod,
-        preprocessor = rec,
-        resamples = data_folds
-      )
-  )
+  expect_snapshot(error = TRUE, {
+    cars_res <- tune_bayes(
+      svm_mod,
+      preprocessor = rec,
+      resamples = data_folds
+    )
+  })
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
-
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -270,17 +304,16 @@ test_that("tune model only - failure in formula is caught elegantly", {
     add_formula(y ~ z) %>%
     add_model(svm_mod)
 
-  expect_snapshot(error = TRUE,
-      cars_res <- tune_bayes(
-        wflow,
-        resamples = data_folds,
-        control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
-      )
-  )
+  expect_snapshot(error = TRUE, {
+    cars_res <- tune_bayes(
+      wflow,
+      resamples = data_folds,
+      control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
+    )
+  })
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
-
   skip("test is not implemented for tune_bayes()")
 
   # With tune_grid() this tests for NA values in the grid.
@@ -325,31 +358,49 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives an error for recipes", {
-  expect_snapshot(error = TRUE,
-    tune_bayes(rec_tune_1, model = lm_mod, resamples = rsample::vfold_cv(mtcars, v = 2),
-               param_info = extract_parameter_set_dials(rec_tune_1),
-               iter = iter1, initial = iter2)
-  )
+  expect_snapshot(error = TRUE, {
+    tune_bayes(
+      rec_tune_1,
+      model = lm_mod,
+      resamples = rsample::vfold_cv(mtcars, v = 2),
+      param_info = extract_parameter_set_dials(rec_tune_1),
+      iter = iter1,
+      initial = iter2
+    )
+  })
 })
 
 test_that("argument order gives an error for formula", {
-  expect_snapshot(error = TRUE,
-    tune_bayes(mpg ~ ., svm_mod, resamples = rsample::vfold_cv(mtcars, v = 2),
-               param_info = extract_parameter_set_dials(svm_mod),
-               initial = iter1, iter = iter2)
-  )
+  expect_snapshot(error = TRUE, {
+    tune_bayes(
+      mpg ~ .,
+      svm_mod,
+      resamples = rsample::vfold_cv(mtcars, v = 2),
+      param_info = extract_parameter_set_dials(svm_mod),
+      initial = iter1,
+      iter = iter2
+    )
+  })
 })
 
 test_that("retain extra attributes and saved GP candidates", {
-
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  wflow <- workflow() %>%
+    add_recipe(rec_tune_1) %>%
+    add_model(lm_mod)
+  pset <- extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(1, 5)))
   folds <- rsample::vfold_cv(mtcars)
   ctrl <- control_bayes(save_gp_scoring = TRUE)
   suppressMessages({
-    res <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                      initial = iter1, iter = iter2, control = ctrl)
+    res <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = ctrl
+    )
   })
   att <- attributes(res)
   att_names <- names(att)
@@ -367,9 +418,14 @@ test_that("retain extra attributes and saved GP candidates", {
 
 
   expect_snapshot(
-    res2 <- tune_bayes(wflow, resamples = folds, param_info = pset,
-                       initial = iter1, iter = iter2,
-                       control = control_bayes(save_workflow = TRUE))
+    res2 <- tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = control_bayes(save_workflow = TRUE)
+    )
   )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
@@ -377,7 +433,7 @@ test_that("retain extra attributes and saved GP candidates", {
 
 # ------------------------------------------------------------------------------
 
-test_that('too few starting values', {
+test_that("too few starting values", {
   options(width = 120)
   # TODO Add specific checks with racing objects once finetune is released
   expect_silent(tune:::check_bayes_initial_size(5, 30, FALSE))
@@ -393,7 +449,7 @@ test_that('too few starting values', {
 
 # ------------------------------------------------------------------------------
 
-test_that('missing performance values', {
+test_that("missing performance values", {
   skip_if(new_rng_snapshots)
 
   data(ames, package = "modeldata")

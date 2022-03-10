@@ -16,7 +16,7 @@ check_param_set_tibble <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-test_that('parameters.recipe() still works after deprecation', {
+test_that("parameters.recipe() still works after deprecation", {
   withr::local_options(lifecycle_verbosity = "quiet")
 
   data("Chicago", package = "modeldata")
@@ -32,7 +32,7 @@ test_that('parameters.recipe() still works after deprecation', {
 
 # ------------------------------------------------------------------------------
 
-test_that('parameters.model_spec() still works after deprecation', {
+test_that("parameters.model_spec() still works after deprecation", {
   withr::local_options(lifecycle_verbosity = "quiet")
 
   skip_if_not_installed("parsnip")
@@ -44,5 +44,3 @@ test_that('parameters.model_spec() still works after deprecation', {
   c5_info <- dials::parameters(bst_model)
   check_param_set_tibble(c5_info)
 })
-
-

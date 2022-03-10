@@ -1,4 +1,4 @@
-test_that('recipe merges', {
+test_that("recipe merges", {
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -44,10 +44,9 @@ test_that('recipe merges', {
       spline_updated$x[[i]]$steps[[8]]$degree, spline_grid$degree[[i]]
     )
   }
-
 })
 
-test_that('partially recipe merge', {
+test_that("partially recipe merge", {
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -93,10 +92,9 @@ test_that('partially recipe merge', {
       spline_updated$x[[i]]$steps[[8]]$degree, spline_grid$degree[[i]]
     )
   }
-
 })
 
-test_that('umerged recipe merge', {
+test_that("umerged recipe merge", {
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -129,14 +127,13 @@ test_that('umerged recipe merge', {
       spline_updated$x[[i]]$steps[[8]]$degree, tune()
     )
   }
-
 })
 
 # ------------------------------------------------------------------------------
 
 
 
-test_that('model spec merges', {
+test_that("model spec merges", {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
@@ -157,10 +154,9 @@ test_that('model spec merges', {
       rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
-
 })
 
-test_that('partially model spec merge', {
+test_that("partially model spec merge", {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
@@ -180,10 +176,9 @@ test_that('partially model spec merge', {
       rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
-
 })
 
-test_that('umerged model spec merge', {
+test_that("umerged model spec merge", {
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
@@ -208,6 +203,4 @@ test_that('umerged model spec merge', {
   #     rlang::get_expr(bst_not_updated$x[[i]]$eng_args$rules), tune()
   #   )
   # }
-
 })
-

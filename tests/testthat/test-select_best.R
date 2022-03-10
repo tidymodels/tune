@@ -74,12 +74,12 @@ test_that("select_best()", {
     select_best(rcv_results, metric = "rsq", maximize = TRUE)
   )
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     select_best(rcv_results, metric = "random")
-  )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     select_best(rcv_results, metric = c("rmse", "rsq"))
-  )
+  })
   expect_snapshot({
     best_default_metric <- select_best(rcv_results)
     best_rmse <- select_best(rcv_results, metric = "rmse")
@@ -137,21 +137,21 @@ test_that("one-std error rule", {
     select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE)
   )
 
-  expect_snapshot(error = TRUE,
-    select_by_one_std_err(rcv_results, metric = "random", deg_free),
-  )
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(rcv_results, metric = "random", deg_free)
+  })
+  expect_snapshot(error = TRUE, {
     select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
-  )
+  })
   expect_snapshot({
     select_via_default_metric <- select_by_one_std_err(knn_results, K)
     select_via_roc <- select_by_one_std_err(knn_results, K, metric = "roc_auc")
   })
   expect_equal(select_via_default_metric, select_via_roc)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     select_by_one_std_err(rcv_results, metric = "random")
-  )
+  })
 })
 
 
@@ -175,19 +175,19 @@ test_that("percent loss", {
     select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE)
   )
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = "random", deg_free)
-  )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
-  )
+  })
   expect_snapshot({
     select_via_default_metric <- select_by_pct_loss(knn_results, K)
     select_via_roc <- select_by_pct_loss(knn_results, K, metric = "roc_auc")
   })
   expect_equal(select_via_default_metric, select_via_roc)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = "random")
-  )
+  })
 })

@@ -1,9 +1,9 @@
-test_that("two quantitative predictor marginal plot",{
+test_that("two quantitative predictor marginal plot", {
   svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
-  expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
+  expect_equal(names(p$data), c("mean", "# resamples", ".metric", "name", "value"))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$y, "")
@@ -14,14 +14,14 @@ test_that("two quantitative predictor marginal plot",{
 })
 
 
-test_that("two quantitative predictor and one qualitative marginal plot",{
+test_that("two quantitative predictor and one qualitative marginal plot", {
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   p <- autoplot(knn_results)
   expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
-    c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
+    c("Distance Weighting Function", "mean", "# resamples", ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -30,7 +30,7 @@ test_that("two quantitative predictor and one qualitative marginal plot",{
   expect_equal(p$labels$colour, "Distance Weighting Function")
 })
 
-test_that("not marginal plot with grid search",{
+test_that("not marginal plot with grid search", {
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_snapshot(error = TRUE, autoplot(knn_results, type = "performance"))
@@ -38,12 +38,12 @@ test_that("not marginal plot with grid search",{
 })
 
 
-test_that("marginal plot labels and transformations - irregular grid",{
+test_that("marginal plot labels and transformations - irregular grid", {
   svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
   p <- autoplot(svm_results)
   expect_s3_class(p, "ggplot")
-  expect_equal(names(p$data), c('mean', '# resamples', '.metric', 'name', 'value'))
+  expect_equal(names(p$data), c("mean", "# resamples", ".metric", "name", "value"))
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$y, "")
@@ -69,14 +69,14 @@ test_that("marginal plot labels and transformations - irregular grid",{
 
 # ------------------------------------------------------------------------------
 
-test_that("marginal plot for iterative search",{
+test_that("marginal plot for iterative search", {
   load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep)
   expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
-    c('Distance Weighting Function', 'mean', '# resamples', '.metric', 'name', 'value')
+    c("Distance Weighting Function", "mean", "# resamples", ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -89,14 +89,18 @@ test_that("marginal plot for iterative search",{
 })
 
 
-test_that("performance plot for iterative search",{
+test_that("performance plot for iterative search", {
   load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance")
   expect_s3_class(p, "ggplot")
-  expect_equal(names(p$data),
-               c('K', 'weight_func', 'deg_free', '.metric',
-                 '.estimator', 'mean', 'n', 'std_err', '.config', '.iter'))
+  expect_equal(
+    names(p$data),
+    c(
+      "K", "weight_func", "deg_free", ".metric",
+      ".estimator", "mean", "n", "std_err", ".config", ".iter"
+    )
+  )
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$x, "Iteration")
@@ -112,12 +116,12 @@ test_that("performance plot for iterative search",{
 })
 
 
-test_that("parameter plot for iterative search",{
+test_that("parameter plot for iterative search", {
   load(test_path("data", "test_objects.RData"))
 
   p <- autoplot(mt_spln_knn_bo_sep, type = "parameters")
   expect_s3_class(p, "ggplot")
-  expect_equal(names(p$data), c('.iter', 'name', 'value'))
+  expect_equal(names(p$data), c(".iter", "name", "value"))
 
   name_vals <- sort(unique(p$data$name))
   expect_equal(name_vals, c("K", "Piecewise Polynomial Degree"))
@@ -128,7 +132,7 @@ test_that("parameter plot for iterative search",{
 })
 
 
-test_that("regular grid plot",{
+test_that("regular grid plot", {
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
@@ -136,7 +140,7 @@ test_that("regular grid plot",{
   expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
+    c("degree", "wt df", "wt degree", "mean", "# resamples", ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -151,7 +155,7 @@ test_that("regular grid plot",{
   expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("degree", "wt df", "wt degree", "mean", '# resamples', ".metric", "name", "value")
+    c("degree", "wt df", "wt degree", "mean", "# resamples", ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -166,7 +170,7 @@ test_that("regular grid plot",{
   expect_s3_class(p, "ggplot")
   expect_equal(
     names(p$data),
-    c("%^*#", "Scale Factor",  "mean", '# resamples', ".metric", "name", "value")
+    c("%^*#", "Scale Factor", "mean", "# resamples", ".metric", "name", "value")
   )
   expect_equal(rlang::get_expr(p$mapping$x), expr(value))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
@@ -186,7 +190,7 @@ test_that("regular grid plot",{
 
 
 
-test_that("coord_obs_pred",{
+test_that("coord_obs_pred", {
   data(solubility_test, package = "modeldata")
 
   library(ggplot2)
@@ -214,7 +218,7 @@ test_that("coord_obs_pred",{
   expect_snapshot_warning(print(p3 + coord_obs_pred()))
 })
 
-test_that("1D regular grid x labels",{
+test_that("1D regular grid x labels", {
   set.seed(1)
   res <-
     parsnip::svm_rbf(cost = tune()) %>%
@@ -223,6 +227,3 @@ test_that("1D regular grid x labels",{
     tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 3)
   expect_equal(autoplot(res)$labels$x, c(cost = "Cost"))
 })
-
-
-

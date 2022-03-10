@@ -1,4 +1,4 @@
-test_that('tune recipe only', {
+test_that("tune recipe only", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -29,7 +29,7 @@ test_that('tune recipe only', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with recipe)', {
+test_that("tune model only (with recipe)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -60,7 +60,7 @@ test_that('tune model only (with recipe)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with variables)', {
+test_that("tune model only (with variables)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -88,7 +88,7 @@ test_that('tune model only (with variables)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only (with recipe, multi-predict)', {
+test_that("tune model only (with recipe, multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -113,7 +113,7 @@ test_that('tune model only (with recipe, multi-predict)', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model and recipe', {
+test_that("tune model and recipe", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -153,7 +153,7 @@ test_that('tune model and recipe', {
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model and recipe (multi-predict)', {
+test_that("tune model and recipe (multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -364,21 +364,21 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 test_that("argument order gives errors for recipes", {
   helper_objects <- helper_objects_tune()
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune_grid(
       helper_objects$rec_tune_1,
       helper_objects$lm_mod,
       rsample::vfold_cv(mtcars, v = 2)
     )
-  )
+  })
 })
 
 test_that("argument order gives errors for formula", {
   helper_objects <- helper_objects_tune()
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
-  )
+  })
 })
 
 test_that("ellipses with tune_grid", {
@@ -397,8 +397,8 @@ test_that("ellipses with tune_grid", {
 test_that("determining the grid type", {
   grid_1 <- expand.grid(a = 1:100, b = letters[1:2])
   expect_true(tune:::is_regular_grid(grid_1))
-  expect_true(tune:::is_regular_grid(grid_1[-(1:10),]))
-  expect_false(tune:::is_regular_grid(grid_1[-(1:100),]))
+  expect_true(tune:::is_regular_grid(grid_1[-(1:10), ]))
+  expect_false(tune:::is_regular_grid(grid_1[-(1:100), ]))
   set.seed(1932)
   grid_2 <- data.frame(a = runif(length(letters)), b = letters)
   expect_false(tune:::is_regular_grid(grid_2))
@@ -449,20 +449,28 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$parameters, "parameters"))
   expect_true(inherits(att$metrics, "metric_set"))
 
-  res2 <- tune_grid(wflow, resamples = folds, grid = grid,
-                    control = control_grid(save_workflow = TRUE))
+  res2 <- tune_grid(
+    wflow,
+    resamples = folds,
+    grid = grid,
+    control = control_grid(save_workflow = TRUE)
+  )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
   wflow2 <- workflow() %>%
-    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000),])) %>%
+    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) %>%
     add_model(helper_objects$svm_mod)
   pset2 <- extract_parameter_set_dials(wflow2)
   grid2 <- dials::grid_regular(pset2, levels = 3)
 
   expect_message(
-    tune_grid(wflow2, resamples = folds, grid = grid2,
-              control = control_grid(save_workflow = TRUE)),
+    tune_grid(
+      wflow2,
+      resamples = folds,
+      grid = grid2,
+      control = control_grid(save_workflow = TRUE)
+    ),
     "being saved contains a recipe, which is"
   )
 })

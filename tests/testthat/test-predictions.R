@@ -36,7 +36,6 @@ test_that("recipe only", {
     check_predictions,
     bo_grid
   )
-
 })
 
 # ------------------------------------------------------------------------------
@@ -80,7 +79,6 @@ test_that("model only", {
     check_predictions,
     bo_grid
   )
-
 })
 
 
@@ -125,5 +123,4 @@ test_that("model and recipe", {
     check_predictions,
     bo_grid
   )
-
 })

@@ -11,7 +11,7 @@ test_that("vec_restore() returns a tune_results subclass if `x` retains tune_res
 test_that("vec_restore() returns bare tibble if `x` loses tune_results structure", {
   for (x in helper_tune_results) {
     col <- x[1]
-    row <- x[0,]
+    row <- x[0, ]
 
     expect_s3_class_bare_tibble(vec_restore(col, x))
     expect_s3_class_bare_tibble(vec_restore(row, x))
@@ -48,20 +48,21 @@ test_that("vec_cast() is working", {
     df <- as.data.frame(tbl)
 
     # tune_results-tune_results
-    expect_snapshot(
-      error = TRUE,
+    expect_snapshot(error = TRUE, {
       vec_cast(x, x)
-      )
+    })
 
     # tune_results-tbl_df
     expect_identical(vec_cast(x, tbl), tbl)
-    expect_snapshot(error = TRUE,
-                    vec_cast(tbl, x))
+    expect_snapshot(error = TRUE, {
+      vec_cast(tbl, x)
+    })
 
     # tune_results-df
     expect_identical(vec_cast(x, df), df)
-    expect_snapshot(error = TRUE,
-                    vec_cast(df, x))
+    expect_snapshot(error = TRUE, {
+      vec_cast(df, x)
+    })
   }
 })
 

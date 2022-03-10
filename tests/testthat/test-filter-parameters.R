@@ -1,4 +1,4 @@
-test_that("basic functionality",{
+test_that("basic functionality", {
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
   load(test_path("data", "test_objects.RData"))
 
@@ -41,8 +41,11 @@ test_that("basic functionality",{
     workflow() %>%
     add_recipe(rec_tune_1) %>%
     add_model(lm_mod) %>%
-    tune_grid(resamples = mt_folds, control = control_grid(extract = extr_rec),
-              grid = tibble::tibble(num_comp = 1:2))
+    tune_grid(
+      resamples = mt_folds,
+      control = control_grid(extract = extr_rec),
+      grid = tibble::tibble(num_comp = 1:2)
+    )
 
   filtered_grid <- filter_parameters(lm_res, parameters = tibble::tibble(num_comp = 1))
   expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$num_comp == 1))))
@@ -61,24 +64,24 @@ test_that("basic functionality",{
 
 # ------------------------------------------------------------------------------
 
-test_that("bad inputs",{
+test_that("bad inputs", {
   skip_if(tune:::dplyr_pre_1.0.0())
 
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     filter_parameters(collect_metrics(svm_reg_results), parameters = tibble::tibble(`%^*#` = 1))
-    )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     filter_parameters(svm_reg_results, parameters = tibble::tibble(soup = 1))
-  )
-  expect_snapshot(error = TRUE,
+  })
+  expect_snapshot(error = TRUE, {
     filter_parameters(svm_reg_results, tibble::tibble(soup = 1))
-  )
-  expect_snapshot(error = TRUE,
-    filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1/3))
-  )
+  })
+  expect_snapshot(error = TRUE, {
+    filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1 / 3))
+  })
   expect_snapshot(
     filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1, soup = 2))
   )
- })
+})

@@ -1,4 +1,4 @@
-test_that('check for finalization with engine parameters', {
+test_that("check for finalization with engine parameters", {
   pset_1 <- parameters(dials::mtry(), dials::penalty(), dials::mixture())
   pset_2 <- pset_1
   pset_2$object[[3]] <- NA
@@ -22,7 +22,7 @@ test_that('check for finalization with engine parameters', {
 
 ## -----------------------------------------------------------------------------
 
-test_that('tuning with engine parameters with dials objects', {
+test_that("tuning with engine parameters with dials objects", {
   skip_if_not_installed("randomForest")
   skip_if(utils::packageVersion("dials") <= "0.0.7")
 
@@ -61,7 +61,7 @@ test_that('tuning with engine parameters with dials objects', {
 
 ## -----------------------------------------------------------------------------
 
-test_that('tuning with engine parameters without dials objects', {
+test_that("tuning with engine parameters without dials objects", {
   skip_if_not_installed("randomForest")
   skip_if(utils::packageVersion("dials") <= "0.0.7")
 
@@ -73,17 +73,19 @@ test_that('tuning with engine parameters without dials objects', {
     parsnip::set_mode("regression")
 
   grid <-
-    data.frame(min_n = c(5, 10, 5, 10),
-               corr.bias = c(TRUE, TRUE, FALSE, FALSE))
+    data.frame(
+      min_n = c(5, 10, 5, 10),
+      corr.bias = c(TRUE, TRUE, FALSE, FALSE)
+    )
 
   set.seed(192)
   rs <- rsample::vfold_cv(mtcars)
 
   ## ---------------------------------------------------------------------------
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     rf_tune <- rf_mod %>% tune_grid(mpg ~ ., resamples = rs, grid = 3)
-  )
+  })
 
   ## ---------------------------------------------------------------------------
 
@@ -93,16 +95,14 @@ test_that('tuning with engine parameters without dials objects', {
     ),
     regex = NA
   )
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     p <- autoplot(rf_tune)
-  )
+  })
 
   ## ---------------------------------------------------------------------------
 
   set.seed(283)
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     rf_search <- rf_mod %>% tune_bayes(mpg ~ ., resamples = rs)
-  )
+  })
 })
-
-

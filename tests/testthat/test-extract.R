@@ -1,5 +1,5 @@
 
-test_that('tune recipe only', {
+test_that("tune recipe only", {
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -24,12 +24,11 @@ test_that('tune recipe only', {
   expect_true(
     all(purrr::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
   )
-
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model only', {
+test_that("tune model only", {
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -47,8 +46,7 @@ test_that('tune model only', {
       tune_grid(
         resamples = mt_folds,
         grid = 2,
-        control = control_grid(extract = extr_2_1
-        )
+        control = control_grid(extract = extr_2_1)
       ),
     NA
   )
@@ -87,12 +85,11 @@ test_that('tune model only', {
     NA
   )
   expect_true(all(!extract_2_2$is_null_rec))
-
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('tune model and recipe', {
+test_that("tune model and recipe", {
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -112,8 +109,12 @@ test_that('tune model and recipe', {
     dials::grid_latin_hypercube(size = 4)
 
   expect_error(
-    res_3_1 <- tune_grid(wflow_3, resamples = mt_folds, grid = grid_3,
-                         control = control_grid(extract = extr_3_1)),
+    res_3_1 <- tune_grid(
+      wflow_3,
+      resamples = mt_folds,
+      grid = grid_3,
+      control = control_grid(extract = extr_3_1)
+    ),
     NA
   )
   expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
@@ -122,13 +123,12 @@ test_that('tune model and recipe', {
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
-
 })
 
 # ------------------------------------------------------------------------------
 
 
-test_that('check .config in extracts', {
+test_that("check .config in extracts", {
   load(test_path("data", "test_objects.RData"))
 
   # recipe only
@@ -157,6 +157,4 @@ test_that('check .config in extracts', {
   for (i in 1:nrow(mt_knn_bo)) {
     expect_true(any(names(mt_knn_bo$.extracts[[i]]) == ".config"))
   }
-
 })
-

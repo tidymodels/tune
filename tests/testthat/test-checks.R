@@ -1,4 +1,4 @@
-test_that('rsample objects', {
+test_that("rsample objects", {
   obj_cv <- rsample::vfold_cv(mtcars)
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = bootstraps())
@@ -9,7 +9,7 @@ test_that('rsample objects', {
 
 # ------------------------------------------------------------------------------
 
-test_that('grid objects', {
+test_that("grid objects", {
   data("Chicago", package = "modeldata")
 
   spline_rec <-
@@ -47,9 +47,9 @@ test_that('grid objects', {
     tune:::check_grid(rbind(grid_1, grid_1), chi_wflow)
   )
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_grid(chi_wflow, chi_wflow)
-  )
+  })
 
   bare_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago))
@@ -77,14 +77,15 @@ test_that('grid objects', {
     penalty = 1:10, mixture = 12, imputation = 1:2,
     threshold = 1:2, deg_free = 2:3, degree = 9:10
   )
-  expect_equal(tune:::check_grid(grid_4, chi_wflow),
-               tibble::as_tibble(vctrs::data_frame(grid_4)))
+  expect_equal(
+    tune:::check_grid(grid_4, chi_wflow),
+    tibble::as_tibble(vctrs::data_frame(grid_4))
+  )
 
   expect_silent(tune:::check_grid(grid_4, chi_wflow))
 })
 
 test_that("Unknown `grid` columns are caught", {
-
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
@@ -100,13 +101,12 @@ test_that("Unknown `grid` columns are caught", {
 
   grid <- tibble::tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_grid(grid, workflow)
-  )
+  })
 })
 
 test_that("Missing required `grid` columns are caught", {
-
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
@@ -122,14 +122,14 @@ test_that("Missing required `grid` columns are caught", {
 
   grid <- tibble::tibble(num_comp = 0.01)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_grid(grid, workflow)
-  )
+  })
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('workflow objects', {
+test_that("workflow objects", {
   skip_if_not_installed("xgboost")
 
   bare_rec <-
@@ -151,13 +151,13 @@ test_that('workflow objects', {
     workflow() %>%
     add_model(
       parsnip::boost_tree(mtry = tune()) %>% parsnip::set_engine("xgboost")
-      ) %>%
+    ) %>%
     add_recipe(bare_rec)
 
   expect_null(tune:::check_workflow(x = wflow_2))
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_workflow(x = wflow_2, check_dials = TRUE)
-  )
+  })
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -165,21 +165,21 @@ test_that('workflow objects', {
   wflow_3 <-
     workflow() %>%
     add_model(glmn)
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_workflow(wflow_3)
-  )
+  })
 
   wflow_4 <-
     workflow() %>%
     add_recipe(bare_rec)
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_workflow(wflow_4)
-  )
+  })
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('yardstick objects', {
+test_that("yardstick objects", {
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -202,14 +202,13 @@ test_that('yardstick objects', {
   metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
   metrics_2 <- yardstick::metric_set(yardstick:::rmse)
   expect_true(inherits(metrics_1, "numeric_metric_set"))
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_metrics(yardstick::rmse, chi_wflow)
-  )
+  })
   expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
-test_that('metrics must match the parsnip engine', {
-
+test_that("metrics must match the parsnip engine", {
   metric_set1 <- yardstick::metric_set(yardstick::accuracy)
   metric_set2 <- yardstick::metric_set(yardstick::rmse)
 
@@ -219,19 +218,18 @@ test_that('metrics must match the parsnip engine', {
   workflow1 <- add_model(workflow(), mod1)
   workflow2 <- add_model(workflow(), mod2)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_metrics(metric_set1, workflow1)
-  )
+  })
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_metrics(metric_set2, workflow2)
-  )
+  })
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('grid control objects', {
-
+test_that("grid control objects", {
   expect_error(control_grid(), NA)
   expect_snapshot(error = TRUE, control_grid(tomato = 1))
   expect_snapshot(error = TRUE, control_grid(verbose = 1))
@@ -251,8 +249,7 @@ test_that('grid control objects', {
   expect_s3_class(control_grid(), c("control_grid", "control_resamples"))
 })
 
-test_that('Bayes control objects', {
-
+test_that("Bayes control objects", {
   expect_error(control_bayes(), NA)
   expect_snapshot(error = TRUE, control_bayes(tomato = 1))
   expect_snapshot(error = TRUE, control_bayes(verbose = 1))
@@ -283,7 +280,7 @@ test_that('Bayes control objects', {
 
 # ------------------------------------------------------------------------------
 
-test_that('initial values', {
+test_that("initial values", {
   svm_mod <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%
@@ -295,26 +292,34 @@ test_that('initial values', {
   mtfolds <- rsample::vfold_cv(mtcars)
 
 
-  grid_1 <- tune:::check_initial(2, extract_parameter_set_dials(wflow_1), wflow_1,
-                                 mtfolds, yardstick::metric_set(yardstick::rsq),
-                                 control_bayes())
+  grid_1 <- tune:::check_initial(
+    2,
+    extract_parameter_set_dials(wflow_1),
+    wflow_1,
+    mtfolds,
+    yardstick::metric_set(yardstick::rsq),
+    control_bayes()
+  )
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), nrow(mtfolds))
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
 
-  expect_snapshot(error = TRUE,
-    tune:::check_initial(data.frame(),
-                         extract_parameter_set_dials(wflow_1), wflow_1,
-                         mtfolds, yardstick::metric_set(yardstick::rsq),
-                         control_bayes())
-  )
+  expect_snapshot(error = TRUE, {
+    tune:::check_initial(
+      data.frame(),
+      extract_parameter_set_dials(wflow_1),
+      wflow_1,
+      mtfolds,
+      yardstick::metric_set(yardstick::rsq),
+      control_bayes()
+    )
+  })
 })
 
 # ------------------------------------------------------------------------------
 
 
-test_that('Acquisition function objects', {
-
+test_that("Acquisition function objects", {
   expect_null(tune:::check_direction(FALSE))
   expect_snapshot(error = TRUE, tune:::check_direction(1))
   expect_snapshot(error = TRUE, tune:::check_direction(rep(TRUE, 2)))
@@ -323,13 +328,11 @@ test_that('Acquisition function objects', {
   expect_snapshot(error = TRUE, tune:::check_best(FALSE))
   expect_snapshot(error = TRUE, tune:::check_best(rep(2, 2)))
   expect_snapshot(error = TRUE, tune:::check_best(NA))
-
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('validation helpers', {
-
+test_that("validation helpers", {
   expect_true(tune:::check_class_or_null("a", "character"))
   expect_true(tune:::check_class_or_null(letters, "character"))
   expect_true(tune:::check_class_or_null(NULL, "character"))
@@ -343,15 +346,14 @@ test_that('validation helpers', {
 
 # ------------------------------------------------------------------------------
 
-test_that('check parameter finalization', {
-
+test_that("check parameter finalization", {
   rec <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_ns(disp, deg_free = 3)
   rec_tune <- rec %>% recipes::step_pca(recipes::all_predictors(), num_comp = tune())
   f <- mpg ~ .
   rf1 <-
-    parsnip::rand_forest(mtry = tune(), min_n  = tune()) %>%
+    parsnip::rand_forest(mtry = tune(), min_n = tune()) %>%
     parsnip::set_engine("ranger") %>%
     parsnip::set_mode("regression")
   lm1 <-
@@ -408,9 +410,9 @@ test_that('check parameter finalization', {
     add_recipe(rec_tune) %>%
     add_model(rf1)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     tune:::check_parameters(w4, data = mtcars)
-  )
+  })
 
   p4_a <-
     extract_parameter_set_dials(w4) %>%

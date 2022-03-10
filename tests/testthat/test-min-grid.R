@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 
-test_that('boosted tree grid reduction - xgboost', {
+test_that("boosted tree grid reduction - xgboost", {
   mod <- parsnip::boost_tree() %>%
     parsnip::set_engine("xgboost")
 
@@ -15,7 +15,7 @@ test_that('boosted tree grid reduction - xgboost', {
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(trees = 1:3, min_n = 1:2)[-3,]
+  reg_ish_grid <- expand.grid(trees = 1:3, min_n = 1:2)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$trees, 2:3)
@@ -81,13 +81,11 @@ test_that('boosted tree grid reduction - xgboost', {
   for (i in 1:nrow(reg_grid_smol)) {
     expect_equal(reg_grid_smol$.submodels[[i]], list(`Ade Tukunbo` = 1:2))
   }
-
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('boosted tree grid reduction - C5.0', {
-
+test_that("boosted tree grid reduction - C5.0", {
   mod <- parsnip::boost_tree() %>% parsnip::set_engine("C5.0")
 
   # A typical grid
@@ -101,7 +99,7 @@ test_that('boosted tree grid reduction - C5.0', {
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(trees = 1:3, min_n = 1:2)[-3,]
+  reg_ish_grid <- expand.grid(trees = 1:3, min_n = 1:2)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$trees, 2:3)
@@ -172,7 +170,7 @@ test_that('boosted tree grid reduction - C5.0', {
 # ------------------------------------------------------------------------------
 
 
-test_that('linear regression grid reduction - glmnet', {
+test_that("linear regression grid reduction - glmnet", {
 
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
@@ -180,40 +178,41 @@ test_that('linear regression grid reduction - glmnet', {
   mod <- parsnip::linear_reg() %>% parsnip::set_engine("glmnet")
 
   # A typical grid
-  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)
+  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
   reg_grid_smol <- min_grid(mod, reg_grid)
 
   expect_equal(reg_grid_smol$penalty, rep(3, 5))
-  expect_equal(reg_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_grid_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(reg_grid_smol)) {
     expect_equal(reg_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)[-3,]
+  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$penalty, c(2, rep(3, 4)))
-  expect_equal(reg_ish_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_ish_grid_smol$mixture, (1:5) / 5)
   expect_equal(reg_ish_grid_smol$.submodels[[1]], list(penalty = 1))
   for (i in 2:nrow(reg_ish_grid_smol)) {
     expect_equal(reg_ish_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5)/5, blah = 10:12)
+  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
-  expect_equal(reg_grid_extra_smol$mixture, rep((1:5)/5, each = 3))
+  expect_equal(reg_grid_extra_smol$mixture, rep((1:5) / 5, each = 3))
   expect_equal(reg_grid_extra_smol$blah, rep(10:12, 5))
   for (i in 1:nrow(reg_grid_extra_smol)) {
     expect_equal(reg_grid_extra_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Penalty not specified
-  expect_snapshot(error = TRUE,
-                 min_grid(mod, data.frame(mixture = 1:3)))
+  expect_snapshot(error = TRUE, {
+    min_grid(mod, data.frame(mixture = 1:3))
+  })
 
   # Only penalty
   only_penalty <- expand.grid(penalty = 1:3)
@@ -223,11 +222,11 @@ test_that('linear regression grid reduction - glmnet', {
   expect_equal(only_penalty_smol$.submodels, list(list(penalty = 1:2)))
 
   # No submodels
-  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5)/5)
+  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5) / 5)
   no_sub_smol <- min_grid(mod, no_sub)
 
   expect_equal(no_sub_smol$penalty, 1:5)
-  expect_equal(no_sub_smol$mixture, (1:5)/5)
+  expect_equal(no_sub_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(no_sub_smol)) {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
@@ -261,12 +260,11 @@ test_that('linear regression grid reduction - glmnet', {
   for (i in 1:nrow(reg_grid_smol)) {
     expect_equal(reg_grid_smol$.submodels[[i]], list(`Josephus Miller` = 1:2))
   }
-
 })
 
 # ------------------------------------------------------------------------------
 
-test_that('logistic regression grid reduction - glmnet', {
+test_that("logistic regression grid reduction - glmnet", {
 
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
@@ -274,41 +272,41 @@ test_that('logistic regression grid reduction - glmnet', {
   mod <- parsnip::logistic_reg() %>% parsnip::set_engine("glmnet")
 
   # A typical grid
-  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)
+  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
   reg_grid_smol <- min_grid(mod, reg_grid)
 
   expect_equal(reg_grid_smol$penalty, rep(3, 5))
-  expect_equal(reg_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_grid_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(reg_grid_smol)) {
     expect_equal(reg_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)[-3,]
+  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$penalty, c(2, rep(3, 4)))
-  expect_equal(reg_ish_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_ish_grid_smol$mixture, (1:5) / 5)
   expect_equal(reg_ish_grid_smol$.submodels[[1]], list(penalty = 1))
   for (i in 2:nrow(reg_ish_grid_smol)) {
     expect_equal(reg_ish_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5)/5, blah = 10:12)
+  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
-  expect_equal(reg_grid_extra_smol$mixture, rep((1:5)/5, each = 3))
+  expect_equal(reg_grid_extra_smol$mixture, rep((1:5) / 5, each = 3))
   expect_equal(reg_grid_extra_smol$blah, rep(10:12, 5))
   for (i in 1:nrow(reg_grid_extra_smol)) {
     expect_equal(reg_grid_extra_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Penalty not specified
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     min_grid(mod, data.frame(mixture = 1:3))
-  )
+  })
 
   # Only penalty
   only_penalty <- expand.grid(penalty = 1:3)
@@ -318,11 +316,11 @@ test_that('logistic regression grid reduction - glmnet', {
   expect_equal(only_penalty_smol$.submodels, list(list(penalty = 1:2)))
 
   # No submodels
-  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5)/5)
+  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5) / 5)
   no_sub_smol <- min_grid(mod, no_sub)
 
   expect_equal(no_sub_smol$penalty, 1:5)
-  expect_equal(no_sub_smol$mixture, (1:5)/5)
+  expect_equal(no_sub_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(no_sub_smol)) {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
@@ -360,11 +358,10 @@ test_that('logistic regression grid reduction - glmnet', {
 })
 
 # more of a negative control test
-test_that('logistic regression grid reduction - spark', {
-
-  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)
+test_that("logistic regression grid reduction - spark", {
+  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
   reg_grid_smol <- min_grid(parsnip::logistic_reg() %>%
-                              parsnip::set_engine("spark"), reg_grid)
+    parsnip::set_engine("spark"), reg_grid)
 
   expect_equal(reg_grid_smol$penalty, reg_grid$penalty)
   expect_equal(reg_grid_smol$mixture, reg_grid$mixture)
@@ -375,8 +372,7 @@ test_that('logistic regression grid reduction - spark', {
 
 # ------------------------------------------------------------------------------
 
-test_that('MARS grid reduction - earth', {
-
+test_that("MARS grid reduction - earth", {
   mod <- parsnip::mars() %>% parsnip::set_engine("earth")
 
   # A typical grid
@@ -390,7 +386,7 @@ test_that('MARS grid reduction - earth', {
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(num_terms = 1:3, prod_degree = 1:2)[-3,]
+  reg_ish_grid <- expand.grid(num_terms = 1:3, prod_degree = 1:2)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$num_terms, 2:3)
@@ -461,7 +457,7 @@ test_that('MARS grid reduction - earth', {
 
 # ------------------------------------------------------------------------------
 
-test_that('multinomial regression grid reduction - glmnet', {
+test_that("multinomial regression grid reduction - glmnet", {
 
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
@@ -469,41 +465,41 @@ test_that('multinomial regression grid reduction - glmnet', {
   mod <- parsnip::multinom_reg() %>% parsnip::set_engine("glmnet")
 
   # A typical grid
-  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)
+  reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
   reg_grid_smol <- min_grid(mod, reg_grid)
 
   expect_equal(reg_grid_smol$penalty, rep(3, 5))
-  expect_equal(reg_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_grid_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(reg_grid_smol)) {
     expect_equal(reg_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5)/5)[-3,]
+  reg_ish_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$penalty, c(2, rep(3, 4)))
-  expect_equal(reg_ish_grid_smol$mixture, (1:5)/5)
+  expect_equal(reg_ish_grid_smol$mixture, (1:5) / 5)
   expect_equal(reg_ish_grid_smol$.submodels[[1]], list(penalty = 1))
   for (i in 2:nrow(reg_ish_grid_smol)) {
     expect_equal(reg_ish_grid_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5)/5, blah = 10:12)
+  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
-  expect_equal(reg_grid_extra_smol$mixture, rep((1:5)/5, each = 3))
+  expect_equal(reg_grid_extra_smol$mixture, rep((1:5) / 5, each = 3))
   expect_equal(reg_grid_extra_smol$blah, rep(10:12, 5))
   for (i in 1:nrow(reg_grid_extra_smol)) {
     expect_equal(reg_grid_extra_smol$.submodels[[i]], list(penalty = 1:2))
   }
 
   # Penalty not specified
-  expect_snapshot(error = TRUE,
+  expect_snapshot(error = TRUE, {
     min_grid(mod, data.frame(mixture = 1:3))
-  )
+  })
 
   # Only penalty
   only_penalty <- expand.grid(penalty = 1:3)
@@ -513,11 +509,11 @@ test_that('multinomial regression grid reduction - glmnet', {
   expect_equal(only_penalty_smol$.submodels, list(list(penalty = 1:2)))
 
   # No submodels
-  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5)/5)
+  no_sub <- tibble::tibble(penalty = 1:5, mixture = (1:5) / 5)
   no_sub_smol <- min_grid(mod, no_sub)
 
   expect_equal(no_sub_smol$penalty, 1:5)
-  expect_equal(no_sub_smol$mixture, (1:5)/5)
+  expect_equal(no_sub_smol$mixture, (1:5) / 5)
   for (i in 1:nrow(no_sub_smol)) {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
@@ -556,8 +552,7 @@ test_that('multinomial regression grid reduction - glmnet', {
 # ------------------------------------------------------------------------------
 
 
-test_that('nearest neighbors grid reduction - kknn', {
-
+test_that("nearest neighbors grid reduction - kknn", {
   mod <- parsnip::nearest_neighbor() %>% parsnip::set_engine("kknn")
 
   # A typical grid
@@ -571,7 +566,7 @@ test_that('nearest neighbors grid reduction - kknn', {
   }
 
   # Unbalanced grid
-  reg_ish_grid <- expand.grid(neighbors = 1:3, dist_power = 1:2)[-3,]
+  reg_ish_grid <- expand.grid(neighbors = 1:3, dist_power = 1:2)[-3, ]
   reg_ish_grid_smol <- min_grid(mod, reg_ish_grid)
 
   expect_equal(reg_ish_grid_smol$neighbors, 2:3)
@@ -581,7 +576,7 @@ test_that('nearest neighbors grid reduction - kknn', {
   }
 
   # Grid with a third parameter
-  wts <- c('rectangular', 'triangular', 'epanechnikov')
+  wts <- c("rectangular", "triangular", "epanechnikov")
   reg_grid_extra <- expand.grid(neighbors = 1:3, dist_power = 1:2, weight_func = wts)
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
