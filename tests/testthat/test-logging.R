@@ -1,193 +1,169 @@
-context("logging")
-library(cli)
-
-# ------------------------------------------------------------------------------
-
-ctrl_t <- control_grid(verbose = TRUE)
-ctrl_f <- control_grid(verbose = FALSE)
-
-rs <- rsample::vfold_cv(mtcars)$splits[[1]]
-
-res_1 <- tune:::catcher(log("a"))
-res_2 <- tune:::catcher(log(1))
-res_3 <- tune:::catcher(log(-1))
-
-sc_1 <- list(best_val = 7, best_iter = 2, last_impr = 3, uncertainty = 0,
-  overall_iter = 1, metrics = .8, max = FALSE)
-
-tb_1 <- tibble::tibble(.mean = 1:3)
-
-tb_2 <-
-  tibble::tibble(
-    .metric = rep(letters[1:2], each = 4),
-    mean = 1:8,
-    .iter = 1:8,
-    std_err = (1:8)/10
+test_that("low-level messages", {
+  expect_snapshot(
+    error = TRUE,
+    tune:::siren("a", "werewolf")
   )
-
-# ------------------------------------------------------------------------------
-
-test_that('low-level messages', {
-  expect_error(tune:::siren("a", "werewolf"), "should be one of")
-  expect_message(tune:::siren("bat", "info"), "i")
-  expect_message(tune:::siren("bat", "go"), cli::symbol$pointer)
-  expect_message(tune:::siren("bat", "danger"), "x")
-  expect_message(tune:::siren("bat", "warning"), "!")
+  expect_snapshot(tune:::siren("bat", "info"))
+  expect_snapshot(tune:::siren("bat", "go"))
+  expect_snapshot(tune:::siren("bat", "danger"))
+  expect_snapshot(tune:::siren("bat", "warning"))
 
   skip_on_os("windows")
-  expect_message(tune:::siren("bat", "success"), tune:::tune_symbol$success)
+  expect_snapshot(tune:::siren("bat", "success"))
 })
 
-test_that('tune_log', {
+test_that("tune_log", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_f <- control_grid(verbose = FALSE)
+  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
 
-  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"), "cube")
-  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"), "Fold01")
-  expect_message(tune:::tune_log(ctrl_t, NULL, task = "cube", type = "go"), "(?!.*Fold)", perl = TRUE)
+  expect_snapshot(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"))
+  expect_snapshot(tune:::tune_log(ctrl_t, NULL, task = "cube", type = "go"))
   expect_silent(tune:::tune_log(ctrl_f, NULL, task = "cube", type = "go"))
 
   skip_on_os("windows")
-  expect_message(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"), tune:::tune_symbol$success)
+  expect_snapshot(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"))
 })
 
-test_that('log issues', {
+test_that("log issues", {
+  ctrl_f <- control_grid(verbose = FALSE)
+
+  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+
+  res_1 <- tune:::catcher(log("a"))
+  res_2 <- tune:::catcher(log(1))
+  res_3 <- tune:::catcher(log(-1))
 
   note_1 <- tibble::tibble(location = "Roshar", type = "Alethi", note = "I'm a stick")
   note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
 
-  expect_message(
+  expect_snapshot(
     expect_equal(
       tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
       dplyr::bind_rows(note_1, note_2)
-    ),
-    "non-numeric argument to mathematical function"
+    )
   )
 
   expect_silent(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
 
   note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
-  expect_message(
+  expect_snapshot(
     expect_equal(
       tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
       dplyr::bind_rows(note_1, note_3)
-    ),
-    'NaNs produced'
+    )
   )
-
 })
 
 
-test_that('catch and log issues', {
-
+test_that("catch and log issues", {
+  ctrl_f <- control_grid(verbose = FALSE)
+  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
   null <- NULL
 
-  expect_message(
-    out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
-    'Fold01: toledo: Error in log("a")', fixed = TRUE
+  expect_snapshot(
+    out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(inherits(out_1, "try-error"))
   expect_silent(out_2 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
   expect_true(out_2 == 0)
-  expect_message(
-    out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
-    'Fold01: toledo: NaNs produced', fixed = TRUE
+  expect_snapshot(
+    out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(is.nan(out_3))
-  expect_message(
-    out_4 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null),
-    '!', fixed = TRUE
-  )
-  expect_true(is.nan(out_4))
-  expect_message(
-    out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null),
-    "(?!.*Fold)", perl = TRUE
+  expect_snapshot(
+    out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(inherits(out_5, "try-error"))
-  expect_message(
-    out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null),
-    "(?!.*Fold)", perl = TRUE
+  expect_snapshot(
+    out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(is.nan(out_6))
-  expect_silent(
-    out_7 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+})
+
+test_that("logging iterations", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_f <- control_grid(verbose = FALSE)
+  sc_1 <- list(
+    best_val = 7,
+    best_iter = 2,
+    last_impr = 3,
+    uncertainty = 0,
+    overall_iter = 1,
+    metrics = .8,
+    max = FALSE
   )
-  expect_true(out_7 == 0)
-})
 
-test_that('logging iterations', {
-
-  expect_message(tune:::log_best(ctrl_t, 10, sc_1), 'Iteration 10')
-  expect_message(tune:::log_best(ctrl_t, 10, sc_1), '0.8=7 (@iter 2)', fixed = TRUE)
+  expect_snapshot(tune:::log_best(ctrl_t, 10, sc_1))
   expect_silent(tune:::log_best(ctrl_f, 10, sc_1))
-
 })
 
-test_that('logging search info', {
+test_that("logging search info", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  tb_1 <- tibble::tibble(.mean = 1:3)
 
   expect_silent(tune:::check_and_log_flow(ctrl_t, tb_1))
-  expect_message(
-    expect_error(
-      tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
-    ),
-    "Skipping to next iteration"
+  expect_snapshot(
+    error = TRUE,
+    tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
   )
-  expect_message(
-    expect_error(
-      tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
-    ),
-    "Halting search"
+  expect_snapshot(
+    error = TRUE,
+    tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
   )
-
 })
 
-test_that('current results', {
+test_that("current results", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_f <- control_grid(verbose = FALSE)
+  tb_2 <-
+    tibble::tibble(
+      .metric = rep(letters[1:2], each = 4),
+      mean = 1:8,
+      .iter = 1:8,
+      std_err = (1:8) / 10
+    )
 
-  expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a"),
-    cli::symbol$circle_cross
+  expect_snapshot(
+    tune:::log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a")
   )
-  expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b"),
-    "+/-"
+  expect_snapshot(
+    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b")
   )
   expect_silent(tune:::log_progress(ctrl_f, tb_2, maximize = TRUE, objective = "a"))
 
   skip_on_os("windows")
 
-  expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
-    cli::symbol$heart
-  )
-
-  expect_message(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a"),
-    "Newest results"
+  expect_snapshot(
+    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a")
   )
 })
 
 
-test_that('show parameters', {
+test_that("show parameters", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_f <- control_grid(verbose = FALSE)
 
-  expect_message(tune:::param_msg(ctrl_t, iris[1, 4:5]), "i")
-  expect_message(tune:::param_msg(ctrl_t, iris[1, 4:5]), "Petal.Width=0.2, Species=setosa")
+  expect_snapshot(tune:::param_msg(ctrl_t, iris[1, 4:5]))
   expect_silent(tune:::param_msg(ctrl_f, iris[1, 4:5]))
-
 })
 
 
-test_that('acquisition functions', {
+test_that("acquisition functions", {
+  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_f <- control_grid(verbose = FALSE)
 
   expect_silent(tune:::acq_summarizer(ctrl_t, 1))
   expect_silent(tune:::acq_summarizer(ctrl_t, 1, conf_bound()))
   expect_silent(tune:::acq_summarizer(ctrl_f, 1, conf_bound()))
-  expect_message(tune:::acq_summarizer(ctrl_t, 1, conf_bound(I)), "Kappa value: 1")
-  expect_message(tune:::acq_summarizer(ctrl_t, 1, exp_improve(I)), "Trade-off value: 1")
-  expect_message(tune:::acq_summarizer(ctrl_t, 1, prob_improve(I)), "Trade-off value: 1")
-
+  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, conf_bound(I)))
+  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, exp_improve(I)))
+  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, prob_improve(I)))
 })
 
 ## -----------------------------------------------------------------------------
 
-test_that('message_wrap', {
+test_that("message_wrap", {
   text <-
     paste(
       "A data frame of tuning combinations or a positive integer. The data",
@@ -223,5 +199,3 @@ test_that('message_wrap', {
     crayon = TRUE
   )
 })
-
-

@@ -1,8 +1,4 @@
-context("handlers")
-
-# ------------------------------------------------------------------------------
-
-test_that('catch errors', {
+test_that("catch errors", {
   res_1 <- tune:::catcher(log("a"))
   expect_true(class(res_1$res) == "try-error")
   expect_true(length(res_1$signals) == 0)
