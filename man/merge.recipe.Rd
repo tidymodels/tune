@@ -62,21 +62,23 @@ spline_grid <-
 
 merge(pca_rec, pca_grid)
 
-library(parsnip)
-library(dials)
-data(hpc_data, pacakge = "modeldata")
+if (rlang::is_installed("modeldata")) {
+  library(parsnip)
+  library(dials)
+  data(hpc_data, package = "modeldata")
 
-xgb_mod <-
-  boost_tree(trees = tune(), min_n = tune()) \%>\%
-  set_engine("xgboost")
+  xgb_mod <-
+    boost_tree(trees = tune(), min_n = tune()) \%>\%
+    set_engine("xgboost")
 
-set.seed(254)
-xgb_grid <-
-  extract_parameter_set_dials(xgb_mod) \%>\%
-  finalize(hpc_data) \%>\%
-  grid_max_entropy(size = 3)
+  set.seed(254)
+  xgb_grid <-
+    extract_parameter_set_dials(xgb_mod) \%>\%
+    finalize(hpc_data) \%>\%
+    grid_max_entropy(size = 3)
 
-merge(xgb_mod, xgb_grid)
+  merge(xgb_mod, xgb_grid)
+}
 }
 }
 \keyword{internal}
