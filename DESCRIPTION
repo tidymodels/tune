@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.1.6.9003
+Version: 0.2.0
 Authors@R: c(
     person("Max", "Kuhn", , "max@rstudio.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -25,11 +25,11 @@ Imports:
     ggplot2,
     glue,
     GPfit,
-    hardhat (>= 0.1.6.9001),
+    hardhat (>= 0.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 0.1.7.9005),
+    parsnip (>= 0.2.0),
     purrr (>= 0.3.2),
-    recipes (>= 0.1.17.9001),
+    recipes (>= 0.2.0),
     rlang (>= 0.4.0),
     rsample (>= 0.0.9),
     tibble (>= 3.1.0),
@@ -47,9 +47,6 @@ Suggests:
     testthat (>= 3.0.0),
     xml2
 Remotes: 
-    tidymodels/hardhat,
-    tidymodels/parsnip,
-    tidymodels/recipes,
     tidymodels/workflows
 Config/Needs/website:
     pkgdown,
