@@ -21,7 +21,7 @@ Imports:
     dials (>= 0.0.10),
     dplyr (>= 1.0.0),
     foreach,
-    generics (>= 0.1.0.9000),
+    generics (>= 0.1.2),
     ggplot2,
     glue,
     GPfit,
@@ -36,7 +36,7 @@ Imports:
     tidyr,
     vctrs (>= 0.3.0),
     withr,
-    workflows (>= 0.2.4.9002),
+    workflows (>= 0.2.5),
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
@@ -46,8 +46,6 @@ Suggests:
     spelling,
     testthat (>= 3.0.0),
     xml2
-Remotes: 
-    tidymodels/workflows
 Config/Needs/website:
     pkgdown,
     tidymodels,
