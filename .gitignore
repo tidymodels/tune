@@ -12,3 +12,4 @@ vignettes/articles/Classification_cache/*
 R/plots.R
 tests/testthat/Rplots.pdf
 docs
+revdep

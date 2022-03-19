@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 0.2.0
 
 * The `.notes` column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes. 
 
