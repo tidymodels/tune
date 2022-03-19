@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.6.9003</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,13 +64,16 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="tune-020">tune 0.2.0<a class="anchor" aria-label="anchor" href="#tune-020"></a></h2><p class="text-muted">CRAN release: 2022-03-18</p>
 <ul><li><p>The <code>.notes</code> column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes.</p></li>
 <li><p><code><a href="../reference/collect_predictions.html">collect_notes()</a></code> can be used to gather any notes to a tibble. (<a href="https://github.com/tidymodels/tune/issues/363" class="external-link">#363</a>)</p></li>
 <li><p>Parallel processing with PSOCK clusters is now more efficient, due to carefully avoiding sending extraneous information to each worker (<a href="https://github.com/tidymodels/tune/issues/384" class="external-link">#384</a>, <a href="https://github.com/tidymodels/tune/issues/396" class="external-link">#396</a>).</p></li>
 <li><p>The engine arguments for xgboost <code>alpha</code>, <code>lambda</code>, and <code>scale_pos_weight</code> are now tunable.</p></li>
 <li><p>When the Bayesian optimization data contain missing values, these are removed before fitting the GP model. If all metrics are missing, no GP is fit and the current results are returned. (<a href="https://github.com/tidymodels/tune/issues/432" class="external-link">#432</a>)</p></li>
-<li><p>Moved <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code> from tune to hardhat (<a href="https://github.com/tidymodels/tune/issues/442" class="external-link">#442</a>).</p></li>
-<li><p>The <code><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters()</a></code> methods for <code>recipe</code>, <code>model_spec</code>, and <code>workflow</code> objects have been soft-deprecated in favor of <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials()</a></code> methods (<a href="https://github.com/tidymodels/tune/issues/428" class="external-link">#428</a>).</p></li>
+<li><p>Moved <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code> from tune to hardhat (<a href="https://github.com/tidymodels/tune/issues/442" class="external-link">#442</a>).</p></li>
+<li><p>The <code><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters()</a></code> methods for <code>recipe</code>, <code>model_spec</code>, and <code>workflow</code> objects have been soft-deprecated in favor of <code><a href="https://rdrr.io/pkg/hardhat/man/hardhat-extract.html" class="external-link">extract_parameter_set_dials()</a></code> methods (<a href="https://github.com/tidymodels/tune/issues/428" class="external-link">#428</a>).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.6" id="tune-016">tune 0.1.6<a class="anchor" aria-label="anchor" href="#tune-016"></a></h2><p class="text-muted">CRAN release: 2021-07-21</p>
@@ -84,7 +87,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.4" id="tune-014">tune 0.1.4<a class="anchor" aria-label="anchor" href="#tune-014"></a></h2><p class="text-muted">CRAN release: 2021-04-20</p>
-<ul><li><p>Fixed an issue in <code><a href="../reference/finalize_model.html">finalize_recipe()</a></code> which failed during tuning of recipe steps that contain multiple <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code> parameters in an single step.</p></li>
+<ul><li><p>Fixed an issue in <code><a href="../reference/finalize_model.html">finalize_recipe()</a></code> which failed during tuning of recipe steps that contain multiple <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code> parameters in an single step.</p></li>
 <li><p>Changed <code><a href="../reference/conf_mat_resampled.html">conf_mat_resampled()</a></code> to return the same type of object as <code><a href="https://yardstick.tidymodels.org/reference/conf_mat.html" class="external-link">yardstick::conf_mat()</a></code> when <code>tidy = FALSE</code> (<a href="https://github.com/tidymodels/tune/issues/370" class="external-link">#370</a>).</p></li>
 <li><p>The automatic parameter machinery for <code>sample_size</code> with the C5.0 engine was changes to use <code><a href="https://dials.tidymodels.org/reference/trees.html" class="external-link">dials::sample_prop()</a></code>.</p></li>
 </ul></div>
@@ -111,7 +114,7 @@
 <li><p>The <code>.config</code> column that appears in the returned tibble from tuning and fitting resamples has changed slightly. It is now always of the form <code>"Preprocessor&lt;i&gt;_Model&lt;j&gt;"</code>.</p></li>
 <li><p><code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> can now be called on the workflow returned from <code><a href="../reference/last_fit.html">last_fit()</a></code> (<a href="https://github.com/tidymodels/tune/issues/294" class="external-link">#294</a>, <a href="https://github.com/tidymodels/tune/issues/295" class="external-link">#295</a>, <a href="https://github.com/tidymodels/tune/issues/296" class="external-link">#296</a>).</p></li>
 <li><p>tune now supports setting the <code>event_level</code> option from yardstick through the control objects (i.e. <code>control_grid(event_level = "second")</code>) (<a href="https://github.com/tidymodels/tune/issues/240" class="external-link">#240</a>, <a href="https://github.com/tidymodels/tune/issues/249" class="external-link">#249</a>).</p></li>
-<li><p>tune now supports workflows created with the new <code><a href="https://workflows.tidymodels.org//reference/add_variables.html" class="external-link">workflows::add_variables()</a></code> preprocessor.</p></li>
+<li><p>tune now supports workflows created with the new <code><a href="https://workflows.tidymodels.org/reference/add_variables.html" class="external-link">workflows::add_variables()</a></code> preprocessor.</p></li>
 <li><p>Better control the random number streams in parallel for <code><a href="../reference/tune_grid.html">tune_grid()</a></code> and <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> (<a href="https://github.com/tidymodels/tune/issues/11" class="external-link">#11</a>)</p></li>
 <li><p>Allow <code>...</code> to pass options from <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> to <code><a href="https://rdrr.io/pkg/GPfit/man/GP_fit.html" class="external-link">GPfit::GP_fit()</a></code>.</p></li>
 <li><p>Additional checks are done for the initial grid that is given to <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>. If the initial grid is small relative to the number of model terms, a warning is issued. If the grid is a single point, an error occurs. (<a href="https://github.com/tidymodels/tune/issues/269" class="external-link">#269</a>)</p></li>
