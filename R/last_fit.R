@@ -15,6 +15,9 @@
 #' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
 #'   set of metrics.
 #'
+#' @param control A [control_last_fit()] object used to fine tune the last fit
+#'   process.
+#'
 #' @param ... Currently unused.
 #'
 #' @details
@@ -72,7 +75,7 @@ last_fit.default <- function(object, ...) {
 
 #' @export
 #' @rdname last_fit
-last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL) {
+last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL, control = control_last_fit()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -90,22 +93,18 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics)
+  last_fit_workflow(wflow, split, metrics, control)
 }
 
 
 #' @rdname last_fit
 #' @export
-last_fit.workflow <- function(object, split, ..., metrics = NULL) {
+last_fit.workflow <- function(object, split, ..., metrics = NULL, control = control_last_fit()) {
   empty_ellipses(...)
-  last_fit_workflow(object, split, metrics)
+  last_fit_workflow(object, split, metrics, control)
 }
 
-last_fit_workflow <- function(object, split, metrics) {
-  extr <- function(x) {
-    x
-  }
-  control <- control_resamples(save_pred = TRUE, extract = extr)
+last_fit_workflow <- function(object, split, metrics, control) {
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 
