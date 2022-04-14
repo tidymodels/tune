@@ -2,7 +2,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   model <- extract_fit_parsnip(workflow)
 
   forged <- forge_from_workflow(split, workflow)
-
+# TODO how will we know the column for case weights?
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
 
