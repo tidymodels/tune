@@ -161,6 +161,7 @@ test_that("`event_level` is passed through in last_fit()", {
   )
 
   metrics <- result$.metrics[[1]]
+  estimates <- metrics$.estimate
   predictions <- result$.predictions[[1]]
 
   expected_sens <- yardstick::sens_vec(
@@ -174,5 +175,8 @@ test_that("`event_level` is passed through in last_fit()", {
     estimate = predictions$.pred_Class2,
     event_level = "second"
   )
+
+  expect_identical(estimates[metrics$.metric == "sens"], expected_sens)
+  expect_identical(estimates[metrics$.metric == "roc_auc"], expected_roc_auc)
 
 })
