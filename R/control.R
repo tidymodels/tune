@@ -82,14 +82,12 @@ control_resamples <- control_grid
 #' @export
 control_last_fit <- function(
     verbose = FALSE,
-    pkgs = NULL,
     event_level = "first"
 ) {
   extr <- function(x) x
   control <-
     control_resamples(
       verbose = verbose,
-      pkgs = pkgs,
       event_level = event_level,
       extract = extr,
       save_pred = TRUE,

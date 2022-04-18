@@ -4,7 +4,7 @@
 \alias{control_last_fit}
 \title{Control aspects of the last fit process}
 \usage{
-control_last_fit(verbose = FALSE, pkgs = NULL, event_level = "first")
+control_last_fit(verbose = FALSE, event_level = "first")
 }
 \arguments{
 \item{verbose}{A logical for logging results (other than warnings and errors,
@@ -13,9 +13,6 @@ R process. When using most parallel backends, this argument typically will
 not result in any logging. If using a dark IDE theme, some logging messages
 might be hard to see; try setting the \code{tidymodels.dark} option with
 \code{options(tidymodels.dark = TRUE)} to print lighter colors.}
-
-\item{pkgs}{An optional character string of R package names that should be
-loaded (by namespace) during parallel processing.}
 
 \item{event_level}{A single string containing either \code{"first"} or \code{"second"}.
 This argument is passed on to yardstick metric functions when any type
