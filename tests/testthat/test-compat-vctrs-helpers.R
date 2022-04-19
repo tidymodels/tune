@@ -74,7 +74,7 @@ test_that("row order doesn't matter", {
   x <- as_tibble(to)
 
   idx <- rev(seq_len(nrow(x)))
-  expect_true(tune_results_can_reconstruct(x[idx,], to))
+  expect_true(tune_results_can_reconstruct(x[idx, ], to))
 })
 
 # ------------------------------------------------------------------------------

@@ -1,10 +1,6 @@
-context("resampling labels")
-
-# ------------------------------------------------------------------------------
-
-test_that("pretty tune objects",{
+test_that("pretty tune objects", {
   expect_equal(
-    readRDS(test_path("knn_results.rds")) %>% pretty(),
+    readRDS(test_path("data", "knn_results.rds")) %>% pretty(),
     "10-fold cross-validation repeated 5 times"
   )
   expect_equal(

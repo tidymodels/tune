@@ -52,6 +52,13 @@ tidyr_new_interface <- function() {
   utils::packageVersion("tidyr") > "0.8.99"
 }
 
+release_bullets <- function() {
+  c(
+    "Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`."
+  )
+}
+
+
 # ------------------------------------------------------------------------------
 ## function is called in .onLoad() in zzz.R
 

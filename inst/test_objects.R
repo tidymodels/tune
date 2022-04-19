@@ -78,7 +78,7 @@ mt_spln_knn_grid <-
   tune_grid(
     mt_spln_knn,
     resamples = folds,
-    grid = grid_regular(parameters(mt_spln_knn)),
+    grid = grid_regular(extract_parameter_set_dials(mt_spln_knn)),
     control = g_ctrl
   )
 
@@ -113,7 +113,7 @@ mt_knn_bo <-
 
 save(
   list = grep("^mt_", ls(), value = TRUE),
-  file = test_path("test_objects.RData"),
+  file = test_path("data", "test_objects.RData"),
   version = 2,
   compress = "xz"
 )
@@ -145,7 +145,7 @@ two_class_wflow <-
   add_model(knn_model)
 
 two_class_set <-
-  parameters(two_class_wflow) %>%
+  extract_parameter_set_dials(two_class_wflow) %>%
   update(K = neighbors(c(1, 50))) %>%
   update(exponent = dist_power(c(1 / 10, 2)))
 
@@ -176,35 +176,35 @@ knn_gp <-
 
 saveRDS(
   knn_results,
-  file = testthat::test_path("knn_results.rds"),
+  file = testthat::test_path("data", "knn_results.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   two_class_set,
-  file = testthat::test_path("knn_set.rds"),
+  file = testthat::test_path("data", "knn_set.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   two_class_grid,
-  file = testthat::test_path("knn_grid.rds"),
+  file = testthat::test_path("data", "knn_grid.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   knn_set,
-  file = testthat::test_path("knn_set.rds"),
+  file = testthat::test_path("data", "knn_set.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   knn_gp,
-  file = testthat::test_path("knn_gp.rds"),
+  file = testthat::test_path("data", "knn_gp.rds"),
   version = 2,
   compress = "xz"
 )
@@ -227,7 +227,7 @@ two_class_wflow <-
   add_model(svm_model)
 
 two_class_set <-
-  parameters(two_class_wflow) %>%
+  extract_parameter_set_dials(two_class_wflow) %>%
   update(cost = cost(c(-10, 4)))
 
 set.seed(2494)
@@ -248,7 +248,7 @@ svm_results <-
 
 saveRDS(
   svm_results,
-  file = testthat::test_path("svm_results.rds"),
+  file = testthat::test_path("data", "svm_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -268,7 +268,7 @@ svm_reg_results <-
 
 saveRDS(
   svm_reg_results,
-  file = testthat::test_path("svm_reg_results.rds"),
+  file = testthat::test_path("data", "svm_reg_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -323,7 +323,7 @@ rcv_results <-
 
 saveRDS(
   rcv_results,
-  file = testthat::test_path("rcv_results.rds"),
+  file = testthat::test_path("data", "rcv_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -347,7 +347,7 @@ lm_resamples
 
 saveRDS(
   lm_resamples,
-  file = testthat::test_path("lm_resamples.rds"),
+  file = testthat::test_path("data", "lm_resamples.rds"),
   version = 2,
   compress = "xz"
 )
@@ -374,7 +374,7 @@ lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
 
 saveRDS(
   lm_bayes,
-  file = testthat::test_path("lm_bayes.rds"),
+  file = testthat::test_path("data", "lm_bayes.rds"),
   version = 2,
   compress = "xz"
 )

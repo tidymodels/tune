@@ -5,7 +5,7 @@ test_that("`event_level` is passed through in tune_grid()", {
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
-  dat <- two_class_dat[1:50,]
+  dat <- two_class_dat[1:50, ]
 
   spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
     parsnip::set_engine("kernlab")
@@ -51,7 +51,7 @@ test_that("`event_level` is passed through in fit_resamples()", {
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
-  dat <- two_class_dat[1:50,]
+  dat <- two_class_dat[1:50, ]
 
   spec <- parsnip::svm_linear(mode = "classification", cost = 2) %>%
     parsnip::set_engine("kernlab")
@@ -95,7 +95,7 @@ test_that("`event_level` is passed through in tune_bayes()", {
   set.seed(123)
 
   data("two_class_dat", package = "modeldata")
-  dat <- two_class_dat[1:50,]
+  dat <- two_class_dat[1:50, ]
 
   spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
     parsnip::set_engine("kernlab")
@@ -114,7 +114,7 @@ test_that("`event_level` is passed through in tune_bayes()", {
     control = control
   )
 
-  result <- result[result$.iter == 1,]
+  result <- result[result$.iter == 1, ]
 
   metrics <- result$.metrics[[1]]
   estimates <- metrics$.estimate

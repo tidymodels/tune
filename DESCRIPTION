@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.1.6.9003
+Version: 0.2.0.9000
 Authors@R: c(
     person("Max", "Kuhn", , "max@rstudio.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -21,22 +21,22 @@ Imports:
     dials (>= 0.0.10),
     dplyr (>= 1.0.0),
     foreach,
-    generics (>= 0.1.0.9000),
+    generics (>= 0.1.2),
     ggplot2,
     glue,
     GPfit,
-    hardhat (>= 0.1.6.9001),
+    hardhat (>= 0.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 0.1.7.9005),
+    parsnip (>= 0.2.0),
     purrr (>= 0.3.2),
-    recipes (>= 0.1.17.9001),
+    recipes (>= 0.2.0),
     rlang (>= 0.4.0),
     rsample (>= 0.0.9),
     tibble (>= 3.1.0),
     tidyr,
     vctrs (>= 0.3.0),
     withr,
-    workflows (>= 0.2.4.9002),
+    workflows (>= 0.2.5),
     yardstick (>= 0.0.7)
 Suggests: 
     covr,
@@ -44,13 +44,8 @@ Suggests:
     knitr,
     modeldata,
     spelling,
-    testthat,
+    testthat (>= 3.0.0),
     xml2
-Remotes: 
-    tidymodels/hardhat,
-    tidymodels/parsnip,
-    tidymodels/recipes,
-    tidymodels/workflows
 Config/Needs/website:
     pkgdown,
     tidymodels,
@@ -62,3 +57,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Config/testthat/edition: 3
