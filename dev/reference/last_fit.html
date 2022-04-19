@@ -78,10 +78,17 @@ the test set.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">last_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span>
 
 <span class="co"># S3 method for model_spec</span>
-<span class="fu">last_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">preprocessor</span>, <span class="va">split</span>, <span class="va">...</span>, metrics <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
+<span class="fu">last_fit</span><span class="op">(</span>
+  <span class="va">object</span>,
+  <span class="va">preprocessor</span>,
+  <span class="va">split</span>,
+  <span class="va">...</span>,
+  metrics <span class="op">=</span> <span class="cn">NULL</span>,
+  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">)</span>
 
 <span class="co"># S3 method for workflow</span>
-<span class="fu">last_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">split</span>, <span class="va">...</span>, metrics <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<span class="fu">last_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">split</span>, <span class="va">...</span>, metrics <span class="op">=</span> <span class="cn">NULL</span>, control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -99,6 +106,9 @@ No tuning parameters are allowed.</p></dd>
 <dt>metrics</dt>
 <dd><p>A <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">yardstick::metric_set()</a></code>, or <code>NULL</code> to compute a standard
 set of metrics.</p></dd>
+<dt>control</dt>
+<dd><p>A <code><a href="control_last_fit.html">control_last_fit()</a></code> object used to fine tune the last fit
+process.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

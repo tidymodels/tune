@@ -52,6 +52,9 @@
     <loc>https://tune.tidymodels.org/dev/reference/control_grid.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/dev/reference/control_last_fit.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/dev/reference/coord_obs_pred.html</loc>
   </url>
   <url>
