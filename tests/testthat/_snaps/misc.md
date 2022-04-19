@@ -2,6 +2,7 @@
 
     Code
       tune:::empty_ellipses(a = 1)
-    Warning <rlang_warning>
+    Condition
+      Warning:
       The `...` are not used in this function but one or more objects were passed: 'a'
 

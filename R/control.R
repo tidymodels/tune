@@ -70,6 +70,39 @@ print.control_grid <- function(x, ...) {
 #' @export
 control_resamples <- control_grid
 
+#' Control aspects of the last fit process
+#'
+#' @inheritParams control_grid
+#'
+#' @details
+#'
+#' [control_last_fit()] is a wrapper around [control_resamples()] and is meant
+#'   to be used with [last_fit()].
+#'
+#' @export
+control_last_fit <- function(
+    verbose = FALSE,
+    event_level = "first"
+) {
+  extr <- function(x) x
+  control <-
+    control_resamples(
+      verbose = verbose,
+      event_level = event_level,
+      extract = extr,
+      save_pred = TRUE,
+      save_workflow = FALSE
+    )
+  class(control) <- c("control_last_fit", class(control))
+  control
+}
+
+#' @export
+print.control_last_fit <- function(x, ...) {
+  cat("last fit control object\n")
+  invisible(x)
+}
+
 # ------------------------------------------------------------------------------
 
 #' Control aspects of the Bayesian search process
