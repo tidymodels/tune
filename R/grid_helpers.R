@@ -2,7 +2,6 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   model <- extract_fit_parsnip(workflow)
 
   forged <- forge_from_workflow(split, workflow)
-# TODO how will we know the column for case weights?
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
 
@@ -84,6 +83,12 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   y_vals <- dplyr::mutate(y_vals, .row = orig_rows)
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
+  # Add case weights (if needed)
+  case_wts <- maybe_assessment_weights(split)
+  if (length(case_wts) > 0) {
+    res$.case_weight <- case_wts
+  }
+
   tibble::as_tibble(res)
 }
 
@@ -96,10 +101,12 @@ forge_from_workflow <- function(split, workflow) {
       "Internal error: hardhat should have been installed from the workflows dependency."
     )
   }
-  forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
+  forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
+  # case weights are picked up form the split object later
   forged
 }
+
 
 make_submod_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model

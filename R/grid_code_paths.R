@@ -299,7 +299,6 @@ tune_grid_loop_iter <- function(split,
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
-      # TODO keep case weights in predict_model?
       iter_predictions <- catch_and_log(
         predict_model(split, workflow, iter_grid, metrics, iter_submodels),
         control,

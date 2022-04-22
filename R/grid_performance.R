@@ -42,22 +42,26 @@ estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level
     ))
   }
 
+  case_wts <- get_case_weight_data(dat)
+
+
   if (all(types == "numeric")) {
-    estimate_reg(dat, metric, param_names, outcome_name)
+    estimate_reg(dat, metric, param_names, outcome_name, case_wts)
   } else if (all(types == "class" | types == "prob")) {
-    estimate_class_prob(dat, metric, param_names, outcome_name, types, event_level)
+    estimate_class_prob(dat, metric, param_names, outcome_name, case_wts, types, event_level)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
 }
 
-estimate_reg <- function(dat, metric, param_names, outcome_name) {
+estimate_reg <- function(dat, metric, param_names, outcome_name, case_wts) {
   dat %>%
     dplyr::group_by(!!!rlang::syms(param_names)) %>%
-    metric(estimate = .pred, truth = !!sym(outcome_name))
+    metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = case_wts)
 }
 
-estimate_class_prob <- function(dat, metric, param_names, outcome_name, types, event_level) {
+estimate_class_prob <- function(dat, metric, param_names, outcome_name,
+                                case_wts, types, event_level) {
   truth <- sym(outcome_name)
 
   estimate <- NULL
@@ -89,6 +93,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name, types, e
       truth = !!truth,
       estimate = !!estimate,
       !!!probs,
+      case_weights = case_wts,
       event_level = event_level
     )
 }
