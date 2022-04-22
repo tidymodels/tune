@@ -103,7 +103,7 @@ forge_from_workflow <- function(split, workflow) {
   }
 
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
-  # case weights are picked up form the split object later
+  # case weights are picked up from the split object later
   forged
 }
 
