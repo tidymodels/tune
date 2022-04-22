@@ -4,15 +4,17 @@ maybe_assessment_weights <- function(rsplit) {
   dat <- rsample::assessment(rsplit)
   is_case_wt <- purrr::map_lgl(dat, ~ inherits(.x, "hardhat_case_weights"))
   num_wt_cols <- sum(is_case_wt)
-  # check more than one
+
   if (num_wt_cols == 1) {
     res <- dat[[which(is_case_wt)]]
     # Now that we have the case weights, should they be used?
-    res <- performance_case_weights(res)
+    if (!.use_case_weights_with_yardstick(res)) {
+      res <- NULL
+    }
   } else if (num_wt_cols == 0) {
     res <- NULL
   } else {
-    rlang::stop("Only one case weight column is allowed.")
+    rlang::abort("Only one case weight column is allowed.")
   }
   res
 }
@@ -29,40 +31,49 @@ get_case_weight_data <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-#' Determine if case weights are needed to estimate model performance
+#' Determine if yardstick used case weights
+#'
+#' @description
+#' This S3 method defines the logical for when a case weight vector should be
+#' passed to the yardstick function and used to measure model performance.
+#' The current logical is that frequency weights are the only situation where
+#' this should occur.
 #'
 #' @param x A vector
 #' @param ... Not currently used.
-#' @return A numeric vector or NULL
+#' @return A logical.
 #' @examples
-#' freq_wts <- frequency_weights(1:10)
-#' performance_case_weights(freq_wts)
+#' frequency_weights(1:10) %>%
+#'   .use_case_weights_with_yardstick()
 #'
-#' imp_wts <- importance_weights(seq(1, 10, by = .1))
-#' performance_case_weights(imp_wts)
+#' importance_weights(seq(1, 10, by = .1))%>%
+#'   .use_case_weights_with_yardstick()
 #'
-#' not_wts <- seq(1, 10, by = .1)
-#' performance_case_weights(not_wts)
+#' seq(1, 10, by = .1) %>%
+#'   .use_case_weights_with_yardstick()
 #' @export
-performance_case_weights <- function(x, ...) {
-  UseMethod("performance_case_weights")
+.use_case_weights_with_yardstick <- function(x, ...) {
+  UseMethod(".use_case_weights_with_yardstick")
 }
 
-#' @rdname performance_case_weights
+#' @rdname .use_case_weights_with_yardstick
 #' @export
-performance_case_weights.default <- function(x, ...) {
-  NULL
+.use_case_weights_with_yardstick.default <- function(x, ...) {
+  FALSE
 }
 
-#' @rdname performance_case_weights
+#' @rdname .use_case_weights_with_yardstick
 #' @export
-performance_case_weights.hardhat_importance_weights <- function(x, ...) {
-  NULL
-}
+.use_case_weights_with_yardstick.hardhat_importance_weights <-
+  function(x, ...) {
+    FALSE
+  }
 
-#' @rdname performance_case_weights
+#' @rdname .use_case_weights_with_yardstick
 #' @export
-performance_case_weights.hardhat_frequency_weights <- function(x, ...) {
-  as.integer(x)
-}
+.use_case_weights_with_yardstick.hardhat_frequency_weights <-
+  function(x, ...) {
+    TRUE
+  }
 
+# TODO case weights: should collect_predictions return the weights?
