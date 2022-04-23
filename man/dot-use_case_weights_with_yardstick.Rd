@@ -21,6 +21,8 @@ The current logical is that frequency weights are the only situation where
 this should occur.
 }
 \examples{
+library(dplyr)
+
 frequency_weights(1:10) \%>\%
   .use_case_weights_with_yardstick()
 

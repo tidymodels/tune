@@ -43,6 +43,8 @@ get_case_weight_data <- function(x) {
 #' @param ... Not currently used.
 #' @return A logical.
 #' @examples
+#' library(dplyr)
+#'
 #' frequency_weights(1:10) %>%
 #'   .use_case_weights_with_yardstick()
 #'
