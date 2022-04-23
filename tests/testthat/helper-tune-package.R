@@ -22,3 +22,15 @@ helper_objects_tune <- function() {
     svm_mod = svm_mod
   )
 }
+
+
+expect_error_free <- function(...) {
+  testthat::expect_error(..., regexp = NA)
+}
+
+expect_unequal <-
+  function(object, expected, ...,
+           tolerance = if (edition_get() >= 3) testthat_tolerance()) {
+    expect_true(!compare(object, expected, tolerance = tolerance, ...)$equal)
+  }
+

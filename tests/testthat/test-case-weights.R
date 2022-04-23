@@ -1,33 +1,34 @@
 library(parsnip)
 library(rsample)
 
-expect_error_free <- function(...) {
-  testthat::expect_error(..., regexp = NA)
-}
-
-expect_unequal <-
-  function(object, expected, ...,
-           tolerance = if (edition_get() >= 3) testthat_tolerance()) {
-    expect_true(!compare(object, expected, tolerance = tolerance, ...)$equal)
-  }
-
 
 test_that("case weight identification", {
-  folds1 <- vfold_cv(mtcars)
-  expect_null(tune:::maybe_assessment_weights(folds1$splits[[1]]))
+  set.seed(1)
+  folds_no_wts <- vfold_cv(mtcars)
+  expect_null(tune:::maybe_assessment_weights(folds_no_wts$splits[[1]]))
   expect_null(tune:::get_case_weight_data(mtcars))
 
-  mtcars$.case_weight <- runif(nrow(mtcars))
+  # ------------------------------------------------------------------------------
+
+  mtcars$.case_weight <- seq(0, 1, length.out = 32)
   mtcars$.case_weight <- importance_weights(mtcars$.case_weight)
-  folds2 <- vfold_cv(mtcars)
-  expect_null(tune:::maybe_assessment_weights(folds2$splits[[1]]))
+  set.seed(1)
+  folds_imp_wts <- vfold_cv(mtcars)
+  expect_null(tune:::maybe_assessment_weights(folds_imp_wts$splits[[1]]))
   expect_equal(tune:::get_case_weight_data(mtcars), mtcars$.case_weight)
 
+  expect_error_free(
+    res_no_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_no_wts)
+  )
+
+  # ------------------------------------------------------------------------------
+
   mtcars$.case_weight <- frequency_weights(1:32)
-  folds3 <- vfold_cv(mtcars)
+  set.seed(1)
+  folds_frq_wts <- vfold_cv(mtcars)
   expect_equal(
-    tune:::maybe_assessment_weights(folds3$splits[[1]]),
-    assessment(folds3$splits[[1]])$.case_weight
+    tune:::maybe_assessment_weights(folds_frq_wts$splits[[1]]),
+    assessment(folds_frq_wts$splits[[1]])$.case_weight
   )
   expect_equal(tune:::get_case_weight_data(mtcars), mtcars$.case_weight)
 
@@ -35,14 +36,19 @@ test_that("case weight identification", {
   expect_false(.use_case_weights_with_yardstick(importance_weights(seq(1, 10, by = .1))))
   expect_false(.use_case_weights_with_yardstick(seq(1, 10, by = .1)))
 
-  expect_error(
-    res1 <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds1)
+  expect_error_free(
+    res_imp_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_imp_wts)
   )
 
-  expect_error_free(res1 <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds1))
-  expect_error_free(res2 <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds2))
-  # expect_error_free(res3 <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds2))
+  # Error:
+  # ! In metric: `rmse`
+  # Problem while computing `.estimate = metric_fn(truth = mpg, estimate = .pred, na_rm = na_rm, case_weights = case_wts)`.
+  # Caused by error in `vec_arith()`:
+  # ! <double> * <frequency_weights> is not permitted
+  # expect_error_free(res_frq_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_frq_wts))
 
-  # check for inequality
+  # ------------------------------------------------------------------------------
+
+  expect_unequal(collect_metrics(res_no_wts), collect_metrics(res_imp_wts))
 
 })
