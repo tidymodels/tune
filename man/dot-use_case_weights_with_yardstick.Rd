@@ -21,6 +21,7 @@ The current logical is that frequency weights are the only situation where
 this should occur.
 }
 \examples{
+library(parsnip)
 library(dplyr)
 
 frequency_weights(1:10) \%>\%
