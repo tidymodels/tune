@@ -2,25 +2,23 @@
 
     Code
       collect_predictions(lm_splines %>% dplyr::select(-.predictions))
-    Condition
-      Error in `collect_predictions()`:
-      ! The `.predictions` column does not exist. Refit with the control argument `save_pred = TRUE` to save predictions.
+    Error <rlang_error>
+      The `.predictions` column does not exist. Refit with the control argument `save_pred = TRUE` to save predictions.
 
 # bad filter grid
 
     Code
       collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
-    Condition
-      Warning:
+    Warning <rlang_warning>
       Unknown columns: `cost value`
-      Error in `filter_predictions()`:
-      ! `parameters` should only have columns: 'cost value'
+    Error <rlang_error>
+      `parameters` should only have columns: 'cost value'
 
 # collecting notes - fit_resamples
 
     Code
       lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
-    Message
+    Message <simpleMessage>
       ! Bootstrap1: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
       ! Bootstrap2: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
 
@@ -47,7 +45,7 @@
 
     Code
       lst <- last_fit(lin_mod, mpg ~ ., split)
-    Message
+    Message <simpleMessage>
       ! train/test split: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
 
 ---

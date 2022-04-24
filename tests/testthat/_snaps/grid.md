@@ -5,11 +5,10 @@
       grid = cars_grid, control = control_grid(extract = function(x) {
         1
       }, save_pred = TRUE))
-    Message
+    Message <simpleMessage>
       x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
       x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
-    Condition
-      Warning:
+    Warning <rlang_warning>
       All models failed. See the `.notes` column.
 
 # tune model only - failure in formula is caught elegantly
@@ -19,13 +18,12 @@
       grid = cars_grid, control = control_grid(extract = function(x) {
         1
       }, save_pred = TRUE))
-    Message
+    Message <simpleMessage>
       x Fold1: preprocessor 1/1: Error in `glubort()`:
       ! The following predictors were ...
       x Fold2: preprocessor 1/1: Error in `glubort()`:
       ! The following predictors were ...
-    Condition
-      Warning:
+    Warning <rlang_warning>
       All models failed. See the `.notes` column.
 
 # argument order gives errors for recipes
@@ -33,24 +31,21 @@
     Code
       tune_grid(helper_objects$rec_tune_1, helper_objects$lm_mod, rsample::vfold_cv(
         mtcars, v = 2))
-    Condition
-      Error in `tune_grid()`:
-      ! The first argument to [tune_grid()] should be either a model or workflow.
+    Error <rlang_error>
+      The first argument to [tune_grid()] should be either a model or workflow.
 
 # argument order gives errors for formula
 
     Code
       tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
-    Condition
-      Error in `tune_grid()`:
-      ! The first argument to [tune_grid()] should be either a model or workflow.
+    Error <rlang_error>
+      The first argument to [tune_grid()] should be either a model or workflow.
 
 # ellipses with tune_grid
 
     Code
       tune_grid(wflow, resamples = folds, grid = 3, something = "wrong")
-    Condition
-      Warning:
+    Warning <rlang_warning>
       The `...` are not used in this function but one or more objects were passed: 'something'
     Output
       # Tuning results

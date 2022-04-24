@@ -2,17 +2,15 @@
 
     Code
       autoplot(knn_results, type = "performance")
-    Condition
-      Error in `autoplot()`:
-      ! `type = performance` is only used iterative search results.
+    Error <rlang_error>
+      `type = performance` is only used iterative search results.
 
 ---
 
     Code
       autoplot(knn_results, type = "parameters")
-    Condition
-      Error in `autoplot()`:
-      ! `type = parameters` is only used iterative search results.
+    Error <rlang_error>
+      `type = parameters` is only used iterative search results.
 
 # coord_obs_pred
 
