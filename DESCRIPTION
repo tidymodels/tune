@@ -36,7 +36,7 @@ Imports:
     tidyr (>= 1.2.0),
     vctrs (>= 0.4.1),
     withr,
-    workflows (>= 0.2.6.9000),
+    workflows (>= 0.2.6.9001),
     yardstick (>= 0.0.9.9000)
 Suggests: 
     covr,
