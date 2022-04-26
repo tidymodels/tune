@@ -57,3 +57,4 @@ reference:
     - merge.recipe
     - parameters.workflow
     - message_wrap
+    - .use_case_weights_with_yardstick

@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.2.0.9000
+Version: 0.2.0.9001
 Authors@R: c(
     person("Max", "Kuhn", , "max@rstudio.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -25,19 +25,20 @@ Imports:
     ggplot2,
     glue (>= 1.6.2),
     GPfit,
-    hardhat (>= 0.2.0),
+    hardhat (>= 0.2.0.9000),
     lifecycle (>= 1.0.0),
-    parsnip (>= 0.2.0),
+    parsnip (>= 0.2.1.9001),
     purrr (>= 0.3.2),
     recipes (>= 0.2.0),
     rlang (>= 1.0.2),
     rsample (>= 0.0.9),
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
+    tidyselect (>= 1.1.2),
     vctrs (>= 0.4.1),
     withr,
-    workflows (>= 0.2.5),
-    yardstick (>= 0.0.7)
+    workflows (>= 0.2.6.9001),
+    yardstick (>= 0.0.9.9000)
 Suggests: 
     covr,
     kernlab,
@@ -46,6 +47,11 @@ Suggests:
     spelling,
     testthat (>= 3.0.0),
     xml2
+Remotes:
+    tidymodels/parsnip@feature/case-weights,
+    tidymodels/workflows,  
+    tidymodels/hardhat,
+    tidymodels/yardstick
 Config/Needs/website:
     pkgdown,
     tidymodels,
