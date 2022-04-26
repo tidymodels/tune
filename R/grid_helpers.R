@@ -43,7 +43,8 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
     tmp_res <-
       predict(model, x_vals, type = type_iter) %>%
       mutate(.row = orig_rows) %>%
-      cbind(grid, row.names = NULL)
+      cbind(grid, row.names = NULL) %>%
+      tibble::as_tibble()
 
     if (!is.null(submodels)) {
       submod_length <- lengths(submodels)
@@ -65,6 +66,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
+          tibble::as_tibble() %>%
           # go back to user-defined name
           dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
@@ -90,7 +92,10 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
     case_weights <- extract_case_weights(new_data, workflow)
 
     if (.use_case_weights_with_yardstick(case_weights)) {
-      res[[case_weights_column_name()]] <- case_weights
+      case_weights <- rlang::list2(!!case_weights_column_name() := case_weights)
+      case_weights <- vctrs::new_data_frame(case_weights)
+      case_weights <- dplyr::mutate(case_weights, .row = orig_rows)
+      res <- dplyr::full_join(res, case_weights, by = ".row")
     }
   }
 
