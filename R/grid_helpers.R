@@ -1,7 +1,9 @@
 predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   model <- extract_fit_parsnip(workflow)
 
-  forged <- forge_from_workflow(split, workflow)
+  new_data <- rsample::assessment(split)
+
+  forged <- forge_from_workflow(new_data, workflow)
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
 
@@ -84,29 +86,24 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
   # Add case weights (if needed)
-  case_wts <- maybe_assessment_weights(split)
-  if (length(case_wts) > 0) {
-    res$.case_weight <- case_wts
+  if (has_case_weights(workflow)) {
+    case_weights <- extract_case_weights(new_data, workflow)
+
+    if (.use_case_weights_with_yardstick(case_weights)) {
+      res[[case_weights_column_name()]] <- case_weights
+    }
   }
 
   tibble::as_tibble(res)
 }
 
-forge_from_workflow <- function(split, workflow) {
-  new_data <- rsample::assessment(split)
-
+forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
-  if (!rlang::is_installed("hardhat")) {
-    rlang::abort(
-      "Internal error: hardhat should have been installed from the workflows dependency."
-    )
-  }
 
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
-  # case weights are picked up from the split object later
+
   forged
 }
-
 
 make_submod_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model
@@ -535,6 +532,10 @@ has_preprocessor_formula <- function(workflow) {
 
 has_preprocessor_variables <- function(workflow) {
   "variables" %in% names(workflow$pre$actions)
+}
+
+has_case_weights <- function(workflow) {
+  "case_weights" %in% names(workflow$pre$actions)
 }
 
 has_spec <- function(workflow) {

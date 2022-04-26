@@ -1,54 +1,76 @@
-library(parsnip)
-library(rsample)
+# ------------------------------------------------------------------------------
+# .use_case_weights_with_yardstick()
 
+test_that("knows about importance weights", {
+  x <- hardhat::importance_weights(1)
+  expect_false(.use_case_weights_with_yardstick(x))
+})
 
-test_that("case weight identification", {
+test_that("knows about frequency weights", {
+  x <- hardhat::frequency_weights(1)
+  expect_true(.use_case_weights_with_yardstick(x))
+})
+
+test_that("gives informative default error", {
+  expect_snapshot(error = TRUE, {
+    .use_case_weights_with_yardstick(1)
+  })
+})
+
+# ------------------------------------------------------------------------------
+# extract_case_weights()
+
+test_that("`extract_case_weights()` errors if `col` doesn't exist", {
+  wf <- workflows::workflow()
+
+  expect_snapshot(error = TRUE, {
+    extract_case_weights(mtcars, wf)
+  })
+})
+
+test_that("`extract_case_weights()` errors if case weights column isn't the right class", {
+  mtcars$weight <- 1L
+
+  wf <- workflows::workflow()
+  wf <- workflows::add_case_weights(wf, weight)
+
+  expect_snapshot(error = TRUE, {
+    extract_case_weights(mtcars, wf)
+  })
+})
+
+# ------------------------------------------------------------------------------
+# Passed on during tuning
+
+test_that("weights are used during tuning", {
   set.seed(1)
-  folds_no_wts <- vfold_cv(mtcars)
-  expect_null(tune:::maybe_assessment_weights(folds_no_wts$splits[[1]]))
-  expect_null(tune:::get_case_weight_data(mtcars))
 
-  # ------------------------------------------------------------------------------
+  mtcars$weight <- hardhat::frequency_weights(1:32)
 
-  mtcars$.case_weight <- seq(0, 1, length.out = 32)
-  mtcars$.case_weight <- importance_weights(mtcars$.case_weight)
-  set.seed(1)
-  folds_imp_wts <- vfold_cv(mtcars)
-  expect_null(tune:::maybe_assessment_weights(folds_imp_wts$splits[[1]]))
-  expect_equal(tune:::get_case_weight_data(mtcars), mtcars$.case_weight)
+  folds <- rsample::vfold_cv(mtcars)
 
-  expect_error_free(
-    res_no_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_no_wts)
+  spec <- parsnip::linear_reg()
+  metrics <- yardstick::metric_set(yardstick::rmse)
+
+  wf <- workflows::workflow()
+  wf <- workflows::add_variables(wf, mpg, c(disp, cyl))
+  wf <- workflows::add_model(wf, spec)
+
+  fit1 <- fit_resamples(wf, resamples = folds, metrics = metrics)
+  fit2 <- fit_resamples(wf, resamples = folds, metrics = metrics)
+
+  wf <- workflows::add_case_weights(wf, weight)
+
+  fit_weighted <- fit_resamples(wf, resamples = folds, metrics = metrics)
+
+  # Baseline
+  expect_identical(
+    fit1$.metrics[[1]]$.estimate[[1]],
+    fit2$.metrics[[1]]$.estimate[[1]]
   )
 
-  # ------------------------------------------------------------------------------
-
-  mtcars$.case_weight <- frequency_weights(1:32)
-  set.seed(1)
-  folds_frq_wts <- vfold_cv(mtcars)
-  expect_equal(
-    tune:::maybe_assessment_weights(folds_frq_wts$splits[[1]]),
-    assessment(folds_frq_wts$splits[[1]])$.case_weight
+  # Weighted results are different
+  expect_true(
+    fit1$.metrics[[1]]$.estimate[[1]] != fit_weighted$.metrics[[1]]$.estimate[[1]]
   )
-  expect_equal(tune:::get_case_weight_data(mtcars), mtcars$.case_weight)
-
-  expect_true(.use_case_weights_with_yardstick(frequency_weights(1:10)))
-  expect_false(.use_case_weights_with_yardstick(importance_weights(seq(1, 10, by = .1))))
-  expect_false(.use_case_weights_with_yardstick(seq(1, 10, by = .1)))
-
-  expect_error_free(
-    res_imp_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_imp_wts)
-  )
-
-  # Error:
-  # ! In metric: `rmse`
-  # Problem while computing `.estimate = metric_fn(truth = mpg, estimate = .pred, na_rm = na_rm, case_weights = case_wts)`.
-  # Caused by error in `vec_arith()`:
-  # ! <double> * <frequency_weights> is not permitted
-  # expect_error_free(res_frq_wts <- fit_resamples(linear_reg(), mpg ~ ., resamples = folds_frq_wts))
-
-  # ------------------------------------------------------------------------------
-
-  expect_unequal(collect_metrics(res_no_wts), collect_metrics(res_imp_wts))
-
 })
