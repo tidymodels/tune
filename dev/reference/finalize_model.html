@@ -12,7 +12,7 @@ update objects with those values."><meta property="og:image" content="https://tu
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@ update objects with those values.</p>
 <dd><p>A recipe, <code>parsnip</code> model specification, or workflow.</p></dd>
 <dt>parameters</dt>
 <dd><p>A list or 1-row tibble of parameter values. Note that the
-column names of the tibble should be the <code>id</code> fields attached to <code><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune()</a></code>.
+column names of the tibble should be the <code>id</code> fields attached to <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code>.
 For example, in the <code>Examples</code> section below, the model has <code>tune("K")</code>. In
 this case, the parameter tibble should be "K" and not "neighbors".</p></dd>
 </dl></div>
@@ -103,9 +103,9 @@ this case, the parameter tibble should be "K" and not "neighbors".</p></dd>
 <span class="r-in"><span class="va">knn_model</span> <span class="op">&lt;-</span></span>
 <span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/nearest_neighbor.html" class="external-link">nearest_neighbor</a></span><span class="op">(</span></span>
 <span class="r-in">    mode <span class="op">=</span> <span class="st">"regression"</span>,</span>
-<span class="r-in">    neighbors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"K"</span><span class="op">)</span>,</span>
-<span class="r-in">    weight_func <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span class="r-in">    dist_power <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/hardhat/man/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in">    neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"K"</span><span class="op">)</span>,</span>
+<span class="r-in">    weight_func <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span class="r-in">    dist_power <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-in">  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span class="r-in">  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span></span>
 <span class="r-in"></span>
