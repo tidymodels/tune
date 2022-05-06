@@ -95,6 +95,14 @@
       Error in `select_by_one_std_err()`:
       ! Please choose at least one tuning parameter to sort in `...`.
 
+---
+
+    Code
+      select_by_one_std_err(mtcars, metric = "disp")
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! No `select_by_one_std_err()` exists for this type of object.
+
 # percent loss
 
     Code

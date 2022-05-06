@@ -152,6 +152,10 @@ test_that("one-std error rule", {
   expect_snapshot(error = TRUE, {
     select_by_one_std_err(rcv_results, metric = "random")
   })
+
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(mtcars, metric = "disp")
+  })
 })
 
 
