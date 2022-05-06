@@ -147,10 +147,6 @@ select_by_pct_loss.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -168,10 +164,6 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
-
-  if (is_a_race) {
-    res <- dplyr::filter(res, n == nrow(x))
-  }
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
