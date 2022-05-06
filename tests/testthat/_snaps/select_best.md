@@ -37,6 +37,14 @@
     Code
       best_rmse <- select_best(rcv_results, metric = "rmse")
 
+---
+
+    Code
+      select_best(mtcars, metric = "disp")
+    Condition
+      Error in `select_best()`:
+      ! No `select_best()` exists for this type of object.
+
 # show_best()
 
     Code

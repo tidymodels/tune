@@ -85,6 +85,10 @@ test_that("select_best()", {
     best_rmse <- select_best(rcv_results, metric = "rmse")
   })
   expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    select_best(mtcars, metric = "disp")
+  })
 })
 
 
