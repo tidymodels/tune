@@ -118,6 +118,10 @@ test_that("show_best()", {
     best_rmse <- show_best(rcv_results, metric = "rmse")
   })
   expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    show_best(mtcars, metric = "disp")
+  })
 })
 
 test_that("one-std error rule", {

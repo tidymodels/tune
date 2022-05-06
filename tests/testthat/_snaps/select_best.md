@@ -55,6 +55,14 @@
     Code
       best_rmse <- show_best(rcv_results, metric = "rmse")
 
+---
+
+    Code
+      show_best(mtcars, metric = "disp")
+    Condition
+      Error in `show_best()`:
+      ! No `show_best()` exists for this type of object.
+
 # one-std error rule
 
     Code
