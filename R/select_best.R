@@ -134,7 +134,19 @@ select_best <- function(x, metric = NULL, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
+select_by_pct_loss <- function(x, ...) {
+  UseMethod("select_by_pct_loss")
+}
+
+#' @export
+#' @rdname show_best
+select_by_pct_loss.default <- function(x, ...) {
+  rlang::abort("No `select_by_pct_loss()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   is_a_race <- inherits(x, "tune_race")
   if (is_a_race) {
     x <- dplyr::select(x, -.order)
