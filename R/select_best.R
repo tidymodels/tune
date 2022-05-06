@@ -214,10 +214,6 @@ select_by_one_std_err.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -234,10 +230,6 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
-
-  if (is_a_race) {
-    res <- dplyr::filter(res, n == nrow(x))
-  }
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
