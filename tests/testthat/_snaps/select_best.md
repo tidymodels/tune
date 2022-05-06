@@ -151,3 +151,11 @@
       Error in `select_by_pct_loss()`:
       ! Please choose at least one tuning parameter to sort in `...`.
 
+---
+
+    Code
+      select_by_pct_loss(mtcars, metric = "disp")
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! No `select_by_pct_loss()` exists for this type of object.
+

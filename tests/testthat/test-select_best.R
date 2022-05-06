@@ -194,4 +194,8 @@ test_that("percent loss", {
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = "random")
   })
+
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(mtcars, metric = "disp")
+  })
 })
