@@ -112,10 +112,21 @@ choose_metric <- function(metric, x) {
   metric
 }
 
+#' @export
+#' @rdname show_best
+select_best <- function(x, ...) {
+  UseMethod("select_best")
+}
 
 #' @export
 #' @rdname show_best
-select_best <- function(x, metric = NULL, ...) {
+select_best.default <- function(x, ...) {
+  rlang::abort("No `select_best()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_best.tune_results <- function(x, metric = NULL, ...) {
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {

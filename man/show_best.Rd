@@ -3,6 +3,8 @@
 \name{show_best}
 \alias{show_best}
 \alias{select_best}
+\alias{select_best.default}
+\alias{select_best.tune_results}
 \alias{select_by_pct_loss}
 \alias{select_by_pct_loss.default}
 \alias{select_by_pct_loss.tune_results}
@@ -13,7 +15,11 @@
 \usage{
 show_best(x, metric = NULL, n = 5, ...)
 
-select_best(x, metric = NULL, ...)
+select_best(x, ...)
+
+\method{select_best}{default}(x, ...)
+
+\method{select_best}{tune_results}(x, metric = NULL, ...)
 
 select_by_pct_loss(x, ...)
 
