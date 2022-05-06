@@ -201,7 +201,19 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err <- function(x, ..., metric = NULL) {
+select_by_one_std_err <- function(x, ...) {
+  UseMethod("select_by_one_std_err")
+}
+
+#' @export
+#' @rdname show_best
+select_by_one_std_err.default <- function(x, ...) {
+  rlang::abort("No `select_by_one_std_err()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   is_a_race <- inherits(x, "tune_race")
   if (is_a_race) {
     x <- dplyr::select(x, -.order)

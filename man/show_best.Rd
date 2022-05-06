@@ -5,6 +5,8 @@
 \alias{select_best}
 \alias{select_by_pct_loss}
 \alias{select_by_one_std_err}
+\alias{select_by_one_std_err.default}
+\alias{select_by_one_std_err.tune_results}
 \title{Investigate best tuning parameters}
 \usage{
 show_best(x, metric = NULL, n = 5, ...)
@@ -14,6 +16,10 @@ select_best(x, metric = NULL, ...)
 select_by_pct_loss(x, ..., metric = NULL, limit = 2)
 
 select_by_one_std_err(x, ..., metric = NULL)
+
+\method{select_by_one_std_err}{default}(x, ...)
+
+\method{select_by_one_std_err}{tune_results}(x, ...)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
