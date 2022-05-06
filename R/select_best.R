@@ -58,7 +58,19 @@
 #' )
 #' }
 #' @export
-show_best <- function(x, metric = NULL, n = 5, ...) {
+show_best <- function(x, ...) {
+  UseMethod("show_best")
+}
+
+#' @export
+#' @rdname show_best
+show_best.default <- function(x, ...) {
+  rlang::abort("No `show_best()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
   is_a_race <- inherits(x, "tune_race")
   if (is_a_race) {
     x <- dplyr::select(x, -.order)
