@@ -71,10 +71,6 @@ show_best.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
@@ -85,9 +81,6 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
   }
   maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
-  if (is_a_race) {
-    summary_res <- dplyr::filter(summary_res, n == nrow(x))
-  }
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
     metric <- metrics
