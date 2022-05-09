@@ -85,6 +85,10 @@ test_that("select_best()", {
     best_rmse <- select_best(rcv_results, metric = "rmse")
   })
   expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    select_best(mtcars, metric = "disp")
+  })
 })
 
 
@@ -114,6 +118,10 @@ test_that("show_best()", {
     best_rmse <- show_best(rcv_results, metric = "rmse")
   })
   expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    show_best(mtcars, metric = "disp")
+  })
 })
 
 test_that("one-std error rule", {
@@ -152,6 +160,10 @@ test_that("one-std error rule", {
   expect_snapshot(error = TRUE, {
     select_by_one_std_err(rcv_results, metric = "random")
   })
+
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(mtcars, metric = "disp")
+  })
 })
 
 
@@ -189,5 +201,9 @@ test_that("percent loss", {
 
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = "random")
+  })
+
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(mtcars, metric = "disp")
   })
 })

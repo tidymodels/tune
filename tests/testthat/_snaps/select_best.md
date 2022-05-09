@@ -37,6 +37,14 @@
     Code
       best_rmse <- select_best(rcv_results, metric = "rmse")
 
+---
+
+    Code
+      select_best(mtcars, metric = "disp")
+    Condition
+      Error in `select_best()`:
+      ! No `select_best()` exists for this type of object.
+
 # show_best()
 
     Code
@@ -46,6 +54,14 @@
       No value of `metric` was given; metric 'rmse' will be used.
     Code
       best_rmse <- show_best(rcv_results, metric = "rmse")
+
+---
+
+    Code
+      show_best(mtcars, metric = "disp")
+    Condition
+      Error in `show_best()`:
+      ! No `show_best()` exists for this type of object.
 
 # one-std error rule
 
@@ -95,6 +111,14 @@
       Error in `select_by_one_std_err()`:
       ! Please choose at least one tuning parameter to sort in `...`.
 
+---
+
+    Code
+      select_by_one_std_err(mtcars, metric = "disp")
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! No `select_by_one_std_err()` exists for this type of object.
+
 # percent loss
 
     Code
@@ -142,4 +166,12 @@
     Condition
       Error in `select_by_pct_loss()`:
       ! Please choose at least one tuning parameter to sort in `...`.
+
+---
+
+    Code
+      select_by_pct_loss(mtcars, metric = "disp")
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! No `select_by_pct_loss()` exists for this type of object.
 
