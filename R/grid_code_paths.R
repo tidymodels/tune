@@ -35,6 +35,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           ns = "tune"
         )
 
+        # Likely want to debug at `tune_grid_loop_iter`
         tune_grid_loop_iter_safely(
           split = split,
           grid_info = grid_info,
@@ -70,6 +71,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 
           grid_info_row <- vctrs::vec_slice(grid_info, row)
 
+          # Likely want to debug at `tune_grid_loop_iter`
           tune_grid_loop_iter_safely(
             split = split,
             grid_info = grid_info_row,
@@ -355,6 +357,7 @@ tune_grid_loop_iter_safely <- function(split,
                                        seed) {
   tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
 
+  # Likely want to debug at `tune_grid_loop_iter`
   result <- tune_grid_loop_iter_wrapper(
     split,
     grid_info,
