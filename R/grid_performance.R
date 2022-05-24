@@ -4,8 +4,8 @@
 pred_type <- function(x) {
   cls <- class(x)[class(x) != "function"][1]
   res <- dplyr::case_when(
-    cls == "class_metric"   ~ "class",
-    cls == "prob_metric"    ~ "prob",
+    cls == "class_metric" ~ "class",
+    cls == "prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     TRUE ~ "unknown"
   )
@@ -42,22 +42,29 @@ estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level
     ))
   }
 
+  if (case_weights_column_name() %in% names(dat)) {
+    case_weights <- sym(case_weights_column_name())
+  } else {
+    case_weights <- NULL
+  }
+
   if (all(types == "numeric")) {
-    estimate_reg(dat, metric, param_names, outcome_name)
+    estimate_reg(dat, metric, param_names, outcome_name, case_weights)
   } else if (all(types == "class" | types == "prob")) {
-    estimate_class_prob(dat, metric, param_names, outcome_name, types, event_level)
+    estimate_class_prob(dat, metric, param_names, outcome_name, case_weights, types, event_level)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
 }
 
-estimate_reg <- function(dat, metric, param_names, outcome_name) {
+estimate_reg <- function(dat, metric, param_names, outcome_name, case_weights) {
   dat %>%
     dplyr::group_by(!!!rlang::syms(param_names)) %>%
-    metric(estimate = .pred, truth = !!sym(outcome_name))
+    metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = !!case_weights)
 }
 
-estimate_class_prob <- function(dat, metric, param_names, outcome_name, types, event_level) {
+estimate_class_prob <- function(dat, metric, param_names, outcome_name,
+                                case_weights, types, event_level) {
   truth <- sym(outcome_name)
 
   estimate <- NULL
@@ -89,6 +96,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name, types, e
       truth = !!truth,
       estimate = !!estimate,
       !!!probs,
+      case_weights = !!case_weights,
       event_level = event_level
     )
 }

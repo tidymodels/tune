@@ -2,21 +2,50 @@
 % Please edit documentation in R/select_best.R
 \name{show_best}
 \alias{show_best}
+\alias{show_best.default}
+\alias{show_best.tune_results}
 \alias{select_best}
+\alias{select_best.default}
+\alias{select_best.tune_results}
 \alias{select_by_pct_loss}
+\alias{select_by_pct_loss.default}
+\alias{select_by_pct_loss.tune_results}
 \alias{select_by_one_std_err}
+\alias{select_by_one_std_err.default}
+\alias{select_by_one_std_err.tune_results}
 \title{Investigate best tuning parameters}
 \usage{
-show_best(x, metric = NULL, n = 5, ...)
+show_best(x, ...)
 
-select_best(x, metric = NULL, ...)
+\method{show_best}{default}(x, ...)
 
-select_by_pct_loss(x, ..., metric = NULL, limit = 2)
+\method{show_best}{tune_results}(x, metric = NULL, n = 5, ...)
 
-select_by_one_std_err(x, ..., metric = NULL)
+select_best(x, ...)
+
+\method{select_best}{default}(x, ...)
+
+\method{select_best}{tune_results}(x, metric = NULL, ...)
+
+select_by_pct_loss(x, ...)
+
+\method{select_by_pct_loss}{default}(x, ...)
+
+\method{select_by_pct_loss}{tune_results}(x, ..., metric = NULL, limit = 2)
+
+select_by_one_std_err(x, ...)
+
+\method{select_by_one_std_err}{default}(x, ...)
+
+\method{select_by_one_std_err}{tune_results}(x, ..., metric = NULL)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
+
+\item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
+argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
+the models from \emph{most simple to most complex}. See the examples below. At
+least one term is required for these two functions.}
 
 \item{metric}{A character value for the metric that will be used to sort
 the models. (See
@@ -26,11 +55,6 @@ multiple metric and none are given, the first in the metric set is used (and
 a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
-
-\item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
-argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
-the models from \emph{most simple to most complex}. See the examples below. At
-least one term is required for these two functions.}
 
 \item{limit}{The limit of loss of performance that is acceptable (in percent
 units). See details below.}
@@ -73,8 +97,11 @@ select_best(ames_iter_search, metric = "rsq")
 select_by_one_std_err(ames_grid_search, metric = "rmse", desc(K))
 
 # Now find the least complex model that has no more than a 5\% loss of RMSE:
-select_by_pct_loss(ames_grid_search, metric = "rmse",
-                   limit = 5, desc(K))
+select_by_pct_loss(
+  ames_grid_search,
+  metric = "rmse",
+  limit = 5, desc(K)
+)
 }
 }
 \references{

@@ -1,5 +1,3 @@
-context("`select_best()` and `show_best()`")
-
 # ------------------------------------------------------------------------------
 # library(tidymodels)
 # set.seed(7898)
@@ -42,19 +40,13 @@ context("`select_best()` and `show_best()`")
 #                       grid = cars_grid,
 #                       control = control_grid(verbose = TRUE, save_pred = TRUE))
 # saveRDS(cars_res,
-#         file = testthat::test_path("rcv_results.rds"),
+#         file = testthat::test_path("data", "rcv_results.rds"),
 #         version = 2, compress = "xz")
 
 # ------------------------------------------------------------------------------
 
-rcv_results <- readRDS(test_path("rcv_results.rds"))
-knn_results <- readRDS(test_path("knn_results.rds"))
-source(test_path("../helper-objects.R"))
-
-# ------------------------------------------------------------------------------
-
-
 test_that("select_best()", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_best(rcv_results, metric = "rmse"))
@@ -78,30 +70,30 @@ test_that("select_best()", {
     select_best(rcv_results, metric = "rsq") %>% select(-.config),
     best_rsq
   )
-  expect_warning(
-    select_best(rcv_results, metric = "rsq", maximize = TRUE),
-    "The `maximize` argument is no longer"
+  expect_snapshot(
+    select_best(rcv_results, metric = "rsq", maximize = TRUE)
   )
 
-  expect_error(
-    select_best(rcv_results, metric = "random"),
-    "Please check the value of `metric`"
-  )
-  expect_error(
-    select_best(rcv_results, metric = c("rmse", "rsq")),
-    "Please specify a single character"
-  )
-  expect_warning(
-    expect_equal(
-      select_best(rcv_results),
-      select_best(rcv_results, metric = "rmse")
-    ),
-    "metric 'rmse' will be used"
-  )
+  expect_snapshot(error = TRUE, {
+    select_best(rcv_results, metric = "random")
+  })
+  expect_snapshot(error = TRUE, {
+    select_best(rcv_results, metric = c("rmse", "rsq"))
+  })
+  expect_snapshot({
+    best_default_metric <- select_best(rcv_results)
+    best_rmse <- select_best(rcv_results, metric = "rmse")
+  })
+  expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    select_best(mtcars, metric = "disp")
+  })
 })
 
 
 test_that("show_best()", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   rcv_rmse <-
     rcv_results %>%
@@ -121,16 +113,20 @@ test_that("show_best()", {
     show_best(rcv_results, metric = "rmse", n = 1) %>% names(),
     rcv_rmse %>% names()
   )
-  expect_warning(
-    expect_equal(
-      show_best(rcv_results),
-      show_best(rcv_results, metric = "rmse")
-    ),
-    "metric 'rmse' will be used"
-  )
+  expect_snapshot({
+    best_default_metric <- show_best(rcv_results)
+    best_rmse <- show_best(rcv_results, metric = "rmse")
+  })
+  expect_equal(best_default_metric, best_rmse)
+
+  expect_snapshot(error = TRUE, {
+    show_best(mtcars, metric = "disp")
+  })
 })
 
 test_that("one-std error rule", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
@@ -145,34 +141,35 @@ test_that("one-std error rule", {
     25L
   )
 
-  expect_warning(
-    select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE),
-    "The `maximize` argument is no longer"
+  expect_snapshot(
+    select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE)
   )
 
-  expect_error(
-    select_by_one_std_err(rcv_results, metric = "random", deg_free),
-    "Please check the value of `metric`"
-  )
-  expect_error(
-    select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free),
-    "Please specify a single character"
-  )
-  expect_warning(
-    expect_equal(
-      select_by_one_std_err(knn_results, K),
-      select_by_one_std_err(knn_results, K, metric = "roc_auc")
-    ),
-    "metric 'roc_auc' will be used"
-  )
-  expect_error(
-    select_by_one_std_err(rcv_results, metric = "random"),
-    "Please choose at least one tuning parameter to sort"
-  )
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(rcv_results, metric = "random", deg_free)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
+  })
+  expect_snapshot({
+    select_via_default_metric <- select_by_one_std_err(knn_results, K)
+    select_via_roc <- select_by_one_std_err(knn_results, K, metric = "roc_auc")
+  })
+  expect_equal(select_via_default_metric, select_via_roc)
+
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(rcv_results, metric = "random")
+  })
+
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(mtcars, metric = "disp")
+  })
 })
 
 
 test_that("percent loss", {
+  rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
@@ -186,30 +183,27 @@ test_that("percent loss", {
     12L
   )
 
-  expect_warning(
-    select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE),
-    "The `maximize` argument is no longer"
+  expect_snapshot(
+    select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE)
   )
 
-  expect_error(
-    select_by_pct_loss(rcv_results, metric = "random", deg_free),
-    "Please check the value of `metric`"
-  )
-  expect_error(
-    select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free),
-    "Please specify a single character"
-  )
-  expect_warning(
-    expect_equal(
-      select_by_pct_loss(knn_results, K),
-      select_by_pct_loss(knn_results, K, metric = "roc_auc")
-    ),
-    "metric 'roc_auc' will be used"
-  )
-  expect_error(
-    select_by_pct_loss(rcv_results, metric = "random"),
-    "Please choose at least one tuning parameter to sort"
-  )
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(rcv_results, metric = "random", deg_free)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
+  })
+  expect_snapshot({
+    select_via_default_metric <- select_by_pct_loss(knn_results, K)
+    select_via_roc <- select_by_pct_loss(knn_results, K, metric = "roc_auc")
+  })
+  expect_equal(select_via_default_metric, select_via_roc)
+
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(rcv_results, metric = "random")
+  })
+
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(mtcars, metric = "disp")
+  })
 })
-
-

@@ -1,5 +1,11 @@
 # tune (development version)
 
+* `last_fit()` now accepts a `control` argument to allow users to control aspects of the last fitting process via `control_last_fit()` (#399).
+
+* Case weights are enabled for models that can use them. 
+
+# tune 0.2.0
+
 * The `.notes` column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes. 
 
 * `collect_notes()` can be used to gather any notes to a tibble. (#363)

@@ -51,26 +51,36 @@
 #' select_by_one_std_err(ames_grid_search, metric = "rmse", desc(K))
 #'
 #' # Now find the least complex model that has no more than a 5% loss of RMSE:
-#' select_by_pct_loss(ames_grid_search, metric = "rmse",
-#'                    limit = 5, desc(K))
+#' select_by_pct_loss(
+#'   ames_grid_search,
+#'   metric = "rmse",
+#'   limit = 5, desc(K)
+#' )
 #' }
 #' @export
-show_best <- function(x, metric = NULL, n = 5, ...) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
+show_best <- function(x, ...) {
+  UseMethod("show_best")
+}
+
+#' @export
+#' @rdname show_best
+show_best.default <- function(x, ...) {
+  rlang::abort("No `show_best()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("The `maximize` argument is no longer needed.",
-                      "This value was ignored."))
+    rlang::warn(paste(
+      "The `maximize` argument is no longer needed.",
+      "This value was ignored."
+    ))
   }
   maximize <- is_metric_maximize(x, metric)
   summary_res <- estimate_tune_results(x)
-  if (is_a_race) {
-    summary_res <- dplyr::filter(summary_res, n == nrow(x))
-  }
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
     metric <- metrics
@@ -97,23 +107,38 @@ choose_metric <- function(metric, x) {
     metric_vals <- .get_tune_metric_names(x)
     metric <- metric_vals[1]
     if (length(metric_vals) > 1) {
-      msg <- paste0("No value of `metric` was given; metric '", metric, "' ",
-                    "will be used.")
+      msg <- paste0(
+        "No value of `metric` was given; metric '", metric, "' ",
+        "will be used."
+      )
       rlang::warn(msg)
     }
   }
   metric
 }
 
+#' @export
+#' @rdname show_best
+select_best <- function(x, ...) {
+  UseMethod("select_best")
+}
 
 #' @export
 #' @rdname show_best
-select_best <- function(x, metric = NULL, ...) {
+select_best.default <- function(x, ...) {
+  rlang::abort("No `select_best()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_best.tune_results <- function(x, metric = NULL, ...) {
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("The `maximize` argument is no longer needed.",
-                      "This value was ignored."))
+    rlang::warn(paste(
+      "The `maximize` argument is no longer needed.",
+      "This value was ignored."
+    ))
   }
   res <- show_best(x, metric = metric, n = 1)
   res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
@@ -125,16 +150,26 @@ select_best <- function(x, metric = NULL, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
+select_by_pct_loss <- function(x, ...) {
+  UseMethod("select_by_pct_loss")
+}
+
+#' @export
+#' @rdname show_best
+select_by_pct_loss.default <- function(x, ...) {
+  rlang::abort("No `select_by_pct_loss()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("The `maximize` argument is no longer needed.",
-                      "This value was ignored."))
+    rlang::warn(paste(
+      "The `maximize` argument is no longer needed.",
+      "This value was ignored."
+    ))
     dots[["maximize"]] <- NULL
   }
 
@@ -146,10 +181,6 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
 
-  if (is_a_race) {
-    res <- dplyr::filter(res, n == nrow(x))
-  }
-
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
@@ -157,14 +188,18 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
     best_metric <- max(res$mean, na.rm = TRUE)
     res <-
       res %>%
-      dplyr::mutate(.best = best_metric,
-                    .loss = (best_metric - mean)/best_metric * 100)
+      dplyr::mutate(
+        .best = best_metric,
+        .loss = (best_metric - mean) / best_metric * 100
+      )
   } else {
     best_metric <- min(res$mean, na.rm = TRUE)
     res <-
       res %>%
-      dplyr::mutate(.best = best_metric,
-                    .loss = (mean - best_metric)/best_metric * 100)
+      dplyr::mutate(
+        .best = best_metric,
+        .loss = (mean - best_metric) / best_metric * 100
+      )
   }
 
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
@@ -186,16 +221,26 @@ select_by_pct_loss <- function(x, ..., metric = NULL, limit = 2) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err <- function(x, ..., metric = NULL) {
-  is_a_race <- inherits(x, "tune_race")
-  if (is_a_race) {
-    x <- dplyr::select(x, -.order)
-  }
+select_by_one_std_err <- function(x, ...) {
+  UseMethod("select_by_one_std_err")
+}
+
+#' @export
+#' @rdname show_best
+select_by_one_std_err.default <- function(x, ...) {
+  rlang::abort("No `select_by_one_std_err()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname show_best
+select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   metric <- choose_metric(metric, x)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
-    rlang::warn(paste("The `maximize` argument is no longer needed.",
-                      "This value was ignored."))
+    rlang::warn(paste(
+      "The `maximize` argument is no longer needed.",
+      "This value was ignored."
+    ))
     dots[["maximize"]] <- NULL
   }
   if (length(dots) == 0) {
@@ -205,10 +250,6 @@ select_by_one_std_err <- function(x, ..., metric = NULL) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
-
-  if (is_a_race) {
-    res <- dplyr::filter(res, n == nrow(x))
-  }
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -220,8 +261,10 @@ select_by_one_std_err <- function(x, ..., metric = NULL) {
     bound <- best - res$std_err[best_index]
     res <-
       res %>%
-      dplyr::mutate(.best = best,
-                    .bound = bound) %>%
+      dplyr::mutate(
+        .best = best,
+        .bound = bound
+      ) %>%
       dplyr::filter(mean >= .bound)
   } else {
     best_index <- which.min(res$mean)
@@ -229,8 +272,10 @@ select_by_one_std_err <- function(x, ..., metric = NULL) {
     bound <- best + res$std_err[best_index]
     res <-
       res %>%
-      dplyr::mutate(.best = best,
-                    .bound = bound) %>%
+      dplyr::mutate(
+        .best = best,
+        .bound = bound
+      ) %>%
       dplyr::filter(mean <= .bound)
   }
 

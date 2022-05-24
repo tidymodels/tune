@@ -50,21 +50,23 @@
 #'
 #' merge(pca_rec, pca_grid)
 #'
-#' library(parsnip)
-#' library(dials)
-#' data(hpc_data, pacakge = "modeldata")
+#' if (rlang::is_installed("modeldata")) {
+#'   library(parsnip)
+#'   library(dials)
+#'   data(hpc_data, package = "modeldata")
 #'
-#' xgb_mod <-
-#'   boost_tree(trees = tune(), min_n = tune()) %>%
-#'   set_engine("xgboost")
+#'   xgb_mod <-
+#'     boost_tree(trees = tune(), min_n = tune()) %>%
+#'     set_engine("xgboost")
 #'
-#' set.seed(254)
-#' xgb_grid <-
-#'   extract_parameter_set_dials(xgb_mod) %>%
-#'   finalize(hpc_data) %>%
-#'   grid_max_entropy(size = 3)
+#'   set.seed(254)
+#'   xgb_grid <-
+#'     extract_parameter_set_dials(xgb_mod) %>%
+#'     finalize(hpc_data) %>%
+#'     grid_max_entropy(size = 3)
 #'
-#' merge(xgb_mod, xgb_grid)
+#'   merge(xgb_mod, xgb_grid)
+#' }
 #' }
 #' @export
 merge.recipe <- function(x, y, ...) {
@@ -82,7 +84,7 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
     param_info <- pset %>% dplyr::filter(id == i & source == "model_spec")
     if (nrow(param_info) > 1) {
       # TODO figure this out and write a better message
-      stop("There are too many things.", call. = FALSE)
+      rlang::abort("There are too many things.")
     }
     if (nrow(param_info) == 1) {
       if (param_info$component_id == "main") {
@@ -104,7 +106,7 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
       idx <- which(step_id == param_info$component_id)
       # check index
       # should use the contructor but maybe dangerous/difficult
-      object$steps[[ idx ]][[param_info$name]] <- grid[[i]]
+      object$steps[[idx]][[param_info$name]] <- grid[[i]]
     }
   }
   object
@@ -113,12 +115,12 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
 
 merger <- function(x, y, ...) {
   if (!is.data.frame(y)) {
-    stop("The second argument should be a data frame.", call. = FALSE)
+    rlang::abort("The second argument should be a data frame.")
   }
   pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
+    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~x))
     return(res)
   }
   grid_name <- colnames(y)

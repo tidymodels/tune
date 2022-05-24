@@ -14,7 +14,7 @@ pulley <- function(resamples, res, col) {
   if (all(purrr::map_lgl(res, inherits, "simpleError"))) {
     res <-
       resamples %>%
-      mutate(col = purrr::map(splits, ~ NULL)) %>%
+      mutate(col = purrr::map(splits, ~NULL)) %>%
       setNames(c(names(resamples), col))
     return(res)
   }
@@ -23,12 +23,12 @@ pulley <- function(resamples, res, col) {
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
-  pulled_vals <- purrr::map_dfr(res, ~.x[[col]])
+  pulled_vals <- purrr::map_dfr(res, ~ .x[[col]])
 
-  if (nrow(pulled_vals)  == 0) {
+  if (nrow(pulled_vals) == 0) {
     res <-
       resamples %>%
-      mutate(col = purrr::map(splits, ~ NULL)) %>%
+      mutate(col = purrr::map(splits, ~NULL)) %>%
       setNames(c(names(resamples), col))
     return(res)
   }
@@ -55,7 +55,7 @@ maybe_repair <- function(x) {
   }
 
   good_val <- which(ok)[1]
-  template <- x[[good_val]][0,]
+  template <- x[[good_val]][0, ]
 
   insert_val <- function(x, y) {
     if (is.null(x)) {
@@ -182,7 +182,7 @@ append_predictions <- function(collection, predictions, split, control, .config 
     if (length(by) == 0L) {
       # Nothing to tune, just bind on config
       predictions <- vec_cbind(predictions, .config)
-    } else{
+    } else {
       predictions <- dplyr::inner_join(predictions, .config, by = by)
     }
   }
@@ -230,9 +230,11 @@ extract_metrics_config <- function(param_names, metrics) {
 #' @return A fitted model.
 #' @export
 extract_model <- function(x) {
-  lifecycle::deprecate_soft("0.1.6",
-                            "extract_model()",
-                            "extract_fit_engine()")
+  lifecycle::deprecate_soft(
+    "0.1.6",
+    "extract_model()",
+    "extract_fit_engine()"
+  )
   parsnip_fit <- extract_fit_parsnip(x)
   model <- parsnip_fit$fit
   model

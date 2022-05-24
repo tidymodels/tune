@@ -8,9 +8,16 @@
 \usage{
 last_fit(object, ...)
 
-\method{last_fit}{model_spec}(object, preprocessor, split, ..., metrics = NULL)
+\method{last_fit}{model_spec}(
+  object,
+  preprocessor,
+  split,
+  ...,
+  metrics = NULL,
+  control = control_last_fit()
+)
 
-\method{last_fit}{workflow}(object, split, ..., metrics = NULL)
+\method{last_fit}{workflow}(object, split, ..., metrics = NULL, control = control_last_fit())
 }
 \arguments{
 \item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
@@ -25,6 +32,9 @@ No tuning parameters are allowed.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
+
+\item{control}{A \code{\link[=control_last_fit]{control_last_fit()}} object used to fine tune the last fit
+process.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.
@@ -67,9 +77,9 @@ spline_res$.metrics[[1]]
 
 library(workflows)
 spline_wfl <-
- workflow() \%>\%
- add_recipe(spline_rec) \%>\%
- add_model(lin_mod)
+  workflow() \%>\%
+  add_recipe(spline_rec) \%>\%
+  add_model(lin_mod)
 
 last_fit(spline_wfl, split = tr_te_split)
 }

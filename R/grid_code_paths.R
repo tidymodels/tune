@@ -101,11 +101,11 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 iter_combine <- function(...) {
   results <- list(...)
 
-  metrics <- purrr::map(results, ~.x[[".metrics"]])
-  extracts <- purrr::map(results, ~.x[[".extracts"]])
-  predictions <- purrr::map(results, ~.x[[".predictions"]])
-  all_outcome_names <- purrr::map(results, ~.x[[".all_outcome_names"]])
-  notes <- purrr::map(results, ~.x[[".notes"]])
+  metrics <- purrr::map(results, ~ .x[[".metrics"]])
+  extracts <- purrr::map(results, ~ .x[[".extracts"]])
+  predictions <- purrr::map(results, ~ .x[[".predictions"]])
+  all_outcome_names <- purrr::map(results, ~ .x[[".all_outcome_names"]])
+  notes <- purrr::map(results, ~ .x[[".notes"]])
 
   metrics <- vec_c(!!!metrics)
   extracts <- vec_c(!!!extracts)

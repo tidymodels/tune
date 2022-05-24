@@ -34,8 +34,11 @@ set.seed(2393)
 res <-
   logistic_reg() \%>\%
   set_engine("glm") \%>\%
-  fit_resamples(Class ~ ., resamples = vfold_cv(two_class_dat, v = 3),
-                control = control_resamples(save_pred = TRUE))
+  fit_resamples(
+    Class ~ .,
+    resamples = vfold_cv(two_class_dat, v = 3),
+    control = control_resamples(save_pred = TRUE)
+  )
 
 conf_mat_resampled(res)
 conf_mat_resampled(res, tidy = FALSE)

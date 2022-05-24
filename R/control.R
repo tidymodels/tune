@@ -45,14 +45,16 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_parallel_over(parallel_over, "control_grid()")
 
 
-  res <- list(verbose = verbose,
-              allow_par = allow_par,
-              extract = extract,
-              save_pred = save_pred,
-              pkgs = pkgs,
-              save_workflow = save_workflow,
-              event_level = event_level,
-              parallel_over = parallel_over)
+  res <- list(
+    verbose = verbose,
+    allow_par = allow_par,
+    extract = extract,
+    save_pred = save_pred,
+    pkgs = pkgs,
+    save_workflow = save_workflow,
+    event_level = event_level,
+    parallel_over = parallel_over
+  )
 
   class(res) <- c("control_grid", "control_resamples")
   res
@@ -67,6 +69,39 @@ print.control_grid <- function(x, ...) {
 #' @rdname control_grid
 #' @export
 control_resamples <- control_grid
+
+#' Control aspects of the last fit process
+#'
+#' @inheritParams control_grid
+#'
+#' @details
+#'
+#' [control_last_fit()] is a wrapper around [control_resamples()] and is meant
+#'   to be used with [last_fit()].
+#'
+#' @export
+control_last_fit <- function(
+    verbose = FALSE,
+    event_level = "first"
+) {
+  extr <- function(x) x
+  control <-
+    control_resamples(
+      verbose = verbose,
+      event_level = event_level,
+      extract = extr,
+      save_pred = TRUE,
+      save_workflow = FALSE
+    )
+  class(control) <- c("control_last_fit", class(control))
+  control
+}
+
+#' @export
+print.control_last_fit <- function(x, ...) {
+  cat("last fit control object\n")
+  invisible(x)
+}
 
 # ------------------------------------------------------------------------------
 

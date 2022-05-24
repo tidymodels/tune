@@ -1,16 +1,19 @@
 predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   model <- extract_fit_parsnip(workflow)
 
-  forged <- forge_from_workflow(split, workflow)
+  new_data <- rsample::assessment(split)
 
+  forged <- forge_from_workflow(new_data, workflow)
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
 
   orig_rows <- as.integer(split, data = "assessment")
 
   if (length(orig_rows) != nrow(x_vals)) {
-    msg <- paste0("Some assessment set rows are not available at ",
-                  "prediction time. ")
+    msg <- paste0(
+      "Some assessment set rows are not available at ",
+      "prediction time. "
+    )
 
     if (has_preprocessor_recipe(workflow)) {
       msg <- paste0(
@@ -40,7 +43,8 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
     tmp_res <-
       predict(model, x_vals, type = type_iter) %>%
       mutate(.row = orig_rows) %>%
-      cbind(grid, row.names = NULL)
+      cbind(grid, row.names = NULL) %>%
+      tibble::as_tibble()
 
     if (!is.null(submodels)) {
       submod_length <- lengths(submodels)
@@ -62,6 +66,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
+          tibble::as_tibble() %>%
           # go back to user-defined name
           dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
           dplyr::select(dplyr::one_of(names(tmp_res))) %>%
@@ -82,18 +87,24 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   y_vals <- dplyr::mutate(y_vals, .row = orig_rows)
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
+  # Add case weights (if needed)
+  if (has_case_weights(workflow)) {
+    case_weights <- extract_case_weights(new_data, workflow)
+
+    if (.use_case_weights_with_yardstick(case_weights)) {
+      case_weights <- rlang::list2(!!case_weights_column_name() := case_weights)
+      case_weights <- vctrs::new_data_frame(case_weights)
+      case_weights <- dplyr::mutate(case_weights, .row = orig_rows)
+      res <- dplyr::full_join(res, case_weights, by = ".row")
+    }
+  }
+
   tibble::as_tibble(res)
 }
 
-forge_from_workflow <- function(split, workflow) {
-  new_data <- rsample::assessment(split)
-
+forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
-  if (!rlang::is_installed("hardhat")) {
-    rlang::abort(
-      "Internal error: hardhat should have been installed from the workflows dependency."
-    )
-  }
+
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
   forged
@@ -439,7 +450,7 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
     iter_configs <- compute_config_ids(model_grid, id_preprocessor)
 
     model_grid <- tibble::add_column(
-      .data  = model_grid,
+      .data = model_grid,
       .iter_model = seq_fit_models,
       .before = 1L
     )
@@ -526,6 +537,10 @@ has_preprocessor_formula <- function(workflow) {
 
 has_preprocessor_variables <- function(workflow) {
   "variables" %in% names(workflow$pre$actions)
+}
+
+has_case_weights <- function(workflow) {
+  "case_weights" %in% names(workflow$pre$actions)
 }
 
 has_spec <- function(workflow) {

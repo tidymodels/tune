@@ -1,0 +1,3 @@
+# CODEOWNERS for tune
+# https://www.tidyverse.org/development/understudies
+.github/CODEOWNERS @topepo @EmilHvitfeldt

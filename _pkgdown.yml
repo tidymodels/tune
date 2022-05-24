@@ -1,24 +1,38 @@
-url: https://tune.tidymodels.org
+url: https://tune.tidymodels.org/
+
+navbar:
+  components:
+    home: ~
+    tutorials:
+      text: Learn more
+      menu:
+      - text: "Grid search"
+        href: https://www.tidymodels.org/learn/work/tune-svm/
+      - text: "Bayesian optimization of classification model"
+        href: https://www.tidymodels.org/learn/work/bayes-opt/
+      - text: "Tuning text models"
+        href: https://www.tidymodels.org/learn/work/tune-text/
 
 template:
   package: tidytemplate
-  params:
-    theme: tidymodels
-    part_of: <a href="https://tidymodels.org">tidymodels</a>
-    footer: tune is a part of the <strong>tidymodels</strong> ecosystem, a collection of modeling packages designed with common APIs and a shared philosophy.
+  bootstrap: 5
+  bslib:
+    danger: "#CA225E"
+    primary: "#CA225E"
+
+  includes:
+      in_header: |
+        <script defer data-domain="tune.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
 
 development:
   mode: auto
-
-home:
-  strip_header: true
 
 figures:
   fig.width: 8
   fig.height: 5.75
 
 reference:
-  - title: User-Facing Functions
+  - title: Functions for tuning
     contents:
     - starts_with("tune")
     - fit_resamples
@@ -38,32 +52,9 @@ reference:
     - coord_obs_pred
     - conf_mat_resampled
     - example_ames_knn
-  - title: Low-Level Functions
+  - title: Developer functions
     contents:
     - merge.recipe
     - parameters.workflow
     - message_wrap
-
-navbar:
-  left:
-  - text: Getting Started
-    href: articles/getting_started.html
-  - text: "Articles"
-    menu:
-    - text: Grid Search
-      href: https://www.tidymodels.org/learn/work/tune-svm/
-    - text: Acquisition Functions
-      href: articles/acquisition_functions.html
-    - text: Bayesian Optimization of Classification Model
-      href: https://www.tidymodels.org/learn/work/bayes-opt/
-    - text: Optimizations and Parallel Processing
-      href: articles/extras/optimizations.html
-    - text: Text Analysis Example
-      href: https://www.tidymodels.org/learn/work/tune-text/
-  - text: Reference
-    href: reference/index.html
-  - text: News
-    href: news/index.html
-
-
-
+    - .use_case_weights_with_yardstick

@@ -1,27 +1,5 @@
-context("extracting predictions")
-
-source(test_path("../helper-objects.R"))
-
-check_predictions <- function(split, pred, tune_df) {
-
-  assess <- rsample::assessment(split)
-  n_te <- nrow(assess)
-  n_pm <- nrow(tune_df)
-  ind_te <- as.integer(split, data = "assessment")
-  expect_true(tibble::is_tibble(pred))
-  expect_equal(nrow(pred), n_te * n_pm)
-  exp_nms <- c(".pred", ".row", names(tune_df), "mpg", ".config")
-  expect_equal(names(pred), exp_nms)
-  expect_equal(sort(unique(ind_te)), sort(unique(pred$.row)))
-  TRUE
-}
-
-load(test_path("test_objects.RData"))
-
-# ------------------------------------------------------------------------------
-
 test_that("recipe only", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <- collect_metrics(mt_spln_lm_grid) %>%
     dplyr::select(deg_free) %>%
     dplyr::distinct()
@@ -58,13 +36,12 @@ test_that("recipe only", {
     check_predictions,
     bo_grid
   )
-
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("model only", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <-
     collect_metrics(mt_knn_grid) %>%
     dplyr::select(neighbors) %>%
@@ -102,14 +79,13 @@ test_that("model only", {
     check_predictions,
     bo_grid
   )
-
 })
 
 
 # ------------------------------------------------------------------------------
 
 test_that("model and recipe", {
-
+  load(test_path("data", "test_objects.RData"))
   grid <-
     collect_metrics(mt_spln_knn_grid) %>%
     dplyr::select(deg_free, neighbors) %>%
@@ -147,5 +123,4 @@ test_that("model and recipe", {
     check_predictions,
     bo_grid
   )
-
 })
