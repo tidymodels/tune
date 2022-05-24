@@ -473,6 +473,7 @@ test_that("retain extra attributes", {
     ),
     "being saved contains a recipe, which is"
   )
+})
 
 test_that("error if wrong control function is used", {
   set.seed(4400)
