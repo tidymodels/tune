@@ -14,7 +14,7 @@ load_pkgs <- function(x, infra = TRUE, ...) {
 
 #' @export
 load_pkgs.character <- function(x, ...) {
-  withr::with_preserve_seed(load_namespace(x))
+  withr::with_preserve_seed(.load_namespace(x))
 }
 
 #' @export
@@ -23,7 +23,7 @@ load_pkgs.model_spec <- function(x, infra = TRUE, ...) {
   if (infra) {
     pkgs <- c(infra_pkgs, pkgs)
   }
-  load_namespace(unique(pkgs))
+  .load_namespace(unique(pkgs))
 }
 
 #' @export
@@ -33,7 +33,8 @@ load_pkgs.workflow <- function(x, infra = TRUE, ...) {
 
 full_load <- c("kknn", "earth")
 
-load_namespace <- function(x) {
+#' @export
+.load_namespace <- function(x) {
   if (length(x) == 0) {
     return(invisible(TRUE))
   }

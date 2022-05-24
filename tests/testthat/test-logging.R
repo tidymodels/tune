@@ -62,21 +62,21 @@ test_that("catch and log issues", {
   null <- NULL
 
   expect_snapshot(
-    out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_1 <- tune:::.catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- tune:::catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
+  expect_silent(out_2 <- tune:::.catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
   expect_true(out_2 == 0)
   expect_snapshot(
-    out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_3 <- tune:::.catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(is.nan(out_3))
   expect_snapshot(
-    out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_5 <- tune:::.catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(inherits(out_5, "try-error"))
   expect_snapshot(
-    out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_6 <- tune:::.catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
   )
   expect_true(is.nan(out_6))
 })

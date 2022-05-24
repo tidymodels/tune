@@ -87,7 +87,7 @@
 # catch and log issues
 
     Code
-      out_1 <- tune:::catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE,
+      out_1 <- tune:::.catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE,
       notes = null)
     Message
       x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
@@ -95,7 +95,7 @@
 ---
 
     Code
-      out_3 <- tune:::catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE,
+      out_3 <- tune:::.catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE,
       notes = null)
     Message
       ! Fold01: toledo: NaNs produced
@@ -103,7 +103,7 @@
 ---
 
     Code
-      out_5 <- tune:::catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE,
+      out_5 <- tune:::.catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE,
       notes = null)
     Message
       x toledo: Error in log("a"): non-numeric argument to mathematical function
@@ -111,7 +111,7 @@
 ---
 
     Code
-      out_6 <- tune:::catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE,
+      out_6 <- tune:::.catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE,
       notes = null)
     Message
       ! toledo: NaNs produced
