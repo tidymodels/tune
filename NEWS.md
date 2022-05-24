@@ -4,6 +4,8 @@
 
 * Case weights are enabled for models that can use them. 
 
+* Function now error if the wrong `control_*()` is used. (#449)
+
 # tune 0.2.0
 
 * The `.notes` column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes. 
@@ -19,8 +21,6 @@
 * Moved `tune()` from tune to hardhat (#442).
 
 * The `parameters()` methods for `recipe`, `model_spec`, and `workflow` objects have been soft-deprecated in favor of `extract_parameter_set_dials()` methods (#428).
-
-* Function now error if the wrong `control_*()` is used. (#449)
 
 # tune 0.1.6
 
