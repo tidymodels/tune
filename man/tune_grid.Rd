@@ -154,7 +154,7 @@ parameter combination).
 \section{Obtaining Predictions}{
 
 
-When \code{control(save_preds = TRUE)}, the output tibble contains a list column
+When \code{control(save_pred = TRUE)}, the output tibble contains a list column
 called \code{.predictions} that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).
 
