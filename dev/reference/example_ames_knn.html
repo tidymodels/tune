@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -81,74 +81,8 @@
 housing data. A K-nearest neighbors model was used with a small
 predictor set that included natural spline transformations of
 the <code>Longitude</code> and <code>Latitude</code> predictors. The code used to
-generate these examples was:</p><div class="sourceCode"><pre><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tune.tidymodels.org/">tune</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/topepo/AmesHousing" class="external-link">AmesHousing</a></span><span class="op">)</span>
-
-<span class="co"># ------------------------------------------------------------------------------</span>
-
-<span class="va">ames</span> <span class="op">&lt;-</span> <span class="fu">make_ames</span><span class="op">(</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">4595</span><span class="op">)</span>
-<span class="va">data_split</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">initial_split</a></span><span class="op">(</span><span class="va">ames</span>, strata <span class="op">=</span> <span class="st">"Sale_Price"</span><span class="op">)</span>
-
-<span class="va">ames_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">training</a></span><span class="op">(</span><span class="va">data_split</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2453</span><span class="op">)</span>
-<span class="va">rs_splits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html" class="external-link">vfold_cv</a></span><span class="op">(</span><span class="va">ames_train</span>, strata <span class="op">=</span> <span class="st">"Sale_Price"</span><span class="op">)</span>
-
-<span class="co"># ------------------------------------------------------------------------------</span>
-
-<span class="va">ames_rec</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">Sale_Price</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_YeoJohnson.html" class="external-link">step_YeoJohnson</a></span><span class="op">(</span><span class="va">Lot_Area</span>, <span class="va">Gr_Liv_Area</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_other.html" class="external-link">step_other</a></span><span class="op">(</span><span class="va">Neighborhood</span>, threshold <span class="op">=</span> <span class="fl">.1</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_zv.html" class="external-link">step_zv</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"lon"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"lat"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">knn_model</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/nearest_neighbor.html" class="external-link">nearest_neighbor</a></span><span class="op">(</span>
-    mode <span class="op">=</span> <span class="st">"regression"</span>,
-    neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"K"</span><span class="op">)</span>,
-    weight_func <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>,
-    dist_power <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>
-  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span>
-
-<span class="va">ames_wflow</span> <span class="op">&lt;-</span>
-  <span class="fu">workflow</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">add_recipe</span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">add_model</span><span class="op">(</span><span class="va">knn_model</span><span class="op">)</span>
-
-<span class="va">ames_set</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span>K <span class="op">=</span> <span class="fu">neighbors</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">7014</span><span class="op">)</span>
-<span class="va">ames_grid</span> <span class="op">&lt;-</span>
-  <span class="va">ames_set</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
-  <span class="fu">grid_max_entropy</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
-
-<span class="va">ames_grid_search</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span>
-    <span class="va">ames_wflow</span>,
-    resamples <span class="op">=</span> <span class="va">rs_splits</span>,
-    grid <span class="op">=</span> <span class="va">ames_grid</span>
-  <span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2082</span><span class="op">)</span>
-<span class="va">ames_iter_search</span> <span class="op">&lt;-</span>
-  <span class="fu"><a href="../reference/tune_bayes.html">tune_bayes</a></span><span class="op">(</span>
-    <span class="va">ames_wflow</span>,
-    resamples <span class="op">=</span> <span class="va">rs_splits</span>,
-    param_info <span class="op">=</span> <span class="va">ames_set</span>,
-    initial <span class="op">=</span> <span class="va">ames_grid_search</span>,
-    iter <span class="op">=</span> <span class="fl">15</span>
-  <span class="op">)</span></code></pre></div>
-
+generate these examples was:</p>
+<p></p><div class="sourceCode"><pre><code></code></pre><p></p></div>
 <p><strong>important note</strong>: Since the <code>rsample</code> split columns contain a reference
 to the same data, saving them to disk can results in large object sizes when
 the object is later used. In essence, R replaces all of those references with
