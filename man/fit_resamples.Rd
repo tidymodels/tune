@@ -89,8 +89,8 @@ parameter combination).
 \section{Obtaining Predictions}{
 
 
-When \code{control(save_preds = TRUE)}, the output tibble contains a list column
-called \code{.predictions} that has the out-of-sample predictions for each
+When \code{control_grid(save_pred = TRUE)}, the output tibble contains a list
+column called \code{.predictions} that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).
 
 The elements of the tibble are tibbles with columns for the tuning
