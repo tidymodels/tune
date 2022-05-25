@@ -133,7 +133,7 @@ tune_grid_loop_iter <- function(split,
                                 control,
                                 seed) {
   load_pkgs(workflow)
-  load_namespace(control$pkgs)
+  .load_namespace(control$pkgs)
 
   # After package loading to avoid potential package RNG manipulation
   if (!is.null(seed)) {
@@ -213,7 +213,7 @@ tune_grid_loop_iter <- function(split,
       grid_preprocessor = iter_grid_preprocessor
     )
 
-    workflow <- catch_and_log(
+    workflow <- .catch_and_log(
       .expr = .fit_pre(workflow, training),
       control,
       split,
@@ -252,8 +252,8 @@ tune_grid_loop_iter <- function(split,
 
       workflow <- finalize_workflow_spec(workflow, iter_grid_model)
 
-      workflow <- catch_and_log_fit(
-        expr = .fit_model(workflow, control_workflow),
+      workflow <- .catch_and_log_fit(
+        .expr = .fit_model(workflow, control_workflow),
         control,
         split,
         iter_msg_model,
@@ -301,7 +301,7 @@ tune_grid_loop_iter <- function(split,
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
-      iter_predictions <- catch_and_log(
+      iter_predictions <- .catch_and_log(
         predict_model(split, workflow, iter_grid, metrics, iter_submodels),
         control,
         split,
