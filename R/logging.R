@@ -156,6 +156,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 }
 
 #' @export
+#' @rdname tune-internal-functions
 .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tune_log(..., type = "info")
   tmp <- catcher(.expr)
@@ -165,6 +166,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 }
 
 #' @export
+#' @rdname tune-internal-functions
 .catch_and_log_fit <- function(.expr, ..., notes) {
   tune_log(..., type = "info")
 

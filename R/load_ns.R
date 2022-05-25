@@ -34,6 +34,7 @@ load_pkgs.workflow <- function(x, infra = TRUE, ...) {
 full_load <- c("kknn", "earth")
 
 #' @export
+#' @rdname tune-internal-functions
 .load_namespace <- function(x) {
   if (length(x) == 0) {
     return(invisible(TRUE))
