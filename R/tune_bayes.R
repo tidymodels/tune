@@ -268,7 +268,7 @@ tune_bayes_workflow <-
 
       set.seed(control$seed[1] + i)
       gp_mod <-
-        catch_and_log(
+        .catch_and_log(
           fit_gp(
             mean_stats %>% dplyr::select(-.iter),
             pset = param_info,

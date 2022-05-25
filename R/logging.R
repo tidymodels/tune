@@ -155,7 +155,9 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   notes
 }
 
-catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
+#' @export
+#' @rdname tune-internal-functions
+.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tune_log(..., type = "info")
   tmp <- catcher(.expr)
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
@@ -163,10 +165,12 @@ catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
   tmp$res
 }
 
-catch_and_log_fit <- function(expr, ..., notes) {
+#' @export
+#' @rdname tune-internal-functions
+.catch_and_log_fit <- function(.expr, ..., notes) {
   tune_log(..., type = "info")
 
-  caught <- catcher(expr)
+  caught <- catcher(.expr)
   result <- caught$res
 
   # Log failures that come from parsnip before the model is fit

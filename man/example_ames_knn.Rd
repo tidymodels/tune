@@ -19,7 +19,9 @@ These objects are the results of an analysis of the Ames
 housing data. A K-nearest neighbors model was used with a small
 predictor set that included natural spline transformations of
 the \code{Longitude} and \code{Latitude} predictors. The code used to
-generate these examples was:\preformatted{library(tidymodels)
+generate these examples was:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{library(tidymodels)
 library(tune)
 library(AmesHousing)
 
@@ -86,7 +88,7 @@ ames_iter_search <-
     initial = ames_grid_search,
     iter = 15
   )
-}
+}\if{html}{\out{</div>}}
 
 \strong{important note}: Since the \code{rsample} split columns contain a reference
 to the same data, saving them to disk can results in large object sizes when

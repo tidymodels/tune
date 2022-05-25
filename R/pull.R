@@ -149,7 +149,7 @@ append_metrics <- function(collection,
     return(collection)
   }
 
-  tmp_est <- estimate_metrics(
+  tmp_est <- .estimate_metrics(
     dat = predictions,
     metric = metrics,
     param_names = param_names,

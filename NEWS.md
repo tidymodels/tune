@@ -4,6 +4,8 @@
 
 * Case weights are enabled for models that can use them. 
 
+* Some internal functions were exported for use by other packages. 
+
 * Function now error if the wrong `control_*()` is used. (#449)
 
 # tune 0.2.0
