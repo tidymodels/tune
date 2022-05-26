@@ -31,8 +31,8 @@
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
                          pkgs = NULL, save_workflow = FALSE,
-                         event_level = "first",
-                         parallel_over = NULL) {
+                         event_level = "first", parallel_over = NULL,
+                         examine = FALSE) {
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
@@ -43,7 +43,11 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   val_class_or_null(pkgs, "character", "control_grid()")
   val_class_or_null(extract, "function", "control_grid()")
   val_parallel_over(parallel_over, "control_grid()")
+  val_class_and_single(examine, "logical", "control_grid()")
 
+  if (examine && !rlang::is_installed("examiner")) {
+    rlang::abort("The examiner package is required when `examine = TRUE`")
+  }
 
   res <- list(
     verbose = verbose,
@@ -53,7 +57,8 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
     pkgs = pkgs,
     save_workflow = save_workflow,
     event_level = event_level,
-    parallel_over = parallel_over
+    parallel_over = parallel_over,
+    examine = examine
   )
 
   class(res) <- c("control_grid", "control_resamples")
@@ -148,6 +153,9 @@ print.control_last_fit <- function(x, ...) {
 #'   `"everything"` describing how to use parallel processing. Alternatively,
 #'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
 #'   automatically.
+#' @param examine A logical to indicate whether structure model characteristics
+#'  (e.g. number of terminal nodes, etc) should be saved. Note that, for some
+#'  models, this may take some time to compute.
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is

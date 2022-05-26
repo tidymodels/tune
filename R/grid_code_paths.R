@@ -29,11 +29,15 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
+
+        # check is_h2o and use h2otune::tune_grid_h2o_safely
+
         # Extract internal function from tune namespace
         tune_grid_loop_iter_safely <- utils::getFromNamespace(
           x = "tune_grid_loop_iter_safely",
           ns = "tune"
         )
+
 
         tune_grid_loop_iter_safely(
           split = split,
@@ -231,7 +235,21 @@ tune_grid_loop_iter <- function(split,
 
     workflow_preprocessed <- workflow
 
-    for (iter_model in iter_models) {
+    # fork tune
+
+    # save model data as h2o frame
+    # setup objects for h2o api call
+    #  - api returns information about the model (metrics, predictions, model identifier)
+
+    # probably don't need the model loop
+
+    # for metrics, may need to get all out-of-sample predictions and
+    # compute them ourselves.
+
+    for (iter_model in iter_models) { # <- h2o.grid()
+
+
+
       workflow <- workflow_preprocessed
 
       iter_grid_info_model <- dplyr::filter(
@@ -325,6 +343,13 @@ tune_grid_loop_iter <- function(split,
       )
 
       iter_config_metrics <- extract_metrics_config(param_names, out_metrics)
+
+      if (control$examine) {
+        model_char <-
+          examine_model(workflow, iter_config_metrics, iter_submodels, split) %>%
+          dplyr::select(dplyr::all_of(names(out_metrics)))
+        out_metrics <- dplyr::bind_rows(out_metrics, model_char)
+      }
 
       out_predictions <- append_predictions(
         collection = out_predictions,

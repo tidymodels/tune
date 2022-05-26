@@ -556,3 +556,40 @@ set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }
+
+# ------------------------------------------------------------------------------
+
+examine_model <- function(workflow, grid, submodels = NULL, split) {
+  # submodels is a named list of parameters values for submodel args
+  # grid is a rolling tibble of the tuning parameters tested
+
+  model <- extract_fit_parsnip(workflow)
+  param_names <- setdiff(names(grid), ".config")
+  if (length(submodels) == 0) {
+    cl <- rlang::call2("examine", .ns = "examiner", x = rlang::expr(model))
+    res <-
+      rlang::eval_tidy(cl) %>%
+      # We are looking at the most recent tuning parameters so merge the last
+      # row of grid
+      cbind(grid[nrow(grid),]) %>%
+      dplyr::relocate(!!!param_names)
+  } else {
+    submod_param <- names(submodels)
+    submod_vals <- c(grid %>% pluck(submod_param), submodels[[submod_param]])
+    submod_vals <- list(sort(submod_vals))
+    names(submod_vals) <- submod_param
+    cl <-
+      call2(
+        "multi_examine", .ns = "examiner",
+        object = expr(model), !!!submod_vals
+      )
+    res <-
+      rlang::eval_tidy(cl) %>%
+      dplyr::full_join(grid, by = submod_param) %>%
+      tidyr::unnest(cols = results) %>%
+      dplyr::relocate(!!!param_names)
+  }
+  cbind(res, labels(split)) %>%
+    dplyr::relocate(.config, .after = dplyr::last_col())
+}
+
