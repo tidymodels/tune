@@ -537,7 +537,8 @@ check_gp_failure <- function(current, prev) {
 check_control <- function(control, name) {
   if (!inherits(control, name)) {
     rlang::abort(
-      glue::glue("`control` must be the output created by `{name}()`.")
+      glue::glue("`control` must be the output created by `{name}()`."),
+      call = NULL
     )
   }
 }
