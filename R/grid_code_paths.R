@@ -4,6 +4,16 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 
   packages <- c(control$pkgs, required_pkgs(workflow))
 
+
+  is_h2o <- is_h2o(workflow)
+  # TODO: remove when h2o supports non-regular grid
+  regular_grid <- is.null(grid) || is_regular_grid(grid)
+  if (is_h2o) {
+    if (!regular_grid) {
+      rlang::abort("The `h2o` engine only supports regular tuning grid.")
+    }
+  }
+
   grid_info <- compute_grid_info(workflow, grid)
 
   n_resamples <- nrow(resamples)
@@ -15,19 +25,22 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   splits <- resamples$splits
 
   parallel_over <- control$parallel_over
-  parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
+  parallel_over <- parallel_over_finalize(parallel_over, n_resamples, is_h2o)
 
   rlang::local_options(doFuture.rng.onMisuse = "ignore")
 
-  if (is_h2o(workflow)) {
-    # if use h2o engine, extract internal function from agua
-    # otherwise, use tune functions
+  tune_grid_loop_iter_safely <- make_safely_iter(
+    split,
+    grid_info,
+    workflow,
+    metrics,
+    control,
+    seed,
+    is_h2o
+  )
+
+  if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_resamples)
-    tune_grid_loop_iter_h2o <- utils::getFromNamespace(
-      x = "tune_grid_loop_iter_h2o",
-      ns = "agua"
-    )
-    tune_grid_loop_iter_h2o_safely <- make_safely_iter(tune_grid_loop_iter_h2o)
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         split = splits,
@@ -35,8 +48,10 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
+        # if use h2o engine, extract internal function from agua
+        # otherwise, use tune functions
         # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-        tune_grid_loop_iter_h2o_safely(
+        tune_grid_loop_iter_safely(
           split = split,
           grid_info = grid_info,
           workflow = workflow,
@@ -46,62 +61,37 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         )
       }
     )
-  } else {
-    if (identical(parallel_over, "resamples")) {
-      seeds <- generate_seeds(rng, n_resamples)
-      tune_grid_loop_iter_safely <- make_safely_iter(tune_grid_loop_iter)
-      suppressPackageStartupMessages(
-        results <- foreach::foreach(
-          split = splits,
-          seed = seeds,
+  } else if (identical(parallel_over, "everything")) {
+    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
+    suppressPackageStartupMessages(
+      results <- foreach::foreach(
+        iteration = iterations,
+        split = splits,
+        .packages = packages,
+        .errorhandling = "pass"
+      ) %:%
+        foreach::foreach(
+          row = rows,
+          seed = slice_seeds(seeds, iteration, n_grid_info),
           .packages = packages,
-          .errorhandling = "pass"
+          .errorhandling = "pass",
+          .combine = iter_combine
         ) %op% {
-          # if use h2o engine, extract internal function from agua
-          # otherwise, use tune functions
+          grid_info_row <- vctrs::vec_slice(grid_info, row)
+
           # Likely want to debug with `debugonce(tune_grid_loop_iter)`
           tune_grid_loop_iter_safely(
             split = split,
-            grid_info = grid_info,
+            grid_info = grid_info_row,
             workflow = workflow,
             metrics = metrics,
             control = control,
             seed = seed
           )
         }
-      )
-    } else if (identical(parallel_over, "everything")) {
-      seeds <- generate_seeds(rng, n_resamples * n_grid_info)
-      suppressPackageStartupMessages(
-        results <- foreach::foreach(
-          iteration = iterations,
-          split = splits,
-          .packages = packages,
-          .errorhandling = "pass"
-        ) %:%
-          foreach::foreach(
-            row = rows,
-            seed = slice_seeds(seeds, iteration, n_grid_info),
-            .packages = packages,
-            .errorhandling = "pass",
-            .combine = iter_combine
-          ) %op% {
-            grid_info_row <- vctrs::vec_slice(grid_info, row)
-
-            # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-            tune_grid_loop_iter_safely(
-              split = split,
-              grid_info = grid_info_row,
-              workflow = workflow,
-              metrics = metrics,
-              control = control,
-              seed = seed
-            )
-          }
-      )
-    } else {
-      rlang::abort("Internal error: Invalid `parallel_over`.")
-    }
+    )
+  } else {
+    rlang::abort("Internal error: Invalid `parallel_over`.")
   }
 
 
@@ -368,14 +358,25 @@ tune_grid_loop_iter <- function(split,
 }
 
 # ------------------------------------------------------------------------------
-make_safely_iter <- function(fun,
-                             split,
+make_safely_iter <- function(split,
                              grid_info,
                              workflow,
                              metrics,
                              control,
-                             seed) {
-  safely_iter <- super_safely(fun)
+                             seed,
+                             is_h2o) {
+  if (is_h2o) {
+    iter_fun <- utils::getFromNamespace(
+      x = "tune_grid_loop_iter_h2o",
+      ns = "agua"
+    )
+  } else {
+    iter_fun <- utils::getFromNamespace(
+      x = "tune_grid_loop_iter",
+      ns = "tune"
+    )
+  }
+  safely_iter <- super_safely(iter_fun)
   function(split, grid_info, workflow, metrics, control, seed) {
     result <- safely_iter(
       split,
@@ -463,10 +464,14 @@ is_failure <- function(x) {
   inherits(x, "try-error")
 }
 
-parallel_over_finalize <- function(parallel_over, n_resamples) {
+parallel_over_finalize <- function(parallel_over, n_resamples, is_h2o) {
   # Always use user supplied option, even if not as efficient
   if (!is.null(parallel_over)) {
     return(parallel_over)
+  }
+
+  if (is_h2o) {
+    return("resamples")
   }
 
   # Generally more efficient to parallelize over just resamples,
