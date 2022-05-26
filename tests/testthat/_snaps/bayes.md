@@ -106,6 +106,7 @@
         rsq), param_info = parameters(dials::cost_complexity(c(-2, 0))))
     Message
       ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
       ! The Gaussian process model is being fit using 1 features but only has 2
