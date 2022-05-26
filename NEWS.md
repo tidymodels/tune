@@ -6,7 +6,7 @@
 
 * Some internal functions were exported for use by other packages. 
 
-* Function now error if the wrong `control_*()` is used. (#449)
+* `tune_grid()`, `tune_bayes()`, and `fit_resamples()` now error informatively if the wrong `control_*()` function is used. (#449)
 
 # tune 0.2.0
 
