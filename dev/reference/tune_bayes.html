@@ -162,8 +162,9 @@ documentation for <code><a href="prob_improve.html">exp_improve()</a></code> and
 parallel, register a parallel backend function. See the documentation for
 <code><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach::foreach()</a></code> for examples.</p>
 <p>For the most part, warnings generated during training are shown as they occur
-and are associated with a specific resample when <code>control(verbose = TRUE)</code>.
-They are (usually) not aggregated until the end of processing.</p>
+and are associated with a specific resample when
+<code>control_bayes(verbose = TRUE)</code>. They are (usually) not aggregated until the
+end of processing.</p>
 <p>For Bayesian optimization, parallel processing is used to estimate the
 resampled performance values once a new candidate set of values are estimated.</p>
     </div>
@@ -225,8 +226,8 @@ parameter combination).</p>
     
 
 
-<p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
-called <code>.predictions</code> that has the out-of-sample predictions for each
+<p>When <code>control_bayes(save_pred = TRUE)</code>, the output tibble contains a list
+column called <code>.predictions</code> that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).</p>
 <p>The elements of the tibble are tibbles with columns for the tuning
 parameters, the row number from the original data object (<code>.row</code>), the

@@ -152,8 +152,9 @@ tuning parameter.</p></li>
 parallel, register a parallel backend function. See the documentation for
 <code><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach::foreach()</a></code> for examples.</p>
 <p>For the most part, warnings generated during training are shown as they occur
-and are associated with a specific resample when <code>control(verbose = TRUE)</code>.
-They are (usually) not aggregated until the end of processing.</p>
+and are associated with a specific resample when
+<code>control_grid(verbose = TRUE)</code>. They are (usually) not aggregated until the
+end of processing.</p>
     </div>
     <div class="section level2">
     <h2 id="parameter-grids">Parameter Grids<a class="anchor" aria-label="anchor" href="#parameter-grids"></a></h2>
@@ -211,8 +212,8 @@ parameter combination).</p>
     
 
 
-<p>When <code>control(save_preds = TRUE)</code>, the output tibble contains a list column
-called <code>.predictions</code> that has the out-of-sample predictions for each
+<p>When <code>control_grid(save_pred = TRUE)</code>, the output tibble contains a list
+column called <code>.predictions</code> that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).</p>
 <p>The elements of the tibble are tibbles with columns for the tuning
 parameters, the row number from the original data object (<code>.row</code>), the
