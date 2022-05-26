@@ -101,6 +101,61 @@
 # missing performance values
 
     Code
+      set.seed(3)
+      res <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
+        Bldg_Type + Latitude + Longitude, resamples = folds, initial = 3, metrics = yardstick::metric_set(
+        rsq), param_info = dials::parameters(dials::cost_complexity(c(-2, 0))))
+    Message
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 1 missing value was found and removed before fitting
+        the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 2 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 3 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 4 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 5 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 6 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! For the rsq estimates, 7 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+
+---
+
+    Code
+      set.seed(2)
+      res_fail <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area +
+        Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
+      metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
+        c(0.5, 0))))
+    Message
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! validation: internal: A correlation computation is required, but `estimate` is const...
+      ! All of the rsq estimates were missing. The Gaussian process model cannot be
+        fit to the data.
+      ! Gaussian process model: no non-missing arguments to min; returning Inf, ...
+      x Gaussian process model: Error in seq_len(n - 1L): argument must be coerc...
+    Condition
+      Error in `check_gp_failure()`:
+      ! Gaussian process model was not fit.
+    Message
+      x Optimization stopped prematurely; returning current results.
+
+---
+
+    Code
       set.seed(1)
       res <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
         Bldg_Type + Latitude + Longitude, resamples = folds, initial = 3, metrics = yardstick::metric_set(

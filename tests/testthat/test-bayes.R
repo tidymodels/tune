@@ -474,8 +474,7 @@ test_that("missing performance values", {
 
   folds <- rsample::validation_split(ames, prop = .9)
 
-  expect_message(
-    expect_error({
+  expect_snapshot({
       set.seed(3)
       res <-
         mod %>%
@@ -485,17 +484,13 @@ test_that("missing performance values", {
           resamples = folds,
           initial = 3,
           metrics = yardstick::metric_set(rsq),
-          param_info = parameters(dials::cost_complexity(c(-2, 0)))
+          param_info = dials::parameters(dials::cost_complexity(c(-2, 0)))
         )
 
-    },
-    regexp = NA
-    ),
-    regexp = "removed before fitting the Gaussian"
+    }
   )
 
-  expect_message(
-    expect_error({
+  expect_snapshot(error = TRUE, {
       set.seed(2)
       res_fail <-
         mod %>%
@@ -507,10 +502,7 @@ test_that("missing performance values", {
           metrics = yardstick::metric_set(rsq),
           param_info = parameters(dials::cost_complexity(c(0.5, 0)))
         )
-    },
-    regexp = NA
-    ),
-    regexp = "Gaussian process model cannot be"
+    }
   )
 
   expect_snapshot({
