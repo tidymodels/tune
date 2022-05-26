@@ -373,7 +373,7 @@ test_that("retain extra attributes", {
 
 test_that("error if wrong control function is used", {
   set.seed(6735)
-  folds <- vfold_cv(mtcars, v = 2)
+  folds <- rsample::vfold_cv(mtcars, v = 2)
 
   lin_mod <- linear_reg() %>%
     set_engine("lm")

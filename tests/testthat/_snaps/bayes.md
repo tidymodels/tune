@@ -56,6 +56,7 @@
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
       ! Gaussian process model: X should be in range (0, 1)
+      ! Gaussian process model: X should be in range (0, 1)
 
 # too few starting values
 

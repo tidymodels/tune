@@ -371,7 +371,7 @@ test_that("argument order gives an error for recipes", {
 })
 
 test_that("argument order gives an error for formula", {
-  expect_snapshot(error = TRUE, {
+  expect_snapshot(error = TRUE,
     tune_bayes(
       mpg ~ .,
       svm_mod,
@@ -380,7 +380,7 @@ test_that("argument order gives an error for formula", {
       initial = iter1,
       iter = iter2
     )
-  })
+  )
 })
 
 test_that("retain extra attributes and saved GP candidates", {
@@ -451,7 +451,7 @@ test_that("error if wrong control function is used", {
   set.seed(4400)
   wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
   pset <- dials::parameters(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
-  folds <- vfold_cv(mtcars)
+  folds <- rsample::vfold_cv(mtcars)
   control <- control_grid()
 
   expect_error(
@@ -472,7 +472,7 @@ test_that("missing performance values", {
 
   set.seed(1)
 
-  folds <- validation_split(ames, prop = .9)
+  folds <- rsample::validation_split(ames, prop = .9)
 
   expect_message(
     expect_error({
@@ -484,7 +484,7 @@ test_that("missing performance values", {
             Latitude + Longitude,
           resamples = folds,
           initial = 3,
-          metrics = metric_set(rsq),
+          metrics = yardstick::metric_set(rsq),
           param_info = parameters(dials::cost_complexity(c(-2, 0)))
         )
 
@@ -504,7 +504,7 @@ test_that("missing performance values", {
             Latitude + Longitude,
           resamples = folds,
           initial = 5,
-          metrics = metric_set(rsq),
+          metrics = yardstick::metric_set(rsq),
           param_info = parameters(dials::cost_complexity(c(0.5, 0)))
         )
     },

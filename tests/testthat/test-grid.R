@@ -476,11 +476,16 @@ test_that("retain extra attributes", {
 })
 
 test_that("error if wrong control function is used", {
+  helper_objects <- helper_objects_tune()
+
   set.seed(4400)
-  wflow <- workflow() %>% add_recipe(rec_tune_1) %>% add_model(lm_mod)
-  pset <- dials::parameters(wflow) %>% update(num_comp = num_comp(c(1, 3)))
-  grid <- grid_regular(pset, levels = 3)
-  folds <- vfold_cv(mtcars)
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$lm_mod)
+  pset <- hardhat::extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(1, 3)))
+  grid <- dials::grid_regular(pset, levels = 3)
+  folds <- rsample::vfold_cv(mtcars)
   control <- control_bayes()
 
   expect_error(
