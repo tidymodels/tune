@@ -5,13 +5,9 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   packages <- c(control$pkgs, required_pkgs(workflow))
 
 
-  is_h2o <- is_h2o(workflow)
   # TODO: remove when h2o supports non-regular grid
-  regular_grid <- is.null(grid) || is_regular_grid(grid)
-  if (is_h2o) {
-    if (!regular_grid) {
-      rlang::abort("The `h2o` engine only supports regular tuning grid.")
-    }
+  if (!is.null(grid) && is_h2o(workflow) && !is_regular_grid(grid)) {
+    rlang::abort("The `h2o` engine only supports regular tuning grid.")
   }
 
   grid_info <- compute_grid_info(workflow, grid)
@@ -25,7 +21,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
   splits <- resamples$splits
 
   parallel_over <- control$parallel_over
-  parallel_over <- parallel_over_finalize(parallel_over, n_resamples, is_h2o)
+  parallel_over <- parallel_over_finalize(parallel_over, n_resamples,
+                                          is_h2o(workflow))
 
   rlang::local_options(doFuture.rng.onMisuse = "ignore")
 
@@ -35,8 +32,7 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
     workflow,
     metrics,
     control,
-    seed,
-    is_h2o
+    seed
   )
 
   if (identical(parallel_over, "resamples")) {
@@ -363,9 +359,9 @@ make_safely_iter <- function(split,
                              workflow,
                              metrics,
                              control,
-                             seed,
-                             is_h2o) {
-  if (is_h2o) {
+                             seed) {
+
+  if (is_h2o(workflow)) {
     iter_fun <- utils::getFromNamespace(
       x = "tune_grid_loop_iter_h2o",
       ns = "agua"
@@ -464,7 +460,7 @@ is_failure <- function(x) {
   inherits(x, "try-error")
 }
 
-parallel_over_finalize <- function(parallel_over, n_resamples, is_h2o) {
+parallel_over_finalize <- function(parallel_over, n_resamples, is_h2o = FALSE) {
   # Always use user supplied option, even if not as efficient
   if (!is.null(parallel_over)) {
     return(parallel_over)
