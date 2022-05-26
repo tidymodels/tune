@@ -151,3 +151,8 @@ new_bare_tibble <- function(x, ..., class = character()) {
 pretty.tune_results <- function(x, ...) {
   attr(x, "rset_info")$label
 }
+
+is_h2o <- function(workflow, ...) {
+  model_spec <- hardhat::extract_spec_parsnip(workflow)
+  identical(model_spec$engine, "h2o")
+}

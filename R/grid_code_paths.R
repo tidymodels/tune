@@ -19,9 +19,15 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
 
   rlang::local_options(doFuture.rng.onMisuse = "ignore")
 
-  if (identical(parallel_over, "resamples")) {
+  if (is_h2o(workflow)) {
+    # if use h2o engine, extract internal function from agua
+    # otherwise, use tune functions
     seeds <- generate_seeds(rng, n_resamples)
-
+    tune_grid_loop_iter_h2o <- utils::getFromNamespace(
+      x = "tune_grid_loop_iter_h2o",
+      ns = "agua"
+    )
+    tune_grid_loop_iter_h2o_safely <- make_safely_iter(tune_grid_loop_iter_h2o)
     suppressPackageStartupMessages(
       results <- foreach::foreach(
         split = splits,
@@ -29,14 +35,8 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
-        # Extract internal function from tune namespace
-        tune_grid_loop_iter_safely <- utils::getFromNamespace(
-          x = "tune_grid_loop_iter_safely",
-          ns = "tune"
-        )
-
         # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-        tune_grid_loop_iter_safely(
+        tune_grid_loop_iter_h2o_safely(
           split = split,
           grid_info = grid_info,
           workflow = workflow,
@@ -46,45 +46,65 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         )
       }
     )
-  } else if (identical(parallel_over, "everything")) {
-    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
-
-    suppressPackageStartupMessages(
-      results <- foreach::foreach(
-        iteration = iterations,
-        split = splits,
-        .packages = packages,
-        .errorhandling = "pass"
-      ) %:%
-        foreach::foreach(
-          row = rows,
-          seed = slice_seeds(seeds, iteration, n_grid_info),
+  } else {
+    if (identical(parallel_over, "resamples")) {
+      seeds <- generate_seeds(rng, n_resamples)
+      tune_grid_loop_iter_safely <- make_safely_iter(tune_grid_loop_iter)
+      suppressPackageStartupMessages(
+        results <- foreach::foreach(
+          split = splits,
+          seed = seeds,
           .packages = packages,
-          .errorhandling = "pass",
-          .combine = iter_combine
+          .errorhandling = "pass"
         ) %op% {
-          # Extract internal function from tune namespace
-          tune_grid_loop_iter_safely <- utils::getFromNamespace(
-            x = "tune_grid_loop_iter_safely",
-            ns = "tune"
-          )
-
-          grid_info_row <- vctrs::vec_slice(grid_info, row)
-
+          # if use h2o engine, extract internal function from agua
+          # otherwise, use tune functions
           # Likely want to debug with `debugonce(tune_grid_loop_iter)`
           tune_grid_loop_iter_safely(
             split = split,
-            grid_info = grid_info_row,
+            grid_info = grid_info,
             workflow = workflow,
             metrics = metrics,
             control = control,
             seed = seed
           )
         }
-    )
-  } else {
-    rlang::abort("Internal error: Invalid `parallel_over`.")
+      )
+    } else if (identical(parallel_over, "everything")) {
+      seeds <- generate_seeds(rng, n_resamples * n_grid_info)
+      suppressPackageStartupMessages(
+        results <- foreach::foreach(
+          iteration = iterations,
+          split = splits,
+          .packages = packages,
+          .errorhandling = "pass"
+        ) %:%
+          foreach::foreach(
+            row = rows,
+            seed = slice_seeds(seeds, iteration, n_grid_info),
+            .packages = packages,
+            .errorhandling = "pass",
+            .combine = iter_combine
+          ) %op% {
+            grid_info_row <- vctrs::vec_slice(grid_info, row)
+
+            # Likely want to debug with `debugonce(tune_grid_loop_iter)`
+            tune_grid_loop_iter_safely(
+              split = split,
+              grid_info = grid_info_row,
+              workflow = workflow,
+              metrics = metrics,
+              control = control,
+              seed = seed
+            )
+          }
+      )
+    } else {
+      rlang::abort("Internal error: Invalid `parallel_over`.")
+    }
   }
+
+
 
   resamples <- pull_metrics(resamples, results, control)
   resamples <- pull_notes(resamples, results, control)
@@ -348,62 +368,62 @@ tune_grid_loop_iter <- function(split,
 }
 
 # ------------------------------------------------------------------------------
-
-tune_grid_loop_iter_safely <- function(split,
-                                       grid_info,
-                                       workflow,
-                                       metrics,
-                                       control,
-                                       seed) {
-  tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
-
-  # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-  result <- tune_grid_loop_iter_wrapper(
-    split,
-    grid_info,
-    workflow,
-    metrics,
-    control,
-    seed
-  )
-
-  error <- result$error
-  warnings <- result$warnings
-  result <- result$result
-
-  # No problems
-  if (is.null(error) && length(warnings) == 0L) {
-    return(result)
-  }
-
-  # No errors, but we might have warning notes
-  if (is.null(error)) {
-    res <- result
-    notes <- result$.notes
-  } else {
-    res <- error
-    notes <- NULL
-  }
-
-  problems <- list(res = res, signals = warnings)
-
-  notes <- log_problems(notes, control, split, "internal", problems)
-
-  # Need an output template
-  if (!is.null(error)) {
-    result <- list(
-      .metrics = NULL,
-      .extracts = NULL,
-      .predictions = NULL,
-      .all_outcome_names = list(),
-      .notes = NULL
+make_safely_iter <- function(fun,
+                             split,
+                             grid_info,
+                             workflow,
+                             metrics,
+                             control,
+                             seed) {
+  safely_iter <- super_safely(fun)
+  function(split, grid_info, workflow, metrics, control, seed) {
+    result <- safely_iter(
+      split,
+      grid_info,
+      workflow,
+      metrics,
+      control,
+      seed
     )
+
+    error <- result$error
+    warnings <- result$warnings
+    result <- result$result
+
+    # No problems
+    if (is.null(error) && length(warnings) == 0L) {
+      return(result)
+    }
+
+    # No errors, but we might have warning notes
+    if (is.null(error)) {
+      res <- result
+      notes <- result$.notes
+    } else {
+      res <- error
+      notes <- NULL
+    }
+
+    problems <- list(res = res, signals = warnings)
+
+    notes <- log_problems(notes, control, split, "internal", problems)
+
+    # Need an output template
+    if (!is.null(error)) {
+      result <- list(
+        .metrics = NULL,
+        .extracts = NULL,
+        .predictions = NULL,
+        .all_outcome_names = list(),
+        .notes = NULL
+      )
+    }
+
+    # Update with new notes
+    result[[".notes"]] <- notes
+
+    result
   }
-
-  # Update with new notes
-  result[[".notes"]] <- notes
-
-  result
 }
 
 # Capture any errors, and all warnings
