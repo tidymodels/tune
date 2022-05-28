@@ -39,7 +39,7 @@ Imports:
     withr,
     workflows (>= 0.2.6.9001),
     yardstick (>= 0.0.9.9000)
-Suggests: 
+Suggests:
     covr,
     kernlab,
     knitr,
@@ -49,7 +49,7 @@ Suggests:
     xml2
 Remotes:
     tidymodels/parsnip@feature/case-weights,
-    tidymodels/workflows,  
+    tidymodels/workflows,
     tidymodels/hardhat,
     tidymodels/yardstick
 Config/Needs/website:

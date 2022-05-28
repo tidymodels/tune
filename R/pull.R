@@ -160,6 +160,13 @@ append_metrics <- function(collection,
   tmp_est <- cbind(tmp_est, labels(split))
 
   if (!rlang::is_null(.config)) {
+
+    if(length(.config) > 1) {
+      if(nrow(tmp_est) != length(.config)) {
+        cli::cli_abort(c("x" = "Metrics with different sizes. This usually is a problem on `compute_config_ids()`."))
+      }
+    }
+
     tmp_est <- cbind(tmp_est, .config)
   }
 

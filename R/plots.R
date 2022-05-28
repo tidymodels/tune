@@ -71,7 +71,7 @@
 #' autoplot(ames_iter_search, metric = "rmse", type = "performance")
 #' }
 #' @export
-autoplot.tune_results <-
+autoplot.tune_results <- # nolint (snake_case)
   function(object,
            type = c("marginals", "parameters", "performance"),
            metric = NULL,
@@ -111,7 +111,7 @@ autoplot.tune_results <-
   }
 
 #' @export
-autoplot.resample_results <- function(object, ...) {
+autoplot.resample_results <- function(object, ...) {  # nolint (snake_case)
   rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
 }
 
@@ -201,8 +201,8 @@ use_regular_grid_plot <- function(x) {
   dat <- collect_metrics(x)
   param_cols <- get_param_columns(x)
   grd <- dat %>%
-    dplyr::select(one_of(param_cols)) %>%
-    distinct()
+    dplyr::select(dplyr::all_of(param_cols)) %>% # one_of is superseded by all_of
+    dplyr::distinct()
   is_regular_grid(grd)
 }
 
@@ -224,24 +224,24 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
     dplyr::mutate(const = ifelse(n > 0, qt(0.975, n), 0))
 
   p <-
-    ggplot(x, aes(x = .iter, y = mean)) +
-    geom_point() +
-    xlab("Iteration")
+    ggplot2::ggplot(x, ggplot2::aes(x = .iter, y = mean)) +
+    ggplot2::geom_point() +
+    ggplot2::xlab("Iteration")
 
   if (nrow(search_iter) > 0 & width > 0) {
     p <-
       p +
-      geom_errorbar(
+      ggplot2::geom_errorbar(
         data = search_iter,
-        aes(ymin = mean - const * std_err, ymax = mean + const * std_err),
+        ggplot2::aes(ymin = mean - const * std_err, ymax = mean + const * std_err),
         width = width
       )
   }
 
   if (length(unique(x$.metric)) > 1) {
-    p <- p + facet_wrap(~.metric, scales = "free_y")
+    p <- p + ggplot2::facet_wrap(~.metric, scales = "free_y")
   } else {
-    p <- p + ylab(unique(x$.metric))
+    p <- p + ggplot2::ylab(unique(x$.metric))
   }
   p
 }
@@ -257,7 +257,7 @@ plot_param_vs_iter <- function(x) {
   # Collect and filter resampling results
 
   x <- estimate_tune_results(x)
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric) # one_of is superseded by all_of
   num_param_cols <- param_cols[is_num]
 
   # ----------------------------------------------------------------------------
@@ -282,17 +282,17 @@ plot_param_vs_iter <- function(x) {
 
   x <-
     x %>%
-    dplyr::select(.iter, dplyr::one_of(num_param_cols)) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
+    dplyr::select(.iter, dplyr::all_of(num_param_cols)) %>% # one_of is superseded by all_of
+    tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ------------------------------------------------------------------------------
 
   p <-
-    ggplot(x, aes(x = .iter, y = value)) +
-    geom_point() +
-    xlab("Iteration") +
-    ylab("") +
-    facet_wrap(~name, scales = "free_y")
+    ggplot2::ggplot(x, ggplot2::aes(x = .iter, y = value)) +
+    ggplot2::geom_point() +
+    ggplot2::xlab("Iteration") +
+    ggplot2::ylab("") +
+    ggplot2::facet_wrap(~name, scales = "free_y")
 
   p
 }
@@ -318,14 +318,14 @@ plot_marginals <- function(x, metric = NULL) {
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
 
-  is_num <- purrr::map_lgl(x %>% dplyr::select(param_cols), is.numeric)
-  num_val <- purrr::map_int(x %>% dplyr::select(param_cols), ~ length(unique(.x)))
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
+  num_val <- purrr::map_int(x %>% dplyr::select(dplyr::all_of(param_cols)), ~ length(unique(.x)))
 
   if (any(num_val < 2)) {
     rm_param <- param_cols[num_val < 2]
     param_cols <- param_cols[num_val >= 2]
     is_num <- is_num[num_val >= 2]
-    x <- x %>% dplyr::select(-dplyr::one_of(rm_param))
+    x <- x %>% dplyr::select(-dplyr::all_of(rm_param))
   }
 
   if (any(!is_num)) {
@@ -369,26 +369,26 @@ plot_marginals <- function(x, metric = NULL) {
   x <-
     x %>%
     dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ----------------------------------------------------------------------------
 
-  p <- ggplot(x, aes(x = value, y = mean))
+  p <- ggplot2::ggplot(x, ggplot2::aes(x = value, y = mean))
 
   if (length(chr_param_cols) > 0) {
     if (is_race) {
-      p <- p + geom_point(aes(col = !!sym(chr_param_cols), alpha = `# resamples`, size = resamples))
+      p <- p + ggplot2::geom_point(ggplot2::aes(col = !!sym(chr_param_cols), alpha = `# resamples`, size = resamples))
       p <- p + ggplot2::labs(color = chr_param_cols)
     } else {
-      p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
+      p <- p + ggplot2::geom_point(ggplot2::aes(col = !!sym(chr_param_cols)), alpha = .7)
       p <- p + ggplot2::labs(color = chr_param_cols)
     }
   } else {
     if (is_race) {
-      p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
+      p <- p + ggplot2::geom_point(ggplot2::aes(alpha = `# resamples`, size = `# resamples`))
     } else {
-      p <- p + geom_point(alpha = .7)
+      p <- p + ggplot2::geom_point(alpha = .7)
     }
   }
 
@@ -396,25 +396,25 @@ plot_marginals <- function(x, metric = NULL) {
     if (length(num_param_cols) == 1) {
       p <-
         p +
-        facet_wrap(~.metric, scales = "free_y") +
-        xlab(num_param_cols) +
-        ylab("")
+        ggplot2::facet_wrap(~.metric, scales = "free_y") +
+        ggplot2::xlab(num_param_cols) +
+        ggplot2::ylab("")
     } else {
       p <-
         p +
         ggplot2::facet_grid(.metric ~ name, scales = "free") +
-        xlab("") +
-        ylab("")
+        ggplot2::xlab("") +
+        ggplot2::ylab("")
     }
   } else {
     if (length(num_param_cols) == 1) {
-      p <- p + xlab(num_param_cols) + ylab(unique(x$.metric))
+      p <- p + ggplot2::xlab(num_param_cols) + ggplot2::ylab(unique(x$.metric))
     } else {
       p <-
         p +
-        facet_wrap(~name, scales = "free_x") +
-        xlab("") +
-        ylab(unique(x$.metric))
+        ggplot2::facet_wrap(~name, scales = "free_x") +
+        ggplot2::xlab("") +
+        ggplot2::ylab(unique(x$.metric))
     }
   }
 
@@ -449,7 +449,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     rlang::abort("`autoplot()` requires objects made with tune version 0.1.0 or later.")
   }
 
-  grd <- dat %>% dplyr::select(one_of(param_cols))
+  grd <- dat %>% dplyr::select(dplyr::all_of(param_cols))
 
   # ----------------------------------------------------------------------------
   # Determine which parameter goes on the x-axis and their types
@@ -501,8 +501,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   dat <-
     dat %>%
     dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(x_col))
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>% # one_of is superseded by all_of
+    tidyr::pivot_longer(cols = dplyr::all_of(x_col))
 
   # ------------------------------------------------------------------------------
 
@@ -532,47 +532,47 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       facets <- rlang::quos(!!!facets)
       # faceting variables
       if (multi_metrics) {
-        p <- p + facet_grid(
+        p <- p + ggplot2::facet_grid(
           rows = vars(.metric), vars(!!!facets),
           labeller = ggplot2::labeller(.cols = ggplot2::label_both),
           scales = "free_y"
         )
       } else {
         p <-
-          p + facet_wrap(vars(!!!facets),
+          p + ggplot2::facet_wrap(vars(!!!facets),
             labeller = ggplot2::labeller(.cols = ggplot2::label_both)
           )
       }
     } else if (multi_metrics) {
-      p <- p + facet_grid(rows = vars(.metric), scales = "free_y")
+      p <- p + ggplot2::facet_grid(rows = dplyr::vars(.metric), scales = "free_y")
     }
   } else {
     # Only a single parameter and potentially multiple metrics.
-    p <- ggplot(dat, aes(x = value, y = mean))
+    p <- ggplot2::ggplot(dat, ggplot2::aes(x = value, y = mean))
     if (multi_metrics) {
-      p <- p + facet_wrap(~.metric, scales = "free_y", ncol = 1)
+      p <- p + ggplot2::facet_wrap(~.metric, scales = "free_y", ncol = 1)
     }
   }
 
   if (is_race) {
-    p <- p + geom_point(aes(alpha = `# resamples`, size = `# resamples`))
+    p <- p + ggplot2::geom_point(ggplot2::aes(alpha = `# resamples`, size = `# resamples`))
   } else {
-    p <- p + geom_point(size = 1)
+    p <- p + ggplot2::geom_point(size = 1)
   }
 
   if (multi_metrics) {
-    p <- p + ylab("")
+    p <- p + ggplot2::ylab("")
   } else {
     dat$.metric[1]
-    p <- p + ylab(dat$.metric[1])
+    p <- p + ggplot2::ylab(dat$.metric[1])
   }
   if (nrow(pset) == 1) {
     x_lab <- pset$object[[1]]$label
-    p <- p + xlab(x_lab)
+    p <- p + ggplot2::xlab(x_lab)
   }
 
   if (any(is_num)) {
-    p <- p + geom_line()
+    p <- p + ggplot2::geom_line()
   }
 
   if (!is.null(trans)) {

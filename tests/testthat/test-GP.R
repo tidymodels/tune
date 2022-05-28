@@ -2,7 +2,7 @@ test_that("encoding before model", {
   knn_set <- readRDS(test_path("data", "knn_set.rds"))
   knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
 
-  knn_encoded <- tune:::encode_set(knn_grid, knn_set)
+  knn_encoded <- tune::encode_set(knn_grid, knn_set)
 
   expect_true(all(knn_encoded$K >= 0 & knn_encoded$K <= 1))
   expect_true(all(knn_encoded$exponent >= 0 & knn_encoded$exponent <= 1))
@@ -17,7 +17,7 @@ test_that("GP fit - svm", {
   svm_set <- attributes(svm_results)$parameters
 
   svm_gp <-
-    tune:::fit_gp(
+    fit_gp(
       collect_metrics(svm_results),
       svm_set,
       "accuracy",
@@ -59,7 +59,7 @@ test_that("GP scoring", {
     mutate(.iter = 0)
 
   svm_gp <-
-    tune:::fit_gp(
+    fit_gp(
       collect_metrics(svm_results),
       svm_set,
       "accuracy",
@@ -67,7 +67,7 @@ test_that("GP scoring", {
     )
 
   svm_scores <-
-    tune:::pred_gp(
+    pred_gp(
       svm_gp,
       pset = svm_set,
       size = 20,

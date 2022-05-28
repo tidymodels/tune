@@ -99,7 +99,7 @@ collect_predictions.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
+collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) { # nolint (snake_case)
   if (!inherits(x, "tune_results")) {
     rlang::abort(
       paste0(
@@ -221,7 +221,7 @@ prob_summarize <- function(x, p) {
   group_cols <- group_cols[group_cols != y_cols]
   totals <-
     x %>%
-    dplyr::select(-y_cols) %>%
+    dplyr::select(-dplyr::all_of(y_cols)) %>% # https://tidyselect.r-lib.org/reference/faq-external-vector.html>
     tidyr::pivot_longer(
       cols = c(dplyr::one_of(pred_cols)),
       names_to = ".column",
@@ -244,7 +244,7 @@ prob_summarize <- function(x, p) {
     ord <- is.ordered(x[[y_cols]])
     class_pred <-
       x %>%
-      dplyr::select(-y_cols) %>%
+      dplyr::select(-dplyr::all_of(y_cols)) %>% # https://tidyselect.r-lib.org/reference/faq-external-vector.html>
       tidyr::pivot_longer(
         cols = c(dplyr::one_of(pred_cols)),
         names_to = ".column",
@@ -415,7 +415,7 @@ estimate_tune_results <- function(x, ...) {
     arrange_names <- arrange_names[(arrange_names %in% param_names)]
     join_names <- param_names[!(param_names %in% arrange_names)]
     x <- dplyr::inner_join(
-      dplyr::select(x, !arrange_names),
+      dplyr::select(x, !dplyr::all_of(arrange_names)), # https://tidyselect.r-lib.org/reference/faq-external-vector.html
       x,
       by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
     ) %>%

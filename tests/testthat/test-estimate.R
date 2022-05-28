@@ -4,21 +4,21 @@ opt <- getOption("dplyr.summarise.inform", default = "FALSE")
 options(dplyr.summarise.inform = FALSE)
 
 compl <-
-  unnest(rcv_results, .metrics) %>%
-  group_by(deg_free, degree, `wt df`, `wt degree`, .config, .metric, .estimator) %>%
-  summarize(
+  tidyr::unnest(rcv_results, .metrics) %>%
+  dplyr::group_by(deg_free, degree, `wt df`, `wt degree`, .config, .metric, .estimator) %>%
+  dplyr::summarise(
     mean = mean(.estimate, na.rm = TRUE),
     n = sum(!is.na(.estimator)),
     std_err = sd(.estimate, na.rm = TRUE) / sqrt(n)
   ) %>%
-  ungroup() %>%
-  arrange(.config)
+  dplyr::ungroup() %>%
+  dplyr::arrange(.config)
 
 options(dplyr.summarise.inform = opt)
 
 test_that("estimate method", {
   expect_equal(
-    collect_metrics(rcv_results)[, names(compl)] %>% arrange(.config),
+    collect_metrics(rcv_results)[, names(compl)] %>% dplyr::arrange(.config),
     compl
   )
 })

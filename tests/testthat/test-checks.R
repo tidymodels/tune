@@ -2,9 +2,9 @@ test_that("rsample objects", {
   obj_cv <- rsample::vfold_cv(mtcars)
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = bootstraps())
-  expect_error(tune:::check_rset(obj_cv), regexp = NA)
-  expect_snapshot(error = TRUE, tune:::check_rset(obj_loo))
-  expect_snapshot(error = TRUE, tune:::check_rset(obj_nst))
+  expect_error(tune::check_rset(obj_cv), regexp = NA)
+  expect_snapshot(error = TRUE, tune::check_rset(obj_loo))
+  expect_snapshot(error = TRUE, tune::check_rset(obj_nst))
 })
 
 # ------------------------------------------------------------------------------
@@ -39,16 +39,16 @@ test_that("grid objects", {
   set_1 <- extract_parameter_set_dials(chi_wflow)
   set_2 <- set_1 %>% update(deg_free = dials::deg_free(c(1, 3)))
 
-  expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
+  expect_equal(check_grid(grid_1, chi_wflow), grid_1)
 
-  expect_silent(tune:::check_grid(grid_1, chi_wflow))
+  expect_silent(check_grid(grid_1, chi_wflow))
 
   expect_snapshot(
-    tune:::check_grid(rbind(grid_1, grid_1), chi_wflow)
+    check_grid(rbind(grid_1, grid_1), chi_wflow)
   )
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(chi_wflow, chi_wflow)
+    check_grid(chi_wflow, chi_wflow)
   })
 
   bare_rec <-
@@ -64,13 +64,13 @@ test_that("grid objects", {
     add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_error(grid_2 <- tune:::check_grid(6, wflow_1), NA)
+  expect_error(grid_2 <- check_grid(6, wflow_1), NA)
   expect_equal(nrow(grid_2), 6)
   expect_true(inherits(grid_2, "data.frame"))
 
   # For issue #56
   grid_3 <- as.data.frame(grid_1)
-  expect_equal(tune:::check_grid(grid_3, chi_wflow), grid_1)
+  expect_equal(check_grid(grid_3, chi_wflow), grid_1)
 
   # For weird attributes
   grid_4 <- expand.grid(
@@ -78,11 +78,11 @@ test_that("grid objects", {
     threshold = 1:2, deg_free = 2:3, degree = 9:10
   )
   expect_equal(
-    tune:::check_grid(grid_4, chi_wflow),
+    check_grid(grid_4, chi_wflow),
     tibble::as_tibble(vctrs::data_frame(grid_4))
   )
 
-  expect_silent(tune:::check_grid(grid_4, chi_wflow))
+  expect_silent(check_grid(grid_4, chi_wflow))
 })
 
 test_that("Unknown `grid` columns are caught", {
@@ -102,7 +102,7 @@ test_that("Unknown `grid` columns are caught", {
   grid <- tibble::tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(grid, workflow)
+    check_grid(grid, workflow)
   })
 })
 
@@ -123,7 +123,7 @@ test_that("Missing required `grid` columns are caught", {
   grid <- tibble::tibble(num_comp = 0.01)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(grid, workflow)
+    check_grid(grid, workflow)
   })
 })
 
@@ -145,7 +145,7 @@ test_that("workflow objects", {
     add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_null(tune:::check_workflow(x = wflow_1))
+  expect_null(tune::check_workflow(x = wflow_1))
 
   wflow_2 <-
     workflow() %>%
@@ -154,9 +154,9 @@ test_that("workflow objects", {
     ) %>%
     add_recipe(bare_rec)
 
-  expect_null(tune:::check_workflow(x = wflow_2))
+  expect_null(tune::check_workflow(x = wflow_2))
   expect_snapshot(error = TRUE, {
-    tune:::check_workflow(x = wflow_2, check_dials = TRUE)
+    tune::check_workflow(x = wflow_2, check_dials = TRUE)
   })
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
@@ -166,14 +166,14 @@ test_that("workflow objects", {
     workflow() %>%
     add_model(glmn)
   expect_snapshot(error = TRUE, {
-    tune:::check_workflow(wflow_3)
+    tune::check_workflow(wflow_3)
   })
 
   wflow_4 <-
     workflow() %>%
     add_recipe(bare_rec)
   expect_snapshot(error = TRUE, {
-    tune:::check_workflow(wflow_4)
+    tune::check_workflow(wflow_4)
   })
 })
 
@@ -199,13 +199,13 @@ test_that("yardstick objects", {
     workflows::add_recipe(spline_rec) %>%
     workflows::add_model(glmn)
 
-  metrics_1 <- tune:::check_metrics(NULL, chi_wflow)
+  metrics_1 <- tune::check_metrics(NULL, chi_wflow)
   metrics_2 <- yardstick::metric_set(yardstick:::rmse)
   expect_true(inherits(metrics_1, "numeric_metric_set"))
   expect_snapshot(error = TRUE, {
-    tune:::check_metrics(yardstick::rmse, chi_wflow)
+    tune::check_metrics(yardstick::rmse, chi_wflow)
   })
-  expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
+  expect_true(inherits(tune::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
 })
 
 test_that("metrics must match the parsnip engine", {
@@ -219,11 +219,11 @@ test_that("metrics must match the parsnip engine", {
   workflow2 <- add_model(workflow(), mod2)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_metrics(metric_set1, workflow1)
+    tune::check_metrics(metric_set1, workflow1)
   })
 
   expect_snapshot(error = TRUE, {
-    tune:::check_metrics(metric_set2, workflow2)
+    tune::check_metrics(metric_set2, workflow2)
   })
 })
 
@@ -292,7 +292,7 @@ test_that("initial values", {
   mtfolds <- rsample::vfold_cv(mtcars)
 
 
-  grid_1 <- tune:::check_initial(
+  grid_1 <- tune::check_initial(
     2,
     extract_parameter_set_dials(wflow_1),
     wflow_1,
@@ -305,7 +305,7 @@ test_that("initial values", {
   expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
 
   expect_snapshot(error = TRUE, {
-    tune:::check_initial(
+    tune::check_initial(
       data.frame(),
       extract_parameter_set_dials(wflow_1),
       wflow_1,
@@ -320,28 +320,28 @@ test_that("initial values", {
 
 
 test_that("Acquisition function objects", {
-  expect_null(tune:::check_direction(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_direction(1))
-  expect_snapshot(error = TRUE, tune:::check_direction(rep(TRUE, 2)))
+  expect_null(check_direction(FALSE))
+  expect_snapshot(error = TRUE, check_direction(1))
+  expect_snapshot(error = TRUE, check_direction(rep(TRUE, 2)))
 
-  expect_null(tune:::check_best(1))
-  expect_snapshot(error = TRUE, tune:::check_best(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_best(rep(2, 2)))
-  expect_snapshot(error = TRUE, tune:::check_best(NA))
+  expect_null(check_best(1))
+  expect_snapshot(error = TRUE, check_best(FALSE))
+  expect_snapshot(error = TRUE, check_best(rep(2, 2)))
+  expect_snapshot(error = TRUE, check_best(NA))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("validation helpers", {
-  expect_true(tune:::check_class_or_null("a", "character"))
-  expect_true(tune:::check_class_or_null(letters, "character"))
-  expect_true(tune:::check_class_or_null(NULL, "character"))
-  expect_false(tune:::check_class_or_null(NA, "character"))
+  expect_true(check_class_or_null("a", "character"))
+  expect_true(check_class_or_null(letters, "character"))
+  expect_true(check_class_or_null(NULL, "character"))
+  expect_false(check_class_or_null(NA, "character"))
 
-  expect_true(tune:::check_class_and_single("a", "character"))
-  expect_false(tune:::check_class_and_single(letters, "character"))
-  expect_false(tune:::check_class_and_single(NULL, "character"))
-  expect_false(tune:::check_class_and_single(NA, "character"))
+  expect_true(check_class_and_single("a", "character"))
+  expect_false(check_class_and_single(letters, "character"))
+  expect_false(check_class_and_single(NULL, "character"))
+  expect_false(check_class_and_single(NA, "character"))
 })
 
 # ------------------------------------------------------------------------------
@@ -367,14 +367,14 @@ test_that("check parameter finalization", {
 
   expect_snapshot(
     expect_error(
-      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0)),
+      p1 <- check_parameters(w1, data = mtcars, grid_names = character(0)),
       regex = NA
     )
   )
   expect_false(any(dials::has_unknowns(p1$object)))
 
   expect_error(
-    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry"),
+    p1 <- check_parameters(w1, data = mtcars, grid_names = "mtry"),
     regex = NA
   )
 
@@ -385,7 +385,7 @@ test_that("check parameter finalization", {
 
   expect_snapshot(
     expect_error(
-      p2 <- tune:::check_parameters(w2, data = mtcars),
+      p2 <- check_parameters(w2, data = mtcars),
       regex = NA
     )
   )
@@ -399,7 +399,7 @@ test_that("check parameter finalization", {
 
   expect_snapshot(
     expect_error(
-      p3_a <- tune:::check_parameters(w3, data = mtcars),
+      p3_a <- check_parameters(w3, data = mtcars),
       regex = NA
     )
   )
@@ -411,7 +411,7 @@ test_that("check parameter finalization", {
     add_model(rf1)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_parameters(w4, data = mtcars)
+    check_parameters(w4, data = mtcars)
   })
 
   p4_a <-
@@ -419,7 +419,7 @@ test_that("check parameter finalization", {
     update(mtry = dials::mtry(c(1, 10)))
 
   expect_error(
-    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars),
+    p4_b <- check_parameters(w4, p4_a, data = mtcars),
     regex = NA
   )
   expect_true(inherits(p4_b, "parameters"))
@@ -430,7 +430,7 @@ test_that("check parameter finalization", {
     add_model(lm1)
 
   expect_error(
-    p5 <- tune:::check_parameters(w5, data = mtcars),
+    p5 <- check_parameters(w5, data = mtcars),
     regex = NA
   )
   expect_true(inherits(p5, "parameters"))
