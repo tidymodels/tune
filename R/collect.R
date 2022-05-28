@@ -156,7 +156,7 @@ filter_predictions <- function(x, parameters) {
   }
 
   param_names <- params$id
-  parameters <- dplyr::select(parameters, dplyr::one_of(param_names))
+  parameters <- dplyr::select(parameters, dplyr::all_of(param_names))
   if (ncol(parameters) != length(param_names)) {
     rlang::abort(
       paste0(
@@ -223,7 +223,7 @@ prob_summarize <- function(x, p) {
     x %>%
     dplyr::select(-dplyr::all_of(y_cols)) %>% # https://tidyselect.r-lib.org/reference/faq-external-vector.html>
     tidyr::pivot_longer(
-      cols = c(dplyr::one_of(pred_cols)),
+      cols = c(dplyr::all_of(pred_cols)),
       names_to = ".column",
       values_to = ".value"
     ) %>%
@@ -246,7 +246,7 @@ prob_summarize <- function(x, p) {
       x %>%
       dplyr::select(-dplyr::all_of(y_cols)) %>% # https://tidyselect.r-lib.org/reference/faq-external-vector.html>
       tidyr::pivot_longer(
-        cols = c(dplyr::one_of(pred_cols)),
+        cols = c(dplyr::all_of(pred_cols)),
         names_to = ".column",
         values_to = ".value"
       ) %>%
@@ -286,7 +286,7 @@ average_predictions <- function(x, grid = NULL) {
   param_names <- attr(x, "parameters")$id
 
   if (!is.null(grid)) {
-    grid <- dplyr::select(grid, dplyr::one_of(param_names))
+    grid <- dplyr::select(grid, dplyr::all_of(param_names))
     if (ncol(grid) != length(param_names)) {
       rlang::abort(
         paste0(
@@ -367,7 +367,7 @@ collector <- function(x, coll_col = ".predictions") {
     keep_cols <- coll_col
   }
   x <- dplyr::select(x, dplyr::starts_with("id"), !!!keep_cols)
-  x <- tidyr::unnest(x, cols = c(dplyr::one_of(coll_col)))
+  x <- tidyr::unnest(x, cols = c(dplyr::all_of(coll_col)))
   arrange_cols <- c(".iter", ".config")
   arrange_cols <- arrange_cols[(arrange_cols %in% names(x))]
   arrange(x, !!!rlang::syms(arrange_cols))
@@ -392,7 +392,7 @@ estimate_tune_results <- function(x, ...) {
   } else {
     keep_cols <- ".metrics"
   }
-  x <- tidyr::unnest(x, cols = dplyr::one_of(keep_cols))
+  x <- tidyr::unnest(x, cols = dplyr::all_of(keep_cols))
 
   all_col <- names(x)
   excl_cols <- c(

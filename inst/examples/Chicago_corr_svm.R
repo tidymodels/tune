@@ -17,7 +17,7 @@ chi_rec <-
   step_rm(date) %>%
   step_dummy(all_nominal()) %>%
   step_zv(all_predictors()) %>%
-  step_corr(one_of(!!stations), threshold = tune())
+  step_corr(dplyr::all_of(!!stations), threshold = tune())
 
 
 svm_mod <-
@@ -29,7 +29,7 @@ chi_wflow <-
   add_recipe(chi_rec) %>%
   add_model(svm_mod)
 
-cor_mat <- Chicago %>% dplyr::select(one_of(stations)) %>% cor()
+cor_mat <- Chicago %>% dplyr::select(dplyr::all_of(stations)) %>% cor()
 cor_mat <- tibble(cor = cor_mat[upper.tri(cor_mat)])
 ggplot(cor_mat, aes(x = cor)) + geom_histogram(binwidth = .01, col = "white")
 

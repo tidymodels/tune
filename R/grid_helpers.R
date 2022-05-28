@@ -69,7 +69,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
           tibble::as_tibble() %>%
           # go back to user-defined name
           dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
-          dplyr::select(dplyr::one_of(names(tmp_res))) %>%
+          dplyr::select(dplyr::all_of(names(tmp_res))) %>%
           dplyr::bind_rows(tmp_res)
       }
     }

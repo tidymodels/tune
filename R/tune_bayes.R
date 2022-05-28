@@ -291,7 +291,7 @@ tune_bayes_workflow <-
         pred_gp(
           gp_mod, param_info,
           control = control,
-          current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id))
+          current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
         )
 
       check_time(start_time, control$time_limit)
@@ -441,7 +441,7 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dat %>%
     dplyr::filter(.metric == metric) %>%
     check_gp_data() %>%
-    dplyr::select(dplyr::one_of(pset$id), mean)
+    dplyr::select(dplyr::all_of(pset$id), mean)
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 

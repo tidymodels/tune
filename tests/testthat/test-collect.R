@@ -64,7 +64,7 @@ test_that("`collect_predictions()`, un-averaged", {
   exp_res <-
     unnest(lm_splines %>% dplyr::select(.predictions, starts_with("id")),
       cols = c(.predictions)
-    ) %>% dplyr::select(one_of(names(res)))
+    ) %>% dplyr::select(dplyr::all_of(names(res)))
   expect_equal(res, exp_res)
 
   res <- collect_predictions(svm_tune)
@@ -73,7 +73,7 @@ test_that("`collect_predictions()`, un-averaged", {
       svm_tune %>% dplyr::select(.predictions, starts_with("id"), .iter),
       cols = c(.predictions)
     ) %>%
-    dplyr::select(one_of(names(res)))
+    dplyr::select(dplyr::all_of(names(res)))
   res_subset <- collect_predictions(svm_tune, parameters = svm_grd[1, ])
   exp_res_subset <- dplyr::filter(exp_res, `cost value` == svm_grd$`cost value`[[1]])
   expect_equal(res_subset, exp_res_subset)
