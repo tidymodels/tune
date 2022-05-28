@@ -112,22 +112,34 @@ forge_from_workflow <- function(new_data, workflow) {
 
 make_submod_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model
+  # Also works with multiple submodel parameters per model
   real_name <-
     parsnip::get_from_env(paste(class(model$spec)[1], "args", sep = "_")) %>%
     dplyr::filter(has_submodel & engine == model$spec$engine) %>%
     dplyr::pull(parsnip)
+
+  # this keeps only the names that are being currently used as submodels (i.e. one is fixed and another is tune())
+  real_name <- real_name[real_name %in% names(grid)]
+
   names(submodels) <- real_name
   submodels
 }
 
 make_rename_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model
+  # Using `as.list` also works with multiple submodel parameters per model
   real_name <-
     parsnip::get_from_env(paste(class(model$spec)[1], "args", sep = "_")) %>%
     dplyr::filter(has_submodel & engine == model$spec$engine) %>%
     dplyr::pull(parsnip)
-  res <- list(real_name)
-  names(res) <- names(submodels)
+
+  # this keeps only the names that are being currently used as submodels (i.e. one is fixed and another is tune())
+  real_name <- real_name[real_name %in% names(grid)]
+
+  # `as.list` instead of `list`, this allows multiple submodel parameters
+  # `split` could be used, but changes the order of the arguments
+  res <- as.list(real_name)
+  names(res) <- real_name
   res
 }
 
@@ -494,9 +506,22 @@ compute_config_ids <- function(data, id_preprocessor) {
   submodels <- unnest(data, .submodels, keep_empty = TRUE)
   submodels <- pull(submodels, .submodels)
 
+  # This deserves some discussion. `.submodels` is a named list.
+  # Could it be a tibble? When there is more than one submodel argument,
+  # `lenghts()` returns repeated values (the amount of submodel arguments).
+  # Here we use `purrr` to retrieve the correct number of submodels.
+
   # Current model that actually is fit is not included in the submodel count
   # so we add 1
-  model_sizes <- lengths(submodels) + 1L
+  model_sizes <- purrr::map_dbl(data$.submodels, function(x) {
+    if(length(x) == 0) {
+      return(1L)
+    } else if (is.list(x)) {
+      return(length(x[[1]]) + 1L)
+    } else {
+      return(length(x) + 1L)
+    }
+  })
 
   n_total_models <- sum(model_sizes)
 

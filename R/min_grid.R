@@ -135,6 +135,25 @@ submod_only <- function(grid) {
   dplyr::select(fit_only, dplyr::one_of(names(grid)), .submodels)
 }
 
+# Assumes more than one sub-model parameter and that the fitted are the
+# maximum values
+submod_only_multi <- function(grid) {
+  if (nrow(grid) == 1) {
+    grid$.submodels <- list(list())
+    return(grid)
+  }
+  nm <- colnames(grid)
+
+  # The incoming grid is not necessarily sorted by all sub-model parameters
+  # so, let's just get the max of the first parameter and move it.
+  max_idx <- which.max(grid[[1]]) # this only returns the first max idx.
+
+  fit_only <- grid[max_idx, , drop = FALSE]
+  sub_mods <- as.list(grid[-max_idx, , drop = FALSE])
+  fit_only$.submodels <- list(sub_mods)
+  dplyr::select(fit_only, dplyr::all_of(nm), .submodels)
+}
+
 # Assumes only one sub-model parameter and that the fitted one is the
 # maximum value
 submod_and_others <- function(grid, fixed_args) {
@@ -170,6 +189,42 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::mutate_if(is.factor, as.character)
 }
 
+# Assumes more than one sub-model parameter and that the fitted are the
+# maximum values
+submod_and_others_multi <- function(grid, fixed_args) {
+  orig_names <- colnames(grid)
+  subm_nm <- orig_names[!(orig_names %in% fixed_args)]
+
+  # ugly, but does the job:
+  # stores the row number for later use
+  # group by the fixed_args
+  # select the max from the first sub-model parameter
+  # select the correspondent line on the other parameters
+  fit_only <- grid %>%
+    dplyr::mutate(idxs = dplyr::row_number()) %>%
+    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
+    dplyr::summarize(dplyr::across(c(!!subm_nm, "idxs"), ~ (.x[which.max(.data[[subm_nm[1]]])]))) %>%
+    dplyr::ungroup()
+
+  # now filter only the combinations not in the `fit_only`
+  # and nest it in a named list.
+  # No need for `rlang::is_null` here.
+  submodels <- grid %>%
+    dplyr::mutate(idxs = dplyr::row_number()) %>%
+    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
+    dplyr::arrange(!!!rlang::syms(fixed_args)) %>%
+    dplyr::filter(!(idxs %in% fit_only$idxs)) %>%
+    dplyr::summarize(.submodels = list(as.list(dplyr::across(!!subm_nm, ~ .x)))) %>%
+    dplyr::ungroup()
+
+  # join and select only what matters
+  min_grid_df <- fit_only %>%
+    dplyr::full_join(submodels, by = fixed_args)
+
+  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) %>%
+    dplyr::mutate_if(is.factor, as.character)
+}
+
 # Determine the correct sub-model structure when the sub-model parameter's
 # fit value should be the maximum (e.g. fit the largest number of boosting
 # iterations and use muti_predict() for the others)
@@ -185,7 +240,7 @@ fit_max_value <- function(x, grid, ...) {
     return(blank_submodels(grid))
   }
 
-  fixed_args <- gr_nms[gr_nms != sub_nm]
+  fixed_args <- gr_nms[!(gr_nms %in% sub_nm)] # allow multiple submodel args support
 
   if (length(fixed_args) == 0) {
     res <- submod_only(grid)
