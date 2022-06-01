@@ -42,6 +42,7 @@ metrics_info <- function(x) {
 #' @param notes Character data to add to the logging.
 #' @param workflow A workflow.
 #' @param grid_preprocessor A tibble with parameter information.
+#' @param new_data A data frame or matrix of predictors to process.
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
