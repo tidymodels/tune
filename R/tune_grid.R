@@ -50,8 +50,9 @@
 #' [foreach::foreach()] for examples.
 #'
 #' For the most part, warnings generated during training are shown as they occur
-#' and are associated with a specific resample when `control(verbose = TRUE)`.
-#' They are (usually) not aggregated until the end of processing.
+#' and are associated with a specific resample when
+#' `control_grid(verbose = TRUE)`. They are (usually) not aggregated until the
+#' end of processing.
 #'
 #' @section Parameter Grids:
 #'
@@ -112,9 +113,9 @@
 #'
 #' @section Obtaining Predictions:
 #'
-#' When `control(save_preds = TRUE)`, the output tibble contains a list column
-#'  called `.predictions` that has the out-of-sample predictions for each
-#'  parameter combination in the grid and each fold (which can be very large).
+#' When `control_grid(save_pred = TRUE)`, the output tibble contains a list
+#' column called `.predictions` that has the out-of-sample predictions for each
+#' parameter combination in the grid and each fold (which can be very large).
 #'
 #' The elements of the tibble are tibbles with columns for the tuning
 #' parameters, the row number from the original data object (`.row`), the

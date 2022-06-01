@@ -40,6 +40,8 @@ metrics_info <- function(x) {
 #' @param ... Object to pass to the internal `tune_log()` function.
 #' @param bad_only A logical for whether warnings and errors should be caught.
 #' @param notes Character data to add to the logging.
+#' @param workflow A workflow.
+#' @param grid_preprocessor A tibble with parameter information.
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
