@@ -102,6 +102,8 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   tibble::as_tibble(res)
 }
 
+#' @export
+#' @rdname tune-internal-functions
 forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
 
