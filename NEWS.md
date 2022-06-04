@@ -6,7 +6,7 @@
 
 * Some internal functions were exported for use by other packages. 
 
-* A check was added to `fit_resamples()` and `last_fit()` to give a more informative error message when the preprocessor or model have parameters marked for tuning. 
+* A check was added to `fit_resamples()` and `last_fit()` to give a more informative error message when a preprocessor or model have parameters marked for tuning. 
 
 # tune 0.2.0
 
