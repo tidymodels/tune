@@ -121,6 +121,8 @@ fit_resamples.workflow <- function(object,
 # ------------------------------------------------------------------------------
 
 resample_workflow <- function(workflow, resamples, metrics, control, rng) {
+  check_no_tuning(workflow)
+
   # `NULL` is the signal that we have no grid to tune with
   grid <- NULL
   pset <- NULL

@@ -6,6 +6,8 @@
 
 * Some internal functions were exported for use by other packages. 
 
+* A check was added to `fit_resamples()` and `last_fit()` to give a more informative error message when the preprocessor or model have parameters marked for tuning. 
+
 # tune 0.2.0
 
 * The `.notes` column now contains information on the type of note (error or warning), the location where it occurred, and the note. Printing a tune result has different output describing the notes. 

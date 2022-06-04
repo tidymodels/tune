@@ -25,7 +25,7 @@ Imports:
     ggplot2,
     glue (>= 1.6.2),
     GPfit,
-    hardhat (>= 0.2.0.9000),
+    hardhat (>= 1.0.0),
     lifecycle (>= 1.0.0),
     parsnip (>= 0.2.1.9001),
     purrr (>= 0.3.2),
@@ -50,7 +50,6 @@ Suggests:
 Remotes:
     tidymodels/parsnip@feature/case-weights,
     tidymodels/workflows,  
-    tidymodels/hardhat,
     tidymodels/yardstick
 Config/Needs/website:
     pkgdown,

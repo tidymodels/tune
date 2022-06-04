@@ -533,3 +533,19 @@ check_gp_failure <- function(current, prev) {
   # return prev model
   prev
 }
+
+check_no_tuning <- function(x) {
+  tune_param <- tune_args(x)
+  num_param <- nrow(tune_param)
+  if (num_param == 0) {
+    return(invisible(FALSE))
+  }
+  srcs <- unique(tune_param$source)
+  num_srcs <- length(srcs)
+  srcs <- paste0(srcs, collapse = " and ")
+  msg_1 <- cli::pluralize("{num_param} argument{?s} have been tagged for tuning in {?this component/these components}: {srcs}. ")
+  msg_2 <- "Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them."
+  msg <- paste0(msg_1, msg_2)
+  rlang::abort(msg)
+}
+
