@@ -229,10 +229,6 @@ tune_bayes_workflow <-
     # we add on an `iteration_results` class later.
     unsummarized <- new_bare_tibble(unsummarized)
 
-    mean_stats <- estimate_tune_results(unsummarized)
-
-    check_time(start_time, control$time_limit)
-
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
 
@@ -247,6 +243,10 @@ tune_bayes_workflow <-
 
       return(out)
     })
+
+    mean_stats <- estimate_tune_results(unsummarized)
+
+    check_time(start_time, control$time_limit)
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
