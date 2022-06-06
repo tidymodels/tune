@@ -190,42 +190,42 @@ check_installs <- function(x) {
 }
 
 check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
-  chr_param <-
-    ifelse(
-      num_param == 1,
-      "is one tuning parameter",
-      paste("are", num_param, "tuning parameters")
+  msg <-
+    cli::pluralize(
+      "There {cli::qty(num_param)}{?is/are} {num_param} tuning parameter{?s} \\
+      and {num_grid} grid point{?s} {?was/were} requested."
     )
-  chr_grid <-
-    ifelse(num_grid == 1,
-           "a single grid point was",
-           paste(num_grid, "grid points were")
-    )
-  msg <- paste0("There ", chr_param, " and ", chr_grid, " requested.")
-  race_msg <-
-    ifelse(race,
-           "With racing, only completely resampled parameters are used.",
-           ""
-    )
+
+
+  if (race) {
+    race_msg <- "With racing, only completely resampled parameters are used."
+  } else {
+    race_msg <- NULL
+  }
+
   if (num_grid == 1) {
     rlang::abort(
-      paste(
-        tune_color$symbol$warning("!"), msg,
-        "The GP model requires 2+ initial points but there should",
-        "be more initial points than there are tuning paramters.", race_msg
+      c(
+        msg,
+        glue::glue("The GP model requires 2+ initial points but there should \\
+                    be more initial points than there are tuning parameters."),
+        race_msg
+      ),
+      call = NULL
+    )
+  }
+
+  if (num_grid < num_param + 1) {
+    rlang::inform(
+      c(
+        `!` = msg,
+        `*` = glue::glue("This is likely to cause numerical issues in the first few \\
+                    search iterations."),
+        `*` = race_msg
       )
     )
   }
-  if (num_grid < num_param + 1) {
-    msg <-
-      paste(
-        msg,
-        "This is likely to cause numerical issues in the first few",
-        "search iterations.",
-        race_msg
-      )
-    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
-  }
+
   invisible(NULL)
 }
 

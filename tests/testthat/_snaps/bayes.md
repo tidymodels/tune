@@ -62,40 +62,45 @@
     Code
       tune:::check_bayes_initial_size(5, 3, FALSE)
     Message
-      ! There are 5 tuning parameters and 3 grid points were requested. This is likely to cause numerical issues in the
-        first few search iterations.
+      ! There are 5 tuning parameters and 3 grid points were requested.
+      * This is likely to cause numerical issues in the first few search iterations.
 
 ---
 
     Code
       tune:::check_bayes_initial_size(5, 3, TRUE)
     Message
-      ! There are 5 tuning parameters and 3 grid points were requested. This is likely to cause numerical issues in the
-        first few search iterations. With racing, only completely resampled parameters are used.
+      ! There are 5 tuning parameters and 3 grid points were requested.
+      * This is likely to cause numerical issues in the first few search iterations.
+      * With racing, only completely resampled parameters are used.
 
 ---
 
     Code
       tune:::check_bayes_initial_size(5, 1, FALSE)
     Condition
-      Error in `tune:::check_bayes_initial_size()`:
-      ! ! There are 5 tuning parameters and a single grid point was requested. The GP model requires 2+ initial points but there should be more initial points than there are tuning paramters. 
+      Error:
+      ! There are 5 tuning parameters and 1 grid point was requested.
+      * The GP model requires 2+ initial points but there should be more initial points than there are tuning parameters.
 
 ---
 
     Code
       tune:::check_bayes_initial_size(5, 1, TRUE)
     Condition
-      Error in `tune:::check_bayes_initial_size()`:
-      ! ! There are 5 tuning parameters and a single grid point was requested. The GP model requires 2+ initial points but there should be more initial points than there are tuning paramters. With racing, only completely resampled parameters are used.
+      Error:
+      ! There are 5 tuning parameters and 1 grid point was requested.
+      * The GP model requires 2+ initial points but there should be more initial points than there are tuning parameters.
+      * With racing, only completely resampled parameters are used.
 
 ---
 
     Code
       tune:::check_bayes_initial_size(1, 1, FALSE)
     Condition
-      Error in `tune:::check_bayes_initial_size()`:
-      ! ! There is one tuning parameter and a single grid point was requested. The GP model requires 2+ initial points but there should be more initial points than there are tuning paramters. 
+      Error:
+      ! There is 1 tuning parameter and 1 grid point was requested.
+      * The GP model requires 2+ initial points but there should be more initial points than there are tuning parameters.
 
 # missing performance values
 
