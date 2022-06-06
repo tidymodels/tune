@@ -10,6 +10,8 @@
       All models failed. See the `.notes` column.
       Error in `estimate_tune_results()`:
       ! All of the models failed. See the .notes column.
+    Message
+      x Optimization stopped prematurely; returning current results.
 
 # tune model only - failure in formula is caught elegantly
 
@@ -28,6 +30,8 @@
       All models failed. See the `.notes` column.
       Error in `estimate_tune_results()`:
       ! All of the models failed. See the .notes column.
+    Message
+      x Optimization stopped prematurely; returning current results.
 
 # argument order gives an error for recipes
 

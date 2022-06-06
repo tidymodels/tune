@@ -293,6 +293,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
       resamples = data_folds
     )
   })
+
+  expect_s3_class(cars_res, "iteration_results")
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
@@ -311,6 +313,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
       control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
     )
   })
+
+  expect_s3_class(cars_res, "iteration_results")
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
