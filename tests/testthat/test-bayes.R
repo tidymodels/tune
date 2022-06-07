@@ -440,6 +440,7 @@ test_that("too few starting values", {
 
   expect_snapshot(tune:::check_bayes_initial_size(5, 3, FALSE))
   expect_snapshot(tune:::check_bayes_initial_size(5, 3, TRUE))
+  expect_snapshot(tune:::check_bayes_initial_size(2, 2, FALSE))
 
   expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, FALSE))
   expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, TRUE))

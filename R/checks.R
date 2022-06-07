@@ -207,8 +207,10 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
     rlang::abort(
       c(
         msg,
-        glue::glue("The GP model requires 2+ initial points but there should \\
-                    be more initial points than there are tuning parameters."),
+        glue::glue(
+          "The GP model requires 2+ initial points. For best performance, \\
+          supply more initial points than there are tuning parameters."
+        ),
         race_msg
       ),
       call = NULL
@@ -216,11 +218,15 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
   }
 
   if (num_grid < num_param + 1) {
+    diff <- num_param - num_grid + 1
     rlang::inform(
       c(
         `!` = msg,
-        `*` = glue::glue("This is likely to cause numerical issues in the first few \\
-                    search iterations."),
+        `*` = cli::pluralize(
+          "There are {cli::qty(diff)}{?as many/more} tuning parameters \\
+          {cli::qty(diff)}{?as/than} there are initial points. \\
+          This is likely to cause numerical issues in the first few \\
+          search iterations."),
         `*` = race_msg
       )
     )
