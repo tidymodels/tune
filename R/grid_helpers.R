@@ -102,6 +102,8 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   tibble::as_tibble(res)
 }
 
+#' @export
+#' @rdname tune-internal-functions
 forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
 
@@ -159,6 +161,8 @@ finalize_workflow_spec <- function(workflow, grid_model) {
   workflow
 }
 
+#' @export
+#' @rdname tune-internal-functions
 finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
   # Already finalized, nothing to tune
   if (ncol(grid_preprocessor) == 0L) {
