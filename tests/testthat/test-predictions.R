@@ -124,3 +124,68 @@ test_that("model and recipe", {
     bo_grid
   )
 })
+
+# ------------------------------------------------------------------------------
+
+test_that("multi-predict bare", {
+  skip_if_not_installed("C50")
+
+  require(modeldata, quietly = TRUE)
+  data(cells)
+  set.seed(2022)
+  cells <- cells %>%
+    dplyr::sample_n(500) %>%
+    dplyr::select(-case)
+
+  set.seed(2022)
+  cell_folds <- rsample::initial_split(cells, 0.95)
+
+  c5_spec <-
+    parsnip::boost_tree(trees = 100) %>%
+    parsnip::set_engine("C5.0") %>%
+    parsnip::set_mode("classification")
+
+  predictors <- rsample::training(cell_folds) %>% dplyr::select(-class)
+  response <- rsample::training(cell_folds) %>% dplyr::select(class)
+
+  set.seed(2022)
+  c5_fit <- c5_spec %>% parsnip::fit_xy(predictors, response)
+
+  expect_true(parsnip::has_multi_predict(c5_fit))
+
+  new_predictors <- rsample::testing(cell_folds) %>% dplyr::select(-class)
+
+  c5_multi <- c5_fit %>% parsnip::multi_predict(new_data = new_predictors, trees = c(20, 30, 40))
+
+  expect_snapshot(c5_multi %>% tidyr::unnest(.pred))
+})
+
+test_that("multi-predict grid", {
+  skip_if_not_installed("C50")
+
+  require(modeldata, quietly = TRUE)
+  data(cells)
+  set.seed(2022)
+  cells <- cells %>%
+    dplyr::sample_n(500) %>%
+    dplyr::select(-case)
+
+  set.seed(2022)
+  cell_folds <- rsample::vfold_cv(cells, v = 2)
+
+  c5_spec <-
+    parsnip::boost_tree(trees = tune()) %>%
+    parsnip::set_engine("C5.0") %>%
+    parsnip::set_mode("classification")
+
+  set.seed(2022)
+  c5_search <- c5_spec %>%
+    tune_grid(
+      class ~ .,
+      resamples = cell_folds,
+      grid = data.frame(trees = 1:100),
+      metrics = yardstick::metric_set(yardstick::roc_auc)
+    )
+
+  expect_snapshot(c5_search %>% collect_metrics())
+})
