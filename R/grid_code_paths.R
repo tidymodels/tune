@@ -1,26 +1,161 @@
-tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
-  `%op%` <- get_operator(control$allow_par, workflow)
-  `%:%` <- foreach::`%:%`
+tune_grid_loop <- function(resamples,
+                           grid,
+                           workflow,
+                           metrics,
+                           control,
+                           rng) {
+  fn_tune_grid_loop <- tune_grid_loop_tune
 
-  packages <- c(control$pkgs, required_pkgs(workflow))
+  if (workflow_uses_agua(workflow)) {
+    # Special allowance for agua, which uses a custom loop implementation
+    fn_tune_grid_loop <- tune_grid_loop_agua
+  }
 
-  grid_info <- compute_grid_info(workflow, grid)
+  results <- fn_tune_grid_loop(
+    resamples,
+    grid,
+    workflow,
+    metrics,
+    control,
+    rng
+  )
 
+  resamples <- pull_metrics(resamples, results, control)
+  resamples <- pull_notes(resamples, results, control)
+  resamples <- pull_extracts(resamples, results, control)
+  resamples <- pull_predictions(resamples, results, control)
+  resamples <- pull_all_outcome_names(resamples, results)
+
+  resamples
+}
+
+# ------------------------------------------------------------------------------
+
+tune_grid_loop_tune <- function(resamples,
+                                grid,
+                                workflow,
+                                metrics,
+                                control,
+                                rng) {
   n_resamples <- nrow(resamples)
-  iterations <- seq_len(n_resamples)
-
-  n_grid_info <- nrow(grid_info)
-  rows <- seq_len(n_grid_info)
-
-  splits <- resamples$splits
 
   parallel_over <- control$parallel_over
   parallel_over <- parallel_over_finalize(parallel_over, n_resamples)
 
+  fn_tune_grid_loop_iter <- tune_grid_loop_iter
+
+  tune_grid_loop_impl(
+    fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+    resamples = resamples,
+    grid = grid,
+    workflow = workflow,
+    metrics = metrics,
+    control = control,
+    rng = rng,
+    parallel_over = parallel_over
+  )
+}
+
+parallel_over_finalize <- function(parallel_over, n_resamples) {
+  # Always use user supplied option, even if not as efficient
+  if (!is.null(parallel_over)) {
+    return(parallel_over)
+  }
+
+  # Generally more efficient to parallelize over just resamples,
+  # but if there is only 1 resample we instead parallelize over
+  # "everything" (resamples and the hyperparameter grid) to maximize
+  # core utilization
+  if (n_resamples == 1L) {
+    "everything"
+  } else {
+    "resamples"
+  }
+}
+
+# ------------------------------------------------------------------------------
+# Agua / h2o specific utilities
+
+tune_grid_loop_agua <- function(resamples,
+                                grid,
+                                workflow,
+                                metrics,
+                                control,
+                                rng) {
+  if (!rlang::is_installed("agua")) {
+    rlang::abort("`agua` must be installed to use an h2o parsnip engine.")
+  }
+
+  if (!is.null(grid) && !is_regular_grid(grid)) {
+    rlang::abort("The h2o engine only supports regular tuning grids.")
+  }
+
+  parallel_over <- control$parallel_over
+  parallel_over <- parallel_over_finalize_agua(parallel_over)
+
+  fn_tune_grid_loop_iter <- utils::getFromNamespace(
+    x = "tune_grid_loop_iter_h2o",
+    ns = "agua"
+  )
+
+  tune_grid_loop_impl(
+    fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+    resamples = resamples,
+    grid = grid,
+    workflow = workflow,
+    metrics = metrics,
+    control = control,
+    rng = rng,
+    parallel_over = parallel_over
+  )
+}
+
+parallel_over_finalize_agua <- function(parallel_over) {
+  if (is.null(parallel_over)) {
+    parallel_over <- "resamples"
+  }
+
+  if (!identical(parallel_over, "resamples")) {
+    rlang::abort("`agua` only supports `parallel_over = \"resamples\".")
+  }
+
+  parallel_over
+}
+
+workflow_uses_agua <- function(workflow) {
+  model_spec <- hardhat::extract_spec_parsnip(workflow)
+  identical(model_spec$engine, "h2o")
+}
+
+# ------------------------------------------------------------------------------
+
+tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
+                                resamples,
+                                grid,
+                                workflow,
+                                metrics,
+                                control,
+                                rng,
+                                parallel_over) {
+  splits <- resamples$splits
+  packages <- c(control$pkgs, required_pkgs(workflow))
+  grid_info <- compute_grid_info(workflow, grid)
+
+  n_splits <- length(splits)
+  n_grid_info <- nrow(grid_info)
+
+  # Must assign `tune:::tune_grid_loop_iter_safely()` to a function in
+  # this function environment so foreach can find it. Mainly an issue with
+  # doParallel and PSOCK clusters.
+  fn_tune_grid_loop_iter_safely <- tune_grid_loop_iter_safely
+
+  `%op%` <- get_operator(control$allow_par, workflow)
+  `%:%` <- foreach::`%:%`
+
   rlang::local_options(doFuture.rng.onMisuse = "ignore")
 
   if (identical(parallel_over, "resamples")) {
-    seeds <- generate_seeds(rng, n_resamples)
+    seeds <- generate_seeds(rng, n_splits)
 
     suppressPackageStartupMessages(
       results <- foreach::foreach(
@@ -29,14 +164,9 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         .packages = packages,
         .errorhandling = "pass"
       ) %op% {
-        # Extract internal function from tune namespace
-        tune_grid_loop_iter_safely <- utils::getFromNamespace(
-          x = "tune_grid_loop_iter_safely",
-          ns = "tune"
-        )
-
         # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-        tune_grid_loop_iter_safely(
+        fn_tune_grid_loop_iter_safely(
+          fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
           split = split,
           grid_info = grid_info,
           workflow = workflow,
@@ -46,8 +176,15 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
         )
       }
     )
-  } else if (identical(parallel_over, "everything")) {
-    seeds <- generate_seeds(rng, n_resamples * n_grid_info)
+
+    return(results)
+  }
+
+  if (identical(parallel_over, "everything")) {
+    iterations <- seq_len(n_splits)
+    rows <- seq_len(n_grid_info)
+
+    seeds <- generate_seeds(rng, n_splits * n_grid_info)
 
     suppressPackageStartupMessages(
       results <- foreach::foreach(
@@ -63,16 +200,11 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           .errorhandling = "pass",
           .combine = iter_combine
         ) %op% {
-          # Extract internal function from tune namespace
-          tune_grid_loop_iter_safely <- utils::getFromNamespace(
-            x = "tune_grid_loop_iter_safely",
-            ns = "tune"
-          )
-
           grid_info_row <- vctrs::vec_slice(grid_info, row)
 
           # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-          tune_grid_loop_iter_safely(
+          fn_tune_grid_loop_iter_safely(
+            fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
             split = split,
             grid_info = grid_info_row,
             workflow = workflow,
@@ -82,17 +214,11 @@ tune_grid_loop <- function(resamples, grid, workflow, metrics, control, rng) {
           )
         }
     )
-  } else {
-    rlang::abort("Internal error: Invalid `parallel_over`.")
+
+    return(results)
   }
 
-  resamples <- pull_metrics(resamples, results, control)
-  resamples <- pull_notes(resamples, results, control)
-  resamples <- pull_extracts(resamples, results, control)
-  resamples <- pull_predictions(resamples, results, control)
-  resamples <- pull_all_outcome_names(resamples, results)
-
-  resamples
+  rlang::abort("Invalid `parallel_over`.", .internal = TRUE)
 }
 
 # ------------------------------------------------------------------------------
@@ -349,16 +475,17 @@ tune_grid_loop_iter <- function(split,
 
 # ------------------------------------------------------------------------------
 
-tune_grid_loop_iter_safely <- function(split,
+tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
+                                       split,
                                        grid_info,
                                        workflow,
                                        metrics,
                                        control,
                                        seed) {
-  tune_grid_loop_iter_wrapper <- super_safely(tune_grid_loop_iter)
+  fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-  result <- tune_grid_loop_iter_wrapper(
+  result <- fn_tune_grid_loop_iter_wrapper(
     split,
     grid_info,
     workflow,
@@ -441,23 +568,6 @@ super_safely <- function(fn) {
 
 is_failure <- function(x) {
   inherits(x, "try-error")
-}
-
-parallel_over_finalize <- function(parallel_over, n_resamples) {
-  # Always use user supplied option, even if not as efficient
-  if (!is.null(parallel_over)) {
-    return(parallel_over)
-  }
-
-  # Generally more efficient to parallelize over just resamples,
-  # but if there is only 1 resample we instead parallelize over
-  # "everything" (resamples and the hyperparameter grid) to maximize
-  # core utilization
-  if (n_resamples == 1L) {
-    "everything"
-  } else {
-    "resamples"
-  }
 }
 
 # Note:
