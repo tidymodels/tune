@@ -20,7 +20,7 @@ chi_rec <-
   step_rm(date) %>%
   step_dummy(all_nominal()) %>%
   step_zv(all_predictors()) %>%
-  step_corr(one_of(!!stations), threshold = tune())
+  step_corr(all_of(!!stations), threshold = tune())
 
 
 knn_model <-
