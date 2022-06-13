@@ -201,7 +201,7 @@ use_regular_grid_plot <- function(x) {
   dat <- collect_metrics(x)
   param_cols <- get_param_columns(x)
   grd <- dat %>%
-    dplyr::select(one_of(param_cols)) %>%
+    dplyr::select(all_of(param_cols)) %>%
     distinct()
   is_regular_grid(grd)
 }
@@ -257,7 +257,7 @@ plot_param_vs_iter <- function(x) {
   # Collect and filter resampling results
 
   x <- estimate_tune_results(x)
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::one_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
   num_param_cols <- param_cols[is_num]
 
   # ----------------------------------------------------------------------------
@@ -282,8 +282,8 @@ plot_param_vs_iter <- function(x) {
 
   x <-
     x %>%
-    dplyr::select(.iter, dplyr::one_of(num_param_cols)) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
+    dplyr::select(.iter, dplyr::all_of(num_param_cols)) %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ------------------------------------------------------------------------------
 
@@ -318,14 +318,14 @@ plot_marginals <- function(x, metric = NULL) {
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
 
-  is_num <- purrr::map_lgl(x %>% dplyr::select(param_cols), is.numeric)
-  num_val <- purrr::map_int(x %>% dplyr::select(param_cols), ~ length(unique(.x)))
+  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
+  num_val <- purrr::map_int(x %>% dplyr::select(dplyr::all_of(param_cols)), ~ length(unique(.x)))
 
   if (any(num_val < 2)) {
     rm_param <- param_cols[num_val < 2]
     param_cols <- param_cols[num_val >= 2]
     is_num <- is_num[num_val >= 2]
-    x <- x %>% dplyr::select(-dplyr::one_of(rm_param))
+    x <- x %>% dplyr::select(-dplyr::all_of(rm_param))
   }
 
   if (any(!is_num)) {
@@ -369,8 +369,8 @@ plot_marginals <- function(x, metric = NULL) {
   x <-
     x %>%
     dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(num_param_cols))
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ----------------------------------------------------------------------------
 
@@ -449,7 +449,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     rlang::abort("`autoplot()` requires objects made with tune version 0.1.0 or later.")
   }
 
-  grd <- dat %>% dplyr::select(one_of(param_cols))
+  grd <- dat %>% dplyr::select(all_of(param_cols))
 
   # ----------------------------------------------------------------------------
   # Determine which parameter goes on the x-axis and their types
@@ -501,8 +501,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
   dat <-
     dat %>%
     dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::one_of(param_cols), mean, `# resamples`, .metric) %>%
-    tidyr::pivot_longer(cols = dplyr::one_of(x_col))
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(x_col))
 
   # ------------------------------------------------------------------------------
 

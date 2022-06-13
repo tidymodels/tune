@@ -156,7 +156,7 @@ filter_predictions <- function(x, parameters) {
   }
 
   param_names <- params$id
-  parameters <- dplyr::select(parameters, dplyr::all_of(param_names))
+  parameters <- dplyr::select(parameters, dplyr::any_of(param_names))
   if (ncol(parameters) != length(param_names)) {
     rlang::abort(
       paste0(
@@ -221,7 +221,7 @@ prob_summarize <- function(x, p) {
   group_cols <- group_cols[group_cols != y_cols]
   totals <-
     x %>%
-    dplyr::select(-y_cols) %>%
+    dplyr::select(-dplyr::all_of(y_cols)) %>%
     tidyr::pivot_longer(
       cols = c(dplyr::all_of(pred_cols)),
       names_to = ".column",
@@ -244,7 +244,7 @@ prob_summarize <- function(x, p) {
     ord <- is.ordered(x[[y_cols]])
     class_pred <-
       x %>%
-      dplyr::select(-y_cols) %>%
+      dplyr::select(-dplyr::all_of(y_cols)) %>%
       tidyr::pivot_longer(
         cols = c(dplyr::all_of(pred_cols)),
         names_to = ".column",
@@ -415,7 +415,7 @@ estimate_tune_results <- function(x, ...) {
     arrange_names <- arrange_names[(arrange_names %in% param_names)]
     join_names <- param_names[!(param_names %in% arrange_names)]
     x <- dplyr::inner_join(
-      dplyr::select(x, !arrange_names),
+      dplyr::select(x, !dplyr::all_of(arrange_names)),
       x,
       by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
     ) %>%
