@@ -94,46 +94,68 @@ R process. When using most parallel backends, this argument typically will
 not result in any logging. If using a dark IDE theme, some logging messages
 might be hard to see; try setting the <code>tidymodels.dark</code> option with
 <code>options(tidymodels.dark = TRUE)</code> to print lighter colors.</p></dd>
+
+
 <dt>no_improve</dt>
 <dd><p>The integer cutoff for the number of iterations without
 better results.</p></dd>
+
+
 <dt>uncertain</dt>
 <dd><p>The number of iterations with no improvement before an
 uncertainty sample is created where a sample with high predicted variance is
 chosen (i.e., in a region that has not yet been explored). The iteration
 counter is reset after each uncertainty sample. For example, if <code>uncertain = 10</code>, this condition is triggered every 10 samples with no improvement.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>An integer for controlling the random number stream.</p></dd>
+
+
 <dt>extract</dt>
 <dd><p>An optional function with at least one argument (or <code>NULL</code>)
 that can be used to retain arbitrary objects from the model fit object,
 recipe, or other elements of the workflow.</p></dd>
+
+
 <dt>save_pred</dt>
 <dd><p>A logical for whether the out-of-sample predictions should
 be saved for each model <em>evaluated</em>.</p></dd>
+
+
 <dt>time_limit</dt>
 <dd><p>A number for the minimum number of <em>minutes</em> (elapsed) that
 the function should execute. The elapsed time is evaluated at internal
 checkpoints and, if over time, the results at that time are returned (with
 a warning). This means that the <code>time_limit</code> is not an exact limit, but a
 minimum time limit.</p></dd>
+
+
 <dt>pkgs</dt>
 <dd><p>An optional character string of R package names that should be
 loaded (by namespace) during parallel processing.</p></dd>
+
+
 <dt>save_workflow</dt>
 <dd><p>A logical for whether the workflow should be appended
 to the output as an attribute.</p></dd>
+
+
 <dt>save_gp_scoring</dt>
 <dd><p>A logical to save the intermediate Gaussian process
 models for each iteration of the search. These are saved to
 <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code> with names <code>gp_candidates_{i}.RData</code> where <code>i</code> is the iteration.
 These results are deleted when the R session ends. This option is only
 useful for teaching purposes.</p></dd>
+
+
 <dt>event_level</dt>
 <dd><p>A single string containing either <code>"first"</code> or <code>"second"</code>.
 This argument is passed on to yardstick metric functions when any type
 of class prediction is made, and specifies which level of the outcome
 is considered the "event".</p></dd>
+
+
 <dt>parallel_over</dt>
 <dd><p>A single string containing either <code>"resamples"</code> or
 <code>"everything"</code> describing how to use parallel processing. Alternatively,
@@ -154,6 +176,7 @@ otherwise chooses <code>"everything"</code> to attempt to maximize core utilizat
 to use the same random number generation schemes. However, re-tuning a
 model using the same <code>parallel_over</code> strategy is guaranteed to be
 reproducible between runs.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -186,7 +209,7 @@ with the original data.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

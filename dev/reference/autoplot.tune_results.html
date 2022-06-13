@@ -83,24 +83,35 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
 <dd><p>A tibble of results from <code><a href="tune_grid.html">tune_grid()</a></code> or <code><a href="tune_bayes.html">tune_bayes()</a></code>.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>A single character value. Choices are <code>"marginals"</code> (for a plot
 of each predictor versus performance; see Details below), <code>"parameters"</code>
 (each parameter versus search iteration), or <code>"performance"</code> (performance
 versus iteration). The latter two choices are only used for <code><a href="tune_bayes.html">tune_bayes()</a></code>.</p></dd>
+
+
 <dt>metric</dt>
 <dd><p>A character vector or <code>NULL</code> for which metric to plot. By
 default, all metrics will be shown via facets.</p></dd>
+
+
 <dt>width</dt>
 <dd><p>A number for the width of the confidence interval bars when
 <code>type = "performance"</code>. A value of zero prevents them from being shown.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>For plots with a regular grid, this is passed to <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code> and is
 applied to a parameter used to color points. Otherwise, it is not used.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>ggplot2</code> object.</p>
+    
+
+<p>A <code>ggplot2</code> object.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -182,7 +193,7 @@ values in the transformed units (and is labeled with the transformation type).</
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>

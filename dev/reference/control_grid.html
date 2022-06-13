@@ -101,27 +101,41 @@ R process. When using most parallel backends, this argument typically will
 not result in any logging. If using a dark IDE theme, some logging messages
 might be hard to see; try setting the <code>tidymodels.dark</code> option with
 <code>options(tidymodels.dark = TRUE)</code> to print lighter colors.</p></dd>
+
+
 <dt>allow_par</dt>
 <dd><p>A logical to allow parallel processing (if a parallel
 backend is registered).</p></dd>
+
+
 <dt>extract</dt>
 <dd><p>An optional function with at least one argument (or <code>NULL</code>)
 that can be used to retain arbitrary objects from the model fit object,
 recipe, or other elements of the workflow.</p></dd>
+
+
 <dt>save_pred</dt>
 <dd><p>A logical for whether the out-of-sample predictions should
 be saved for each model <em>evaluated</em>.</p></dd>
+
+
 <dt>pkgs</dt>
 <dd><p>An optional character string of R package names that should be
 loaded (by namespace) during parallel processing.</p></dd>
+
+
 <dt>save_workflow</dt>
 <dd><p>A logical for whether the workflow should be appended
 to the output as an attribute.</p></dd>
+
+
 <dt>event_level</dt>
 <dd><p>A single string containing either <code>"first"</code> or <code>"second"</code>.
 This argument is passed on to yardstick metric functions when any type
 of class prediction is made, and specifies which level of the outcome
 is considered the "event".</p></dd>
+
+
 <dt>parallel_over</dt>
 <dd><p>A single string containing either <code>"resamples"</code> or
 <code>"everything"</code> describing how to use parallel processing. Alternatively,
@@ -142,6 +156,7 @@ otherwise chooses <code>"everything"</code> to attempt to maximize core utilizat
 to use the same random number generation schemes. However, re-tuning a
 model using the same <code>parallel_over</code> strategy is guaranteed to be
 reproducible between runs.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -176,7 +191,7 @@ used with <code><a href="fit_resamples.html">fit_resamples()</a></code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
   </div></footer></body></html>
