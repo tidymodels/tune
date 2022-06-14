@@ -546,6 +546,6 @@ check_no_tuning <- function(x) {
   msg_1 <- cli::pluralize("{num_param} argument{?s} {?has/have} been tagged for tuning in {?this component/these components}: {srcs}. ")
   msg_2 <- "Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them."
   msg <- paste(msg_1, msg_2, sep = "\n")
-  rlang::abort(msg)
+  rlang::abort(msg, call = NULL)
 }
 
