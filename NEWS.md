@@ -1,5 +1,7 @@
 # tune (development version)
 
+* `show_notes()` is a new function that can better help understand warnings and errors. 
+
 * `last_fit()` now accepts a `control` argument to allow users to control aspects of the last fitting process via `control_last_fit()` (#399).
 
 * Case weights are enabled for models that can use them. 

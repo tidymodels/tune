@@ -75,7 +75,7 @@ summarize_notes <- function(x) {
     )
   cat("\nThere were issues with some computations:\n\n")
   cat(by_type$note)
-  cat("\n\nUse `collect_notes(object)` for more information.\n")
+  cat("\n\nUse `show_notes(object)` for more information.\n")
   invisible(NULL)
 }
 
@@ -125,3 +125,39 @@ peek_tune_results_outcomes <- function(x) {
 
   out
 }
+
+# ------------------------------------------------------------------------------
+
+#' Display distinct errors from tune objects
+#' @param x An object of class `tune_results`.
+#' @param n An integer for how many unique notes to show.
+#' @return Invisibly, `x`. Function is called for side-effects and printing.
+#' @export
+show_notes <- function(x, n = 10) {
+  res <-
+    collect_notes(x) %>%
+    dplyr::distinct(type, note)
+
+  if (nrow(res) == 0) {
+    cat("Great job! No notes to show.\n")
+    return(invisible(x))
+  }
+
+  n <- min(nrow(res), n)
+  notes <- res$note[1:n]
+
+  msg <- "unique notes:\n"
+  if (n != nrow(res)) {
+    msg <- paste0("first ", n, msg)
+  }
+
+  sub_notes <- strsplit(notes, split = "\n")[[1]]
+  max_width <- max(purrr::map_int(sub_notes, nchar))
+  max_width <- min(max_width, cli::console_width())
+
+  notes <-  paste(cli::rule(width = max_width), notes, sep = "\n")
+  cat(msg)
+  cat(notes)
+  invisible(x)
+}
+
