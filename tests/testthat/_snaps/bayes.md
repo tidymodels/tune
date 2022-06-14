@@ -7,7 +7,7 @@
       x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
       Error in `estimate_tune_results()`:
       ! All of the models failed. See the .notes column.
     Message
@@ -27,7 +27,7 @@
       ! The following predictors were ...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
       Error in `estimate_tune_results()`:
       ! All of the models failed. See the .notes column.
     Message

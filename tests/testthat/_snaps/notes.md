@@ -25,7 +25,7 @@
       ! The following cols a...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
 
 ---
 

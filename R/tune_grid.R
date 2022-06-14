@@ -341,7 +341,7 @@ tune_grid_workflow <- function(workflow,
   )
 
   if (is_cataclysmic(resamples)) {
-    rlang::warn("All models failed. See the `.notes` column.")
+    rlang::warn("All models failed. Run `show_notes(your_object_name)` for more information.")
   }
 
   outcomes <- reduce_all_outcome_names(resamples)
