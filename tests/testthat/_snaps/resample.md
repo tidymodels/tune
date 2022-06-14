@@ -3,37 +3,43 @@
     Code
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
-      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
+      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
+      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
 
 # failure in variables tidyselect specification is caught elegantly
 
     Code
       result <- fit_resamples(workflow, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1: Error in `chr_as_locations()`:
-      ! Can't subset columns ...
-      x Fold2: preprocessor 1/1: Error in `chr_as_locations()`:
-      ! Can't subset columns ...
+      x Fold1: preprocessor 1/1:
+        Error in `chr_as_locations()`:
+        ! Can't subset columns that don't exist.
+        x Column `foobar` doesn't exist.
+      x Fold2: preprocessor 1/1:
+        Error in `chr_as_locations()`:
+        ! Can't subset columns that don't exist.
+        x Column `foobar` doesn't exist.
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
 
 # classification models generate correct error message
 
     Code
       result <- fit_resamples(log_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1, model 1/1: Error in `check_outcome()`:
-      ! For a classif...
-      x Fold2: preprocessor 1/1, model 1/1: Error in `check_outcome()`:
-      ! For a classif...
+      x Fold1: preprocessor 1/1, model 1/1:
+        Error in `check_outcome()`:
+        ! For a classification model, the outcome should be a factor.
+      x Fold2: preprocessor 1/1, model 1/1:
+        Error in `check_outcome()`:
+        ! For a classification model, the outcome should be a factor.
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(your_object_name)` for more information.
 
 # `tune_grid()` falls back to `fit_resamples()` - formula
 
