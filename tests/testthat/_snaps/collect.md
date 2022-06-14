@@ -19,8 +19,8 @@
     Code
       lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
     Message
-      ! Bootstrap1: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
-      ! Bootstrap2: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
+      ! Bootstrap1: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+      ! Bootstrap2: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
 
 ---
 
@@ -46,7 +46,7 @@
     Code
       lst <- last_fit(lin_mod, mpg ~ ., split)
     Message
-      ! train/test split: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-defici...
+      ! train/test split: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
 
 ---
 

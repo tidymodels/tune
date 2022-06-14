@@ -6,8 +6,8 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
-      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
+      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
+      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
     Condition
       Warning:
       All models failed. Run `show_notes(your_object_name)` for more information.
@@ -20,10 +20,12 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1: Error in `glubort()`:
-      ! The following predictors were ...
-      x Fold2: preprocessor 1/1: Error in `glubort()`:
-      ! The following predictors were ...
+      x Fold1: preprocessor 1/1:
+        Error in `glubort()`:
+        ! The following predictors were not found in `data`: 'z'.
+      x Fold2: preprocessor 1/1:
+        Error in `glubort()`:
+        ! The following predictors were not found in `data`: 'z'.
     Condition
       Warning:
       All models failed. Run `show_notes(your_object_name)` for more information.

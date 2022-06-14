@@ -1,7 +1,7 @@
 test_that("rsample objects", {
   obj_cv <- rsample::vfold_cv(mtcars)
   obj_loo <- rsample::loo_cv(mtcars)
-  obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = bootstraps())
+  obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = rsample::bootstraps())
   expect_error(tune:::check_rset(obj_cv), regexp = NA)
   expect_snapshot(error = TRUE, tune:::check_rset(obj_loo))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_nst))
