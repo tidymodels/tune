@@ -1,24 +1,4 @@
-# multi-predict bare
-
-    Code
-      c5_multi %>% tidyr::unnest(.pred)
-    Output
-      # A tibble: 75 x 2
-         trees .pred_class
-         <dbl> <fct>      
-       1    20 WS         
-       2    30 WS         
-       3    40 WS         
-       4    20 PS         
-       5    30 PS         
-       6    40 WS         
-       7    20 PS         
-       8    30 PS         
-       9    40 PS         
-      10    20 PS         
-      # ... with 65 more rows
-
-# multi-predict grid
+# multi-predict with tuning
 
     Code
       c5_search %>% collect_metrics()
