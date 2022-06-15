@@ -39,7 +39,7 @@
       
         - Warning(s) x2: prediction from a rank-deficient fit may be misleading
       
-      Use `show_notes(object)` for more information.
+      Run `show_notes(.Last.tune.result)` for more information.
 
 # collecting notes - last_fit
 
@@ -64,5 +64,5 @@
       
         - Warning(s) x1: prediction from a rank-deficient fit may be misleading
       
-      Use `show_notes(object)` for more information.
+      Run `show_notes(.Last.tune.result)` for more information.
 

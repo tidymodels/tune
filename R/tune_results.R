@@ -75,7 +75,7 @@ summarize_notes <- function(x) {
     )
   cat("\nThere were issues with some computations:\n\n")
   cat(by_type$note)
-  cat("\n\nUse `show_notes(object)` for more information.\n")
+  cat("\n\nRun `show_notes(.Last.tune.result)` for more information.\n")
   invisible(NULL)
 }
 

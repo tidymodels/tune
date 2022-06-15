@@ -7,7 +7,7 @@
       x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
     Condition
       Warning:
-      All models failed. Run `show_notes(your_object_name)` for more information.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # failure in variables tidyselect specification is caught elegantly
 
@@ -24,7 +24,7 @@
         x Column `foobar` doesn't exist.
     Condition
       Warning:
-      All models failed. Run `show_notes(your_object_name)` for more information.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # classification models generate correct error message
 
@@ -39,7 +39,7 @@
         ! For a classification model, the outcome should be a factor.
     Condition
       Warning:
-      All models failed. Run `show_notes(your_object_name)` for more information.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # `tune_grid()` falls back to `fit_resamples()` - formula
 
