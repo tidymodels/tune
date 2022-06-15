@@ -132,7 +132,7 @@ submod_only <- function(grid) {
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
   fit_only$.submodels <- list(sub_mods)
-  dplyr::select(fit_only, dplyr::one_of(names(grid)), .submodels)
+  dplyr::select(fit_only, dplyr::all_of(names(grid)), .submodels)
 }
 
 # Assumes more than one sub-model parameter and that the fitted are the
@@ -185,7 +185,7 @@ submod_and_others <- function(grid, fixed_args) {
       purrr::map(1:nrow(min_grid_df), ~ list())
     )
 
-  dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
+  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) %>%
     dplyr::mutate_if(is.factor, as.character)
 }
 

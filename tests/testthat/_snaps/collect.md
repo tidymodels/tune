@@ -11,8 +11,6 @@
     Code
       collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
     Condition
-      Warning:
-      Unknown columns: `cost value`
       Error in `filter_predictions()`:
       ! `parameters` should only have columns: 'cost value'
 
