@@ -282,6 +282,58 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     }
   }
 
+  if (has_preprocessor_recipe(x)) {
+    recipe <- extract_recipe(x, estimated = FALSE)
+    exclusions <- c("case_weights", "outcome", "predictor")
+
+    original_var_data <- recipe$var_info %>%
+      dplyr::filter(source == "original", is.na(role) | !(role %in% exclusions))
+
+    non_standard_roles <- original_var_data$variable
+
+    vars_print <- glue::glue_collapse(
+      non_standard_roles,
+      sep = ", ", last = ", and "
+    )
+
+    msg <- glue::glue(
+      "The following columns in the recipe have non-standard roles: {vars_print}."
+    )
+
+    if (is.null(x$pre$actions$recipe$blueprint)) {
+      if (nrow(original_var_data) > 0) {
+        rlang::abort(
+          c(
+            msg,
+            "i" = "No blueprint were specfied for the recipe.",
+            "i" = "See ... for how for more information on how use non-standard recipe roles."
+          ),
+          call = NULL
+        )
+      }
+    } else {
+      bake_dependent_roles <- x$pre$actions$recipe$blueprint$bake_dependent_roles
+
+      if (!all(original_var_data$role %in% bake_dependent_roles)) {
+        rlang::abort(
+          c(
+            msg,
+            "i" = "A blueprint were specfied for the recipe.",
+            "i" = "But didn't have `bake_dependant_roles` correctly specified."
+          ),
+          call = NULL
+        )
+      }
+
+    }
+
+
+
+
+    x$pre$actions$recipe$blueprint$bake_dependent_roles
+  }
+
+
   mod <- extract_spec_parsnip(x)
   check_installs(mod)
 
