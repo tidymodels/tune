@@ -324,15 +324,8 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
           call = NULL
         )
       }
-
     }
-
-
-
-
-    x$pre$actions$recipe$blueprint$bake_dependent_roles
   }
-
 
   mod <- extract_spec_parsnip(x)
   check_installs(mod)
