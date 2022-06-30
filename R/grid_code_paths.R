@@ -86,8 +86,12 @@ tune_grid_loop_agua <- function(resamples,
     rlang::abort("`agua` must be installed to use an h2o parsnip engine.")
   }
 
-  if (!is.null(grid) && !is_regular_grid(grid)) {
-    rlang::abort("The h2o engine only supports regular tuning grids.")
+  if (!is_regular_grid(grid)) {
+    msg <- paste0(
+        "The h2o engine only supports regular tuning grids. ",
+        "Set `grid` explicitly to be a regular grid data frame."
+    )
+    rlang::abort(msg)
   }
 
   parallel_over <- control$parallel_over
