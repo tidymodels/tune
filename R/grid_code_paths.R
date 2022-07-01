@@ -89,7 +89,8 @@ tune_grid_loop_agua <- function(resamples,
   if (!is_regular_grid(grid)) {
     msg <- paste0(
         "The h2o engine only supports regular tuning grids. ",
-        "Set `grid` explicitly to be a regular grid data frame."
+        "Set `grid` explicitly to be a data frame of regular grid. ",
+        "For more details see ?dials::grid_regular."
     )
     rlang::abort(msg)
   }
