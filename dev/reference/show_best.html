@@ -69,37 +69,37 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tune_results</span>
-<span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="fl">5</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tune_results</span>
-<span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tune_results</span>
-<span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, limit <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-
-<span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for tune_results</span>
-<span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tune_results</span></span>
+<span><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="fl">5</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tune_results</span></span>
+<span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tune_results</span></span>
+<span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, limit <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tune_results</span></span>
+<span><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -161,10 +161,10 @@ or 25 percent. Note that loss will always be non-negative.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ames_knn"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">show_best</span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ames_knn"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best</span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       K weight_func dist_power   lon   lat .metric .estimator   mean     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -174,39 +174,39 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>    21 cos              0.626     1     4 rmse    standard   0.074<span style="text-decoration: underline;">6</span>    10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    19 inv              0.117     1     4 rmse    standard   0.075<span style="text-decoration: underline;">8</span>    10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">select_best</span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rsq"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">select_best</span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rsq"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       K weight_func dist_power   lon   lat .config              </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    33 triweight        0.511    10     3 Preprocessor10_Model1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># To find the least complex model within one std error of the numerically</span></span>
-<span class="r-in"><span class="co"># optimal model, the number of nearest neighbors are sorted from the largest</span></span>
-<span class="r-in"><span class="co"># number of neighbors (the least complex class boundary) to the smallest</span></span>
-<span class="r-in"><span class="co"># (corresponding to the most complex model).</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">ames_grid_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To find the least complex model within one std error of the numerically</span></span></span>
+<span class="r-in"><span><span class="co"># optimal model, the number of nearest neighbors are sorted from the largest</span></span></span>
+<span class="r-in"><span><span class="co"># number of neighbors (the least complex class boundary) to the smallest</span></span></span>
+<span class="r-in"><span><span class="co"># (corresponding to the most complex model).</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">ames_grid_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       K weight_func dist_power   lon   lat .metric .estimator   mean     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    33 triweight        0.511    10     3 rmse    standard   0.072<span style="text-decoration: underline;">8</span>    10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 4 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;, .best &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .bound &lt;dbl&gt;</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Now find the least complex model that has no more than a 5% loss of RMSE:</span></span>
-<span class="r-in"><span class="fu">select_by_pct_loss</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">ames_grid_search</span>,</span>
-<span class="r-in">  metric <span class="op">=</span> <span class="st">"rmse"</span>,</span>
-<span class="r-in">  limit <span class="op">=</span> <span class="fl">5</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Now find the least complex model that has no more than a 5% loss of RMSE:</span></span></span>
+<span class="r-in"><span><span class="fu">select_by_pct_loss</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">ames_grid_search</span>,</span></span>
+<span class="r-in"><span>  metric <span class="op">=</span> <span class="st">"rmse"</span>,</span></span>
+<span class="r-in"><span>  limit <span class="op">=</span> <span class="fl">5</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">K</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 13</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       K weight_func dist_power   lon   lat .metric .estimator   mean     n</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    33 triweight        0.511    10     3 rmse    standard   0.072<span style="text-decoration: underline;">8</span>    10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 4 more variables: std_err &lt;dbl&gt;, .config &lt;chr&gt;, .best &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .loss &lt;dbl&gt;</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -220,7 +220,7 @@ or 25 percent. Note that loss will always be non-negative.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
   </div></footer></body></html>

@@ -111,21 +111,21 @@
 <p>For some types of models, such as boosted models or regularized models, the number of models that are actually <em>fit</em> can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This “sub-model trick” can greatly speed up the training time for many models (e.g. see <a href="https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost" class="external-link">this example</a> in the <code>caret</code> documentation).</p>
 <p>In order to know what models allow this, the <code>parsnip</code> package contains a <code><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict()</a></code> function that enables this feature. Printing the S3 methods for it lists the possible models:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/methods.html" class="external-link">methods</a></span><span class="op">(</span><span class="st">"multi_predict"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] multi_predict._C5.0*        multi_predict._earth*      </span>
-<span class="co">## [3] multi_predict._elnet*       multi_predict._lognet*     </span>
-<span class="co">## [5] multi_predict._multnet*     multi_predict._torch_mlp*  </span>
-<span class="co">## [7] multi_predict._train.kknn*  multi_predict._xgb.Booster*</span>
-<span class="co">## [9] multi_predict.default*     </span>
-<span class="co">## see '?methods' for accessing help and source code</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/methods.html" class="external-link">methods</a></span><span class="op">(</span><span class="st">"multi_predict"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] multi_predict._C5.0*        multi_predict._earth*      </span></span>
+<span><span class="co">## [3] multi_predict._elnet*       multi_predict._lognet*     </span></span>
+<span><span class="co">## [5] multi_predict._multnet*     multi_predict._torch_mlp*  </span></span>
+<span><span class="co">## [7] multi_predict._train.kknn*  multi_predict._xgb.Booster*</span></span>
+<span><span class="co">## [9] multi_predict.default*     </span></span>
+<span><span class="co">## see '?methods' for accessing help and source code</span></span></code></pre>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span>
-<span class="co"># For xgboost, `trees` are cheap to evaluate: </span>
-<span class="fu">parsnip</span><span class="fu">:::</span><span class="va"><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict._xgb.Booster</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/formals.html" class="external-link">formals</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "object"   "new_data" "type"     "trees"    "..."</span></code></pre>
+<code class="sourceCode R"><span><span class="co"># There are arguments for the parameter(s) that can create multiple predictions.</span></span>
+<span><span class="co"># For xgboost, `trees` are cheap to evaluate: </span></span>
+<span><span class="fu">parsnip</span><span class="fu">:::</span><span class="va"><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict._xgb.Booster</a></span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/formals.html" class="external-link">formals</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "object"   "new_data" "type"     "trees"    "..."</span></span></code></pre>
 <p>The same feature does not exist for recipes though.</p>
 </div>
 <div class="section level2">
@@ -134,62 +134,62 @@
 <p>When tuning a recipe and a model, it makes sense to avoid <em>recreating</em> the recipe for each model.</p>
 <p>For example, suppose that <a href="https://en.wikipedia.org/wiki/Isomap" class="external-link">Isomap multi-dimensional scaling</a> is used to pre-process the data prior to tuning a K-nearest neighbor regression:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Chicago</span><span class="op">)</span>
-<span class="va">iso_rec</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">ridership</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Chicago</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_isomap.html" class="external-link">step_isomap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_terms <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">knn_mod</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/nearest_neighbor.html" class="external-link">nearest_neighbor</a></span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, weight_func <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Chicago</span><span class="op">)</span></span>
+<span><span class="va">iso_rec</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">ridership</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Chicago</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_dummy.html" class="external-link">step_dummy</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_nominal</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_isomap.html" class="external-link">step_isomap</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_terms <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">knn_mod</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/nearest_neighbor.html" class="external-link">nearest_neighbor</a></span><span class="op">(</span>neighbors <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, weight_func <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kknn"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span></code></pre></div>
 <p>With the following grid:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">grid</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/num_comp.html" class="external-link">num_terms</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://dials.tidymodels.org/reference/neighbors.html" class="external-link">neighbors</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://dials.tidymodels.org/reference/weight_func.html" class="external-link">weight_func</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">num_terms</span>, <span class="va">neighbors</span>, <span class="va">weight_func</span><span class="op">)</span>
-<span class="va">grid</span> </code></pre></div>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 350 × 3</span></span>
-<span class="co">##    num_terms neighbors weight_func </span>
-<span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="co">## <span style="color: #BCBCBC;"> 1</span>         1         1 biweight    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 2</span>         1         1 cos         </span>
-<span class="co">## <span style="color: #BCBCBC;"> 3</span>         1         1 epanechnikov</span>
-<span class="co">## <span style="color: #BCBCBC;"> 4</span>         1         1 inv         </span>
-<span class="co">## <span style="color: #BCBCBC;"> 5</span>         1         1 rectangular </span>
-<span class="co">## <span style="color: #BCBCBC;"> 6</span>         1         1 triangular  </span>
-<span class="co">## <span style="color: #BCBCBC;"> 7</span>         1         1 triweight   </span>
-<span class="co">## <span style="color: #BCBCBC;"> 8</span>         1         2 biweight    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 9</span>         1         2 cos         </span>
-<span class="co">## <span style="color: #BCBCBC;">10</span>         1         2 epanechnikov</span>
-<span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></code></pre>
+<code class="sourceCode R"><span><span class="va">grid</span> <span class="op">&lt;-</span> </span>
+<span>  <span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="fu"><a href="https://dials.tidymodels.org/reference/num_comp.html" class="external-link">num_terms</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://dials.tidymodels.org/reference/neighbors.html" class="external-link">neighbors</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://dials.tidymodels.org/reference/weight_func.html" class="external-link">weight_func</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_regular.html" class="external-link">grid_regular</a></span><span class="op">(</span>levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">7</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">num_terms</span>, <span class="va">neighbors</span>, <span class="va">weight_func</span><span class="op">)</span></span>
+<span><span class="va">grid</span> </span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 350 × 3</span></span></span>
+<span><span class="co">##    num_terms neighbors weight_func </span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>         1         1 biweight    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>         1         1 cos         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>         1         1 epanechnikov</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>         1         1 inv         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>         1         1 rectangular </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>         1         1 triangular  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>         1         1 triweight   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         1         2 biweight    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         1         2 cos         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>         1         2 epanechnikov</span></span>
+<span><span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></span></code></pre>
 <p>To evaluate these 350 candidate models, we would have to compute the same recipe 70 times <em>per resample</em>. Since Isomap is expensive, this is really inefficient.</p>
 <p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:</p>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 5 × 2</span></span>
-<span class="co">##   num_terms data             </span>
-<span class="co">##       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           </span>
-<span class="co">## <span style="color: #BCBCBC;">1</span>         1 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;">2</span>         3 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;">3</span>         5 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;">4</span>         7 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span>
-<span class="co">## <span style="color: #BCBCBC;">5</span>         9 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
+<span><span class="co">##   num_terms data             </span></span>
+<span><span class="co">##       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span>         1 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span>         3 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span>         5 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span>         7 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span>         9 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span></code></pre>
 <p>Only 5 recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with <code>num_terms = 1</code> is created, the model parameters are iteratively tuned:</p>
-<pre><code><span class="co">## <span style="color: #949494;"># A tibble: 70 × 2</span></span>
-<span class="co">##    neighbors weight_func </span>
-<span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="co">## <span style="color: #BCBCBC;"> 1</span>         1 biweight    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 2</span>         1 cos         </span>
-<span class="co">## <span style="color: #BCBCBC;"> 3</span>         1 epanechnikov</span>
-<span class="co">## <span style="color: #BCBCBC;"> 4</span>         1 inv         </span>
-<span class="co">## <span style="color: #BCBCBC;"> 5</span>         1 rectangular </span>
-<span class="co">## <span style="color: #BCBCBC;"> 6</span>         1 triangular  </span>
-<span class="co">## <span style="color: #BCBCBC;"> 7</span>         1 triweight   </span>
-<span class="co">## <span style="color: #BCBCBC;"> 8</span>         2 biweight    </span>
-<span class="co">## <span style="color: #BCBCBC;"> 9</span>         2 cos         </span>
-<span class="co">## <span style="color: #BCBCBC;">10</span>         2 epanechnikov</span>
-<span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></code></pre>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 70 × 2</span></span></span>
+<span><span class="co">##    neighbors weight_func </span></span>
+<span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span>         1 biweight    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span>         1 cos         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span>         1 epanechnikov</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span>         1 inv         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span>         1 rectangular </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span>         1 triangular  </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span>         1 triweight   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         2 biweight    </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         2 cos         </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span>         2 epanechnikov</span></span>
+<span><span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></span></code></pre>
 <p>The same will be true for post-processing parameters being tuned. For each unique set of recipe and model parameters, the post-processing parameters will be evaluated without unnecessary re-fitting.</p>
 <p>Also, when using a model formula, the model matrix is only created once per resample.</p>
 </div>
@@ -200,32 +200,32 @@
 <p>The <code>foreach</code> package is used to facilitate parallel computations. <code>foreach</code> can use a variety of technologies to share the computations and the choice of technology is determined by which <em>parallel backend</em> package is chosen (aka the <code>do{technology}</code> packages). For example, the <code>doMC</code> package uses the forking mechanism on *unix systems to split the computations across multiple cores. As of this writing, the backend packages are <code>doFuture</code>, <code>doMC</code>, <code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>, <code>doRNG</code>, <code>doSNOW</code>, and <code>doAzureParallel</code> (GitHub only). Of these, <code>doFuture</code> and <code>doParallel</code> are probably the most comprehensive and best supported.</p>
 <p>Registering a parallel backend is also somewhat dependent of the package. For <code>doParallel</code>, one could use:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span>
-<span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Other options exist in <code>doParallel</code>.</p>
 <p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html" class="external-link">declare the method</a>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doFuture.futureverse.org" class="external-link">doFuture</a></span><span class="op">)</span>
-<span class="fu">registerDoFuture</span><span class="op">(</span><span class="op">)</span>
-<span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span>
-<span class="fu">plan</span><span class="op">(</span><span class="va">cluster</span>, workers <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doFuture.futureverse.org" class="external-link">doFuture</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://doFuture.futureverse.org/reference/registerDoFuture.html" class="external-link">registerDoFuture</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">cluster</span>, workers <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking <em>tends</em> to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the <code>pkg</code> option in <code><a href="../../reference/control_grid.html">control_grid()</a></code>.</p>
 <p>Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span>
-
-<span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="co"># Bad since num_pcs might not be found by a worker process</span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pca.html" class="external-link">step_pca</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="va">num_pcs</span><span class="op">)</span>
-
-<span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="co"># Good since the value is injected into the object</span>
-  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pca.html" class="external-link">step_pca</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">num_pcs</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span></span>
+<span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co"># Bad since num_pcs might not be found by a worker process</span></span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pca.html" class="external-link">step_pca</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="va">num_pcs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="co"># Good since the value is injected into the object</span></span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pca.html" class="external-link">step_pca</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">num_pcs</span><span class="op">)</span></span></code></pre></div>
 <p>This issue is likely to occur if <code><a href="https://tidyselect.r-lib.org/reference/one_of.html" class="external-link">dplyr::one_of()</a></code> is used as a sector.</p>
 <p>Also note that almost all of the logging provided by <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel. Again, this is dependent on the backend package and technology being used.</p>
 </div>
@@ -245,7 +245,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
   </div></footer>
