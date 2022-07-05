@@ -53,10 +53,10 @@ reference:
     - coord_obs_pred
     - conf_mat_resampled
     - example_ames_knn
-    - show_notes
   - title: Developer functions
     contents:
     - merge.recipe
     - parameters.workflow
     - message_wrap
     - .use_case_weights_with_yardstick
+    - .stash_last_result
