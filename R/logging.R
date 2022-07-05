@@ -68,7 +68,7 @@ siren <- function(x, type = "info") {
   types <- names(tune_color$message)
   type <- match.arg(type, types)
 
-  msg <- glue::glue(x)
+  msg <- glue::glue(x, .trim = FALSE)
 
   symb <- dplyr::case_when(
     type == "warning" ~ tune_color$symbol$warning("!"),
@@ -128,10 +128,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
     notes <- dplyr::bind_rows(notes, wrn_msg)
 
-    wrn_msg <- glue::glue_collapse(
-      paste0(loc, ": ", wrn_msg$note),
-      width = options()$width - 5
-    )
+    wrn_msg <- format_msg(loc, wrn_msg$note)
     tune_log(control2, split, wrn_msg, type = "warning")
   }
   if (inherits(res$res, "try-error")) {
@@ -142,10 +139,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
     notes <- dplyr::bind_rows(notes, err_msg)
 
-    err_msg <- glue::glue_collapse(
-      paste0(loc, ": ", err_msg$note),
-      width = options()$width - 5
-    )
+    err_msg <- format_msg(loc, err_msg$note)
     tune_log(control2, split, err_msg, type = "danger")
   } else {
     if (!bad_only) {
@@ -153,6 +147,22 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     }
   }
   notes
+}
+
+format_msg <- function(loc, msg) {
+  msg <- trimws(msg, "left")
+  # truncate by line
+  by_line <- strsplit(msg, split = "\n")[[1]]
+  multi_line <- length(unlist(by_line)) > 1
+  # A tad of indentation
+  if (multi_line) {
+    by_line <- purrr::map(by_line, ~ paste0("  ", .x))
+  }
+  by_line <- purrr::map(by_line, glue::glue_collapse, width = options()$width - 5)
+  # reform message
+  msg <- paste0(by_line, collapse = "\n")
+  sep <- ifelse(multi_line, ":\n", ": ")
+  paste0(loc, sep, msg)
 }
 
 #' @export

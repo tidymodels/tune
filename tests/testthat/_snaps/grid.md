@@ -6,11 +6,11 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
-      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
+      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
+      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # tune model only - failure in formula is caught elegantly
 
@@ -20,13 +20,15 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1: Error in `glubort()`:
-      ! The following predictors were ...
-      x Fold2: preprocessor 1/1: Error in `glubort()`:
-      ! The following predictors were ...
+      x Fold1: preprocessor 1/1:
+        Error in `get_all_predictors()`:
+        ! The following predictors were not found in `data`: 'z'.
+      x Fold2: preprocessor 1/1:
+        Error in `get_all_predictors()`:
+        ! The following predictors were not found in `data`: 'z'.
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # argument order gives errors for recipes
 

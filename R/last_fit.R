@@ -125,5 +125,7 @@ last_fit_workflow <- function(object, split, metrics, control) {
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
   class(res) <- unique(class(res))
+
+  .stash_last_result(res)
   res
 }

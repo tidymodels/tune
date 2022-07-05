@@ -151,3 +151,23 @@ new_bare_tibble <- function(x, ..., class = character()) {
 pretty.tune_results <- function(x, ...) {
   attr(x, "rset_info")$label
 }
+
+
+# ------------------------------------------------------------------------------
+
+#' Save most recent results to search path
+#' @param x An object.
+#' @return NULL, invisibly.
+#' @details The function will assign `x` to `.Last.tune.result` and put it in
+#' the search path.
+#' @export
+.stash_last_result <- function(x) {
+  if (! "org:r-lib" %in% search()) {
+    do.call("attach", list(new.env(), pos = length(search()),
+                           name = "org:r-lib"))
+  }
+  env <- as.environment("org:r-lib")
+  env$.Last.tune.result <- x
+  invisible(NULL)
+}
+
