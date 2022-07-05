@@ -70,6 +70,7 @@
 <li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> now accepts a <code>control</code> argument to allow users to control aspects of the last fitting process via <code><a href="../reference/control_last_fit.html">control_last_fit()</a></code> (<a href="https://github.com/tidymodels/tune/issues/399" class="external-link">#399</a>).</p></li>
 <li><p>Case weights are enabled for models that can use them.</p></li>
 <li><p>Some internal functions were exported for use by other packages.</p></li>
+<li><p>A check was added to <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> and <code><a href="../reference/last_fit.html">last_fit()</a></code> to give a more informative error message when a preprocessor or model have parameters marked for tuning.</p></li>
 <li><p><code><a href="../reference/outcome_names.html">outcome_names()</a></code> works correctly when recipe has NA roles. (<a href="https://github.com/tidymodels/tune/issues/518" class="external-link">#518</a>)</p></li>
 </ul></div>
     <div class="section level2">
