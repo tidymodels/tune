@@ -40,6 +40,8 @@ test_that("tune recipe only", {
   res_est <- collect_metrics(res)
   res_workflow <- res$.extracts[[1]]$.extracts[[1]]
 
+  expect_equal(res, .Last.tune.result)
+
   # Ensure tunable parameters in recipe are finalized
   num_comp <- res_workflow$pre$actions$recipe$recipe$steps[[2]]$num_comp
 
