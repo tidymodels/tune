@@ -12,7 +12,10 @@
 
 * Some internal functions were exported for use by other packages. 
 
+* A check was added to `fit_resamples()` and `last_fit()` to give a more informative error message when a preprocessor or model have parameters marked for tuning. 
+
 * `outcome_names()` works correctly when recipe has NA roles. (#518)
+
 
 # tune 0.2.0
 

@@ -123,3 +123,18 @@
       1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 3]>
       2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 3]>
 
+# `fit_resamples()` when objects need tuning
+
+    2 arguments have been tagged for tuning in these components: model_spec and recipe. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+
+---
+
+    1 argument has been tagged for tuning in this component: model_spec. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+
+---
+
+    1 argument has been tagged for tuning in this component: recipe. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+

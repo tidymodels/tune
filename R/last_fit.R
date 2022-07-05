@@ -105,6 +105,7 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL, control = cont
 }
 
 last_fit_workflow <- function(object, split, metrics, control) {
+  check_no_tuning(object)
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 

@@ -125,3 +125,18 @@ test_that("same results of last_fit() and fit() (#300)", {
     r_pred$.pred
   )
 })
+
+
+test_that("`last_fit()` when objects need tuning", {
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
+  spec_2 <- linear_reg()
+  wflow_1 <- workflow(rec, spec_1)
+  wflow_2 <- workflow(mpg ~ ., spec_1)
+  wflow_3 <- workflow(rec, spec_2)
+  split <- rsample::initial_split(mtcars)
+
+  expect_snapshot_error(last_fit(wflow_1, split))
+  expect_snapshot_error(last_fit(wflow_2, split))
+  expect_snapshot_error(last_fit(wflow_3, split))
+})
