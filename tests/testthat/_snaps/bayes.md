@@ -22,10 +22,10 @@
         }, save_pred = TRUE))
     Message
       x Fold1: preprocessor 1/1:
-        Error in `glubort()`:
+        Error in `get_all_predictors()`:
         ! The following predictors were not found in `data`: 'z'.
       x Fold2: preprocessor 1/1:
-        Error in `glubort()`:
+        Error in `get_all_predictors()`:
         ! The following predictors were not found in `data`: 'z'.
     Condition
       Warning:

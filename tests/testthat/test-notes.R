@@ -14,8 +14,9 @@ test_that("showing notes", {
 
   role_rec <-
     recipe(ridership ~ ., data = Chicago) %>%
-    step_date(date) %>%
-    update_role(date, new_role = "date")
+    step_date(date, id = "step_date") %>%
+    update_role(date, new_role = "date") %>%
+    update_role_requirements("date", bake = FALSE)
 
   role_bp_wflow <-
     base_wflow %>%
@@ -51,5 +52,6 @@ test_that("showing notes", {
     add_recipe(clean_rec)
 
   res_clean <- clean_wflow %>% fit_resamples(rs)
-  expect_snapshot(show_notes(res_clean))
+  expect_snapshot(show_notes(.Last.tune.result
+                             ))
 })
