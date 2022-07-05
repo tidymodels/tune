@@ -11,6 +11,8 @@ test_that("formula method", {
     parsnip::set_engine("lm") %>%
     last_fit(f, split)
 
+  expect_equal(res, .Last.tune.result)
+
   expect_equal(
     coef(extract_fit_engine(res$.workflow[[1]])),
     coef(lm_fit),
@@ -23,6 +25,8 @@ test_that("formula method", {
     nrow(predict(res$.workflow[[1]], rsample::testing(split))),
     nrow(rsample::testing(split))
   )
+
+
 })
 
 test_that("recipe method", {

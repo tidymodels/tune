@@ -1,5 +1,11 @@
 # tune (development version)
 
+* `show_notes()` is a new function that can better help understand warnings and errors. 
+
+* Logging that occurs using the tuning and resampling functions now show multi-line error messages and warnings in multiple lines. 
+
+* When `fit_resamples()`, `last_fit()`, `tune_grid()`, or `tune_bayes()` complete without error (even if models fail), the results are _also_ available via `.Last.tune.result`.
+
 * `last_fit()` now accepts a `control` argument to allow users to control aspects of the last fitting process via `control_last_fit()` (#399).
 
 * Case weights are enabled for models that can use them. 

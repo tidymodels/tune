@@ -109,13 +109,16 @@ fit_resamples.workflow <- function(object,
                                    control = control_resamples()) {
   empty_ellipses(...)
 
-  resample_workflow(
-    workflow = object,
-    resamples = resamples,
-    metrics = metrics,
-    control = control,
-    rng = TRUE
-  )
+  res <-
+    resample_workflow(
+      workflow = object,
+      resamples = resamples,
+      metrics = metrics,
+      control = control,
+      rng = TRUE
+    )
+  .stash_last_result(res)
+  res
 }
 
 # ------------------------------------------------------------------------------
