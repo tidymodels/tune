@@ -48,7 +48,7 @@ Suggests:
     testthat (>= 3.0.0),
     xml2
 Remotes:
-    tidymodels/parsnip@feature/case-weights,
+    tidymodels/parsnip,
     tidymodels/workflows,  
     tidymodels/yardstick
 Config/Needs/website:

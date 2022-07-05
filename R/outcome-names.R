@@ -34,7 +34,7 @@ outcome_names.formula <- outcome_names.terms
 #' @rdname outcome_names
 outcome_names.recipe <- function(x, ...) {
   y <- summary(x)
-  y$variable[y$role == "outcome"]
+  y$variable[y$role == "outcome" & !is.na(y$role)]
 }
 
 #' @export

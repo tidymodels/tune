@@ -293,6 +293,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
       resamples = data_folds
     )
   })
+
+  expect_s3_class(cars_res, "iteration_results")
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
@@ -311,6 +313,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
       control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
     )
   })
+
+  expect_s3_class(cars_res, "iteration_results")
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
@@ -440,6 +444,7 @@ test_that("too few starting values", {
 
   expect_snapshot(tune:::check_bayes_initial_size(5, 3, FALSE))
   expect_snapshot(tune:::check_bayes_initial_size(5, 3, TRUE))
+  expect_snapshot(tune:::check_bayes_initial_size(2, 2, FALSE))
 
   expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, FALSE))
   expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, TRUE))
