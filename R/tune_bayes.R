@@ -189,12 +189,16 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes()) {
-    tune_bayes_workflow(
-      object,
-      resamples = resamples, iter = iter, param_info = param_info,
-      metrics = metrics, objective = objective, initial = initial,
-      control = control, ...
-    )
+
+    res <-
+      tune_bayes_workflow(
+        object,
+        resamples = resamples, iter = iter, param_info = param_info,
+        metrics = metrics, objective = objective, initial = initial,
+        control = control, ...
+      )
+    .stash_last_result(res)
+    res
   }
 
 tune_bayes_workflow <-

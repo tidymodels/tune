@@ -3,37 +3,43 @@
     Code
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
-      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) ...
+      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
+      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # failure in variables tidyselect specification is caught elegantly
 
     Code
       result <- fit_resamples(workflow, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1: Error in `chr_as_locations()`:
-      ! Can't subset columns ...
-      x Fold2: preprocessor 1/1: Error in `chr_as_locations()`:
-      ! Can't subset columns ...
+      x Fold1: preprocessor 1/1:
+        Error in `chr_as_locations()`:
+        ! Can't subset columns that don't exist.
+        x Column `foobar` doesn't exist.
+      x Fold2: preprocessor 1/1:
+        Error in `chr_as_locations()`:
+        ! Can't subset columns that don't exist.
+        x Column `foobar` doesn't exist.
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # classification models generate correct error message
 
     Code
       result <- fit_resamples(log_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1, model 1/1: Error in `check_outcome()`:
-      ! For a classif...
-      x Fold2: preprocessor 1/1, model 1/1: Error in `check_outcome()`:
-      ! For a classif...
+      x Fold1: preprocessor 1/1, model 1/1:
+        Error in `check_outcome()`:
+        ! For a classification model, the outcome should be a factor.
+      x Fold2: preprocessor 1/1, model 1/1:
+        Error in `check_outcome()`:
+        ! For a classification model, the outcome should be a factor.
     Condition
       Warning:
-      All models failed. See the `.notes` column.
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # `tune_grid()` falls back to `fit_resamples()` - formula
 
@@ -116,4 +122,19 @@
         <list>          <chr> <list>           <list>          
       1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 3]>
       2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 3]>
+
+# `fit_resamples()` when objects need tuning
+
+    2 arguments have been tagged for tuning in these components: model_spec and recipe. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+
+---
+
+    1 argument has been tagged for tuning in this component: model_spec. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+
+---
+
+    1 argument has been tagged for tuning in this component: recipe. 
+    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 

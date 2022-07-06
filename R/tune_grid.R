@@ -289,14 +289,17 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
     rlang::abort(grid_msg)
   }
 
-  tune_grid_workflow(
-    object,
-    resamples = resamples,
-    grid = grid,
-    metrics = metrics,
-    pset = param_info,
-    control = control
-  )
+  res <-
+    tune_grid_workflow(
+      object,
+      resamples = resamples,
+      grid = grid,
+      metrics = metrics,
+      pset = param_info,
+      control = control
+    )
+  .stash_last_result(res)
+  res
 }
 
 # ------------------------------------------------------------------------------
@@ -341,7 +344,7 @@ tune_grid_workflow <- function(workflow,
   )
 
   if (is_cataclysmic(resamples)) {
-    rlang::warn("All models failed. See the `.notes` column.")
+    rlang::warn("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
   }
 
   outcomes <- reduce_all_outcome_names(resamples)

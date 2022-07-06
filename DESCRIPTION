@@ -18,27 +18,27 @@ Depends:
     R (>= 3.4)
 Imports:
     cli (>= 3.3.0),
-    dials (>= 0.0.10),
+    dials (>= 1.0.0),
     dplyr (>= 1.0.8),
     foreach,
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
     GPfit,
-    hardhat (>= 0.2.0.9000),
+    hardhat (>= 1.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 0.2.1.9001),
+    parsnip (>= 1.0.0),
     purrr (>= 0.3.2),
-    recipes (>= 0.2.0),
+    recipes (>= 1.0.0),
     rlang (>= 1.0.2),
-    rsample (>= 0.0.9),
+    rsample (>= 1.0.0),
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
     tidyselect (>= 1.1.2),
     vctrs (>= 0.4.1),
     withr,
-    workflows (>= 0.2.6.9001),
-    yardstick (>= 0.0.9.9000)
+    workflows (>= 1.0.0),
+    yardstick (>= 1.0.0)
 Suggests: 
     covr,
     kernlab,
@@ -47,20 +47,11 @@ Suggests:
     spelling,
     testthat (>= 3.0.0),
     xml2
-Remotes:
-    tidymodels/parsnip,
-    tidymodels/workflows,  
-    tidymodels/hardhat,
-    tidymodels/yardstick
-Config/Needs/website:
-    pkgdown,
-    tidymodels,
-    kknn,
-    doParallel,
+Config/Needs/website:pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
+Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0.9000
-Config/testthat/edition: 3

@@ -109,18 +109,23 @@ fit_resamples.workflow <- function(object,
                                    control = control_resamples()) {
   empty_ellipses(...)
 
-  resample_workflow(
-    workflow = object,
-    resamples = resamples,
-    metrics = metrics,
-    control = control,
-    rng = TRUE
-  )
+  res <-
+    resample_workflow(
+      workflow = object,
+      resamples = resamples,
+      metrics = metrics,
+      control = control,
+      rng = TRUE
+    )
+  .stash_last_result(res)
+  res
 }
 
 # ------------------------------------------------------------------------------
 
 resample_workflow <- function(workflow, resamples, metrics, control, rng) {
+  check_no_tuning(workflow)
+
   # `NULL` is the signal that we have no grid to tune with
   grid <- NULL
   pset <- NULL

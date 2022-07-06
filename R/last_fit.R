@@ -105,6 +105,7 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL, control = cont
 }
 
 last_fit_workflow <- function(object, split, metrics, control) {
+  check_no_tuning(object)
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 
@@ -124,5 +125,7 @@ last_fit_workflow <- function(object, split, metrics, control) {
   res$.extracts <- NULL
   class(res) <- c("last_fit", class(res))
   class(res) <- unique(class(res))
+
+  .stash_last_result(res)
   res
 }

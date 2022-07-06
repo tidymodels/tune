@@ -46,6 +46,7 @@ reference:
     - starts_with("collect")
     - filter_parameters
     - show_best
+    - show_notes
     - starts_with("select_")
     - starts_with("extract_")
     - starts_with("finalize")
@@ -58,3 +59,4 @@ reference:
     - parameters.workflow
     - message_wrap
     - .use_case_weights_with_yardstick
+    - .stash_last_result

@@ -11,6 +11,8 @@ test_that("formula method", {
     parsnip::set_engine("lm") %>%
     last_fit(f, split)
 
+  expect_equal(res, .Last.tune.result)
+
   expect_equal(
     coef(extract_fit_engine(res$.workflow[[1]])),
     coef(lm_fit),
@@ -23,6 +25,8 @@ test_that("formula method", {
     nrow(predict(res$.workflow[[1]], rsample::testing(split))),
     nrow(rsample::testing(split))
   )
+
+
 })
 
 test_that("recipe method", {
@@ -120,4 +124,19 @@ test_that("same results of last_fit() and fit() (#300)", {
     lf_obj$.predictions[[1]]$.pred,
     r_pred$.pred
   )
+})
+
+
+test_that("`last_fit()` when objects need tuning", {
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
+  spec_2 <- linear_reg()
+  wflow_1 <- workflow(rec, spec_1)
+  wflow_2 <- workflow(mpg ~ ., spec_1)
+  wflow_3 <- workflow(rec, spec_2)
+  split <- rsample::initial_split(mtcars)
+
+  expect_snapshot_error(last_fit(wflow_1, split))
+  expect_snapshot_error(last_fit(wflow_2, split))
+  expect_snapshot_error(last_fit(wflow_3, split))
 })
