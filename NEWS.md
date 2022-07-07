@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 
 
