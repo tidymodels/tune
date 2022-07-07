@@ -55,7 +55,16 @@
     <loc>https://tune.tidymodels.org/reference/control_grid.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/control_last_fit.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/coord_obs_pred.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/dot-stash_last_result.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/dot-use_case_weights_with_yardstick.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/empty_ellipses.html</loc>
@@ -113,6 +122,12 @@
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/show_best.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/show_notes.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/tune-internal-functions.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/tune_accessor.html</loc>
