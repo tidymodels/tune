@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 0.2.0.9002
+Version: 1.0.0.9000
 Authors@R: c(
     person("Max", "Kuhn", , "max@rstudio.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -47,7 +47,7 @@ Suggests:
     spelling,
     testthat (>= 3.0.0),
     xml2
-Config/Needs/website:pkgdown, tidymodels, kknn, doParallel, doFuture,
+Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8

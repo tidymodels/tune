@@ -1,5 +1,7 @@
 # tune (development version)
 
+# tune 1.0.0
+
 * `show_notes()` is a new function that can better help understand warnings and errors. 
 
 * Logging that occurs using the tuning and resampling functions now show multi-line error messages and warnings in multiple lines. 
