@@ -151,12 +151,12 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::ungroup()
 
   min_grid_df <-
-    dplyr::full_join(fit_only, grid, by = fixed_args) %>%
+    dplyr::full_join(fit_only, grid, by = fixed_args, multiple = "all") %>%
     dplyr::filter(..val != max_val) %>%
     dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
     dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) %>%
     dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, by = fixed_args) %>%
+    dplyr::full_join(fit_only, by = fixed_args, multiple = "all") %>%
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
