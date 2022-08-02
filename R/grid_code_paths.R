@@ -3,6 +3,7 @@ tune_grid_loop <- function(resamples,
                            workflow,
                            metrics,
                            control,
+                           backend_options,
                            rng) {
   fn_tune_grid_loop <- tune_grid_loop_tune
 
@@ -17,6 +18,7 @@ tune_grid_loop <- function(resamples,
     workflow,
     metrics,
     control,
+    backend_options,
     rng
   )
 
@@ -36,6 +38,7 @@ tune_grid_loop_tune <- function(resamples,
                                 workflow,
                                 metrics,
                                 control,
+                                backend_options,
                                 rng) {
   n_resamples <- nrow(resamples)
 
@@ -81,6 +84,7 @@ tune_grid_loop_agua <- function(resamples,
                                 workflow,
                                 metrics,
                                 control,
+                                backend_options,
                                 rng) {
   if (!rlang::is_installed("agua")) {
     rlang::abort("`agua` must be installed to use an h2o parsnip engine.")
@@ -99,9 +103,14 @@ tune_grid_loop_agua <- function(resamples,
   parallel_over <- parallel_over_finalize_agua(parallel_over)
 
   fn_tune_grid_loop_iter <- utils::getFromNamespace(
-    x = "tune_grid_loop_iter_h2o",
+    x = "tune_grid_loop_iter_agua",
     ns = "agua"
   )
+
+  parallelism <- backend_options$parallelism %||% 1L
+  fn_tune_grid_loop_iter <- purrr::partial(fn_tune_grid_loop_iter,
+                                           parallelism = parallelism)
+
 
   tune_grid_loop_impl(
     fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,

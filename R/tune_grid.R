@@ -249,7 +249,8 @@ tune_grid.default <- function(object, ...) {
 #' @rdname tune_grid
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
-                                 control = control_grid()) {
+                                 control = control_grid(),
+                                 backend_options = list()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -273,14 +274,17 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     param_info = param_info,
     grid = grid,
     metrics = metrics,
-    control = control
+    control = control,
+    backend_options = backend_options
   )
 }
 
 #' @export
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
-                               grid = 10, metrics = NULL, control = control_grid()) {
+                               grid = 10, metrics = NULL,
+                               control = control_grid(),
+                               backend_options = list()) {
   empty_ellipses(...)
 
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
@@ -296,7 +300,8 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
       grid = grid,
       metrics = metrics,
       pset = param_info,
-      control = control
+      control = control,
+      backend_options = backend_options
     )
   .stash_last_result(res)
   res
@@ -310,6 +315,7 @@ tune_grid_workflow <- function(workflow,
                                metrics = NULL,
                                pset = NULL,
                                control = control_grid(),
+                               backend_options = list(),
                                rng = TRUE) {
   check_rset(resamples)
 
@@ -340,6 +346,7 @@ tune_grid_workflow <- function(workflow,
     workflow = workflow,
     metrics = metrics,
     control = control,
+    backend_options = backend_options,
     rng = rng
   )
 
