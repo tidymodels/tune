@@ -17,6 +17,7 @@
 #'  parameter sets to be created automatically.
 #' @param metrics A [yardstick::metric_set()] or `NULL`.
 #' @param control An object used to modify the tuning process.
+#' @param backend_options A list of options for specific tuning backends.
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
