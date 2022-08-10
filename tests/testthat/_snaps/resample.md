@@ -15,11 +15,11 @@
       result <- fit_resamples(workflow, folds, control = control)
     Message
       x Fold1: preprocessor 1/1:
-        Error in `fit()`:
+        Error in `chr_as_locations()`:
         ! Can't subset columns that don't exist.
         x Column `foobar` doesn't exist.
       x Fold2: preprocessor 1/1:
-        Error in `fit()`:
+        Error in `chr_as_locations()`:
         ! Can't subset columns that don't exist.
         x Column `foobar` doesn't exist.
     Condition
