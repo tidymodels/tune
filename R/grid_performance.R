@@ -26,7 +26,27 @@ metrics_info <- function(x) {
   res
 }
 
-estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level) {
+#' Internal functions used by other tidymodels packages
+#'
+#' These are not to be meant to be invoked directly by users.
+#' @param dat A data set.
+#' @param metric A metric set.
+#' @param param_names A character vector of tuning parameter names.
+#' @param outcome_name A character string for the column of `dat` that is the
+#' outcome.
+#' @param event_level A logical passed from the control function.
+#' @param x A character vector of package names.
+#' @param .expr Code to execute.
+#' @param ... Object to pass to the internal `tune_log()` function.
+#' @param bad_only A logical for whether warnings and errors should be caught.
+#' @param notes Character data to add to the logging.
+#' @param workflow A workflow.
+#' @param grid_preprocessor A tibble with parameter information.
+#' @param new_data A data frame or matrix of predictors to process.
+#' @keywords internal
+#' @name tune-internal-functions
+#' @export
+.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level) {
   if (inherits(dat, "try-error")) {
     return(NULL)
   }
@@ -38,7 +58,7 @@ estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level
   if (length(outcome_name) > 1L) {
     rlang::abort(paste0(
       "Internal error: Multiple outcomes are not ",
-      "supported in `estimate_metrics()`."
+      "supported in `.estimate_metrics()`."
     ))
   }
 

@@ -36,7 +36,7 @@ pre_proc <-
   step_texthash(review, signed = TRUE) %>%
   step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
   step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
-  step_YeoJohnson(one_of(!!basics)) %>%
+  step_YeoJohnson(all_of(!!basics)) %>%
   step_zv(all_predictors())
 
 boost_mod <-

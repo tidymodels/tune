@@ -96,8 +96,9 @@ parallel, register a parallel backend function. See the documentation for
 \code{\link[foreach:foreach]{foreach::foreach()}} for examples.
 
 For the most part, warnings generated during training are shown as they occur
-and are associated with a specific resample when \code{control(verbose = TRUE)}.
-They are (usually) not aggregated until the end of processing.
+and are associated with a specific resample when
+\code{control_bayes(verbose = TRUE)}. They are (usually) not aggregated until the
+end of processing.
 
 For Bayesian optimization, parallel processing is used to estimate the
 resampled performance values once a new candidate set of values are estimated.
@@ -166,8 +167,8 @@ parameter combination).
 \section{Obtaining Predictions}{
 
 
-When \code{control(save_preds = TRUE)}, the output tibble contains a list column
-called \code{.predictions} that has the out-of-sample predictions for each
+When \code{control_bayes(save_pred = TRUE)}, the output tibble contains a list
+column called \code{.predictions} that has the out-of-sample predictions for each
 parameter combination in the grid and each fold (which can be very large).
 
 The elements of the tibble are tibbles with columns for the tuning

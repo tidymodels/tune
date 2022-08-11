@@ -132,7 +132,7 @@ submod_only <- function(grid) {
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
   fit_only$.submodels <- list(sub_mods)
-  dplyr::select(fit_only, dplyr::one_of(names(grid)), .submodels)
+  dplyr::select(fit_only, dplyr::all_of(names(grid)), .submodels)
 }
 
 # Assumes only one sub-model parameter and that the fitted one is the
@@ -150,13 +150,29 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::summarize(max_val = max(..val, na.rm = TRUE)) %>%
     dplyr::ungroup()
 
-  min_grid_df <-
-    dplyr::full_join(fit_only, grid, by = fixed_args) %>%
+  if (utils::packageVersion("dplyr") >= "1.0.99.9000") {
+    min_grid_df <-
+      dplyr::full_join(fit_only, grid, by = fixed_args, multiple = "all")
+  } else {
+    min_grid_df <-
+      dplyr::full_join(fit_only, grid, by = fixed_args)
+  }
+
+  min_grid_df <- min_grid_df %>%
     dplyr::filter(..val != max_val) %>%
     dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
     dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) %>%
-    dplyr::ungroup() %>%
-    dplyr::full_join(fit_only, by = fixed_args) %>%
+    dplyr::ungroup()
+
+  if (utils::packageVersion("dplyr") >= "1.0.99.9000") {
+    min_grid_df <- min_grid_df %>%
+      dplyr::full_join(fit_only, by = fixed_args, multiple = "all")
+  } else {
+    min_grid_df <- min_grid_df %>%
+      dplyr::full_join(fit_only, by = fixed_args)
+  }
+
+  min_grid_df <- min_grid_df %>%
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
@@ -166,7 +182,7 @@ submod_and_others <- function(grid, fixed_args) {
       purrr::map(1:nrow(min_grid_df), ~ list())
     )
 
-  dplyr::select(min_grid_df, dplyr::one_of(orig_names), .submodels) %>%
+  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) %>%
     dplyr::mutate_if(is.factor, as.character)
 }
 

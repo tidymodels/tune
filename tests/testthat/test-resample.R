@@ -11,6 +11,8 @@ test_that("`fit_resamples()` returns a `resample_result` object", {
     fit_resamples(mpg ~ ., folds)
 
   expect_s3_class(result, "resample_results")
+
+  expect_equal(result, .Last.tune.result)
 })
 
 test_that("can use `fit_resamples()` with a formula", {
@@ -370,3 +372,19 @@ test_that("retain extra attributes", {
     )
   )
 })
+
+
+test_that("`fit_resamples()` when objects need tuning", {
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
+  spec_2 <- linear_reg()
+  wflow_1 <- workflow(rec, spec_1)
+  wflow_2 <- workflow(mpg ~ ., spec_1)
+  wflow_3 <- workflow(rec, spec_2)
+  rs <- rsample::vfold_cv(mtcars)
+
+  expect_snapshot_error(fit_resamples(wflow_1, rs))
+  expect_snapshot_error(fit_resamples(wflow_2, rs))
+  expect_snapshot_error(fit_resamples(wflow_3, rs))
+})
+

@@ -47,8 +47,9 @@
 #' [foreach::foreach()] for examples.
 #'
 #' For the most part, warnings generated during training are shown as they occur
-#' and are associated with a specific resample when `control(verbose = TRUE)`.
-#' They are (usually) not aggregated until the end of processing.
+#' and are associated with a specific resample when
+#' `control_bayes(verbose = TRUE)`. They are (usually) not aggregated until the
+#' end of processing.
 #'
 #' For Bayesian optimization, parallel processing is used to estimate the
 #' resampled performance values once a new candidate set of values are estimated.
@@ -109,9 +110,9 @@
 #'
 #' @section Obtaining Predictions:
 #'
-#' When `control(save_preds = TRUE)`, the output tibble contains a list column
-#'  called `.predictions` that has the out-of-sample predictions for each
-#'  parameter combination in the grid and each fold (which can be very large).
+#' When `control_bayes(save_pred = TRUE)`, the output tibble contains a list
+#' column called `.predictions` that has the out-of-sample predictions for each
+#' parameter combination in the grid and each fold (which can be very large).
 #'
 #' The elements of the tibble are tibbles with columns for the tuning
 #' parameters, the row number from the original data object (`.row`), the
@@ -188,12 +189,16 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes()) {
-    tune_bayes_workflow(
-      object,
-      resamples = resamples, iter = iter, param_info = param_info,
-      metrics = metrics, objective = objective, initial = initial,
-      control = control, ...
-    )
+
+    res <-
+      tune_bayes_workflow(
+        object,
+        resamples = resamples, iter = iter, param_info = param_info,
+        metrics = metrics, objective = objective, initial = initial,
+        control = control, ...
+      )
+    .stash_last_result(res)
+    res
   }
 
 tune_bayes_workflow <-
@@ -228,10 +233,6 @@ tune_bayes_workflow <-
     # we add on an `iteration_results` class later.
     unsummarized <- new_bare_tibble(unsummarized)
 
-    mean_stats <- estimate_tune_results(unsummarized)
-
-    check_time(start_time, control$time_limit)
-
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
 
@@ -246,6 +247,10 @@ tune_bayes_workflow <-
 
       return(out)
     })
+
+    mean_stats <- estimate_tune_results(unsummarized)
+
+    check_time(start_time, control$time_limit)
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
@@ -265,7 +270,7 @@ tune_bayes_workflow <-
 
       set.seed(control$seed[1] + i)
       gp_mod <-
-        catch_and_log(
+        .catch_and_log(
           fit_gp(
             mean_stats %>% dplyr::select(-.iter),
             pset = param_info,
@@ -290,7 +295,7 @@ tune_bayes_workflow <-
         pred_gp(
           gp_mod, param_info,
           control = control,
-          current = mean_stats %>% dplyr::select(dplyr::one_of(param_info$id))
+          current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
         )
 
       check_time(start_time, control$time_limit)
@@ -440,7 +445,7 @@ fit_gp <- function(dat, pset, metric, control, ...) {
     dat %>%
     dplyr::filter(.metric == metric) %>%
     check_gp_data() %>%
-    dplyr::select(dplyr::one_of(pset$id), mean)
+    dplyr::select(dplyr::all_of(pset$id), mean)
 
   x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
 
