@@ -19,7 +19,7 @@
 #'  more details). Not required if a single metric exists in `x`. If there are
 #'  multiple metric and none are given, the first in the metric set is used (and
 #'  a warning is issued).
-#' @param n An integer for the number of top results/rows to return.
+#' @param n An integer for the maximum number of top results/rows to return.
 #' @param limit The limit of loss of performance that is acceptable (in percent
 #' units). See details below.
 #' @param ... For [select_by_one_std_err()] and [select_by_pct_loss()], this
@@ -32,6 +32,11 @@
 #' For percent loss, suppose the best model has an RMSE of 0.75 and a simpler
 #' model has an RMSE of 1. The percent loss would be `(1.00 - 0.75)/1.00 * 100`,
 #' or 25 percent. Note that loss will always be non-negative.
+#'
+#' For racing results (from the \pkg{finetune} package), it is best to only
+#' report configurations that finished the race (i.e., were completely
+#' resampled). Comparing performance metrics for configurations averaged with
+#' different resamples is likely to lead to inappropriate results.
 #' @references
 #' Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
 #' _Classification and Regression Trees._ Monterey, CA: Wadsworth.
@@ -102,6 +107,21 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
   summary_res %>% dplyr::slice(show_ind)
 }
 
+
+#' @export
+#' @rdname show_best
+show_best.tune_race <- function(x, metric = NULL, n = 5, ...) {
+  x <- dplyr::select(x, -.order)
+  final_configs <- race_subset(x)
+  res <- NextMethod(metric = metric, n = Inf, ...)
+  res$.ranked <- 1:nrow(res)
+  res <- dplyr::inner_join(res, final_configs, by = ".config")
+  res$.ranked <- NULL
+  n <- min(n, nrow(res))
+  res[1:n,]
+}
+
+
 choose_metric <- function(metric, x) {
   if (is.null(metric)) {
     metric_vals <- .get_tune_metric_names(x)
@@ -147,6 +167,9 @@ select_best.tune_results <- function(x, metric = NULL, ...) {
   }
   res
 }
+
+# No specific racing method is required for `select_best()` since `show_best()`
+# will return appropriate results.
 
 #' @export
 #' @rdname show_best

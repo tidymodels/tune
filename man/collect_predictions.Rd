@@ -4,6 +4,7 @@
 \alias{collect_predictions}
 \alias{collect_predictions.default}
 \alias{collect_predictions.tune_results}
+\alias{collect_predictions.tune_race}
 \alias{collect_metrics}
 \alias{collect_metrics.tune_results}
 \alias{collect_metrics.tune_race}
@@ -17,11 +18,19 @@ collect_predictions(x, ...)
 
 \method{collect_predictions}{tune_results}(x, summarize = FALSE, parameters = NULL, ...)
 
+\method{collect_predictions}{tune_race}(
+  x,
+  summarize = FALSE,
+  parameters = NULL,
+  complete = FALSE,
+  ...
+)
+
 collect_metrics(x, ...)
 
 \method{collect_metrics}{tune_results}(x, summarize = TRUE, ...)
 
-\method{collect_metrics}{tune_race}(x, summarize = TRUE, ...)
+\method{collect_metrics}{tune_race}(x, summarize = TRUE, complete = FALSE, ...)
 
 collect_notes(x, ...)
 
@@ -42,6 +51,10 @@ types, the method of summarizing predictions is detailed below.}
 used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
 if \code{tune("my_param")} was used).}
+
+\item{complete}{A logical: should we return the complete set of results or
+just the model configurations that made it to the end of the race (the
+default).}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
@@ -78,6 +91,11 @@ summarize.
 \code{\link[=collect_notes]{collect_notes()}} returns a tibble with columns for the resampling
 indicators, the location (preprocessor, model, etc.), type (error or warning),
 and the notes.
+
+For racing results (from the \pkg{finetune} package), it is best to only
+collect model configurations that finished the race (i.e., were completely
+resampled). Comparing performance metrics for configurations averaged with
+different resamples is likely to lead to inappropriate results.
 }
 \description{
 Obtain and format results produced by tuning functions

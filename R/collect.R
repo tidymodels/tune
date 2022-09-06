@@ -11,6 +11,9 @@
 #'  used to filter the predicted values before processing. This tibble should
 #'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
 #'  if `tune("my_param")` was used).
+#' @param complete A logical: should we return the complete set of results or
+#' just the model configurations that made it to the end of the race (the
+#' default).
 #' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
@@ -46,6 +49,11 @@
 #' [collect_notes()] returns a tibble with columns for the resampling
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
+#'
+#' For racing results (from the \pkg{finetune} package), it is best to only
+#' collect model configurations that finished the race (i.e., were completely
+#' resampled). Comparing performance metrics for configurations averaged with
+#' different resamples is likely to lead to inappropriate results.
 #' @examples
 #' \donttest{
 #' data("example_ames_knn")
@@ -132,6 +140,25 @@ collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = 
   }
   x
 }
+
+
+#' @export
+#' @rdname collect_predictions
+collect_predictions.tune_race <-
+  function(x,
+           summarize = FALSE,
+           parameters = NULL,
+           complete = FALSE,
+           ...) {
+    final_configs <- race_subset(x)
+    res <- NextMethod()
+    if (!complete) {
+      final_configs <- race_subset(x)
+      res <- dplyr::inner_join(res, final_configs, by = ".config")
+    }
+    res
+  }
+
 
 filter_predictions <- function(x, parameters) {
   if (is.null(parameters)) {
@@ -349,14 +376,31 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_race <- function(x, summarize = TRUE, ...) {
+collect_metrics.tune_race <- function(x, summarize = TRUE, complete = FALSE, ...) {
+
   x <- dplyr::select(x, -.order)
   if (summarize) {
     res <- estimate_tune_results(x)
   } else {
     res <- collector(x, coll_col = ".metrics")
   }
+  if (!complete) {
+    final_configs <- race_subset(x)
+    res <- dplyr::inner_join(res, final_configs, by = ".config")
+  }
   res
+}
+
+# Only return configurations that were completely resampled
+race_subset <- function(x) {
+  x <- dplyr::select(x, -dplyr::any_of(".order"))
+  full_res <- estimate_tune_results(x)
+  # At least one configuration was completely resampled
+  max_b <- max(full_res$n)
+  final_configs <- dplyr::filter(full_res, n == max_b)
+  final_configs <- dplyr::distinct(final_configs, .config)
+  final_configs <- dplyr::select(final_configs, .config)
+  final_configs
 }
 
 

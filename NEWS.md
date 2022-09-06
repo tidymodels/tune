@@ -1,5 +1,9 @@
 # tune (development version)
 
+* For racing: 
+ - `collect_metrics()` and `collect_predictions()` have a `'complete'` argument that only returns results for model configurations that were fully resampled. 
+ - `select_best()` and `show_best()` now only show results for model configurations that were fully resampled. 
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 

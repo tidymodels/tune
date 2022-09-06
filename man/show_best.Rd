@@ -4,6 +4,7 @@
 \alias{show_best}
 \alias{show_best.default}
 \alias{show_best.tune_results}
+\alias{show_best.tune_race}
 \alias{select_best}
 \alias{select_best.default}
 \alias{select_best.tune_results}
@@ -20,6 +21,8 @@ show_best(x, ...)
 \method{show_best}{default}(x, ...)
 
 \method{show_best}{tune_results}(x, metric = NULL, n = 5, ...)
+
+\method{show_best}{tune_race}(x, metric = NULL, n = 5, ...)
 
 select_best(x, ...)
 
@@ -54,7 +57,7 @@ more details). Not required if a single metric exists in \code{x}. If there are
 multiple metric and none are given, the first in the metric set is used (and
 a warning is issued).}
 
-\item{n}{An integer for the number of top results/rows to return.}
+\item{n}{An integer for the maximum number of top results/rows to return.}
 
 \item{limit}{The limit of loss of performance that is acceptable (in percent
 units). See details below.}
@@ -80,6 +83,11 @@ performance is within some acceptable limit.
 For percent loss, suppose the best model has an RMSE of 0.75 and a simpler
 model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100},
 or 25 percent. Note that loss will always be non-negative.
+
+For racing results (from the \pkg{finetune} package), it is best to only
+report configurations that finished the race (i.e., were completely
+resampled). Comparing performance metrics for configurations averaged with
+different resamples is likely to lead to inappropriate results.
 }
 \examples{
 \donttest{
