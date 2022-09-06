@@ -340,8 +340,6 @@ compute_grid_info_model <- function(workflow,
   spec <- extract_spec_parsnip(workflow)
   out <- min_grid(spec, grid)
 
-  parameter_names_model <- parameters_model[["id"]]
-
   n_fit_models <- nrow(out)
   seq_fit_models <- seq_len(n_fit_models)
 
