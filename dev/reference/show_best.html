@@ -175,7 +175,6 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>    19 inv         0.117     1     4 rmse    standa… 0.075<span style="text-decoration: underline;">8</span>    10 0.003<span style="text-decoration: underline;">60</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 2 more variables: .config &lt;chr&gt;, .iter &lt;int&gt;, and abbreviated</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   variable names ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">select_best</span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rsq"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
@@ -195,7 +194,6 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    33 triweight   0.511    10     3 rmse    standa… 0.072<span style="text-decoration: underline;">8</span>    10 0.003<span style="text-decoration: underline;">37</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: .config &lt;chr&gt;, .best &lt;dbl&gt;, .bound &lt;dbl&gt;, and</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   abbreviated variable names ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Now find the least complex model that has no more than a 5% loss of RMSE:</span></span></span>
 <span class="r-in"><span><span class="fu">select_by_pct_loss</span><span class="op">(</span></span></span>
@@ -209,7 +207,6 @@ or 25 percent. Note that loss will always be non-negative.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    33 triweight   0.511    10     3 rmse    standa… 0.072<span style="text-decoration: underline;">8</span>    10 0.003<span style="text-decoration: underline;">37</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 3 more variables: .config &lt;chr&gt;, .best &lt;dbl&gt;, .loss &lt;dbl&gt;, and</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   abbreviated variable names ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

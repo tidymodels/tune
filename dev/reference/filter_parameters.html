@@ -156,7 +156,6 @@ for the object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span>    33 triweig…   0.511    10     3 rsq     standa… 0.842     10 0.012<span style="text-decoration: underline;">4</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: .config &lt;chr&gt;, and abbreviated variable names</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">filter_parameters</span><span class="op">(</span><span class="va">ames_grid_search</span>, <span class="va">weight_func</span> <span class="op">==</span> <span class="st">"rank"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -171,7 +170,6 @@ for the object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     5 rank        0.411     2     7 rsq     standa… 0.833     10 0.012<span style="text-decoration: underline;">7</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: .config &lt;chr&gt;, and abbreviated variable names</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">rank_only</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>weight_func <span class="op">=</span> <span class="st">"rank"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">filter_parameters</span><span class="op">(</span><span class="va">ames_grid_search</span>, parameters <span class="op">=</span> <span class="va">rank_only</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
@@ -187,7 +185,6 @@ for the object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     5 rank        0.411     2     7 rsq     standa… 0.833     10 0.012<span style="text-decoration: underline;">7</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1 more variable: .config &lt;chr&gt;, and abbreviated variable names</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## -----------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Keep only the results from the numerically best combination</span></span></span>
@@ -209,7 +206,6 @@ for the object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    32 triangu…   0.165     9    15 rsq     standa… 0.826     10 0.013<span style="text-decoration: underline;">0</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 30 more rows, 2 more variables: .config &lt;chr&gt;, .iter &lt;int&gt;, and</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   abbreviated variable names ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows, and `colnames()` to see all variable names</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">best_param</span> <span class="op">&lt;-</span> <span class="fu"><a href="show_best.html">select_best</a></span><span class="op">(</span><span class="va">ames_iter_search</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ames_iter_search</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
@@ -222,7 +218,6 @@ for the object.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    33 triweight   0.511    10     3 rsq     standa… 0.842     10 0.012<span style="text-decoration: underline;">4</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 2 more variables: .config &lt;chr&gt;, .iter &lt;int&gt;, and abbreviated</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   variable names ¹​weight_func, ²​dist_power, ³​.estimator</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

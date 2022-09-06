@@ -164,8 +164,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         1         2 biweight    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         1         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         1         2 epanechnikov</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></span></code></pre>
 <p>To evaluate these 350 candidate models, we would have to compute the same recipe 70 times <em>per resample</em>. Since Isomap is expensive, this is really inefficient.</p>
 <p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
@@ -190,8 +189,7 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         2 biweight    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         2 epanechnikov</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></span></code></pre>
 <p>The same will be true for post-processing parameters being tuned. For each unique set of recipe and model parameters, the post-processing parameters will be evaluated without unnecessary re-fitting.</p>
 <p>Also, when using a model formula, the model matrix is only created once per resample.</p>
 </div>
