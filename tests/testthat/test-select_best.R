@@ -207,3 +207,20 @@ test_that("percent loss", {
     select_by_pct_loss(mtcars, metric = "disp")
   })
 })
+
+
+
+test_that("show and select best with racing", {
+  anova_race <- readRDS(test_path("data", "anova_race.rds"))
+  expect_equal(nrow(show_best(anova_race, metric = "rmse")), 1)
+  expect_true(all(show_best(anova_race, metric = "rmse")$n == 20))
+  expect_equal(nrow(select_best(anova_race, metric = "rmse")), 1)
+  expect_equal(
+    nrow(select_by_pct_loss(anova_race, metric = "rmse", dist_power, limit = 10)),
+    1
+  )
+  expect_equal(
+    nrow(select_by_one_std_err(anova_race, metric = "rmse", dist_power)),
+    1
+  )
+})
