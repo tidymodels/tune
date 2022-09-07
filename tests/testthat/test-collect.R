@@ -63,7 +63,7 @@ test_that("`collect_predictions()`, un-averaged", {
   res <- collect_predictions(lm_splines)
   exp_res <-
     unnest(lm_splines %>% dplyr::select(.predictions, starts_with("id")),
-      cols = c(.predictions)
+           cols = c(.predictions)
     ) %>% dplyr::select(all_of(names(res)))
   expect_equal(res, exp_res)
 
@@ -186,3 +186,38 @@ test_that("collecting notes - last_fit", {
   expect_true(all(grepl("rank", nts$note)))
   expect_equal(names(nts), c("location", "type", "note"))
 })
+
+test_that("collecting metrics with racing", {
+  library(purrr)
+  anova_race <- readRDS(test_path("data", "anova_race.rds"))
+  expect_equal(nrow(collect_metrics(anova_race)), 2)
+  expect_equal(nrow(collect_metrics(anova_race, complete = TRUE)), 6)
+  expect_equal(nrow(collect_metrics(anova_race, summarize = FALSE)), 2 * 20)
+  expect_equal(
+    nrow(collect_metrics(anova_race, summarize = FALSE, complete = TRUE)),
+    nrow(map_dfr(anova_race$.metrics, ~ .x))
+  )
+})
+
+test_that("collecting predictions with racing", {
+  library(purrr)
+  library(dplyr)
+  anova_race <- readRDS(test_path("data", "anova_race.rds"))
+  expect_equal(
+    nrow(collect_predictions(anova_race, complete = FALSE, summarize = TRUE)),
+    nrow(mtcars) * 1 # 1 config x nrow(mtcars)
+  )
+  expect_equal(
+    nrow(collect_predictions(anova_race, complete = TRUE, summarize = TRUE)),
+    map_dfr(anova_race$.predictions, ~ .x) %>% distinct(.config, .row) %>% nrow()
+  )
+  expect_equal(
+    nrow(collect_predictions(anova_race, complete = FALSE, summarize = FALSE)),
+    nrow(mtcars) * 1 * 2 # 1 config x 2 repeats x nrow(mtcars)
+  )
+  expect_equal(
+    nrow(collect_predictions(anova_race, complete = TRUE, summarize = FALSE)),
+    nrow(map_dfr(anova_race$.predictions, ~ .x))
+  )
+})
+

@@ -150,8 +150,8 @@ collect_predictions.tune_race <-
            parameters = NULL,
            complete = FALSE,
            ...) {
-    final_configs <- race_subset(x)
-    res <- NextMethod()
+    x <- dplyr::select(x, -.order)
+    res <- NextMethod(summarize = summarize, parameters = parameters)
     if (!complete) {
       final_configs <- race_subset(x)
       res <- dplyr::inner_join(res, final_configs, by = ".config")
