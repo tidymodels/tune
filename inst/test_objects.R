@@ -1,4 +1,9 @@
+# ------------------------------------------------------------------------------
+# Run this, in place, from the terminal with R CMD BATCH --vanilla test_objects.R
+# Make sure to commit the Rout file
+
 library(tidymodels)
+library(finetune)
 library(sessioninfo)
 library(testthat)
 
@@ -25,6 +30,10 @@ knn_mod <-
 
 knn_mod_two <-
   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
+  set_engine("kknn")
+
+knn_mod_power <-
+  nearest_neighbor(mode = "regression", dist_power = tune()) %>%
   set_engine("kknn")
 
 get_coefs  <- function(x) {
@@ -113,7 +122,7 @@ mt_knn_bo <-
 
 save(
   list = grep("^mt_", ls(), value = TRUE),
-  file = test_path("data", "test_objects.RData"),
+  file = file.path("..", "tests", "testthat", "data", "test_objects.RData"),
   version = 2,
   compress = "xz"
 )
@@ -176,35 +185,35 @@ knn_gp <-
 
 saveRDS(
   knn_results,
-  file = testthat::test_path("data", "knn_results.rds"),
+  file = file.path("..", "tests", "testthat", "data", "knn_results.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   two_class_set,
-  file = testthat::test_path("data", "knn_set.rds"),
+  file = file.path("..", "tests", "testthat", "data", "knn_set.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   two_class_grid,
-  file = testthat::test_path("data", "knn_grid.rds"),
+  file = file.path("..", "tests", "testthat", "data", "knn_grid.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   knn_set,
-  file = testthat::test_path("data", "knn_set.rds"),
+  file = file.path("..", "tests", "testthat", "data", "knn_set.rds"),
   version = 2,
   compress = "xz"
 )
 
 saveRDS(
   knn_gp,
-  file = testthat::test_path("data", "knn_gp.rds"),
+  file = file.path("..", "tests", "testthat", "data", "knn_gp.rds"),
   version = 2,
   compress = "xz"
 )
@@ -248,7 +257,7 @@ svm_results <-
 
 saveRDS(
   svm_results,
-  file = testthat::test_path("data", "svm_results.rds"),
+  file = file.path("..", "tests", "testthat", "data", "svm_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -268,7 +277,7 @@ svm_reg_results <-
 
 saveRDS(
   svm_reg_results,
-  file = testthat::test_path("data", "svm_reg_results.rds"),
+  file = file.path("..", "tests", "testthat", "data", "svm_reg_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -323,7 +332,7 @@ rcv_results <-
 
 saveRDS(
   rcv_results,
-  file = testthat::test_path("data", "rcv_results.rds"),
+  file = file.path("..", "tests", "testthat", "data", "rcv_results.rds"),
   version = 2,
   compress = "xz"
 )
@@ -347,7 +356,7 @@ lm_resamples
 
 saveRDS(
   lm_resamples,
-  file = testthat::test_path("data", "lm_resamples.rds"),
+  file = file.path("..", "tests", "testthat", "data", "lm_resamples.rds"),
   version = 2,
   compress = "xz"
 )
@@ -374,7 +383,28 @@ lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
 
 saveRDS(
   lm_bayes,
-  file = testthat::test_path("data", "lm_bayes.rds"),
+  file = file.path("..", "tests", "testthat", "data", "lm_bayes.rds"),
+  version = 2,
+  compress = "xz"
+)
+
+# ------------------------------------------------------------------------------
+# For racing methods in #535
+
+set.seed(7898)
+race_folds <- vfold_cv(mtcars, repeats = 2)
+
+ctrl_rc <- control_race(save_pred = TRUE)
+set.seed(9323)
+mt_anova_race <-
+  tune_race_anova(knn_mod_power,
+                  simple_rec,
+                  resamples = race_folds,
+                  grid = tibble(dist_power = c(1/10, 1, 2)),
+                  control = ctrl_rc)
+saveRDS(
+  mt_anova_race,
+  file = file.path("..", "tests", "testthat", "data", "anova_race.rds"),
   version = 2,
   compress = "xz"
 )

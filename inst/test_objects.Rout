@@ -1,7 +1,7 @@
 
-R version 4.0.2 (2020-06-22) -- "Taking Off Again"
-Copyright (C) 2020 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin17.0 (64-bit)
+R version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -17,27 +17,37 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> # ------------------------------------------------------------------------------
+> # Run this, in place, from the terminal with R CMD BATCH --vanilla test_objects.R
+> # Make sure to commit the Rout file
+> 
 > library(tidymodels)
-── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──
-✔ broom     0.7.0          ✔ recipes   0.1.13    
-✔ dials     0.0.9.9000     ✔ rsample   0.0.8.9000
-✔ dplyr     1.0.2          ✔ tibble    3.0.3     
-✔ ggplot2   3.3.2          ✔ tidyr     1.1.2     
-✔ infer     0.5.3          ✔ tune      0.1.1.9000
-✔ modeldata 0.0.2          ✔ workflows 0.2.0.9000
-✔ parsnip   0.1.3          ✔ yardstick 0.0.7     
-✔ purrr     0.3.4          
+── Attaching packages ────────────────────────────────────── tidymodels 1.0.0 ──
+✔ broom        1.0.1      ✔ recipes      1.0.1 
+✔ dials        1.0.0      ✔ rsample      1.1.0 
+✔ dplyr        1.0.10     ✔ tibble       3.1.8 
+✔ ggplot2      3.3.6      ✔ tidyr        1.2.0 
+✔ infer        1.0.3      ✔ tune         1.0.0 
+✔ modeldata    1.0.0      ✔ workflows    1.0.0 
+✔ parsnip      1.0.1      ✔ workflowsets 1.0.0 
+✔ purrr        0.3.4      ✔ yardstick    1.0.0 
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
 ✖ dplyr::filter()  masks stats::filter()
 ✖ dplyr::lag()     masks stats::lag()
 ✖ recipes::step()  masks stats::step()
+• Learn how to get started at https://www.tidymodels.org/start/
+> library(finetune)
 > library(sessioninfo)
 > library(testthat)
 
 Attaching package: ‘testthat’
 
 The following object is masked from ‘package:tidyr’:
+
+    matches
+
+The following object is masked from ‘package:rsample’:
 
     matches
 
@@ -75,9 +85,13 @@ The following object is masked from ‘package:dplyr’:
 +   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
 +   set_engine("kknn")
 > 
+> knn_mod_power <-
++   nearest_neighbor(mode = "regression", dist_power = tune()) %>%
++   set_engine("kknn")
+> 
 > get_coefs  <- function(x) {
 +   x %>%
-+     pull_workflow_fit() %>%
++     extract_fit_parsnip() %>%
 +     tidy()
 + }
 > 
@@ -109,31 +123,28 @@ The following object is masked from ‘package:dplyr’:
 +   tune_grid(mt_spln_lm,
 +             resamples = folds,
 +             control = g_ctrl)
-! Fold1: recipe  9/10: 'df' was too small; have used 3
-! Fold2: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  9/10: 'df' was too small; have used 3
-! Fold2: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold3: recipe  9/10: 'df' was too small; have used 3
-! Fold4: recipe  9/10: 'df' was too small; have used 3
-! Fold5: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  9/10: 'df' was too small; have used 3
-! Fold5: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
+! Fold1: preprocessor 10/10, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold2: preprocessor 1/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 3/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 4/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 5/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 6/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 7/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 8/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 9/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 10/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold3: preprocessor 10/10, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold5: preprocessor 1/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 3/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 4/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 5/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 6/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 7/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 8/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 9/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 10/10, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > set.seed(8825)
 > mt_spln_lm_bo <-
@@ -143,32 +154,22 @@ The following object is masked from ‘package:dplyr’:
 +     iter = 3,
 +     control = b_ctrl
 +   )
-! Fold1: recipe 1/5: 'df' was too small; have used 3
-! Fold2: recipe 1/5: 'df' was too small; have used 3
-! Fold2: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/5: 'df' was too small; have used 3
-! Fold4: recipe 1/5: 'df' was too small; have used 3
-! Fold5: recipe 1/5: 'df' was too small; have used 3
-! Fold5: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 3/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 4/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 5/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 3/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 4/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 5/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -177,20 +178,15 @@ The following object is masked from ‘package:dplyr’:
 +   tune_grid(
 +     mt_spln_knn,
 +     resamples = folds,
-+     grid = grid_regular(parameters(mt_spln_knn)),
++     grid = grid_regular(extract_parameter_set_dials(mt_spln_knn)),
 +     control = g_ctrl
 +   )
-! Fold1: recipe 1/3: 'df' was too small; have used 3
-! Fold2: recipe 1/3: 'df' was too small; have used 3
-! Fold2: recipe 1/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/3: 'df' was too small; have used 3
-! Fold4: recipe 1/3: 'df' was too small; have used 3
-! Fold5: recipe 1/3: 'df' was too small; have used 3
-! Fold5: recipe 1/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 3/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 3/3, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > set.seed(8825)
 > mt_spln_knn_bo <-
@@ -198,27 +194,22 @@ The following object is masked from ‘package:dplyr’:
 +              resamples = folds,
 +              iter = 3,
 +              control = b_ctrl)
-! Fold2: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 3/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 4/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 5/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 3/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 4/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 5/5, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > set.seed(8825)
 > mt_spln_knn_bo_sep <-
@@ -227,39 +218,29 @@ The following object is masked from ‘package:dplyr’:
 +              resamples = folds,
 +              iter = 3,
 +              control = b_ctrl)
-! Fold1: recipe 1/4: 'df' was too small; have used 3
-! Fold2: recipe 1/4: 'df' was too small; have used 3
-! Fold2: recipe 1/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/4, model 1/2 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/4, model 2/2 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/4: 'df' was too small; have used 3
-! Fold4: recipe 1/4: 'df' was too small; have used 3
-! Fold5: recipe 1/4: 'df' was too small; have used 3
-! Fold5: recipe 1/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/4, model 1/2 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/4, model 2/2 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/4, model 1/2 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 2/4, model 2/2 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 3/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold2: preprocessor 4/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/4, model 1/2 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 2/4, model 2/2 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 3/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 4/4, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 ! The Gaussian process model is being fit using 12 features but only has 5
   data points to do so. This may cause errors or a poor model fit.
 ! Gaussian process model: did not converge in 10 iterations
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 ! The Gaussian process model is being fit using 12 features but only has 6
   data points to do so. This may cause errors or a poor model fit.
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 ! The Gaussian process model is being fit using 12 features but only has 7
   data points to do so. This may cause errors or a poor model fit.
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+! Fold2: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold5: preprocessor 1/1, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -277,7 +258,7 @@ The following object is masked from ‘package:dplyr’:
 > 
 > save(
 +   list = grep("^mt_", ls(), value = TRUE),
-+   file = test_path("test_objects.RData"),
++   file = file.path("..", "tests", "testthat", "data", "test_objects.RData"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -309,7 +290,7 @@ The following object is masked from ‘package:dplyr’:
 +   add_model(knn_model)
 > 
 > two_class_set <-
-+   parameters(two_class_wflow) %>%
++   extract_parameter_set_dials(two_class_wflow) %>%
 +   update(K = neighbors(c(1, 50))) %>%
 +   update(exponent = dist_power(c(1 / 10, 2)))
 > 
@@ -342,35 +323,35 @@ The following object is masked from ‘package:dplyr’:
 > 
 > saveRDS(
 +   knn_results,
-+   file = testthat::test_path("knn_results.rds"),
++   file = file.path("..", "tests", "testthat", "data", "knn_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   two_class_set,
-+   file = testthat::test_path("knn_set.rds"),
++   file = file.path("..", "tests", "testthat", "data", "knn_set.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   two_class_grid,
-+   file = testthat::test_path("knn_grid.rds"),
++   file = file.path("..", "tests", "testthat", "data", "knn_grid.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   knn_set,
-+   file = testthat::test_path("knn_set.rds"),
++   file = file.path("..", "tests", "testthat", "data", "knn_set.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   knn_gp,
-+   file = testthat::test_path("knn_gp.rds"),
++   file = file.path("..", "tests", "testthat", "data", "knn_gp.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -393,7 +374,7 @@ The following object is masked from ‘package:dplyr’:
 +   add_model(svm_model)
 > 
 > two_class_set <-
-+   parameters(two_class_wflow) %>%
++   extract_parameter_set_dials(two_class_wflow) %>%
 +   update(cost = cost(c(-10, 4)))
 > 
 > set.seed(2494)
@@ -411,25 +392,10 @@ The following object is masked from ‘package:dplyr’:
 +     metrics = class_only,
 +     control = control_grid(save_pred = TRUE)
 +   )
-
-Attaching package: ‘kernlab’
-
-The following object is masked from ‘package:purrr’:
-
-    cross
-
-The following object is masked from ‘package:ggplot2’:
-
-    alpha
-
-The following object is masked from ‘package:scales’:
-
-    alpha
-
 > 
 > saveRDS(
 +   svm_results,
-+   file = testthat::test_path("svm_results.rds"),
++   file = file.path("..", "tests", "testthat", "data", "svm_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -449,7 +415,7 @@ The following object is masked from ‘package:scales’:
 > 
 > saveRDS(
 +   svm_reg_results,
-+   file = testthat::test_path("svm_reg_results.rds"),
++   file = file.path("..", "tests", "testthat", "data", "svm_reg_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -487,6 +453,9 @@ The following object is masked from ‘package:scales’:
 +   update(deg_free = deg_free(c(2, 10))) %>%
 +   update(`wt degree` = degree_int(1:2)) %>%
 +   update(`wt df` = deg_free(c(2, 10)))
+Warning message:
+`parameters.workflow()` was deprecated in tune 0.1.6.9003.
+Please use `hardhat::extract_parameter_set_dials()` instead. 
 > 
 > set.seed(255)
 > cars_grid <-
@@ -501,306 +470,306 @@ The following object is masked from ‘package:scales’:
 +     grid = cars_grid,
 +     control = control_grid(verbose = FALSE, save_pred = TRUE)
 +   )
-! Fold01, Repeat1: recipe 15/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 18/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 33/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 36/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat2: recipe 15/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 18/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 33/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 36/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold06, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
+! Fold01, Repeat1: preprocessor 15/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold01, Repeat1: preprocessor 18/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold01, Repeat1: preprocessor 33/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold01, Repeat1: preprocessor 36/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold02, Repeat1: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold02, Repeat1: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold02, Repeat1: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold02, Repeat1: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold02, Repeat1: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold07, Repeat1: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold07, Repeat1: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat1: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat1: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold01, Repeat2: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold01, Repeat2: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold01, Repeat2: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold01, Repeat2: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases, p...
+! Fold02, Repeat2: preprocessor 15/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold02, Repeat2: preprocessor 18/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold02, Repeat2: preprocessor 33/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold02, Repeat2: preprocessor 36/36, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold06, Repeat2: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold06, Repeat2: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold08, Repeat2: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 1/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 2/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 3/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 4/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 5/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 6/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 7/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 8/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 9/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 10/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 11/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 12/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 13/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 14/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 15/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 16/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 17/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 18/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 19/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 20/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 21/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 22/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 23/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 24/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 25/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 26/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 27/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 28/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 29/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 30/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 31/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 32/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 33/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 34/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 35/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
+! Fold10, Repeat2: preprocessor 36/36, model 1/1 (predictions): some 'x' values beyond boundary knots may cause ill-conditioned bases
 > 
 > saveRDS(
 +   rcv_results,
-+   file = testthat::test_path("rcv_results.rds"),
++   file = file.path("..", "tests", "testthat", "data", "rcv_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -823,16 +792,16 @@ The following object is masked from ‘package:scales’:
 > lm_resamples
 # Resampling results
 # 3-fold cross-validation 
-# A tibble: 3 x 4
+# A tibble: 3 × 4
   splits          id    .metrics         .notes          
   <list>          <chr> <list>           <list>          
-1 <split [21/11]> Fold1 <tibble [2 × 3]> <tibble [0 × 1]>
-2 <split [21/11]> Fold2 <tibble [2 × 3]> <tibble [0 × 1]>
-3 <split [22/10]> Fold3 <tibble [2 × 3]> <tibble [0 × 1]>
+1 <split [21/11]> Fold1 <tibble [2 × 4]> <tibble [0 × 3]>
+2 <split [21/11]> Fold2 <tibble [2 × 4]> <tibble [0 × 3]>
+3 <split [22/10]> Fold3 <tibble [2 × 4]> <tibble [0 × 3]>
 > 
 > saveRDS(
 +   lm_resamples,
-+   file = testthat::test_path("lm_resamples.rds"),
++   file = file.path("..", "tests", "testthat", "data", "lm_resamples.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -856,14 +825,35 @@ The following object is masked from ‘package:scales’:
 > 
 > set.seed(2934)
 > lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
-! Fold1: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+! Fold1: preprocessor 3/4, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold1: preprocessor 4/4, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold2: preprocessor 3/4, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+! Fold2: preprocessor 4/4, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
 > 
 > saveRDS(
 +   lm_bayes,
-+   file = testthat::test_path("lm_bayes.rds"),
++   file = file.path("..", "tests", "testthat", "data", "lm_bayes.rds"),
++   version = 2,
++   compress = "xz"
++ )
+> 
+> # ------------------------------------------------------------------------------
+> # For racing methods in #535
+> 
+> set.seed(7898)
+> race_folds <- vfold_cv(mtcars, repeats = 2)
+> 
+> ctrl_rc <- control_race(save_pred = TRUE)
+> set.seed(9323)
+> mt_anova_race <-
++   tune_race_anova(knn_mod_power,
++                   simple_rec,
++                   resamples = race_folds,
++                   grid = tibble(dist_power = c(1/10, 1, 2)),
++                   control = ctrl_rc)
+> saveRDS(
++   mt_anova_race,
++   file = file.path("..", "tests", "testthat", "data", "anova_race.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -872,97 +862,109 @@ The following object is masked from ‘package:scales’:
 > 
 > sessioninfo::session_info()
 ─ Session info ───────────────────────────────────────────────────────────────
- setting  value                       
- version  R version 4.0.2 (2020-06-22)
- os       macOS Mojave 10.14.6        
- system   x86_64, darwin17.0          
- ui       X11                         
- language (EN)                        
- collate  en_US.UTF-8                 
- ctype    en_US.UTF-8                 
- tz       America/Denver              
- date     2020-10-06                  
+ setting  value
+ version  R version 4.2.0 (2022-04-22)
+ os       macOS Monterey 12.5.1
+ system   aarch64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2022-09-07
+ pandoc   2.17.1.1 @ /opt/homebrew/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package     * version    date       lib source                               
- assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.0.0)                       
- backports     1.1.10     2020-09-15 [1] CRAN (R 4.0.2)                       
- broom       * 0.7.0      2020-07-09 [1] CRAN (R 4.0.0)                       
- class         7.3-17     2020-04-26 [1] CRAN (R 4.0.2)                       
- cli           2.0.2      2020-02-28 [1] CRAN (R 4.0.0)                       
- codetools     0.2-16     2018-12-24 [1] CRAN (R 4.0.2)                       
- colorspace    1.4-1      2019-03-18 [1] CRAN (R 4.0.0)                       
- crayon        1.3.4.9000 2020-09-19 [1] Github (r-lib/crayon@6b3f0c6)        
- dials       * 0.0.9.9000 2020-10-05 [1] Github (tidymodels/dials@2b79300)    
- DiceDesign    1.8-1      2019-07-31 [1] CRAN (R 4.0.0)                       
- digest        0.6.25     2020-02-23 [1] CRAN (R 4.0.0)                       
- dplyr       * 1.0.2      2020-08-18 [1] CRAN (R 4.0.2)                       
- ellipsis      0.3.1      2020-05-15 [1] CRAN (R 4.0.0)                       
- fansi         0.4.1      2020-01-08 [1] CRAN (R 4.0.0)                       
- foreach       1.5.0      2020-03-30 [1] CRAN (R 4.0.0)                       
- furrr         0.1.0      2018-05-16 [1] CRAN (R 4.0.0)                       
- future        1.19.1     2020-09-22 [1] CRAN (R 4.0.2)                       
- generics      0.0.2      2018-11-29 [1] CRAN (R 4.0.0)                       
- ggplot2     * 3.3.2      2020-06-19 [1] CRAN (R 4.0.0)                       
- globals       0.13.0     2020-09-17 [1] CRAN (R 4.0.2)                       
- glue          1.4.2      2020-08-27 [1] CRAN (R 4.0.2)                       
- gower         0.2.2      2020-06-23 [1] CRAN (R 4.0.0)                       
- GPfit         1.0-8      2019-02-08 [1] CRAN (R 4.0.0)                       
- gtable        0.3.0      2019-03-25 [1] CRAN (R 4.0.0)                       
- hardhat       0.1.4      2020-07-02 [1] CRAN (R 4.0.2)                       
- igraph        1.2.5      2020-03-19 [1] CRAN (R 4.0.0)                       
- infer       * 0.5.3      2020-07-14 [1] CRAN (R 4.0.0)                       
- ipred         0.9-9      2019-04-28 [1] CRAN (R 4.0.0)                       
- iterators     1.0.12     2019-07-26 [1] CRAN (R 4.0.0)                       
- kernlab     * 0.9-29     2019-11-12 [1] CRAN (R 4.0.0)                       
- kknn        * 1.3.1      2016-03-26 [1] CRAN (R 4.0.0)                       
- lattice       0.20-41    2020-04-02 [1] CRAN (R 4.0.2)                       
- lava          1.6.8      2020-09-26 [1] CRAN (R 4.0.2)                       
- lhs           1.1.0      2020-09-29 [1] CRAN (R 4.0.2)                       
- lifecycle     0.2.0      2020-03-06 [1] CRAN (R 4.0.0)                       
- listenv       0.8.0      2019-12-05 [1] CRAN (R 4.0.0)                       
- lubridate     1.7.9      2020-06-08 [1] CRAN (R 4.0.0)                       
- magrittr      1.5.0.9000 2020-09-27 [1] Github (tidyverse/magrittr@0221e18)  
- MASS          7.3-53     2020-09-09 [1] CRAN (R 4.0.2)                       
- Matrix        1.2-18     2019-11-27 [1] CRAN (R 4.0.2)                       
- modeldata   * 0.0.2      2020-06-22 [1] CRAN (R 4.0.0)                       
- munsell       0.5.0      2018-06-12 [1] CRAN (R 4.0.0)                       
- nnet          7.3-14     2020-04-26 [1] CRAN (R 4.0.2)                       
- parsnip     * 0.1.3      2020-08-04 [1] CRAN (R 4.0.2)                       
- pillar        1.4.6      2020-07-10 [1] CRAN (R 4.0.0)                       
- pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.0.0)                       
- plyr          1.8.6      2020-03-03 [1] CRAN (R 4.0.0)                       
- pROC          1.16.2     2020-03-19 [1] CRAN (R 4.0.0)                       
- prodlim       2019.11.13 2019-11-17 [1] CRAN (R 4.0.0)                       
- purrr       * 0.3.4      2020-04-17 [1] CRAN (R 4.0.0)                       
- R6            2.4.1      2019-11-12 [1] CRAN (R 4.0.0)                       
- Rcpp          1.0.5      2020-07-06 [1] CRAN (R 4.0.0)                       
- recipes     * 0.1.13     2020-06-23 [1] CRAN (R 4.0.2)                       
- rlang         0.4.7      2020-07-09 [1] CRAN (R 4.0.0)                       
- rpart         4.1-15     2019-04-12 [1] CRAN (R 4.0.2)                       
- rsample     * 0.0.8.9000 2020-10-05 [1] Github (tidymodels/rsample@ae99c86)  
- rstudioapi    0.11       2020-02-07 [1] CRAN (R 4.0.0)                       
- scales      * 1.1.1      2020-05-11 [1] CRAN (R 4.0.0)                       
- sessioninfo * 1.1.1      2018-11-05 [1] CRAN (R 4.0.0)                       
- survival      3.2-3      2020-06-13 [1] CRAN (R 4.0.1)                       
- testthat    * 2.3.2      2020-03-02 [1] CRAN (R 4.0.0)                       
- tibble      * 3.0.3      2020-07-10 [1] CRAN (R 4.0.2)                       
- tidymodels  * 0.1.1      2020-07-14 [1] CRAN (R 4.0.2)                       
- tidyr       * 1.1.2      2020-08-27 [1] CRAN (R 4.0.2)                       
- tidyselect    1.1.0      2020-05-11 [1] CRAN (R 4.0.0)                       
- timeDate      3043.102   2018-02-21 [1] CRAN (R 4.0.0)                       
- tune        * 0.1.1.9000 2020-10-06 [1] local                                
- utf8          1.1.4      2018-05-24 [1] CRAN (R 4.0.0)                       
- vctrs         0.3.4      2020-08-29 [1] CRAN (R 4.0.2)                       
- withr         2.3.0      2020-09-22 [1] CRAN (R 4.0.2)                       
- workflows   * 0.2.0.9000 2020-10-05 [1] Github (tidymodels/workflows@40482ae)
- yardstick   * 0.0.7      2020-07-13 [1] CRAN (R 4.0.0)                       
+ package      * version    date (UTC) lib source
+ assertthat     0.2.1      2019-03-21 [1] CRAN (R 4.2.0)
+ backports      1.4.1      2021-12-13 [1] CRAN (R 4.2.0)
+ boot           1.3-28     2021-05-03 [1] CRAN (R 4.2.0)
+ brio           1.1.3      2021-11-30 [1] CRAN (R 4.2.0)
+ broom        * 1.0.1      2022-08-29 [1] CRAN (R 4.2.0)
+ class          7.3-20     2022-01-16 [1] CRAN (R 4.2.0)
+ cli            3.3.0      2022-04-25 [1] CRAN (R 4.2.0)
+ codetools      0.2-18     2020-11-04 [1] CRAN (R 4.2.0)
+ colorspace     2.0-3      2022-02-21 [1] CRAN (R 4.2.0)
+ crayon         1.5.1      2022-03-26 [1] CRAN (R 4.2.0)
+ DBI            1.1.3      2022-06-18 [1] CRAN (R 4.2.0)
+ dials        * 1.0.0      2022-06-14 [1] CRAN (R 4.2.0)
+ DiceDesign     1.9        2021-02-13 [1] CRAN (R 4.2.0)
+ digest         0.6.29     2021-12-01 [1] CRAN (R 4.2.0)
+ dplyr        * 1.0.10     2022-09-01 [1] CRAN (R 4.2.0)
+ ellipsis       0.3.2      2021-04-29 [1] CRAN (R 4.2.0)
+ fansi          1.0.3      2022-03-24 [1] CRAN (R 4.2.0)
+ finetune     * 1.0.0      2022-09-05 [1] CRAN (R 4.2.0)
+ foreach        1.5.2      2022-02-02 [1] CRAN (R 4.2.0)
+ furrr          0.3.1      2022-08-15 [1] CRAN (R 4.2.0)
+ future         1.27.0     2022-07-22 [1] CRAN (R 4.2.0)
+ future.apply   1.9.0      2022-04-25 [1] CRAN (R 4.2.0)
+ generics       0.1.3      2022-07-05 [1] CRAN (R 4.2.0)
+ ggplot2      * 3.3.6      2022-05-03 [1] CRAN (R 4.2.0)
+ globals        0.16.1     2022-08-28 [1] CRAN (R 4.2.0)
+ glue           1.6.2      2022-02-24 [1] CRAN (R 4.2.0)
+ gower          1.0.0      2022-02-03 [1] CRAN (R 4.2.0)
+ GPfit          1.0-8      2019-02-08 [1] CRAN (R 4.2.0)
+ gtable         0.3.0      2019-03-25 [1] CRAN (R 4.2.0)
+ hardhat        1.2.0      2022-06-30 [1] CRAN (R 4.2.0)
+ igraph         1.3.4      2022-07-19 [1] CRAN (R 4.2.0)
+ infer        * 1.0.3      2022-08-22 [1] CRAN (R 4.2.0)
+ ipred          0.9-13     2022-06-02 [1] CRAN (R 4.2.0)
+ iterators      1.0.14     2022-02-05 [1] CRAN (R 4.2.0)
+ kernlab      * 0.9-31     2022-06-09 [1] CRAN (R 4.2.0)
+ kknn         * 1.3.1      2016-03-26 [1] CRAN (R 4.2.0)
+ lattice        0.20-45    2021-09-22 [1] CRAN (R 4.2.0)
+ lava           1.6.10     2021-09-02 [1] CRAN (R 4.2.0)
+ lhs            1.1.5      2022-03-22 [1] CRAN (R 4.2.0)
+ lifecycle      1.0.1      2021-09-24 [1] CRAN (R 4.2.0)
+ listenv        0.8.0      2019-12-05 [1] CRAN (R 4.2.0)
+ lme4           1.1-30     2022-07-08 [1] CRAN (R 4.2.0)
+ lubridate      1.8.0      2021-10-07 [1] CRAN (R 4.2.0)
+ magrittr       2.0.3      2022-03-30 [1] CRAN (R 4.2.0)
+ MASS           7.3-58.1   2022-08-03 [1] CRAN (R 4.2.0)
+ Matrix         1.4-1      2022-03-23 [1] CRAN (R 4.2.0)
+ minqa          1.2.4      2014-10-09 [1] CRAN (R 4.2.0)
+ modeldata    * 1.0.0      2022-07-01 [1] CRAN (R 4.2.0)
+ munsell        0.5.0      2018-06-12 [1] CRAN (R 4.2.0)
+ nlme           3.1-159    2022-08-09 [1] CRAN (R 4.2.0)
+ nloptr         2.0.3      2022-05-26 [1] CRAN (R 4.2.0)
+ nnet           7.3-17     2022-01-16 [1] CRAN (R 4.2.0)
+ parallelly     1.32.1     2022-07-21 [1] CRAN (R 4.2.0)
+ parsnip      * 1.0.1      2022-08-18 [1] CRAN (R 4.2.0)
+ pillar         1.8.1      2022-08-19 [1] CRAN (R 4.2.0)
+ pkgconfig      2.0.3      2019-09-22 [1] CRAN (R 4.2.0)
+ prodlim        2019.11.13 2019-11-17 [1] CRAN (R 4.2.0)
+ purrr        * 0.3.4      2020-04-17 [1] CRAN (R 4.2.0)
+ R6             2.5.1      2021-08-19 [1] CRAN (R 4.2.0)
+ Rcpp           1.0.9      2022-07-08 [1] CRAN (R 4.2.0)
+ recipes      * 1.0.1      2022-07-07 [1] local
+ rlang        * 1.0.4      2022-07-12 [1] CRAN (R 4.2.0)
+ rpart          4.1.16     2022-01-24 [1] CRAN (R 4.2.0)
+ rsample      * 1.1.0      2022-08-08 [1] CRAN (R 4.2.0)
+ rstudioapi     0.14       2022-08-22 [1] CRAN (R 4.2.0)
+ scales       * 1.2.1      2022-08-20 [1] CRAN (R 4.2.0)
+ sessioninfo  * 1.2.2      2021-12-06 [1] CRAN (R 4.2.0)
+ survival       3.4-0      2022-08-09 [1] CRAN (R 4.2.0)
+ testthat     * 3.1.4      2022-04-26 [1] CRAN (R 4.2.0)
+ tibble       * 3.1.8      2022-07-22 [1] CRAN (R 4.2.0)
+ tidymodels   * 1.0.0      2022-07-13 [1] CRAN (R 4.2.0)
+ tidyr        * 1.2.0      2022-02-01 [1] CRAN (R 4.2.0)
+ tidyselect     1.1.2      2022-02-21 [1] CRAN (R 4.2.0)
+ timeDate       4021.104   2022-07-19 [1] CRAN (R 4.2.0)
+ tune         * 1.0.0      2022-07-07 [1] CRAN (R 4.2.0)
+ utf8           1.2.2      2021-07-24 [1] CRAN (R 4.2.0)
+ vctrs          0.4.1      2022-04-13 [1] CRAN (R 4.2.0)
+ withr          2.5.0      2022-03-03 [1] CRAN (R 4.2.0)
+ workflows    * 1.0.0      2022-07-05 [1] CRAN (R 4.2.0)
+ workflowsets * 1.0.0      2022-07-12 [1] CRAN (R 4.2.0)
+ yardstick    * 1.0.0      2022-06-06 [1] CRAN (R 4.2.0)
 
-[1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library
+ [1] /Library/Frameworks/R.framework/Versions/4.2-arm64/Resources/library
+
+──────────────────────────────────────────────────────────────────────────────
 > 
 > if (!interactive()) {
 +   q("no")
 + }
 > proc.time()
-    user   system  elapsed 
-1469.417    6.036 1479.245 
+   user  system elapsed 
+406.250   3.412 411.229 
