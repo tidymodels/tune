@@ -66,6 +66,7 @@ test_that("basic functionality", {
 
 test_that("bad inputs", {
   skip_if(tune:::dplyr_pre_1.0.0())
+  options(pillar.advice = FALSE, pillar.min_title_chars = Inf, width = 120)
 
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
