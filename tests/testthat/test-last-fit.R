@@ -72,6 +72,8 @@ test_that("collect metrics of last fit", {
 
 
 test_that("ellipses with last_fit", {
+  options(pillar.advice = FALSE, pillar.min_title_chars = Inf, width = 120)
+
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
