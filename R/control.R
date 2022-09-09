@@ -269,6 +269,7 @@ val_parallel_over <- function(parallel_over, where) {
 }
 
 #' @export
+#' @keywords internal
 #' @rdname control_grid
 new_backend_options <- function(..., class = character()) {
   out <- rlang::list2(...)

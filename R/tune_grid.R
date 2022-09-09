@@ -324,6 +324,7 @@ tune_grid_workflow <- function(workflow,
   )
 
   check_workflow(workflow, pset = pset)
+  check_backend_options(control$backend_options)
 
   grid <- check_grid(
     grid = grid,

@@ -219,6 +219,7 @@ tune_bayes_workflow <-
       param_info <- hardhat::extract_parameter_set_dials(object)
     }
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
+    check_backend_options(control$backend_options)
 
     unsummarized <- check_initial(
       initial, param_info, object, resamples,
