@@ -3,6 +3,7 @@
 \name{control_grid}
 \alias{control_grid}
 \alias{control_resamples}
+\alias{new_backend_options}
 \title{Control aspects of the grid search process}
 \usage{
 control_grid(
@@ -28,6 +29,8 @@ control_resamples(
   parallel_over = NULL,
   backend_options = NULL
 )
+
+new_backend_options(..., class = character())
 }
 \arguments{
 \item{verbose}{A logical for logging results (other than warnings and errors,
