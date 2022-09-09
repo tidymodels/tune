@@ -54,7 +54,8 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
     pkgs = pkgs,
     save_workflow = save_workflow,
     event_level = event_level,
-    parallel_over = parallel_over
+    parallel_over = parallel_over,
+    backend_options = backend_options
   )
 
   class(res) <- c("control_grid", "control_resamples")
@@ -241,7 +242,8 @@ control_bayes <-
         save_workflow = save_workflow,
         save_gp_scoring = save_gp_scoring,
         event_level = event_level,
-        parallel_over = parallel_over
+        parallel_over = parallel_over,
+        backend_options = backend_options
       )
 
     class(res) <- "control_bayes"
