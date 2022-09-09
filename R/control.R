@@ -170,7 +170,7 @@ print.control_last_fit <- function(x, ...) {
 #'   model using the same `parallel_over` strategy is guaranteed to be
 #'   reproducible between runs.
 #' @param backend_options An object of class `"tune_backend_options"` as created
-#'   by `new_backend_options()` used to pass arguments to specific tuning
+#'   by `tune::new_backend_options()`, used to pass arguments to specific tuning
 #'   backend. Defaults to `NULL` for default backend options.
 #'
 #' @details

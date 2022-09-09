@@ -86,7 +86,7 @@ model using the same \code{parallel_over} strategy is guaranteed to be
 reproducible between runs.}
 
 \item{backend_options}{An object of class \code{"tune_backend_options"} as created
-by \code{new_backend_options()} used to pass arguments to specific tuning
+by \code{tune::new_backend_options()}, used to pass arguments to specific tuning
 backend. Defaults to \code{NULL} for default backend options.}
 }
 \description{
