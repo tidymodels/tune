@@ -32,7 +32,8 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
                          pkgs = NULL, save_workflow = FALSE,
                          event_level = "first",
-                         parallel_over = NULL) {
+                         parallel_over = NULL,
+                         backend_options = NULL) {
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
@@ -167,6 +168,9 @@ print.control_last_fit <- function(x, ...) {
 #'   to use the same random number generation schemes. However, re-tuning a
 #'   model using the same `parallel_over` strategy is guaranteed to be
 #'   reproducible between runs.
+#' @param backend_options An object of class `"tune_backend_options"` as created
+#'   by `new_backend_options()` used to pass arguments to specific tuning
+#'   backend. Defaults to `NULL` for default backend options.
 #'
 #' @details
 #'
@@ -201,7 +205,8 @@ control_bayes <-
            save_workflow = FALSE,
            save_gp_scoring = FALSE,
            event_level = "first",
-           parallel_over = NULL) {
+           parallel_over = NULL,
+           backend_options = NULL) {
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
@@ -259,4 +264,15 @@ val_parallel_over <- function(parallel_over, where) {
   rlang::arg_match0(parallel_over, c("resamples", "everything"), "parallel_over")
 
   invisible(NULL)
+}
+
+#' @export
+new_backend_options <- function(..., class = character()) {
+  out <- rlang::list2(...)
+
+  if (any(rlang::names2(out) == "")) {
+    rlang::abort("All backend options must be named.")
+  }
+
+  structure(out, class = c(class, "tune_backend_options"))
 }

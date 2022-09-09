@@ -17,7 +17,6 @@
 #'  parameter sets to be created automatically.
 #' @param metrics A [yardstick::metric_set()] or `NULL`.
 #' @param control An object used to modify the tuning process.
-#' @param backend_options A list of options for specific tuning backends.
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
@@ -250,8 +249,7 @@ tune_grid.default <- function(object, ...) {
 #' @rdname tune_grid
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
-                                 control = control_grid(),
-                                 backend_options = list()) {
+                                 control = control_grid()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -276,7 +274,6 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     grid = grid,
     metrics = metrics,
     control = control,
-    backend_options = backend_options
   )
 }
 
@@ -284,8 +281,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL,
-                               control = control_grid(),
-                               backend_options = list()) {
+                               control = control_grid()) {
   empty_ellipses(...)
 
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
@@ -301,8 +297,7 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
       grid = grid,
       metrics = metrics,
       pset = param_info,
-      control = control,
-      backend_options = backend_options
+      control = control
     )
   .stash_last_result(res)
   res
@@ -316,7 +311,6 @@ tune_grid_workflow <- function(workflow,
                                metrics = NULL,
                                pset = NULL,
                                control = control_grid(),
-                               backend_options = list(),
                                rng = TRUE) {
   check_rset(resamples)
 
@@ -347,7 +341,6 @@ tune_grid_workflow <- function(workflow,
     workflow = workflow,
     metrics = metrics,
     control = control,
-    backend_options = backend_options,
     rng = rng
   )
 
