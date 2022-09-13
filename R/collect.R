@@ -377,13 +377,9 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
 #' @export
 #' @rdname collect_predictions
 collect_metrics.tune_race <- function(x, summarize = TRUE, complete = FALSE, ...) {
-
   x <- dplyr::select(x, -.order)
-  if (summarize) {
-    res <- estimate_tune_results(x)
-  } else {
-    res <- collector(x, coll_col = ".metrics")
-  }
+  final_configs <- race_subset(x)
+  res <- NextMethod(summarize = summarize, ...)
   if (!complete) {
     final_configs <- race_subset(x)
     res <- dplyr::inner_join(res, final_configs, by = ".config")
