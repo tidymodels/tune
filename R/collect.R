@@ -11,8 +11,8 @@
 #'  used to filter the predicted values before processing. This tibble should
 #'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
 #'  if `tune("my_param")` was used).
-#' @param complete A logical: should we return the complete set of results or
-#' just the model configurations that made it to the end of the race (the
+#' @param all_configs A logical: should we return the complete set of model
+#' configurations or just those that made it to the end of the race (the
 #' default).
 #' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the
@@ -148,11 +148,11 @@ collect_predictions.tune_race <-
   function(x,
            summarize = FALSE,
            parameters = NULL,
-           complete = FALSE,
+           all_configs = FALSE,
            ...) {
     x <- dplyr::select(x, -.order)
     res <- NextMethod(summarize = summarize, parameters = parameters)
-    if (!complete) {
+    if (!all_configs) {
       final_configs <- race_subset(x)
       res <- dplyr::inner_join(res, final_configs, by = ".config")
     }
@@ -376,11 +376,11 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_race <- function(x, summarize = TRUE, complete = FALSE, ...) {
+collect_metrics.tune_race <- function(x, summarize = TRUE, all_configs = FALSE, ...) {
   x <- dplyr::select(x, -.order)
   final_configs <- race_subset(x)
   res <- NextMethod(summarize = summarize, ...)
-  if (!complete) {
+  if (!all_configs) {
     final_configs <- race_subset(x)
     res <- dplyr::inner_join(res, final_configs, by = ".config")
   }

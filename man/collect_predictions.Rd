@@ -22,7 +22,7 @@ collect_predictions(x, ...)
   x,
   summarize = FALSE,
   parameters = NULL,
-  complete = FALSE,
+  all_configs = FALSE,
   ...
 )
 
@@ -30,7 +30,7 @@ collect_metrics(x, ...)
 
 \method{collect_metrics}{tune_results}(x, summarize = TRUE, ...)
 
-\method{collect_metrics}{tune_race}(x, summarize = TRUE, complete = FALSE, ...)
+\method{collect_metrics}{tune_race}(x, summarize = TRUE, all_configs = FALSE, ...)
 
 collect_notes(x, ...)
 
@@ -52,8 +52,8 @@ used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
 if \code{tune("my_param")} was used).}
 
-\item{complete}{A logical: should we return the complete set of results or
-just the model configurations that made it to the end of the race (the
+\item{all_configs}{A logical: should we return the complete set of model
+configurations or just those that made it to the end of the race (the
 default).}
 }
 \value{

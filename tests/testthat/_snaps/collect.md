@@ -56,10 +56,9 @@
       # Resampling results
       # Manual resampling 
       # A tibble: 1 x 6
-        splits         id               .metrics         .notes   .predic~1 .workflow 
-        <list>         <chr>            <list>           <list>   <list>    <list>    
-      1 <split [24/8]> train/test split <tibble [2 x 4]> <tibble> <tibble>  <workflow>
-      # ... with abbreviated variable name 1: .predictions
+        splits         id               .metrics .notes   .predictions     .workflow 
+        <list>         <chr>            <list>   <list>   <list>           <list>    
+      1 <split [24/8]> train/test split <tibble> <tibble> <tibble [8 x 4]> <workflow>
       
       There were issues with some computations:
       
