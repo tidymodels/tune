@@ -257,6 +257,8 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     ))
   }
 
+  control <- parsnip::condense_control(control, control_grid())
+
   empty_ellipses(...)
 
   wflow <- add_model(workflow(), object)
@@ -282,6 +284,8 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL, control = control_grid()) {
   empty_ellipses(...)
+
+  control <- parsnip::condense_control(control, control_grid())
 
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
   # used when no tuning is required

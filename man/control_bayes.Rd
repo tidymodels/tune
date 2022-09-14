@@ -16,7 +16,8 @@ control_bayes(
   save_workflow = FALSE,
   save_gp_scoring = FALSE,
   event_level = "first",
-  parallel_over = NULL
+  parallel_over = NULL,
+  allow_par = TRUE
 )
 }
 \arguments{
