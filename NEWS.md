@@ -1,5 +1,7 @@
 # tune (development version)
 
+* `last_fit()`, `fit_resamples()`, `tune_grid()`, and `tune_bayes()` no longer error if `control` argument isn't a the corresponding `control_*()` object. Will work as long as the object passed to `control` includes the same elements as the required `control_*()` object.
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 
