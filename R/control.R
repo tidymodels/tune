@@ -31,6 +31,9 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          pkgs = NULL, save_workflow = FALSE,
                          event_level = "first",
                          parallel_over = NULL) {
+  # Any added arguments should also be added in superset control functions
+  # in other packages
+
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
@@ -82,6 +85,9 @@ control_last_fit <- function(
     verbose = FALSE,
     event_level = "first"
 ) {
+  # Any added arguments should also be added in superset control functions
+  # in other packages
+
   extr <- function(x) x
   control <-
     control_resamples(
@@ -203,6 +209,9 @@ control_bayes <-
            event_level = "first",
            parallel_over = NULL,
            allow_par = TRUE) {
+    # Any added arguments should also be added in superset control functions
+    # in other packages
+
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
