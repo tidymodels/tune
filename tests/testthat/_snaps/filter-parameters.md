@@ -58,5 +58,4 @@
        9 <split [712/79]> Repeat1 Fold09 <tibble [30 x 7]> <tibble [0 x 1]> <tibble>  
       10 <split [712/79]> Repeat1 Fold10 <tibble [30 x 7]> <tibble [0 x 1]> <tibble>  
       # ... with 40 more rows, and abbreviated variable name 1: .predictions
-      # i Use `print(n = ...)` to see more rows
 
