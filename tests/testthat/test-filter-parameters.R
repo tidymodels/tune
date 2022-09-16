@@ -1,6 +1,7 @@
 test_that("basic functionality", {
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
   load(test_path("data", "test_objects.RData"))
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
   filtered_grid <- filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1))
   expect_true(all(purrr::map_lgl(filtered_grid$.metrics, ~ all(.x$`%^*#` == 1))))

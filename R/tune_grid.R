@@ -320,7 +320,7 @@ tune_grid_workflow <- function(workflow,
   metrics <- check_metrics(metrics, workflow)
 
   pset <- check_parameters(
-    workflow = workflow,
+    workflow,
     pset = pset,
     data = resamples$splits[[1]]$data,
     grid_names = names(grid)
