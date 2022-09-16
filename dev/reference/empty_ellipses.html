@@ -71,6 +71,8 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_rset</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">check_parameters</span><span class="op">(</span><span class="va">wflow</span>, pset <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">data</span>, grid_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">check_workflow</span><span class="op">(</span><span class="va">x</span>, pset <span class="op">=</span> <span class="cn">NULL</span>, check_dials <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">check_metrics</span><span class="op">(</span><span class="va">x</span>, <span class="va">object</span><span class="op">)</span></span>
@@ -117,8 +119,20 @@
 <dd><p>An object.</p></dd>
 
 
+<dt>wflow</dt>
+<dd><p>A <code>workflow</code> object.</p></dd>
+
+
 <dt>pset</dt>
 <dd><p>A <code>parameters</code> object.</p></dd>
+
+
+<dt>data</dt>
+<dd><p>The training data.</p></dd>
+
+
+<dt>grid_names</dt>
+<dd><p>A character vector of column names from the grid.</p></dd>
 
 
 <dt>check_dials</dt>
@@ -126,10 +140,6 @@
 
 
 <dt>object</dt>
-<dd><p>A <code>workflow</code> object.</p></dd>
-
-
-<dt>wflow</dt>
 <dd><p>A <code>workflow</code> object.</p></dd>
 
 
