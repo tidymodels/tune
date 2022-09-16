@@ -46,6 +46,8 @@
 # ------------------------------------------------------------------------------
 
 test_that("select_best()", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   expect_true(
@@ -125,6 +127,8 @@ test_that("show_best()", {
 })
 
 test_that("one-std error rule", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
@@ -168,6 +172,8 @@ test_that("one-std error rule", {
 
 
 test_that("percent loss", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
