@@ -83,6 +83,8 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     ))
   }
 
+  control <- parsnip::condense_control(control, control_last_fit())
+
   empty_ellipses(...)
 
   wflow <- add_model(workflow(), object)
@@ -101,6 +103,9 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
 #' @export
 last_fit.workflow <- function(object, split, ..., metrics = NULL, control = control_last_fit()) {
   empty_ellipses(...)
+
+  control <- parsnip::condense_control(control, control_last_fit())
+
   last_fit_workflow(object, split, metrics, control)
 }
 
