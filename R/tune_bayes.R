@@ -258,7 +258,7 @@ tune_bayes_workflow <-
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
-    if (control$verbose) {
+    if (control$verbose_progress) {
       message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
@@ -520,7 +520,7 @@ pick_candidate <- function(results, info, control) {
       dplyr::arrange(dplyr::desc(objective)) %>%
       dplyr::slice(1)
   } else {
-    if (control$verbose) {
+    if (control$verbose_progress) {
       msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
       message(msg)
     }
@@ -618,12 +618,7 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = control_grid(
-          verbose = FALSE,
-          extract = control$extract,
-          save_pred = control$save_pred,
-          event_level = control$event_level
-        )
+        control = parsnip::condense_control(control, control_grid())
       ),
       silent = TRUE
     )
