@@ -2,6 +2,8 @@
 
 * `last_fit()`, `fit_resamples()`, `tune_grid()`, and `tune_bayes()` do not automatically error if  the wrong type of `control` object is passed. If the passed control object is not a superset of the one that is needed, the function will still error. As an example, passing `control_grid()` to `tune_bayes()` will fail but passing `control_bayes()` to `tune_grid()` will not. ([#449](https://github.com/tidymodels/tune/issues/449))
 
+* The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 
