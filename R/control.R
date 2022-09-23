@@ -1,8 +1,6 @@
 #' Control aspects of the grid search process
 #'
 #' @inheritParams control_bayes
-#' @param allow_par A logical to allow parallel processing (if a parallel
-#'   backend is registered).
 #'
 #' @details
 #'
@@ -33,6 +31,9 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          pkgs = NULL, save_workflow = FALSE,
                          event_level = "first",
                          parallel_over = NULL) {
+  # Any added arguments should also be added in superset control functions
+  # in other packages
+
   # add options for  seeds per resample
 
   val_class_and_single(verbose, "logical", "control_grid()")
@@ -84,6 +85,9 @@ control_last_fit <- function(
     verbose = FALSE,
     event_level = "first"
 ) {
+  # Any added arguments should also be added in superset control functions
+  # in other packages
+
   extr <- function(x) x
   control <-
     control_resamples(
@@ -148,6 +152,8 @@ print.control_last_fit <- function(x, ...) {
 #'   `"everything"` describing how to use parallel processing. Alternatively,
 #'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
 #'   automatically.
+#' @param allow_par A logical to allow parallel processing (if a parallel
+#'   backend is registered).
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is
@@ -201,7 +207,11 @@ control_bayes <-
            save_workflow = FALSE,
            save_gp_scoring = FALSE,
            event_level = "first",
-           parallel_over = NULL) {
+           parallel_over = NULL,
+           allow_par = TRUE) {
+    # Any added arguments should also be added in superset control functions
+    # in other packages
+
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
@@ -216,6 +226,8 @@ control_bayes <-
     val_class_or_null(pkgs, "character", "control_bayes()")
     val_class_and_single(event_level, "character", "control_bayes()")
     val_parallel_over(parallel_over, "control_bayes()")
+    val_class_and_single(allow_par, "logical", "control_bayes()")
+
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_alert_warning(
@@ -226,6 +238,7 @@ control_bayes <-
     res <-
       list(
         verbose = verbose,
+        allow_par = allow_par,
         no_improve = no_improve,
         uncertain = uncertain,
         seed = seed,

@@ -160,6 +160,8 @@ tune_bayes.model_spec <- function(object,
     ))
   }
 
+  control <- parsnip::condense_control(control, control_bayes())
+
   wflow <- add_model(workflow(), object)
 
   if (is_recipe(preprocessor)) {
@@ -189,6 +191,8 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes()) {
+
+    control <- parsnip::condense_control(control, control_bayes())
 
     res <-
       tune_bayes_workflow(

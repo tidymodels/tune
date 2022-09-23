@@ -3,6 +3,7 @@
 %   R/iteration_results.R, R/symbol.R, R/tune_bayes.R, R/tune_grid.R, R/utils.R
 \name{check_rset}
 \alias{check_rset}
+\alias{check_parameters}
 \alias{check_workflow}
 \alias{check_metrics}
 \alias{check_initial}
@@ -22,6 +23,8 @@
 \title{Get colors for tune text.}
 \usage{
 check_rset(x)
+
+check_parameters(wflow, pset = NULL, data, grid_names = character(0))
 
 check_workflow(x, pset = NULL, check_dials = FALSE)
 
@@ -65,13 +68,17 @@ is_workflow(x)
 \arguments{
 \item{x}{An object.}
 
+\item{wflow}{A \code{workflow} object.}
+
 \item{pset}{A \code{parameters} object.}
+
+\item{data}{The training data.}
+
+\item{grid_names}{A character vector of column names from the grid.}
 
 \item{check_dials}{A logical for check for a NULL parameter object.}
 
 \item{object}{A \code{workflow} object.}
-
-\item{wflow}{A \code{workflow} object.}
 
 \item{resamples}{An \code{rset} object.}
 
