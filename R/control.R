@@ -83,7 +83,9 @@ control_resamples <- control_grid
 #' @export
 control_last_fit <- function(
     verbose = FALSE,
-    event_level = "first"
+    event_level = "first",
+    allow_par = FALSE
+
 ) {
   # Any added arguments should also be added in superset control functions
   # in other packages
@@ -92,6 +94,7 @@ control_last_fit <- function(
   control <-
     control_resamples(
       verbose = verbose,
+      allow_par = allow_par,
       event_level = event_level,
       extract = extr,
       save_pred = TRUE,
