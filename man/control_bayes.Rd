@@ -17,7 +17,8 @@ control_bayes(
   save_gp_scoring = FALSE,
   event_level = "first",
   parallel_over = NULL,
-  backend_options = NULL
+  backend_options = NULL,
+  allow_par = TRUE
 )
 }
 \arguments{
@@ -71,7 +72,10 @@ is considered the "event".}
 \item{parallel_over}{A single string containing either \code{"resamples"} or
 \code{"everything"} describing how to use parallel processing. Alternatively,
 \code{NULL} is allowed, which chooses between \code{"resamples"} and \code{"everything"}
-automatically.
+automatically.}
+
+\item{allow_par}{A logical to allow parallel processing (if a parallel
+backend is registered).
 
 If \code{"resamples"}, then tuning will be performed in parallel over resamples
 alone. Within each resample, the preprocessor (i.e. recipe or formula) is

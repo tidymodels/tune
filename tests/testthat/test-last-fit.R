@@ -72,6 +72,8 @@ test_that("collect metrics of last fit", {
 
 
 test_that("ellipses with last_fit", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
@@ -82,6 +84,8 @@ test_that("ellipses with last_fit", {
 })
 
 test_that("argument order gives errors for recipe/formula", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
 
@@ -128,6 +132,8 @@ test_that("same results of last_fit() and fit() (#300)", {
 
 
 test_that("`last_fit()` when objects need tuning", {
+  options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()

@@ -9,9 +9,9 @@
       # Resampling results
       # Manual resampling 
       # A tibble: 1 x 6
-        splits         id               .metrics .notes   .predictions     .workflow 
-        <list>         <chr>            <list>   <list>   <list>           <list>    
-      1 <split [24/8]> train/test split <tibble> <tibble> <tibble [8 x 4]> <workflow>
+        splits         id               .metrics         .notes           .predictions     .workflow 
+        <list>         <chr>            <list>           <list>           <list>           <list>    
+      1 <split [24/8]> train/test split <tibble [2 x 4]> <tibble [0 x 3]> <tibble [8 x 4]> <workflow>
 
 # argument order gives errors for recipe/formula
 

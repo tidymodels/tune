@@ -132,15 +132,20 @@ needs_finalization <- function(x, nms = character(0)) {
   any(dials::has_unknowns(x$object))
 }
 
-check_parameters <- function(workflow, pset = NULL, data, grid_names = character(0)) {
+#' @export
+#' @param data The training data.
+#' @param grid_names A character vector of column names from the grid.
+#' @keywords internal
+#' @rdname empty_ellipses
+check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)) {
   if (is.null(pset)) {
-    pset <- hardhat::extract_parameter_set_dials(workflow)
+    pset <- hardhat::extract_parameter_set_dials(wflow)
   }
   unk <- purrr::map_lgl(pset$object, dials::has_unknowns)
   if (!any(unk)) {
     return(pset)
   }
-  tune_param <- tune_args(workflow)
+  tune_param <- tune_args(wflow)
   tune_recipe <- tune_param$id[tune_param$source == "recipe"]
   tune_recipe <- length(tune_recipe) > 0
 
@@ -164,12 +169,11 @@ check_parameters <- function(workflow, pset = NULL, data, grid_names = character
 
     tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
 
-    x <- workflows::.fit_pre(workflow, data)$pre$mold$predictors
+    x <- workflows::.fit_pre(wflow, data)$pre$mold$predictors
     pset$object <- purrr::map(pset$object, dials::finalize, x = x)
   }
   pset
 }
-
 
 shhhh <- function(x) {
   suppressPackageStartupMessages(requireNamespace(x, quietly = TRUE))

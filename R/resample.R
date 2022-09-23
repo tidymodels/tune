@@ -81,6 +81,8 @@ fit_resamples.model_spec <- function(object,
     ))
   }
 
+  control <- parsnip::condense_control(control, control_resamples())
+
   empty_ellipses(...)
 
   wflow <- add_model(workflow(), object)
@@ -108,6 +110,8 @@ fit_resamples.workflow <- function(object,
                                    metrics = NULL,
                                    control = control_resamples()) {
   empty_ellipses(...)
+
+  control <- parsnip::condense_control(control, control_resamples())
 
   res <-
     resample_workflow(
