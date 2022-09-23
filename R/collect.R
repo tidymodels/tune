@@ -347,19 +347,6 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
   res
 }
 
-#' @export
-#' @rdname collect_predictions
-collect_metrics.tune_race <- function(x, summarize = TRUE, ...) {
-  x <- dplyr::select(x, -.order)
-  if (summarize) {
-    res <- estimate_tune_results(x)
-  } else {
-    res <- collector(x, coll_col = ".metrics")
-  }
-  res
-}
-
-
 collector <- function(x, coll_col = ".predictions") {
   if (any(colnames(x) == ".iter")) {
     keep_cols <- c(coll_col, ".iter")

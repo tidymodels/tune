@@ -6,7 +6,6 @@
 \alias{collect_predictions.tune_results}
 \alias{collect_metrics}
 \alias{collect_metrics.tune_results}
-\alias{collect_metrics.tune_race}
 \alias{collect_notes}
 \alias{collect_notes.tune_results}
 \title{Obtain and format results produced by tuning functions}
@@ -20,8 +19,6 @@ collect_predictions(x, ...)
 collect_metrics(x, ...)
 
 \method{collect_metrics}{tune_results}(x, summarize = TRUE, ...)
-
-\method{collect_metrics}{tune_race}(x, summarize = TRUE, ...)
 
 collect_notes(x, ...)
 
