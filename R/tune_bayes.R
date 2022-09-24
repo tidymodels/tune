@@ -618,7 +618,7 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = parsnip::condense_control(control, control_grid())
+        control = control
       ),
       silent = TRUE
     )
