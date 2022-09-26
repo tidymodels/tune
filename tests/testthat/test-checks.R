@@ -179,6 +179,35 @@ test_that("workflow objects", {
   })
 })
 
+test_that("workflow objects (will not tune, tidymodels/tune#548)", {
+  bare_rec <-
+    recipes::recipe(ridership ~ ., data = head(Chicago))
+
+  # don't warn when supplied tune args make sense given engine / steps
+  expect_silent(
+    check_workflow(workflow(bare_rec,
+                            linear_reg()))
+  )
+  expect_silent(
+    check_workflow(workflow(bare_rec,
+                            linear_reg(engine = "glmnet", penalty = tune())))
+  )
+  expect_silent(
+    check_workflow(workflow(bare_rec,
+                            linear_reg(engine = "glmnet", penalty = tune(), mixture = tune())))
+  )
+
+  # warn when supplied tune args don't make sense given engine / steps
+  expect_snapshot_warning(
+    check_workflow(workflow(bare_rec,
+                            linear_reg(penalty = tune())))
+  )
+  expect_snapshot_warning(
+    check_workflow(workflow(bare_rec,
+                            linear_reg(penalty = tune(), mixture = tune())))
+  )
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("yardstick objects", {

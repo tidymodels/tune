@@ -84,6 +84,16 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
+# workflow objects (will not tune, tidymodels/tune#548)
+
+    ! The parameter `penalty` was marked with `tune()`, though is not supported for tuning.
+    i Have you supplied an engine that supports tuning this parameter?
+
+---
+
+    ! The parameters `penalty` and `mixture` were marked with `tune()`, though are not supported for tuning.
+    i Have you supplied an engine that supports tuning these parameters?
+
 # yardstick objects
 
     Code
