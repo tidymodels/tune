@@ -33,12 +33,16 @@ check_grid <- function(grid, workflow, pset = NULL) {
   }
 
   if (nrow(pset) == 0L) {
-    msg <- paste0(
-      "No tuning parameters have been detected, ",
-      "performance will be evaluated using the resamples with no tuning. ",
-      "Did you want to [tune()] parameters?"
+    msg <- c(
+      "!" = "No tuning parameters have been detected;
+             performance will be evaluated using the resamples with no tuning."
     )
-    rlang::warn(msg)
+
+    if (nrow(pset) == nrow(tune_args(workflow))) {
+      msg <- c(msg, "i" = "Did you want to `tune()` parameters?")
+    }
+
+    cli::cli_warn(msg)
 
     # Return `NULL` as the new `grid`, like what is used in `fit_resamples()`
     return(NULL)
@@ -269,11 +273,11 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     rlang::abort("A parsnip model is required.")
   }
 
-  if (check_dials) {
-    if (is.null(pset)) {
-      pset <- hardhat::extract_parameter_set_dials(x)
-    }
+  if (is.null(pset)) {
+    pset <- hardhat::extract_parameter_set_dials(x)
+  }
 
+  if (check_dials) {
     check_param_objects(pset)
 
     incompl <- dials::has_unknowns(pset$object)
@@ -284,6 +288,24 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
         paste0("'", pset$id[incompl], "'", collapse = ", ")
       ))
     }
+  }
+
+  tune_tbl <- tune_args(x)
+
+  if (nrow(tune_tbl) > nrow(pset)) {
+    not_tunable <- tune_tbl$id[!tune_tbl$id %in% pset$id]
+    not_tunable_tbl <- tune_tbl[tune_tbl$id %in% not_tunable, ]
+    msg <-
+      c("!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
+               {?was/were} marked with `tune()`, though {?is/are} not supported for tuning.")
+    if (all(not_tunable_tbl$source == "model_spec")) {
+      msg <-
+        c(msg,
+          "i" = "{cli::qty(not_tunable)}Have you supplied an engine that
+                 supports tuning {?this/these} parameter{?s}?")
+    }
+
+    cli::cli_warn(msg)
   }
 
   mod <- extract_spec_parsnip(x)
