@@ -150,7 +150,9 @@ test_that("workflow objects", {
   wflow_2 <-
     workflow() %>%
     add_model(
-      parsnip::boost_tree(mtry = tune()) %>% parsnip::set_engine("xgboost")
+      parsnip::boost_tree(mtry = tune()) %>%
+        parsnip::set_engine("xgboost") %>%
+        parsnip::set_mode("regression")
     ) %>%
     add_recipe(bare_rec)
 
