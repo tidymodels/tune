@@ -4,6 +4,8 @@
 
 * The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
 
+* Improved warnings related to parameter tuning. When tuning parameters are supplied that are not compatible with the given engine, `tune_*()` functions will note that those parameters will not be tuned. In that case, as well, `tune_grid()` will not suggest that a user hadn't marked any parameters for tuning when they indeed had.
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 
