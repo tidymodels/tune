@@ -4,7 +4,7 @@
 
 * The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
 
-* the `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. (#539)
+* The `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. This change addresses failures after `last_fit()` using modeling engines that require native serialization, and we anticipate little to no increase in time-to-fit resulting from this change. (#539, tidymodels/bonsai#52).
 
 # tune 1.0.0
 
