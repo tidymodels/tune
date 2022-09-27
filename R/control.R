@@ -152,8 +152,6 @@ print.control_last_fit <- function(x, ...) {
 #'   `"everything"` describing how to use parallel processing. Alternatively,
 #'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
 #'   automatically.
-#' @param allow_par A logical to allow parallel processing (if a parallel
-#'   backend is registered).
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is
@@ -173,6 +171,8 @@ print.control_last_fit <- function(x, ...) {
 #'   to use the same random number generation schemes. However, re-tuning a
 #'   model using the same `parallel_over` strategy is guaranteed to be
 #'   reproducible between runs.
+#' @param allow_par A logical to allow parallel processing (if a parallel
+#'   backend is registered).
 #'
 #' @details
 #'
