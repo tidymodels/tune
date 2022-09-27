@@ -180,31 +180,50 @@ test_that("workflow objects", {
 })
 
 test_that("workflow objects (will not tune, tidymodels/tune#548)", {
+  skip_if_not_installed("glmnet")
+
   bare_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago))
 
   # don't warn when supplied tune args make sense given engine / steps
   expect_silent(
-    check_workflow(workflow(bare_rec,
-                            linear_reg()))
+    check_workflow(
+      workflows::workflow(bare_rec, parsnip::linear_reg())
+    )
   )
   expect_silent(
-    check_workflow(workflow(bare_rec,
-                            linear_reg(engine = "glmnet", penalty = tune())))
+    check_workflow(
+      workflows::workflow(
+        bare_rec,
+        parsnip::linear_reg(engine = "glmnet", penalty = tune())
+      )
+    )
   )
   expect_silent(
-    check_workflow(workflow(bare_rec,
-                            linear_reg(engine = "glmnet", penalty = tune(), mixture = tune())))
+    check_workflow(
+      workflows::workflow(
+        bare_rec,
+        parsnip::linear_reg(engine = "glmnet", penalty = tune(), mixture = tune())
+      )
+    )
   )
 
   # warn when supplied tune args don't make sense given engine / steps
   expect_snapshot_warning(
-    check_workflow(workflow(bare_rec,
-                            linear_reg(penalty = tune())))
+    check_workflow(
+      workflows::workflow(
+        bare_rec,
+        parsnip::linear_reg(penalty = tune())
+      )
+    )
   )
   expect_snapshot_warning(
-    check_workflow(workflow(bare_rec,
-                            linear_reg(penalty = tune(), mixture = tune())))
+    check_workflow(
+      workflows::workflow(
+        bare_rec,
+        parsnip::linear_reg(penalty = tune(), mixture = tune())
+      )
+    )
   )
 })
 
