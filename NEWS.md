@@ -4,7 +4,7 @@
 
 * The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
 
-* The `control_bayes()` got a new argument `verbose_progress` that is used to control the verbosity of the bayesian calculations. This change means that the `verbose` argument is being passed to `tune_grid()` to control its verbosity.
+* The `control_bayes()` got a new argument `verbose_iter` that is used to control the verbosity of the bayesian calculations. This change means that the `verbose` argument is being passed to `tune_grid()` to control its verbosity.
 
 # tune 1.0.0
 

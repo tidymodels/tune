@@ -258,7 +258,7 @@ tune_bayes_workflow <-
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
-    if (control$verbose_progress) {
+    if (control$verbose_iter) {
       message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
@@ -520,7 +520,7 @@ pick_candidate <- function(results, info, control) {
       dplyr::arrange(dplyr::desc(objective)) %>%
       dplyr::slice(1)
   } else {
-    if (control$verbose_progress) {
+    if (control$verbose_iter) {
       msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
       message(msg)
     }
