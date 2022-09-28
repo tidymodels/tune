@@ -6,6 +6,9 @@
 
 * Improved warnings related to parameter tuning. When tuning parameters are supplied that are not compatible with the given engine, `tune_*()` functions will note that those parameters will not be tuned. In that case, as well, `tune_grid()` will not suggest that a user hadn't marked any parameters for tuning when they indeed had.
 
+* The `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. This change addresses failures after `last_fit()` using modeling engines that require native serialization, and we anticipate little to no increase in time-to-fit resulting from this change. (#539, tidymodels/bonsai#52)
+
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 
