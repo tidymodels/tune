@@ -161,12 +161,7 @@ is considered the "event".</p></dd>
 <dd><p>A single string containing either <code>"resamples"</code> or
 <code>"everything"</code> describing how to use parallel processing. Alternatively,
 <code>NULL</code> is allowed, which chooses between <code>"resamples"</code> and <code>"everything"</code>
-automatically.</p></dd>
-
-
-<dt>allow_par</dt>
-<dd><p>A logical to allow parallel processing (if a parallel
-backend is registered).</p>
+automatically.</p>
 <p>If <code>"resamples"</code>, then tuning will be performed in parallel over resamples
 alone. Within each resample, the preprocessor (i.e. recipe or formula) is
 processed once, and is then reused across all models that need to be fit.</p>
@@ -182,6 +177,11 @@ otherwise chooses <code>"everything"</code> to attempt to maximize core utilizat
 to use the same random number generation schemes. However, re-tuning a
 model using the same <code>parallel_over</code> strategy is guaranteed to be
 reproducible between runs.</p></dd>
+
+
+<dt>allow_par</dt>
+<dd><p>A logical to allow parallel processing (if a parallel
+backend is registered).</p></dd>
 
 </dl></div>
     <div class="section level2">

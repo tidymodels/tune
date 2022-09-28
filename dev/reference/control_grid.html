@@ -105,22 +105,7 @@ might be hard to see; try setting the <code>tidymodels.dark</code> option with
 
 <dt>allow_par</dt>
 <dd><p>A logical to allow parallel processing (if a parallel
-backend is registered).</p>
-<p>If <code>"resamples"</code>, then tuning will be performed in parallel over resamples
-alone. Within each resample, the preprocessor (i.e. recipe or formula) is
-processed once, and is then reused across all models that need to be fit.</p>
-<p>If <code>"everything"</code>, then tuning will be performed in parallel at two levels.
-An outer parallel loop will iterate over resamples. Additionally, an
-inner parallel loop will iterate over all unique combinations of
-preprocessor and model tuning parameters for that specific resample. This
-will result in the preprocessor being re-processed multiple times, but
-can be faster if that processing is extremely fast.</p>
-<p>If <code>NULL</code>, chooses <code>"resamples"</code> if there are more than one resample,
-otherwise chooses <code>"everything"</code> to attempt to maximize core utilization.</p>
-<p>Note that switching between <code>parallel_over</code> strategies is not guaranteed
-to use the same random number generation schemes. However, re-tuning a
-model using the same <code>parallel_over</code> strategy is guaranteed to be
-reproducible between runs.</p></dd>
+backend is registered).</p></dd>
 
 
 <dt>extract</dt>
@@ -155,7 +140,22 @@ is considered the "event".</p></dd>
 <dd><p>A single string containing either <code>"resamples"</code> or
 <code>"everything"</code> describing how to use parallel processing. Alternatively,
 <code>NULL</code> is allowed, which chooses between <code>"resamples"</code> and <code>"everything"</code>
-automatically.</p></dd>
+automatically.</p>
+<p>If <code>"resamples"</code>, then tuning will be performed in parallel over resamples
+alone. Within each resample, the preprocessor (i.e. recipe or formula) is
+processed once, and is then reused across all models that need to be fit.</p>
+<p>If <code>"everything"</code>, then tuning will be performed in parallel at two levels.
+An outer parallel loop will iterate over resamples. Additionally, an
+inner parallel loop will iterate over all unique combinations of
+preprocessor and model tuning parameters for that specific resample. This
+will result in the preprocessor being re-processed multiple times, but
+can be faster if that processing is extremely fast.</p>
+<p>If <code>NULL</code>, chooses <code>"resamples"</code> if there are more than one resample,
+otherwise chooses <code>"everything"</code> to attempt to maximize core utilization.</p>
+<p>Note that switching between <code>parallel_over</code> strategies is not guaranteed
+to use the same random number generation schemes. However, re-tuning a
+model using the same <code>parallel_over</code> strategy is guaranteed to be
+reproducible between runs.</p></dd>
 
 </dl></div>
     <div class="section level2">
