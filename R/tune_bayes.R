@@ -127,6 +127,46 @@
 #'
 #' @inheritSection tune_grid Extracting Information
 #'
+#' @examplesIf (identical(Sys.getenv("NOT_CRAN"), "true") && rlang::is_installed("kernlab"))
+#' library(recipes)
+#' library(rsample)
+#' library(parsnip)
+#'
+#' # define resamples and minimal recipe on mtcars
+#' set.seed(6735)
+#' folds <- vfold_cv(mtcars, v = 5)
+#'
+#' car_rec <-
+#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   step_normalize(all_predictors())
+#'
+#' # define an svm with parameters to tune
+#' svm_mod <-
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
+#'   set_engine("kernlab") %>%
+#'   set_mode("regression")
+#'
+#' # use a space-filling design with 6 points
+#' set.seed(3254)
+#' svm_grid <- tune_grid(svm_mod, car_rec, folds, grid = 6)
+#'
+#' show_best(svm_grid, metric = "rmse")
+#'
+#' # use bayesian optimization to evaluate at 6 more points
+#' set.seed(8241)
+#' svm_bayes <- tune_bayes(svm_mod, car_rec, folds, initial = svm_grid, iter = 6)
+#'
+#' # note that bayesian optimization evaluated parameterizations
+#' # similar to those that previously decreased rmse in svm_grid
+#' show_best(svm_bayes, metric = "rmse")
+#'
+#' # specifying `initial` as a numeric rather than previous tuning results
+#' # will result in `tune_bayes` initially evaluating an space-filling
+#' # grid using `tune_grid` with `grid = initial`
+#' set.seed(0239)
+#' svm_init <- tune_bayes(svm_mod, car_rec, folds, initial = 6, iter = 6)
+#'
+#' show_best(svm_init, metric = "rmse")
 #' @export
 tune_bayes <- function(object, ...) {
   UseMethod("tune_bayes")
