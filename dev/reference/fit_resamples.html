@@ -193,10 +193,13 @@ object, depending on what is returned.</p>
 retain any model or recipe that was created within the resamples. This
 argument should be a function with a single argument. The value of the
 argument that is given to the function in each resample is a workflow
-object (see <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code> for more information). There are two
-helper functions that can be used to easily pull out the recipe (if any)
-and/or the model: <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_recipe()</a></code> and <code><a href="extract_model.html">extract_model()</a></code>.</p>
-<p>As an example, if there is interest in getting each model back, one could use:</p><div class="sourceCode"><pre><code><span></span>
+object (see <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code> for more information). Several
+helper functions can be used to easily pull out the preprocessing
+and/or model information from the workflow, such as
+<code><a href="https://workflows.tidymodels.org/reference/extract-workflow.html" class="external-link">extract_preprocessor()</a></code> and
+<code><a href="https://workflows.tidymodels.org/reference/extract-workflow.html" class="external-link">extract_fit_parsnip()</a></code>.</p>
+<p>As an example, if there is interest in getting each parsnip model fit back,
+one could use:</p><div class="sourceCode"><pre><code><span></span>
 <span>  <span class="va">extract</span> <span class="op">=</span> <span class="kw">function</span> <span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_fit_parsnip</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 
 <p>Note that the function given to the <code>extract</code> argument is evaluated on
