@@ -86,7 +86,8 @@ control_resamples <- control_grid
 #' @export
 control_last_fit <- function(
     verbose = FALSE,
-    event_level = "first"
+    event_level = "first",
+    allow_par = FALSE
 ) {
   # Any added arguments should also be added in superset control functions
   # in other packages
@@ -95,6 +96,7 @@ control_last_fit <- function(
   control <-
     control_resamples(
       verbose = verbose,
+      allow_par = allow_par,
       event_level = event_level,
       extract = extr,
       save_pred = TRUE,
@@ -155,8 +157,6 @@ print.control_last_fit <- function(x, ...) {
 #'   `"everything"` describing how to use parallel processing. Alternatively,
 #'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
 #'   automatically.
-#' @param allow_par A logical to allow parallel processing (if a parallel
-#'   backend is registered).
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is
@@ -179,6 +179,8 @@ print.control_last_fit <- function(x, ...) {
 #' @param backend_options An object of class `"tune_backend_options"` as created
 #'   by `tune::new_backend_options()`, used to pass arguments to specific tuning
 #'   backend. Defaults to `NULL` for default backend options.
+#' @param allow_par A logical to allow parallel processing (if a parallel
+#'   backend is registered).
 #'
 #' @details
 #'

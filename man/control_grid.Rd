@@ -41,26 +41,7 @@ might be hard to see; try setting the \code{tidymodels.dark} option with
 \code{options(tidymodels.dark = TRUE)} to print lighter colors.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
-backend is registered).
-
-If \code{"resamples"}, then tuning will be performed in parallel over resamples
-alone. Within each resample, the preprocessor (i.e. recipe or formula) is
-processed once, and is then reused across all models that need to be fit.
-
-If \code{"everything"}, then tuning will be performed in parallel at two levels.
-An outer parallel loop will iterate over resamples. Additionally, an
-inner parallel loop will iterate over all unique combinations of
-preprocessor and model tuning parameters for that specific resample. This
-will result in the preprocessor being re-processed multiple times, but
-can be faster if that processing is extremely fast.
-
-If \code{NULL}, chooses \code{"resamples"} if there are more than one resample,
-otherwise chooses \code{"everything"} to attempt to maximize core utilization.
-
-Note that switching between \code{parallel_over} strategies is not guaranteed
-to use the same random number generation schemes. However, re-tuning a
-model using the same \code{parallel_over} strategy is guaranteed to be
-reproducible between runs.}
+backend is registered).}
 
 \item{extract}{An optional function with at least one argument (or \code{NULL})
 that can be used to retain arbitrary objects from the model fit object,

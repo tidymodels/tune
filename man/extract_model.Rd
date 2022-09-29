@@ -16,7 +16,7 @@ A fitted model.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#soft-deprecated}{\figure{lifecycle-soft-deprecated.svg}{options: alt='[Soft-deprecated]'}}}{\strong{[Soft-deprecated]}}
 }
 \details{
-Use \code{\link[=extract_fit_engine]{extract_fit_engine()}} instead of \code{extract_model()}.
+Use \code{\link[=extract_fit_engine.tune_results]{extract_fit_engine()}} instead of \code{extract_model()}.
 
 When extracting the fitted results, the workflow is easily accessible. If
 there is only interest in the model, this functions can be used
