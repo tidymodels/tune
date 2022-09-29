@@ -98,7 +98,7 @@ by \code{tune::new_backend_options()}, used to pass arguments to specific tuning
 backend. Defaults to \code{NULL} for default backend options.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
-backend is registered).
+backend is registered).}
 }
 \description{
 Control aspects of the Bayesian search process

@@ -88,7 +88,6 @@ reproducible between runs.}
 \item{backend_options}{An object of class \code{"tune_backend_options"} as created
 by \code{tune::new_backend_options()}, used to pass arguments to specific tuning
 backend. Defaults to \code{NULL} for default backend options.}
-
 }
 \description{
 Control aspects of the grid search process
