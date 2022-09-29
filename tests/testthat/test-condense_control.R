@@ -17,7 +17,11 @@ test_that("control functions respect hierarchy with condense_control", {
 
   expect_equal(
     ctrl,
-    control_grid(extract = control_last_fit()$extract, save_pred = TRUE)
+    control_grid(
+      extract = control_last_fit()$extract,
+      save_pred = TRUE,
+      allow_par = FALSE
+    )
   )
 
   ctrl <- parsnip::condense_control(
@@ -27,7 +31,11 @@ test_that("control functions respect hierarchy with condense_control", {
 
   expect_equal(
     ctrl,
-    control_resamples(extract = control_last_fit()$extract, save_pred = TRUE)
+    control_resamples(
+      extract = control_last_fit()$extract,
+      save_pred = TRUE,
+      allow_par = FALSE
+    )
   )
 
   ctrl <- parsnip::condense_control(

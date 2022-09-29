@@ -83,7 +83,8 @@ control_resamples <- control_grid
 #' @export
 control_last_fit <- function(
     verbose = FALSE,
-    event_level = "first"
+    event_level = "first",
+    allow_par = FALSE
 ) {
   # Any added arguments should also be added in superset control functions
   # in other packages
@@ -92,6 +93,7 @@ control_last_fit <- function(
   control <-
     control_resamples(
       verbose = verbose,
+      allow_par = allow_par,
       event_level = event_level,
       extract = extr,
       save_pred = TRUE,
@@ -156,8 +158,6 @@ print.control_last_fit <- function(x, ...) {
 #'   `"everything"` describing how to use parallel processing. Alternatively,
 #'   `NULL` is allowed, which chooses between `"resamples"` and `"everything"`
 #'   automatically.
-#' @param allow_par A logical to allow parallel processing (if a parallel
-#'   backend is registered).
 #'
 #'   If `"resamples"`, then tuning will be performed in parallel over resamples
 #'   alone. Within each resample, the preprocessor (i.e. recipe or formula) is
@@ -177,6 +177,8 @@ print.control_last_fit <- function(x, ...) {
 #'   to use the same random number generation schemes. However, re-tuning a
 #'   model using the same `parallel_over` strategy is guaranteed to be
 #'   reproducible between runs.
+#' @param allow_par A logical to allow parallel processing (if a parallel
+#'   backend is registered).
 #'
 #' @details
 #'

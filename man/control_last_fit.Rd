@@ -4,7 +4,7 @@
 \alias{control_last_fit}
 \title{Control aspects of the last fit process}
 \usage{
-control_last_fit(verbose = FALSE, event_level = "first")
+control_last_fit(verbose = FALSE, event_level = "first", allow_par = FALSE)
 }
 \arguments{
 \item{verbose}{A logical for logging results (other than warnings and errors,
@@ -18,6 +18,9 @@ might be hard to see; try setting the \code{tidymodels.dark} option with
 This argument is passed on to yardstick metric functions when any type
 of class prediction is made, and specifies which level of the outcome
 is considered the "event".}
+
+\item{allow_par}{A logical to allow parallel processing (if a parallel
+backend is registered).}
 }
 \description{
 Control aspects of the last fit process

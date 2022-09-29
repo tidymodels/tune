@@ -4,28 +4,35 @@
 #' These functions extract various elements from a tune object. If they do
 #' not exist yet, an error is thrown.
 #'
-#' - `extract_preprocessor()` returns the formula, recipe, or variable
+#' - [`extract_preprocessor()`][extract_preprocessor.tune_results()] returns
+#'   the formula, recipe, or variable
 #'   expressions used for preprocessing.
 #'
-#' - `extract_spec_parsnip()` returns the parsnip model specification.
+#' - [`extract_spec_parsnip()`][extract_spec_parsnip.tune_results()] returns
+#'   the parsnip model specification.
 #'
-#' - `extract_fit_parsnip()` returns the parsnip model fit object.
+#' - [`extract_fit_parsnip()`][extract_fit_parsnip.tune_results()] returns the
+#'   parsnip model fit object.
 #'
-#' - `extract_fit_engine()` returns the engine specific fit embedded within
+#' - [`extract_fit_engine()`][extract_fit_engine.tune_results()] returns the
+#'   engine specific fit embedded within
 #'   a parsnip model fit. For example, when using [parsnip::linear_reg()]
 #'   with the `"lm"` engine, this returns the underlying `lm` object.
 #'
-#' - `extract_mold()` returns the preprocessed "mold" object returned
+#' - [`extract_mold()`][extract_mold.tune_results()] returns the preprocessed
+#'   "mold" object returned
 #'   from [hardhat::mold()]. It contains information about the preprocessing,
 #'   including either the prepped recipe, the formula terms object, or
 #'   variable selectors.
 #'
-#' - `extract_recipe()` returns the recipe. The `estimated` argument specifies
-#'    whether the fitted or original recipe is returned.
+#' - [`extract_recipe()`][extract_recipe.tune_results()] returns the recipe.
+#'   The `estimated` argument specifies
+#'   whether the fitted or original recipe is returned.
 #'
-#' - `extract_workflow()` returns the workflow object if the control option
-#'    `save_workflow = TRUE` was used. The workflow will only have been
-#'    estimated for objects produced by [last_fit()].
+#' - [`extract_workflow()`][extract_workflow.tune_results()] returns the
+#'   workflow object if the control option
+#'   `save_workflow = TRUE` was used. The workflow will only have been
+#'   estimated for objects produced by [last_fit()].
 #'
 #' @param x A `tune_results` object.
 #' @param estimated A logical for whether the original (unfit) recipe or the
