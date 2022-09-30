@@ -302,7 +302,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
       )
 
 
-    cli::cli_abort(msg, call = rlang::caller_env(2))
+    cli::cli_abort(msg, call = rlang::caller_env(2), class = "not_tunable_error")
   }
 
   check_installs(mod)

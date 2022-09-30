@@ -86,19 +86,8 @@
 
 # workflow objects (will not tune, tidymodels/tune#548)
 
-    ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
-    i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
-
----
-
-    ! The parameters `penalty` and `mixture` were marked with `tune()`, though will not be tuned.
-    i This usually means that the current modeling engine `lm` does not support tuning `penalty` and `mixture`.
-
----
-
     Code
-      tune_grid(parsnip::linear_reg(penalty = tune()), mpg ~ ., rsample::bootstraps(
-        mtcars, 2))
+      tune_grid(lr_lm_1, rec_bare, rsample::bootstraps(Chicago, 2))
     Condition
       Error in `tune_grid()`:
       ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
@@ -107,12 +96,11 @@
 ---
 
     Code
-      tune_bayes(parsnip::linear_reg(penalty = tune()), mpg ~ ., rsample::bootstraps(
-        mtcars, 2))
+      tune_bayes(lr_lm_2, rec_tune, rsample::bootstraps(Chicago, 2))
     Condition
       Error in `tune_bayes()`:
-      ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
-      i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
+      ! The parameters `penalty` and `mixture` were marked with `tune()`, though will not be tuned.
+      i This usually means that the current modeling engine `lm` does not support tuning `penalty` and `mixture`.
 
 # yardstick objects
 
