@@ -90,7 +90,7 @@ tune_grid_loop_agua <- function(resamples,
   parallel_over <- parallel_over_finalize_agua(parallel_over)
 
   fn_tune_grid_loop_iter <- utils::getFromNamespace(
-    x = "tune_grid_loop_iter_h2o",
+    x = "tune_grid_loop_iter_agua",
     ns = "agua"
   )
 

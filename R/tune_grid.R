@@ -278,14 +278,15 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     param_info = param_info,
     grid = grid,
     metrics = metrics,
-    control = control
+    control = control,
   )
 }
 
 #' @export
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
-                               grid = 10, metrics = NULL, control = control_grid()) {
+                               grid = 10, metrics = NULL,
+                               control = control_grid()) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -330,6 +331,7 @@ tune_grid_workflow <- function(workflow,
   )
 
   check_workflow(workflow, pset = pset)
+  check_backend_options(control$backend_options)
 
   grid <- check_grid(
     grid = grid,
