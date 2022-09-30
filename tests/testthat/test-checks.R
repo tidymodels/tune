@@ -186,12 +186,12 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
     recipes::recipe(ridership ~ ., data = head(Chicago))
 
   # don't warn when supplied tune args make sense given engine / steps
-  expect_silent(
+  expect_warning(regexp = NA,
     check_workflow(
       workflows::workflow(bare_rec, parsnip::linear_reg())
     )
   )
-  expect_silent(
+  expect_warning(regexp = NA,
     check_workflow(
       workflows::workflow(
         bare_rec,
@@ -199,7 +199,7 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
       )
     )
   )
-  expect_silent(
+  expect_warning(regexp = NA,
     check_workflow(
       workflows::workflow(
         bare_rec,
