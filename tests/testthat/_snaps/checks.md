@@ -86,13 +86,13 @@
 
 # workflow objects (will not tune, tidymodels/tune#548)
 
-    ! The parameter `penalty` was marked with `tune()`, though is not supported for tuning.
-    i Have you supplied an engine that supports tuning this parameter?
+    ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
+    i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
 
 ---
 
-    ! The parameters `penalty` and `mixture` were marked with `tune()`, though are not supported for tuning.
-    i Have you supplied an engine that supports tuning these parameters?
+    ! The parameters `penalty` and `mixture` were marked with `tune()`, though will not be tuned.
+    i This usually means that the current modeling engine `lm` does not support tuning `penalty` and `mixture`.
 
 # yardstick objects
 

@@ -273,11 +273,11 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     rlang::abort("A parsnip model is required.")
   }
 
-  if (is.null(pset)) {
-    pset <- hardhat::extract_parameter_set_dials(x)
-  }
-
   if (check_dials) {
+    if (is.null(pset)) {
+      pset <- hardhat::extract_parameter_set_dials(x)
+    }
+
     check_param_objects(pset)
 
     incompl <- dials::has_unknowns(pset$object)
@@ -290,25 +290,25 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     }
   }
 
-  tune_tbl <- tune_args(x)
+  mod <- hardhat::extract_spec_parsnip(x)
 
-  if (nrow(tune_tbl) > nrow(pset)) {
-    not_tunable_tbl <- tune_tbl[!tune_tbl$id %in% pset$id, ]
-    not_tunable <- not_tunable_tbl$id
+  to_be_tuned <- hardhat::extract_parameter_set_dials(mod)
+  marked_for_tuning <- generics::tune_args(mod)
+
+  if (nrow(marked_for_tuning) > nrow(to_be_tuned)) {
+    not_tunable <- marked_for_tuning$name[!marked_for_tuning$name %in% to_be_tuned$name]
     msg <-
       c("!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
-               {?was/were} marked with `tune()`, though {?is/are} not supported for tuning.")
-    if (all(not_tunable_tbl$source == "model_spec")) {
-      msg <-
-        c(msg,
-          "i" = "{cli::qty(not_tunable)}Have you supplied an engine that
-                 supports tuning {?this/these} parameter{?s}?")
-    }
+               {?was/were} marked with `tune()`, though will not be tuned.",
+        "i" = "This usually means that the current modeling engine
+               {.var {extract_spec_parsnip(x)$engine}}
+               does not support tuning {.var {not_tunable}}."
+      )
+
 
     cli::cli_warn(msg)
   }
 
-  mod <- extract_spec_parsnip(x)
   check_installs(mod)
 
   invisible(NULL)
