@@ -94,6 +94,26 @@
     ! The parameters `penalty` and `mixture` were marked with `tune()`, though will not be tuned.
     i This usually means that the current modeling engine `lm` does not support tuning `penalty` and `mixture`.
 
+---
+
+    Code
+      tune_grid(parsnip::linear_reg(penalty = tune()), mpg ~ ., rsample::bootstraps(
+        mtcars, 2))
+    Condition
+      Error in `tune_grid()`:
+      ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
+      i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
+
+---
+
+    Code
+      tune_bayes(parsnip::linear_reg(penalty = tune()), mpg ~ ., rsample::bootstraps(
+        mtcars, 2))
+    Condition
+      Error in `tune_bayes()`:
+      ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
+      i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
+
 # yardstick objects
 
     Code

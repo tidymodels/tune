@@ -186,12 +186,12 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
     recipes::recipe(ridership ~ ., data = head(Chicago))
 
   # don't warn when supplied tune args make sense given engine / steps
-  expect_warning(regexp = NA,
+  expect_error(regexp = NA,
     check_workflow(
       workflows::workflow(bare_rec, parsnip::linear_reg())
     )
   )
-  expect_warning(regexp = NA,
+  expect_error(regexp = NA,
     check_workflow(
       workflows::workflow(
         bare_rec,
@@ -199,7 +199,7 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
       )
     )
   )
-  expect_warning(regexp = NA,
+  expect_error(regexp = NA,
     check_workflow(
       workflows::workflow(
         bare_rec,
@@ -209,7 +209,7 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   )
 
   # warn when supplied tune args don't make sense given engine / steps
-  expect_snapshot_warning(
+  expect_snapshot_error(
     check_workflow(
       workflows::workflow(
         bare_rec,
@@ -217,12 +217,29 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
       )
     )
   )
-  expect_snapshot_warning(
+  expect_snapshot_error(
     check_workflow(
       workflows::workflow(
         bare_rec,
         parsnip::linear_reg(penalty = tune(), mixture = tune())
       )
+    )
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    tune_grid(
+      parsnip::linear_reg(penalty = tune()),
+      mpg ~ .,
+      rsample::bootstraps(mtcars, 2)
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(
+      parsnip::linear_reg(penalty = tune()),
+      mpg ~ .,
+      rsample::bootstraps(mtcars, 2)
     )
   )
 })

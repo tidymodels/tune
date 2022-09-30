@@ -33,16 +33,12 @@ check_grid <- function(grid, workflow, pset = NULL) {
   }
 
   if (nrow(pset) == 0L) {
-    msg <- c(
-      "!" = "No tuning parameters have been detected;
-             performance will be evaluated using the resamples with no tuning."
+    msg <- paste0(
+      "No tuning parameters have been detected, ",
+      "performance will be evaluated using the resamples with no tuning. ",
+      "Did you want to [tune()] parameters?"
     )
-
-    if (nrow(tune_args(workflow)) == 0L) {
-      msg <- c(msg, "i" = "Did you want to `tune()` parameters?")
-    }
-
-    cli::cli_warn(msg)
+    rlang::warn(msg)
 
     # Return `NULL` as the new `grid`, like what is used in `fit_resamples()`
     return(NULL)
@@ -306,7 +302,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
       )
 
 
-    cli::cli_warn(msg)
+    cli::cli_abort(msg, call = rlang::caller_env(2))
   }
 
   check_installs(mod)

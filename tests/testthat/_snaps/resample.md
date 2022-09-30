@@ -47,8 +47,7 @@
       result <- tune_grid(lin_mod, mpg ~ ., folds)
     Condition
       Warning:
-      ! No tuning parameters have been detected; performance will be evaluated using the resamples with no tuning.
-      i Did you want to `tune()` parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
 
 # `tune_grid()` falls back to `fit_resamples()` - workflow variables
 
@@ -56,8 +55,7 @@
       result <- tune_grid(wf, folds)
     Condition
       Warning:
-      ! No tuning parameters have been detected; performance will be evaluated using the resamples with no tuning.
-      i Did you want to `tune()` parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
 
 # `tune_grid()` ignores `grid` if there are no tuning parameters
 
@@ -65,8 +63,7 @@
       result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds)
     Condition
       Warning:
-      ! No tuning parameters have been detected; performance will be evaluated using the resamples with no tuning.
-      i Did you want to `tune()` parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
 
 # cannot autoplot `fit_resamples()` results
 
