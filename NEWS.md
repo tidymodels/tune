@@ -6,6 +6,8 @@
 
 * The `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. This change addresses failures after `last_fit()` using modeling engines that require native serialization, and we anticipate little to no increase in time-to-fit resulting from this change. (#539, tidymodels/bonsai#52)
 
+* `show_notes()` does a better jobs of... showing notes. 
+
 # tune 1.0.0
 
 * `show_notes()` is a new function that can better help understand warnings and errors. 

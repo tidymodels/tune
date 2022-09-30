@@ -45,7 +45,7 @@
       unique notes:
       --------------------------------------------------------------------------------
       Error in `step_date()`:
-      ! The following required column is missing from `new_data` in step 'step_date': date.
+      ! The following required column is missing from `new_data` in step 'step_date': date. 
 
 ---
 
@@ -70,7 +70,7 @@
     Output
       unique notes:
       ------------------------------------------------------
-      prediction from a rank-deficient fit may be misleading
+      prediction from a rank-deficient fit may be misleading 
 
 ---
 
@@ -78,4 +78,15 @@
       show_notes(.Last.tune.result)
     Output
       Great job! No notes to show.
+
+---
+
+    Code
+      show_notes(fit_lr)
+    Output
+      unique notes:
+      -----------------------------------
+      glm.fit: algorithm did not converge 
+       -----------------------------------
+      glm.fit: algorithm did not converge, glm.fit: fitted probabilities numerically 0 or 1 occurred 
 
