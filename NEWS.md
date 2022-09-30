@@ -4,7 +4,7 @@
 
 * The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
 
-* Improved warnings related to parameter tuning. When tuning parameters are supplied that are not compatible with the given engine, `tune_*()` functions will note that those parameters will not be tuned. In that case, as well, `tune_grid()` will not suggest that a user hadn't marked any parameters for tuning when they indeed had.
+* Improved prompts related to parameter tuning. When tuning parameters are supplied that are not compatible with the given engine, `tune_*()` functions will now error. (#549)
 
 * The `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. This change addresses failures after `last_fit()` using modeling engines that require native serialization, and we anticipate little to no increase in time-to-fit resulting from this change. (#539, tidymodels/bonsai#52)
 
