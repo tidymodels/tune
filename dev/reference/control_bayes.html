@@ -82,6 +82,7 @@
 <span>  save_gp_scoring <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  event_level <span class="op">=</span> <span class="st">"first"</span>,</span>
 <span>  parallel_over <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  backend_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  allow_par <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -177,6 +178,12 @@ otherwise chooses <code>"everything"</code> to attempt to maximize core utilizat
 to use the same random number generation schemes. However, re-tuning a
 model using the same <code>parallel_over</code> strategy is guaranteed to be
 reproducible between runs.</p></dd>
+
+
+<dt>backend_options</dt>
+<dd><p>An object of class <code>"tune_backend_options"</code> as created
+by <code><a href="control_grid.html">tune::new_backend_options()</a></code>, used to pass arguments to specific tuning
+backend. Defaults to <code>NULL</code> for default backend options.</p></dd>
 
 
 <dt>allow_par</dt>
