@@ -38,7 +38,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
              performance will be evaluated using the resamples with no tuning."
     )
 
-    if (nrow(pset) == nrow(tune_args(workflow))) {
+    if (nrow(tune_args(workflow)) == 0L) {
       msg <- c(msg, "i" = "Did you want to `tune()` parameters?")
     }
 
@@ -293,8 +293,8 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
   tune_tbl <- tune_args(x)
 
   if (nrow(tune_tbl) > nrow(pset)) {
-    not_tunable <- tune_tbl$id[!tune_tbl$id %in% pset$id]
-    not_tunable_tbl <- tune_tbl[tune_tbl$id %in% not_tunable, ]
+    not_tunable_tbl <- tune_tbl[!tune_tbl$id %in% pset$id, ]
+    not_tunable <- not_tunable_tbl$id
     msg <-
       c("!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
                {?was/were} marked with `tune()`, though {?is/are} not supported for tuning.")
