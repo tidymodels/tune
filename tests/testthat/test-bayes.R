@@ -67,6 +67,43 @@ test_that("tune recipe only", {
     ),
     regexp = NA
   )
+
+
+  # test verbose options
+  expect_snapshot(
+    tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = control_bayes(verbose = TRUE)
+    )
+  )
+
+  expect_snapshot(
+    tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = control_bayes(verbose_iter = TRUE)
+    )
+  )
+
+  expect_snapshot(
+    tune_bayes(
+      wflow,
+      resamples = folds,
+      param_info = pset,
+      initial = iter1,
+      iter = iter2,
+      control = control_bayes(verbose_iter = TRUE, verbose = TRUE)
+    )
+  )
+
+
 })
 
 # ------------------------------------------------------------------------------
