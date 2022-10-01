@@ -71,6 +71,7 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">control_bayes</span><span class="op">(</span></span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  verbose_iter <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  no_improve <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  uncertain <span class="op">=</span> <span class="cn">Inf</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample.int</a></span><span class="op">(</span><span class="fl">10</span><span class="op">^</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -96,6 +97,13 @@ R process. When using most parallel backends, this argument typically will
 not result in any logging. If using a dark IDE theme, some logging messages
 might be hard to see; try setting the <code>tidymodels.dark</code> option with
 <code>options(tidymodels.dark = TRUE)</code> to print lighter colors.</p></dd>
+
+
+<dt>verbose_iter</dt>
+<dd><p>A logical for logging results of the Bayesian search
+process. Defaults to FALSE. If using a dark IDE theme, some logging
+messages might be hard to see; try setting the <code>tidymodels.dark</code> option
+with <code>options(tidymodels.dark = TRUE)</code> to print lighter colors.</p></dd>
 
 
 <dt>no_improve</dt>
