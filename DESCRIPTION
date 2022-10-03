@@ -27,7 +27,7 @@ Imports:
     GPfit,
     hardhat (>= 1.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 1.0.1.9000),
+    parsnip (>= 1.0.2),
     purrr (>= 0.3.2),
     recipes (>= 1.0.0),
     rlang (>= 1.0.2),
@@ -55,5 +55,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1.9000
-Remotes: 
-    tidymodels/parsnip
+
