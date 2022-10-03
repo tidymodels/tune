@@ -141,11 +141,14 @@
 #'  retain any model or recipe that was created within the resamples. This
 #'  argument should be a function with a single argument. The value of the
 #'  argument that is given to the function in each resample is a workflow
-#'  object (see [workflows::workflow()] for more information). There are two
-#'  helper functions that can be used to easily pull out the recipe (if any)
-#'  and/or the model: [extract_recipe()] and [extract_model()].
+#'  object (see [workflows::workflow()] for more information). Several
+#'  helper functions can be used to easily pull out the preprocessing
+#'  and/or model information from the workflow, such as
+#'  [`extract_preprocessor()`][workflows::extract_preprocessor.workflow()] and
+#'  [`extract_fit_parsnip()`][workflows::extract_fit_parsnip.workflow()].
 #'
-#' As an example, if there is interest in getting each model back, one could use:
+#' As an example, if there is interest in getting each parsnip model fit back,
+#' one could use:
 #' \preformatted{
 #'   extract = function (x) extract_fit_parsnip(x)
 #' }
@@ -275,14 +278,15 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     param_info = param_info,
     grid = grid,
     metrics = metrics,
-    control = control
+    control = control,
   )
 }
 
 #' @export
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
-                               grid = 10, metrics = NULL, control = control_grid()) {
+                               grid = 10, metrics = NULL,
+                               control = control_grid()) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -327,6 +331,7 @@ tune_grid_workflow <- function(workflow,
   )
 
   check_workflow(workflow, pset = pset)
+  check_backend_options(control$backend_options)
 
   grid <- check_grid(
     grid = grid,

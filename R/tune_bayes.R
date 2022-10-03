@@ -223,6 +223,7 @@ tune_bayes_workflow <-
       param_info <- hardhat::extract_parameter_set_dials(object)
     }
     check_workflow(object, check_dials = is.null(param_info), pset = param_info)
+    check_backend_options(control$backend_options)
 
     unsummarized <- check_initial(
       initial, param_info, object, resamples,
@@ -258,7 +259,7 @@ tune_bayes_workflow <-
 
     score_card <- initial_info(mean_stats, metrics_name, maximize)
 
-    if (control$verbose) {
+    if (control$verbose_iter) {
       message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
     }
 
@@ -520,7 +521,7 @@ pick_candidate <- function(results, info, control) {
       dplyr::arrange(dplyr::desc(objective)) %>%
       dplyr::slice(1)
   } else {
-    if (control$verbose) {
+    if (control$verbose_iter) {
       msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
       message(msg)
     }
@@ -618,12 +619,7 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = control_grid(
-          verbose = FALSE,
-          extract = control$extract,
-          save_pred = control$save_pred,
-          event_level = control$event_level
-        )
+        control = control
       ),
       silent = TRUE
     )

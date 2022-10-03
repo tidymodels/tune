@@ -221,7 +221,7 @@ extract_metrics_config <- function(param_names, metrics) {
 #'
 #' `r lifecycle::badge("soft-deprecated")`
 #'
-#' Use [extract_fit_engine()] instead of `extract_model()`.
+#' Use [`extract_fit_engine()`][extract_fit_engine.tune_results()] instead of `extract_model()`.
 #'
 #' When extracting the fitted results, the workflow is easily accessible. If
 #' there is only interest in the model, this functions can be used

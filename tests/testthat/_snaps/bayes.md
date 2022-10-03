@@ -1,3 +1,345 @@
+# tune recipe only
+
+    Code
+      tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1, iter = iter2,
+        control = control_bayes(verbose = TRUE))
+    Message
+      
+      >  Generating a set of 2 initial parameter results
+      v Initialization complete
+      
+      
+      -- Iteration 1 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
+      ! The Gaussian process model is being fit using 1 features but only has 2
+        data points to do so. This may cause errors or a poor model fit.
+      ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 3 candidates
+      i Predicted candidates
+      i num_comp=2
+      i Estimating performance
+      i Fold01: preprocessor 1/1
+      v Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      v Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      v Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      v Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      v Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      v Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      v Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      v Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      v Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      v Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      v Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      v Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      v Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      v Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      v Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      v Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      v Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      v Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      v Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      v Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
+      v Estimating performance
+      (x) Newest results:	rmse=2.666 (+/-0.281)
+      
+      -- Iteration 2 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
+      ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 2 candidates
+      i Predicted candidates
+      i num_comp=5
+      i Estimating performance
+      i Fold01: preprocessor 1/1
+      v Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      v Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      v Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      v Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      v Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      v Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      v Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      v Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      v Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      v Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      v Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      v Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      v Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      v Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      v Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      v Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      v Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      v Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      v Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      v Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
+      v Estimating performance
+      (x) Newest results:	rmse=2.453 (+/-0.381)
+    Output
+      # Tuning results
+      # 10-fold cross-validation 
+      # A tibble: 30 x 5
+         splits         id     .metrics         .notes           .iter
+         <list>         <chr>  <list>           <list>           <int>
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      # ... with 20 more rows
+
+---
+
+    Code
+      tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1, iter = iter2,
+        control = control_bayes(verbose_iter = TRUE))
+    Message
+      Optimizing rmse using the expected improvement
+      ! The Gaussian process model is being fit using 1 features but only has 2
+        data points to do so. This may cause errors or a poor model fit.
+      ! Gaussian process model: X should be in range (0, 1)
+      ! Gaussian process model: X should be in range (0, 1)
+    Output
+      # Tuning results
+      # 10-fold cross-validation 
+      # A tibble: 30 x 5
+         splits         id     .metrics         .notes           .iter
+         <list>         <chr>  <list>           <list>           <int>
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      # ... with 20 more rows
+
+---
+
+    Code
+      tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1, iter = iter2,
+        control = control_bayes(verbose_iter = TRUE, verbose = TRUE))
+    Message
+      
+      >  Generating a set of 2 initial parameter results
+      v Initialization complete
+      
+      Optimizing rmse using the expected improvement
+      
+      -- Iteration 1 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
+      ! The Gaussian process model is being fit using 1 features but only has 2
+        data points to do so. This may cause errors or a poor model fit.
+      ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 3 candidates
+      i Predicted candidates
+      i num_comp=2
+      i Estimating performance
+      i Fold01: preprocessor 1/1
+      v Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      v Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      v Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      v Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      v Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      v Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      v Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      v Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      v Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      v Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      v Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      v Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      v Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      v Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      v Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      v Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      v Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      v Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      v Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      v Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
+      v Estimating performance
+      (x) Newest results:	rmse=2.666 (+/-0.281)
+      
+      -- Iteration 2 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
+      ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 2 candidates
+      i Predicted candidates
+      i num_comp=5
+      i Estimating performance
+      i Fold01: preprocessor 1/1
+      v Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      v Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      v Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      v Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      v Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      v Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      v Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      v Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      v Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      v Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      v Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      v Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      v Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      v Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      v Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      v Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      v Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      v Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      v Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      v Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
+      v Estimating performance
+      (x) Newest results:	rmse=2.453 (+/-0.381)
+    Output
+      # Tuning results
+      # 10-fold cross-validation 
+      # A tibble: 30 x 5
+         splits         id     .metrics         .notes           .iter
+         <list>         <chr>  <list>           <list>           <int>
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+      # ... with 20 more rows
+
 # tune model only - failure in recipe is caught elegantly
 
     Code

@@ -3,6 +3,7 @@
 \name{control_grid}
 \alias{control_grid}
 \alias{control_resamples}
+\alias{new_backend_options}
 \title{Control aspects of the grid search process}
 \usage{
 control_grid(
@@ -13,7 +14,8 @@ control_grid(
   pkgs = NULL,
   save_workflow = FALSE,
   event_level = "first",
-  parallel_over = NULL
+  parallel_over = NULL,
+  backend_options = NULL
 )
 
 control_resamples(
@@ -24,8 +26,11 @@ control_resamples(
   pkgs = NULL,
   save_workflow = FALSE,
   event_level = "first",
-  parallel_over = NULL
+  parallel_over = NULL,
+  backend_options = NULL
 )
+
+new_backend_options(..., class = character())
 }
 \arguments{
 \item{verbose}{A logical for logging results (other than warnings and errors,
@@ -79,6 +84,10 @@ Note that switching between \code{parallel_over} strategies is not guaranteed
 to use the same random number generation schemes. However, re-tuning a
 model using the same \code{parallel_over} strategy is guaranteed to be
 reproducible between runs.}
+
+\item{backend_options}{An object of class \code{"tune_backend_options"} as created
+by \code{tune::new_backend_options()}, used to pass arguments to specific tuning
+backend. Defaults to \code{NULL} for default backend options.}
 }
 \description{
 Control aspects of the grid search process
@@ -106,3 +115,4 @@ with the original data.
 \code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
 used with \code{\link[=fit_resamples]{fit_resamples()}}.
 }
+\keyword{internal}

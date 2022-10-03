@@ -19,6 +19,17 @@ check_rset <- function(x) {
   invisible(NULL)
 }
 
+backend_options_msg <- "`backend_options` should be created by `tune::new_backend_options()`."
+
+check_backend_options <- function(backend_options) {
+  if (!is.null(backend_options) &&
+      !inherits(backend_options, "tune_backend_options")) {
+    rlang::abort(backend_options_msg)
+  }
+
+  invisible(NULL)
+}
+
 
 grid_msg <- "`grid` should be a positive integer or a data frame."
 

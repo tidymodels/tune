@@ -60,3 +60,4 @@ reference:
     - message_wrap
     - .use_case_weights_with_yardstick
     - .stash_last_result
+    - new_backend_options
