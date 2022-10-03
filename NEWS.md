@@ -4,9 +4,12 @@
 
 * The `collect_metrics()` method for racing objects was removed (and is now in the finetune package).
 
+* The `control_bayes()` got a new argument `verbose_iter` that is used to control the verbosity of the bayesian calculations. This change means that the `verbose` argument is being passed to `tune_grid()` to control its verbosity.
+
 * The `control_last_fit()` function gained an argument `allow_par` that defaults to `FALSE`. This change addresses failures after `last_fit()` using modeling engines that require native serialization, and we anticipate little to no increase in time-to-fit resulting from this change. (#539, tidymodels/bonsai#52)
 
 * `show_notes()` does a better jobs of... showing notes. 
+
 
 # tune 1.0.0
 

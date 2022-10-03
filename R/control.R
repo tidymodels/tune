@@ -122,6 +122,10 @@ print.control_last_fit <- function(x, ...) {
 #'   not result in any logging. If using a dark IDE theme, some logging messages
 #'   might be hard to see; try setting the `tidymodels.dark` option with
 #'   `options(tidymodels.dark = TRUE)` to print lighter colors.
+#' @param verbose_iter A logical for logging results of the Bayesian search
+#'   process. Defaults to FALSE. If using a dark IDE theme, some logging
+#'   messages might be hard to see; try setting the `tidymodels.dark` option
+#'   with `options(tidymodels.dark = TRUE)` to print lighter colors.
 #' @param no_improve The integer cutoff for the number of iterations without
 #'   better results.
 #' @param uncertain The number of iterations with no improvement before an
@@ -205,6 +209,7 @@ print.control_last_fit <- function(x, ...) {
 #' @export
 control_bayes <-
   function(verbose = FALSE,
+           verbose_iter = FALSE,
            no_improve = 10L,
            uncertain = Inf,
            seed = sample.int(10^5, 1),
@@ -224,6 +229,7 @@ control_bayes <-
     # add options for seeds per resample
 
     val_class_and_single(verbose, "logical", "control_bayes()")
+    val_class_and_single(verbose_iter, "logical", "control_bayes()")
     val_class_and_single(save_pred, "logical", "control_bayes()")
     val_class_and_single(save_gp_scoring, "logical", "control_bayes()")
     val_class_and_single(save_workflow, "logical", "control_bayes()")
@@ -247,6 +253,7 @@ control_bayes <-
     res <-
       list(
         verbose = verbose,
+        verbose_iter = verbose_iter,
         allow_par = allow_par,
         no_improve = no_improve,
         uncertain = uncertain,
