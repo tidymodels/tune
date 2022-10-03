@@ -297,6 +297,14 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     }
   }
 
+  check_extra_tune_parameters(x)
+
+  check_installs(hardhat::extract_spec_parsnip(x))
+
+  invisible(NULL)
+}
+
+check_extra_tune_parameters <- function(x) {
   mod <- hardhat::extract_spec_parsnip(x)
 
   to_be_tuned <- hardhat::extract_parameter_set_dials(mod)
@@ -313,13 +321,11 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
       )
 
 
-    cli::cli_abort(msg, call = rlang::caller_env(2), class = "not_tunable_error")
+    cli::cli_abort(msg, call = rlang::caller_env(3), class = "not_tunable_error")
   }
-
-  check_installs(mod)
-
   invisible(NULL)
 }
+
 
 #' @export
 #' @keywords internal
