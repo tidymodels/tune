@@ -84,6 +84,24 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
+# workflow objects (will not tune, tidymodels/tune#548)
+
+    Code
+      tune_grid(lr_lm_1, rec_bare, rsample::bootstraps(Chicago, 2))
+    Condition
+      Error in `tune_grid()`:
+      ! The parameter `penalty` was marked with `tune()`, though will not be tuned.
+      i This usually means that the current modeling engine `lm` does not support tuning `penalty`.
+
+---
+
+    Code
+      tune_bayes(lr_lm_2, rec_tune, rsample::bootstraps(Chicago, 2))
+    Condition
+      Error in `tune_bayes()`:
+      ! The parameters `penalty` and `mixture` were marked with `tune()`, though will not be tuned.
+      i This usually means that the current modeling engine `lm` does not support tuning `penalty` and `mixture`.
+
 # yardstick objects
 
     Code

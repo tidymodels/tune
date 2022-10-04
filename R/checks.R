@@ -297,11 +297,35 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
     }
   }
 
-  mod <- extract_spec_parsnip(x)
-  check_installs(mod)
+  check_extra_tune_parameters(x)
+
+  check_installs(hardhat::extract_spec_parsnip(x))
 
   invisible(NULL)
 }
+
+check_extra_tune_parameters <- function(x) {
+  mod <- hardhat::extract_spec_parsnip(x)
+
+  to_be_tuned <- hardhat::extract_parameter_set_dials(mod)
+  marked_for_tuning <- generics::tune_args(mod)
+
+  if (nrow(marked_for_tuning) > nrow(to_be_tuned)) {
+    not_tunable <- marked_for_tuning$name[!marked_for_tuning$name %in% to_be_tuned$name]
+    msg <-
+      c("!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
+               {?was/were} marked with `tune()`, though will not be tuned.",
+        "i" = "This usually means that the current modeling engine
+               {.var {extract_spec_parsnip(x)$engine}}
+               does not support tuning {.var {not_tunable}}."
+      )
+
+
+    cli::cli_abort(msg, call = rlang::caller_env(3), class = "not_tunable_error")
+  }
+  invisible(NULL)
+}
+
 
 #' @export
 #' @keywords internal
