@@ -37,6 +37,29 @@ is_workflow <- function(x) {
   inherits(x, "workflow")
 }
 
+# adapted from ps:::is_cran_check()
+is_cran_check <- function() {
+  if (identical(Sys.getenv("NOT_CRAN"), "true")) {
+    FALSE
+  }
+  else {
+    Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
+  }
+}
+
+# suggests: a character vector of package names, giving packages
+#           listed in Suggests that are needed for the example.
+# for use a la `@examplesIf (tune:::should_run_examples())`
+should_run_examples <- function(suggests = NULL) {
+  has_needed_installs <- TRUE
+
+  if (!is.null(suggests)) {
+    has_needed_installs <- rlang::is_installed(suggests)
+  }
+
+  has_needed_installs && !is_cran_check()
+}
+
 # new_tibble() currently doesn't strip attributes
 # https://github.com/tidyverse/tibble/pull/769
 new_bare_tibble <- function(x, ..., class = character()) {
