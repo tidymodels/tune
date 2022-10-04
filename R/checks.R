@@ -299,7 +299,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
   check_extra_tune_parameters(x)
 
-  check_installs(hardhat::extract_spec_parsnip(x))
+  check_installs(x)
 
   invisible(NULL)
 }
