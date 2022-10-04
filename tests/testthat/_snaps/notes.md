@@ -45,7 +45,7 @@
       unique notes:
       --------------------------------------------------------------------------------
       Error in `step_date()`:
-      ! The following required column is missing from `new_data` in step 'step_date': date. 
+      ! The following required column is missing from `new_data` in step 'step_date': date.
 
 ---
 
@@ -70,7 +70,7 @@
     Output
       unique notes:
       ------------------------------------------------------
-      prediction from a rank-deficient fit may be misleading 
+      prediction from a rank-deficient fit may be misleading
 
 ---
 
@@ -82,11 +82,38 @@
 ---
 
     Code
+      fit_lr <- parsnip::logistic_reg() %>% fit_resamples(class ~ ., rs)
+    Message
+      ! Fold01: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge
+      ! Fold02: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold02: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold03: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold03: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold04: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold04: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold05: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold05: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold06: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold06: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold07: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold07: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold08: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold08: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold09: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold09: internal: No control observations were detected in `truth` with control level 'cla...
+      ! Fold10: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
+      ! Fold10: internal: No control observations were detected in `truth` with control level 'cla...
+
+---
+
+    Code
       show_notes(fit_lr)
     Output
       unique notes:
       -----------------------------------
-      glm.fit: algorithm did not converge 
-       -----------------------------------
-      glm.fit: algorithm did not converge, glm.fit: fitted probabilities numerically 0 or 1 occurred 
+      glm.fit: algorithm did not converge
+      -----------------------------------
+      glm.fit: algorithm did not converge, glm.fit: fitted probabilities numerically 0 or 1 occurred
+      -----------------------------------
+      No control observations were detected in `truth` with control level 'class_2'.
 

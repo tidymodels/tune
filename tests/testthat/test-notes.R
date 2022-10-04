@@ -59,13 +59,11 @@ test_that("showing notes", {
   set.seed(1)
   dat <- modeldata::sim_classification(150, intercept = 15)
   rs <- rsample::vfold_cv(dat)
-  fit_lr <-
-    parsnip::logistic_reg() %>%
-    fit_resamples(
-      class ~ .,
-      rs,
-      metrics = yardstick::metric_set(accuracy, kap, recall, precision)
-    )
+  expect_snapshot(
+    fit_lr <-
+      parsnip::logistic_reg() %>%
+      fit_resamples(class ~ ., rs)
+  )
   expect_snapshot(show_notes(fit_lr))
 
 })

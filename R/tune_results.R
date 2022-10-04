@@ -156,9 +156,9 @@ show_notes <- function(x, n = 10) {
   max_width <- min(max_width, cli::console_width())
 
   notes <-  paste(cli::rule(width = max_width), notes, sep = "\n")
-  notes <-  paste(notes, "\n")
+  notes <-  paste0(notes, "\n")
   cat(msg)
-  cat(notes)
+  cat(notes, sep = "")
   invisible(x)
 }
 
