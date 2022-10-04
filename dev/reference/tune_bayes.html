@@ -302,6 +302,73 @@ grid has a separate R object associated with it.</p>
 <code><a href="fit_resamples.html">fit_resamples()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rsample.tidymodels.org" class="external-link">rsample</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># define resamples and minimal recipe on mtcars</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">6735</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html" class="external-link">vfold_cv</a></span><span class="op">(</span><span class="va">mtcars</span>, v <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">car_rec</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># define an svm with parameters to tune</span></span></span>
+<span class="r-in"><span><span class="va">svm_mod</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/svm_rbf.html" class="external-link">svm_rbf</a></span><span class="op">(</span>cost <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, rbf_sigma <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"kernlab"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_args.html" class="external-link">set_mode</a></span><span class="op">(</span><span class="st">"regression"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use a space-filling design with 6 points</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3254</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">svm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">svm_mod</span>, <span class="va">car_rec</span>, <span class="va">folds</span>, grid <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_grid</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       cost    rbf_sigma .metric .estimator  mean     n std_err .config    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 25.3     0.248        rmse    standard    3.17     5   0.678 Preprocess…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  3.88    0.000<span style="text-decoration: underline;">510</span>     rmse    standard    4.07     5   0.727 Preprocess…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  0.102   0.000<span style="text-decoration: underline;">005</span>92   rmse    standard    5.96     5   0.970 Preprocess…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  0.001<span style="text-decoration: underline;">25</span> 0.000<span style="text-decoration: underline;">138</span>     rmse    standard    5.96     5   0.970 Preprocess…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  0.019<span style="text-decoration: underline;">2</span>  0.000<span style="text-decoration: underline;">000</span>042<span style="text-decoration: underline;">7</span> rmse    standard    5.96     5   0.970 Preprocess…</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># use bayesian optimization to evaluate at 6 more points</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8241</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">svm_bayes</span> <span class="op">&lt;-</span> <span class="fu">tune_bayes</span><span class="op">(</span><span class="va">svm_mod</span>, <span class="va">car_rec</span>, <span class="va">folds</span>, initial <span class="op">=</span> <span class="va">svm_grid</span>, iter <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># note that bayesian optimization evaluated parameterizations</span></span></span>
+<span class="r-in"><span><span class="co"># similar to those that previously decreased rmse in svm_grid</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_bayes</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    cost rbf_sigma .metric .estimator  mean     n std_err .config .iter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 31.6    0.001<span style="text-decoration: underline;">44</span> rmse    standard    2.60     5   0.232 Iter1       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 28.7    0.002<span style="text-decoration: underline;">92</span> rmse    standard    2.61     5   0.208 Iter4       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 28.3    0.006<span style="text-decoration: underline;">85</span> rmse    standard    2.62     5   0.195 Iter3       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 31.4    0.004<span style="text-decoration: underline;">82</span> rmse    standard    2.64     5   0.183 Iter5       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  7.30   0.053<span style="text-decoration: underline;">3</span>  rmse    standard    2.71     5   0.303 Iter6       6</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specifying `initial` as a numeric rather than previous tuning results</span></span></span>
+<span class="r-in"><span><span class="co"># will result in `tune_bayes` initially evaluating an space-filling</span></span></span>
+<span class="r-in"><span><span class="co"># grid using `tune_grid` with `grid = initial`</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0239</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">svm_init</span> <span class="op">&lt;-</span> <span class="fu">tune_bayes</span><span class="op">(</span><span class="va">svm_mod</span>, <span class="va">car_rec</span>, <span class="va">folds</span>, initial <span class="op">=</span> <span class="fl">6</span>, iter <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_init</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    cost rbf_sigma .metric .estimator  mean     n std_err .config .iter</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 2.35     0.026<span style="text-decoration: underline;">9</span> rmse    standard    2.70     5   0.188 Iter5       5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 3.32     0.036<span style="text-decoration: underline;">1</span> rmse    standard    2.72     5   0.192 Iter6       6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 1.40     0.047<span style="text-decoration: underline;">9</span> rmse    standard    2.78     5   0.229 Iter4       4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 0.509    0.025<span style="text-decoration: underline;">6</span> rmse    standard    3.17     5   0.473 Iter3       3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> 0.256    0.020<span style="text-decoration: underline;">1</span> rmse    standard    3.79     5   0.622 Iter2       2</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
