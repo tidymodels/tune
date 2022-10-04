@@ -44,23 +44,23 @@ tune.
 
 Good places to begin include:
 
--   [Getting started with cell segmentation
-    data](https://www.tidymodels.org/start/tuning/)
--   [Getting started with Ames housing
-    data](https://tune.tidymodels.org/articles/getting_started.html)
+- [Getting started with cell segmentation
+  data](https://www.tidymodels.org/start/tuning/)
+- [Getting started with Ames housing
+  data](https://tune.tidymodels.org/articles/getting_started.html)
 
 More advanced resources available are:
 
--   [Basic grid search for an SVM
-    model](https://www.tidymodels.org/learn/work/tune-svm/)
--   [Iterative Bayesian optimization of a classification
-    model](https://www.tidymodels.org/learn/work/bayes-opt/)
--   [Advanced text mining
-    example](https://tune.tidymodels.org/articles/extras/text_analysis.html)
--   [Notes on optimizations and parallel
-    processing](https://tune.tidymodels.org/articles/extras/optimizations.html)
--   [Details on acquisition function for scoring parameter
-    combinations](https://tune.tidymodels.org/articles/acquisition_functions.html)
+- [Basic grid search for an SVM
+  model](https://www.tidymodels.org/learn/work/tune-svm/)
+- [Iterative Bayesian optimization of a classification
+  model](https://www.tidymodels.org/learn/work/bayes-opt/)
+- [Advanced text mining
+  example](https://tune.tidymodels.org/articles/extras/text_analysis.html)
+- [Notes on optimizations and parallel
+  processing](https://tune.tidymodels.org/articles/extras/optimizations.html)
+- [Details on acquisition function for scoring parameter
+  combinations](https://tune.tidymodels.org/articles/acquisition_functions.html)
 
 ## Contributing
 
@@ -68,18 +68,18 @@ This project is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
--   For questions and discussions about tidymodels packages, modeling,
-    and machine learning, please [post on RStudio
-    Community](https://community.rstudio.com/new-topic?category_id=15&tags=tidymodels,question).
+- For questions and discussions about tidymodels packages, modeling, and
+  machine learning, please [post on RStudio
+  Community](https://community.rstudio.com/new-topic?category_id=15&tags=tidymodels,question).
 
--   If you think you have encountered a bug, please [submit an
-    issue](https://github.com/tidymodels/tune/issues).
+- If you think you have encountered a bug, please [submit an
+  issue](https://github.com/tidymodels/tune/issues).
 
--   Either way, learn how to create and share a
-    [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html)
-    (a minimal, reproducible example), to clearly communicate about your
-    code.
+- Either way, learn how to create and share a
+  [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html)
+  (a minimal, reproducible example), to clearly communicate about your
+  code.
 
--   Check out further details on [contributing guidelines for tidymodels
-    packages](https://www.tidymodels.org/contribute/) and [how to get
-    help](https://www.tidymodels.org/help/).
+- Check out further details on [contributing guidelines for tidymodels
+  packages](https://www.tidymodels.org/contribute/) and [how to get
+  help](https://www.tidymodels.org/help/).
