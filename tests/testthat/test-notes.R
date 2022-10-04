@@ -3,6 +3,7 @@ library(dplyr)
 library(recipes)
 library(parsnip)
 library(rsample)
+library(yardstick)
 
 test_that("showing notes", {
   skip_if_not_installed("modeldata")
@@ -52,6 +53,17 @@ test_that("showing notes", {
     add_recipe(clean_rec)
 
   res_clean <- clean_wflow %>% fit_resamples(rs)
-  expect_snapshot(show_notes(.Last.tune.result
-                             ))
+  expect_snapshot(show_notes(.Last.tune.result))
+
+  # Get cli lines right
+  set.seed(1)
+  dat <- modeldata::sim_classification(150, intercept = 15)
+  rs <- rsample::vfold_cv(dat)
+  expect_snapshot(
+    fit_lr <-
+      parsnip::logistic_reg() %>%
+      fit_resamples(class ~ ., rs)
+  )
+  expect_snapshot(show_notes(fit_lr))
+
 })
