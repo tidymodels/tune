@@ -127,7 +127,7 @@
 #'
 #' @inheritSection tune_grid Extracting Information
 #'
-#' @examplesIf (identical(Sys.getenv("NOT_CRAN"), "true") && rlang::is_installed("kernlab"))
+#' @examplesIf (tune:::should_run_examples(suggests = "kernlab"))
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

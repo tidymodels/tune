@@ -214,7 +214,7 @@ grid has a separate R object associated with it.
 }
 
 \examples{
-\dontshow{if ((identical(Sys.getenv("NOT_CRAN"), "true") && rlang::is_installed("kernlab"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if ((tune:::should_run_examples(suggests = "kernlab"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
