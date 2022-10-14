@@ -155,7 +155,7 @@ basic usage, grid search, and model optimization.
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dials.tidymodels.org/reference/parameters.html" class="external-link">parameters</a></span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span></span>
-<span><span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `hardhat::extract_parameter_set_dials()` instead.</span></span>
 <span><span class="co">#&gt; Collection of 2 parameters for tuning</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  identifier     type    object</span></span>
@@ -180,8 +180,6 @@ basic usage, grid search, and model optimization.
 <span>    `long df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="op">)</span>, </span>
 <span>    `lat df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span></span>
-<span><span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span></span>
 <span><span class="va">ames_param</span></span>
 <span><span class="co">#&gt; Collection of 2 parameters for tuning</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -356,9 +354,7 @@ basic usage, grid search, and model optimization.
 <span>    `lat df` <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">18</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    neighbors <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/neighbors.html" class="external-link">neighbors</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">50</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    weight_func <span class="op">=</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/weight_func.html" class="external-link">weight_func</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rectangular"</span>, <span class="st">"inv"</span>, <span class="st">"gaussian"</span>, <span class="st">"triangular"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: `parameters.workflow()` was deprecated in tune 0.1.6.9003.</span></span>
-<span><span class="co">#&gt; Please use `hardhat::extract_parameter_set_dials()` instead.</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p>This parameter collection can be used with the grid functions or with <code><a href="../reference/tune_grid.html">tune_grid()</a></code> via the <code>param_info</code> argument.</p>
 <p>Instead of using grid search, an iterative method called <a href="http://krasserm.github.io/2018/03/21/bayesian-optimization/" class="external-link">Bayesian optimization</a> can be used. This takes an initial set of results and tries to predict the next tuning parameters to evaluate.</p>
 <p>Although no grid is required, the process requires a few additional pieces of information:</p>
