@@ -212,4 +212,10 @@ test_that("percent loss", {
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(mtcars, metric = "disp")
   })
+
+  data("example_ames_knn")
+  expect_equal(
+    select_by_pct_loss(ames_grid_search, metric = "rmse", limit = 10, desc(K))$K,
+    40
+  )
 })
