@@ -210,12 +210,12 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
     rlang::abort(msg)
   }
 
-  # discard models more complex than the best then rank by loss
+  # discard models more complex than the best and
+  # remove models with greater increase in loss than the limit
   best_index <- which(res$.loss == 0)
   res %>%
     dplyr::slice(1:best_index) %>%
     dplyr::filter(.loss < limit) %>%
-    dplyr::arrange(desc(.loss)) %>%
     dplyr::slice(1)
 }
 
