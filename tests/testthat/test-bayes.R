@@ -171,7 +171,7 @@ test_that("tune model only (with variables)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe, multi-predict)", {
-  skip_if_not(has_multi_predict())
+  skip_on_cran()
 
   set.seed(4400)
   wflow <- workflow() %>%
@@ -192,7 +192,7 @@ test_that("tune model only (with recipe, multi-predict)", {
   expect_equal(unique(res$id), folds$id)
   expect_equal(
     colnames(res$.metrics[[1]]),
-    c("cost", ".metric", ".estimator", ".estimate")
+    c("cost", ".metric", ".estimator", ".estimate", ".config")
   )
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), iterT * 2)
@@ -237,14 +237,14 @@ test_that("tune model and recipe", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe (multi-predict)", {
-  skip_if_not(has_multi_predict())
+  skip_on_cran()
 
   set.seed(4400)
   wflow <- workflow() %>%
     add_recipe(rec_tune_1) %>%
     add_model(svm_mod)
   pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
-  grid <- grid_regular(pset, levels = c(3, 2))
+  grid <- dials::grid_regular(pset, levels = c(3, 2))
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
     res <- tune_bayes(
