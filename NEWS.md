@@ -1,6 +1,7 @@
 # tune (development version)
 
 * Fixed bug in `select_by_*` functions where selection was silently ignored if supplied as a string rather than an unquoted column name. Arguments to those functions supplied in `...` are now always passed as symbols to `arrange()` internally.
+* Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
 
 # tune 1.0.1
 

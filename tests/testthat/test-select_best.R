@@ -236,4 +236,10 @@ test_that("percent loss", {
     select_by_pct_loss(knn_results, metric = "roc_auc", nonexistent_column),
     "Could not sort results"
   )
+
+  data("example_ames_knn")
+  expect_equal(
+    select_by_pct_loss(ames_grid_search, metric = "rmse", limit = 10, desc(K))$K,
+    40
+  )
 })
