@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Fixed bug in `select_by_*` functions where selection was silently ignored if supplied as a string rather than an unquoted column name. Arguments to those functions supplied in `...` are now always passed as symbols to `arrange()` internally.
+
 # tune 1.0.1
 
 * `last_fit()`, `fit_resamples()`, `tune_grid()`, and `tune_bayes()` do not automatically error if  the wrong type of `control` object is passed. If the passed control object is not a superset of the one that is needed, the function will still error. As an example, passing `control_grid()` to `tune_bayes()` will fail but passing `control_bayes()` to `tune_grid()` will not. ([#449](https://github.com/tidymodels/tune/issues/449))

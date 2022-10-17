@@ -135,6 +135,10 @@ test_that("one-std error rule", {
   expect_true(
     tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
   )
+  expect_equal(
+    select_by_one_std_err(knn_results, metric = "roc_auc", K),
+    select_by_one_std_err(knn_results, metric = "roc_auc", "K")
+  )
 
   expect_equal(
     select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$mean,
@@ -168,6 +172,14 @@ test_that("one-std error rule", {
   expect_snapshot(error = TRUE, {
     select_by_one_std_err(mtcars, metric = "disp")
   })
+  expect_error(
+    select_by_one_std_err(knn_results, metric = "roc_auc", "nonexistent_column"),
+    "Could not sort results"
+  )
+  expect_error(
+    select_by_one_std_err(knn_results, metric = "roc_auc", nonexistent_column),
+    "Could not sort results"
+  )
 })
 
 
@@ -179,6 +191,10 @@ test_that("percent loss", {
 
   expect_true(
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
+  )
+  expect_equal(
+    select_by_pct_loss(knn_results, metric = "roc_auc", K),
+    select_by_pct_loss(knn_results, metric = "roc_auc", "K")
   )
   expect_equal(
     select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$mean,
@@ -212,4 +228,12 @@ test_that("percent loss", {
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(mtcars, metric = "disp")
   })
+  expect_error(
+    select_by_pct_loss(knn_results, metric = "roc_auc", "nonexistent_column"),
+    "Could not sort results"
+  )
+  expect_error(
+    select_by_pct_loss(knn_results, metric = "roc_auc", nonexistent_column),
+    "Could not sort results"
+  )
 })

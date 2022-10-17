@@ -202,10 +202,12 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
       )
   }
 
+  dots <- purrr::map(dots, handle_chr_names)
+
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::get_expr(.x)))
     msg <- paste0("Could not sort results by '", var_nm, "'.")
     rlang::abort(msg)
   }
@@ -279,10 +281,12 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
       dplyr::filter(mean <= .bound)
   }
 
+  dots <- purrr::map(dots, handle_chr_names)
+
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::get_expr(.x)))
     msg <- paste0("Could not sort results by '", var_nm, "'.")
     rlang::abort(msg)
   }
@@ -304,4 +308,15 @@ is_metric_maximize <- function(x, metric) {
     purrr::map(~ attr(.x, "direction"))
 
   directions[[metric]] == "maximize"
+}
+
+# adapted from yardstick:::handle_chr_names
+handle_chr_names <- function(x) {
+  x_expr <- rlang::get_expr(x)
+
+  if (is.character(x_expr) && length(x_expr) == 1) {
+    x <- as.name(x_expr)
+  }
+
+  x
 }
