@@ -29,7 +29,7 @@ These methods extend the generic \code{\link[dials:parameters]{dials::parameters
 complex objects, such as recipes, model specifications, and workflows.
 }
 \examples{
-\donttest{
+\dontshow{if ((tune:::should_run_examples(suggests = c("xgboost", "C5.0")))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(tibble)
 library(recipes)
 
@@ -59,7 +59,6 @@ boost_tree(trees = tune(), min_n = tune()) \%>\%
 boost_tree(trees = tune(), min_n = tune()) \%>\%
   set_engine("C5.0", rules = TRUE) \%>\%
   dials::parameters()
-}
-
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}

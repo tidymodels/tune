@@ -139,7 +139,7 @@ grid has a separate R object associated with it.
 }
 
 \examples{
-\donttest{
+\dontshow{if ((tune:::should_run_examples())) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -172,7 +172,7 @@ wf <- workflow() \%>\%
   add_model(lin_mod)
 
 wf_res <- fit_resamples(wf, folds)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=control_resamples]{control_resamples()}}, \code{\link[=collect_predictions]{collect_predictions()}}, \code{\link[=collect_metrics]{collect_metrics()}}

@@ -205,7 +205,7 @@ grid has a separate R object associated with it.
 }
 
 \examples{
-\donttest{
+\dontshow{if ((tune:::should_run_examples(suggests = "kernlab"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -279,7 +279,7 @@ wf <- workflow() \%>\%
 
 set.seed(3254)
 svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=control_grid]{control_grid()}}, \code{\link[=tune]{tune()}}, \code{\link[=fit_resamples]{fit_resamples()}},

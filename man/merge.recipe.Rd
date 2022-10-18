@@ -26,9 +26,11 @@ A tibble with a column \code{x} that has as many rows as were in \code{y}.
 \pkg{parsnip} model or recipe.
 }
 \examples{
-\donttest{
+\dontshow{if ((tune:::should_run_examples(suggests = c("xgboost", "modeldata")))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(tibble)
 library(recipes)
+library(parsnip)
+library(dials)
 
 pca_rec <-
   recipe(mpg ~ ., data = mtcars) \%>\%
@@ -62,23 +64,19 @@ spline_grid <-
 
 merge(pca_rec, pca_grid)
 
-if (rlang::is_installed("modeldata")) {
-  library(parsnip)
-  library(dials)
-  data(hpc_data, package = "modeldata")
+data(hpc_data, package = "modeldata")
 
-  xgb_mod <-
-    boost_tree(trees = tune(), min_n = tune()) \%>\%
-    set_engine("xgboost")
+xgb_mod <-
+  boost_tree(trees = tune(), min_n = tune()) \%>\%
+  set_engine("xgboost")
 
-  set.seed(254)
-  xgb_grid <-
-    extract_parameter_set_dials(xgb_mod) \%>\%
-    finalize(hpc_data) \%>\%
-    grid_max_entropy(size = 3)
+set.seed(254)
+xgb_grid <-
+  extract_parameter_set_dials(xgb_mod) \%>\%
+  finalize(hpc_data) \%>\%
+  grid_max_entropy(size = 3)
 
-  merge(xgb_mod, xgb_grid)
-}
-}
+merge(xgb_mod, xgb_grid)
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}
