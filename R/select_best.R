@@ -197,14 +197,14 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
 
   res <-
     res %>%
-    rowwise() %>%
+    dplyr::rowwise() %>%
     dplyr::mutate(
       .best = best_metric,
       # can calculate loss without knowledge of direction since
       # we know that losses must be larger than that for the best
       .loss = abs((abs(mean) - abs(.best)) / .best) * 100
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
@@ -288,13 +288,13 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
     bound_upper <- abs(best) + res$std_err[best_index]
     res <-
       res %>%
-      rowwise() %>%
+      dplyr::rowwise() %>%
       dplyr::mutate(
         .best = best,
         .bound = list(c(lower = bound_lower, upper = bound_upper))
       ) %>%
       dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) %>%
-      ungroup()
+      dplyr::ungroup()
   }
 
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
