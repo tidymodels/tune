@@ -79,7 +79,7 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
       "This value was ignored."
     ))
   }
-  maximize <- is_metric_maximize(x, metric)
+  direction <- get_metric_direction(x, metric)
   summary_res <- estimate_tune_results(x)
   metrics <- unique(summary_res$.metric)
   if (length(metrics) == 1) {
@@ -93,10 +93,12 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
 
-  if (maximize) {
+  if (direction == "maximize") {
     summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
-  } else {
+  } else if (direction == "minimize") {
     summary_res <- summary_res %>% dplyr::arrange(mean)
+  } else if (direction == "zero") {
+    summary_res <- summary_res %>% dplyr::arrange(abs(mean))
   }
   show_ind <- 1:min(nrow(summary_res), n)
   summary_res %>% dplyr::slice(show_ind)
@@ -176,7 +178,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
-  maximize <- is_metric_maximize(x, metric)
+  direction <- get_metric_direction(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -184,23 +186,25 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
-  if (maximize) {
+  if (direction == "maximize") {
     best_metric <- max(res$mean, na.rm = TRUE)
-    res <-
-      res %>%
-      dplyr::mutate(
-        .best = best_metric,
-        .loss = (best_metric - mean) / best_metric * 100
-      )
-  } else {
+  } else if (direction == "minimize") {
     best_metric <- min(res$mean, na.rm = TRUE)
-    res <-
-      res %>%
-      dplyr::mutate(
-        .best = best_metric,
-        .loss = (mean - best_metric) / best_metric * 100
-      )
+  } else if (direction == "zero") {
+    which_min <- which.min(abs(res$mean))
+    best_metric <- res$mean[which_min]
   }
+
+  res <-
+    res %>%
+    rowwise() %>%
+    dplyr::mutate(
+      .best = best_metric,
+      # can calculate loss without knowledge of direction since
+      # we know that losses must be larger than that for the best
+      .loss = abs((abs(mean) - abs(.best)) / .best) * 100
+    ) %>%
+    ungroup()
 
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
@@ -246,7 +250,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
-  maximize <- is_metric_maximize(x, metric)
+  direction <- get_metric_direction(x, metric)
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
@@ -255,7 +259,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
     rlang::abort("No results are available. Please check the value of `metric`.")
   }
 
-  if (maximize) {
+  if (direction == "maximize") {
     best_index <- which.max(res$mean)
     best <- res$mean[best_index]
     bound <- best - res$std_err[best_index]
@@ -266,7 +270,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
         .bound = bound
       ) %>%
       dplyr::filter(mean >= .bound)
-  } else {
+  } else if (direction == "minimize") {
     best_index <- which.min(res$mean)
     best <- res$mean[best_index]
     bound <- best + res$std_err[best_index]
@@ -277,6 +281,20 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
         .bound = bound
       ) %>%
       dplyr::filter(mean <= .bound)
+  } else if (direction == "zero") {
+    best_index <- which.min(abs(res$mean))
+    best <- res$mean[best_index]
+    bound_lower <- -abs(best) - res$std_err[best_index]
+    bound_upper <- abs(best) + res$std_err[best_index]
+    res <-
+      res %>%
+      rowwise() %>%
+      dplyr::mutate(
+        .best = best,
+        .bound = list(c(lower = bound_lower, upper = bound_upper))
+      ) %>%
+      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) %>%
+      ungroup()
   }
 
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
@@ -289,7 +307,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   res %>% dplyr::slice(1)
 }
 
-is_metric_maximize <- function(x, metric) {
+get_metric_direction <- function(x, metric) {
   if (rlang::is_missing(metric) | length(metric) > 1) {
     rlang::abort("Please specify a single character value for `metric`.")
   }
@@ -303,5 +321,5 @@ is_metric_maximize <- function(x, metric) {
     attr("metrics") %>%
     purrr::map(~ attr(.x, "direction"))
 
-  directions[[metric]] == "maximize"
+  directions[[metric]]
 }
