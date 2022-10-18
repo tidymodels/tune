@@ -42,6 +42,7 @@ Imports:
 Suggests: 
     covr,
     kernlab,
+    kknn,
     knitr,
     modeldata,
     spelling,
