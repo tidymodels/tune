@@ -40,12 +40,15 @@ Imports:
     workflows (>= 1.0.0),
     yardstick (>= 1.0.0)
 Suggests: 
+    C50,
     covr,
     kernlab,
+    kknn,
     knitr,
     modeldata,
     spelling,
     testthat (>= 3.0.0),
+    xgboost,
     xml2
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate

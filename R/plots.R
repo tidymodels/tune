@@ -51,8 +51,7 @@
 #' _except_ when an identifier was used (e.g. `neighbors = tune("K")`).
 #'
 #' @seealso [tune_grid()], [tune_bayes()]
-#' @examples
-#' \donttest{
+#' @examplesIf (tune:::should_run_examples())
 #' # For grid search:
 #' data("example_ames_knn")
 #'
@@ -69,7 +68,6 @@
 #'
 #' # Plot performance over iterations
 #' autoplot(ames_iter_search, metric = "rmse", type = "performance")
-#' }
 #' @export
 autoplot.tune_results <-
   function(object,

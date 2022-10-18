@@ -158,8 +158,7 @@
 #' As noted above, in some cases, model predictions can be derived for
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
-#' @examples
-#' \donttest{
+#' @examplesIf (tune:::should_run_examples(suggests = "kernlab"))
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -233,7 +232,6 @@
 #'
 #' set.seed(3254)
 #' svm_res_wf <- tune_grid(wf, resamples = folds, grid = 7)
-#' }
 #' @export
 tune_grid <- function(object, ...) {
   UseMethod("tune_grid")

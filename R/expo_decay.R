@@ -14,8 +14,7 @@
 #' @param slope A coefficient for the exponent to control the rate of decay. The
 #'  sign of the slope controls the direction of decay.
 #' @return A single numeric value.
-#' @examples
-#' \donttest{
+#' @examplesIf (tune:::should_run_examples())
 #' library(tibble)
 #' library(purrr)
 #' library(ggplot2)
@@ -32,7 +31,6 @@
 #' ) %>%
 #'   ggplot(aes(x = iter, y = value)) +
 #'   geom_path()
-#' }
 #' @export
 expo_decay <- function(iter, start_val, limit_val, slope = 1 / 5) {
   # between 0:1

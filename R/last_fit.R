@@ -28,8 +28,7 @@
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
 #' model (and recipe, if any) that used the training set.
-#' @examples
-#' \donttest{
+#' @examplesIf (tune:::should_run_examples())
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -58,7 +57,6 @@
 #'   add_model(lin_mod)
 #'
 #' last_fit(spline_wfl, split = tr_te_split)
-#' }
 #' @export
 last_fit <- function(object, ...) {
   UseMethod("last_fit")

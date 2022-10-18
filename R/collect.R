@@ -46,8 +46,7 @@
 #' [collect_notes()] returns a tibble with columns for the resampling
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
-#' @examples
-#' \donttest{
+#' @examplesIf (tune:::should_run_examples(suggests = "kknn"))
 #' data("example_ames_knn")
 #' # The parameters for the model:
 #' extract_parameter_set_dials(ames_wflow)
@@ -85,7 +84,6 @@
 #' collect_predictions(resampled) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE, grid[1, ]) %>% arrange(.row)
-#' }
 #' @export
 collect_predictions <- function(x, ...) {
   UseMethod("collect_predictions")
