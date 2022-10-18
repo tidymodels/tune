@@ -111,8 +111,10 @@
 <dt>...</dt>
 <dd><p>For <code>select_by_one_std_err()</code> and <code>select_by_pct_loss()</code>, this
 argument is passed directly to <code><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">dplyr::arrange()</a></code> so that the user can sort
-the models from <em>most simple to most complex</em>. See the examples below. At
-least one term is required for these two functions.</p></dd>
+the models from <em>most simple to most complex</em>. That is, for a parameter <code>p</code>,
+pass the unquoted expression <code>p</code> if smaller values of <code>p</code> indicate a simpler
+model, or <code>desc(p)</code> if larger values indicate a simpler model. At
+least one term is required for these two functions. See the examples below.</p></dd>
 
 
 <dt>metric</dt>
