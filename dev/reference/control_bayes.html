@@ -138,7 +138,10 @@ be saved for each model <em>evaluated</em>.</p></dd>
 the function should execute. The elapsed time is evaluated at internal
 checkpoints and, if over time, the results at that time are returned (with
 a warning). This means that the <code>time_limit</code> is not an exact limit, but a
-minimum time limit.</p></dd>
+minimum time limit.</p>
+<p>Note that timing begins immediately on execution. Thus, if the
+<code>initial</code> argument to <code><a href="tune_bayes.html">tune_bayes()</a></code> is supplied as a number, the elapsed
+time will include the time needed to generate initialization results.</p></dd>
 
 
 <dt>pkgs</dt>
