@@ -538,7 +538,7 @@ super_safely <- function(fn) {
 
   # Construct a try()-error to be compatible with `log_problems()`
   handle_error <- function(e) {
-    e <- structure(e$message, class = "try-error", condition = e)
+    e <- structure(conditionMessage(e), class = "try-error", condition = e)
     list(result = NULL, error = e, warnings = warnings)
   }
 
