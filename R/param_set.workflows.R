@@ -10,7 +10,7 @@
 #' @param x An object
 #' @param ... Not currently used.
 #' @return A parameter set object
-#' @examplesIf (tune:::should_run_examples(suggests = c("xgboost", "C5.0")))
+#' @examplesIf tune:::should_run_examples(suggests = c("xgboost", "C5.0"))
 #' library(tibble)
 #' library(recipes)
 #'

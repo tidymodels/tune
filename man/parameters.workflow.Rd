@@ -29,7 +29,7 @@ These methods extend the generic \code{\link[dials:parameters]{dials::parameters
 complex objects, such as recipes, model specifications, and workflows.
 }
 \examples{
-\dontshow{if ((tune:::should_run_examples(suggests = c("xgboost", "C5.0")))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = c("xgboost", "C5.0"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(tibble)
 library(recipes)
 

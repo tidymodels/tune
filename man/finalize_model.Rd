@@ -28,7 +28,7 @@ The \verb{finalize_*} functions take a list or tibble of tuning parameter values
 update objects with those values.
 }
 \examples{
-\dontshow{if ((tune:::should_run_examples(suggests = "kknn"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = "kknn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data("example_ames_knn")
 
 library(parsnip)

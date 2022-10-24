@@ -127,7 +127,7 @@
 #'
 #' @inheritSection tune_grid Extracting Information
 #'
-#' @examplesIf (tune:::should_run_examples(suggests = "kernlab"))
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

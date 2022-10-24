@@ -46,7 +46,7 @@
 #' [collect_notes()] returns a tibble with columns for the resampling
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
-#' @examplesIf (tune:::should_run_examples(suggests = "kknn"))
+#' @examplesIf tune:::should_run_examples(suggests = "kknn")
 #' data("example_ames_knn")
 #' # The parameters for the model:
 #' extract_parameter_set_dials(ames_wflow)

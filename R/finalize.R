@@ -10,7 +10,7 @@
 #'  this case, the parameter tibble should be "K" and not "neighbors".
 #' @return An updated version of `x`.
 #' @export
-#' @examplesIf (tune:::should_run_examples(suggests = "kknn"))
+#' @examplesIf tune:::should_run_examples(suggests = "kknn")
 #' data("example_ames_knn")
 #'
 #' library(parsnip)

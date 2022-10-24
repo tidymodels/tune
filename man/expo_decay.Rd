@@ -30,7 +30,7 @@ would be required since only the first argument would be evaluated during
 tuning.
 }
 \examples{
-\dontshow{if ((tune:::should_run_examples())) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(tibble)
 library(purrr)
 library(ggplot2)

@@ -51,7 +51,7 @@
 #' _except_ when an identifier was used (e.g. `neighbors = tune("K")`).
 #'
 #' @seealso [tune_grid()], [tune_bayes()]
-#' @examplesIf (tune:::should_run_examples())
+#' @examplesIf tune:::should_run_examples()
 #' # For grid search:
 #' data("example_ames_knn")
 #'

@@ -37,7 +37,7 @@
 #' @references
 #' Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
 #' _Classification and Regression Trees._ Monterey, CA: Wadsworth.
-#' @examplesIf (tune:::should_run_examples())
+#' @examplesIf tune:::should_run_examples()
 #' data("example_ames_knn")
 #'
 #' show_best(ames_iter_search, metric = "rmse")

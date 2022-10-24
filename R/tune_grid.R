@@ -158,7 +158,7 @@
 #' As noted above, in some cases, model predictions can be derived for
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
-#' @examplesIf (tune:::should_run_examples(suggests = "kernlab"))
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

@@ -28,7 +28,7 @@
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
 #' model (and recipe, if any) that used the training set.
-#' @examplesIf (tune:::should_run_examples())
+#' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

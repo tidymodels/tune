@@ -13,7 +13,7 @@
 #'
 #' @return A tibble with a column `x` that has as many rows as were in `y`.
 #' @keywords internal
-#' @examplesIf (tune:::should_run_examples(suggests = c("xgboost", "modeldata")))
+#' @examplesIf tune:::should_run_examples(suggests = c("xgboost", "modeldata"))
 #' library(tibble)
 #' library(recipes)
 #' library(parsnip)

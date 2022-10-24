@@ -17,7 +17,7 @@
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
-#' @examplesIf (tune:::should_run_examples())
+#' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
