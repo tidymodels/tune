@@ -104,9 +104,16 @@ names (or their annotations) in the object.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tibble.tidyverse.org/" class="external-link">tibble</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/recipes" class="external-link">recipes</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: scales</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘scales’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:purrr’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     discard</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">pca_rec</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
@@ -154,36 +161,25 @@ names (or their annotations) in the object.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;recipe&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;recipe&gt;</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/is_installed.html" class="external-link">is_installed</a></span><span class="op">(</span><span class="st">"modeldata"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/parsnip" class="external-link">parsnip</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dials.tidymodels.org" class="external-link">dials</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hpc_data</span>, package <span class="op">=</span> <span class="st">"modeldata"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hpc_data</span>, package <span class="op">=</span> <span class="st">"modeldata"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">xgb_mod</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/boost_tree.html" class="external-link">boost_tree</a></span><span class="op">(</span>trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, min_n <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"xgboost"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xgb_mod</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/boost_tree.html" class="external-link">boost_tree</a></span><span class="op">(</span>trees <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span>, min_n <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"xgboost"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">254</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">xgb_grid</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">xgb_mod</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dials.tidymodels.org/reference/finalize.html" class="external-link">finalize</a></span><span class="op">(</span><span class="va">hpc_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_max_entropy.html" class="external-link">grid_max_entropy</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">254</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">xgb_grid</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">xgb_mod</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dials.tidymodels.org/reference/finalize.html" class="external-link">finalize</a></span><span class="op">(</span><span class="va">hpc_data</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_max_entropy.html" class="external-link">grid_max_entropy</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">xgb_mod</span>, <span class="va">xgb_grid</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: scales</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘scales’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:purrr’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     discard</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">xgb_mod</span>, <span class="va">xgb_grid</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 1</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   x        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;spec[?]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;spec[?]&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;spec[?]&gt;</span></span>
-<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
