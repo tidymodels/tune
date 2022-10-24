@@ -10,8 +10,7 @@
 #'  this case, the parameter tibble should be "K" and not "neighbors".
 #' @return An updated version of `x`.
 #' @export
-#' @examples
-#' \donttest{
+#' @examplesIf tune:::should_run_examples(suggests = "kknn")
 #' data("example_ames_knn")
 #'
 #' library(parsnip)
@@ -29,7 +28,6 @@
 #'
 #' knn_model
 #' finalize_model(knn_model, lowest_rmse)
-#' }
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
     rlang::abort("`x` should be a parsnip model specification.")

@@ -10,8 +10,7 @@
 #' @param x An object
 #' @param ... Not currently used.
 #' @return A parameter set object
-#' @examples
-#' \donttest{
+#' @examplesIf tune:::should_run_examples(suggests = c("xgboost", "C5.0"))
 #' library(tibble)
 #' library(recipes)
 #'
@@ -41,7 +40,6 @@
 #' boost_tree(trees = tune(), min_n = tune()) %>%
 #'   set_engine("C5.0", rules = TRUE) %>%
 #'   dials::parameters()
-#' }
 #'
 #' @keywords internal
 #' @export

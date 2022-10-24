@@ -24,8 +24,10 @@
 #' units). See details below.
 #' @param ... For [select_by_one_std_err()] and [select_by_pct_loss()], this
 #' argument is passed directly to [dplyr::arrange()] so that the user can sort
-#' the models from *most simple to most complex*. See the examples below. At
-#' least one term is required for these two functions.
+#' the models from *most simple to most complex*. That is, for a parameter `p`,
+#' pass the unquoted expression `p` if smaller values of `p` indicate a simpler
+#' model, or `desc(p)` if larger values indicate a simpler model. At
+#' least one term is required for these two functions. See the examples below.
 #' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
 #' @details
@@ -35,8 +37,7 @@
 #' @references
 #' Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
 #' _Classification and Regression Trees._ Monterey, CA: Wadsworth.
-#' @examples
-#' \donttest{
+#' @examplesIf tune:::should_run_examples()
 #' data("example_ames_knn")
 #'
 #' show_best(ames_iter_search, metric = "rmse")
@@ -56,7 +57,6 @@
 #'   metric = "rmse",
 #'   limit = 5, desc(K)
 #' )
-#' }
 #' @export
 show_best <- function(x, ...) {
   UseMethod("show_best")

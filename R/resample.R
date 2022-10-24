@@ -17,8 +17,7 @@
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
-#' @examples
-#' \donttest{
+#' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -51,7 +50,6 @@
 #'   add_model(lin_mod)
 #'
 #' wf_res <- fit_resamples(wf, folds)
-#' }
 #' @export
 fit_resamples <- function(object, ...) {
   UseMethod("fit_resamples")

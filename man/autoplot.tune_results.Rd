@@ -74,7 +74,7 @@ Parameters are labeled using the labels found in the parameter object
 }
 }
 \examples{
-\donttest{
+\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # For grid search:
 data("example_ames_knn")
 
@@ -91,7 +91,7 @@ autoplot(ames_iter_search, metric = "rmse", type = "parameters")
 
 # Plot performance over iterations
 autoplot(ames_iter_search, metric = "rmse", type = "performance")
-}
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}

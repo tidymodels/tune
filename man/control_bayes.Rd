@@ -56,7 +56,11 @@ be saved for each model \emph{evaluated}.}
 the function should execute. The elapsed time is evaluated at internal
 checkpoints and, if over time, the results at that time are returned (with
 a warning). This means that the \code{time_limit} is not an exact limit, but a
-minimum time limit.}
+minimum time limit.
+
+Note that timing begins immediately on execution. Thus, if the
+\code{initial} argument to \code{\link[=tune_bayes]{tune_bayes()}} is supplied as a number, the elapsed
+time will include the time needed to generate initialization results.}
 
 \item{pkgs}{An optional character string of R package names that should be
 loaded (by namespace) during parallel processing.}

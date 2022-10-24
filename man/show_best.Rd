@@ -44,8 +44,10 @@ select_by_one_std_err(x, ...)
 
 \item{...}{For \code{\link[=select_by_one_std_err]{select_by_one_std_err()}} and \code{\link[=select_by_pct_loss]{select_by_pct_loss()}}, this
 argument is passed directly to \code{\link[dplyr:arrange]{dplyr::arrange()}} so that the user can sort
-the models from \emph{most simple to most complex}. See the examples below. At
-least one term is required for these two functions.}
+the models from \emph{most simple to most complex}. That is, for a parameter \code{p},
+pass the unquoted expression \code{p} if smaller values of \code{p} indicate a simpler
+model, or \code{desc(p)} if larger values indicate a simpler model. At
+least one term is required for these two functions. See the examples below.}
 
 \item{metric}{A character value for the metric that will be used to sort
 the models. (See
@@ -82,7 +84,7 @@ model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100
 or 25 percent. Note that loss will always be non-negative.
 }
 \examples{
-\donttest{
+\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data("example_ames_knn")
 
 show_best(ames_iter_search, metric = "rmse")
@@ -102,7 +104,7 @@ select_by_pct_loss(
   metric = "rmse",
   limit = 5, desc(K)
 )
-}
+\dontshow{\}) # examplesIf}
 }
 \references{
 Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).

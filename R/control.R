@@ -139,6 +139,10 @@ print.control_last_fit <- function(x, ...) {
 #'   checkpoints and, if over time, the results at that time are returned (with
 #'   a warning). This means that the `time_limit` is not an exact limit, but a
 #'   minimum time limit.
+#'
+#'   Note that timing begins immediately on execution. Thus, if the
+#'   `initial` argument to [tune_bayes()] is supplied as a number, the elapsed
+#'   time will include the time needed to generate initialization results.
 #' @param extract An optional function with at least one argument (or `NULL`)
 #'   that can be used to retain arbitrary objects from the model fit object,
 #'   recipe, or other elements of the workflow.
