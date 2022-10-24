@@ -37,8 +37,7 @@
 #' @references
 #' Breiman, Leo; Friedman, J. H.; Olshen, R. A.; Stone, C. J. (1984).
 #' _Classification and Regression Trees._ Monterey, CA: Wadsworth.
-#' @examples
-#' \donttest{
+#' @examplesIf tune:::should_run_examples()
 #' data("example_ames_knn")
 #'
 #' show_best(ames_iter_search, metric = "rmse")
@@ -58,7 +57,6 @@
 #'   metric = "rmse",
 #'   limit = 5, desc(K)
 #' )
-#' }
 #' @export
 show_best <- function(x, ...) {
   UseMethod("show_best")

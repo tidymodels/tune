@@ -80,7 +80,7 @@ and the notes.
 Obtain and format results produced by tuning functions
 }
 \examples{
-\donttest{
+\dontshow{if (tune:::should_run_examples(suggests = "kknn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data("example_ames_knn")
 # The parameters for the model:
 extract_parameter_set_dials(ames_wflow)
@@ -118,5 +118,5 @@ resampled <-
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE, grid[1, ]) \%>\% arrange(.row)
-}
+\dontshow{\}) # examplesIf}
 }
