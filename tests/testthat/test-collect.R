@@ -169,6 +169,8 @@ test_that("collecting notes - fit_resamples", {
 })
 
 test_that("collecting notes - last_fit", {
+  options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
+
   mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
   split <- rsample::initial_split(mtcars2)
