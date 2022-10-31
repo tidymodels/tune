@@ -104,12 +104,24 @@
 
     
     
-<p><code>tune</code> attempts to evaluate the candidate models in the shortest amount of time. This vignette is a summary of those approaches.</p>
+<p><code>tune</code> attempts to evaluate the candidate models in the
+shortest amount of time. This vignette is a summary of those
+approaches.</p>
 <div class="section level2">
 <h2 id="sub-model-speed-ups">Sub-model speed-ups<a class="anchor" aria-label="anchor" href="#sub-model-speed-ups"></a>
 </h2>
-<p>For some types of models, such as boosted models or regularized models, the number of models that are actually <em>fit</em> can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This “sub-model trick” can greatly speed up the training time for many models (e.g. see <a href="https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost" class="external-link">this example</a> in the <code>caret</code> documentation).</p>
-<p>In order to know what models allow this, the <code>parsnip</code> package contains a <code><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict()</a></code> function that enables this feature. Printing the S3 methods for it lists the possible models:</p>
+<p>For some types of models, such as boosted models or regularized
+models, the number of models that are actually <em>fit</em> can be far
+less than the number of models evaluated. For example, suppose a boosted
+tree is fit with 1000 trees. Many boosting implementations let the user
+make predictions for any number of trees less than what was originally
+fit (1000 in this example). This “sub-model trick” can greatly speed up
+the training time for many models (e.g. see <a href="https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost" class="external-link">this
+example</a> in the <code>caret</code> documentation).</p>
+<p>In order to know what models allow this, the <code>parsnip</code>
+package contains a <code><a href="https://parsnip.tidymodels.org/reference/multi_predict.html" class="external-link">multi_predict()</a></code> function that enables
+this feature. Printing the S3 methods for it lists the possible
+models:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/methods.html" class="external-link">methods</a></span><span class="op">(</span><span class="st">"multi_predict"</span><span class="op">)</span></span></code></pre></div>
@@ -131,8 +143,11 @@
 <div class="section level2">
 <h2 id="expensive-pre-processing">Expensive pre-processing<a class="anchor" aria-label="anchor" href="#expensive-pre-processing"></a>
 </h2>
-<p>When tuning a recipe and a model, it makes sense to avoid <em>recreating</em> the recipe for each model.</p>
-<p>For example, suppose that <a href="https://en.wikipedia.org/wiki/Isomap" class="external-link">Isomap multi-dimensional scaling</a> is used to pre-process the data prior to tuning a K-nearest neighbor regression:</p>
+<p>When tuning a recipe and a model, it makes sense to avoid
+<em>recreating</em> the recipe for each model.</p>
+<p>For example, suppose that <a href="https://en.wikipedia.org/wiki/Isomap" class="external-link">Isomap multi-dimensional
+scaling</a> is used to pre-process the data prior to tuning a K-nearest
+neighbor regression:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Chicago</span><span class="op">)</span></span>
 <span><span class="va">iso_rec</span> <span class="op">&lt;-</span> </span>
@@ -165,8 +180,13 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         1         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         1         2 epanechnikov</span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></span></code></pre>
-<p>To evaluate these 350 candidate models, we would have to compute the same recipe 70 times <em>per resample</em>. Since Isomap is expensive, this is really inefficient.</p>
-<p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:</p>
+<p>To evaluate these 350 candidate models, we would have to compute the
+same recipe 70 times <em>per resample</em>. Since Isomap is expensive,
+this is really inefficient.</p>
+<p><code><a href="../../reference/tune_grid.html">tune_grid()</a></code> determines when this occurs and fits all 70
+candidate models for each unique configuration of the recipe. In
+essence, it nests the model parameters inside the unique parameters of
+the recipe:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 5 × 2</span></span></span>
 <span><span class="co">##   num_terms data             </span></span>
 <span><span class="co">##       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           </span></span>
@@ -175,7 +195,10 @@
 <span><span class="co">## <span style="color: #BCBCBC;">3</span>         5 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">4</span>         7 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span>         9 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span></code></pre>
-<p>Only 5 recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with <code>num_terms = 1</code> is created, the model parameters are iteratively tuned:</p>
+<p>Only 5 recipes are prepared and, within each, all of the appropriate
+models are fit from the same recipe. In this example, once the recipe
+with <code>num_terms = 1</code> is created, the model parameters are
+iteratively tuned:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 70 × 2</span></span></span>
 <span><span class="co">##    neighbors weight_func </span></span>
 <span><span class="co">##        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
@@ -190,15 +213,35 @@
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         2 epanechnikov</span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></span></code></pre>
-<p>The same will be true for post-processing parameters being tuned. For each unique set of recipe and model parameters, the post-processing parameters will be evaluated without unnecessary re-fitting.</p>
-<p>Also, when using a model formula, the model matrix is only created once per resample.</p>
+<p>The same will be true for post-processing parameters being tuned. For
+each unique set of recipe and model parameters, the post-processing
+parameters will be evaluated without unnecessary re-fitting.</p>
+<p>Also, when using a model formula, the model matrix is only created
+once per resample.</p>
 </div>
 <div class="section level2">
 <h2 id="parallel-processing">Parallel Processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
 </h2>
-<p><code>tune</code> allows users, when possible, to use multiple cores or separate machines fit models. Currently, the package parallelizes the <em>resampling</em> loop of grid search<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;There will be more options in the future to control this since the current implementation doesn’t help for cases when many models are fit over a single resample of the data (such as a validation set).&lt;/p&gt;"><sup>1</sup></a>.</p>
-<p>The <code>foreach</code> package is used to facilitate parallel computations. <code>foreach</code> can use a variety of technologies to share the computations and the choice of technology is determined by which <em>parallel backend</em> package is chosen (aka the <code>do{technology}</code> packages). For example, the <code>doMC</code> package uses the forking mechanism on *unix systems to split the computations across multiple cores. As of this writing, the backend packages are <code>doFuture</code>, <code>doMC</code>, <code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>, <code>doRNG</code>, <code>doSNOW</code>, and <code>doAzureParallel</code> (GitHub only). Of these, <code>doFuture</code> and <code>doParallel</code> are probably the most comprehensive and best supported.</p>
-<p>Registering a parallel backend is also somewhat dependent of the package. For <code>doParallel</code>, one could use:</p>
+<p><code>tune</code> allows users, when possible, to use multiple cores
+or separate machines fit models. Currently, the package parallelizes the
+<em>resampling</em> loop of grid search<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;There will be more options in the future to control this
+since the current implementation doesn’t help for cases when many models
+are fit over a single resample of the data (such as a validation set).&lt;/p&gt;"><sup>1</sup></a>.</p>
+<p>The <code>foreach</code> package is used to facilitate parallel
+computations. <code>foreach</code> can use a variety of technologies to
+share the computations and the choice of technology is determined by
+which <em>parallel backend</em> package is chosen (aka the
+<code>do{technology}</code> packages). For example, the
+<code>doMC</code> package uses the forking mechanism on *unix systems to
+split the computations across multiple cores. As of this writing, the
+backend packages are <code>doFuture</code>, <code>doMC</code>,
+<code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>,
+<code>doRNG</code>, <code>doSNOW</code>, and
+<code>doAzureParallel</code> (GitHub only). Of these,
+<code>doFuture</code> and <code>doParallel</code> are probably the most
+comprehensive and best supported.</p>
+<p>Registering a parallel backend is also somewhat dependent of the
+package. For <code>doParallel</code>, one could use:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -206,7 +249,8 @@
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>Other options exist in <code>doParallel</code>.</p>
-<p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html" class="external-link">declare the method</a>:</p>
+<p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html" class="external-link">declare
+the method</a>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -214,8 +258,15 @@
 <span><span class="fu"><a href="https://doFuture.futureverse.org/reference/registerDoFuture.html" class="external-link">registerDoFuture</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">cluster</span>, workers <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></code></pre></div>
-<p>One downside to parallel processing is that the different technologies handle inputs and outputs differently. For example, multicore forking <em>tends</em> to carry the loaded packages and objects into the worker processes. Others do not. To make sure that the correct packages are loaded (but not attached) in the workers is to use the <code>pkg</code> option in <code><a href="../../reference/control_grid.html">control_grid()</a></code>.</p>
-<p>Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:</p>
+<p>One downside to parallel processing is that the different
+technologies handle inputs and outputs differently. For example,
+multicore forking <em>tends</em> to carry the loaded packages and
+objects into the worker processes. Others do not. To make sure that the
+correct packages are loaded (but not attached) in the workers is to use
+the <code>pkg</code> option in <code><a href="../../reference/control_grid.html">control_grid()</a></code>.</p>
+<p>Some helpful advice to avoid errors in parallel processing is to not
+use variables in the global environment. These may not be found when the
+code is run inside of a worker process. For example:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span></span>
@@ -226,8 +277,12 @@
 <span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="co"># Good since the value is injected into the object</span></span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_pca.html" class="external-link">step_pca</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_predictors</a></span><span class="op">(</span><span class="op">)</span>, num_comp <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">num_pcs</span><span class="op">)</span></span></code></pre></div>
-<p>This issue is likely to occur if <code><a href="https://tidyselect.r-lib.org/reference/one_of.html" class="external-link">dplyr::one_of()</a></code> is used as a sector.</p>
-<p>Also note that almost all of the logging provided by <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel. Again, this is dependent on the backend package and technology being used.</p>
+<p>This issue is likely to occur if <code><a href="https://tidyselect.r-lib.org/reference/one_of.html" class="external-link">dplyr::one_of()</a></code> is used
+as a sector.</p>
+<p>Also note that almost all of the logging provided by
+<code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel.
+Again, this is dependent on the backend package and technology being
+used.</p>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

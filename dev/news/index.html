@@ -64,7 +64,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li>Fixed bug in <code><a href="../reference/show_best.html">select_by_pct_loss()</a></code> where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (<a href="https://github.com/tidymodels/tune/issues/543" class="external-link">#543</a>)</li></ul></div>
+<ul><li>Fixed bug in <code><a href="../reference/show_best.html">select_by_pct_loss()</a></code> where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (<a href="https://github.com/tidymodels/tune/issues/543" class="external-link">#543</a>)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="tune-101">tune 1.0.1<a class="anchor" aria-label="anchor" href="#tune-101"></a></h2><p class="text-muted">CRAN release: 2022-10-09</p>
 <ul><li><p><code><a href="../reference/last_fit.html">last_fit()</a></code>, <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code>, <code><a href="../reference/tune_grid.html">tune_grid()</a></code>, and <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> do not automatically error if the wrong type of <code>control</code> object is passed. If the passed control object is not a superset of the one that is needed, the function will still error. As an example, passing <code><a href="../reference/control_grid.html">control_grid()</a></code> to <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> will fail but passing <code><a href="../reference/control_bayes.html">control_bayes()</a></code> to <code><a href="../reference/tune_grid.html">tune_grid()</a></code> will not. (<a href="https://github.com/tidymodels/tune/issues/449" class="external-link">#449</a>)</p></li>
@@ -170,7 +171,8 @@
 <h2 class="pkg-version" data-toc-text="0.1.0" id="tune-010">tune 0.1.0<a class="anchor" aria-label="anchor" href="#tune-010"></a></h2><p class="text-muted">CRAN release: 2020-04-02</p>
 <div class="section level3">
 <h3 id="breaking-changes-0-1-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-0"></a></h3>
-<ul><li>The arguments to the main tuning/fitting functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) have been reordered to better align with parsnip’s <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code>. The first argument to all these functions is now a model specification or model workflow. The previous versions are soft-deprecated as of 0.1.0 and will be deprecated as of 0.1.2.</li></ul></div>
+<ul><li>The arguments to the main tuning/fitting functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) have been reordered to better align with parsnip’s <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code>. The first argument to all these functions is now a model specification or model workflow. The previous versions are soft-deprecated as of 0.1.0 and will be deprecated as of 0.1.2.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="other-changes-0-1-0">Other Changes<a class="anchor" aria-label="anchor" href="#other-changes-0-1-0"></a></h3>
 <ul><li><p>Added more packages to be fully loaded in the workers when run in parallel using <code>doParallel</code> (<a href="https://github.com/tidymodels/tune/issues/157" class="external-link">#157</a>), (<a href="https://github.com/tidymodels/tune/issues/159" class="external-link">#159</a>), and (<a href="https://github.com/tidymodels/tune/issues/160" class="external-link">#160</a>)</p></li>
@@ -180,7 +182,8 @@
 <div class="section level3">
 <h3 id="bug-fixes-0-1-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-0"></a></h3>
 <ul><li>
-<code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (<a href="https://github.com/tidymodels/tune/issues/168" class="external-link">#168</a>).</li></ul></div>
+<code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> no longer errors with a recipe, which has tuning parameters, in combination with a parameter set, where the defaults contain unknown values (<a href="https://github.com/tidymodels/tune/issues/168" class="external-link">#168</a>).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.1" id="tune-001">tune 0.0.1<a class="anchor" aria-label="anchor" href="#tune-001"></a></h2><p class="text-muted">CRAN release: 2020-02-11</p>
@@ -195,7 +198,8 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="tune-0009000">tune 0.0.0.9000<a class="anchor" aria-label="anchor" href="#tune-0009000"></a></h2>
-<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li></ul></div>
+<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+</ul></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
