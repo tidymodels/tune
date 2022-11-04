@@ -95,7 +95,7 @@ test_that("mis-specified extract function", {
     )
 
   set.seed(1)
-  boots <- bootstraps(mtcars, 3)
+  boots <- rsample::bootstraps(mtcars, 3)
 
   raise_warning <- function(x) {warning("AHHH"); TRUE}
   raise_error <- function(x) {stop("AHHH"); TRUE}
