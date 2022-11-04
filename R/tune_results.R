@@ -66,6 +66,7 @@ summarize_notes <- function(x) {
     dplyr::group_nest(type) %>%
     dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) %>%
     tidyr::unnest(data) %>%
+    dplyr::rowwise() %>%
     dplyr::mutate(
       note = gsub("(Error:)", "", note),
       note = glue::glue_collapse(note, width = 0.85 * getOption("width")),
@@ -74,8 +75,8 @@ summarize_notes <- function(x) {
       note = paste0(pre, n, ": ", note)
     )
   cat("\nThere were issues with some computations:\n\n")
-  cat(by_type$note)
-  cat("\n\nRun `show_notes(.Last.tune.result)` for more information.\n")
+  cat(by_type$note, sep = "\n")
+  cat("\nRun `show_notes(.Last.tune.result)` for more information.\n")
   invisible(NULL)
 }
 

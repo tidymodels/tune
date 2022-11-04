@@ -87,7 +87,8 @@
       
       There were issues with some computations:
       
-        - Error(s) x3: Error in extractor(object): AHHHAH   - Warning(s) x3: Error in extractor(object): AHHHAH
+        - Error(s) x3: Error in extractor(object): AHHH
+        - Warning(s) x3: AH
       
       Run `show_notes(.Last.tune.result)` for more information.
 
