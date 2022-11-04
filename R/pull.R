@@ -3,7 +3,7 @@ extract_details <- function(object, extractor) {
   if (is.null(extractor)) {
     return(list())
   }
-  try(extractor(object), silent = TRUE)
+  extractor(object)
 }
 
 # ------------------------------------------------------------------------------
@@ -23,9 +23,9 @@ pulley <- function(resamples, res, col) {
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
-  pulled_vals <- purrr::map_dfr(res, ~ .x[[col]])
+  pulled_vals <- try(purrr::map_dfr(res, ~ .x[[col]]), silent = TRUE)
 
-  if (nrow(pulled_vals) == 0) {
+  if (inherits(pulled_vals, "try-error") || nrow(pulled_vals) == 0) {
     res <-
       resamples %>%
       mutate(col = purrr::map(splits, ~NULL)) %>%
@@ -191,14 +191,8 @@ append_predictions <- function(collection, predictions, split, control, .config 
 }
 
 append_extracts <- function(collection, workflow, grid, split, ctrl, .config = NULL) {
-  extracts <-
-    grid %>%
-    dplyr::bind_cols(labels(split)) %>%
-    mutate(
-      .extracts = list(
-        extract_details(workflow, ctrl$extract)
-      )
-    )
+  extracts <- dplyr::bind_cols(grid, labels(split))
+  extracts$.extracts <- list(extract_details(workflow, ctrl$extract))
 
   if (!rlang::is_null(.config)) {
     extracts <- cbind(extracts, .config)

@@ -87,6 +87,40 @@ test_that("tune model only", {
   expect_true(all(!extract_2_2$is_null_rec))
 })
 
+test_that("mis-specified extract function", {
+  wf <-
+    workflows::workflow(
+      preprocessor = mpg ~ .,
+      spec = parsnip::linear_reg()
+    )
+
+  set.seed(1)
+  boots <- bootstraps(mtcars, 3)
+
+  raise_warning <- function(x) {warning("AHHH"); TRUE}
+  raise_error <- function(x) {stop("AHHH"); TRUE}
+  raise_both <- function(x) {warning("AH"); stop("AHHH"); TRUE}
+
+  expect_snapshot(
+    res_extract_warning <-
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning))
+  )
+
+  expect_snapshot(
+    res_extract_error <-
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error))
+  )
+
+  expect_snapshot(
+    res_extract_both <-
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_both))
+  )
+
+  expect_snapshot(res_extract_warning)
+  expect_snapshot(res_extract_error)
+  expect_snapshot(res_extract_both)
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
