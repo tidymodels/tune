@@ -202,7 +202,7 @@ autoplot(ames_res, metric = "rmse")
 
 Interestingly, latitude does _not_ do well with degrees of freedom less than 8. How nonlinear are the optimal degrees of freedom? 
 
-Let's plot these spline functions over the data for booth good and bad values of `deg_free`:  
+Let's plot these spline functions over the data for both good and bad values of `deg_free`:  
 
 ```{r final-vals}
 ames_train %>% 
