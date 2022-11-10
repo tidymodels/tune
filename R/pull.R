@@ -23,9 +23,9 @@ pulley <- function(resamples, res, col) {
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
-  pulled_vals <- try(purrr::map_dfr(res, ~ .x[[col]]), silent = TRUE)
+  pulled_vals <- purrr::map_dfr(res, ~ .x[[col]])
 
-  if (inherits(pulled_vals, "try-error") || nrow(pulled_vals) == 0) {
+  if (nrow(pulled_vals) == 0) {
     res <-
       resamples %>%
       mutate(col = purrr::map(splits, ~NULL)) %>%
@@ -194,7 +194,7 @@ append_extracts <- function(collection, extracts) {
   dplyr::bind_rows(collection, extracts)
 }
 
-make_extracts <- function(extract, workflow, grid, split, .config = NULL) {
+make_extracts <- function(extract, grid, split, .config = NULL) {
   extracts <- dplyr::bind_cols(grid, labels(split))
   extracts$.extracts <- list(extract)
 
