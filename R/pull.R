@@ -190,15 +190,19 @@ append_predictions <- function(collection, predictions, split, control, .config 
   dplyr::bind_rows(collection, predictions)
 }
 
-append_extracts <- function(collection, workflow, grid, split, ctrl, .config = NULL) {
+append_extracts <- function(collection, extracts) {
+  dplyr::bind_rows(collection, extracts)
+}
+
+make_extracts <- function(extract, workflow, grid, split, .config = NULL) {
   extracts <- dplyr::bind_cols(grid, labels(split))
-  extracts$.extracts <- list(extract_details(workflow, ctrl$extract))
+  extracts$.extracts <- list(extract)
 
   if (!rlang::is_null(.config)) {
     extracts <- cbind(extracts, .config)
   }
 
-  dplyr::bind_rows(collection, extracts)
+  extracts
 }
 
 append_outcome_names <- function(all_outcome_names, outcome_names) {

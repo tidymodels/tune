@@ -412,21 +412,16 @@ tune_grid_loop_iter <- function(split,
         iter_grid <- tibble::new_tibble(x = list(), nrow = nrow)
       }
 
-      out_extracts <- .catch_and_log(
-        append_extracts(
-          collection = out_extracts,
-          workflow = workflow,
-          grid = iter_grid,
-          split = split,
-          ctrl = control,
-          .config = iter_config
-        ),
+      elt_extract <- .catch_and_log(
+        extract_details(workflow, ctrl$extract),
         control,
         split,
         paste(iter_msg_model, "(extracts)"),
         bad_only = TRUE,
         notes = out_notes
       )
+      elt_extract <- make_extracts(elt_extract, workflow, iter_grid, split, .config = iter_config)
+      out_extracts <- append_extracts(out_extracts, elt_extract)
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
