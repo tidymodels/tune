@@ -16,5 +16,5 @@
 
 # coord_obs_pred
 
-    Removed 1 rows containing missing values (geom_point).
+    Removed 1 rows containing missing values (`geom_point()`).
 
