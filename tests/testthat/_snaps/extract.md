@@ -34,6 +34,14 @@
 ---
 
     Code
+      res_extract_error_once <- fit_resamples(wf, boots, control = control_resamples(
+        extract = raise_error_once))
+    Message
+      x Bootstrap1: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): oh no
+
+---
+
+    Code
       res_extract_warning
     Output
       # Resampling results
@@ -59,11 +67,11 @@
       # Resampling results
       # Bootstrap sampling 
       # A tibble: 3 x 5
-        splits          id         .metrics         .notes           .extracts
-        <list>          <chr>      <list>           <list>           <list>   
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <NULL>   
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 3]> <NULL>   
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 3]> <NULL>   
+        splits          id         .metrics         .notes           .extracts       
+        <list>          <chr>      <list>           <list>           <list>          
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -79,11 +87,11 @@
       # Resampling results
       # Bootstrap sampling 
       # A tibble: 3 x 5
-        splits          id         .metrics         .notes           .extracts
-        <list>          <chr>      <list>           <list>           <list>   
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [2 x 3]> <NULL>   
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [2 x 3]> <NULL>   
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [2 x 3]> <NULL>   
+        splits          id         .metrics         .notes           .extracts       
+        <list>          <chr>      <list>           <list>           <list>          
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -91,4 +99,77 @@
         - Warning(s) x3: AH
       
       Run `show_notes(.Last.tune.result)` for more information.
+
+---
+
+    Code
+      res_extract_error_once
+    Output
+      # Resampling results
+      # Bootstrap sampling 
+      # A tibble: 3 x 5
+        splits          id         .metrics         .notes           .extracts       
+        <list>          <chr>      <list>           <list>           <list>          
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [0 x 3]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [0 x 3]> <tibble [1 x 2]>
+      
+      There were issues with some computations:
+      
+        - Error(s) x1: Error in extractor(object): oh no
+      
+      Run `show_notes(.Last.tune.result)` for more information.
+
+---
+
+    Code
+      res_extract_warning$.notes[[1]]
+    Output
+      # A tibble: 1 x 3
+        location                               type    note 
+        <chr>                                  <chr>   <chr>
+      1 preprocessor 1/1, model 1/1 (extracts) warning AHHH 
+
+---
+
+    Code
+      res_extract_error$.extracts[[1]]$.extracts[[1]]
+    Output
+      [1] "Error in extractor(object) : AHHH\n"
+      attr(,"class")
+      [1] "try-error"
+      attr(,"condition")
+      <simpleError in extractor(object): AHHH>
+
+---
+
+    Code
+      res_extract_error$.notes[[1]]
+    Output
+      # A tibble: 1 x 3
+        location                               type  note                            
+        <chr>                                  <chr> <chr>                           
+      1 preprocessor 1/1, model 1/1 (extracts) error Error in extractor(object): AHHH
+
+---
+
+    Code
+      res_extract_both$.extracts[[1]]$.extracts[[1]]
+    Output
+      [1] "Error in extractor(object) : AHHH\n"
+      attr(,"class")
+      [1] "try-error"
+      attr(,"condition")
+      <simpleError in extractor(object): AHHH>
+
+---
+
+    Code
+      res_extract_error_once$.extracts[[1]]$.extracts[[1]]
+    Output
+      [1] "Error in extractor(object) : oh no\n"
+      attr(,"class")
+      [1] "try-error"
+      attr(,"condition")
+      <simpleError in extractor(object): oh no>
 

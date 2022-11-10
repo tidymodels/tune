@@ -100,6 +100,18 @@ test_that("mis-specified extract function", {
   raise_warning <- function(x) {warning("AHHH"); TRUE}
   raise_error <- function(x) {stop("AHHH"); TRUE}
   raise_both <- function(x) {warning("AH"); stop("AHHH"); TRUE}
+  raise_error_once <- local({
+    first <- TRUE
+
+    function(x) {
+      if (first) {
+        first <<- FALSE
+        stop("oh no")
+      }
+
+      "hi"
+    }
+  })
 
   expect_snapshot(
     res_extract_warning <-
@@ -116,9 +128,27 @@ test_that("mis-specified extract function", {
       fit_resamples(wf, boots, control = control_resamples(extract = raise_both))
   )
 
+  expect_snapshot(
+    res_extract_error_once <-
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once))
+  )
+
   expect_snapshot(res_extract_warning)
   expect_snapshot(res_extract_error)
   expect_snapshot(res_extract_both)
+  expect_snapshot(res_extract_error_once)
+
+  expect_true(res_extract_warning$.extracts[[1]]$.extracts[[1]])
+  expect_snapshot(res_extract_warning$.notes[[1]])
+
+  expect_snapshot(res_extract_error$.extracts[[1]]$.extracts[[1]])
+  expect_snapshot(res_extract_error$.notes[[1]])
+
+  expect_snapshot(res_extract_both$.extracts[[1]]$.extracts[[1]])
+
+  expect_snapshot(res_extract_error_once$.extracts[[1]]$.extracts[[1]])
+  expect_equal(res_extract_error_once$.extracts[[2]]$.extracts[[1]], "hi")
+  expect_equal(res_extract_error_once$.extracts[[3]]$.extracts[[1]], "hi")
 })
 
 # ------------------------------------------------------------------------------
