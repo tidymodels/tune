@@ -2,6 +2,8 @@
 
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
 
+* Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to mis-specified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
+
 # tune 1.0.1
 
 * `last_fit()`, `fit_resamples()`, `tune_grid()`, and `tune_bayes()` do not automatically error if  the wrong type of `control` object is passed. If the passed control object is not a superset of the one that is needed, the function will still error. As an example, passing `control_grid()` to `tune_bayes()` will fail but passing `control_bayes()` to `tune_grid()` will not. ([#449](https://github.com/tidymodels/tune/issues/449))
