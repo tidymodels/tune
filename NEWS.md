@@ -2,7 +2,7 @@
 
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
 
-* Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to mis-specified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()`.
+* Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to mis-specified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
 
 # tune 1.0.1
 
