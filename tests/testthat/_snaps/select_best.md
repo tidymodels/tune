@@ -16,7 +16,7 @@
     Code
       select_best(rcv_results, metric = "random")
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please check the value of `metric`.
 
 ---
@@ -24,7 +24,7 @@
     Code
       select_best(rcv_results, metric = c("rmse", "rsq"))
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please specify a single character value for `metric`.
 
 ---
@@ -81,7 +81,7 @@
     Code
       select_by_one_std_err(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please check the value of `metric`.
 
 ---
@@ -89,7 +89,7 @@
     Code
       select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please specify a single character value for `metric`.
 
 ---
@@ -136,7 +136,7 @@
     Code
       select_by_pct_loss(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please check the value of `metric`.
 
 ---
@@ -144,7 +144,7 @@
     Code
       select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Error in `is_metric_maximize()`:
+      Error in `get_metric_direction()`:
       ! Please specify a single character value for `metric`.
 
 ---

@@ -219,3 +219,151 @@ test_that("percent loss", {
     40
   )
 })
+
+test_that("select_by_* can handle metrics with direction == 'zero'", {
+  skip_on_cran()
+
+  set.seed(1)
+  resamples <- bootstraps(mtcars, times = 5)
+
+  set.seed(1)
+  tune_res <-
+    tune::tune_grid(
+      nearest_neighbor(mode = "regression", neighbors = tune()),
+      mpg ~ .,
+      resamples,
+      metrics = yardstick::metric_set(yardstick::mpe, yardstick::msd)
+    )
+
+  tune_res_metrics <- tune_res %>% collect_metrics()
+
+  expect_equal(
+    select_best(tune_res, metric = "msd")$.config,
+    tune_res_metrics %>%
+      filter(.metric == "msd") %>%
+      arrange(abs(mean)) %>%
+      slice(1) %>%
+      select(.config) %>%
+      pull()
+  )
+
+  expect_equal(
+    select_best(tune_res, metric = "mpe")$.config,
+    tune_res_metrics %>%
+      filter(.metric == "mpe") %>%
+      arrange(abs(mean)) %>%
+      slice(1) %>%
+      select(.config) %>%
+      pull()
+  )
+
+  expect_equal(
+    show_best(tune_res, metric = "msd", n = 5)$.config,
+    tune_res_metrics %>%
+      filter(.metric == "msd") %>%
+      arrange(abs(mean)) %>%
+      slice(1:5) %>%
+      select(.config) %>%
+      pull()
+  )
+
+  expect_equal(
+    show_best(tune_res, metric = "mpe", n = 5)$.config,
+    tune_res_metrics %>%
+      filter(.metric == "mpe") %>%
+      arrange(abs(mean)) %>%
+      slice(1:5) %>%
+      select(.config) %>%
+      pull()
+  )
+
+  # one std error, msd ----------
+  best <-
+    tune_res_metrics %>%
+    filter(.metric == "msd") %>%
+    arrange(min(abs(mean))) %>%
+    slice(1)
+
+  bound_lower <- -abs(best$mean) - abs(best$std_err)
+  bound_upper <- abs(best$mean) + abs(best$std_err)
+  expect_equal(bound_lower, -bound_upper)
+
+  simplest_within_bound <-
+    tune_res_metrics %>%
+    filter(.metric == "msd") %>%
+    filter(abs(mean) < bound_upper) %>%
+    arrange(desc(neighbors)) %>%
+    slice(1)
+
+  expect_equal(
+    select_by_one_std_err(tune_res, metric = "msd", desc(neighbors))$.config,
+    simplest_within_bound$.config
+  )
+
+  # one std error, mpe ----------
+  best <-
+    tune_res_metrics %>%
+    filter(.metric == "mpe") %>%
+    arrange(min(abs(mean))) %>%
+    slice(1)
+
+  bound_lower <- -abs(best$mean) - abs(best$std_err)
+  bound_upper <- abs(best$mean) + abs(best$std_err)
+  expect_equal(bound_lower, -bound_upper)
+
+  simplest_within_bound <-
+    tune_res_metrics %>%
+    filter(.metric == "mpe") %>%
+    filter(abs(mean) < bound_upper) %>%
+    arrange(desc(neighbors)) %>%
+    slice(1)
+
+  expect_equal(
+    select_by_one_std_err(tune_res, metric = "mpe", desc(neighbors))$.config,
+    simplest_within_bound$.config
+  )
+
+  # pct loss, msd ----------
+  best <-
+    tune_res_metrics %>%
+    filter(.metric == "msd") %>%
+    arrange(abs(mean)) %>%
+    slice(1)
+
+  expect_equal(
+    select_by_pct_loss(tune_res, metric = "msd", limit = 10, desc(neighbors))$.config,
+    tune_res_metrics %>%
+      filter(.metric == "msd") %>%
+      rowwise() %>%
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
+      ungroup() %>%
+      arrange(desc(neighbors)) %>%
+      slice(1:which(.config == best$.config)) %>%
+      filter(loss < 10) %>%
+      slice(1) %>%
+      select(.config) %>%
+      pull()
+  )
+
+  # pct loss, mpe ----------
+  best <-
+    tune_res_metrics %>%
+    filter(.metric == "mpe") %>%
+    arrange(abs(mean)) %>%
+    slice(1)
+
+  expect_equal(
+    select_by_pct_loss(tune_res, metric = "mpe", limit = 10, desc(neighbors))$.config,
+    tune_res_metrics %>%
+      filter(.metric == "mpe") %>%
+      rowwise() %>%
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
+      ungroup() %>%
+      arrange(desc(neighbors)) %>%
+      slice(1:which(.config == best$.config)) %>%
+      filter(loss < 10) %>%
+      slice(1) %>%
+      select(.config) %>%
+      pull()
+  )
+})
