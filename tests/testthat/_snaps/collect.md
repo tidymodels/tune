@@ -66,3 +66,48 @@
       
       Run `show_notes(.Last.tune.result)` for more information.
 
+# collecting extracted objects - fit_resamples
+
+    Code
+      collect_extracts(res_fit)
+    Output
+      # A tibble: 5 x 3
+        id         .extracts .config             
+        <chr>      <list>    <chr>               
+      1 Bootstrap1 <lm>      Preprocessor1_Model1
+      2 Bootstrap2 <lm>      Preprocessor1_Model1
+      3 Bootstrap3 <lm>      Preprocessor1_Model1
+      4 Bootstrap4 <lm>      Preprocessor1_Model1
+      5 Bootstrap5 <lm>      Preprocessor1_Model1
+
+---
+
+    Code
+      collect_extracts(res_nothing)
+    Condition
+      Error in `collect_extracts()`:
+      ! Failed to collect extracted objects.
+      i Please supply a control object (`?tune::control_grid()`) with a non-`NULL` `extract` argument during resample fitting.
+
+---
+
+    Code
+      collect_extracts(res_error)
+    Output
+      # A tibble: 5 x 3
+        id         .extracts      .config             
+        <chr>      <list>         <chr>               
+      1 Bootstrap1 <try-errr [1]> Preprocessor1_Model1
+      2 Bootstrap2 <try-errr [1]> Preprocessor1_Model1
+      3 Bootstrap3 <try-errr [1]> Preprocessor1_Model1
+      4 Bootstrap4 <try-errr [1]> Preprocessor1_Model1
+      5 Bootstrap5 <try-errr [1]> Preprocessor1_Model1
+
+---
+
+    Code
+      collect_extracts("boop")
+    Condition
+      Error in `collect_extracts()`:
+      ! No `collect_extracts()` exists for this type of object.
+

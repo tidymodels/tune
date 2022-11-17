@@ -46,6 +46,10 @@
 #' [collect_notes()] returns a tibble with columns for the resampling
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
+#'
+#' [collect_extracts()] returns a tibble with columns for the resampling
+#' indicators, the location (preprocessor, model, etc.), and objects extracted
+#' from workflows via the `extract` argument to [control functions][control_grid()].
 #' @examplesIf tune:::should_run_examples(suggests = "kknn")
 #' data("example_ames_knn")
 #' # The parameters for the model:
@@ -69,7 +73,7 @@
 #' lm_mod <- linear_reg() %>% set_engine("lm")
 #' set.seed(93599150)
 #' car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
-#' ctrl <- control_resamples(save_pred = TRUE)
+#' ctrl <- control_resamples(save_pred = TRUE, extract = extract_fit_engine)
 #'
 #' spline_rec <-
 #'   recipe(mpg ~ ., data = mtcars) %>%
@@ -84,6 +88,9 @@
 #' collect_predictions(resampled) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE, grid[1, ]) %>% arrange(.row)
+#'
+#' collect_extracts(resampled)
+#'
 #' @export
 collect_predictions <- function(x, ...) {
   UseMethod("collect_predictions")
@@ -433,3 +440,33 @@ collect_notes.tune_results <- function(x, ...) {
     dplyr::select(dplyr::starts_with("id"), dplyr::any_of(".iter"), .notes) %>%
     tidyr::unnest(cols = .notes)
 }
+
+# ----------------------------------------------------------------------------
+
+#' @export
+#' @rdname collect_predictions
+collect_extracts <- function(x, ...) {
+  UseMethod("collect_extracts")
+}
+
+#' @export
+collect_extracts.default <- function(x, ...) {
+  rlang::abort("No `collect_extracts()` exists for this type of object.")
+}
+
+#' @export
+#' @rdname collect_predictions
+collect_extracts.tune_results <- function(x, ...) {
+  if (!".extracts" %in% colnames(x)) {
+    cli::cli_abort(c(
+      "!" = "Failed to collect extracted objects.",
+      "i" = "Please supply a {.help [control object](tune::control_grid)} with \\
+             a non-{.var NULL} {.arg extract} argument during resample fitting."
+    ))
+  }
+
+  x %>%
+    dplyr::select(dplyr::starts_with("id"), dplyr::any_of(".iter"), .extracts) %>%
+    tidyr::unnest(cols = .extracts)
+}
+
