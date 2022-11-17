@@ -193,7 +193,7 @@ test_that("collecting extracted objects - fit_resamples", {
   spec <- parsnip::linear_reg()
   form <- mpg ~ .
   set.seed(1)
-  boots <- bootstraps(mtcars, 5)
+  boots <- rsample::bootstraps(mtcars, 5)
 
   ctrl_fit <- control_resamples(extract = extract_fit_engine)
   ctrl_err <- control_resamples(extract = function(x) {stop("eeeep! eep!")})
