@@ -319,6 +319,8 @@ tune_grid_workflow <- function(workflow,
                                rng = TRUE) {
   check_rset(resamples)
 
+  initialize_catalog()
+
   metrics <- check_metrics(metrics, workflow)
 
   pset <- check_parameters(

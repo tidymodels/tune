@@ -63,6 +63,113 @@ message_wrap <-
     invisible(msg)
   }
 
+# issue cataloger --------------------------------------------------------------
+tune <- rlang::new_environment()
+
+get_tune_env <- function() {
+  utils::getFromNamespace("tune", ns = "tune")
+}
+
+update_tune_env <- function(...) {
+  rlang::env_bind(get_tune_env(), ...)
+}
+
+initialize_catalog <- function() {
+  catalog <-
+    tibble::tibble(
+      type = character(0),
+      note = character(0),
+      n = numeric(0),
+      id = numeric(0)
+    )
+
+  update_tune_env(catalog = catalog)
+}
+
+# given a catalog, summarize errors and warnings in a 1-length glue vector
+summarize_catalog <- function(catalog) {
+  if (nrow(catalog) == 0) {
+    return("")
+  }
+
+  res <-
+    catalog %>%
+    dplyr::arrange(id) %>%
+    dplyr::mutate(color = if_else(type == "warning", list(cli::col_yellow), list(cli::col_red))) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(
+      msg = glue::glue("{color(cli::style_bold(id))}: x{n}")
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::pull(msg) %>%
+    glue::glue_collapse(sep = "   ")
+
+  res
+}
+
+update_catalog <- function(issues) {
+  tune_env <- get_tune_env()
+  catalog <- rlang::env_get(env = tune_env, nm = "catalog")
+
+  res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
+  res <- dplyr::bind_rows(res, catalog)
+  res <- dplyr::group_by(res, type, note)
+  non_missing_if_possible <- function(x) {
+    res <- x[!is.na(x)]
+    if (length(res) == 0) {return(NA_integer_)}
+    res
+  }
+  res <- dplyr::summarize(res, n = sum(n), id = non_missing_if_possible(id))
+  res <- dplyr::ungroup(res)
+
+  for (issue in 1:nrow(res)) {
+    current <- res[issue,]
+    if (is.na(current$id)) {
+      current_ids <- res$id[!is.na(res$id)]
+      if (length(current_ids) == 0) {
+        res[issue, "id"] <- 1L
+      } else {
+        res[issue, "id"] <- max(current_ids) + 1L
+      }
+
+      # construct issue summary
+      color <- if (current$type == "warning") {cli::col_yellow} else {cli::col_red}
+      msg <- glue::glue(
+        "{color(cli::style_bold(res[issue, 'id']))} {color(current$type)}: {current$note}"
+      )
+      # pad to console width in order to prevent residual characters of the
+      # progress bar persisting on the `cat`ted line
+      msg <- glue::glue_collapse(c(msg, paste0(rep(" ", cli::console_width()), collapse = "")))
+      msg <- cli::ansi_strtrim(msg, width = cli::console_width() - 5, ellipsis = "")
+      msg <- glue::glue_collapse(c(msg, "\n"))
+      cat(msg)
+    }
+  }
+
+  update_tune_env(catalog = res)
+  update_tune_env(catalog_summary = summarize_catalog(res))
+
+  if (nrow(catalog) == 0) {
+    rlang::with_options(
+      {bar <- cli::cli_progress_bar(
+        type = "custom",
+        format = "There were issues with some computations   {catalog_summary}",
+        clear = FALSE,
+        .envir = tune_env
+      )},
+      cli.progress_show_after = 0
+    )
+
+    update_tune_env(bar = bar)
+  } else {
+    bar <- rlang::env_get(tune_env, "bar")
+    cli::cli_progress_update(.envir = tune_env)
+  }
+
+  invisible(TRUE)
+}
+
+# catching and logging ---------------------------------------------------------
 siren <- function(x, type = "info") {
   tune_color <- get_tune_colors()
   types <- names(tune_color$message)
@@ -118,6 +225,8 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   control2 <- control
   control2$verbose <- TRUE
 
+  should_catalog <- !allow_parallelism(control$allow_par)
+
   wrn <- res$signals
   if (length(wrn) > 0) {
     wrn_msg <- purrr::map_chr(wrn, ~conditionMessage(.x))
@@ -128,8 +237,12 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
     notes <- dplyr::bind_rows(notes, wrn_msg)
 
-    wrn_msg <- format_msg(loc, wrn_msg$note)
-    tune_log(control2, split, wrn_msg, type = "warning")
+    if (should_catalog) {
+      update_catalog(dplyr::filter(notes, type == "warning"))
+    } else {
+      wrn_msg <- format_msg(loc, wrn_msg$note)
+      tune_log(control2, split, wrn_msg, type = "warning")
+    }
   }
   if (inherits(res$res, "try-error")) {
     err_msg <- as.character(attr(res$res, "condition"))
@@ -139,8 +252,12 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
 
     notes <- dplyr::bind_rows(notes, err_msg)
 
-    err_msg <- format_msg(loc, err_msg$note)
-    tune_log(control2, split, err_msg, type = "danger")
+    if (should_catalog) {
+      update_catalog(dplyr::filter(notes, type == "error"))
+    } else {
+      err_msg <- format_msg(loc, err_msg$note)
+      tune_log(control2, split, err_msg, type = "danger")
+    }
   } else {
     if (!bad_only) {
       tune_log(control, split, loc, type = "success")
