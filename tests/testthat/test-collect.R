@@ -190,6 +190,9 @@ test_that("collecting notes - last_fit", {
 })
 
 test_that("collecting extracted objects - fit_resamples", {
+  # skip pre-R-4.0.0 so that snaps aren't affected by stringsAsFactors change
+  skip_if(R.Version()$major < "4")
+
   spec <- parsnip::linear_reg()
   form <- mpg ~ .
   set.seed(1)
