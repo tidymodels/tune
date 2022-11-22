@@ -220,12 +220,17 @@ tune_log <- function(control, split = NULL, task, type = "success") {
   NULL
 }
 
+# copied from testthat::is_testing
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
+
 log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose <- TRUE
 
-  should_catalog <- !allow_parallelism(control$allow_par)
+  should_catalog <- !(allow_parallelism(control$allow_par) || is_testing())
 
   wrn <- res$signals
   if (length(wrn) > 0) {
