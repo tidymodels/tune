@@ -199,3 +199,105 @@ test_that("message_wrap", {
     crayon = TRUE
   )
 })
+
+## -----------------------------------------------------------------------------
+
+test_that("issue cataloger works", {
+  skip("not yet implemented")
+
+  skip_if_not_installed("mockr")
+  mockr::local_mock(is_testing = function() FALSE)
+
+  # data setup
+  ames_narrow <- ames[, c(72, 42:45)]
+  spec_lm <- parsnip::linear_reg()
+  spec_glmn <- parsnip::linear_reg(engine = "glmnet", penalty = tune())
+  form <- Sale_Price ~ .
+  boots <- rsample::bootstraps(ames_narrow, times = 10)
+
+  # set up functions to error / warn deterministically
+  raise_warning <- function() {warning("ope! yikes.")}
+  raise_error <- function() {stop("AHHhH")}
+
+  raise_error_once <- function() {local({
+    first <- TRUE
+    function(x) {
+      if (first) {
+        first <<- FALSE
+        stop("oh no")
+      }
+
+      "hi"
+    }
+  })}
+
+  raise_error_later <- function() {local({
+    count <- 0
+    function(x) {
+      count <<- count + 1
+      if (count > 5) {
+        stop("this errors now! ha!")
+      }
+      "hi"
+    }
+  })}
+
+  raise_error_numbered <- function() {local({
+    count <- 0
+    function(x) {
+      count <<- count + 1
+      stop(paste0("error number ", count))
+      "hi"
+    }
+  })}
+
+  expect_snapshot(
+    res_fit <-
+      fit_resamples(spec_lm, form, boots,
+                    control = control_resamples(extract = raise_error_once()))
+  )
+
+  expect_snapshot(
+    res_fit <-
+      fit_resamples(spec_lm, form, boots,
+                    control = control_resamples(extract = raise_error_later()))
+  )
+
+  expect_snapshot(
+    res_fit <-
+      fit_resamples(spec_lm, form, boots,
+                    control = control_resamples(extract = raise_error_numbered()))
+  )
+
+  expect_snapshot({
+    once <- raise_error_once()
+    later <- raise_error_later()
+    res_fit <-
+      fit_resamples(spec_lm, form, boots,
+                    control = control_resamples(extract = function(x) {once(); later()}))
+  })
+
+  expect_snapshot({
+    res_fit <-
+      fit_resamples(spec_lm, form, boots,
+                    control = control_resamples(
+                      extract = function(x) {raise_warning(); raise_error()})
+      )
+  })
+
+  # ensure that cataloging works with several tuning functions
+  expect_snapshot(
+    res_fit <-
+      fit_resamples(spec_lm, form, boots, control = control_resamples(extract = raise_error))
+  )
+
+  expect_snapshot(
+    res_grid <-
+      tune_grid(spec_glmn, form, boots, control = control_resamples(extract = raise_error))
+  )
+
+  expect_snapshot(
+    res_bayes <-
+      tune_bayes(spec_glmn, form, boots, control = control_resamples(extract = raise_error))
+  )
+})
