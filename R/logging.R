@@ -228,7 +228,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     notes <- dplyr::bind_rows(notes, wrn_msg)
 
     if (should_catalog) {
-      update_catalog(dplyr::filter(notes, type == "warning"))
+      update_catalog(dplyr::filter(notes, type == "warning" & location == loc))
     } else {
       wrn_msg <- format_msg(loc, wrn_msg$note)
       tune_log(control2, split, wrn_msg, type = "warning")
@@ -247,7 +247,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     notes <- dplyr::bind_rows(notes, err_msg)
 
     if (should_catalog) {
-      update_catalog(dplyr::filter(notes, type == "error"))
+      update_catalog(dplyr::filter(notes, type == "error" & location == loc))
     } else {
       err_msg <- format_msg(loc, err_msg$note)
       tune_log(control2, split, err_msg, type = "danger")
