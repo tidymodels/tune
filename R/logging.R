@@ -140,7 +140,7 @@ update_catalog <- function(issues) {
       # pad to console width in order to prevent residual characters of the
       # progress bar persisting on the `cat`ted line
       msg <- glue::glue_collapse(c(msg, paste0(rep(" ", cli::console_width()), collapse = "")))
-      msg <- cli::ansi_strtrim(msg, width = cli::console_width() - 5, ellipsis = "")
+      msg <- cli::ansi_strtrim(msg, width = cli::console_width() - 3, ellipsis = "")
       msg <- glue::glue_collapse(c(msg, "\n"))
       cat(msg)
     }
