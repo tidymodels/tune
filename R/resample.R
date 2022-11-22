@@ -109,8 +109,6 @@ fit_resamples.workflow <- function(object,
                                    control = control_resamples()) {
   empty_ellipses(...)
 
-  initialize_catalog()
-
   control <- parsnip::condense_control(control, control_resamples())
 
   res <-

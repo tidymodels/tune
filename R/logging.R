@@ -64,17 +64,11 @@ message_wrap <-
   }
 
 # issue cataloger --------------------------------------------------------------
-tune <- rlang::new_environment()
+tune <- rlang::new_environment(data = list(progress_env = NULL))
 
-get_tune_env <- function() {
-  utils::getFromNamespace("tune", ns = "tune")
-}
+initialize_catalog <- function(env = rlang::caller_env()) {
+  rlang::env_bind(tune, progress_env = env)
 
-update_tune_env <- function(...) {
-  rlang::env_bind(get_tune_env(), ...)
-}
-
-initialize_catalog <- function() {
   catalog <-
     tibble::tibble(
       type = character(0),
@@ -83,7 +77,7 @@ initialize_catalog <- function() {
       id = numeric(0)
     )
 
-  update_tune_env(catalog = catalog)
+  rlang::env_bind(tune$progress_env, catalog = catalog)
 }
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector
@@ -108,8 +102,7 @@ summarize_catalog <- function(catalog) {
 }
 
 update_catalog <- function(issues) {
-  tune_env <- get_tune_env()
-  catalog <- rlang::env_get(env = tune_env, nm = "catalog")
+  catalog <- rlang::env_get(env = tune$progress_env, nm = "catalog")
 
   res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
   res <- dplyr::bind_rows(res, catalog)
@@ -135,35 +128,27 @@ update_catalog <- function(issues) {
       # construct issue summary
       color <- if (current$type == "warning") {cli::col_yellow} else {cli::col_red}
       msg <- glue::glue(
-        "{color(cli::style_bold(res[issue, 'id']))} {color(current$type)}: {current$note}"
+        "{color(cli::style_bold(res[issue, 'id']))} | {color(current$type)}: {current$note}"
       )
-      # pad to console width in order to prevent residual characters of the
-      # progress bar persisting on the `cat`ted line
-      msg <- glue::glue_collapse(c(msg, paste0(rep(" ", cli::console_width()), collapse = "")))
-      msg <- cli::ansi_strtrim(msg, width = cli::console_width() - 3, ellipsis = "")
-      msg <- glue::glue_collapse(c(msg, "\n"))
-      cat(msg)
+      cli::cli_alert(msg)
     }
   }
 
-  update_tune_env(catalog = res)
-  update_tune_env(catalog_summary = summarize_catalog(res))
+  rlang::env_bind(tune$progress_env, catalog = res)
+  rlang::env_bind(tune$progress_env, catalog_summary = summarize_catalog(res))
 
   if (nrow(catalog) == 0) {
     rlang::with_options(
-      {bar <- cli::cli_progress_bar(
+      {cli::cli_progress_bar(
         type = "custom",
         format = "There were issues with some computations   {catalog_summary}",
         clear = FALSE,
-        .envir = tune_env
+        .envir = tune$progress_env
       )},
       cli.progress_show_after = 0
     )
-
-    update_tune_env(bar = bar)
   } else {
-    bar <- rlang::env_get(tune_env, "bar")
-    cli::cli_progress_update(.envir = tune_env)
+    cli::cli_progress_update(.envir = tune$progress_env)
   }
 
   invisible(TRUE)
@@ -250,8 +235,12 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     }
   }
   if (inherits(res$res, "try-error")) {
-    err_msg <- as.character(attr(res$res, "condition"))
-    err_msg <- gsub("\n$", "", err_msg)
+    if (should_catalog) {
+      err_msg <- conditionMessage(attr(res$res, "condition"))
+    } else {
+      err_msg <- as.character(attr(res$res, "condition"))
+      err_msg <- gsub("\n$", "", err_msg)
+    }
 
     err_msg <- tibble::tibble(location = loc, type = "error", note = err_msg)
 

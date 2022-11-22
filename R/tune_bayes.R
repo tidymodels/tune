@@ -254,8 +254,6 @@ tune_bayes_workflow <-
     check_rset(resamples)
     rset_info <- pull_rset_attributes(resamples)
 
-    initialize_catalog()
-
     metrics <- check_metrics(metrics, object)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
