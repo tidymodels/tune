@@ -85,7 +85,12 @@
 <span><span class="fu">collect_notes</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">collect_notes</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">collect_notes</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">collect_extracts</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for tune_results</span></span>
+<span><span class="fu">collect_extracts</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -156,6 +161,11 @@ summarize.</p>
 <p><code>collect_notes()</code> returns a tibble with columns for the resampling
 indicators, the location (preprocessor, model, etc.), type (error or warning),
 and the notes.</p>
+
+
+<p><code>collect_extracts()</code> returns a tibble with columns for the resampling
+indicators, the location (preprocessor, model, etc.), and objects extracted
+from workflows via the <code>extract</code> argument to <a href="control_grid.html">control functions</a>.</p>
     </div>
 
     <div class="section level2">
@@ -244,7 +254,7 @@ and the notes.</p>
 <span class="r-in"><span><span class="va">lm_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">93599150</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">car_folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rsample.tidymodels.org/reference/vfold_cv.html" class="external-link">vfold_cv</a></span><span class="op">(</span><span class="va">mtcars</span>, v <span class="op">=</span> <span class="fl">2</span>, repeats <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ctrl</span> <span class="op">&lt;-</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span>save_pred <span class="op">=</span> <span class="cn">TRUE</span>, extract <span class="op">=</span> <span class="va">extract_fit_engine</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">spline_rec</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span></span>
@@ -301,6 +311,22 @@ and the notes.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     3  22.8 Preprocessor1_Model1  34.8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10     3  19.2 Preprocessor1_Model1  16.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 22 more rows</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">collect_extracts</span><span class="op">(</span><span class="va">resampled</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    id      id2      df .extracts .config             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Repeat1 Fold1     3 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> Repeat1 Fold1     4 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor2_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Repeat1 Fold1     5 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor3_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> Repeat1 Fold1     6 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor4_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Repeat1 Fold2     3 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Repeat1 Fold2     4 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor2_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Repeat1 Fold2     5 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor3_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Repeat1 Fold2     6 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor4_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> Repeat2 Fold1     3 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Repeat2 Fold1     4 <span style="color: #949494;">&lt;lm&gt;</span>      Preprocessor2_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 14 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
