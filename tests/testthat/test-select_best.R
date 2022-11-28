@@ -168,6 +168,18 @@ test_that("one-std error rule", {
   expect_snapshot(error = TRUE, {
     select_by_one_std_err(mtcars, metric = "disp")
   })
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, K)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, Kay)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, desc(K))
+  })
 })
 
 
@@ -211,6 +223,18 @@ test_that("percent loss", {
 
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(mtcars, metric = "disp")
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, K)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, Kay)
+  })
+  expect_snapshot(error = TRUE, {
+    select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, desc(K))
   })
 
   data("example_ames_knn")

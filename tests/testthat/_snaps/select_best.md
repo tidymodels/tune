@@ -118,6 +118,38 @@
       Error in `select_by_one_std_err()`:
       ! No `select_by_one_std_err()` exists for this type of object.
 
+---
+
+    Code
+      select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk)
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! Could not sort results by `weight_funk`.
+
+---
+
+    Code
+      select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, K)
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! Could not sort results by `weight_funk`.
+
+---
+
+    Code
+      select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, Kay)
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! Could not sort results by `weight_funk` and `Kay`.
+
+---
+
+    Code
+      select_by_one_std_err(knn_results, metric = "roc_auc", weight_funk, desc(K))
+    Condition
+      Error in `select_by_one_std_err()`:
+      ! Could not sort results by `weight_funk` and `desc(K)`.
+
 # percent loss
 
     Code
@@ -172,4 +204,36 @@
     Condition
       Error in `select_by_pct_loss()`:
       ! No `select_by_pct_loss()` exists for this type of object.
+
+---
+
+    Code
+      select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk)
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! Could not sort results by `weight_funk`.
+
+---
+
+    Code
+      select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, K)
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! Could not sort results by `weight_funk`.
+
+---
+
+    Code
+      select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, Kay)
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! Could not sort results by `weight_funk` and `Kay`.
+
+---
+
+    Code
+      select_by_pct_loss(knn_results, metric = "roc_auc", weight_funk, desc(K))
+    Condition
+      Error in `select_by_pct_loss()`:
+      ! Could not sort results by `weight_funk` and `desc(K)`.
 
