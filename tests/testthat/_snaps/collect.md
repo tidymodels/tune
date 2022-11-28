@@ -86,7 +86,7 @@
       collect_extracts(res_nothing)
     Condition
       Error in `collect_extracts()`:
-      ! Failed to collect extracted objects.
+      ! The `.extracts` column does not exist.
       i Please supply a control object (`?tune::control_grid()`) with a non-`NULL` `extract` argument during resample fitting.
 
 ---

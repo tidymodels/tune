@@ -459,7 +459,7 @@ collect_extracts.default <- function(x, ...) {
 collect_extracts.tune_results <- function(x, ...) {
   if (!".extracts" %in% colnames(x)) {
     cli::cli_abort(c(
-      "!" = "Failed to collect extracted objects.",
+      "!" = "The {.var .extracts} column does not exist.",
       "i" = "Please supply a {.help [control object](tune::control_grid)} with \\
              a non-{.var NULL} {.arg extract} argument during resample fitting."
     ))
