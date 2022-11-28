@@ -209,7 +209,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    var_nm <- purrr::map_chr(var_nm, ~ rlang::quo_name(.x))
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
@@ -300,7 +300,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   res <- try(dplyr::arrange(res, !!!dots), silent = TRUE)
   if (inherits(res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ as.character(rlang::quo_get_expr(.x)))
+    var_nm <- purrr::map_chr(var_nm, ~ rlang::quo_name(.x))
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
