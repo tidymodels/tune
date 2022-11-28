@@ -188,3 +188,27 @@ test_that("collecting notes - last_fit", {
   expect_true(all(grepl("rank", nts$note)))
   expect_equal(names(nts), c("location", "type", "note"))
 })
+
+test_that("collecting extracted objects - fit_resamples", {
+  # skip pre-R-4.0.0 so that snaps aren't affected by stringsAsFactors change
+  skip_if(R.Version()$major < "4")
+
+  spec <- parsnip::linear_reg()
+  form <- mpg ~ .
+  set.seed(1)
+  boots <- rsample::bootstraps(mtcars, 5)
+
+  ctrl_fit <- control_resamples(extract = extract_fit_engine)
+  ctrl_err <- control_resamples(extract = function(x) {stop("eeeep! eep!")})
+
+  res_fit <-     fit_resamples(spec, form, boots, control = ctrl_fit)
+  res_nothing <- fit_resamples(spec, form, boots)
+  suppressMessages({
+    res_error <-   fit_resamples(spec, form, boots, control = ctrl_err)
+  })
+
+  expect_snapshot(collect_extracts(res_fit))
+  expect_snapshot(collect_extracts(res_nothing), error = TRUE)
+  expect_snapshot(collect_extracts(res_error))
+  expect_snapshot(collect_extracts("boop"), error = TRUE)
+})

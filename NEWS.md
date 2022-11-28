@@ -5,6 +5,7 @@
 * Clarified error messages in `select_by_*` functions. Error messages now only note entries in `...` that are likely candidates for failure to `arrange()`, and those error messages are no longer duplicated for each entry in `...`.
 
 * Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to mis-specified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
+* Introduces `collect_extracts()`, a function for collecting extracted objects from tuning results. The format of results closely mirrors `collect_notes()`, where the extracted objects are contained in a list-column alongside the resample ID and workflow `.config`. 
 
 # tune 1.0.1
 

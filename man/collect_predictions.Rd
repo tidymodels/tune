@@ -8,6 +8,8 @@
 \alias{collect_metrics.tune_results}
 \alias{collect_notes}
 \alias{collect_notes.tune_results}
+\alias{collect_extracts}
+\alias{collect_extracts.tune_results}
 \title{Obtain and format results produced by tuning functions}
 \usage{
 collect_predictions(x, ...)
@@ -23,6 +25,10 @@ collect_metrics(x, ...)
 collect_notes(x, ...)
 
 \method{collect_notes}{tune_results}(x, ...)
+
+collect_extracts(x, ...)
+
+\method{collect_extracts}{tune_results}(x, ...)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
@@ -75,6 +81,10 @@ summarize.
 \code{\link[=collect_notes]{collect_notes()}} returns a tibble with columns for the resampling
 indicators, the location (preprocessor, model, etc.), type (error or warning),
 and the notes.
+
+\code{\link[=collect_extracts]{collect_extracts()}} returns a tibble with columns for the resampling
+indicators, the location (preprocessor, model, etc.), and objects extracted
+from workflows via the \code{extract} argument to \link[=control_grid]{control functions}.
 }
 \description{
 Obtain and format results produced by tuning functions
@@ -103,7 +113,7 @@ library(tibble)
 lm_mod <- linear_reg() \%>\% set_engine("lm")
 set.seed(93599150)
 car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
-ctrl <- control_resamples(save_pred = TRUE)
+ctrl <- control_resamples(save_pred = TRUE, extract = extract_fit_engine)
 
 spline_rec <-
   recipe(mpg ~ ., data = mtcars) \%>\%
@@ -118,5 +128,7 @@ resampled <-
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE, grid[1, ]) \%>\% arrange(.row)
+
+collect_extracts(resampled)
 \dontshow{\}) # examplesIf}
 }
