@@ -390,8 +390,10 @@
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
-      Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      Warning:
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
+      Error in `dplyr::select()`:
+      ! Problem while evaluating `dplyr::all_of(param_names)`.
     Message
       x Optimization stopped prematurely; returning current results.
 
@@ -412,8 +414,10 @@
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
-      Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      Warning:
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
+      Error in `dplyr::select()`:
+      ! Problem while evaluating `dplyr::all_of(param_names)`.
     Message
       x Optimization stopped prematurely; returning current results.
 
