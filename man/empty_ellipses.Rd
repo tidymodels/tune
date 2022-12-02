@@ -9,7 +9,7 @@
 \alias{check_initial}
 \alias{val_class_or_null}
 \alias{val_class_and_single}
-\alias{config_key_from_metrics}
+\alias{.config_key_from_metrics}
 \alias{estimate_tune_results}
 \alias{metrics_info}
 \alias{new_iteration_results}
@@ -37,7 +37,7 @@ val_class_or_null(x, cls = "numeric", where = NULL)
 
 val_class_and_single(x, cls = "numeric", where = NULL)
 
-config_key_from_metrics(x)
+.config_key_from_metrics(x)
 
 estimate_tune_results(x, col_name = ".metrics", ...)
 

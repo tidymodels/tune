@@ -369,7 +369,7 @@ collector <- function(x, coll_col = ".predictions") {
 #' @keywords internal
 #' @rdname empty_ellipses
 # Get relationship between the parameter values, .config, and (potentially) .iter
-config_key_from_metrics <- function(x) {
+.config_key_from_metrics <- function(x) {
   param_names <- .get_tune_parameter_names(x)
   tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
   x <- x[tibble_metrics, ]
@@ -392,7 +392,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
   }
 
   # The mapping of tuning parameters and .config.
-  config_key <- config_key_from_metrics(x)
+  config_key <- .config_key_from_metrics(x)
 
   tibble_metrics <- purrr::map_lgl(x[[col_name]], tibble::is_tibble)
   x <- x[tibble_metrics, c(id_names, col_name)]
