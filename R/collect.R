@@ -388,7 +388,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
 
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
-    rlang::warn("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
+    rlang::abort("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
   }
 
   # The mapping of tuning parameters and .config.
