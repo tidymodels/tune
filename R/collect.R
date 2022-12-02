@@ -437,7 +437,8 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
       .groups = "drop"
     ) %>%
     dplyr::full_join(config_key, by = param_names)
-  x
+  arrange_names <- intersect(c(".iter", ".config"), names(x))
+  dplyr::arrange(x, !!!rlang::syms(arrange_names))
 }
 
 # ------------------------------------------------------------------------------
