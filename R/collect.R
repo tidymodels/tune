@@ -391,7 +391,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
     rlang::warn("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
   }
 
-  # The the mapping of tuning parameters and .config.
+  # The mapping of tuning parameters and .config.
   config_key <- config_key_from_metrics(x)
 
   tibble_metrics <- purrr::map_lgl(x[[col_name]], tibble::is_tibble)
