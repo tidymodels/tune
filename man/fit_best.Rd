@@ -23,6 +23,8 @@ fit_best(x, ...)
 \code{NULL}, the first metric is used.}
 
 \item{parameters}{An optional tibble of tuning parameter settings.}
+
+\item{verbose}{A logical for printing logging.}
 }
 \value{
 A fitted workflow.
@@ -51,6 +53,7 @@ metrics from the test set.
 \examples{
 library(recipes)
 library(rsample)
+library(parsnip)
 library(dplyr)
 
 data(meats, package = "modeldata")

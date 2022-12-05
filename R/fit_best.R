@@ -9,6 +9,7 @@
 #' @param metric A character string (or `NULL`) for which metric to optimize. If
 #' `NULL`, the first metric is used.
 #' @param parameters An optional tibble of tuning parameter settings.
+#' @param verbose A logical for printing logging.
 #' @param ... Not currently used.
 #' @details
 #' This function is a shortcut for the manual steps of:
@@ -30,6 +31,7 @@
 
 #' library(recipes)
 #' library(rsample)
+#' library(parsnip)
 #' library(dplyr)
 #'
 #' data(meats, package = "modeldata")
@@ -77,6 +79,9 @@ fit_best.tune_results <- function(x, metric = NULL, parameters = NULL, verbose =
     cli::cli_abort(c("x" = "The `...` are not used by this function."))
   }
   wflow <- .get_tune_workflow(x)
+  if (is.null(wflow)) {
+    cli::cli_abort(c("x" = "The control option `save_workflow = TRUE` should be used when tuning."))
+  }
 
   if (is.null(parameters)) {
     if (is.null(metric)) {
