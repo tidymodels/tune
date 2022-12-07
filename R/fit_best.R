@@ -5,10 +5,14 @@
 #'
 #' @param x The results of class `tune_results` (coming from functions such as
 #' [tune_grid()], [tune_bayes()], etc). The control option
-#' `save_workflow = TRUE` should have been used.
+#' [`save_workflow = TRUE`][tune::control_grid] should have been used.
 #' @param metric A character string (or `NULL`) for which metric to optimize. If
 #' `NULL`, the first metric is used.
-#' @param parameters An optional tibble of tuning parameter settings.
+#' @param parameters An optional 1-row tibble of tuning parameter settings, with
+#' a column for each tuning parameter. This tibble should have columns for each
+#' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
+#' If `NULL`, this argument will be set to
+#' [`select_best(metric)`][tune::select_best.tune_results].
 #' @param verbose A logical for printing logging.
 #' @param ... Not currently used.
 #' @details

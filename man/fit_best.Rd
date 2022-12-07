@@ -15,14 +15,18 @@ fit_best(x, ...)
 \arguments{
 \item{x}{The results of class \code{tune_results} (coming from functions such as
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, etc). The control option
-\code{save_workflow = TRUE} should have been used.}
+\code{\link[=control_grid]{save_workflow = TRUE}} should have been used.}
 
 \item{...}{Not currently used.}
 
 \item{metric}{A character string (or \code{NULL}) for which metric to optimize. If
 \code{NULL}, the first metric is used.}
 
-\item{parameters}{An optional tibble of tuning parameter settings.}
+\item{parameters}{An optional 1-row tibble of tuning parameter settings, with
+a column for each tuning parameter. This tibble should have columns for each
+tuning parameter identifier (e.g. \code{"my_param"} if \code{tune("my_param")} was used).
+If \code{NULL}, this argument will be set to
+\code{\link[=select_best.tune_results]{select_best(metric)}}.}
 
 \item{verbose}{A logical for printing logging.}
 }
