@@ -1,6 +1,6 @@
 # tune (development version)
 
-* A new function (`fit_best()`) was added for automating some of the work to fit a model after parameter tuning. 
+* Introduced a new function `fit_best()` that provides a shorthand interface to fit a final model after parameter tuning. (#586)
 
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
 * Extended `show_best()`, `select_best()`, `select_by_one_std_error()`, `select_by_pct_loss()` to accommodate metrics with a target value of zero (notably, `yardstick::mpe()` and `yardstick::msd()`). (#243)
