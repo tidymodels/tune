@@ -41,10 +41,19 @@ test_that("fit_best", {
   )
 
   expect_snapshot_error(
+    fit_best(1L)
+  )
+  expect_snapshot_error(
+    fit_best(tibble())
+  )
+  expect_snapshot_error(
     fit_best(knn_pca_res, metric = "WAT")
   )
   expect_snapshot_error(
     fit_best(knn_pca_res, parameters = tibble())
+  )
+  expect_snapshot_error(
+    fit_best(knn_pca_res, parameters = tibble(neighbors = 2))
   )
   expect_snapshot_error(
     fit_best(knn_pca_res, chickens = 2)

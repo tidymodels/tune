@@ -65,10 +65,11 @@ fit_best <- function(x, ...) {
 #' @export
 #' @rdname fit_best
 fit_best.default <- function(x, ...) {
-  cls <- paste0("'", class(x), "'", collapse = ", ")
-  msg <-
-    paste("There is no `fit_best()` method for an object with class(es):", cls)
-  rlang::abort(msg)
+  cls <- class(x)
+  cli::cli_abort(
+    "There is no `fit_best()` method for an object with \\
+     {cli::qty(cls)} class{?es} {.var {cls}}."
+  )
 }
 
 #' @export
@@ -105,10 +106,9 @@ fit_best.tune_results <- function(x,
   pset <- hardhat::extract_parameter_set_dials(wflow)
   p <- nrow(pset)
   if (p > 0) {
-    prms <- paste0("'", pset$id, "'", collapse = ", ")
-    msg <- paste("There {?is/are} {p} parameter{?s} still marked for tuning: ", prms)
     cli::cli_abort(
-      msg
+      "The {cli::qty(pset$id)} parameter{?s} {.var {pset$id}} \\
+       {?is/are} still marked for tuning."
     )
   }
 
@@ -116,11 +116,11 @@ fit_best.tune_results <- function(x,
 
   dat <- x$splits[[1]]$data
   if (verbose) {
-    cli::cli_inform(paste("Fitting using", nrow(dat), "data points..."))
+    cli::cli_inform(c("i" = "Fitting using {nrow(dat)} data points..."))
   }
   res <- parsnip::fit(wflow, dat)
   if (verbose) {
-    cli::cli_inform("done")
+    cli::cli_inform(c("v" = "Done.", " "))
   }
   res
 }

@@ -8,8 +8,8 @@
         num_comp:  3
       
     Message
-      Fitting using 161 data points...
-      done
+      i Fitting using 161 data points...
+      v Done.
     Output
       == Workflow [trained] ==========================================================
       Preprocessor: Recipe
@@ -37,8 +37,16 @@
       tmp <- fit_best(knn_pca_res, verbose = TRUE, parameters = tibble(neighbors = 1,
         num_comp = 1))
     Message
-      Fitting using 161 data points...
-      done
+      i Fitting using 161 data points...
+      v Done.
+
+---
+
+    There is no `fit_best()` method for an object with class `integer`.
+
+---
+
+    There is no `fit_best()` method for an object with classes `tbl_df`, `tbl`, and `data.frame`.
 
 ---
 
@@ -46,7 +54,11 @@
 
 ---
 
-    There are 2 parameters still marked for tuning: 'neighbors', 'num_comp'
+    The parameters `neighbors` and `num_comp` are still marked for tuning.
+
+---
+
+    The parameter `num_comp` is still marked for tuning.
 
 ---
 
