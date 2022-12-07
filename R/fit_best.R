@@ -28,7 +28,6 @@
 #' the model on the data set by [rsample::initial_split()], and computes
 #' metrics from the test set.
 #' @examples
-
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -74,7 +73,11 @@ fit_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname fit_best
-fit_best.tune_results <- function(x, metric = NULL, parameters = NULL, verbose = FALSE, ...) {
+fit_best.tune_results <- function(x,
+                                  metric = NULL,
+                                  parameters = NULL,
+                                  verbose = FALSE,
+                                  ...) {
   if (length(list(...))) {
     cli::cli_abort(c("x" = "The `...` are not used by this function."))
   }
@@ -117,7 +120,7 @@ fit_best.tune_results <- function(x, metric = NULL, parameters = NULL, verbose =
   }
   res <- parsnip::fit(wflow, dat)
   if (verbose) {
-    cat(cli::cli_inform("done\n\n"))
+    cli::cli_inform("done")
   }
   res
 }
