@@ -80,11 +80,11 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
   }
   extra_names <- setdiff(filter_names, param_names)
   if (length(extra_names) > 0) {
-    msg <- paste0(
-      "There are unneeded columns in `parameters` that were ignored: ",
-      paste0("'", extra_names, "'", collapse = ", ")
-    )
-    rlang::warn(msg)
+    cli_warn(c(
+      "{qty(extra_names)} The column{?s} {.var {extra_names}} passed in \\
+       {.arg parameters} {?is/are} unneeded and will be ignored."
+    ))
+
     parameters <- parameters[, filter_names %in% param_names]
   }
 

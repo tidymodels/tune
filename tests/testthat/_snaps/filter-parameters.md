@@ -40,7 +40,7 @@
         soup = 2))
     Condition
       Warning:
-      There are unneeded columns in `parameters` that were ignored: 'soup'
+      The column `soup` passed in `parameters` is unneeded and will be ignored.
     Output
       # Tuning results
       # 10-fold cross-validation repeated 5 times 
@@ -58,4 +58,22 @@
        9 <split [712/79]> Repeat1 Fold09 <tibble [30 x 7]> <tibble> <tibble [790 x 7]>
       10 <split [712/79]> Repeat1 Fold10 <tibble [30 x 7]> <tibble> <tibble [790 x 7]>
       # ... with 40 more rows
+
+---
+
+    Code
+      res <- filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1,
+        soup = 2, boop = 3))
+    Condition
+      Warning:
+      The columns `soup` and `boop` passed in `parameters` are unneeded and will be ignored.
+
+---
+
+    Code
+      res <- filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1,
+        soup = 2, boop = 3, loop = 4))
+    Condition
+      Warning:
+      The columns `soup`, `boop`, and `loop` passed in `parameters` are unneeded and will be ignored.
 
