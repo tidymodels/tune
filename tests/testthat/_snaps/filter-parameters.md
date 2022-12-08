@@ -40,7 +40,7 @@
         soup = 2))
     Condition
       Warning:
-      The column `soup` passed in `parameters` is unneeded and will be ignored.
+      The column `soup` passed in `parameters` is not needed and will be ignored.
     Output
       # Tuning results
       # 10-fold cross-validation repeated 5 times 
@@ -66,7 +66,7 @@
         soup = 2, boop = 3))
     Condition
       Warning:
-      The columns `soup` and `boop` passed in `parameters` are unneeded and will be ignored.
+      The columns `soup` and `boop` passed in `parameters` are not needed and will be ignored.
 
 ---
 
@@ -75,5 +75,5 @@
         soup = 2, boop = 3, loop = 4))
     Condition
       Warning:
-      The columns `soup`, `boop`, and `loop` passed in `parameters` are unneeded and will be ignored.
+      The columns `soup`, `boop`, and `loop` passed in `parameters` are not needed and will be ignored.
 
