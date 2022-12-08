@@ -20,9 +20,7 @@ allow_parallelism <- function(allow = TRUE, object = NULL) {
 }
 
 get_operator <- function(allow = TRUE, object) {
-  cond <- allow_parallelism(allow, object)
-
-  if (cond) {
+  if (allow_parallelism(allow, object)) {
     res <- foreach::`%dopar%`
   } else {
     res <- foreach::`%do%`
