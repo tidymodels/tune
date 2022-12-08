@@ -278,6 +278,7 @@ tune_bayes_workflow <-
     # we add on an `iteration_results` class later.
     unsummarized <- new_bare_tibble(unsummarized)
 
+    evalq({
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
 
@@ -430,6 +431,7 @@ tune_bayes_workflow <-
       rset_info = rset_info,
       workflow = workflow_output
     )
+    }) # end of evalq() call
   }
 
 create_initial_set <- function(param, n = NULL, checks) {
