@@ -391,7 +391,7 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
       Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      ! All models failed. Run `show_notes(.Last.tune.result)` for more information.
     Message
       x Optimization stopped prematurely; returning current results.
 
@@ -413,7 +413,7 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
       Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      ! All models failed. Run `show_notes(.Last.tune.result)` for more information.
     Message
       x Optimization stopped prematurely; returning current results.
 
