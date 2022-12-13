@@ -368,52 +368,77 @@ collector <- function(x, coll_col = ".predictions") {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-estimate_tune_results <- function(x, ...) {
+# Get relationship between the parameter values, .config, and (potentially) .iter
+.config_key_from_metrics <- function(x) {
   param_names <- .get_tune_parameter_names(x)
+  tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
+  x <- x[tibble_metrics, ]
+  x <- dplyr::select(x, dplyr::any_of(".iter"), .metrics)
+  x <- tidyr::unnest(x, cols = .metrics)
+  x <- dplyr::select(x, dplyr::all_of(param_names), ".config", dplyr::any_of(".iter"))
+  dplyr::distinct(x)
+}
+
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+estimate_tune_results <- function(x, col_name = ".metrics", ...) {
+  param_names <- .get_tune_parameter_names(x)
+  id_names <- grep("^id", names(x), value = TRUE)
 
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
-    rlang::abort("All of the models failed. See the .notes column.")
+    rlang::abort("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
   }
 
-  tibble_metrics <- purrr::map_lgl(x$.metrics, tibble::is_tibble)
-  x <- x[tibble_metrics, ]
+  # The mapping of tuning parameters and .config.
+  config_key <- .config_key_from_metrics(x)
 
-  if (any(names(x) == ".iter")) {
-    keep_cols <- c(".iter", ".metrics")
-  } else {
-    keep_cols <- ".metrics"
+  tibble_metrics <- purrr::map_lgl(x[[col_name]], tibble::is_tibble)
+  x <- x[tibble_metrics, c(id_names, col_name)]
+  x <- tidyr::unnest(x, cols = c(all_of(col_name)))
+
+  if (col_name == ".extracts") {
+    # For sub-model parameters, there are parameter columns in the current tibble
+    # but the list column of tibbles may also have some of those parameter columns
+    # too (and these are more accurate). We will see if there is overlap and
+    # delete the top-level columns.
+    outer_names <- names(x)
+    inner_names <- names(x$.extracts[[1]])
+    conflicts <- intersect(outer_names, inner_names)
+    conflicts <- intersect(conflicts, param_names)
+    if (length(conflicts) > 0) {
+      x <- dplyr::select(x, -dplyr::all_of(conflicts))
+    }
+    # Now bring the extract values to the top
+    x <- tidyr::unnest(x, cols = .extracts)
+    # There may _still_ be list columns and, if there are, un-nest these.
+    is_list_col <- purrr::map_lgl(x, is.list)
+    if (any(is_list_col)) {
+      list_cols <- names(is_list_col)[is_list_col]
+      x <- tidyr::unnest(x, cols = c(dplyr::all_of(list_cols)))
+    }
+    # Again, for models with sub-model parameters, the current .config may not
+    # be accurate so we remove it and merge back in later.
+    x$.config <- NULL
+    if (any(names(x) == ".iter")) {
+      x$.iter <- NULL
+    }
+
+    x <- dplyr::distinct(x)
   }
-  x <- tidyr::unnest(x, cols = dplyr::all_of(keep_cols))
-
-  all_col <- names(x)
-  excl_cols <- c(
-    ".metric", ".estimator", ".estimate", "splits", ".notes",
-    grep("^id", all_col, value = TRUE), ".predictions", ".extracts"
-  )
-  param_names <- all_col[!(all_col %in% excl_cols)]
   x <- x %>%
     tibble::as_tibble() %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
-      std_err = sd(.estimate, na.rm = TRUE) / sqrt(n)
+      std_err = sd(.estimate, na.rm = TRUE) / sqrt(n),
+      .groups = "drop"
     ) %>%
-    dplyr::ungroup()
-
-  if (".config" %in% param_names) {
-    arrange_names <- c(".iter", ".config")
-    arrange_names <- arrange_names[(arrange_names %in% param_names)]
-    join_names <- param_names[!(param_names %in% arrange_names)]
-    x <- dplyr::inner_join(
-      dplyr::select(x, !dplyr::all_of(arrange_names)),
-      x,
-      by = c(join_names, ".metric", ".estimator", "mean", "n", "std_err")
-    ) %>%
-      dplyr::arrange(!!!rlang::syms(arrange_names))
-  }
-  x
+    dplyr::full_join(config_key, by = param_names)
+  arrange_names <- intersect(c(".iter", ".config"), names(x))
+  dplyr::arrange(x, !!!rlang::syms(arrange_names))
 }
 
 # ------------------------------------------------------------------------------

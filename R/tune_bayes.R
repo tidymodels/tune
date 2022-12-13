@@ -274,11 +274,8 @@ tune_bayes_workflow <-
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
 
-    # Strip off `tune_results` class and drop all attributes since
-    # we add on an `iteration_results` class later.
-    unsummarized <- new_bare_tibble(unsummarized)
-
     evalq({
+    # Return whatever we have if there is a error (or execution is stopped)
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
 
@@ -294,7 +291,12 @@ tune_bayes_workflow <-
       return(out)
     })
 
+    # Get the averaged resampling stats before stripping attributes
     mean_stats <- estimate_tune_results(unsummarized)
+
+    # Strip off `tune_results` class and drop all attributes since
+    # we add on an `iteration_results` class later.
+    unsummarized <- new_bare_tibble(unsummarized)
 
     check_time(start_time, control$time_limit)
 

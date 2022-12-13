@@ -458,7 +458,7 @@ get_objective_name <- function(x, metrics) {
     metric_data <- metrics_info(metrics)
     x <- metric_data$.metric[1]
   } else {
-    # check for a name or acquisition funciton
+    # check for a name or acquisition function
   }
   x
 }
