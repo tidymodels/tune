@@ -274,6 +274,7 @@ tune_bayes_workflow <-
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
 
+    evalq({
     # Return whatever we have if there is a error (or execution is stopped)
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
@@ -432,6 +433,7 @@ tune_bayes_workflow <-
       rset_info = rset_info,
       workflow = workflow_output
     )
+    }) # end of evalq() call
   }
 
 create_initial_set <- function(param, n = NULL, checks) {
