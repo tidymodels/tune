@@ -210,10 +210,6 @@ test_that("issue cataloger works", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   skip_if(is_testing(), "Will not catalog: `is_testing()` mocking disabled.")
 
-  skip("tests not yet working.")
-  # from run-to-run, snapshots will change slightly due to multiple
-  # fit failures happening within different progress bar updates.
-
   # data setup
   ames_narrow <- modeldata::ames[, c(72, 40:45)]
   spec_dt <- parsnip::decision_tree(mode = "regression")
@@ -262,67 +258,104 @@ test_that("issue cataloger works", {
     }
   })}
 
-  expect_snapshot({
-    res_fit <-
-      fit_resamples(spec_dt, form, folds,
-                    control = control_resamples(
-                      extract = function(x) {raise_warning(); raise_error()})
-      )
-  })
+  # only works when run following `local_reproducible_output()`, as in
+  # `devtools::test()`. for each test case, ensure that each issue is allotted
+  # a unique and minimal number that's counted correctly in the final summary.
+  res_1 <-
+    capture_messages({
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(
+                        extract = function(x) {raise_warning(); raise_error()})
+        )
+    })
 
-  expect_snapshot({
-    res_fit_rl <-
-      fit_resamples(spec_dt, form, folds,
-                    control = control_resamples(
-                      extract = function(x) {raise_warning_rl(); raise_error_rl()})
-      )
-  })
+  expect_match(res_1, "1.*warning.*ope", all = FALSE)
+  expect_match(res_1, "2.*error.*AHHhH", all = FALSE)
+  expect_match(res_1, "with some computations.*1.*x10.*2.*x10", all = FALSE)
 
-  expect_snapshot(
-    res_fit <-
-      fit_resamples(spec_dt, form, folds,
-                    control = control_resamples(extract = raise_error_later()))
-  )
+  res_2 <-
+    capture_messages({
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(
+                        extract = function(x) {raise_warning_rl(); raise_error_rl()})
+        )
+    })
 
-  expect_snapshot(
-    res_fit <-
-      fit_resamples(spec_dt, form, folds,
-                    control = control_resamples(extract = raise_error_numbered()))
-  )
+  res_2
 
-  expect_snapshot({
-    once <- raise_error_once()
-    later <- raise_error_later()
-    res_fit <-
-      fit_resamples(spec_dt, form, folds,
-                    control = control_resamples(extract = function(x) {once(); later()}))
-  })
+  expect_match(res_2, "1.*warning.*ope.*rlang", all = FALSE)
+  expect_match(res_2, "2.*error.*AHHhH.*rlang", all = FALSE)
+  expect_match(res_2, "with some computations.*1.*x10.*2.*x10", all = FALSE)
 
-  # ensure that cataloging works with several tuning functions
-  expect_snapshot(
-    res_fit <-
-      fit_resamples(spec_dt, form, folds, control = control_resamples(extract = raise_error))
-  )
+  res_3 <-
+    capture_messages({
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(extract = raise_error_later()))
+    })
 
-  expect_snapshot({
-    set.seed(1)
-    res_grid <-
-      tune_grid(spec_dt_tune, form, folds, grid = 5,
-                control = control_grid(extract = raise_error))
-  })
+  expect_match(res_3, "1.*error.*this errors now", all = FALSE)
+  expect_match(res_3, "with some computations.*1.*x7", all = FALSE)
 
-  expect_snapshot({
-    set.seed(1)
-    res_bayes <-
-      tune_bayes(spec_dt_tune, form, folds, initial = 5, iter = 5,
-                 control = control_bayes(extract = raise_error))
-  })
+  res_4 <-
+    capture_messages({
+      once <- raise_error_once()
+      later <- raise_error_later()
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(extract = function(x) {once(); later()}))
+    })
 
-  expect_snapshot({
-    set.seed(1)
-    res_bayes_grid <-
-      tune_bayes(spec_dt_tune, form, folds, iter = 5,
-                 control = control_bayes(extract = raise_error),
-                 initial = res_grid)
-  })
+  expect_match(res_4, "1.*error.*oh no", all = FALSE)
+  expect_match(res_4, "2.*error.*this errors now", all = FALSE)
+  expect_match(res_4, "with some computations.*1.*x1.*2.*x6", all = FALSE)
+
+  res_5 <-
+    capture_messages({
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(extract = raise_error_numbered()))
+    })
+
+
+  expect_match(res_5, "1.*error number.*1", all = FALSE)
+  expect_match(res_5, "2.*error number.*2", all = FALSE)
+  expect_match(res_5, "3.*error number.*3", all = FALSE)
+  expect_match(res_5, "with some computations.*1.*x1.*2.*x1.*3.*x1", all = FALSE)
+
+  res_6 <-
+    capture_messages({
+      set.seed(1)
+      res_grid <-
+        tune_grid(spec_dt_tune, form, folds, grid = 5,
+                  control = control_grid(extract = raise_error))
+    })
+
+  expect_match(res_6, "1.*error.*AHHhH", all = FALSE)
+  expect_match(res_6, "with some computations.*1.*x50", all = FALSE)
+
+  res_7 <-
+    capture_messages({
+      set.seed(1)
+      res_grid <-
+        tune_bayes(spec_dt_tune, form, folds, initial = 5, iter = 5,
+                   control = control_bayes(extract = raise_error))
+    })
+
+  expect_match(res_7, "1.*error.*AHHhH", all = FALSE)
+  expect_match(res_7, "with some computations.*1.*x100", all = FALSE)
+
+  res_8 <-
+    capture_messages({
+      set.seed(1)
+      res_grid <-
+        tune_bayes(spec_dt_tune, form, folds, iter = 5,
+                   control = control_bayes(extract = raise_error),
+                   initial = res_grid)
+    })
+
+  expect_match(res_8, "1.*error.*AHHhH", all = FALSE)
+  expect_match(res_8, "with some computations.*1.*x50", all = FALSE)
 })
