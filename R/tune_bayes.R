@@ -251,6 +251,8 @@ tune_bayes_workflow <-
            initial = 5, control = control_bayes(), ...) {
     start_time <- proc.time()[3]
 
+    initialize_catalog(control = control)
+
     check_rset(resamples)
     rset_info <- pull_rset_attributes(resamples)
 
