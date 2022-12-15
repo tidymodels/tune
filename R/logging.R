@@ -87,6 +87,7 @@ catalog_is_active <- function(id = tune_env$progress_env$bar) {
 # initializes machinery for the tune catalog inside of an environment.
 # the `env` should be an execution environment that persists throughout the
 # tuning process for a given tuning approach and exits once tuning is completed.
+#' @export
 initialize_catalog <- function(env = rlang::caller_env(), control) {
   catalog <-
     tibble::tibble(
