@@ -69,7 +69,7 @@ tune_env <- rlang::new_environment(data = list(progress_env = NULL))
 # determines whether a supplied bar id references a tuning process that
 # uses the issue cataloger.
 uses_catalog <- function(id = tune_env$progress_env$bar) {
-  !is.na(id) && !is_testing()
+  isTRUE(!is.na(id) && !is_testing())
 }
 
 # determines whether a supplied bar id references an issue cataloger that
