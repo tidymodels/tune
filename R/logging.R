@@ -64,12 +64,15 @@ message_wrap <-
   }
 
 # issue cataloger --------------------------------------------------------------
-tune_env <- rlang::new_environment(data = list(progress_env = NULL))
+tune_env <-
+  rlang::new_environment(
+    data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
+  )
 
 # determines whether a supplied bar id references a tuning process that
 # uses the issue cataloger.
-uses_catalog <- function(id = tune_env$progress_env$bar) {
-  isTRUE(!is.na(id) && !is_testing())
+uses_catalog <- function() {
+  isTRUE(tune_env$progress_active && !is_testing())
 }
 
 # determines whether a supplied bar id references an issue cataloger that
@@ -77,11 +80,8 @@ uses_catalog <- function(id = tune_env$progress_env$bar) {
 # `initialize_catalog()` inside of machinery that is wrapped by other tuning
 # method. e.g. `tune_bayes()` has an issue cataloger that ought not to be
 # overwritten when fitting over an initial grid.
-catalog_is_active <- function(id = tune_env$progress_env$bar) {
-  isTRUE(
-    identical(id, "init") ||
-    id %in% rlang::env_get(rlang::env_get(getNamespace("cli"), "clienv"), "progress_ids")
-  )
+catalog_is_active <- function() {
+  tune_env$progress_active
 }
 
 # initializes machinery for the tune catalog inside of an environment.
@@ -98,14 +98,25 @@ initialize_catalog <- function(env = rlang::caller_env(), control) {
     )
 
   if (!(allow_parallelism(control$allow_par) || is_testing())) {
-    bar_init <- "init"
+    progress_active <- TRUE
   } else {
-    bar_init <- NA_character_
+    progress_active <- FALSE
   }
 
   rlang::env_bind(tune_env, progress_env = env)
-  rlang::env_bind(tune_env$progress_env, catalog = catalog)
-  rlang::env_bind(tune_env$progress_env, bar = bar_init)
+
+  rlang::env_bind(tune_env, progress_catalog = catalog)
+  withr::defer(
+    rlang::env_bind(tune_env, progress_catalog = NULL),
+    envir = env
+  )
+
+  rlang::env_bind(tune_env, progress_active = progress_active)
+  withr::defer(
+    rlang::env_bind(tune_env, progress_active = FALSE),
+    envir = env
+  )
+
 
   invisible(NULL)
 }
@@ -153,7 +164,7 @@ log_catalog <- function(msg, type) {
 # encountered issues, and interactively summarizes them by type rather than
 # printing out each new tuning issue individually.
 tune_catalog <- function(issues) {
-  catalog <- rlang::env_get(env = tune_env$progress_env, nm = "catalog")
+  catalog <- rlang::env_get(env = tune_env, nm = "progress_catalog")
 
   res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
   res <- dplyr::bind_rows(res, catalog)
@@ -181,24 +192,22 @@ tune_catalog <- function(issues) {
     }
   }
 
-  rlang::env_bind(tune_env$progress_env, catalog = res)
+  rlang::env_bind(tune_env, progress_catalog = res)
   rlang::env_bind(tune_env$progress_env, catalog_summary = summarize_catalog(res))
 
   if (nrow(catalog) == 0) {
     rlang::with_options(
-      {bar <- cli::cli_progress_bar(
+      cli::cli_progress_bar(
         type = "custom",
         format = "There were issues with some computations   {catalog_summary}",
         clear = FALSE,
         .envir = tune_env$progress_env
-      )},
+      ),
       cli.progress_show_after = 0
     )
   } else {
-    bar <- cli::cli_progress_update(.envir = tune_env$progress_env)
+    cli::cli_progress_update(.envir = tune_env$progress_env)
   }
-
-  rlang::env_bind(tune_env$progress_env, bar = bar)
 
   invisible(TRUE)
 }
