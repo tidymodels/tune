@@ -44,7 +44,7 @@ utils::globalVariables(
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
     "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
     ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type",
-    "rowwise", ".best"
+    "rowwise", ".best", "location", "msg"
   )
 )
 

@@ -7,6 +7,7 @@
 \alias{tune-internal-functions}
 \alias{.estimate_metrics}
 \alias{.load_namespace}
+\alias{initialize_catalog}
 \alias{.catch_and_log}
 \alias{.catch_and_log_fit}
 \title{Internal functions used by other tidymodels packages}
@@ -18,6 +19,8 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
 .estimate_metrics(dat, metric, param_names, outcome_name, event_level)
 
 .load_namespace(x)
+
+initialize_catalog(env = rlang::caller_env(), control)
 
 .catch_and_log(.expr, ..., bad_only = FALSE, notes)
 
