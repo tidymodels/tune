@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Refined machinery for logging issues during tuning. Rather than printing out warnings and errors as they appear, the package will now only print unique tuning issues, and iteratively update a progress bar to maintain counts of each unique issue. This feature is only enabled for tuning sequentially. (#588)
+
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
 
 * Extended `show_best()`, `select_best()`, `select_by_one_std_error()`, `select_by_pct_loss()` to accommodate metrics with a target value of zero (notably, `yardstick::mpe()` and `yardstick::msd()`). (#243)
