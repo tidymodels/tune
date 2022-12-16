@@ -234,7 +234,7 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
 
   if (num_grid < num_param + 1) {
     diff <- num_param - num_grid + 1
-    rlang::inform(
+    cli::cli_bullets(
       c(
         `!` = msg,
         `*` = cli::pluralize(
