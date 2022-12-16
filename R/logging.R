@@ -174,7 +174,7 @@ tune_catalog <- function(issues) {
   res <- dplyr::summarize(res, n = sum(n), id = dplyr::first(id[!is.na(id)]))
   res <- dplyr::ungroup(res)
 
-  for (issue in 1:nrow(res)) {
+  for (issue in seq_along(res[[1]])) {
     current <- res[issue,]
     if (is.na(current$id)) {
       current_ids <- res$id[!is.na(res$id)]
