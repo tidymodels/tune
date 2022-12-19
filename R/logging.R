@@ -206,9 +206,9 @@ tune_catalog <- function(issues) {
       ),
       cli.progress_show_after = 0
     )
-  } else {
-    cli::cli_progress_update(.envir = tune_env$progress_env)
   }
+
+  cli::cli_progress_update(.envir = tune_env$progress_env)
 
   invisible(TRUE)
 }

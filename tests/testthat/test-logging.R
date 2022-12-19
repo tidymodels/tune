@@ -358,4 +358,15 @@ test_that("issue cataloger works", {
 
   expect_match(res_8, "1.*error.*AHHhH", all = FALSE)
   expect_match(res_8, "with some computations.*1.*x50", all = FALSE)
+
+  res_9 <-
+    capture_messages({
+      once <- raise_error_once()
+      res_fit <-
+        fit_resamples(spec_dt, form, folds,
+                      control = control_resamples(extract = function(x) {once()}))
+    })
+
+  expect_match(res_9, "1.*error.*oh no", all = FALSE)
+  expect_match(res_9, "with some computations.*1.*x1", all = FALSE)
 })
