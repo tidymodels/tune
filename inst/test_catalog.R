@@ -1,7 +1,9 @@
 library(tidymodels)
 library(testthat)
+library(finetune)
 
 skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+skip_if(packageVersion("finetune") < "1.0.1.9002")
 
 # data setup ------------------------------------------------------------------
 ames_narrow <- modeldata::ames[, c(72, 40:45)]
@@ -125,3 +127,31 @@ res_grid <-
              initial = res_grid)
 #> → 1 | error: AHHhH
 #> There were issues with some computations   1: x50
+
+set.seed(1)
+res_anova <-
+  tune_race_anova(
+    spec_dt_tune,
+    form,
+    resamples = folds,
+    control = control_race(extract = function(x) {raise_warning(); raise_error()})
+  )
+#> → 1 | warning: ope! yikes.
+#> → 2 | error: AHHhH
+#> There were issues with some computations   1: x58   2: x58
+
+set.seed(1)
+res_sa <-
+  tune_sim_anneal(
+    spec_dt_tune,
+    form,
+    resamples = folds,
+    initial = res_anova,
+    metrics = metric_set(rmse),
+    iter = 15,
+    control = control_sim_anneal(verbose_iter = FALSE,
+                                 extract = function(x) {raise_warning(); raise_error()})
+  )
+#> → 1 | warning: ope! yikes.
+#> → 2 | error: AHHhH
+#> There were issues with some computations   1: x150   2: x149
