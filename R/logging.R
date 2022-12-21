@@ -69,16 +69,15 @@ tune_env <-
     data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
   )
 
-# determines whether a supplied bar id references a tuning process that
-# uses the issue cataloger.
+# determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
   isTRUE(tune_env$progress_active && !is_testing())
 }
 
-# determines whether a supplied bar id references an issue cataloger that
-# has not yet been terminated. this function is intended to guard calls to
-# `initialize_catalog()` inside of machinery that is wrapped by other tuning
-# method. e.g. `tune_bayes()` has an issue cataloger that ought not to be
+# determines whether a tuning process is currently active.
+# this function is intended to guard calls to `initialize_catalog()`
+# inside of machinery that is wrapped by other tuning
+# methods. e.g. `tune_bayes()` has an issue cataloger that ought not to be
 # overwritten when fitting over an initial grid.
 catalog_is_active <- function() {
   tune_env$progress_active
@@ -89,7 +88,7 @@ catalog_is_active <- function() {
 # tuning process for a given tuning approach and exits once tuning is completed.
 #' @rdname tune-internal-functions
 #' @export
-initialize_catalog <- function(env = rlang::caller_env(), control) {
+initialize_catalog <- function(control, env = rlang::caller_env()) {
   catalog <-
     tibble::tibble(
       type = character(0),
@@ -174,7 +173,7 @@ tune_catalog <- function(issues) {
   res <- dplyr::summarize(res, n = sum(n), id = dplyr::first(id[!is.na(id)]))
   res <- dplyr::ungroup(res)
 
-  for (issue in seq_along(res[[1]])) {
+  for (issue in seq_len(nrow(res))) {
     current <- res[issue,]
     if (is.na(current$id)) {
       current_ids <- res$id[!is.na(res$id)]

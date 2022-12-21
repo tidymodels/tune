@@ -20,7 +20,7 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
 
 .load_namespace(x)
 
-initialize_catalog(env = rlang::caller_env(), control)
+initialize_catalog(control, env = rlang::caller_env())
 
 .catch_and_log(.expr, ..., bad_only = FALSE, notes)
 
