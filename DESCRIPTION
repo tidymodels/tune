@@ -45,7 +45,6 @@ Suggests:
     kernlab,
     kknn,
     knitr,
-    mockr,
     modeldata,
     spelling,
     testthat (>= 3.0.0),

@@ -14,5 +14,6 @@ issue_template.md
 _cache$
 ^\.github/workflows/R-CMD-check\.yaml$
 ^inst/examples$
+^inst/test_catalog.R
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
