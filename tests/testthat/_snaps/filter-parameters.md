@@ -21,7 +21,9 @@
     Code
       filter_parameters(svm_reg_results, tibble::tibble(soup = 1))
     Condition
-      Error in `dplyr::filter()`:
+      Error in `purrr::map()`:
+      i In index: 1.
+      Caused by error in `dplyr::filter()`:
       ! Problem while computing `..1 = tibble::tibble(soup = 1)`.
       x Input `..1$soup` must be a logical vector, not a double.
 
