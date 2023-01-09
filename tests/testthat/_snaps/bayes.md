@@ -391,7 +391,7 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
       Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      ! All models failed. Run `show_notes(.Last.tune.result)` for more information.
     Message
       x Optimization stopped prematurely; returning current results.
 
@@ -413,7 +413,7 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
       Error in `estimate_tune_results()`:
-      ! All of the models failed. See the .notes column.
+      ! All models failed. Run `show_notes(.Last.tune.result)` for more information.
     Message
       x Optimization stopped prematurely; returning current results.
 
@@ -451,7 +451,8 @@
       tune:::check_bayes_initial_size(5, 3, FALSE)
     Message
       ! There are 5 tuning parameters and 3 grid points were requested.
-      * There are more tuning parameters than there are initial points. This is likely to cause numerical issues in the first few search iterations.
+      * There are more tuning parameters than there are initial points. This is
+        likely to cause numerical issues in the first few search iterations.
 
 ---
 
@@ -459,7 +460,8 @@
       tune:::check_bayes_initial_size(5, 3, TRUE)
     Message
       ! There are 5 tuning parameters and 3 grid points were requested.
-      * There are more tuning parameters than there are initial points. This is likely to cause numerical issues in the first few search iterations.
+      * There are more tuning parameters than there are initial points. This is
+        likely to cause numerical issues in the first few search iterations.
       * With racing, only completely resampled parameters are used.
 
 ---
@@ -468,7 +470,8 @@
       tune:::check_bayes_initial_size(2, 2, FALSE)
     Message
       ! There are 2 tuning parameters and 2 grid points were requested.
-      * There are as many tuning parameters as there are initial points. This is likely to cause numerical issues in the first few search iterations.
+      * There are as many tuning parameters as there are initial points. This is
+        likely to cause numerical issues in the first few search iterations.
 
 ---
 
