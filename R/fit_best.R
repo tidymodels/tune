@@ -29,8 +29,8 @@
 #' are used.
 #'
 #' In comparison to [last_fit()], that function requires a finalized model, fits
-#' the model on the data set by [rsample::initial_split()], and computes
-#' metrics from the test set.
+#' the model on the training set defined by [rsample::initial_split()], and
+#' computes metrics from the test set.
 #' @examples
 #' library(recipes)
 #' library(rsample)
@@ -43,23 +43,26 @@
 #' set.seed(1)
 #' meat_split <- initial_split(meats)
 #' meat_train <- training(meat_split)
-#' meat_test <- testing(meat_split)
+#' meat_test  <- testing(meat_split)
 #'
 #' set.seed(2)
 #' meat_rs <- vfold_cv(meat_train, v = 10)
 #'
 #' pca_rec <-
 #'   recipe(protein ~ ., data = meat_train) %>%
-#'   step_pca(all_predictors(), num_comp = tune())
+#'   step_normalize(all_numeric_predictors()) %>%
+#'   step_pca(all_numeric_predictors(), num_comp = tune())
 #'
 #' knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
 #'
 #' ctrl <- control_grid(save_workflow = TRUE)
 #'
+#' set.seed(128)
 #' knn_pca_res <-
 #'   tune_grid(knn_mod, pca_rec, resamples = meat_rs, grid = 10, control = ctrl)
 #'
 #' knn_fit <- fit_best(knn_pca_res, verbose = TRUE)
+#' predict(knn_fit, meat_test)
 #' @return A fitted workflow.
 #' @export
 fit_best <- function(x, ...) {
