@@ -407,7 +407,7 @@ set_workflow <- function(workflow, control) {
         cols <- get_tune_colors()
         msg <- strwrap(msg, prefix = paste0(cols$symbol$info(cli::symbol$info), " "))
         msg <- cols$message$info(paste0(msg, collapse = "\n"))
-        rlang::inform(msg)
+        cli::cli_bullets(msg)
       }
     }
     workflow

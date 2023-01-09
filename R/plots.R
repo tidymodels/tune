@@ -513,9 +513,8 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
       dat[[col_col]] <- format(dat[[col_col]], ...)
     }
     col_col <- rlang::ensym(col_col)
-    p <- ggplot(dat, aes_(
-      x = rlang::expr(value), y = rlang::expr(mean),
-      col = col_col, group = col_col
+    p <- ggplot(dat, aes(value, y = mean,
+      col = {{col_col}}, group = {{col_col}}
     ))
     # Since `col_col` has either the parameter id or the parameter label, use
     # is in the key:

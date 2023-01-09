@@ -85,4 +85,16 @@ test_that("bad inputs", {
   expect_snapshot(
     filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1, soup = 2))
   )
+  expect_snapshot(
+    res <- filter_parameters(
+      svm_reg_results,
+      parameters = tibble::tibble(`%^*#` = 1, soup = 2, boop = 3)
+    )
+  )
+  expect_snapshot(
+    res <- filter_parameters(
+      svm_reg_results,
+      parameters = tibble::tibble(`%^*#` = 1, soup = 2, boop = 3, loop = 4)
+    )
+  )
 })

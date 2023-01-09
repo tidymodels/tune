@@ -3,10 +3,13 @@
 * Introduced a new function `fit_best()` that provides a shorthand interface to fit a final model after parameter tuning. (#586)
 
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
+
 * Extended `show_best()`, `select_best()`, `select_by_one_std_error()`, `select_by_pct_loss()` to accommodate metrics with a target value of zero (notably, `yardstick::mpe()` and `yardstick::msd()`). (#243)
+
 * Clarified error messages in `select_by_*` functions. Error messages now only note entries in `...` that are likely candidates for failure to `arrange()`, and those error messages are no longer duplicated for each entry in `...`.
 
 * Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to misspecified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
+
 * Introduces `collect_extracts()`, a function for collecting extracted objects from tuning results. The format of results closely mirrors `collect_notes()`, where the extracted objects are contained in a list-column alongside the resample ID and workflow `.config`. 
 
 # tune 1.0.1

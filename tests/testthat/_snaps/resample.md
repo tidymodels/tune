@@ -111,9 +111,9 @@
       fit_resamples(lin_mod, recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ]),
       folds, control = control_resamples(save_workflow = TRUE))
     Message
-      i The workflow being saved contains a recipe, which is 8.07 Mb in
-      i memory. If this was not intentional, please set the control setting
-      i `save_workflow = FALSE`.
+      i The workflow being saved contains a recipe, which is 8.07 Mb in i memory. If
+      this was not intentional, please set the control setting i `save_workflow =
+      FALSE`.
     Output
       # Resampling results
       # 2-fold cross-validation 
