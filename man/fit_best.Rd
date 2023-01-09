@@ -55,7 +55,7 @@ the model on the training set defined by \code{\link[rsample:initial_split]{rsam
 computes metrics from the test set.
 }
 \examples{
-\dontshow{if (!tune:::is_rcmd_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
