@@ -55,6 +55,7 @@ the model on the training set defined by \code{\link[rsample:initial_split]{rsam
 computes metrics from the test set.
 }
 \examples{
+\dontshow{if (!tune:::is_rcmd_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -86,4 +87,5 @@ knn_pca_res <-
 
 knn_fit <- fit_best(knn_pca_res, verbose = TRUE)
 predict(knn_fit, meat_test)
+\dontshow{\}) # examplesIf}
 }

@@ -31,7 +31,7 @@
 #' In comparison to [last_fit()], that function requires a finalized model, fits
 #' the model on the training set defined by [rsample::initial_split()], and
 #' computes metrics from the test set.
-#' @examples
+#' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
