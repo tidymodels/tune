@@ -36,6 +36,7 @@ reference:
     contents:
     - starts_with("tune")
     - fit_resamples
+    - fit_best
     - last_fit
     - conf_bound
     - starts_with("control")
