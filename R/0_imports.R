@@ -44,7 +44,7 @@ utils::globalVariables(
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
     "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
     ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type",
-    "rowwise", ".best"
+    "rowwise", ".best", "location", "msg"
   )
 )
 
@@ -56,7 +56,8 @@ tidyr_new_interface <- function() {
 
 release_bullets <- function() {
   c(
-    "Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`."
+    "Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`.",
+    "Confirm issue cataloger gives expected output in `inst/test_catalog.R`."
   )
 }
 

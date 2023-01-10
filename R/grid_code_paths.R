@@ -137,6 +137,10 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
 
+  if (!catalog_is_active()) {
+    initialize_catalog(control = control)
+  }
+
   n_splits <- length(splits)
   n_grid_info <- nrow(grid_info)
 
