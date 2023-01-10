@@ -123,7 +123,7 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
-summarize_catalog <- function(catalog) {
+summarize_catalog <- function(catalog, sep = "   ") {
   if (nrow(catalog) == 0) {
     return("")
   }
@@ -134,7 +134,7 @@ summarize_catalog <- function(catalog) {
   res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(id))}: x{n}"))
   res <- dplyr::ungroup(res)
   res <- dplyr::pull(res, msg)
-  res <- glue::glue_collapse(res, sep = "   ")
+  res <- glue::glue_collapse(res, sep = sep)
 
   res
 }
