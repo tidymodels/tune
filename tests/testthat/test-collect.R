@@ -149,6 +149,7 @@ test_that("classification class and prob predictions, averaged", {
 
 test_that("collecting notes - fit_resamples", {
   skip_if(new_rng_snapshots)
+  skip_if(rankdeficient_version)
 
   mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
@@ -169,6 +170,8 @@ test_that("collecting notes - fit_resamples", {
 })
 
 test_that("collecting notes - last_fit", {
+  skip_if(rankdeficient_version)
+
   options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
   mtcars2 <- mtcars %>% mutate(wt2 = wt)

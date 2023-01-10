@@ -1,5 +1,9 @@
 new_rng_snapshots <- utils::compareVersion("3.6.0", as.character(getRversion())) > 0
 
+# New (as of 4.3.0) a new option generates different snapshots
+rankdeficient_version <- any(names(formals("predict.lm")) == "rankdeficient")
+
+
 helper_objects_tune <- function() {
   rec_tune_1 <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
