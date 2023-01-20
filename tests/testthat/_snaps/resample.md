@@ -3,8 +3,14 @@
     Code
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
-      x Fold2: preprocessor 1/1: Error in if (!is.null(args$df) && is.null(args$knots) && args$df - degre...
+      x Fold1: preprocessor 1/1:
+        Error in `step_ns()`:
+        Caused by error in `if (...) NULL`:
+        ! missing value where TRUE/FALSE needed
+      x Fold2: preprocessor 1/1:
+        Error in `step_ns()`:
+        Caused by error in `if (...) NULL`:
+        ! missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
