@@ -159,7 +159,7 @@ test_that("failure in recipe is caught elegantly", {
   expect_length(notes, 2L)
 
   # Known failure in the recipe
-  expect_true(any(grepl("args", note)))
+  expect_true(any(grepl("missing value where", note)))
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
