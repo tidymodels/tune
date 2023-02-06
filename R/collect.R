@@ -438,7 +438,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
     )
 
   # use differing joins based on whether any parameters are being tuned (#600)
-  if (length(param_names) == 0 && packageVersion("dplyr") >= "1.0.99.9000") {
+  if (length(param_names) == 0) {
     x <- x %>%
       dplyr::cross_join(config_key)
   } else {
