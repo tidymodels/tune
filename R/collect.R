@@ -437,10 +437,10 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
       .groups = "drop"
     )
 
-  # use differing joins based on whether any parameters are being tuned (#600)
+  # only join when parameters are being tuned (#600)
   if (length(param_names) == 0) {
     x <- x %>%
-      dplyr::cross_join(config_key)
+      dplyr::bind_cols(config_key)
   } else {
     x <- x %>%
       dplyr::full_join(config_key, by = param_names)
