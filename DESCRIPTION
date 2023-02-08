@@ -19,7 +19,7 @@ Depends:
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.0.0),
-    dplyr (>= 1.1.0),
+    dplyr (>= 1.0.8),
     foreach,
     generics (>= 0.1.2),
     ggplot2,
