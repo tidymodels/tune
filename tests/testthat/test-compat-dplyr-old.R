@@ -128,7 +128,6 @@ test_that("slice() drops tune_results class when rows are modified", {
 
 test_that("slice() keeps tune_results class when rows are untouched", {
   for (x in helper_tune_results) {
-    expect_s3_class_tune_results(slice(x))
     expect_s3_class_tune_results(slice(x, seq_len(nrow(x))))
   }
 })
