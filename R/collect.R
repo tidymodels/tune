@@ -435,8 +435,17 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
       n = sum(!is.na(.estimate)),
       std_err = sd(.estimate, na.rm = TRUE) / sqrt(n),
       .groups = "drop"
-    ) %>%
-    dplyr::full_join(config_key, by = param_names)
+    )
+
+  # only join when parameters are being tuned (#600)
+  if (length(param_names) == 0) {
+    x <- x %>%
+      dplyr::bind_cols(config_key)
+  } else {
+    x <- x %>%
+      dplyr::full_join(config_key, by = param_names)
+  }
+
   arrange_names <- intersect(c(".iter", ".config"), names(x))
   dplyr::arrange(x, !!!rlang::syms(arrange_names))
 }
