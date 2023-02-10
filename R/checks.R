@@ -61,7 +61,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
     }
 
     grid_distinct <- distinct(grid)
-    grid_distinct <- vctrs::vec_restore(grid_distinct, tibble::tibble())
+    grid_distinct <- vctrs::new_data_frame(grid_distinct, n = nrow(grid_distinct))
     if (!identical(nrow(grid_distinct), nrow(grid))) {
       rlang::warn(
         "Duplicate rows in grid of tuning combinations found and removed."
