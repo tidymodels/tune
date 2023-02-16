@@ -24,8 +24,9 @@
       Error in `purrr::map()`:
       i In index: 1.
       Caused by error in `dplyr::filter()`:
-      ! Problem while computing `..1 = tibble::tibble(soup = 1)`.
-      x Input `..1$soup` must be a logical vector, not a double.
+      i In argument: `tibble::tibble(soup = 1)`.
+      Caused by error:
+      ! `..1$soup` must be a logical vector, not the number 1.
 
 ---
 
