@@ -80,6 +80,9 @@ test_that("bad inputs", {
     filter_parameters(svm_reg_results, tibble::tibble(soup = 1))
   })
   expect_snapshot(error = TRUE, {
+    filter_parameters(svm_reg_results, cost < 1, tibble::tibble(soup = 1))
+  })
+  expect_snapshot(error = TRUE, {
     filter_parameters(svm_reg_results, parameters = tibble::tibble(`%^*#` = 1 / 3))
   })
   expect_snapshot(

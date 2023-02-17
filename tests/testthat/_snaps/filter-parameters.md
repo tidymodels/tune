@@ -21,12 +21,18 @@
     Code
       filter_parameters(svm_reg_results, tibble::tibble(soup = 1))
     Condition
-      Error in `purrr::map()`:
-      i In index: 1.
-      Caused by error in `dplyr::filter()`:
-      i In argument: `tibble::tibble(soup = 1)`.
-      Caused by error:
-      ! `..1$soup` must be a logical vector, not the number 1.
+      Error in `filter_parameters()`:
+      ! An element passed to `...` is a data frame rather than a filter expression.
+      i Did you forget to name the `parameters` argument?
+
+---
+
+    Code
+      filter_parameters(svm_reg_results, cost < 1, tibble::tibble(soup = 1))
+    Condition
+      Error in `filter_parameters()`:
+      ! An element passed to `...` is a data frame rather than a filter expression.
+      i Did you forget to name the `parameters` argument?
 
 ---
 
