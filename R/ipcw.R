@@ -3,8 +3,6 @@
 # censored regression models
 
 
-
-
 # ------------------------------------------------------------------------------
 # Low-level
 
@@ -112,7 +110,7 @@ brier_survival_weights <- function(data, truth, analysis_time, model_fit, trunc 
 # time-dependent outcome with marker-dependent censoring. Biom. J., 55: 687-704.
 # is a good starting place to understand these calculations.
 
-# Note that these weights are indpendent of the time of analysis. We keep the
+# Note that these weights are independent of the time of analysis. We keep the
 # same API as the Brier function for API consistency.
 roc_survival_weights <- function(data, truth, analysis_time, model_fit,
                                  trunc = 0.05, eps = 10^-10) {
