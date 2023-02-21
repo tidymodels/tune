@@ -495,6 +495,7 @@ test_that("too few starting values", {
 
 test_that("missing performance values", {
   skip_if(new_rng_snapshots)
+  skip_if(packageVersion("dplyr") < "1.1.1")
 
   data(ames, package = "modeldata")
 
