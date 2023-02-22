@@ -187,8 +187,12 @@ tune_catalog <- function(issues) {
 
       # construct issue summary
       color <- if (current$type == "warning") {cli::col_yellow} else {cli::col_red}
+      pad <- nchar(pull(res[issue, "id"])) + 14L
+      justify <- paste0("\n", paste0(rep("\u00a0", pad), collapse = ""))
+      note <- gsub("\n", justify, current$note)
+      if (current$type == "error") {note <- paste0("\u00a0\u00a0", note)}
       msg <- glue::glue(
-        "{color(cli::style_bold(lbls[pull(res[issue, 'id'])]))} | {color(current$type)}: {current$note}"
+        "{color(cli::style_bold(lbls[pull(res[issue, 'id'])]))} | {color(current$type)}: {note}"
       )
       cli::cli_alert(msg)
     }
