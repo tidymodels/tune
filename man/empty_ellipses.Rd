@@ -31,7 +31,16 @@ check_workflow(x, pset = NULL, check_dials = FALSE)
 
 check_metrics(x, object)
 
-check_initial(x, pset, wflow, resamples, metrics, ctrl, checks = "grid")
+check_initial(
+  x,
+  pset,
+  wflow,
+  resamples,
+  metrics,
+  ctrl,
+  eval_times,
+  checks = "grid"
+)
 
 val_class_or_null(x, cls = "numeric", where = NULL)
 

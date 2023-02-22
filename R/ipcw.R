@@ -145,3 +145,4 @@ graf_weight_time <- function(surv_obj, predict_time, eps = 10^-10) {
 }
 
 
+# add a helper function to use in predict_model() (at the end) to compute the weights

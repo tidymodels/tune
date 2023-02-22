@@ -389,7 +389,8 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "grid") {
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_times,
+                          checks = "grid") {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
   }
@@ -411,7 +412,8 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "gr
         extract = ctrl$extract,
         save_pred = ctrl$save_pred,
         event_level = ctrl$event_level
-      )
+      ),
+      eval_times = eval_times
     )
 
     if (ctrl$verbose) {
@@ -598,3 +600,21 @@ check_no_tuning <- function(x) {
   rlang::abort(msg, call = NULL)
 }
 
+
+check_eval_times <- function(.times, metrics) {
+  metric_types <- tibble::as_tibble(metrics)$class
+  has_dyn <- any(metric_types == "dynamic_survival_metric")
+  if (!is.null(.times) & !has_dyn) {
+    rlang::abort("evaluation times are only used for dynamic survival metrics.")
+  }
+  if (is.null(.times) & has_dyn) {
+    rlang::abort(
+      "1+ metric require the specification of time points in the `eval_times` argument."
+    )
+  }
+
+  # will still propagate nulls
+  .times <- .times[!is.na(.times)]
+  .times <- unique(.times)
+  sort(.times)
+}

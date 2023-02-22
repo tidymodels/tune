@@ -1,4 +1,5 @@
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
+predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
+                          eval_times = NULL) {
   model <- extract_fit_parsnip(workflow)
 
   new_data <- rsample::assessment(split)

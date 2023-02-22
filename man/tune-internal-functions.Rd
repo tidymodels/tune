@@ -16,7 +16,14 @@ forge_from_workflow(new_data, workflow)
 
 finalize_workflow_preprocessor(workflow, grid_preprocessor)
 
-.estimate_metrics(dat, metric, param_names, outcome_name, event_level)
+.estimate_metrics(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  event_level,
+  stat_time = NULL
+)
 
 .load_namespace(x)
 
