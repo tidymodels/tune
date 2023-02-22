@@ -135,7 +135,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
 
 estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, stat_time) {
   # IPCW should already be computed, un-nested and have .time
-
+  types <- NULL
   if (any(types == "survival")) {
 
   } else {
