@@ -62,71 +62,71 @@ res_fit <-
                 control = control_resamples(
                   extract = function(x) {raise_warning(); raise_error()})
   )
-#> → 1 | warning: ope! yikes.
-#> → 2 | error: AHHhH
-#> There were issues with some computations   1: x10   2: x10
+#> → A | warning: ope! yikes.
+#> → B | error: AHHhH
+#> There were issues with some computations   A: x10   B: x10
 
 res_fit <-
   fit_resamples(spec_dt, form, folds,
                 control = control_resamples(
                   extract = function(x) {raise_warning_rl(); raise_error_rl()})
   )
-#> → 1 | warning: ope! yikes. (but rlang)
-#> → 2 | error: AHHhH (but rlang)
-#> There were issues with some computations   1: x10   2: x10
+#> → A | warning: ope! yikes. (but rlang)
+#> → B | error: AHHhH (but rlang)
+#> There were issues with some computations   A: x10   B: x10
 
 res_fit <-
   fit_resamples(spec_dt, form, folds,
                 control = control_resamples(extract = raise_error_later()))
-#> → 1 | error: this errors now! ha!
-#> There were issues with some computations   1: x7
+#> → A | error: this errors now! ha!
+#> There were issues with some computations   B: x7
 
 once <- raise_error_once()
 later <- raise_error_later()
 res_fit <-
   fit_resamples(spec_dt, form, folds,
                 control = control_resamples(extract = function(x) {once(); later()}))
-#> → 1 | error: oh no
-#> → 2 | error: this errors now! ha!
-#> There were issues with some computations   1: x1   2: x6
+#> → A | error: oh no
+#> → B | error: this errors now! ha!
+#> There were issues with some computations   A: x1   B: x6
 
 res_fit <-
   fit_resamples(spec_dt, form, folds,
                 control = control_resamples(extract = raise_error_numbered()))
 
-#> → 1 | error: error number 1
-#> → 2 | error: error number 2
-#> → 3 | error: error number 3
-#> → 4 | error: error number 4
-#> → 5 | error: error number 5
-#> → 6 | error: error number 6
-#> → 7 | error: error number 7
-#> → 8 | error: error number 8
-#> → 9 | error: error number 9
-#> → 10 | error: error number 10
-#> There were issues with some computations   1: x1   2: x1   3: x1   4: x1   5: x…
+#> → A | error: error number 1
+#> → B | error: error number 2
+#> → C | error: error number 3
+#> → D | error: error number 4
+#> → E | error: error number 5
+#> → F | error: error number 6
+#> → G | error: error number 7
+#> → H | error: error number 8
+#> → I | error: error number 9
+#> → J | error: error number 10
+#> There were issues with some computations   A: x1   B: x1   C: x1   D: x1   E: x…
 
 set.seed(1)
 res_grid <-
   tune_grid(spec_dt_tune, form, folds, grid = 5,
             control = control_grid(extract = raise_error))
-#> → 1 | error: AHHhH
-#> There were issues with some computations   1: x50
+#> → A | error: AHHhH
+#> There were issues with some computations   A: x50
 
 set.seed(1)
 res_grid <-
   tune_bayes(spec_dt_tune, form, folds, initial = 5, iter = 5,
              control = control_bayes(extract = raise_error))
-#> → 1 | error: AHHhH
-#> There were issues with some computations   1: x100
+#> → A | error: AHHhH
+#> There were issues with some computations   A: x100
 
 set.seed(1)
 res_grid <-
   tune_bayes(spec_dt_tune, form, folds, iter = 5,
              control = control_bayes(extract = raise_error),
              initial = res_grid)
-#> → 1 | error: AHHhH
-#> There were issues with some computations   1: x50
+#> → A | error: AHHhH
+#> There were issues with some computations   A: x50
 
 set.seed(1)
 res_anova <-
@@ -136,9 +136,9 @@ res_anova <-
     resamples = folds,
     control = control_race(extract = function(x) {raise_warning(); raise_error()})
   )
-#> → 1 | warning: ope! yikes.
-#> → 2 | error: AHHhH
-#> There were issues with some computations   1: x58   2: x58
+#> → A | warning: ope! yikes.
+#> → B | error: AHHhH
+#> There were issues with some computations   A: x58   B: x58
 
 set.seed(1)
 res_sa <-
@@ -152,6 +152,6 @@ res_sa <-
     control = control_sim_anneal(verbose_iter = FALSE,
                                  extract = function(x) {raise_warning(); raise_error()})
   )
-#> → 1 | warning: ope! yikes.
-#> → 2 | error: AHHhH
-#> There were issues with some computations   1: x150   2: x149
+#> → A | warning: ope! yikes.
+#> → B | error: AHHhH
+#> There were issues with some computations   A: x150   B: x149
