@@ -346,6 +346,9 @@ check_metrics <- function(x, object) {
            classification = {
              x <- yardstick::metric_set(roc_auc, accuracy)
            },
+           'censored regression' = {
+             x <- yardstick::metric_set(brier_survival)
+           },
            unknown = {
              rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
            },
