@@ -325,7 +325,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_bs(disp, deg_free = NA_real_)
 
-  expect_snapshot(error = TRUE, {
+  expect_snapshot({
     cars_res <- tune_bayes(
       svm_mod,
       preprocessor = rec,
@@ -345,7 +345,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
     add_formula(y ~ z) %>%
     add_model(svm_mod)
 
-  expect_snapshot(error = TRUE, {
+  expect_snapshot({
     cars_res <- tune_bayes(
       wflow,
       resamples = data_folds,

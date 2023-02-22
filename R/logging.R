@@ -69,6 +69,8 @@ tune_env <-
     data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
   )
 
+lbls <- c(LETTERS, letters, 1:1e3)
+
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
   isTRUE(tune_env$progress_active && !is_testing())
@@ -131,7 +133,7 @@ summarize_catalog <- function(catalog, sep = "   ") {
   res <- dplyr::arrange(catalog, id)
   res <- dplyr::mutate(res, color = dplyr::if_else(type == "warning", list(cli::col_yellow), list(cli::col_red)))
   res <- dplyr::rowwise(res)
-  res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(id))}: x{n}"))
+  res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}"))
   res <- dplyr::ungroup(res)
   res <- dplyr::pull(res, msg)
   res <- glue::glue_collapse(res, sep = sep)
@@ -186,7 +188,7 @@ tune_catalog <- function(issues) {
       # construct issue summary
       color <- if (current$type == "warning") {cli::col_yellow} else {cli::col_red}
       msg <- glue::glue(
-        "{color(cli::style_bold(res[issue, 'id']))} | {color(current$type)}: {current$note}"
+        "{color(cli::style_bold(lbls[pull(res[issue, 'id'])]))} | {color(current$type)}: {current$note}"
       )
       cli::cli_alert(msg)
     }

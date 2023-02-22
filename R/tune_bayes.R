@@ -295,6 +295,12 @@ tune_bayes_workflow <-
       return(out)
     })
 
+    # Preempt `estimate_tune_results()` error and rely
+    # on `on.exit()` condition to return preliminary results
+    if (is_cataclysmic(unsummarized)) {
+      return()
+    }
+
     # Get the averaged resampling stats before stripping attributes
     mean_stats <- estimate_tune_results(unsummarized)
 
