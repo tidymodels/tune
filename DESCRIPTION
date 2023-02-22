@@ -41,6 +41,7 @@ Imports:
     yardstick (>= 1.0.0)
 Suggests: 
     C50,
+    censored,
     covr,
     kernlab,
     kknn,
@@ -50,13 +51,12 @@ Suggests:
     testthat (>= 3.0.0),
     xgboost,
     xml2
-remotes:
-    tidymodels/yardstick#347
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
+remotes: tidymodels/yardstick#347
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.2.3.9000

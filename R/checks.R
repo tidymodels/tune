@@ -360,27 +360,36 @@ check_metrics <- function(x, object) {
 
   is_numeric_metric_set <- inherits(x, "numeric_metric_set")
   is_class_prob_metric_set <- inherits(x, "class_prob_metric_set")
+  is_surv_metric_set <-
+    inherits(x, c("dynamic_survival_metric_set", "static_survival_metric_set"))
 
-  if (!is_numeric_metric_set && !is_class_prob_metric_set) {
+  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
     rlang::abort("The `metrics` argument should be the results of [yardstick::metric_set()].")
   }
 
-  if (mode == "regression" && is_class_prob_metric_set) {
+  if (mode == "regression" && !is_numeric_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'regression'`, ",
-      "but `metrics` is a metric set for class / probability metrics."
+      "but `metrics` is a metric set for other model modes."
     )
     rlang::abort(msg)
   }
 
-  if (mode == "classification" && is_numeric_metric_set) {
+  if (mode == "classification" && !is_class_prob_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'classification'`, ",
-      "but `metrics` is a metric set for regression metrics."
+      "but `metrics` is a metric set for other model modes."
     )
     rlang::abort(msg)
   }
 
+  if (mode == "censored regression" && !is_surv_metric_set) {
+    msg <- paste0(
+      "The parsnip model has `mode = 'censored regression'`, ",
+      "but `metrics` is a metric set for other model modes."
+    )
+    rlang::abort(msg)
+  }
   x
 }
 
@@ -619,5 +628,10 @@ check_eval_times <- function(.times, metrics) {
   # will still propagate nulls
   .times <- .times[!is.na(.times)]
   .times <- unique(.times)
-  sort(.times)
+  .times <- sort(.times)
+  .times <- .times[.times >= 0]
+  if (identical(.times, numeric(0))) {
+    rlang::abort("There were no usable evaluation times.")
+  }
+  .times
 }
