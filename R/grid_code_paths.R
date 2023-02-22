@@ -436,7 +436,7 @@ tune_grid_loop_iter <- function(split,
       out_extracts <- append_extracts(out_extracts, elt_extract)
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
-browser()
+
       iter_predictions <- .catch_and_log(
         predict_model(split, workflow, iter_grid, metrics, iter_submodels, eval_times),
         control,
