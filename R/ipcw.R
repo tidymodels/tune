@@ -37,10 +37,10 @@ collect_surv_col <- function(data, truth) {
     stats::setNames("surv")
 }
 
-# For avoiding xtremely large, outlier weights
+# For avoiding extremely large, outlier weights
 trunc_probs <- function(probs, trunc = 0.01) {
-  probs <- probs[!is.na(probs)]
-  non_zero_min <- min(probs[probs > 0])
+  probs_non_zero <- probs[!is.na(probs)]
+  non_zero_min <- min(probs_non_zero[probs_non_zero > 0])
   if (non_zero_min < trunc) {
     trunc <- non_zero_min / 2
   }
