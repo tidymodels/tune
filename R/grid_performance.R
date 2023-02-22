@@ -7,6 +7,8 @@ pred_type <- function(x) {
     cls == "class_metric" ~ "class",
     cls == "prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
+    cls == "dynamic_survival_metric" ~ "survival",
+    cls == "static_survival_metric" ~ "time",
     TRUE ~ "unknown"
   )
   res
@@ -46,7 +48,15 @@ metrics_info <- function(x) {
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
-.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level) {
+.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level, stat_time = NULL) {
+  # The call stack is:
+  #
+  # tune_grid_loop_iter()
+  #   append_metrics(). <many times>
+  #    .estimate_metrics()
+
+  # predictions made in predict_model()
+
   if (inherits(dat, "try-error")) {
     return(NULL)
   }
@@ -72,6 +82,8 @@ metrics_info <- function(x) {
     estimate_reg(dat, metric, param_names, outcome_name, case_weights)
   } else if (all(types == "class" | types == "prob")) {
     estimate_class_prob(dat, metric, param_names, outcome_name, case_weights, types, event_level)
+  } else if (all(types == "time" | types == "survival")) {
+    # estimate_surv(dat, metric, param_names, outcome_name, case_weights, types, stat_time)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
@@ -120,3 +132,15 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
       event_level = event_level
     )
 }
+
+estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, stat_time) {
+  # IPCW should already be computed, un-nested and have .time
+
+  if (any(types == "survival")) {
+
+  } else {
+    # pad with .time = NA
+  }
+  # metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = !!case_weights)
+}
+
