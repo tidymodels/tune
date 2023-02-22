@@ -85,7 +85,20 @@ graf_weight_time <- function(surv_obj, predict_time, eps = 10^-10) {
 
 # Overall wrapper to compute the weights and line everything up in a big tibble
 
-brier_survival_weights <- function(data, truth, analysis_time, model_fit, trunc = 0.05) {
+#' Calculations for two types of IPCW
+#'
+#' @param data A data frame with a column containing a [survival::Surv()] object.
+#' @param truth An unquoted variable name that has the  [survival::Surv()] object.
+#' @param analysis_time A vector of non-negative times at which we should
+#' compute the probability of censoring and the corresponding weights. For ROC
+#' analyses, the weights are independent of time but this argument is retained
+#' to keep a consistent API across functions.
+#' @param model_fit A fitted parsnip model object with a mode of "censored regression".
+#' @param trunc A potential lower bound for the probability of censoring to avoid
+#' very large weight values.
+#' @export
+#' @keywords internal
+.survival_weights_brier <- function(data, truth, analysis_time, model_fit, trunc = 0.05) {
   truth <- rlang::enquo(truth)
   surv_data <- collect_surv_col(data, truth)
   purrr::map_dfr(analysis_time, ~ graf_weight_time(surv_data$surv, .x))  %>%
@@ -112,7 +125,11 @@ brier_survival_weights <- function(data, truth, analysis_time, model_fit, trunc 
 
 # Note that these weights are independent of the time of analysis. We keep the
 # same API as the Brier function for API consistency.
-roc_survival_weights <- function(data, truth, analysis_time, model_fit,
+
+#' @export
+#' @keywords internal
+#' @rdname dot-survival_weights_brier
+.survival_weights_roc <- function(data, truth, analysis_time, model_fit,
                                  trunc = 0.05, eps = 10^-10) {
 
   truth <- rlang::enquo(truth)
