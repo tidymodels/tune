@@ -71,7 +71,8 @@ fit_resamples.model_spec <- function(object,
                                      resamples,
                                      ...,
                                      metrics = NULL,
-                                     control = control_resamples()) {
+                                     control = control_resamples(),
+                                     eval_times = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -95,7 +96,8 @@ fit_resamples.model_spec <- function(object,
     wflow,
     resamples = resamples,
     metrics = metrics,
-    control = control
+    control = control,
+    eval_times = eval_times
   )
 }
 
@@ -106,7 +108,8 @@ fit_resamples.workflow <- function(object,
                                    resamples,
                                    ...,
                                    metrics = NULL,
-                                   control = control_resamples()) {
+                                   control = control_resamples(),
+                                   eval_times = NULL) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_resamples())
@@ -117,6 +120,7 @@ fit_resamples.workflow <- function(object,
       resamples = resamples,
       metrics = metrics,
       control = control,
+      eval_times = eval_times,
       rng = TRUE
     )
   .stash_last_result(res)
@@ -125,7 +129,8 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, control, rng) {
+resample_workflow <- function(workflow, resamples, metrics, control,
+                              eval_times = NULL, rng) {
   check_no_tuning(workflow)
 
   # `NULL` is the signal that we have no grid to tune with
@@ -139,6 +144,7 @@ resample_workflow <- function(workflow, resamples, metrics, control, rng) {
     metrics = metrics,
     pset = pset,
     control = control,
+    eval_times = eval_times,
     rng = rng
   )
 

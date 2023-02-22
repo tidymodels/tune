@@ -42,7 +42,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   for (type_iter in types) {
     # Regular predictions
     tmp_res <-
-      predict(model, x_vals, type = type_iter) %>%
+      predict_wrapper(model, x_vals, type_iter, eval_times) %>%
       mutate(.row = orig_rows) %>%
       cbind(grid, row.names = NULL) %>%
       tibble::as_tibble()
@@ -53,17 +53,9 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
 
       if (has_submodels) {
         submod_param <- names(submodels)
-        mp_call <-
-          call2(
-            "multi_predict",
-            .ns = "parsnip",
-            object = expr(model),
-            new_data = expr(x_vals),
-            type = type_iter,
-            !!!make_submod_arg(grid, model, submodels)
-          )
+        subgrid <- make_submod_arg(grid, model, submodels)
         tmp_res <-
-          eval_tidy(mp_call) %>%
+          predict_wrapper(model, x_vals, type_iter, eval_times, submodels) %>%
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
@@ -102,6 +94,30 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
 
   tibble::as_tibble(res)
 }
+
+predict_wrapper <- function(model, new_data, type, times, subgrid = NULL) {
+  cl <-
+    rlang::call2(
+      "predict",
+      object = rlang::expr(model),
+      new_data = rlang::expr(new_data),
+      type = type)
+
+  # Add in censored regression evaluation times (if needed)
+  has_type <- type %in% c("survival", "hazard")
+  if (model$spec$mode == "censored regression" & !is.null(times) & has_type) {
+    cl <- rlang::call_modify(cl, time = times)
+  }
+
+  # When there are sub-models:
+  if (!is.null(subgrid)) {
+    cl <- rlang::call_modify(cl, !!!subgrid)
+  }
+  res <- rlang::eval_tidy(cl)
+  res
+}
+
+# ------------------------------------------------------------------------------
 
 #' @export
 #' @rdname tune-internal-functions

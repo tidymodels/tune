@@ -14,7 +14,8 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_resamples()
+  control = control_resamples(),
+  eval_times = NULL
 )
 
 \method{fit_resamples}{workflow}(
@@ -22,7 +23,8 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_resamples()
+  control = control_resamples(),
+  eval_times = NULL
 )
 }
 \arguments{

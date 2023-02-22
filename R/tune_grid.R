@@ -354,6 +354,7 @@ tune_grid_workflow <- function(workflow,
     workflow = workflow,
     metrics = metrics,
     control = control,
+    eval_times = eval_times,
     rng = rng
   )
 
