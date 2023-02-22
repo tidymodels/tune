@@ -194,9 +194,9 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   lr_lm_2 <- parsnip::linear_reg(penalty = tune(), mixture = tune())
 
   # well-defined:
-  lr_glmnet_0 <- lr_lm_0 %>% set_engine("glmnet")
-  lr_glmnet_1 <- lr_lm_1 %>% set_engine("glmnet")
-  lr_glmnet_2 <- lr_lm_2 %>% set_engine("glmnet")
+  lr_glmnet_0 <- lr_lm_0 %>% parsnip::set_engine("glmnet")
+  lr_glmnet_1 <- lr_lm_1 %>% parsnip::set_engine("glmnet")
+  lr_glmnet_2 <- lr_lm_2 %>% parsnip::set_engine("glmnet")
 
   # don't error when supplied tune args make sense given engine / steps
   expect_error_na <- function(x) {testthat::expect_error(x, regexp = NA)}
@@ -360,7 +360,8 @@ test_that("initial values", {
     wflow_1,
     mtfolds,
     yardstick::metric_set(yardstick::rsq),
-    control_bayes()
+    control_bayes(),
+    eval_times = NULL
   )
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), nrow(mtfolds))

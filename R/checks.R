@@ -370,7 +370,7 @@ check_metrics <- function(x, object) {
   if (mode == "regression" && !is_numeric_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'regression'`, ",
-      "but `metrics` is a metric set for other model modes."
+      "but `metrics` is a metric set for a different model mode."
     )
     rlang::abort(msg)
   }
@@ -378,7 +378,7 @@ check_metrics <- function(x, object) {
   if (mode == "classification" && !is_class_prob_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'classification'`, ",
-      "but `metrics` is a metric set for other model modes."
+      "but `metrics` is a metric set for a different model mode."
     )
     rlang::abort(msg)
   }
