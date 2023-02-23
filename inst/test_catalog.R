@@ -53,6 +53,12 @@ raise_error_numbered <- function() {local({
   }
 })}
 
+raise_multiline_conditions <- function(x) {
+  cli::cli_warn(c("hmmm what's happening", "uuuhhHhH"))
+  cli::cli_abort(c("aHHHksdjvndiuf", "!" = "),:"))
+  x
+}
+
 # run tuning processes with known errors ---------------------------------------
 # for each test case, ensure that each issue is allotted a unique and minimal
 # number that's counted correctly in the final summary. the expected
@@ -73,6 +79,16 @@ res_fit <-
   )
 #> → A | warning: ope! yikes. (but rlang)
 #> → B | error: AHHhH (but rlang)
+#> There were issues with some computations   A: x10   B: x10
+
+res_fit <-
+  fit_resamples(spec_dt, form, folds,
+                control = control_resamples(extract = raise_multiline_conditions)
+  )
+#> → A | warning: hmmm what's happening
+#>                uuuhhHhH
+#> → B | error:   aHHHksdjvndiuf
+#>                ! ),:
 #> There were issues with some computations   A: x10   B: x10
 
 res_fit <-
