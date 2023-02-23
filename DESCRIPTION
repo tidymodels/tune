@@ -30,7 +30,7 @@ Imports:
     parsnip (>= 1.0.2),
     purrr (>= 0.3.2),
     recipes (>= 1.0.4),
-    rlang (>= 1.0.2),
+    rlang (>= 1.0.6.9000),
     rsample (>= 1.0.0),
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
@@ -57,6 +57,8 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-remotes: tidymodels/yardstick#347
+remotes: 
+    tidymodels/yardstick#347,
+    r-lib/rlang
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
