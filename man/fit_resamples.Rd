@@ -44,6 +44,9 @@ set of metrics.}
 
 \item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
 process.}
+
+\item{eval_times}{A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc).}
 }
 \description{
 \code{\link[=fit_resamples]{fit_resamples()}} computes a set of performance metrics across one or more

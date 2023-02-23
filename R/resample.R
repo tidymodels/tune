@@ -13,6 +13,9 @@
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
 #'
+#' @param eval_times A numeric vector of time points where dynamic event time
+#' metrics should be computed (e.g. the time-dependent ROC curve, etc).
+#'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information

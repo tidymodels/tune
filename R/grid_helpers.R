@@ -96,9 +96,16 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
 }
 
 predict_wrapper <- function(model, new_data, type, times, subgrid = NULL) {
+  if (is.null(subgrid)) {
+    fn <- "predict.model_fit"
+  } else {
+    fn <- "multi_predict"
+  }
+
   cl <-
     rlang::call2(
-      "predict",
+      fn,
+      .ns = "parsnip",
       object = rlang::expr(model),
       new_data = rlang::expr(new_data),
       type = type)
