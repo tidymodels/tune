@@ -27,8 +27,8 @@
 
     Code
       spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr,
-      eval_time = -1)
+      eval_time = c(-1, Inf))
     Condition
       Error:
-      ! There were no usable evaluation times (non-missing and >= 0).
+      ! There were no usable evaluation times (finite, non-missing, and >= 0).
 

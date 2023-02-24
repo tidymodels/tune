@@ -24,6 +24,6 @@ test_that("evaluation time", {
     linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr, eval_time = 1)
   )
   expect_snapshot(error = TRUE,
-    spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_time = -1)
+    spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_time = c(-1, Inf))
   )
 })
