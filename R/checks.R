@@ -612,10 +612,23 @@ check_no_tuning <- function(x) {
   rlang::abort(msg, call = NULL)
 }
 
+filter_eval_time <- function(eval_time) {
+  # will still propagate nulls
+  eval_time <- eval_time[!is.na(eval_time)]
+  eval_time <- unique(eval_time)
+  eval_time <- sort(eval_time)
+  eval_time <- eval_time[eval_time >= 0 & is.finite(eval_time)]
+  eval_time
+}
+
+uses_dynamic_metric <- function(metrics) {
+  metric_types <- tibble::as_tibble(metrics)$class
+  any(metric_types == "dynamic_survival_metric")
+}
+
 
 check_eval_time <- function(eval_time, metrics) {
-  metric_types <- tibble::as_tibble(metrics)$class
-  has_dyn <- any(metric_types == "dynamic_survival_metric")
+  has_dyn <- uses_dynamic_metric(metrics)
   if (!is.null(eval_time) & !has_dyn) {
     rlang::abort(
       "Evaluation times are only used for dynamic survival metrics.",
@@ -630,10 +643,7 @@ check_eval_time <- function(eval_time, metrics) {
   }
 
   # will still propagate nulls
-  eval_time <- eval_time[!is.na(eval_time)]
-  eval_time <- unique(eval_time)
-  eval_time <- sort(eval_time)
-  eval_time <- eval_time[eval_time >= 0 & is.finite(eval_time)]
+  eval_time <- filter_eval_time(eval_time)
   if (identical(eval_time, numeric(0))) {
     rlang::abort("There were no usable evaluation times (finite, non-missing, and >= 0).", call = NULL)
   }
