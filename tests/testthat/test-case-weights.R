@@ -21,6 +21,7 @@ test_that("gives informative default error", {
 # extract_case_weights()
 
 test_that("`extract_case_weights()` errors if `col` doesn't exist", {
+  skip_if(packageVersion("rlang") < "1.0.6.9000")
   wf <- workflows::workflow()
 
   expect_snapshot(error = TRUE, {

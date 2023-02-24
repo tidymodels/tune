@@ -16,7 +16,7 @@
       Error in `extract_case_weights()`:
       ! `col` must exist and be a quosure at this point.
       i This is an internal error that was detected in the tune package.
-        Please report it at <https://github.com/tidymodels/tune/issues> with a reprex (<https://https://tidyverse.org/help/>) and the full backtrace.
+        Please report it at <https://github.com/tidymodels/tune/issues> with a reprex (<https://tidyverse.org/help/>) and the full backtrace.
 
 # `extract_case_weights()` errors if case weights column isn't the right class
 
