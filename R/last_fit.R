@@ -73,7 +73,8 @@ last_fit.default <- function(object, ...) {
 
 #' @export
 #' @rdname last_fit
-last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL, control = control_last_fit()) {
+last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
+                                control = control_last_fit(), eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -93,21 +94,22 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control)
+  last_fit_workflow(wflow, split, metrics, control, eval_time)
 }
 
 
 #' @rdname last_fit
 #' @export
-last_fit.workflow <- function(object, split, ..., metrics = NULL, control = control_last_fit()) {
+last_fit.workflow <- function(object, split, ..., metrics = NULL,
+                              control = control_last_fit(), eval_time = NULL) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control)
+  last_fit_workflow(object, split, metrics, control, eval_time)
 }
 
-last_fit_workflow <- function(object, split, metrics, control) {
+last_fit_workflow <- function(object, split, metrics, control, eval_time = NULL) {
   check_no_tuning(object)
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
@@ -121,6 +123,7 @@ last_fit_workflow <- function(object, split, metrics, control) {
     resamples = resamples,
     metrics = metrics,
     control = control,
+    eval_time = NULL,
     rng = rng
   )
 
