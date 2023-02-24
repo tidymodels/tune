@@ -14,13 +14,13 @@ test_that("evaluation time", {
   mtr <- metric_set(brier_survival)
   reg_mtr <- metric_set(rmse)
 
-  expect_snapshot_error(
+  expect_snapshot(error = TRUE,
     spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr)
   )
-  expect_snapshot_error(
+  expect_snapshot(error = TRUE,
     spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
   )
-  expect_snapshot_error(
+  expect_snapshot(error = TRUE,
     spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_times = -1)
   )
 })
