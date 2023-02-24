@@ -401,7 +401,7 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_times,
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_time,
                           checks = "grid") {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
@@ -425,7 +425,7 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_times,
         save_pred = ctrl$save_pred,
         event_level = ctrl$event_level
       ),
-      eval_times = eval_times
+      eval_time = eval_time
     )
 
     if (ctrl$verbose) {
@@ -613,29 +613,29 @@ check_no_tuning <- function(x) {
 }
 
 
-check_eval_times <- function(.times, metrics) {
+check_eval_time <- function(eval_time, metrics) {
   metric_types <- tibble::as_tibble(metrics)$class
   has_dyn <- any(metric_types == "dynamic_survival_metric")
-  if (!is.null(.times) & !has_dyn) {
+  if (!is.null(eval_time) & !has_dyn) {
     rlang::abort(
       "Evaluation times are only used for dynamic survival metrics.",
       call = NULL
     )
   }
-  if (is.null(.times) & has_dyn) {
+  if (is.null(eval_time) & has_dyn) {
     rlang::abort(
-      "One or more metric requires the specification of time points in the `eval_times` argument.",
+      "One or more metric requires the specification of time points in the `eval_time` argument.",
       call = NULL
     )
   }
 
   # will still propagate nulls
-  .times <- .times[!is.na(.times)]
-  .times <- unique(.times)
-  .times <- sort(.times)
-  .times <- .times[.times >= 0]
-  if (identical(.times, numeric(0))) {
-    rlang::abort("There were no usable evaluation times.", call = NULL)
+  eval_time <- eval_time[!is.na(eval_time)]
+  eval_time <- unique(eval_time)
+  eval_time <- sort(eval_time)
+  eval_time <- eval_time[eval_time >= 0]
+  if (identical(eval_time, numeric(0))) {
+    rlang::abort("There were no usable evaluation times (non-missing and >= 0).", call = NULL)
   }
-  .times
+  eval_time
 }

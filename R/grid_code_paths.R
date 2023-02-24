@@ -3,7 +3,7 @@ tune_grid_loop <- function(resamples,
                            workflow,
                            metrics,
                            control,
-                           eval_times = NULL,
+                           eval_time = NULL,
                            rng) {
   fn_tune_grid_loop <- tune_grid_loop_tune
 
@@ -18,7 +18,7 @@ tune_grid_loop <- function(resamples,
     workflow,
     metrics,
     control,
-    eval_times,
+    eval_time,
     rng
   )
 
@@ -38,7 +38,7 @@ tune_grid_loop_tune <- function(resamples,
                                 workflow,
                                 metrics,
                                 control,
-                                eval_times = NULL,
+                                eval_time = NULL,
                                 rng) {
   n_resamples <- nrow(resamples)
 
@@ -54,7 +54,7 @@ tune_grid_loop_tune <- function(resamples,
     workflow = workflow,
     metrics = metrics,
     control = control,
-    eval_times = eval_times,
+    eval_time = eval_time,
     rng = rng,
     parallel_over = parallel_over
   )
@@ -135,7 +135,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
                                 workflow,
                                 metrics,
                                 control,
-                                eval_times = NULL,
+                                eval_time = NULL,
                                 rng,
                                 parallel_over) {
   splits <- resamples$splits
@@ -177,7 +177,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           workflow = workflow,
           metrics = metrics,
           control = control,
-          eval_times = eval_times,
+          eval_time = eval_time,
           seed = seed
         )
       }
@@ -216,7 +216,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             workflow = workflow,
             metrics = metrics,
             control = control,
-            eval_times = eval_times,
+            eval_time = eval_time,
             seed = seed
           )
         }
@@ -264,7 +264,7 @@ tune_grid_loop_iter <- function(split,
                                 workflow,
                                 metrics,
                                 control,
-                                eval_times = NULL,
+                                eval_time = NULL,
                                 seed) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
@@ -438,7 +438,7 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels, eval_times),
+        predict_model(split, workflow, iter_grid, metrics, iter_submodels, eval_time),
         control,
         split,
         iter_msg_predictions,
@@ -491,7 +491,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        workflow,
                                        metrics,
                                        control,
-                                       eval_times = NULL,
+                                       eval_time = NULL,
                                        seed) {
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
@@ -502,7 +502,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     workflow,
     metrics,
     control,
-    eval_times,
+    eval_time,
     seed
   )
 

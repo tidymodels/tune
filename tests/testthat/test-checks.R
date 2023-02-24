@@ -361,7 +361,7 @@ test_that("initial values", {
     mtfolds,
     yardstick::metric_set(yardstick::rsq),
     control_bayes(),
-    eval_times = NULL
+    eval_time = NULL
   )
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), nrow(mtfolds))

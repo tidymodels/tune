@@ -38,7 +38,7 @@ check_initial(
   resamples,
   metrics,
   ctrl,
-  eval_times,
+  eval_time,
   checks = "grid"
 )
 

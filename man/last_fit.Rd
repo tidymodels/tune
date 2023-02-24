@@ -14,10 +14,18 @@ last_fit(object, ...)
   split,
   ...,
   metrics = NULL,
-  control = control_last_fit()
+  control = control_last_fit(),
+  eval_time = NULL
 )
 
-\method{last_fit}{workflow}(object, split, ..., metrics = NULL, control = control_last_fit())
+\method{last_fit}{workflow}(
+  object,
+  split,
+  ...,
+  metrics = NULL,
+  control = control_last_fit(),
+  eval_time = NULL
+)
 }
 \arguments{
 \item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
@@ -35,6 +43,11 @@ set of metrics.}
 
 \item{control}{A \code{\link[=control_last_fit]{control_last_fit()}} object used to fine tune the last fit
 process.}
+
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values should be non-negative and should probably be no greater then the
+largest event time in the training set.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.

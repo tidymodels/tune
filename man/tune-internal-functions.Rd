@@ -22,7 +22,7 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
   param_names,
   outcome_name,
   event_level,
-  stat_time = NULL
+  eval_time = NULL
 )
 
 .load_namespace(x)

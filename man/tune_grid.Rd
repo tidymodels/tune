@@ -17,7 +17,7 @@ tune_grid(object, ...)
   grid = 10,
   metrics = NULL,
   control = control_grid(),
-  eval_times = NULL
+  eval_time = NULL
 )
 
 \method{tune_grid}{workflow}(
@@ -28,7 +28,7 @@ tune_grid(object, ...)
   grid = 10,
   metrics = NULL,
   control = control_grid(),
-  eval_times = NULL
+  eval_time = NULL
 )
 }
 \arguments{
@@ -54,8 +54,10 @@ parameter sets to be created automatically.}
 
 \item{control}{An object used to modify the tuning process.}
 
-\item{eval_times}{A numeric vector of time points where dynamic event time
-metrics should be computed (e.g. the time-dependent ROC curve, etc).}
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values should be non-negative and should probably be no greater then the
+largest event time in the training set.}
 }
 \value{
 An updated version of \code{resamples} with extra list columns for \code{.metrics} and

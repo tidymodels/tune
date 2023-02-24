@@ -18,6 +18,11 @@
 #' @param control A [control_last_fit()] object used to fine tune the last fit
 #'   process.
 #'
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+#' values should be non-negative and should probably be no greater then the
+#' largest event time in the training set.
+#'
 #' @param ... Currently unused.
 #'
 #' @details

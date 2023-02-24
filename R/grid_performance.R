@@ -48,7 +48,7 @@ metrics_info <- function(x) {
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
-.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level, stat_time = NULL) {
+.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level, eval_time = NULL) {
   # The call stack is:
   #
   # tune_grid_loop_iter()
@@ -83,7 +83,7 @@ metrics_info <- function(x) {
   } else if (all(types == "class" | types == "prob")) {
     estimate_class_prob(dat, metric, param_names, outcome_name, case_weights, types, event_level)
   } else if (all(types == "time" | types == "survival")) {
-    # estimate_surv(dat, metric, param_names, outcome_name, case_weights, types, stat_time)
+    # estimate_surv(dat, metric, param_names, outcome_name, case_weights, types, eval_time)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
@@ -133,7 +133,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
     )
 }
 
-estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, stat_time) {
+estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, eval_time) {
   # IPCW should already be computed, un-nested and have .time
   types <- NULL
   if (any(types == "survival")) {

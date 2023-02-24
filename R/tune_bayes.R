@@ -193,7 +193,7 @@ tune_bayes.model_spec <- function(object,
                                   objective = exp_improve(),
                                   initial = 5,
                                   control = control_bayes(),
-                                  eval_times = NULL) {
+                                  eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -232,7 +232,7 @@ tune_bayes.workflow <-
            objective = exp_improve(),
            initial = 5,
            control = control_bayes(),
-           eval_times = NULL) {
+           eval_time = NULL) {
 
     control <- parsnip::condense_control(control, control_bayes())
 
@@ -241,7 +241,7 @@ tune_bayes.workflow <-
         object,
         resamples = resamples, iter = iter, param_info = param_info,
         metrics = metrics, objective = objective, initial = initial,
-        control = control, eval_times = eval_times, ...
+        control = control, eval_time = eval_time, ...
       )
     .stash_last_result(res)
     res
@@ -250,7 +250,7 @@ tune_bayes.workflow <-
 tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
-           initial = 5, control = control_bayes(), eval_times = NULL, ...) {
+           initial = 5, control = control_bayes(), eval_time = NULL, ...) {
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -271,7 +271,7 @@ tune_bayes_workflow <-
 
     unsummarized <- check_initial(
       initial, param_info, object, resamples,
-      metrics, control, eval_times,
+      metrics, control, eval_time,
       checks = "bayes"
     )
 

@@ -1,5 +1,5 @@
 predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
-                          eval_times = NULL) {
+                          eval_time = NULL) {
   model <- extract_fit_parsnip(workflow)
 
   new_data <- rsample::assessment(split)
@@ -42,7 +42,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   for (type_iter in types) {
     # Regular predictions
     tmp_res <-
-      predict_wrapper(model, x_vals, type_iter, eval_times) %>%
+      predict_wrapper(model, x_vals, type_iter, eval_time) %>%
       mutate(.row = orig_rows) %>%
       cbind(grid, row.names = NULL) %>%
       tibble::as_tibble()
@@ -55,7 +55,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
         submod_param <- names(submodels)
         subgrid <- make_submod_arg(grid, model, submodels)
         tmp_res <-
-          predict_wrapper(model, x_vals, type_iter, eval_times, submodels) %>%
+          predict_wrapper(model, x_vals, type_iter, eval_time, submodels) %>%
           mutate(.row = orig_rows) %>%
           unnest(cols = dplyr::starts_with(".pred")) %>%
           cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
