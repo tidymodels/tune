@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Fixed bug in `tune_bayes()` where `.Last.tune.result` would return intermediate tuning results. (#613)
+
 * Refined machinery for logging issues during tuning. Rather than printing out warnings and errors as they appear, the package will now only print unique tuning issues, and iteratively update a progress bar to maintain counts of each unique issue. This feature is only enabled for tuning sequentially. (#588)
 
 * Introduced a new function `fit_best()` that provides a shorthand interface to fit a final model after parameter tuning. (#586)

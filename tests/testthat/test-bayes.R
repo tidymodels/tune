@@ -125,6 +125,7 @@ test_that("tune model only (with recipe)", {
     )
   })
 
+  expect_equal(res, .Last.tune.result)
   expect_equal(unique(res$id), folds$id)
   res_est <- collect_metrics(res)
   expect_equal(nrow(res_est), iterT * 2)
