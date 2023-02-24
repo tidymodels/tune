@@ -10,7 +10,7 @@
 #' @importFrom dials parameters_constr is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame update
-#' @importFrom yardstick rsq rmse accuracy roc_auc
+#' @importFrom yardstick rsq rmse accuracy roc_auc brier_survival
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env required_pkgs

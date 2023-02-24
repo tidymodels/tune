@@ -3,8 +3,8 @@
     Code
       spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr)
     Condition
-      Error in `check_eval_times()`:
-      ! 1+ metric require the specification of time points in the `eval_times` argument.
+      Error:
+      ! One or more metric requires the specification of time points in the `eval_times` argument.
 
 ---
 
@@ -12,7 +12,16 @@
       spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
     Condition
       Error in `check_metrics()`:
-      ! The parsnip model has `mode = 'censored regression'`, but `metrics` is a metric set for other model modes.
+      ! The parsnip model has `mode = 'censored regression'`, but `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr,
+      eval_times = 1)
+    Condition
+      Error:
+      ! Evaluation times are only used for dynamic survival metrics.
 
 ---
 
@@ -20,6 +29,6 @@
       spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr,
       eval_times = -1)
     Condition
-      Error in `check_eval_times()`:
+      Error:
       ! There were no usable evaluation times.
 

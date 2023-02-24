@@ -347,7 +347,7 @@ check_metrics <- function(x, object) {
              x <- yardstick::metric_set(roc_auc, accuracy)
            },
            'censored regression' = {
-             x <- yardstick::metric_set(yardstick::brier_survival)
+             x <- yardstick::metric_set(brier_survival)
            },
            unknown = {
              rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
@@ -386,7 +386,7 @@ check_metrics <- function(x, object) {
   if (mode == "censored regression" && !is_surv_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'censored regression'`, ",
-      "but `metrics` is a metric set for other model modes."
+      "but `metrics` is a metric set for a different model mode."
     )
     rlang::abort(msg)
   }
@@ -617,11 +617,15 @@ check_eval_times <- function(.times, metrics) {
   metric_types <- tibble::as_tibble(metrics)$class
   has_dyn <- any(metric_types == "dynamic_survival_metric")
   if (!is.null(.times) & !has_dyn) {
-    rlang::abort("evaluation times are only used for dynamic survival metrics.")
+    rlang::abort(
+      "Evaluation times are only used for dynamic survival metrics.",
+      call = NULL
+    )
   }
   if (is.null(.times) & has_dyn) {
     rlang::abort(
-      "1+ metric require the specification of time points in the `eval_times` argument."
+      "One or more metric requires the specification of time points in the `eval_times` argument.",
+      call = NULL
     )
   }
 
@@ -631,7 +635,7 @@ check_eval_times <- function(.times, metrics) {
   .times <- sort(.times)
   .times <- .times[.times >= 0]
   if (identical(.times, numeric(0))) {
-    rlang::abort("There were no usable evaluation times.")
+    rlang::abort("There were no usable evaluation times.", call = NULL)
   }
   .times
 }
