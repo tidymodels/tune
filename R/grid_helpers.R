@@ -92,6 +92,37 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
     }
   }
 
+  # censored regression models with time-dependent metrics
+  if (uses_dynamic_metric(metrics)) {
+    y_name <- names(y_vals)
+    y_name <- y_name[y_name != ".row"]
+
+    # .n <- nrow(y_vals)
+    # .t <- length(eval_time)
+    # res has .n rows (with a list column with .t rows)
+
+    res <-
+      tidyr::unnest(res, cols = .pred) %>%
+      dplyr::rename(eval_time = .time)
+    # Now res has .n * .t rows with keys .row and .time
+
+    res <-
+      dplyr::full_join(
+        res,
+        # weight results should also be .n * .t with the same key combinations
+        .survival_weights_graf(
+          data = y_vals,
+          truth = !!y_name,
+          eval_time = eval_time,
+          model_fit = model,
+          rows = y_vals$.row
+        ),
+        by = c(".row", "eval_time")
+      ) %>%
+      dplyr::relocate(.row, eval_time)
+    # res should still be .n * .t
+  }
+
   tibble::as_tibble(res)
 }
 
