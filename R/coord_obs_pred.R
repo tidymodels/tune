@@ -13,7 +13,7 @@ CoordObsPred <-
       )
       self$limits$y <- rngs
       self$limits$x <- rngs
-      ggplot2::ggproto_parent(CoordFixed, self)$setup_panel_params(scale_x, scale_y, params)
+      ggplot2::ggproto_parent(ggplot2::CoordFixed, self)$setup_panel_params(scale_x, scale_y, params)
     },
     aspect = function(self, ranges) {
       1 / self$ratio
