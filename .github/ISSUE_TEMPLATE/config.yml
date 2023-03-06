@@ -4,4 +4,4 @@ contact_links:
     about: "Check out options for getting help on tidymodels.org"
   - name: Discussion
     url: https://rstd.io/tidymodels-community
-    about: "For discussions about tidymodels, post on RStudio Community"
+    about: "For discussions about tidymodels, post on Posit Community"
