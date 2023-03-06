@@ -1,7 +1,0 @@
-contact_links:
-  - name: Help
-    url: https://www.tidymodels.org/help/
-    about: "Check out options for getting help on tidymodels.org"
-  - name: Discussion
-    url: https://rstd.io/tidymodels-community
-    about: "For discussions about tidymodels, post on Posit Community"
