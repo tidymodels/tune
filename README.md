@@ -33,7 +33,8 @@ install.packages("tune", repos = "http://cran.r-project.org") #or your local mir
 or you can install the current development version using:
 
 ``` r
-devtools::install_github("tidymodels/tune")
+# install.packages("pak")
+pak::pak("tidymodels/tune")
 ```
 
 ## Examples
