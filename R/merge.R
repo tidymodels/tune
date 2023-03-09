@@ -85,10 +85,10 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
     if (nrow(param_info) == 1) {
       if (param_info$component_id == "main") {
         object$args[[param_info$name]] <-
-          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
+          rlang::as_quosure(grid[[i]][[1]], env = rlang::empty_env())
       } else {
         object$eng_args[[param_info$name]] <-
-          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
+          rlang::as_quosure(grid[[i]][[1]], env = rlang::empty_env())
       }
     }
   }

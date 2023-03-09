@@ -154,6 +154,24 @@ test_that("model spec merges", {
       rlang::as_quosure(bst_grid$rules[[i]], empty_env())
     )
   }
+
+  # ensure that `grid` can handle list-columns
+  bst_model_obj <-
+    boost_tree(mode = "classification") %>%
+    set_args(objective = tune())
+
+  bst_grid_obj <- tibble::tibble(objective = list("hey", "there"))
+
+  bst_updated_obj <- merge(bst_model_obj, bst_grid_obj)
+
+  expect_equal(
+    rlang::quo_get_expr(bst_updated_obj$x[[1]]$eng_args$objective),
+    "hey"
+  )
+  expect_equal(
+    rlang::quo_get_expr(bst_updated_obj$x[[2]]$eng_args$objective),
+    "there"
+  )
 })
 
 test_that("partially model spec merge", {
