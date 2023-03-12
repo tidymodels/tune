@@ -396,11 +396,7 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
   parameter_names_model <- parameters_model[["id"]]
 
   # Nest model parameters, keep preprocessor parameters outside
-  if (tidyr_new_interface()) {
-    out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
-  } else {
-    out <- tidyr::nest(grid, dplyr::all_of(parameter_names_model))
-  }
+  out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
 
   n_preprocessors <- nrow(out)
   seq_preprocessors <- seq_len(n_preprocessors)
