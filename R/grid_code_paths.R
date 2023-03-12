@@ -280,15 +280,17 @@ tune_grid_loop_iter <- function(split,
   out_predictions <- NULL
   out_all_outcome_names <- list()
   out_notes <-
-    tibble::tibble(location = character(0), type = character(0), note = character(0))
+    tibble::new_tibble(list(
+      location = character(0), type = character(0), note = character(0)
+    ))
 
   params <- hardhat::extract_parameter_set_dials(workflow)
-  model_params <- dplyr::filter(params, source == "model_spec")
-  preprocessor_params <- dplyr::filter(params, source == "recipe")
+  model_params <- vctrs::vec_slice(params, params$source == "model_spec")
+  preprocessor_params <- vctrs::vec_slice(params, params$source == "recipe")
 
-  param_names <- dplyr::pull(params, "id")
-  model_param_names <- dplyr::pull(model_params, "id")
-  preprocessor_param_names <- dplyr::pull(preprocessor_params, "id")
+  param_names <- params$id
+  model_param_names <- model_params$id
+  preprocessor_param_names <- preprocessor_params$id
 
   # Model related grid-info columns
   cols <- rlang::expr(
@@ -322,15 +324,12 @@ tune_grid_loop_iter <- function(split,
   for (iter_preprocessor in iter_preprocessors) {
     workflow <- workflow_original
 
-    iter_grid_info <- dplyr::filter(
-      .data = grid_info,
-      .iter_preprocessor == iter_preprocessor
+    iter_grid_info <- vctrs::vec_slice(
+      grid_info,
+      grid_info$.iter_preprocessor == iter_preprocessor
     )
 
-    iter_grid_preprocessor <- dplyr::select(
-      .data = iter_grid_info,
-      dplyr::all_of(preprocessor_param_names)
-    )
+    iter_grid_preprocessor <- iter_grid_info[, preprocessor_param_names]
 
     iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]]
 
@@ -362,15 +361,12 @@ tune_grid_loop_iter <- function(split,
     for (iter_model in iter_models) {
       workflow <- workflow_preprocessed
 
-      iter_grid_info_model <- dplyr::filter(
-        .data = iter_grid_info_models,
-        .iter_model == iter_model
+      iter_grid_info_model <- vctrs::vec_slice(
+        iter_grid_info_models,
+        iter_grid_info_models$.iter_model == iter_model
       )
 
-      iter_grid_model <- dplyr::select(
-        .data = iter_grid_info_model,
-        dplyr::all_of(model_param_names)
-      )
+      iter_grid_model <- iter_grid_info_model[, model_param_names]
 
       iter_submodels <- iter_grid_info_model[[".submodels"]][[1L]]
       iter_msg_model <- iter_grid_info_model[[".msg_model"]]
