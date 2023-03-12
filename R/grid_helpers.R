@@ -253,14 +253,14 @@ new_grid_info_resamples <- function() {
 
   iter_config <- list("Preprocessor1_Model1")
 
-  out <- tibble::tibble(
+  out <- tibble::new_tibble(list(
     .iter_preprocessor = 1L,
     .msg_preprocessor = msgs_preprocessor,
     .iter_model = 1L,
     .iter_config = iter_config,
     .msg_model = msgs_model,
     .submodels = list(list())
-  )
+  ), nrow = length(msgs_model))
 
   out
 }

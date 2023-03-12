@@ -379,7 +379,7 @@ pull_rset_attributes <- function(x) {
   att <- attributes(x)
   att_nms <- names(att)
   att_nms <- setdiff(att_nms, excl_att)
-  att$class <- setdiff(class(x), class(tibble::tibble()))
+  att$class <- setdiff(class(x), class(tibble::new_tibble(list())))
   att$class <- att$class[att$class != "rset"]
 
   lab <- try(pretty(x), silent = TRUE)

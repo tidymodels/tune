@@ -116,7 +116,8 @@ merger <- function(x, y, ...) {
   pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~x))
+    res <- purrr::map(1:nrow(y), ~x)
+    res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
   grid_name <- colnames(y)
@@ -132,7 +133,8 @@ merger <- function(x, y, ...) {
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
+    res <- purrr::map(1:nrow(y), ~ x)
+    res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
 
