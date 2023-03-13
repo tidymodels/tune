@@ -92,12 +92,12 @@ catalog_is_active <- function() {
 #' @export
 initialize_catalog <- function(control, env = rlang::caller_env()) {
   catalog <-
-    tibble::tibble(
+    tibble::new_tibble(list(
       type = character(0),
       note = character(0),
       n = numeric(0),
       id = numeric(0)
-    )
+    ), nrow = 0)
 
   if (!(allow_parallelism(control$allow_par) || is_testing())) {
     progress_active <- TRUE
@@ -152,9 +152,9 @@ log_catalog <- function(msg, type) {
     )
 
   issues <-
-    tibble::tibble(
-      type = type,
-      note = msg
+    tibble::new_tibble(
+      list(type = type, note = msg),
+      nrow = length(msg)
     )
 
   tune_catalog(issues)
@@ -298,7 +298,10 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
 
-    wrn_msg <- tibble::tibble(location = loc, type = "warning", note = wrn_msg)
+    wrn_msg <- tibble::new_tibble(
+      list(location = loc, type = "warning", note = wrn_msg),
+      nrow = 1
+    )
 
     notes <- dplyr::bind_rows(notes, wrn_msg)
 
@@ -317,7 +320,10 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
       err_msg <- gsub("\n$", "", err_msg)
     }
 
-    err_msg <- tibble::tibble(location = loc, type = "error", note = err_msg)
+    err_msg <- tibble::new_tibble(
+      list(location = loc, type = "error", note = err_msg),
+      nrow = 1
+    )
 
     notes <- dplyr::bind_rows(notes, err_msg)
 

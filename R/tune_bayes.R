@@ -320,7 +320,10 @@ tune_bayes_workflow <-
 
     for (i in (1:iter) + score_card$overall_iter) {
       .notes <-
-        tibble::tibble(location = character(0), type = character(0), note = character(0))
+        tibble::new_tibble(
+          list(location = character(0), type = character(0), note = character(0)),
+          nrow = 0
+        )
 
       log_best(control, i, score_card)
 

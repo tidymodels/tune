@@ -109,7 +109,7 @@ get_submodel_info <- function(spec) {
     dplyr::filter(engine == spec$engine) %>%
     dplyr::select(name = parsnip, has_submodel) %>%
     dplyr::full_join(
-      hardhat::extract_parameter_set_dials(spec) %>% tibble::as_tibble() %>% dplyr::select(name, id),
+      hardhat::extract_parameter_set_dials(spec) %>% dplyr::select(name, id),
       by = "name"
     ) %>%
     dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%
@@ -127,7 +127,7 @@ submod_only <- function(grid) {
     return(grid)
   }
   nm <- colnames(grid)[1]
-  fit_only <- tibble::tibble(nm = max(grid[[nm]], na.rm = TRUE))
+  fit_only <- tibble::new_tibble(list(nm = max(grid[[nm]], na.rm = TRUE)), nrow = 1)
   names(fit_only) <- nm
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
