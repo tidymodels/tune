@@ -304,11 +304,7 @@ tune_grid_loop_iter <- function(split,
   # Nest grid_info:
   # - Preprocessor info in the outer level
   # - Model info in the inner level
-  if (tidyr_new_interface()) {
-    grid_info <- tidyr::nest(grid_info, data = !!cols)
-  } else {
-    grid_info <- tidyr::nest(grid_info, !!cols)
-  }
+  grid_info <- tidyr::nest(grid_info, data = !!cols)
 
   training <- rsample::analysis(split)
 
