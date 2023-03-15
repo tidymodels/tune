@@ -328,7 +328,7 @@ tune_grid_workflow <- function(workflow,
 
 
   metrics <- check_metrics(metrics, workflow)
-  eval_time <- check_eval_time(eval_time, metrics)
+  check_eval_time(eval_time, metrics)
 
   pset <- check_parameters(
     workflow,

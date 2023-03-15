@@ -628,14 +628,6 @@ check_eval_time <- function(eval_time, metrics) {
       call = NULL
     )
   }
+  invisible(NULL)
 
-  # will still propagate nulls
-  eval_time <- eval_time[!is.na(eval_time)]
-  eval_time <- unique(eval_time)
-  eval_time <- sort(eval_time)
-  eval_time <- eval_time[eval_time >= 0 & is.finite(eval_time)]
-  if (identical(eval_time, numeric(0))) {
-    rlang::abort("There were no usable evaluation times (finite, non-missing, and >= 0).", call = NULL)
-  }
-  eval_time
 }
