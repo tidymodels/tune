@@ -95,7 +95,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   tibble::as_tibble(res)
 }
 
-predict_wrapper <- function(model, new_data, type, times, subgrid = NULL) {
+predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
   if (is.null(subgrid)) {
     fn <- "predict.model_fit"
   } else {
@@ -112,8 +112,8 @@ predict_wrapper <- function(model, new_data, type, times, subgrid = NULL) {
 
   # Add in censored regression evaluation times (if needed)
   has_type <- type %in% c("survival", "hazard")
-  if (model$spec$mode == "censored regression" & !is.null(times) & has_type) {
-    cl <- rlang::call_modify(cl, time = times)
+  if (model$spec$mode == "censored regression" & !is.null(eval_time) & has_type) {
+    cl <- rlang::call_modify(cl, time = eval_time)
   }
 
   # When there are sub-models:
