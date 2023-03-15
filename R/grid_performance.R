@@ -83,7 +83,7 @@ metrics_info <- function(x) {
   } else if (all(types == "class" | types == "prob")) {
     estimate_class_prob(dat, metric, param_names, outcome_name, case_weights, types, event_level)
   } else if (all(types == "time" | types == "survival")) {
-    # estimate_surv(dat, metric, param_names, outcome_name, case_weights, types, eval_time)
+    estimate_surv(dat, metric, param_names, outcome_name, case_weights, types)
   } else {
     rlang::abort("Metric type not yet supported by tune.")
   }
@@ -133,14 +133,22 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
     )
 }
 
-estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, eval_time) {
-  # IPCW should already be computed, un-nested and have .time
-  types <- NULL
+estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
+  # TODO mixed sets?
   if (any(types == "survival")) {
-
+    res <-
+      dat %>%
+      dplyr::group_by(!!!rlang::syms(param_names), eval_time) %>%
+      metric(
+        truth = surv,
+        estimate = .pred_survival,
+        censoring_weights = .weight_cens,
+        case_weights = !!case_weights,
+        eval_time = eval_time
+      )
   } else {
-    # pad with .time = NA
+    # pad with .time = NA?
   }
-  # metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = !!case_weights)
+  res
 }
 

@@ -8,6 +8,12 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
 
+  # TODO patch since parsnip does not record the column names when Surv objects
+  # are used with fit_xy()
+  if (model$spec$mode == "censored regression") {
+    model$preproc$y_var <- names(y_vals)
+  }
+
   orig_rows <- as.integer(split, data = "assessment")
 
   if (length(orig_rows) != nrow(x_vals)) {
@@ -92,8 +98,27 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
     }
   }
 
-  tibble::as_tibble(res)
+  # TODO do we need this?
+  # res <- tibble::as_tibble(res)
+  maybe_add_ipcw(res, model, eval_time, types)
 }
+
+maybe_add_ipcw <- function(.data, model, eval_time, types) {
+  if (!any(types == "survival")) {
+    return(.data)
+  }
+  res <-
+    tidyr::unnest(.data, cols = .pred) %>%
+    dplyr::rename(eval_time = .time) %>%
+    dplyr::full_join(
+      # TODO is the outcome name enforced or the original name?
+      parsnip::.censoring_weights_graf(model, .data, eval_time = eval_time),
+      by = c(".row", "eval_time")
+    )
+  res
+}
+
+
 
 predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
   if (is.null(subgrid)) {
