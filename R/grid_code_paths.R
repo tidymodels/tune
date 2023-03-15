@@ -292,28 +292,12 @@ tune_grid_loop_iter <- function(split,
   model_param_names <- model_params$id
   preprocessor_param_names <- preprocessor_params$id
 
-  # Model related grid-info columns
-  cols <- rlang::expr(
-    c(
-      .iter_model,
-      .iter_config,
-      .msg_model,
-      dplyr::all_of(model_param_names),
-      .submodels
-    )
-  )
-
-  # Nest grid_info:
-  # - Preprocessor info in the outer level
-  # - Model info in the inner level
-  grid_info <- tidyr::nest(grid_info, data = !!cols)
-
   training <- rsample::analysis(split)
 
   # ----------------------------------------------------------------------------
   # Preprocessor loop
 
-  iter_preprocessors <- grid_info[[".iter_preprocessor"]]
+  iter_preprocessors <- unique(grid_info[[".iter_preprocessor"]])
 
   workflow_original <- workflow
 
@@ -325,9 +309,9 @@ tune_grid_loop_iter <- function(split,
       grid_info$.iter_preprocessor == iter_preprocessor
     )
 
-    iter_grid_preprocessor <- iter_grid_info[, preprocessor_param_names]
+    iter_grid_preprocessor <- iter_grid_info[1L, preprocessor_param_names]
 
-    iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]]
+    iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]][1]
 
     workflow <- finalize_workflow_preprocessor(
       workflow = workflow,
@@ -349,8 +333,7 @@ tune_grid_loop_iter <- function(split,
     # --------------------------------------------------------------------------
     # Model loop
 
-    iter_grid_info_models <- iter_grid_info[["data"]][[1L]]
-    iter_models <- iter_grid_info_models[[".iter_model"]]
+    iter_models <- iter_grid_info[[".iter_model"]]
 
     workflow_preprocessed <- workflow
 
@@ -358,8 +341,8 @@ tune_grid_loop_iter <- function(split,
       workflow <- workflow_preprocessed
 
       iter_grid_info_model <- vctrs::vec_slice(
-        iter_grid_info_models,
-        iter_grid_info_models$.iter_model == iter_model
+        iter_grid_info,
+        iter_grid_info$.iter_model == iter_model
       )
 
       iter_grid_model <- iter_grid_info_model[, model_param_names]
