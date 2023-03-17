@@ -261,7 +261,7 @@ tune_grid_loop_iter <- function(split,
                                 metrics,
                                 control,
                                 seed,
-                                params = hardhat::extract_parameter_set_dials(workflow)) {
+                                params) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
 
