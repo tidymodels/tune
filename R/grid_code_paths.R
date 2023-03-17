@@ -136,6 +136,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   splits <- resamples$splits
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
+  metrics_info <- metrics_info(metrics)
 
   if (!catalog_is_active()) {
     initialize_catalog(control = control)
@@ -172,7 +173,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           workflow = workflow,
           metrics = metrics,
           control = control,
-          seed = seed
+          seed = seed,
+          metrics_info = metrics_info
         )
       }
     )
@@ -210,7 +212,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             workflow = workflow,
             metrics = metrics,
             control = control,
-            seed = seed
+            seed = seed,
+            metrics_info = metrics_info
           )
         }
     )
@@ -257,7 +260,8 @@ tune_grid_loop_iter <- function(split,
                                 workflow,
                                 metrics,
                                 control,
-                                seed) {
+                                seed,
+                                metrics_info = metrics_info(metrics)) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
 
@@ -405,7 +409,8 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels),
+        predict_model(split, workflow, iter_grid, metrics,
+                      iter_submodels, metrics_info = metrics_info),
         control,
         split,
         iter_msg_predictions,
@@ -426,7 +431,8 @@ tune_grid_loop_iter <- function(split,
         outcome_name = outcome_names,
         event_level = event_level,
         split = split,
-        .config = iter_config
+        .config = iter_config,
+        metrics_info = metrics_info
       )
 
       iter_config_metrics <- extract_metrics_config(param_names, out_metrics)
@@ -458,7 +464,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        workflow,
                                        metrics,
                                        control,
-                                       seed) {
+                                       seed,
+                                       metrics_info) {
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
@@ -468,7 +475,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     workflow,
     metrics,
     control,
-    seed
+    seed,
+    metrics_info = metrics_info
   )
 
   error <- result$error
