@@ -16,7 +16,14 @@ forge_from_workflow(new_data, workflow)
 
 finalize_workflow_preprocessor(workflow, grid_preprocessor)
 
-.estimate_metrics(dat, metric, param_names, outcome_name, event_level)
+.estimate_metrics(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  event_level,
+  metrics_info = metrics_info(metrics)
+)
 
 .load_namespace(x)
 
@@ -43,6 +50,9 @@ initialize_catalog(control, env = rlang::caller_env())
 outcome.}
 
 \item{event_level}{A logical passed from the control function.}
+
+\item{metrics_info}{The output of \code{tune:::metrics_info(metrics)}---only
+included as an argument to allow for pre-computing.}
 
 \item{x}{A character vector of package names.}
 
