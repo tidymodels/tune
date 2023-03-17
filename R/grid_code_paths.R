@@ -136,6 +136,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   splits <- resamples$splits
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
+  params <- hardhat::extract_parameter_set_dials(workflow)
 
   if (!catalog_is_active()) {
     initialize_catalog(control = control)
@@ -172,7 +173,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           workflow = workflow,
           metrics = metrics,
           control = control,
-          seed = seed
+          seed = seed,
+          params = params
         )
       }
     )
@@ -210,7 +212,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             workflow = workflow,
             metrics = metrics,
             control = control,
-            seed = seed
+            seed = seed,
+            params = params
           )
         }
     )
@@ -257,7 +260,8 @@ tune_grid_loop_iter <- function(split,
                                 workflow,
                                 metrics,
                                 control,
-                                seed) {
+                                seed,
+                                params = hardhat::extract_parameter_set_dials(workflow)) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
 
@@ -284,7 +288,6 @@ tune_grid_loop_iter <- function(split,
       location = character(0), type = character(0), note = character(0)
     ))
 
-  params <- hardhat::extract_parameter_set_dials(workflow)
   model_params <- vctrs::vec_slice(params, params$source == "model_spec")
   preprocessor_params <- vctrs::vec_slice(params, params$source == "recipe")
 
@@ -458,7 +461,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        workflow,
                                        metrics,
                                        control,
-                                       seed) {
+                                       seed,
+                                       params) {
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
@@ -468,7 +472,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     workflow,
     metrics,
     control,
-    seed
+    seed,
+    params
   )
 
   error <- result$error
