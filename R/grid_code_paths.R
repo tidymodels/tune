@@ -264,7 +264,7 @@ tune_grid_loop_iter <- function(split,
                                 metrics,
                                 control,
                                 seed,
-                                metrics_info = metrics_info(metrics)),
+                                metrics_info = metrics_info(metrics),
                                 params) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
