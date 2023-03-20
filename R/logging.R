@@ -99,7 +99,9 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
       id = numeric(0)
     ), nrow = 0)
 
-  if (!(allow_parallelism(control$allow_par) || is_testing())) {
+  if (!(allow_parallelism(control$allow_par) ||
+        is_testing()) &&
+      !control$verbose) {
     progress_active <- TRUE
   } else {
     progress_active <- FALSE
@@ -290,7 +292,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   control2 <- control
   control2$verbose <- TRUE
 
-  should_catalog <- !(allow_parallelism(control$allow_par) || is_testing())
+  should_catalog <- uses_catalog()
 
   wrn <- res$signals
   if (length(wrn) > 0) {
