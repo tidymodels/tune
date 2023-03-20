@@ -226,7 +226,7 @@ extract_metrics_config <- function(param_names, metrics) {
 #' @return A fitted model.
 #' @export
 extract_model <- function(x) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.1.6",
     "extract_model()",
     "extract_fit_engine()"
