@@ -97,7 +97,6 @@ test_that("accessor functions", {
 
 test_that("accessor functions", {
   skip_if(utils::packageVersion("dials") <= "0.0.7")
-  skip_if(tune:::dplyr_pre_1.0.0())
 
   load(test_path("data", "test_objects.RData"))
 
