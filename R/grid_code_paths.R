@@ -136,6 +136,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   splits <- resamples$splits
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
+  metrics_info <- metrics_info(metrics)
   params <- hardhat::extract_parameter_set_dials(workflow)
 
   if (!catalog_is_active()) {
@@ -174,6 +175,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           metrics = metrics,
           control = control,
           seed = seed,
+          metrics_info = metrics_info,
           params = params
         )
       }
@@ -213,6 +215,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             metrics = metrics,
             control = control,
             seed = seed,
+            metrics_info = metrics_info,
             params = params
           )
         }
@@ -261,6 +264,7 @@ tune_grid_loop_iter <- function(split,
                                 metrics,
                                 control,
                                 seed,
+                                metrics_info = metrics_info(metrics),
                                 params) {
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
@@ -408,7 +412,8 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels),
+        predict_model(split, workflow, iter_grid, metrics,
+                      iter_submodels, metrics_info = metrics_info),
         control,
         split,
         iter_msg_predictions,
@@ -429,7 +434,8 @@ tune_grid_loop_iter <- function(split,
         outcome_name = outcome_names,
         event_level = event_level,
         split = split,
-        .config = iter_config
+        .config = iter_config,
+        metrics_info = metrics_info
       )
 
       iter_config_metrics <- extract_metrics_config(param_names, out_metrics)
@@ -462,6 +468,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        metrics,
                                        control,
                                        seed,
+                                       metrics_info,
                                        params) {
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
@@ -473,6 +480,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     metrics,
     control,
     seed,
+    metrics_info = metrics_info,
     params
   )
 

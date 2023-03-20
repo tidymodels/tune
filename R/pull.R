@@ -140,7 +140,8 @@ append_metrics <- function(collection,
                            outcome_name,
                            event_level,
                            split,
-                           .config = NULL) {
+                           .config = NULL,
+                           metrics_info) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
@@ -150,7 +151,8 @@ append_metrics <- function(collection,
     metric = metrics,
     param_names = param_names,
     outcome_name = outcome_name,
-    event_level = event_level
+    event_level = event_level,
+    metrics_info = metrics_info
   )
 
   tmp_est <- cbind(tmp_est, labels(split))

@@ -1,4 +1,4 @@
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
+predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metrics_info) {
   model <- extract_fit_parsnip(workflow)
 
   new_data <- rsample::assessment(split)
@@ -32,8 +32,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL) {
   }
 
   # Determine the type of prediction that is required
-  type_info <- metrics_info(metrics)
-  types <- unique(type_info$type)
+  types <- unique(metrics_info$type)
 
   res <- NULL
   merge_vars <- c(".row", names(grid))
