@@ -57,32 +57,9 @@
   s3_register("ggplot2::autoplot", "tune_results")
   s3_register("rsample::.get_fingerprint", "tune_results")
 
-  if (dplyr_pre_1.0.0()) {
-    vctrs::s3_register("dplyr::mutate", "tune_results", method = mutate_tune_results)
-    vctrs::s3_register("dplyr::arrange", "tune_results", method = arrange_tune_results)
-    vctrs::s3_register("dplyr::filter", "tune_results", method = filter_tune_results)
-    vctrs::s3_register("dplyr::rename", "tune_results", method = rename_tune_results)
-    vctrs::s3_register("dplyr::select", "tune_results", method = select_tune_results)
-    vctrs::s3_register("dplyr::slice", "tune_results", method = slice_tune_results)
-
-    vctrs::s3_register("dplyr::mutate", "resample_results", method = mutate_resample_results)
-    vctrs::s3_register("dplyr::arrange", "resample_results", method = arrange_resample_results)
-    vctrs::s3_register("dplyr::filter", "resample_results", method = filter_resample_results)
-    vctrs::s3_register("dplyr::rename", "resample_results", method = rename_resample_results)
-    vctrs::s3_register("dplyr::select", "resample_results", method = select_resample_results)
-    vctrs::s3_register("dplyr::slice", "resample_results", method = slice_resample_results)
-
-    vctrs::s3_register("dplyr::mutate", "iteration_results", method = mutate_iteration_results)
-    vctrs::s3_register("dplyr::arrange", "iteration_results", method = arrange_iteration_results)
-    vctrs::s3_register("dplyr::filter", "iteration_results", method = filter_iteration_results)
-    vctrs::s3_register("dplyr::rename", "iteration_results", method = rename_iteration_results)
-    vctrs::s3_register("dplyr::select", "iteration_results", method = select_iteration_results)
-    vctrs::s3_register("dplyr::slice", "iteration_results", method = slice_iteration_results)
-  } else {
-    vctrs::s3_register("dplyr::dplyr_reconstruct", "tune_results", method = dplyr_reconstruct_tune_results)
-    vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
-    vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
-  }
+  vctrs::s3_register("dplyr::dplyr_reconstruct", "tune_results", method = dplyr_reconstruct_tune_results)
+  vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
+  vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
 }
 
 # nocov end
