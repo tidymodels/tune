@@ -314,7 +314,7 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard      0.697  Preprocessor04_Model1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard      0.096<span style="text-decoration: underline;">0</span> Preprocessor05_Model1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard      0.699  Preprocessor05_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 152 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>To get the average metric value for each parameter combination,
 <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
@@ -333,7 +333,7 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard   0.684     10 0.009<span style="text-decoration: underline;">46</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard   0.099<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard   0.683     10 0.010<span style="text-decoration: underline;">1</span>  Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 152 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10
 resamples. The best RMSE values corresponded to:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
@@ -355,7 +355,7 @@ resamples. The best RMSE values corresponded to:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        18        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        18       18 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">20</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16       14 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">17</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 71 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 71 more rows</span></span></span></code></pre></div>
 <p>Smaller degrees of freedom values correspond to more linear
 functions, but the grid search indicates that more nonlinearity is
 better. What was the relationship between these two parameters and
@@ -712,21 +712,20 @@ here.</p></li>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"rmse"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 11</span></span></span>
-<span><span class="co">#&gt;    neighbors weight…¹ long …² lat d…³ .metric .esti…⁴   mean     n std_err</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         8 triangu…       9       8 rmse    standa… 0.081<span style="text-decoration: underline;">6</span>    10 0.002<span style="text-decoration: underline;">10</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         7 triangu…       9       8 rmse    standa… 0.081<span style="text-decoration: underline;">9</span>    10 0.002<span style="text-decoration: underline;">11</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         9 triangu…       8       9 rmse    standa… 0.082<span style="text-decoration: underline;">1</span>    10 0.002<span style="text-decoration: underline;">01</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         7 triangu…      11       7 rmse    standa… 0.082<span style="text-decoration: underline;">4</span>    10 0.002<span style="text-decoration: underline;">20</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        11 triangu…       5      10 rmse    standa… 0.082<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6 inv            8       6 rmse    standa… 0.082<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">86</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         5 gaussian      10       7 rmse    standa… 0.082<span style="text-decoration: underline;">9</span>    10 0.002<span style="text-decoration: underline;">07</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8 inv            8       5 rmse    standa… 0.082<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">84</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         7 inv           10      11 rmse    standa… 0.083<span style="text-decoration: underline;">1</span>    10 0.002<span style="text-decoration: underline;">33</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10 triangu…       2       7 rmse    standa… 0.083<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">28</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># … with 15 more rows, 2 more variables: .config &lt;chr&gt;, .iter &lt;int&gt;, and</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   abbreviated variable names ¹​weight_func, ²​`long df`, ³​`lat df`,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   ⁴​.estimator</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .metric .estimator   mean</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         8 triangular          9        8 rmse    standard   0.081<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         7 triangular          9        8 rmse    standard   0.081<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         9 triangular          8        9 rmse    standard   0.082<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         7 triangular         11        7 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        11 triangular          5       10 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6 inv                 8        6 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         5 gaussian           10        7 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8 inv                 8        5 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         7 inv                10       11 rmse    standard   0.083<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10 triangular          2        7 rmse    standard   0.083<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></span></span></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the
 nonlinear terms created by the recipe.</p>
 </div>

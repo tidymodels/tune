@@ -182,7 +182,7 @@ neighbor regression:</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         1         2 biweight    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         1         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         1         2 epanechnikov</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 340 more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 340 more rows</span></span></span></code></pre>
 <p>To evaluate these 350 candidate models, we would have to compute the
 same recipe 70 times <em>per resample</em>. Since Isomap is expensive,
 this is really inefficient.</p>
@@ -215,7 +215,7 @@ iteratively tuned:</p>
 <span><span class="co">## <span style="color: #BCBCBC;"> 8</span>         2 biweight    </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;"> 9</span>         2 cos         </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">10</span>         2 epanechnikov</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 60 more rows</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;"># ℹ 60 more rows</span></span></span></code></pre>
 <p>The same will be true for post-processing parameters being tuned. For
 each unique set of recipe and model parameters, the post-processing
 parameters will be evaluated without unnecessary re-fitting.</p>
