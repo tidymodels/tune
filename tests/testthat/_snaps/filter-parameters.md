@@ -66,7 +66,7 @@
        8 <split [712/79]> Repeat1 Fold08 <tibble [30 x 7]> <tibble> <tibble [790 x 7]>
        9 <split [712/79]> Repeat1 Fold09 <tibble [30 x 7]> <tibble> <tibble [790 x 7]>
       10 <split [712/79]> Repeat1 Fold10 <tibble [30 x 7]> <tibble> <tibble [790 x 7]>
-      # ... with 40 more rows
+      # i 40 more rows
 
 ---
 
