@@ -85,7 +85,8 @@ conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
   options(dplyr.summarise.inform = FALSE)
 
   res <-
-    purrr::map_dfr(preds$conf_mats, ~ as.data.frame(.x$table)) %>%
+    purrr::map(preds$conf_mats, ~ as.data.frame(.x$table)) %>%
+    purrr::list_rbind() %>%
     dplyr::group_by(Prediction, Truth) %>%
     dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
     dplyr::ungroup()

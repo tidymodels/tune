@@ -23,7 +23,7 @@ pulley <- function(resamples, res, col) {
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
-  pulled_vals <- purrr::map_dfr(res, ~ .x[[col]])
+  pulled_vals <- purrr::map(res, ~ .x[[col]]) %>% purrr::list_rbind()
 
   if (nrow(pulled_vals) == 0) {
     res <-
