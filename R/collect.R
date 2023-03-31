@@ -361,7 +361,7 @@ collector <- function(x, coll_col = ".predictions") {
 
   id_cols <- colnames(x)[grepl("id", colnames(x))]
   keep_cols <- c(coll_col, id_cols)
-  x <- x[, keep_cols]
+  x <- x[keep_cols]
   coll_col <- x[[coll_col]]
 
   res <-
@@ -373,11 +373,7 @@ collector <- function(x, coll_col = ".predictions") {
   arrange_cols <- c(".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
-  if (length(arrange_cols) == 1) {
-    return(res[vctrs::vec_order(res[[arrange_cols]]), ])
-  }
-
-  arrange(res, !!!rlang::syms(arrange_cols))
+  res <- vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
 }
 
 #' @export
