@@ -191,10 +191,10 @@ numeric_summarize <- function(x) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred")),
-      ~ mean(., na.rm = TRUE)
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred"), mean_na_rm)
     )
+
   x
 }
 
@@ -216,9 +216,8 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred_")),
-      ~ mean(., na.rm = TRUE)
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred_"), mean_na_rm)
     ) %>%
     ungroup()
 
@@ -239,7 +238,10 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::full_join(totals, by = group_cols) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ . / .totals) %>%
+    dplyr::mutate(
+      dplyr::across(dplyr::starts_with(".pred_"),
+      ~ .x / .totals
+    )) %>%
     dplyr::select(-.totals)
 
   # If we started with hard class predictions, recompute them based on the
@@ -267,6 +269,12 @@ prob_summarize <- function(x, p) {
     x <- full_join(x, class_pred, by = group_cols)
   }
   x
+}
+
+# define a `mean()` wrapper to avoid slowdown in
+# evaluation of anonymous function
+mean_na_rm <- function(x) {
+  mean(x, na.rm = TRUE)
 }
 
 class_summarize <- function(x, p) {
