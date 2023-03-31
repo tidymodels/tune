@@ -271,6 +271,8 @@ prob_summarize <- function(x, p) {
   x
 }
 
+# define a `mean()` wrapper to avoid slowdown in
+# evaluation of anonymous function
 mean_na_rm <- function(x) {
   mean(x, na.rm = TRUE)
 }
