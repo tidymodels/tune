@@ -191,10 +191,11 @@ numeric_summarize <- function(x) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred")),
-      ~ mean(., na.rm = TRUE)
-    )
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred"),
+      ~ mean(.x, na.rm = TRUE)
+    ))
+
   x
 }
 
@@ -216,10 +217,10 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred_")),
-      ~ mean(., na.rm = TRUE)
-    ) %>%
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred_"),
+      ~ mean(.x, na.rm = TRUE)
+    )) %>%
     ungroup()
 
   # In case the class probabilities do not add up to 1 after averaging
@@ -239,7 +240,10 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::full_join(totals, by = group_cols) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ . / .totals) %>%
+    dplyr::mutate(
+      dplyr::across(dplyr::starts_with(".pred_"),
+      ~ .x / .totals
+    )) %>%
     dplyr::select(-.totals)
 
   # If we started with hard class predictions, recompute them based on the
