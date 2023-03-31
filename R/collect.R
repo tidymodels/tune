@@ -362,15 +362,16 @@ collector <- function(x, coll_col = ".predictions") {
   id_cols <- colnames(x)[grepl("id", colnames(x))]
   keep_cols <- c(coll_col, id_cols)
   x <- x[, keep_cols]
+  coll_col <- x[[coll_col]]
 
   res <-
     vctrs::vec_cbind(
-      vctrs::list_unchop(x[[coll_col]]),
-      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(x[[coll_col]]))
+      vctrs::list_unchop(coll_col),
+      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col))
     )
 
   arrange_cols <- c(".iter", ".config")
-  arrange_cols <- arrange_cols[(arrange_cols %in% names(res))]
+  arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
   if (length(arrange_cols) == 1) {
     return(res[vctrs::vec_order(res[[arrange_cols]]), ])
