@@ -372,23 +372,22 @@ collector <- function(x, coll_col = ".predictions") {
 .config_key_from_metrics <- function(x) {
   param_names <- .get_tune_parameter_names(x)
   tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
-  x <- x[tibble_metrics, ]
+  x <- vec_slice(x, tibble_metrics)
   x <- x[, colnames(x) %in% c(".iter", ".metrics")]
 
-  res <- vctrs::list_unchop(x$.metrics)
-  if (".iter" %in% colnames(x)) {
-    res <- vctrs::vec_cbind(
-      res,
-      vctrs::data_frame(
-        .iter = vctrs::vec_rep_each(x$.iter, vctrs::list_sizes(x$.metrics))
-      )
-    )
+  metrics <- x[[".metrics"]]
+
+  out <- vctrs::list_unchop(metrics)
+  out <- out[c(param_names, ".config")]
+
+  if (rlang::has_name(x, ".iter")) {
+    iter <- x[[".iter"]]
+    out[[".iter"]] <- vctrs::vec_rep_each(iter, times = vctrs::list_sizes(metrics))
   }
 
-  keep_cols <- colnames(res) %in% c(param_names, ".config", ".iter")
-  res <- res[, keep_cols]
+  out <- vctrs::vec_unique(out)
 
-  dplyr::distinct(res)
+  out
 }
 
 #' @export
