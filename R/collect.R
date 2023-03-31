@@ -192,9 +192,8 @@ numeric_summarize <- function(x) {
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
     dplyr::summarise(
-      dplyr::across(dplyr::starts_with(".pred"),
-      ~ mean(.x, na.rm = TRUE)
-    ))
+      dplyr::across(dplyr::starts_with(".pred"), mean_na_rm)
+    )
 
   x
 }
@@ -218,9 +217,8 @@ prob_summarize <- function(x, p) {
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
     dplyr::summarise(
-      dplyr::across(dplyr::starts_with(".pred_"),
-      ~ mean(.x, na.rm = TRUE)
-    )) %>%
+      dplyr::across(dplyr::starts_with(".pred_"), mean_na_rm)
+    ) %>%
     ungroup()
 
   # In case the class probabilities do not add up to 1 after averaging
@@ -271,6 +269,10 @@ prob_summarize <- function(x, p) {
     x <- full_join(x, class_pred, by = group_cols)
   }
   x
+}
+
+mean_na_rm <- function(x) {
+  mean(x, na.rm = TRUE)
 }
 
 class_summarize <- function(x, p) {
