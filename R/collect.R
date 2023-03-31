@@ -373,10 +373,22 @@ collector <- function(x, coll_col = ".predictions") {
   param_names <- .get_tune_parameter_names(x)
   tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
   x <- x[tibble_metrics, ]
-  x <- dplyr::select(x, dplyr::any_of(".iter"), .metrics)
-  x <- tidyr::unnest(x, cols = .metrics)
-  x <- dplyr::select(x, dplyr::all_of(param_names), ".config", dplyr::any_of(".iter"))
-  dplyr::distinct(x)
+  x <- x[, colnames(x) %in% c(".iter", ".metrics")]
+
+  res <- vctrs::list_unchop(x$.metrics)
+  if (".iter" %in% colnames(x)) {
+    res <- vctrs::vec_cbind(
+      res,
+      vctrs::data_frame(
+        .iter = vctrs::vec_rep_each(x$.iter, vctrs::list_sizes(x$.metrics))
+      )
+    )
+  }
+
+  keep_cols <- colnames(res) %in% c(param_names, ".config", ".iter")
+  res <- res[, keep_cols]
+
+  dplyr::distinct(res)
 }
 
 #' @export
