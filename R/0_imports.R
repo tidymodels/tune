@@ -7,7 +7,7 @@
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
 #' @importFrom rlang is_missing %||%
 #' @importFrom glue glue glue_collapse
-#' @importFrom dials parameters_constr is_unknown encode_unit
+#' @importFrom dials is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame update
 #' @importFrom yardstick rsq rmse accuracy roc_auc
