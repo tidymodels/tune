@@ -358,11 +358,25 @@ collector <- function(x, coll_col = ".predictions") {
   } else {
     keep_cols <- coll_col
   }
-  x <- dplyr::select(x, dplyr::starts_with("id"), !!!keep_cols)
-  x <- tidyr::unnest(x, cols = c(dplyr::all_of(coll_col)))
+
+  id_cols <- colnames(x)[grepl("id", colnames(x))]
+  keep_cols <- c(coll_col, id_cols)
+  x <- x[, keep_cols]
+
+  res <-
+    vctrs::vec_cbind(
+      vctrs::list_unchop(x[[coll_col]]),
+      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(x[[coll_col]]))
+    )
+
   arrange_cols <- c(".iter", ".config")
-  arrange_cols <- arrange_cols[(arrange_cols %in% names(x))]
-  arrange(x, !!!rlang::syms(arrange_cols))
+  arrange_cols <- arrange_cols[(arrange_cols %in% names(res))]
+
+  if (length(arrange_cols) == 1) {
+    return(res[vctrs::vec_order(res[[arrange_cols]]), ])
+  }
+
+  arrange(res, !!!rlang::syms(arrange_cols))
 }
 
 #' @export
