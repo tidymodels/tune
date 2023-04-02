@@ -172,7 +172,7 @@
        8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
        9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
       10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      # ... with 20 more rows
+      # i 20 more rows
 
 ---
 
@@ -201,7 +201,7 @@
        8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
        9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
       10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      # ... with 20 more rows
+      # i 20 more rows
 
 ---
 
@@ -378,7 +378,7 @@
        8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
        9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
       10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      # ... with 20 more rows
+      # i 20 more rows
 
 # tune model only - failure in recipe is caught elegantly
 
@@ -511,28 +511,68 @@
         Bldg_Type + Latitude + Longitude, resamples = folds, initial = 3, metrics = yardstick::metric_set(
         rsq), param_info = parameters(dials::cost_complexity(c(-2, 0))))
     Message
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9998726`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9995734`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9995`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9992439`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9996399`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9994867`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9997809`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 0.9999164`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
 
 ---
 
@@ -543,11 +583,36 @@
       metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
         c(0.5, 0))))
     Message
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 1.95966`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 2.500534`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 1.263317`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 2.792327`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
+      ! validation: internal:
+        There was 1 warning in `dplyr::summarise()`.
+        i In argument: `.estimate = metric_fn(truth = Sale_Price, estimate = ....
+        i In group 1: `cost_complexity = 1.224671`.
+        Caused by warning:
+        ! A correlation computation is required, but `estimate` is constant an...
       ! All of the rsq estimates were missing. The Gaussian process model cannot be
         fit to the data.
       ! Gaussian process model: no non-missing arguments to min; returning Inf, no non-missing arguments...

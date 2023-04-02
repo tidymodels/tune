@@ -1,5 +1,7 @@
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
-                          eval_time = NULL) {
+
+predict_model <- function(split, workflow, grid, metrics, submodels = NULL, 
+                          metrics_info, eval_time = NULL) {
+
   model <- extract_fit_parsnip(workflow)
 
   new_data <- rsample::assessment(split)
@@ -39,19 +41,18 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   }
 
   # Determine the type of prediction that is required
-  type_info <- metrics_info(metrics)
-  types <- unique(type_info$type)
+  types <- unique(metrics_info$type)
 
   res <- NULL
   merge_vars <- c(".row", names(grid))
 
   for (type_iter in types) {
     # Regular predictions
-    tmp_res <-
-      predict_wrapper(model, x_vals, type_iter, eval_time) %>%
-      mutate(.row = orig_rows) %>%
-      cbind(grid, row.names = NULL) %>%
-      tibble::as_tibble()
+
+    tmp_res <- predict_wrapper(model, x_vals, type_iter, eval_time)
+    tmp_res$.row <- orig_rows
+    tmp_res <- vctrs::vec_cbind(tmp_res, grid)
+
 
     if (!is.null(submodels)) {
       submod_length <- lengths(submodels)
@@ -60,16 +61,20 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
       if (has_submodels) {
         submod_param <- names(submodels)
         subgrid <- make_submod_arg(grid, model, submodels)
-        tmp_res <-
-          predict_wrapper(model, x_vals, type_iter, eval_time, submodels) %>%
-          mutate(.row = orig_rows) %>%
-          unnest(cols = dplyr::starts_with(".pred")) %>%
-          cbind(dplyr::select(grid, -dplyr::all_of(submod_param)), row.names = NULL) %>%
-          tibble::as_tibble() %>%
-          # go back to user-defined name
-          dplyr::rename(!!!make_rename_arg(grid, model, submodels)) %>%
-          dplyr::select(dplyr::all_of(names(tmp_res))) %>%
-          dplyr::bind_rows(tmp_res)
+
+        tmp_sub <- predict_wrapper(model, x_vals, type_iter, eval_time, submodels)
+        tmp_sub$.row <- orig_rows
+        tmp_sub <- unnest(tmp_sub, cols = dplyr::starts_with(".pred"))
+
+        grid_bind <- grid
+        grid_bind[, submod_param] <- NULL
+
+        tmp_sub <- vctrs::vec_cbind(tmp_sub, grid_bind)
+        rownames(tmp_sub) <- NULL
+        tmp_sub <- dplyr::rename(tmp_sub, !!!make_rename_arg(grid, model, submodels))
+        tmp_sub <- tmp_sub[, names(tmp_res)]
+
+        tmp_res <- vec_rbind(tmp_sub, tmp_res)
       }
     }
 
@@ -83,7 +88,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   } # end type loop
 
   # Add outcome data
-  y_vals <- dplyr::mutate(y_vals, .row = orig_rows)
+  y_vals$.row <- orig_rows
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
   # Add case weights (if needed)
@@ -97,10 +102,16 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
       res <- dplyr::full_join(res, case_weights, by = ".row")
     }
   }
+  if (!tibble::is_tibble(res)) {
+    res <- tibble::as_tibble(res)
+  }
+  # maybe_add_ipcw(res, model, eval_time, types)
+  res
+}
 
   # TODO do we need this?
   # res <- tibble::as_tibble(res)
-  maybe_add_ipcw(res, model, eval_time, types)
+
 }
 
 maybe_add_ipcw <- function(.data, model, eval_time, types) {
@@ -117,8 +128,6 @@ maybe_add_ipcw <- function(.data, model, eval_time, types) {
     )
   res
 }
-
-
 
 predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
   if (is.null(subgrid)) {
@@ -146,6 +155,7 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
     cl <- rlang::call_modify(cl, !!!subgrid)
   }
   res <- rlang::eval_tidy(cl)
+
   res
 }
 
@@ -302,14 +312,14 @@ new_grid_info_resamples <- function() {
 
   iter_config <- list("Preprocessor1_Model1")
 
-  out <- tibble::tibble(
+  out <- tibble::new_tibble(list(
     .iter_preprocessor = 1L,
     .msg_preprocessor = msgs_preprocessor,
     .iter_model = 1L,
     .iter_config = iter_config,
     .msg_model = msgs_model,
     .submodels = list(list())
-  )
+  ), nrow = length(msgs_model))
 
   out
 }
@@ -445,11 +455,7 @@ compute_grid_info_model_and_preprocessor <- function(workflow,
   parameter_names_model <- parameters_model[["id"]]
 
   # Nest model parameters, keep preprocessor parameters outside
-  if (tidyr_new_interface()) {
-    out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
-  } else {
-    out <- tidyr::nest(grid, dplyr::all_of(parameter_names_model))
-  }
+  out <- tidyr::nest(grid, data = dplyr::all_of(parameter_names_model))
 
   n_preprocessors <- nrow(out)
   seq_preprocessors <- seq_len(n_preprocessors)

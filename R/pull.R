@@ -23,7 +23,7 @@ pulley <- function(resamples, res, col) {
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
   resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
-  pulled_vals <- purrr::map_dfr(res, ~ .x[[col]])
+  pulled_vals <- purrr::map(res, ~ .x[[col]]) %>% purrr::list_rbind()
 
   if (nrow(pulled_vals) == 0) {
     res <-
@@ -33,12 +33,8 @@ pulley <- function(resamples, res, col) {
     return(res)
   }
 
-  if (tidyr_new_interface()) {
-    pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
-    names(pulled_vals)[ncol(pulled_vals)] <- col
-  } else {
-    pulled_vals <- tidyr::nest(pulled_vals, -starts_with("id"), .key = !!col)
-  }
+  pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
+  names(pulled_vals)[ncol(pulled_vals)] <- col
 
   res <- new_bare_tibble(resamples)
   res <- full_join(res, pulled_vals, by = id_cols)
@@ -123,9 +119,9 @@ reduce_all_outcome_names <- function(resamples) {
 
 ensure_tibble <- function(x) {
   if (is.null(x)) {
-    res <- tibble::tibble(.notes = character(0))
+    res <- tibble::new_tibble(list(.notes = character(0)), nrow = 0)
   } else {
-    res <- tibble::tibble(.notes = x)
+    res <- tibble::new_tibble(list(.notes = x), nrow = length(x))
   }
   res
 }
@@ -144,7 +140,8 @@ append_metrics <- function(collection,
                            outcome_name,
                            event_level,
                            split,
-                           .config = NULL) {
+                           .config = NULL,
+                           metrics_info) {
   if (inherits(predictions, "try-error")) {
     return(collection)
   }
@@ -154,7 +151,8 @@ append_metrics <- function(collection,
     metric = metrics,
     param_names = param_names,
     outcome_name = outcome_name,
-    event_level = event_level
+    event_level = event_level,
+    metrics_info = metrics_info
   )
 
   tmp_est <- cbind(tmp_est, labels(split))
@@ -228,7 +226,7 @@ extract_metrics_config <- function(param_names, metrics) {
 #' @return A fitted model.
 #' @export
 extract_model <- function(x) {
-  lifecycle::deprecate_soft(
+  lifecycle::deprecate_warn(
     "0.1.6",
     "extract_model()",
     "extract_fit_engine()"

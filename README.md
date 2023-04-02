@@ -33,7 +33,8 @@ install.packages("tune", repos = "http://cran.r-project.org") #or your local mir
 or you can install the current development version using:
 
 ``` r
-devtools::install_github("tidymodels/tune")
+# install.packages("pak")
+pak::pak("tidymodels/tune")
 ```
 
 ## Examples
@@ -69,7 +70,7 @@ Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
 - For questions and discussions about tidymodels packages, modeling, and
-  machine learning, please [post on RStudio
+  machine learning, please [post on Posit
   Community](https://community.rstudio.com/new-topic?category_id=15&tags=tidymodels,question).
 
 - If you think you have encountered a bug, please [submit an

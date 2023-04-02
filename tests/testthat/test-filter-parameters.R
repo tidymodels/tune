@@ -66,8 +66,6 @@ test_that("basic functionality", {
 # ------------------------------------------------------------------------------
 
 test_that("bad inputs", {
-  skip_if(tune:::dplyr_pre_1.0.0())
-
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
   expect_snapshot(error = TRUE, {

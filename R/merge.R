@@ -85,10 +85,10 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
     if (nrow(param_info) == 1) {
       if (param_info$component_id == "main") {
         object$args[[param_info$name]] <-
-          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
+          rlang::as_quosure(grid[[i]][[1]], env = rlang::empty_env())
       } else {
         object$eng_args[[param_info$name]] <-
-          rlang::as_quosure(grid[[i]], env = rlang::empty_env())
+          rlang::as_quosure(grid[[i]][[1]], env = rlang::empty_env())
       }
     }
   }
@@ -116,7 +116,8 @@ merger <- function(x, y, ...) {
   pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~x))
+    res <- purrr::map(seq_len(nrow(y)), ~x)
+    res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
   grid_name <- colnames(y)
@@ -132,7 +133,8 @@ merger <- function(x, y, ...) {
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- tibble::tibble(x = purrr::map(1:nrow(y), ~ x))
+    res <- purrr::map(seq_len(nrow(y)), ~ x)
+    res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
 

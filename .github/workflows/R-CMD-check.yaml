@@ -32,7 +32,7 @@ jobs:
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
-          - {os: ubuntu-latest,   r: 'oldrel-2'}
+          # - {os: ubuntu-latest,   r: 'oldrel-2'} # until lava issues resolved
           #- {os: ubuntu-latest,   r: 'oldrel-3'}
           #- {os: ubuntu-latest,   r: 'oldrel-4'}
 

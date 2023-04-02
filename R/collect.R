@@ -191,10 +191,10 @@ numeric_summarize <- function(x) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred")),
-      ~ mean(., na.rm = TRUE)
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred"), mean_na_rm)
     )
+
   x
 }
 
@@ -216,9 +216,8 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::group_by(!!!rlang::syms(group_cols)) %>%
-    dplyr::summarise_at(
-      dplyr::vars(dplyr::starts_with(".pred_")),
-      ~ mean(., na.rm = TRUE)
+    dplyr::summarise(
+      dplyr::across(dplyr::starts_with(".pred_"), mean_na_rm)
     ) %>%
     ungroup()
 
@@ -239,7 +238,10 @@ prob_summarize <- function(x, p) {
   x <-
     x %>%
     dplyr::full_join(totals, by = group_cols) %>%
-    dplyr::mutate_at(dplyr::vars(dplyr::starts_with(".pred_")), ~ . / .totals) %>%
+    dplyr::mutate(
+      dplyr::across(dplyr::starts_with(".pred_"),
+      ~ .x / .totals
+    )) %>%
     dplyr::select(-.totals)
 
   # If we started with hard class predictions, recompute them based on the
@@ -267,6 +269,12 @@ prob_summarize <- function(x, p) {
     x <- full_join(x, class_pred, by = group_cols)
   }
   x
+}
+
+# define a `mean()` wrapper to avoid slowdown in
+# evaluation of anonymous function
+mean_na_rm <- function(x) {
+  mean(x, na.rm = TRUE)
 }
 
 class_summarize <- function(x, p) {
@@ -358,11 +366,22 @@ collector <- function(x, coll_col = ".predictions") {
   } else {
     keep_cols <- coll_col
   }
-  x <- dplyr::select(x, dplyr::starts_with("id"), !!!keep_cols)
-  x <- tidyr::unnest(x, cols = c(dplyr::all_of(coll_col)))
+
+  id_cols <- colnames(x)[grepl("id", colnames(x))]
+  keep_cols <- c(coll_col, id_cols)
+  x <- x[keep_cols]
+  coll_col <- x[[coll_col]]
+
+  res <-
+    vctrs::vec_cbind(
+      vctrs::list_unchop(coll_col),
+      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col))
+    )
+
   arrange_cols <- c(".iter", ".config")
-  arrange_cols <- arrange_cols[(arrange_cols %in% names(x))]
-  arrange(x, !!!rlang::syms(arrange_cols))
+  arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
+
+  res <- vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
 }
 
 #' @export
@@ -372,11 +391,22 @@ collector <- function(x, coll_col = ".predictions") {
 .config_key_from_metrics <- function(x) {
   param_names <- .get_tune_parameter_names(x)
   tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
-  x <- x[tibble_metrics, ]
-  x <- dplyr::select(x, dplyr::any_of(".iter"), .metrics)
-  x <- tidyr::unnest(x, cols = .metrics)
-  x <- dplyr::select(x, dplyr::all_of(param_names), ".config", dplyr::any_of(".iter"))
-  dplyr::distinct(x)
+  x <- vec_slice(x, tibble_metrics)
+  x <- x[, colnames(x) %in% c(".iter", ".metrics")]
+
+  metrics <- x[[".metrics"]]
+
+  out <- vctrs::list_unchop(metrics)
+  out <- out[c(param_names, ".config")]
+
+  if (rlang::has_name(x, ".iter")) {
+    iter <- x[[".iter"]]
+    out[[".iter"]] <- vctrs::vec_rep_each(iter, times = vctrs::list_sizes(metrics))
+  }
+
+  out <- vctrs::vec_unique(out)
+
+  out
 }
 
 #' @export

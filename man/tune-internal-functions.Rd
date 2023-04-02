@@ -21,8 +21,7 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
   metric,
   param_names,
   outcome_name,
-  event_level,
-  eval_time = NULL
+  event_level
 )
 
 .load_namespace(x)
@@ -50,6 +49,9 @@ initialize_catalog(control, env = rlang::caller_env())
 outcome.}
 
 \item{event_level}{A logical passed from the control function.}
+
+\item{metrics_info}{The output of \code{tune:::metrics_info(metrics)}---only
+included as an argument to allow for pre-computing.}
 
 \item{x}{A character vector of package names.}
 

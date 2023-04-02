@@ -141,6 +141,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   splits <- resamples$splits
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
+  metrics_info <- metrics_info(metrics)
+  params <- hardhat::extract_parameter_set_dials(workflow)
 
   if (!catalog_is_active()) {
     initialize_catalog(control = control)
@@ -179,6 +181,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           control = control,
           eval_time = eval_time,
           seed = seed
+          metrics_info = metrics_info,
+          params = params
         )
       }
     )
@@ -218,6 +222,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             control = control,
             eval_time = eval_time,
             seed = seed
+            metrics_info = metrics_info,
+            params = params
           )
         }
     )
@@ -265,7 +271,10 @@ tune_grid_loop_iter <- function(split,
                                 metrics,
                                 control,
                                 eval_time = NULL,
-                                seed) {
+                                seed,
+                                metrics_info = metrics_info(metrics),
+                                params) {
+
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
 
@@ -288,59 +297,37 @@ tune_grid_loop_iter <- function(split,
   out_predictions <- NULL
   out_all_outcome_names <- list()
   out_notes <-
-    tibble::tibble(location = character(0), type = character(0), note = character(0))
+    tibble::new_tibble(list(
+      location = character(0), type = character(0), note = character(0)
+    ))
 
-  params <- hardhat::extract_parameter_set_dials(workflow)
-  model_params <- dplyr::filter(params, source == "model_spec")
-  preprocessor_params <- dplyr::filter(params, source == "recipe")
+  model_params <- vctrs::vec_slice(params, params$source == "model_spec")
+  preprocessor_params <- vctrs::vec_slice(params, params$source == "recipe")
 
-  param_names <- dplyr::pull(params, "id")
-  model_param_names <- dplyr::pull(model_params, "id")
-  preprocessor_param_names <- dplyr::pull(preprocessor_params, "id")
-
-  # Model related grid-info columns
-  cols <- rlang::expr(
-    c(
-      .iter_model,
-      .iter_config,
-      .msg_model,
-      dplyr::all_of(model_param_names),
-      .submodels
-    )
-  )
-
-  # Nest grid_info:
-  # - Preprocessor info in the outer level
-  # - Model info in the inner level
-  if (tidyr_new_interface()) {
-    grid_info <- tidyr::nest(grid_info, data = !!cols)
-  } else {
-    grid_info <- tidyr::nest(grid_info, !!cols)
-  }
+  param_names <- params$id
+  model_param_names <- model_params$id
+  preprocessor_param_names <- preprocessor_params$id
 
   training <- rsample::analysis(split)
 
   # ----------------------------------------------------------------------------
   # Preprocessor loop
 
-  iter_preprocessors <- grid_info[[".iter_preprocessor"]]
+  iter_preprocessors <- unique(grid_info[[".iter_preprocessor"]])
 
   workflow_original <- workflow
 
   for (iter_preprocessor in iter_preprocessors) {
     workflow <- workflow_original
 
-    iter_grid_info <- dplyr::filter(
-      .data = grid_info,
-      .iter_preprocessor == iter_preprocessor
+    iter_grid_info <- vctrs::vec_slice(
+      grid_info,
+      grid_info$.iter_preprocessor == iter_preprocessor
     )
 
-    iter_grid_preprocessor <- dplyr::select(
-      .data = iter_grid_info,
-      dplyr::all_of(preprocessor_param_names)
-    )
+    iter_grid_preprocessor <- iter_grid_info[1L, preprocessor_param_names]
 
-    iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]]
+    iter_msg_preprocessor <- iter_grid_info[[".msg_preprocessor"]][1]
 
     workflow <- finalize_workflow_preprocessor(
       workflow = workflow,
@@ -362,23 +349,19 @@ tune_grid_loop_iter <- function(split,
     # --------------------------------------------------------------------------
     # Model loop
 
-    iter_grid_info_models <- iter_grid_info[["data"]][[1L]]
-    iter_models <- iter_grid_info_models[[".iter_model"]]
+    iter_models <- iter_grid_info[[".iter_model"]]
 
     workflow_preprocessed <- workflow
 
     for (iter_model in iter_models) {
       workflow <- workflow_preprocessed
 
-      iter_grid_info_model <- dplyr::filter(
-        .data = iter_grid_info_models,
-        .iter_model == iter_model
+      iter_grid_info_model <- vctrs::vec_slice(
+        iter_grid_info,
+        iter_grid_info$.iter_model == iter_model
       )
 
-      iter_grid_model <- dplyr::select(
-        .data = iter_grid_info_model,
-        dplyr::all_of(model_param_names)
-      )
+      iter_grid_model <- iter_grid_info_model[, model_param_names]
 
       iter_submodels <- iter_grid_info_model[[".submodels"]][[1L]]
       iter_msg_model <- iter_grid_info_model[[".msg_model"]]
@@ -438,7 +421,8 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels, eval_time),
+        predict_model(split, workflow, iter_grid, metrics, iter_submodels, 
+                      metrics_info = metrics_info, eval_time = eval_time),
         control,
         split,
         iter_msg_predictions,
@@ -459,7 +443,8 @@ tune_grid_loop_iter <- function(split,
         outcome_name = outcome_names,
         event_level = event_level,
         split = split,
-        .config = iter_config
+        .config = iter_config,
+        metrics_info = metrics_info
       )
 
       iter_config_metrics <- extract_metrics_config(param_names, out_metrics)
@@ -492,7 +477,10 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        metrics,
                                        control,
                                        eval_time = NULL,
-                                       seed) {
+                                       seed,
+                                       metrics_info,
+                                       params) {
+                                       
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
@@ -503,7 +491,9 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     metrics,
     control,
     eval_time,
-    seed
+    seed,
+    metrics_info = metrics_info,
+    params
   )
 
   error <- result$error

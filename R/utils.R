@@ -92,7 +92,7 @@ new_bare_tibble <- function(x, ..., class = character()) {
   if (any(names(x) == "parameters")) {
     res <- x$parameters
   } else {
-    res <- tibble::tibble()
+    res <- tibble::new_tibble(list())
   }
   res
 }

@@ -20,10 +20,13 @@ pred_type <- function(x) {
 metrics_info <- function(x) {
   metric_list <- rlang::env_get(environment(x), "fns")
   metric_dir <- purrr::map_chr(metric_list, attr, "direction")
-  res <- tibble::tibble(
-    .metric = names(metric_dir),
-    direction = unname(metric_dir),
-    type = unname(purrr::map_chr(metric_list, pred_type))
+  res <- tibble::new_tibble(
+    list(
+      .metric = names(metric_dir),
+      direction = unname(metric_dir),
+      type = unname(purrr::map_chr(metric_list, pred_type))
+    ),
+    nrow = length(metric_dir)
   )
   res
 }
@@ -45,25 +48,27 @@ metrics_info <- function(x) {
 #' @param workflow A workflow.
 #' @param grid_preprocessor A tibble with parameter information.
 #' @param new_data A data frame or matrix of predictors to process.
+#' @param metrics_info The output of `tune:::metrics_info(metrics)`---only
+#' included as an argument to allow for pre-computing.
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
-.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level, eval_time = NULL) {
+.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level,
+                              metrics_info = metrics_info(metrics), eval_time = NULL) {
   # The call stack is:
   #
   # tune_grid_loop_iter()
   #   append_metrics(). <many times>
   #    .estimate_metrics()
 
-  # predictions made in predict_model()
-
+  # predictions made in predict_model()                             
+                              
   if (inherits(dat, "try-error")) {
     return(NULL)
   }
 
   # Determine the type of prediction that is required
-  type_info <- metrics_info(metric)
-  types <- unique(type_info$type)
+  types <- unique(metrics_info$type)
 
   if (length(outcome_name) > 1L) {
     rlang::abort(paste0(

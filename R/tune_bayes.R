@@ -292,6 +292,8 @@ tune_bayes_workflow <-
         workflow = NULL
       )
 
+      .stash_last_result(out)
+
       return(out)
     })
 
@@ -320,7 +322,10 @@ tune_bayes_workflow <-
 
     for (i in (1:iter) + score_card$overall_iter) {
       .notes <-
-        tibble::tibble(location = character(0), type = character(0), note = character(0))
+        tibble::new_tibble(
+          list(location = character(0), type = character(0), note = character(0)),
+          nrow = 0
+        )
 
       log_best(control, i, score_card)
 
@@ -435,14 +440,18 @@ tune_bayes_workflow <-
     # Reset `on.exit()` hook
     on.exit()
 
-    new_iteration_results(
-      x = unsummarized,
-      parameters = param_info,
-      metrics = metrics,
-      outcomes = outcomes,
-      rset_info = rset_info,
-      workflow = workflow_output
-    )
+    res <-
+      new_iteration_results(
+        x = unsummarized,
+        parameters = param_info,
+        metrics = metrics,
+        outcomes = outcomes,
+        rset_info = rset_info,
+        workflow = workflow_output
+      )
+
+    .stash_last_result(res)
+    res
     }) # end of evalq() call
   }
 
