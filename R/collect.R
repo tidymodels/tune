@@ -210,7 +210,7 @@ prob_summarize <- function(x, p) {
   }
 
   nms <- names(x)
-  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", pred_cols, p))]
+  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", ".eval_time", pred_cols, p))]
   group_cols <- nms[!(nms %in% pred_cols)]
 
   x <-
@@ -361,8 +361,10 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
 }
 
 collector <- function(x, coll_col = ".predictions") {
-  if (any(colnames(x) == ".iter")) {
-    keep_cols <- c(coll_col, ".iter")
+  extra_cols <- c(".iter", ".eval_time")
+  if (any(colnames(x) %in% extra_cols)) {
+    more_cols <- intersect(extra_cols, colnames(x))
+    keep_cols <- c(coll_col, more_cols)
   } else {
     keep_cols <- coll_col
   }
@@ -378,7 +380,7 @@ collector <- function(x, coll_col = ".predictions") {
       vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col))
     )
 
-  arrange_cols <- c(".iter", ".config")
+  arrange_cols <- c(".eval_time", ".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
   res <- vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
@@ -415,6 +417,7 @@ collector <- function(x, coll_col = ".predictions") {
 estimate_tune_results <- function(x, col_name = ".metrics", ...) {
   param_names <- .get_tune_parameter_names(x)
   id_names <- grep("^id", names(x), value = TRUE)
+  group_cols <- .get_extra_col_names(x)
 
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
@@ -457,9 +460,11 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
 
     x <- dplyr::distinct(x)
   }
+
   x <- x %>%
     tibble::as_tibble() %>%
-    dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator) %>%
+    dplyr::group_by(!!!rlang::syms(param_names), !!!rlang::syms(group_cols),
+                    .metric, .estimator) %>%
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
@@ -476,7 +481,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
       dplyr::full_join(config_key, by = param_names)
   }
 
-  arrange_names <- intersect(c(".iter", ".config"), names(x))
+  arrange_names <- intersect(c(".iter", ".config", ".eval_time"), names(x))
   dplyr::arrange(x, !!!rlang::syms(arrange_names))
 }
 

@@ -109,6 +109,22 @@ new_bare_tibble <- function(x, ..., class = character()) {
   res
 }
 
+
+#' @export
+#' @rdname tune_accessor
+# This will return any other columns that should be added to the group_by()
+# when computing the final (averaged) resampling estimate
+.get_extra_col_names <- function(x) {
+  res <- character(0)
+  mtrcs <- x$.metrics[[1]]
+  if (any(names(mtrcs) == ".eval_time")) {
+    res <- c(res, ".eval_time")
+  }
+  res
+}
+
+
+
 #' @export
 #' @rdname tune_accessor
 .get_tune_metrics <- function(x) {
