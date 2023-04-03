@@ -20,7 +20,7 @@ tune 1.1.0 introduces a number of new features and bug fixes, accompanied by var
 
 ## Other changes
 
-* Implemented various optimizations in tune's backend that [substantially decrease the total evaluation time](https://www.simonpcouch.com/blog/speedups-2023/#tidymodels) to tune hyperparameters with the tidymodels. (#634, #635, #636, #637, #640, #641, #642, #648, #649, #653, #656, #657).
+* Implemented various optimizations in tune's backend that [substantially decrease the total evaluation time](https://www.simonpcouch.com/blog/speedups-2023/#tidymodels) to tune hyperparameters with the tidymodels. (#634, #635, #636, #637, #640, #641, #642, #648, #649, #653, #656, #657)
 
 * Allowed users to supply list-columns in `grid` arguments. This change allows for manually specifying grid values that must be contained in list-columns, like functions or lists. (#625)
 
