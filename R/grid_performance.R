@@ -61,8 +61,8 @@ metrics_info <- function(x) {
   #   append_metrics(). <many times>
   #    .estimate_metrics()
 
-  # predictions made in predict_model()                             
-                              
+  # predictions made in predict_model()
+
   if (inherits(dat, "try-error")) {
     return(NULL)
   }
@@ -139,21 +139,12 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
 }
 
 estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
-  # TODO mixed sets?
-  if (any(types == "survival")) {
-    res <-
-      dat %>%
-      dplyr::group_by(!!!rlang::syms(param_names), eval_time) %>%
-      metric(
-        truth = surv,
-        estimate = .pred_survival,
-        censoring_weights = .weight_cens,
-        case_weights = !!case_weights,
-        eval_time = eval_time
-      )
-  } else {
-    # pad with .time = NA?
-  }
-  res
+  dat %>%
+    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+    metric(
+      truth = surv,
+      estimate = .pred,
+      case_weights = !!case_weights
+    )
 }
 

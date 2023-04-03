@@ -27,7 +27,7 @@ Imports:
     GPfit,
     hardhat (>= 1.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 1.0.4.9004),
+    parsnip (>= 1.0.4.9006),
     purrr (>= 1.0.0),
     recipes (>= 1.0.4),
     rlang (>= 1.0.6.9000),
