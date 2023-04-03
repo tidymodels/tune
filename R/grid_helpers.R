@@ -1,5 +1,5 @@
 
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL, 
+predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
                           metrics_info, eval_time = NULL) {
 
   model <- extract_fit_parsnip(workflow)
@@ -102,31 +102,21 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
       res <- dplyr::full_join(res, case_weights, by = ".row")
     }
   }
+
+
+  res <- maybe_add_ipcw(res, model, types)
+
   if (!tibble::is_tibble(res)) {
     res <- tibble::as_tibble(res)
   }
-  # maybe_add_ipcw(res, model, eval_time, types)
   res
 }
 
-  # TODO do we need this?
-  # res <- tibble::as_tibble(res)
-
-}
-
-maybe_add_ipcw <- function(.data, model, eval_time, types) {
+maybe_add_ipcw <- function(.data, model, types) {
   if (!any(types == "survival")) {
     return(.data)
   }
-  res <-
-    tidyr::unnest(.data, cols = .pred) %>%
-    dplyr::rename(eval_time = .time) %>%
-    dplyr::full_join(
-      # TODO is the outcome name enforced or the original name?
-      parsnip::.censoring_weights_graf(model, .data, eval_time = eval_time),
-      by = c(".row", "eval_time")
-    )
-  res
+  parsnip::.censoring_weights_graf(model, .data)
 }
 
 predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
@@ -147,7 +137,7 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
   # Add in censored regression evaluation times (if needed)
   has_type <- type %in% c("survival", "hazard")
   if (model$spec$mode == "censored regression" & !is.null(eval_time) & has_type) {
-    cl <- rlang::call_modify(cl, time = eval_time)
+    cl <- rlang::call_modify(cl, eval_time = eval_time)
   }
 
   # When there are sub-models:

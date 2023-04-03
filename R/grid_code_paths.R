@@ -180,7 +180,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           metrics = metrics,
           control = control,
           eval_time = eval_time,
-          seed = seed
+          seed = seed,
           metrics_info = metrics_info,
           params = params
         )
@@ -221,7 +221,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             metrics = metrics,
             control = control,
             eval_time = eval_time,
-            seed = seed
+            seed = seed,
             metrics_info = metrics_info,
             params = params
           )
@@ -421,7 +421,7 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels, 
+        predict_model(split, workflow, iter_grid, metrics, iter_submodels,
                       metrics_info = metrics_info, eval_time = eval_time),
         control,
         split,
@@ -480,7 +480,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        seed,
                                        metrics_info,
                                        params) {
-                                       
+
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
