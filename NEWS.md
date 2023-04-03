@@ -1,22 +1,36 @@
 # tune (development version)
 
-* Allowed users to supply list-columns in `grid` arguments. (#625)
+tune 1.1.0 introduces a number of new features and bug fixes, accompanied by various optimizations that substantially decrease the total evaluation time to tune hyperparameters in the tidymodels.
 
-* Fixed bug in `tune_bayes()` where `.Last.tune.result` would return intermediate tuning results. (#613)
-
-* Refined machinery for logging issues during tuning. Rather than printing out warnings and errors as they appear, the package will now only print unique tuning issues, and iteratively update a progress bar to maintain counts of each unique issue. This feature is only enabled for tuning sequentially. (#588)
+## New features
 
 * Introduced a new function `fit_best()` that provides a shorthand interface to fit a final model after parameter tuning. (#586)
 
+* Refined machinery for logging issues during tuning. Rather than printing out warnings and errors as they appear, the package will now only print unique tuning issues, updating a dynamic summary message that maintains counts of each unique issue. This feature is only enabled for tuning sequentially and can be manually toggled with the `verbose` option. (#588)
+
+* Introduced `collect_extracts()`, a function for collecting extracted objects from tuning results. The format of results closely mirrors `collect_notes()`, where the extracted objects are contained in a list-column alongside the resample ID and workflow `.config`. (#579)
+
+## Bug fixes
+
 * Fixed bug in `select_by_pct_loss()` where the model with the greatest loss within the limit was returned rather than the most simple model whose loss was within the limit. (#543)
+
+* Fixed bug in `tune_bayes()` where `.Last.tune.result` would return intermediate tuning results. (#613)
 
 * Extended `show_best()`, `select_best()`, `select_by_one_std_error()`, `select_by_pct_loss()` to accommodate metrics with a target value of zero (notably, `yardstick::mpe()` and `yardstick::msd()`). (#243)
 
+## Other changes
+
+* Implemented various optimizations in tune's backend that [substantially decrease the total evaluation time](https://www.simonpcouch.com/blog/speedups-2023/#tidymodels) to tune hyperparameters with the tidymodels. (#634, #635, #636, #637, #640, #641, #642, #648, #649, #653, #656, #657).
+
+* Allowed users to supply list-columns in `grid` arguments. This change allows for manually specifying grid values that must be contained in list-columns, like functions or lists. (#625)
+
 * Clarified error messages in `select_by_*` functions. Error messages now only note entries in `...` that are likely candidates for failure to `arrange()`, and those error messages are no longer duplicated for each entry in `...`.
 
-* Improves condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to misspecified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
+* Improved condition handling for errors that occur during extraction from workflows. While messages and warnings were appropriately handled, errors occurring due to misspecified `extract()` functions being supplied to `control_*()` functions were silently caught. As with warnings, errors are now surfaced both during execution and at `print()` (#575).
 
-* Introduces `collect_extracts()`, a function for collecting extracted objects from tuning results. The format of results closely mirrors `collect_notes()`, where the extracted objects are contained in a list-column alongside the resample ID and workflow `.config`. 
+* Moved forward with the deprecation of `parameters()` methods for `workflow`s, `model_spec`s, and `recipes`. Each of these methods will now warn on every usage and will be defunct in a later release of the package. (#650)
+
+* Various bug fixes and improvements to documentation.
 
 # tune 1.0.1
 
