@@ -374,8 +374,8 @@ collector <- function(x, coll_col = ".predictions") {
 
   res <-
     vctrs::vec_cbind(
-      vctrs::list_unchop(coll_col),
-      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col))
+      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col)),
+      vctrs::list_unchop(coll_col)
     )
 
   arrange_cols <- c(".iter", ".config")
