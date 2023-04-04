@@ -337,6 +337,16 @@ get_metric_direction <- function(x, metric) {
   directions[[metric]]
 }
 
+middle_eval_time <- function(x) {
+  x <- x[!is.na(x)]
+  times <- unique(x)
+  med_time <- median(x, na.rm = TRUE)
+  ind <- which.min(abs(times - med_time))
+  eval_time <- times[ind]
+  eval_time
+}
+
+
 choose_eval_time <- function(x, object, eval_time) {
   mtrs <- .get_tune_metrics(object)
   mtrs <- as_tibble(mtrs)
@@ -346,20 +356,18 @@ choose_eval_time <- function(x, object, eval_time) {
   if (!any(mtrs$class == "dynamic_survival_metric")) {
     return(x)
   }
-  # TODO maybe issue a warning:
-  x <- x[!is.na(x$.eval_time), ]
-  times <- unique(x$.eval_time)
+  # TODO maybe issue a warning if there are missing values
   if (is.null(eval_time)) {
-    med_time <- median(x$.eval_time, na.rm = TRUE)
-    ind <- which.min(abs(times - med_time))
-    eval_time <- times[ind]
-    cli::cli_warn("No evaluation time was set; a value of {eval_time} was used.")
+    eval_time <- middle_eval_time(x$.eval_time)
+    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
+    rlang::warn(msg)
   } else {
     if (length(eval_time) > 1) {
       rlang::abort("Please pick a single evaluation time point.")
     }
     if (!any(times == eval_time)) {
-      cli::cli_abort("No evaluation times matched a value of {eval_time}.")
+      msg <- cli::pluralize("No evaluation times matched a value of {eval_time}.")
+      rlang::abort(msg)
     }
   }
   x <- x[x$.eval_time == eval_time, ]
