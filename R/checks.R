@@ -360,8 +360,7 @@ check_metrics <- function(x, object) {
 
   is_numeric_metric_set <- inherits(x, "numeric_metric_set")
   is_class_prob_metric_set <- inherits(x, "class_prob_metric_set")
-  is_surv_metric_set <-
-    inherits(x, c("dynamic_survival_metric_set", "static_survival_metric_set"))
+  is_surv_metric_set <- inherits(x, c("survival_metric_set"))
 
   if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
     rlang::abort("The `metrics` argument should be the results of [yardstick::metric_set()].")

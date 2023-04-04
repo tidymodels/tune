@@ -70,8 +70,9 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
+show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
+  metric <- check_eval_time(metric, x, eval_time)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -133,8 +134,9 @@ select_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_best.tune_results <- function(x, metric = NULL, ...) {
+select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
+  metric <- check_eval_time(metric, x, eval_time)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -164,8 +166,9 @@ select_by_pct_loss.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
+select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, eval_time = NULL) {
   metric <- choose_metric(metric, x)
+  metric <- check_eval_time(metric, x, eval_time)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -237,8 +240,9 @@ select_by_one_std_err.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
+select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
   metric <- choose_metric(metric, x)
+  metric <- check_eval_time(metric, x, eval_time)
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -323,3 +327,34 @@ get_metric_direction <- function(x, metric) {
 
   directions[[metric]]
 }
+
+check_eval_time <- function(x, object, eval_time) {
+  mtrs <- .get_tune_metrics(object)
+  mtrs <- as_tibble(mtrs)
+  actual_metrics <- unique(x$.metric)
+  mtrs <- mtrs[mtrs$.metric %in% actual_metrics, ]
+  # check for only dynamic?
+  if (!any(mtrs$class == "dynamic_survival_metric")) {
+    return(x)
+  }
+  # TODO maybe issue a warning:
+  x <- x[!is.na(x$.eval_time), ]
+  times <- unique(x$.eval_time)
+  if (is.null(eval_time)) {
+    med_time <- median(x$.eval_time, na.rm = TRUE)
+    ind <- which.min(abs(times - med_time))
+    eval_time <- times[ind]
+    cli::cli_warn("No evaluation time was set; a value of {eval_time} was used.")
+  } else {
+    if (length(eval_time) > 1) {
+      rlang::abort("Please pick a single evaluation time point.")
+    }
+    if (!any(times == eval_time)) {
+      cli::cli_abort("No evaluation times matched a value of {eval_time}.")
+    }
+  }
+  x <- x[x$.eval_time == eval_time, ]
+  x
+}
+
+
