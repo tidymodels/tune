@@ -1,5 +1,7 @@
 #' Investigate best tuning parameters
 #'
+#' @description
+#'
 #' [show_best()] displays the top sub-models and their performance estimates.
 #'
 #' [select_best()] finds the tuning parameter combination with the best
@@ -72,7 +74,7 @@ show_best.default <- function(x, ...) {
 #' @rdname show_best
 show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
-  metric <- check_eval_time(metric, x, eval_time)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -89,6 +91,7 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
 
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
+  summary_res <- choose_eval_time(summary_res, x, eval_time)
 
   if (nrow(summary_res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -102,7 +105,8 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
     summary_res <- summary_res %>% dplyr::arrange(abs(mean))
   }
   show_ind <- 1:min(nrow(summary_res), n)
-  summary_res %>% dplyr::slice(show_ind)
+  summary_res %>%
+    dplyr::slice(show_ind)
 }
 
 choose_metric <- function(metric, x) {
@@ -136,7 +140,8 @@ select_best.default <- function(x, ...) {
 #' @rdname show_best
 select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
-  metric <- check_eval_time(metric, x, eval_time)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -144,12 +149,9 @@ select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
       "This value was ignored."
     ))
   }
-  res <- show_best(x, metric = metric, n = 1)
-  res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
-  if (any(names(res) == ".iter")) {
-    res <- res %>% dplyr::select(-.iter)
-  }
-  res
+  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time)
+  res %>% dplyr::select(dplyr::all_of(param_names), .config)
+
 }
 
 #' @export
@@ -168,7 +170,8 @@ select_by_pct_loss.default <- function(x, ...) {
 #' @rdname show_best
 select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, eval_time = NULL) {
   metric <- choose_metric(metric, x)
-  metric <- check_eval_time(metric, x, eval_time)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -185,6 +188,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+  res <- choose_eval_time(res, x, eval_time)
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -223,7 +227,8 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
   res %>%
     dplyr::slice(1:best_index) %>%
     dplyr::filter(.loss < limit) %>%
-    dplyr::slice(1)
+    dplyr::slice(1) %>%
+    dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 #' @export
@@ -242,7 +247,8 @@ select_by_one_std_err.default <- function(x, ...) {
 #' @rdname show_best
 select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
   metric <- choose_metric(metric, x)
-  metric <- check_eval_time(metric, x, eval_time)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -258,6 +264,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+  res <- choose_eval_time(res, x, eval_time)
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -308,7 +315,9 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
-  res %>% dplyr::slice(1)
+  res %>%
+    dplyr::slice(1) %>%
+    dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 get_metric_direction <- function(x, metric) {
@@ -328,12 +337,12 @@ get_metric_direction <- function(x, metric) {
   directions[[metric]]
 }
 
-check_eval_time <- function(x, object, eval_time) {
+choose_eval_time <- function(x, object, eval_time) {
   mtrs <- .get_tune_metrics(object)
   mtrs <- as_tibble(mtrs)
   actual_metrics <- unique(x$.metric)
-  mtrs <- mtrs[mtrs$.metric %in% actual_metrics, ]
-  # check for only dynamic?
+  mtrs <- mtrs[mtrs$metric %in% actual_metrics, ]
+
   if (!any(mtrs$class == "dynamic_survival_metric")) {
     return(x)
   }
