@@ -161,6 +161,11 @@ filter_plot_eval_time <- function(x, eval_time) {
   }
 
   # TODO check for null and add warning
+  if (is.null(eval_time)) {
+    eval_time <- middle_eval_time(x$.eval_time)
+    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
+    rlang::warn(msg)
+  }
 
   times <- x$.eval_time
   is_miss_time <- is.na(times)
@@ -168,7 +173,8 @@ filter_plot_eval_time <- function(x, eval_time) {
   time_dif <- setdiff(eval_time, times)
   if (length(time_dif) > 0) {
     bad_times <- paste0(format(time_dif, digits = 3), collapse = ", ")
-    cli::cli_abort("One or more evaluation times were not computed: {bad_times}")
+    msg <- cli::pluralize("One or more chosen evaluation times were not in the results: {bad_times}")
+    rlang::warn(msg)
   }
   if (any(is_miss_time)) {
     keep_times <- tibble::tibble(.eval_time = c(eval_time, NA))
