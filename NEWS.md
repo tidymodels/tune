@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 1.1.0
 
 tune 1.1.0 introduces a number of new features and bug fixes, accompanied by various optimizations that substantially decrease the total evaluation time to tune hyperparameters in the tidymodels.
 
