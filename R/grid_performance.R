@@ -139,7 +139,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
 }
 
 estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
-  # TODO need to work around sub odel parameters since those are within
+  # TODO need to work around sub model parameters since those are within
   dat %>%
     dplyr::group_by(!!!rlang::syms(param_names)) %>%
     metric(
