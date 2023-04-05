@@ -1,5 +1,6 @@
 test_that("gives same output as collect_metrics() when metrics match", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   library(parsnip)
   library(rsample)
@@ -9,7 +10,7 @@ test_that("gives same output as collect_metrics() when metrics match", {
 
   res <-
     tune_grid(
-      linear_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("regression", neighbors = tune()),
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5),
       grid = 3,
@@ -30,6 +31,7 @@ test_that("gives same output as collect_metrics() when metrics match", {
 
 test_that("sensitivity to `metrics` argument (numeric metrics)", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   library(parsnip)
   library(rsample)
@@ -42,7 +44,7 @@ test_that("sensitivity to `metrics` argument (numeric metrics)", {
 
   res_rmse <-
     tune_grid(
-      linear_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("regression", neighbors = tune()),
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5),
       grid = 3,
@@ -54,7 +56,7 @@ test_that("sensitivity to `metrics` argument (numeric metrics)", {
 
   res_rsq <-
     tune_grid(
-      linear_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("regression", neighbors = tune()),
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5),
       grid = 3,
@@ -80,6 +82,7 @@ test_that("sensitivity to `metrics` argument (numeric metrics)", {
 
 test_that("sensitivity to `metrics` argument (compatible class metric types)", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   library(parsnip)
   library(rsample)
@@ -90,7 +93,7 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
 
   res_acc_auc <-
     tune_grid(
-      logistic_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("classification", neighbors = tune()),
       Class ~ .,
       vfold_cv(two_class_dat, 5),
       metrics = metric_set(accuracy, roc_auc),
@@ -102,7 +105,7 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
 
   res_class <-
     tune_grid(
-      logistic_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("classification", neighbors = tune()),
       Class ~ .,
       vfold_cv(two_class_dat, 5),
       metrics = metric_set(precision),
@@ -114,7 +117,7 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
 
   res_prob <-
     tune_grid(
-      logistic_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("classification", neighbors = tune()),
       Class ~ .,
       vfold_cv(two_class_dat, 5),
       metrics = metric_set(mn_log_loss),
@@ -133,7 +136,6 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
 
   expect_equal(collected_unsum_class, computed_unsum_class)
 
-
   collected_sum_prob <- collect_metrics(res_prob)
   computed_sum_prob  <- compute_metrics(res_acc_auc, metric_set(mn_log_loss))
 
@@ -148,6 +150,7 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
 
 test_that("sensitivity to `metrics` argument (differing class metric types)", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   library(parsnip)
   library(rsample)
@@ -163,7 +166,7 @@ test_that("sensitivity to `metrics` argument (differing class metric types)", {
 
   res_acc <-
     tune_grid(
-      logistic_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("classification", neighbors = tune()),
       Class ~ .,
       vfold_cv(two_class_dat, 5),
       metrics = m_set_acc,
@@ -175,7 +178,7 @@ test_that("sensitivity to `metrics` argument (differing class metric types)", {
 
   res_auc <-
     tune_grid(
-      logistic_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("classification", neighbors = tune()),
       Class ~ .,
       vfold_cv(two_class_dat, 5),
       metrics = m_set_auc,
@@ -196,6 +199,7 @@ test_that("sensitivity to `metrics` argument (differing class metric types)", {
 
 test_that("errors informatively with bad input", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   library(parsnip)
   library(rsample)
@@ -205,7 +209,7 @@ test_that("errors informatively with bad input", {
 
   res_rmse <-
     tune_grid(
-      linear_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("regression", neighbors = tune()),
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5),
       grid = 3,
@@ -214,7 +218,7 @@ test_that("errors informatively with bad input", {
 
   res_rmse_save_pred <-
     tune_grid(
-      linear_reg(engine = "glmnet", penalty = tune()),
+      nearest_neighbor("regression", neighbors = tune()),
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5),
       grid = 3,
