@@ -88,6 +88,9 @@
     <loc>https://tune.tidymodels.org/reference/finalize_model.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/fit_best.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/fit_resamples.html</loc>
   </url>
   <url>
