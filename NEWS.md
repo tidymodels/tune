@@ -1,5 +1,8 @@
 # tune (development version)
 
+* Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 
+  `.iter` column was dropped.
+
 # tune 1.1.0
 
 tune 1.1.0 introduces a number of new features and bug fixes, accompanied by various optimizations that substantially decrease the total evaluation time to tune hyperparameters in the tidymodels.
