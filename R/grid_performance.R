@@ -139,7 +139,8 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
 }
 
 estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
-  # TODO need to work around sub model parameters since those are within
+  #  potentially need to work around submodel parameters since those are within .pred
+  dat <- unnest_parameters(dat, param_names)
   dat %>%
     dplyr::group_by(!!!rlang::syms(param_names)) %>%
     metric(
@@ -148,4 +149,34 @@ estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, 
       case_weights = !!case_weights
     )
 }
+
+unnest_parameters <- function(x, params = NULL) {
+  # When muti_predict is used, .pred will have the tuning parameter values.
+  # Other (non-submodel) parameters will be outside of 'x'.
+  # If this happens, pull the submodel parameters out of .pred and put them at
+  # the out level ('x') with the rest (if any)
+  outer_nms <- names(x)
+  inner_nms <- names(x$.pred[[1]])
+  has_inner_params <- any(params %in% inner_nms)
+  has_pred <- any(outer_nms == ".pred")
+  if (is.null(params) || !has_pred || !has_inner_params) {
+    return(x)
+  }
+  x <- x %>% parsnip::add_rowindex()
+
+  others <- x %>% dplyr::select(-.pred)
+  rm_cols <- c(".pred_censored", ".weight_time")
+  nest_cols <- c(".eval_time", ".pred_survival", ".weight_censored")
+  x <-
+    x %>%
+    dplyr::select(.pred, .row) %>%
+    tidyr::unnest(cols = c(.pred)) %>%
+    dplyr::select(-dplyr::any_of(rm_cols)) %>%
+    tidyr::nest(.pred = c(all_of(nest_cols)), .by = c(.row, dplyr::all_of(params))) %>%
+    dplyr::full_join(others, by = ".row") %>%
+    dplyr::select(-.row)
+  x
+}
+
+
 
