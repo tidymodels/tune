@@ -138,6 +138,8 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
     )
 }
 
+# ------------------------------------------------------------------------------
+
 estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
   #  potentially need to work around submodel parameters since those are within .pred
   dat <- unnest_parameters(dat, param_names)
@@ -145,8 +147,9 @@ estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, 
     dplyr::group_by(!!!rlang::syms(param_names)) %>%
     metric(
       truth = !!rlang::sym(outcome_name),
-      estimate = .pred,
-      case_weights = !!case_weights
+      estimate = !!maybe_estimate(metric),
+      case_weights = !!case_weights,
+      !!maybe_surv_prob(metric)
     )
 }
 
@@ -178,5 +181,24 @@ unnest_parameters <- function(x, params = NULL) {
   x
 }
 
+maybe_estimate <- function(x) {
+  info <- as_tibble(x)
+  if (any(info$class == "static_survival_metric")) {
+    res <- rlang::sym(".pred_time")
+  } else {
+    res <- NULL
+  }
+  res
+}
+
+maybe_surv_prob <- function(x) {
+  info <- as_tibble(x)
+  if (any(info$class == "dynamic_survival_metric")) {
+    res <- rlang::sym(".pred")
+  } else {
+    res <- NULL
+  }
+  res
+}
 
 
