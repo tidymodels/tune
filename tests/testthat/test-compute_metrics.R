@@ -197,6 +197,58 @@ test_that("sensitivity to `metrics` argument (differing class metric types)", {
   )
 })
 
+test_that("sensitivity to `metrics` argument (iterative tuning)", {
+  # the pattern of tuning first with one metric, then with another,
+  # and then testing equality of collected vs computed metrics is a bit
+  # more complicated here, as a different metric will lead to different
+  # proposed hyperparameters in the gaussian process.
+
+  skip_on_cran()
+  skip_if_not_installed("kknn")
+
+  library(parsnip)
+  library(rsample)
+  library(yardstick)
+
+  m_set_rmse <- metric_set(rmse)
+  m_set_rsq  <- metric_set(rsq)
+  m_set_both  <- metric_set(rmse, rsq)
+
+  set.seed(1)
+
+  res_rmse <-
+    tune_bayes(
+      nearest_neighbor("regression", neighbors = tune()),
+      mpg ~ .,
+      vfold_cv(mtcars, v = 3),
+      metrics = m_set_rmse,
+      control = tune::control_bayes(save_pred = TRUE),
+      iter = 2, initial = 3
+    )
+
+  set.seed(1)
+
+  res_both <-
+    tune_bayes(
+      nearest_neighbor("regression", neighbors = tune()),
+      mpg ~ .,
+      vfold_cv(mtcars, v = 3),
+      metrics = m_set_both,
+      control = tune::control_bayes(save_pred = TRUE),
+      iter = 2, initial = 3
+    )
+
+  collected_sum_rmse <- collect_metrics(res_rmse)
+  computed_sum_rmse  <- compute_metrics(res_both, m_set_rmse)
+
+  expect_equal(collected_sum_rmse, computed_sum_rmse)
+
+  collected_unsum_rmse <- collect_metrics(res_rmse, summarize = FALSE)
+  computed_unsum_rmse  <- compute_metrics(res_both, m_set_rmse, summarize = FALSE)
+
+  expect_equal(collected_unsum_rmse, computed_unsum_rmse)
+})
+
 test_that("errors informatively with bad input", {
   skip_on_cran()
   skip_if_not_installed("kknn")

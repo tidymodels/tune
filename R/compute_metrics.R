@@ -130,17 +130,24 @@ compute_metrics.tune_results <- function(x,
 
   # re-order so `.config` comes last
   mtrcs <-
-    vctrs::vec_cbind(
-      mtrcs[, colnames(mtrcs) != ".config"],
-      mtrcs[, colnames(mtrcs) == ".config"]
-    )
+    mtrcs[, c(colnames(mtrcs)[colnames(mtrcs) != ".config"], ".config")]
 
   # nest by resample id
-  mtrcs <-
-    vctrs::vec_split(mtrcs[, colnames(mtrcs) != "id"], mtrcs$id)
+  nest_cols <- c("id")
 
-  # vec_split will split as data.frames
-  x$.metrics <- purrr::map(mtrcs$val, tibble::new_tibble)
+  if ("Iter1" %in% unique(mtrcs$.config)) {
+    .iter <- mtrcs$.config
+    nonzero <- grepl("Iter", .iter)
+    .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
+    .iter <- as.numeric(.iter)
+    mtrcs$.iter <- .iter
+
+    nest_cols <- c(nest_cols, ".iter")
+  }
+
+  mtrcs <- nest(mtrcs, .by = all_of(nest_cols), .key = ".metrics")
+  match_locations <- vctrs::vec_locate_matches(x[nest_cols], mtrcs[nest_cols])
+  x$.metrics <- vctrs::vec_slice(mtrcs$.metrics, match_locations$haystack)
 
   attr(x, "metrics") <- metrics
 
