@@ -611,17 +611,18 @@ check_no_tuning <- function(x) {
   rlang::abort(msg, call = NULL)
 }
 
+dyn_inputs <- c("integrated_survival_metric", "dynamic_survival_metric")
 
 check_eval_time <- function(eval_time, metrics) {
   metric_types <- tibble::as_tibble(metrics)$class
-  has_dyn <- any(metric_types == "dynamic_survival_metric")
-  if (!is.null(eval_time) & !has_dyn) {
+  needs_eval_time <- any(metric_types %in% dyn_inputs)
+  if (!is.null(eval_time) & !needs_eval_time) {
     rlang::abort(
-      "Evaluation times are only used for dynamic survival metrics.",
+      "Evaluation times are only used for dynamic and integrated survival metrics.",
       call = NULL
     )
   }
-  if (is.null(eval_time) & has_dyn) {
+  if (is.null(eval_time) & needs_eval_time) {
     rlang::abort(
       "One or more metric requires the specification of time points in the `eval_time` argument.",
       call = NULL

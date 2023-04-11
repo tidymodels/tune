@@ -8,6 +8,7 @@ pred_type <- function(x) {
     cls == "prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     cls == "dynamic_survival_metric" ~ "survival",
+    cls == "integrated_survival_metric" ~ "survival",
     cls == "static_survival_metric" ~ "time",
     TRUE ~ "unknown"
   )
@@ -193,7 +194,8 @@ maybe_estimate <- function(x) {
 
 maybe_surv_prob <- function(x) {
   info <- as_tibble(x)
-  if (any(info$class == "dynamic_survival_metric")) {
+  # dyn_inputs defined in checks.R
+  if (any(info$class %in% dyn_inputs)) {
     res <- rlang::sym(".pred")
   } else {
     res <- NULL

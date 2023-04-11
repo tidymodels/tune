@@ -353,6 +353,10 @@ choose_eval_time <- function(x, object, eval_time) {
   actual_metrics <- unique(x$.metric)
   mtrs <- mtrs[mtrs$metric %in% actual_metrics, ]
 
+  # Dynamic and integrated metrics need eval time as an input _but_
+  # only dynamic metrics need them as outputs. So if the metric like
+  # `brier_survival_integrated()` is used, the evaluation time doesn't need
+  # to be specified for computations that use the metrics.
   if (!any(mtrs$class == "dynamic_survival_metric")) {
     return(x)
   }
