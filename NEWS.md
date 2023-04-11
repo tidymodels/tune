@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 1.1.0
 
 * Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 
   `.iter` column was dropped.
