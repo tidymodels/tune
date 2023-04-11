@@ -69,13 +69,18 @@ test_that("sensitivity to `metrics` argument (numeric metrics)", {
 
   expect_equal(collected_sum_rsq, computed_sum_rsq)
 
-  collected_unsum_rsq <- collect_metrics(res_rsq)
-  computed_unsum_rsq  <- compute_metrics(res_rmse, m_set_rsq)
+  collected_sum_rmse <- collect_metrics(res_rmse)
+  computed_sum_rmse  <- compute_metrics(res_rsq, m_set_rmse)
+
+  expect_equal(collected_sum_rsq, computed_sum_rsq)
+
+  collected_unsum_rsq <- collect_metrics(res_rsq, summarize = FALSE)
+  computed_unsum_rsq  <- compute_metrics(res_rmse, m_set_rsq, summarize = FALSE)
 
   expect_equal(collected_unsum_rsq, computed_unsum_rsq)
 
-  collected_unsum_rmse <- collect_metrics(res_rmse)
-  computed_unsum_rmse  <- compute_metrics(res_rsq, m_set_rmse)
+  collected_unsum_rmse <- collect_metrics(res_rmse, summarize = FALSE)
+  computed_unsum_rmse  <- compute_metrics(res_rsq, m_set_rmse, summarize = FALSE)
 
   expect_equal(collected_unsum_rmse, computed_unsum_rmse)
 })
