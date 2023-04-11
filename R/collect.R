@@ -361,27 +361,37 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
 }
 
 collector <- function(x, coll_col = ".predictions") {
-  if (any(colnames(x) == ".iter")) {
+  is_iterative <- any(colnames(x) == ".iter")
+  if (is_iterative) {
     keep_cols <- c(coll_col, ".iter")
   } else {
     keep_cols <- coll_col
   }
 
   id_cols <- colnames(x)[grepl("id", colnames(x))]
-  keep_cols <- c(coll_col, id_cols)
+  keep_cols <- c(id_cols, keep_cols)
   x <- x[keep_cols]
   coll_col <- x[[coll_col]]
+  sizes <- vctrs::list_sizes(coll_col)
 
   res <-
     vctrs::vec_cbind(
-      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col)),
+      vctrs::vec_rep_each(x[, id_cols], times = sizes),
       vctrs::list_unchop(coll_col)
     )
+
+  if (is_iterative) {
+    res <-
+      vctrs::vec_cbind(
+        res,
+        vctrs::vec_rep_each(x[, ".iter"], times = sizes)
+      )
+  }
 
   arrange_cols <- c(".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
-  res <- vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
+  vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
 }
 
 #' @export
