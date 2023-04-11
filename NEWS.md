@@ -3,6 +3,12 @@
 * Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance
 metrics without requiring users to re-fit and re-predict from each model. (#663)
 
+# tune 1.1.1
+
+* Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 
+  `.iter` column was dropped.
+
+
 # tune 1.1.0
 
 tune 1.1.0 introduces a number of new features and bug fixes, accompanied by various optimizations that substantially decrease the total evaluation time to tune hyperparameters in the tidymodels.

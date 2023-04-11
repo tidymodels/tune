@@ -112,6 +112,11 @@ test_that("classification class predictions, averaged", {
   res <- collect_predictions(svm_tune_class, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
   expect_false(dplyr::is_grouped_df(res))
+  expect_named(
+    collect_predictions(svm_tune, summarize = TRUE),
+    c(".row", "cost value", "Class", ".config", ".iter", ".pred_Class1",
+      ".pred_Class2", ".pred_class")
+  )
 
   # pull out an example to test
   all_res_subset <-
