@@ -8,6 +8,7 @@ pred_type <- function(x) {
     cls == "prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     cls == "dynamic_survival_metric" ~ "survival",
+    cls == "integrated_survival_metric" ~ "survival",
     cls == "static_survival_metric" ~ "time",
     TRUE ~ "unknown"
   )

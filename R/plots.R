@@ -159,6 +159,9 @@ filter_plot_eval_time <- function(x, eval_time) {
   if (!any(names(x) == ".eval_time")) {
     return(x)
   }
+  if (all(is.na(x$.eval_time))) {
+    return(x %>% dplyr::select(-.eval_time))
+  }
 
   # TODO check for null and add warning
   if (is.null(eval_time)) {
