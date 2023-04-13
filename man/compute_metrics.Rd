@@ -8,7 +8,7 @@
 \usage{
 compute_metrics(x, metrics, summarize, event_level, ...)
 
-\method{compute_metrics}{default}(x, metrics, summarize, event_level, ...)
+\method{compute_metrics}{default}(x, metrics, summarize = TRUE, event_level = "first", ...)
 
 \method{compute_metrics}{tune_results}(x, metrics, summarize = TRUE, event_level = "first", ...)
 }
@@ -18,7 +18,7 @@ compute_metrics(x, metrics, summarize, event_level, ...)
 
 \item{metrics}{A \link[yardstick:metric_set]{metric set} of new metrics
 to compute. Each metric in the set must have a metric type (usually
-\code{"numeric"}, \code{"class"}, or \verb{"prob}) that matches some metric evaluated
+\code{"numeric"}, \code{"class"}, or \code{"prob"}) that matches some metric evaluated
 when generating \code{x}.}
 
 \item{summarize}{A single logical value indicating whether metrics should
@@ -39,18 +39,13 @@ A tibble. See \code{\link[=collect_metrics]{collect_metrics()}} for more details
 \description{
 This function computes metrics from tuning results. The arguments and
 output formats are closely related to those from \code{\link[=collect_metrics]{collect_metrics()}}, but
-this function additionally takes a \code{metrics} argument with a metric set
-for new metrics to compute. This allows for computing new performance
-metrics without requiring users to re-evaluate models against resamples.
-}
-\details{
+this function additionally takes a \code{metrics} argument with a
+\link[yardstick:metric_set]{metric set} for new metrics to compute. This
+allows for computing new performance metrics without requiring users to
+re-evaluate models against resamples.
+
 Note that the \link[=control_grid]{control option} \code{save_pred = TRUE} must
 have been supplied when generating \code{x}.
-
-If the \code{metrics} argument is equivalent to that passed as the \code{metrics}
-argument when generating \code{x}, then \code{compute_metrics(x, ...)} will return
-the same results as \code{collect_metrics(x, ...)} (though will be quite a
-bit slower).
 }
 \examples{
 \dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

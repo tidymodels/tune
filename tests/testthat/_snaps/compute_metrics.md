@@ -4,7 +4,7 @@
       compute_metrics(res_auc, m_set_acc)
     Condition
       Error in `compute_metrics()`:
-      ! The supplied `metrics` argument has input type "class", while the metrics used to generate predictions only used "prob" metrics.
+      ! The supplied `metrics` argument has metrics of type "class", while the metrics used to generate predictions only used "prob" metrics.
       i To save predictions for class metrics, generate `x` with metrics of that type.
 
 ---
@@ -13,7 +13,7 @@
       compute_metrics(res_acc, m_set_auc)
     Condition
       Error in `compute_metrics()`:
-      ! The supplied `metrics` argument has input type "prob", while the metrics used to generate predictions only used "class" metrics.
+      ! The supplied `metrics` argument has metrics of type "prob", while the metrics used to generate predictions only used "class" metrics.
       i To save predictions for prob metrics, generate `x` with metrics of that type.
 
 # errors informatively with bad input
@@ -22,7 +22,7 @@
       compute_metrics(res_rmse, metric_set(rsq))
     Condition
       Error in `compute_metrics()`:
-      ! The inputted `x` argument must have been generated with the control argument `save_pred = TRUE`.
+      ! `x` must have been generated with the control argument `save_pred = TRUE`.
 
 ---
 
@@ -38,5 +38,5 @@
       compute_metrics(res_rmse_save_pred, "wheee")
     Condition
       Error in `compute_metrics()`:
-      ! The inputted `metrics` argument must be a metric set.
+      ! `metrics` must be a metric set.
 

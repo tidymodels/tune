@@ -1,24 +1,22 @@
 #' Calculate and format metrics from tuning functions
 #'
+#' @description
+#'
 #' This function computes metrics from tuning results. The arguments and
 #' output formats are closely related to those from [collect_metrics()], but
-#' this function additionally takes a `metrics` argument with a metric set
-#' for new metrics to compute. This allows for computing new performance
-#' metrics without requiring users to re-evaluate models against resamples.
+#' this function additionally takes a `metrics` argument with a
+#' [metric set][yardstick::metric_set()] for new metrics to compute. This
+#' allows for computing new performance metrics without requiring users to
+#' re-evaluate models against resamples.
 #'
 #' Note that the [control option][control_grid()] `save_pred = TRUE` must
 #' have been supplied when generating `x`.
-#'
-#' If the `metrics` argument is equivalent to that passed as the `metrics`
-#' argument when generating `x`, then `compute_metrics(x, ...)` will return
-#' the same results as `collect_metrics(x, ...)` (though will be quite a
-#' bit slower).
 #'
 #' @param x The results of a tuning function like [tune_grid()] or
 #' [fit_resamples()], generated with the control option `save_pred = TRUE`.
 #' @param metrics A [metric set][yardstick::metric_set()] of new metrics
 #' to compute. Each metric in the set must have a metric type (usually
-#' `"numeric"`, `"class"`, or `"prob`) that matches some metric evaluated
+#' `"numeric"`, `"class"`, or `"prob"`) that matches some metric evaluated
 #' when generating `x`.
 #' @param summarize A single logical value indicating whether metrics should
 #' be summarized over resamples (`TRUE`) or return the values for each
@@ -66,7 +64,11 @@ compute_metrics <- function(x, metrics, summarize, event_level, ...) {
 
 #' @export
 #' @rdname compute_metrics
-compute_metrics.default <- function(x, metrics, summarize, event_level, ...) {
+compute_metrics.default <- function(x,
+                                    metrics,
+                                    summarize = TRUE,
+                                    event_level = "first",
+                                    ...) {
   rlang::abort("No `compute_metrics()` method exists for this type of object.")
 }
 
@@ -77,15 +79,15 @@ compute_metrics.tune_results <- function(x,
                                          summarize = TRUE,
                                          event_level = "first",
                                          ...) {
-  if (!any(names(x) == ".predictions")) {
+  if (!".predictions" %in% names(x)) {
     rlang::abort(paste0(
-      "The inputted `x` argument must have been generated with the ",
+      "`x` must have been generated with the ",
       "control argument `save_pred = TRUE`."
     ))
   }
 
   if (!inherits(metrics, "metric_set")) {
-    rlang::abort("The inputted `metrics` argument must be a metric set.")
+    rlang::abort("`metrics` must be a metric set.")
   }
 
   new_metrics_info <- metrics_info(metrics)
@@ -96,10 +98,9 @@ compute_metrics.tune_results <- function(x,
   # each model. same story goes for prob metrics.
   if (!all(new_metrics_info$type %in% old_metrics_info$type)) {
     cli::cli_abort(c(
-      "The supplied `metrics` argument has input  \\
-       {cli::qty(new_metrics_info$type)} type{?s} {.val {new_metrics_info$type}}, \\
-       while the metrics used to generate predictions only used \\
-       {.val {old_metrics_info$type}} metrics.",
+      "The supplied `metrics` argument has metrics of type \\
+       {.val {new_metrics_info$type}}, while the metrics used to generate \\
+       predictions only used {.val {old_metrics_info$type}} metrics.",
       "i" = "To save predictions for {new_metrics_info$type} metrics, \\
              generate {.arg x} with metrics of that type."
     ))
@@ -114,7 +115,7 @@ compute_metrics.tune_results <- function(x,
 
   preds <- x$.predictions
   preds <- purrr::map2(preds, x$id, mutate_id)
-  preds <- dplyr::bind_rows(preds)
+  preds <- purrr::list_rbind(preds)
   preds <- dplyr::group_by(preds, id, .config)
 
   # call `.estimate_metrics` with additional groupings
@@ -129,13 +130,12 @@ compute_metrics.tune_results <- function(x,
     )
 
   # re-order so `.config` comes last
-  mtrcs <-
-    mtrcs[, c(colnames(mtrcs)[colnames(mtrcs) != ".config"], ".config")]
+  mtrcs <- mtrcs[c(setdiff(names(mtrcs), ".config"), ".config")]
 
   # nest by resample id
-  nest_cols <- c("id")
+  nest_cols <- "id"
 
-  if ("Iter1" %in% unique(mtrcs$.config)) {
+  if ("Iter1" %in% mtrcs$.config) {
     .iter <- mtrcs$.config
     nonzero <- grepl("Iter", .iter)
     .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
