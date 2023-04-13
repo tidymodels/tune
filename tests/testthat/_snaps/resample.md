@@ -22,11 +22,11 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `fit()`:
-        ! Can't subset columns that don't exist.
+        ! Can't select columns that don't exist.
         x Column `foobar` doesn't exist.
       x Fold2: preprocessor 1/1:
         Error in `fit()`:
-        ! Can't subset columns that don't exist.
+        ! Can't select columns that don't exist.
         x Column `foobar` doesn't exist.
     Condition
       Warning:
@@ -39,10 +39,10 @@
     Message
       x Fold1: preprocessor 1/1, model 1/1:
         Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a factor.
+        ! For a classification model, the outcome should be a `factor`, not a ...
       x Fold2: preprocessor 1/1, model 1/1:
         Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a factor.
+        ! For a classification model, the outcome should be a `factor`, not a ...
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
