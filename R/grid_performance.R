@@ -194,7 +194,8 @@ maybe_estimate <- function(x) {
 
 maybe_surv_prob <- function(x) {
   info <- as_tibble(x)
-  if (any(info$class == "dynamic_survival_metric")) {
+  prob_types <- c("dynamic_survival_metric", "integrated_survival_metric")
+  if (any(info$class %in% prob_types)) {
     res <- rlang::sym(".pred")
   } else {
     res <- NULL
