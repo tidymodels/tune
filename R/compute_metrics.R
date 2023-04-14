@@ -146,8 +146,8 @@ compute_metrics.tune_results <- function(x,
   }
 
   mtrcs <- nest(mtrcs, .by = all_of(nest_cols), .key = ".metrics")
-  match_locations <- vctrs::vec_locate_matches(x[nest_cols], mtrcs[nest_cols])
-  x$.metrics <- vctrs::vec_slice(mtrcs$.metrics, match_locations$haystack)
+  match_locations <- vec_locate_matches(x[nest_cols], mtrcs[nest_cols])
+  x$.metrics <- vec_slice(mtrcs$.metrics, match_locations$haystack)
 
   attr(x, "metrics") <- metrics
 
