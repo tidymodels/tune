@@ -41,7 +41,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
     # Regular predictions
     tmp_res <- predict(model, x_vals, type = type_iter)
     tmp_res$.row <- orig_rows
-    tmp_res <- vctrs::vec_cbind(tmp_res, grid)
+    tmp_res <- vec_cbind(tmp_res, grid)
 
     if (!is.null(submodels)) {
       submod_length <- lengths(submodels)
@@ -66,7 +66,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
         grid_bind <- grid
         grid_bind[, submod_param] <- NULL
 
-        tmp_sub <- vctrs::vec_cbind(tmp_sub, grid_bind)
+        tmp_sub <- vec_cbind(tmp_sub, grid_bind)
         rownames(tmp_sub) <- NULL
         tmp_sub <- dplyr::rename(tmp_sub, !!!make_rename_arg(grid, model, submodels))
         tmp_sub <- tmp_sub[, names(tmp_res)]
@@ -94,7 +94,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
 
     if (.use_case_weights_with_yardstick(case_weights)) {
       case_weights <- rlang::list2(!!case_weights_column_name() := case_weights)
-      case_weights <- vctrs::new_data_frame(case_weights)
+      case_weights <- new_data_frame(case_weights)
       case_weights <- dplyr::mutate(case_weights, .row = orig_rows)
       res <- dplyr::full_join(res, case_weights, by = ".row")
     }
