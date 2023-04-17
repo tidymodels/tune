@@ -369,6 +369,7 @@ choose_eval_time <- function(x, object, eval_time) {
     if (length(eval_time) > 1) {
       rlang::abort("Please pick a single evaluation time point.")
     }
+    times <- unique(x$.eval_time)
     if (!any(times == eval_time)) {
       msg <- cli::pluralize("No evaluation times matched a value of {eval_time}.")
       rlang::abort(msg)
