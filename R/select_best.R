@@ -349,7 +349,7 @@ middle_eval_time <- function(x) {
 
 choose_eval_time <- function(x, object, eval_time) {
   mtrs <- .get_tune_metrics(object)
-  mtrs <- as_tibble(mtrs)
+  mtrs <- tibble::as_tibble(mtrs)
   actual_metrics <- unique(x$.metric)
   mtrs <- mtrs[mtrs$metric %in% actual_metrics, ]
 
