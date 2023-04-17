@@ -128,7 +128,7 @@ last_fit_workflow <- function(object, split, metrics, control, eval_time = NULL)
     resamples = resamples,
     metrics = metrics,
     control = control,
-    eval_time = NULL,
+    eval_time = eval_time,
     rng = rng
   )
 
