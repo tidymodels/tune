@@ -33,7 +33,7 @@ engines <-
 num_models <- engines %>% distinct(model) %>% nrow()
 ```
 
-In June 2022, the censored package was released. This enabled users to fit event time/survival time models using the tidymodels framework. As of this writing, there are now a total of `r nrow(engines)` different engines that can be used with `r num_models` different models. 
+The censored package was released in June 2022, enabling users to fit event time/survival time models using the tidymodels framework. As of this writing, there are now a total of `r nrow(engines)` different engines that can be used with `r num_models` different models. 
 
 This document is intended as a tutorial for using the broader tidymodels framework for event time analysis, including model tuning, evaluation, and selection. 
 
@@ -54,27 +54,34 @@ pak::pak(c("tidymodels/yardstick"), ask = FALSE)
 
 ## An Example
 
-We'll use the heart value data set in the joineR package (also described in [this publication](https://doi.org/10.1186/s12874-021-01375-x)). There are `r length(unique(heart.valve$num))` patients in the study that experienced aortic valve replacement surgery. The data has time-dependent covariates, but we will skip those to simplify the analysis here. The outcome is the time to death after surgery.
-
-First, we'll load packages and then get the appropriate event times for the outcome (since there are multiple time points where patients were measured). Then we'll get the predictors that have the same values across the multiple time points and then merge them. We'll use the functions in the joineR package for the first two tasks: 
-
+We'll use the heart valve data set in the joineR package (also described in [this publication](https://doi.org/10.1186/s12874-021-01375-x)). There are `r length(unique(heart.valve$num))` patients in the study that experienced aortic valve replacement surgery. The data has time-dependent covariates, but we will skip those to simplify the analysis here. The outcome is the time to death after surgery:
 
 ```{r}
-#| label: get-initial-data
+#| label: print-data-head
+library(joineR)
+
+data(heart.valve, package = "joineR")
+
+str(heart.valve)
+```
+
+Loading needed tidymodels packages:
+
+```{r}
+#| label: load-tm
 library(tidymodels)
 library(censored)
-library(joineR)
 
 # ------------------------------------------------------------------------------
 
 tidymodels_prefer()
 theme_set(theme_bw())
 options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
+```
 
-# ------------------------------------------------------------------------------
+We'll retrieve the appropriate event times for the outcome (since there are multiple time points where patients were measured). Then, we'll identify the predictors that have the same values across the multiple time points and merge them. Functions in the joineR package will help us out here: 
 
-data(heart.valve, package = "joineR")
-
+```{r}
 outcome_data <- 
   UniqueVariables(heart.valve, var.col = c("fuyrs", "status"), id.col = "num")
 covar_data <- 
@@ -84,7 +91,10 @@ covar_data <-
 
 heart_data <- 
   full_join(outcome_data, covar_data, by = "num") %>% 
-  select(-num) 
+  select(-num) %>%
+  as_tibble()
+
+heart_data
 ```
 
 We'll reformat some of the categorical predictors since they are currently encoded as integers. 
@@ -145,7 +155,7 @@ In the training set, the observed time values range from `r format(min(valve_tr$
 
 ## New Prediction Types
 
-For event time analysis, there are different types of predictions. Dynamic predictions require a specific time to make the prediction (sometimes called a "landmark time"). For example, we might want to know the probability of survival up to some time $t$. A static prediction is one that is not dependent on time. For example, we might predict the event time from a model. 
+There are different types of predictions for event time analysis. _Dynamic_ predictions require a specific time to make the prediction (sometimes called a "landmark time"). For example, we might want to know the probability of survival up to some time $t$. A _static_ prediction is one that is not dependent on time. For example, we might predict the event time from a model. 
 
 To demonstrate, let's fit a bagged tree to the training data: 
 
@@ -169,10 +179,9 @@ Instead of using the training or testing sets, let's make two fake patients by r
 #| fake-patients
 set.seed(4853)
 fake_examples <- 
-  bind_rows(
-    map_dfc(valve_tr, ~ sample(.x, 1)),
-    map_dfc(valve_tr, ~ sample(.x, 1))
-  )
+  slice(valve_tr, sample(nrow(valve_tr), 2))
+
+fake_examples
 ```
 
 The standard `predict()` machinery can be used to get static (`type = "time"`) or dynamic predictions (`type = "survival"`). We'll create a grid of `r length(seq(0, 10, by = .1))` time points for the latter:
@@ -257,13 +266,12 @@ ipcw_data <-
 ipcw_data
 
 # The adjusted data:
-
 ipcw_data$.pred[[1]] %>% slice(1:5)
 ```
 
 The last column is used as a case weight. 
 
-With the data in this format, a function such as `brier_survival()` can be used: 
+With the data in this format, we can use a yardstick function for dynamic metrics like `brier_survival()`: 
 
 ```{r}
 #| label: brier-surv
@@ -275,7 +283,7 @@ brier_scores <-
 brier_scores %>% slice(1:5)
 ```
 
-We compute a score for each landmark time.
+We compute a score for each landmark time:
 
 ```{r}
 #| label: brier-surv-plot
@@ -293,7 +301,7 @@ The vertical line is the level of performance that you would get with a non-info
 
 The other dynamic metrics that are currently implemented are `brier_survival_integrated()` (for an AUC of the curve above) and `roc_auc_survival().` 
 
-Multiple combinations of static and dynamic metrics can be combined via a metric set. 
+Multiple static and dynamic metrics can be combined via a metric set. 
 
 ## Resampling the Model
 
@@ -313,7 +321,7 @@ bag_tree_res <-
   fit_resamples(event_time ~ ., resamples = valve_rs, eval_time = time_points)
 ```
 
-By default, the Brier score is used. 
+By default, the Brier score is used:
 
 ```{r}
 #| label: resampled-brier
@@ -339,7 +347,7 @@ bag_tree_res  %>%
 
 ## Model Tuning
 
-Suppose we try a regularized Cox model for these data. We'll add a recipe to the analysis and tune a lasso model. The code is pretty standard tidymodels syntax, with the added `eval_time` argument. We'll also use a metric set to include the integrated Brier score, which computes the AUC of the Brier/time curve. 
+Suppose we try a regularized Cox model for these data. We'll add a recipe to the analysis and tune a lasso model. The code is pretty standard tidymodels syntax, with the added `eval_time` argument. We'll also use a metric set to include the integrated Brier score, which computes the AUC of the Brier/time curve: 
 
 ```{r}
 #| label: lasso-model
@@ -380,7 +388,7 @@ We can plot the results for that specific metric:
 autoplot(lasso_tune_res, metric = "brier_survival_integrated") 
 ```
 
-For these plot methods, `eval_times` can be passed in as shown. If a dynamic metric is used and `eval_time` is not set, the function will pick a time near the middle of the range. 
+For these plot methods, `eval_time` can be passed in as shown. If a dynamic metric is used and `eval_time` is not set, the function will pick a time near the middle of the range. 
 
 We can also choose the best penalty. If we use an integrated method, no `eval_time` is needed: 
 
