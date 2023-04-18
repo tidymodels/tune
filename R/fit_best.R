@@ -28,9 +28,10 @@
 #' column was from a validation split, the combined training and validation sets
 #' are used.
 #'
-#' In comparison to [last_fit()], that function requires a finalized model, fits
+#' This is different to [last_fit()]: that function requires a finalized model, fits
 #' the model on the training set defined by [rsample::initial_split()], and
 #' computes metrics from the test set.
+#'
 #' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
