@@ -1,4 +1,4 @@
-# sensitivity to `metrics` argument (differing class metric types)
+# `metrics` argument works (differing class metric types)
 
     Code
       compute_metrics(res_auc, m_set_acc)

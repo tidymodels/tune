@@ -29,7 +29,7 @@ test_that("gives same output as collect_metrics() when metrics match", {
   expect_equal(collected_unsum, computed_unsum)
 })
 
-test_that("sensitivity to `metrics` argument (numeric metrics)", {
+test_that("`metrics` argument works (numeric metrics)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
 
@@ -85,7 +85,7 @@ test_that("sensitivity to `metrics` argument (numeric metrics)", {
   expect_equal(collected_unsum_rmse, computed_unsum_rmse)
 })
 
-test_that("sensitivity to `metrics` argument (compatible class metric types)", {
+test_that("`metrics` argument works (compatible class metric types)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
 
@@ -153,7 +153,7 @@ test_that("sensitivity to `metrics` argument (compatible class metric types)", {
   expect_equal(collected_unsum_prob, computed_unsum_prob)
 })
 
-test_that("sensitivity to `metrics` argument (differing class metric types)", {
+test_that("`metrics` argument works (differing class metric types)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
 
@@ -202,7 +202,7 @@ test_that("sensitivity to `metrics` argument (differing class metric types)", {
   )
 })
 
-test_that("sensitivity to `metrics` argument (iterative tuning)", {
+test_that("`metrics` argument works (iterative tuning)", {
   # the pattern of tuning first with one metric, then with another,
   # and then testing equality of collected vs computed metrics is a bit
   # more complicated here, as a different metric will lead to different
