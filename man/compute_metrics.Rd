@@ -17,9 +17,7 @@ compute_metrics(x, metrics, summarize, event_level, ...)
 \code{\link[=fit_resamples]{fit_resamples()}}, generated with the control option \code{save_pred = TRUE}.}
 
 \item{metrics}{A \link[yardstick:metric_set]{metric set} of new metrics
-to compute. Each metric in the set must have a metric type (usually
-\code{"numeric"}, \code{"class"}, or \code{"prob"}) that matches some metric evaluated
-when generating \code{x}.}
+to compute. See the "Details" section below for more information.}
 
 \item{summarize}{A single logical value indicating whether metrics should
 be summarized over resamples (\code{TRUE}) or return the values for each
@@ -46,6 +44,14 @@ re-evaluate models against resamples.
 
 Note that the \link[=control_grid]{control option} \code{save_pred = TRUE} must
 have been supplied when generating \code{x}.
+}
+\details{
+Each metric in the set supplied to the \code{metrics} argument must have a metric
+type (usually \code{"numeric"}, \code{"class"}, or \code{"prob"}) that matches some metric
+evaluated when generating \code{x}. e.g. For example, if \code{x} was generated with
+only hard \code{"class"} metrics, this function can't compute metrics that take in
+class probabilities (\code{"prob"}.) By default, the tuning functions used to
+generate \code{x} compute metrics of all needed types.
 }
 \examples{
 \dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

@@ -15,9 +15,7 @@
 #' @param x The results of a tuning function like [tune_grid()] or
 #' [fit_resamples()], generated with the control option `save_pred = TRUE`.
 #' @param metrics A [metric set][yardstick::metric_set()] of new metrics
-#' to compute. Each metric in the set must have a metric type (usually
-#' `"numeric"`, `"class"`, or `"prob"`) that matches some metric evaluated
-#' when generating `x`.
+#' to compute. See the "Details" section below for more information.
 #' @param summarize A single logical value indicating whether metrics should
 #' be summarized over resamples (`TRUE`) or return the values for each
 #' individual resample. See [collect_metrics()] for more details on how
@@ -26,6 +24,15 @@
 #' @inheritParams collect_metrics
 #'
 #' @return A tibble. See [collect_metrics()] for more details on the return value.
+#'
+#' @details
+#'
+#' Each metric in the set supplied to the `metrics` argument must have a metric
+#' type (usually `"numeric"`, `"class"`, or `"prob"`) that matches some metric
+#' evaluated when generating `x`. e.g. For example, if `x` was generated with
+#' only hard `"class"` metrics, this function can't compute metrics that take in
+#' class probabilities (`"prob"`.) By default, the tuning functions used to
+#' generate `x` compute metrics of all needed types.
 #'
 #' @examplesIf tune:::should_run_examples()
 #' # load needed packages:
