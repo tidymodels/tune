@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function requires that the input be generated with the control option `save_pred = TRUE` and additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model. (#663)
+
 # tune 1.1.1
 
 * Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 

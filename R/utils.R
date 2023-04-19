@@ -67,6 +67,17 @@ new_bare_tibble <- function(x, ..., class = character()) {
   tibble::new_tibble(x, nrow = nrow(x), ..., class = class)
 }
 
+# a helper that takes in a .config vector and returns the corresponding `.iter`.
+# entries from initial results, e.g. `Model1_Preprocessor3`, are assigned
+# `.iter = 0`.
+.config_to_.iter <- function(.config) {
+  .iter <- .config
+  nonzero <- grepl("Iter", .iter)
+  .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
+  .iter <- as.numeric(.iter)
+  .iter
+}
+
 ## -----------------------------------------------------------------------------
 
 #' Various accessor functions
