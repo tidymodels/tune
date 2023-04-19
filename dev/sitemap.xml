@@ -43,6 +43,9 @@
     <loc>https://tune.tidymodels.org/dev/reference/collect_predictions.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/dev/reference/compute_metrics.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/dev/reference/conf_mat_resampled.html</loc>
   </url>
   <url>

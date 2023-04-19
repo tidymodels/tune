@@ -142,7 +142,7 @@ metrics are desired, they can be bundled. For example, to estimate the area
 under the ROC curve as well as the sensitivity and specificity (under the
 typical probability cutoff of 0.50), the <code>metrics</code> argument could be given:</p>
 <div class="sourceCode"><pre><code><span></span>
-<span>  <span class="va">metrics</span> <span class="op">=</span> <span class="fu">metric_set</span><span class="op">(</span><span class="va">roc_auc</span>, <span class="va">sens</span>, <span class="va">spec</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="va">metrics</span> <span class="op">=</span> <span class="fu"><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">metric_set</a></span><span class="op">(</span><span class="va">roc_auc</span>, <span class="va">sens</span>, <span class="va">spec</span><span class="op">)</span></span></code></pre></div>
 
 <p>Each metric is calculated for each candidate model.</p>
 <p>If no metric set is provided, one is created:</p><ul><li><p>For regression models, the root mean squared error and coefficient
