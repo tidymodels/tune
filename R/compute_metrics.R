@@ -143,11 +143,7 @@ compute_metrics.tune_results <- function(x,
   nest_cols <- "id"
 
   if ("Iter1" %in% mtrcs$.config) {
-    .iter <- mtrcs$.config
-    nonzero <- grepl("Iter", .iter)
-    .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
-    .iter <- as.numeric(.iter)
-    mtrcs$.iter <- .iter
+    mtrcs$.iter <- .config_to_.iter(mtrcs$.config)
 
     nest_cols <- c(nest_cols, ".iter")
   }
