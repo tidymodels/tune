@@ -4,8 +4,10 @@
 #' the final fit on the entire training set is needed and is then evaluated on
 #' the test set.
 #'
-#' @param object A `parsnip` model specification or a [workflows::workflow()].
-#'   No tuning parameters are allowed.
+#' @param object A `parsnip` model specification or an unfitted
+#'   [workflow()][workflows::workflow]. No tuning parameters are allowed; if arguments
+#'   have been marked with [tune()][hardhat::tune], their values must be
+#'   [finalized][finalize_model].
 #'
 #' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].

@@ -20,8 +20,10 @@ last_fit(object, ...)
 \method{last_fit}{workflow}(object, split, ..., metrics = NULL, control = control_last_fit())
 }
 \arguments{
-\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
-No tuning parameters are allowed.}
+\item{object}{A \code{parsnip} model specification or an unfitted
+\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
+have been marked with \link[hardhat:tune]{tune()}, their values must be
+\link[=finalize_model]{finalized}.}
 
 \item{...}{Currently unused.}
 
