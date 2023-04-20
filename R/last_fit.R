@@ -77,6 +77,16 @@ last_fit.default <- function(object, ...) {
 }
 
 #' @export
+last_fit.model_fit <- function(object, ...) {
+  cli::cli_abort(c(
+    "{.help [{.fun last_fit}](tune::last_fit)} is not well-defined for \\
+     fitted model objects.",
+    "i" = "{.help [{.fun last_fit}](tune::last_fit)} takes \\
+           a model specification or unfitted workflow as its first argument."
+  ))
+}
+
+#' @export
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL, control = control_last_fit()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
