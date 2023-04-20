@@ -179,7 +179,7 @@ Instead of using the training or testing sets, let's make two fake patients by r
 #| fake-patients
 set.seed(4853)
 fake_examples <- 
-  slice(valve_tr, sample(nrow(valve_tr), 2))
+  slice_sample(valve_tr, n = 2)
 
 fake_examples
 ```
@@ -200,7 +200,7 @@ bag_pred <-
 bag_pred
 ```
 
-As usual, the prediction columns are prefaced with `.pred_`. What is unusual is that `.pred` is a list column, and each list element is a tibble with `r ncol(bag_pred$.pred[[1]])` columns and `r nrow(bag_pred$.pred[[1]])` rows. They contain the survival estimates for each patient: 
+As usual, the prediction columns are prefixed with `.pred_`. What is unusual is that `.pred` is a list column, and each list element is a tibble with `r ncol(bag_pred$.pred[[1]])` columns and `r nrow(bag_pred$.pred[[1]])` rows. They contain the survival estimates for each patient: 
 
 ```{r}
 #| dot-pred
@@ -252,7 +252,7 @@ The main difficulty is that, due to censoring, some data can't be cleanly classi
 
 There are a lot of ways to deal with this issue. We've done an exhaustive reading of the literature and have come to a somewhat opinionated conclusion. Most of the survival metrics in the literature are developed to univariately score a collection of predictors, typically biomarkers, regarding how well they are associated with the event times. That's not what we are doing; we have model predictions. 
 
-Our choice for dynamic metrics is to use the inverse probability of censoring weights (IPCW), specifically the scheme used by [Graf _et al._ (1999)](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C7&q=%22Assessment+and+comparison+of+prognostic+classification+schemes+for+survival+data). They compute the probability that every data point might have been censored and uses the inverse of this value as a case weight. If the observed time is a censoring time, and that is before the evaluation time, the data point should make no contribution to the performance metric. 
+Our choice for dynamic metrics is to use the inverse probability of censoring weights (IPCW), specifically the scheme used by [Graf _et al._ (1999)](https://scholar.google.com/scholar?hl=en&as_sdt=0%2C7&q=%22Assessment+and+comparison+of+prognostic+classification+schemes+for+survival+data). They compute the probability that every data point might have been censored and uses the inverse of this value as a case weight. If the observed time is a censoring time that occurs before the evaluation time, the data point should make no contribution to the performance metric. 
 
 If you were to compute model performance manually (as above), these weights are computed using:
 
@@ -262,14 +262,16 @@ ipcw_data <-
   test_pred %>% 
   .censoring_weights_graf(bag_fit, .) %>% 
   select(-.pred_time)
+```
 
+This adds a column called `.weight_censored` to the tibble of predicted survival probabilities which is used as a case weight in calculating the performance metric.
+
+```{r}
 ipcw_data
 
 # The adjusted data:
 ipcw_data$.pred[[1]] %>% slice(1:5)
 ```
-
-The last column is used as a case weight. 
 
 With the data in this format, we can use a yardstick function for dynamic metrics like `brier_survival()`: 
 
@@ -385,7 +387,7 @@ We can plot the results for that specific metric:
 #| label: integrated-tune
 #| out-width: "60%"
 #| fig-align: center
-autoplot(lasso_tune_res, metric = "brier_survival_integrated") 
+autoplot(lasso_tune_res, metric = "brier_survival", eval_time = 5)
 ```
 
 For these plot methods, `eval_time` can be passed in as shown. If a dynamic metric is used and `eval_time` is not set, the function will pick a time near the middle of the range. 
@@ -407,7 +409,7 @@ lasso_final_wflow <-
 lasso_final_wflow
 ```
 
-For the test set, you can manually predict it or use `last_fit()` with the original split object: 
+For performance assessment on the test set, you can manually predict it and calculate performance or use `last_fit()` with the original split object to do these steps for you: 
 
 ```{r}
 #| label: last-fit
@@ -415,7 +417,7 @@ test_res <-
   last_fit(lasso_final_wflow, valve_split, eval_time = time_points)
 ```
 
-As usual, you can get the test set statistics via: 
+As usual, you can get the test set metrics via: 
 
 ```{r}
 #| label: test-metrics
