@@ -49,11 +49,23 @@ This function is a shortcut for the manual steps of:
 The data used for the fit are taken from the \code{splits} column. If the split
 column was from a validation split, the combined training and validation sets
 are used.
-
-This is different to \code{\link[=last_fit]{last_fit()}}: that function requires a finalized model, fits
-the model on the training set defined by \code{\link[rsample:initial_split]{rsample::initial_split()}}, and
-computes metrics from the test set.
 }
+\section{See also}{
+
+
+\code{\link[=last_fit]{last_fit()}} is closely related to \code{\link[=fit_best]{fit_best()}}. They both
+give you access to a workflow fitted on the training data but are situated
+somewhat differently in the modeling workflow. \code{\link[=fit_best]{fit_best()}} picks up
+after a tuning function like \code{\link[=tune_grid]{tune_grid()}} to take you from tuning results
+to fitted workflow, ready for you to predict and assess further. \code{\link[=last_fit]{last_fit()}}
+assumes you have made your choice of hyperparameters and finalized your
+workflow to then take you from finalized workflow to fitted workflow and
+further to performance assessment on the test data. While \code{\link[=fit_best]{fit_best()}} gives
+a fitted workflow, \code{\link[=last_fit]{last_fit()}} gives you the performance results. If you
+want the fitted workflow, you can extract it from the result of \code{\link[=last_fit]{last_fit()}}
+via \link[=extract_workflow.tune_results]{extract_workflow()}.
+}
+
 \examples{
 \dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)

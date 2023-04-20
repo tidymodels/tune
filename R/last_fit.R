@@ -27,6 +27,21 @@
 #'  and the final tuning parameters (if any) have been finalized. The next step
 #'  would be to fit using the entire training set and verify performance using
 #'  the test data.
+#'
+#' @section See also:
+#'
+#' [last_fit()] is closely related to [fit_best()]. They both
+#' give you access to a workflow fitted on the training data but are situated
+#' somewhat differently in the modeling workflow. [fit_best()] picks up
+#' after a tuning function like [tune_grid()] to take you from tuning results
+#' to fitted workflow, ready for you to predict and assess further. [last_fit()]
+#' assumes you have made your choice of hyperparameters and finalized your
+#' workflow to then take you from finalized workflow to fitted workflow and
+#' further to performance assessment on the test data. While [fit_best()] gives
+#' a fitted workflow, [last_fit()] gives you the performance results. If you
+#' want the fitted workflow, you can extract it from the result of [last_fit()]
+#' via [extract_workflow()][extract_workflow.tune_results].
+#'
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
 #' model (and recipe, if any) that used the training set. Helper functions
