@@ -155,7 +155,7 @@ In the training set, the observed time values range from `r format(min(valve_tr$
 
 ## New Prediction Types
 
-There are different types of predictions for event time analysis. _Dynamic_ predictions require a specific time to make the prediction (sometimes called a "landmark time"). For example, we might want to know the probability of survival up to some time $t$. A _static_ prediction is one that is not dependent on time. For example, we might predict the event time from a model. 
+There are different types of predictions for event time analysis. _Dynamic_ predictions require a specific time to make the prediction at. That time is sometimes called a "landmark time", we call it "evaluation time" since our focus is prediction. For example, we might want to know the probability of survival up to some evaluation time $t$. A _static_ prediction is one that is not dependent on an evaluation time point. For example, we might predict the event time from a model. 
 
 To demonstrate, let's fit a bagged tree to the training data: 
 
@@ -184,7 +184,7 @@ fake_examples <-
 fake_examples
 ```
 
-The standard `predict()` machinery can be used to get static (`type = "time"`) or dynamic predictions (`type = "survival"`). We'll create a grid of `r length(seq(0, 10, by = .1))` time points for the latter:
+The standard `predict()` machinery can be used to get static (e.g., `type = "time"`) or dynamic predictions (e.g., `type = "survival"`). We'll create a grid of `r length(seq(0, 10, by = .1))` evaluation time points for the latter:
 
 
 ```{r}
@@ -246,7 +246,7 @@ test_pred %>%
   concordance_survival(truth = event_time, estimate = .pred_time)
 ```
 
-Dynamic metrics usually are classification metrics re-purposed for survival analysis. For example, if we wanted to evaluate the model at $t = 5$, we could use the predicted survival probabilities and try to classify each data point as dead or alive. This ends up being a two class situation, and metrics like the Brier Score or the area under the ROC curve can be used to quantify how well the model works at time $t$. 
+Dynamic metrics usually are classification metrics re-purposed for survival analysis. For example, if we wanted to evaluate the model at $t = 5$, we could use the predicted survival probabilities and try to classify each data point as dead or alive. This ends up being a two class situation, and metrics like the Brier Score or the area under the ROC curve can be used to quantify how well the model works at evaluation time $t$. 
 
 The main difficulty is that, due to censoring, some data can't be cleanly classified. If we have a censored event at time 6, we definitely know that it should not be classified as an event. However, if the observed time were 2 and censored, we don't know if it is an event at $t = 5$ or not. 
 
@@ -285,7 +285,7 @@ brier_scores <-
 brier_scores %>% slice(1:5)
 ```
 
-We compute a score for each landmark time:
+We compute a score for each evaluation time:
 
 ```{r}
 #| label: brier-surv-plot
