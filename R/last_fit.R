@@ -27,7 +27,9 @@
 #'  the test data.
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
-#' model (and recipe, if any) that used the training set.
+#' model (and recipe, if any) that used the training set. Helper functions
+#' for formatting tuning results like [collect_metrics()] and
+#' [collect_predictions()] can be used with `last_fit()` output.
 #' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
@@ -45,8 +47,11 @@
 #' spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 #' spline_res
 #'
-#' # test set results
-#' spline_res$.metrics[[1]]
+#' # test set metrics
+#' collect_metrics(spline_res)
+#'
+#' # test set predictions
+#' collect_predictions(spline_res)
 #'
 #' # or use a workflow
 #'

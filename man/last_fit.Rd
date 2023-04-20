@@ -39,7 +39,9 @@ process.}
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.
 However, a list column called \code{.workflow} is also attached with the fitted
-model (and recipe, if any) that used the training set.
+model (and recipe, if any) that used the training set. Helper functions
+for formatting tuning results like \code{\link[=collect_metrics]{collect_metrics()}} and
+\code{\link[=collect_predictions]{collect_predictions()}} can be used with \code{last_fit()} output.
 }
 \description{
 \code{\link[=last_fit]{last_fit()}} emulates the process where, after determining the best model,
@@ -70,8 +72,11 @@ lin_mod <- linear_reg() \%>\%
 spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 spline_res
 
-# test set results
-spline_res$.metrics[[1]]
+# test set metrics
+collect_metrics(spline_res)
+
+# test set predictions
+collect_predictions(spline_res)
 
 # or use a workflow
 
