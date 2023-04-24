@@ -63,7 +63,7 @@ should_run_examples <- function(suggests = NULL) {
 # new_tibble() currently doesn't strip attributes
 # https://github.com/tidyverse/tibble/pull/769
 new_bare_tibble <- function(x, ..., class = character()) {
-  x <- new_data_frame(x)
+  x <- vctrs::new_data_frame(x)
   tibble::new_tibble(x, nrow = nrow(x), ..., class = class)
 }
 

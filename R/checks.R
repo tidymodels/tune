@@ -63,7 +63,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
     grid_distinct <- distinct(grid)
 
     # remove attributes, particularly those tacked on by `expand.grid()`
-    grid_distinct <- new_data_frame(grid_distinct, n = nrow(grid_distinct))
+    grid_distinct <- vctrs::new_data_frame(grid_distinct, n = nrow(grid_distinct))
 
     if (!identical(nrow(grid_distinct), nrow(grid))) {
       rlang::warn(
