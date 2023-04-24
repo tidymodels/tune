@@ -95,7 +95,7 @@ pull_all_outcome_names <- function(resamples, res) {
 reduce_all_outcome_names <- function(resamples) {
   all_outcome_names <- resamples$.all_outcome_names
   all_outcome_names <- purrr::list_flatten(all_outcome_names)
-  all_outcome_names <- vctrs::vec_unique(all_outcome_names)
+  all_outcome_names <- vec_unique(all_outcome_names)
 
   n_unique <- length(all_outcome_names)
 

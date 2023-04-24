@@ -370,20 +370,22 @@ collector <- function(x, coll_col = ".predictions") {
   }
 
   id_cols <- colnames(x)[grepl("id", colnames(x))]
-  keep_cols <- c(coll_col, id_cols)
+  keep_cols <- c(id_cols, keep_cols)
   x <- x[keep_cols]
   coll_col <- x[[coll_col]]
+  sizes <- list_sizes(coll_col)
 
   res <-
-    vctrs::vec_cbind(
-      vctrs::list_unchop(coll_col),
-      vctrs::vec_rep_each(x[, id_cols], times = vctrs::list_sizes(coll_col))
+    vec_cbind(
+      vec_rep_each(x[, id_cols], times = sizes),
+      list_unchop(coll_col)
     )
+
 
   arrange_cols <- c(".eval_time", ".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
-  res <- vctrs::vec_slice(res, vctrs::vec_order(res[arrange_cols]))
+  vec_slice(res, vec_order(res[arrange_cols]))
 }
 
 #' @export
@@ -398,15 +400,15 @@ collector <- function(x, coll_col = ".predictions") {
 
   metrics <- x[[".metrics"]]
 
-  out <- vctrs::list_unchop(metrics)
+  out <- list_unchop(metrics)
   out <- out[c(param_names, ".config")]
 
   if (rlang::has_name(x, ".iter")) {
     iter <- x[[".iter"]]
-    out[[".iter"]] <- vctrs::vec_rep_each(iter, times = vctrs::list_sizes(metrics))
+    out[[".iter"]] <- vec_rep_each(iter, times = list_sizes(metrics))
   }
 
-  out <- vctrs::vec_unique(out)
+  out <- vec_unique(out)
 
   out
 }

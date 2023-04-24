@@ -45,6 +45,7 @@ reference:
     - coord_obs_pred
     - expo_decay
     - starts_with("collect")
+    - starts_with("compute")
     - filter_parameters
     - show_best
     - show_notes

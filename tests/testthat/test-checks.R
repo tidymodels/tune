@@ -79,7 +79,7 @@ test_that("grid objects", {
   )
   expect_equal(
     tune:::check_grid(grid_4, chi_wflow),
-    tibble::as_tibble(vctrs::data_frame(grid_4))
+    tibble::as_tibble(data_frame(grid_4))
   )
 
   expect_silent(tune:::check_grid(grid_4, chi_wflow))

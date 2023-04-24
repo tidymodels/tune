@@ -50,7 +50,7 @@ The data used for the fit are taken from the \code{splits} column. If the split
 column was from a validation split, the combined training and validation sets
 are used.
 
-In comparison to \code{\link[=last_fit]{last_fit()}}, that function requires a finalized model, fits
+This is different to \code{\link[=last_fit]{last_fit()}}: that function requires a finalized model, fits
 the model on the training set defined by \code{\link[rsample:initial_split]{rsample::initial_split()}}, and
 computes metrics from the test set.
 }
