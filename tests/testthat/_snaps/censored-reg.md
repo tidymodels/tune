@@ -21,14 +21,15 @@
       eval_time = 1)
     Condition
       Error:
-      ! Evaluation times are only used for dynamic survival metrics.
+      ! Evaluation times are only used for dynamic and integrated survival metrics.
 
 ---
 
     Code
-      spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr,
-      eval_time = c(-1, Inf))
-    Condition
+      show_notes(no_usable_times)
+    Output
+      unique notes:
+      ------------------------------------------------------------------------
       Error:
       ! There were no usable evaluation times (finite, non-missing, and >= 0).
 

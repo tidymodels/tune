@@ -23,7 +23,13 @@ test_that("evaluation time", {
   expect_snapshot(error = TRUE,
     linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr, eval_time = 1)
   )
-  expect_snapshot(error = TRUE,
-    spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_time = c(-1, Inf))
+
+  suppressMessages(suppressWarnings(
+    no_usable_times <-
+      spec %>%
+      tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_time = c(-1, Inf))
+  ))
+  expect_snapshot(
+    show_notes(no_usable_times)
   )
 })
