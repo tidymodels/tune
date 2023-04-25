@@ -183,7 +183,7 @@ unnest_parameters <- function(x, params = NULL) {
 }
 
 maybe_estimate <- function(x) {
-  info <- as_tibble(x)
+  info <- tibble::as_tibble(x)
   if (any(info$class == "static_survival_metric")) {
     res <- rlang::sym(".pred_time")
   } else {
@@ -193,7 +193,7 @@ maybe_estimate <- function(x) {
 }
 
 maybe_surv_prob <- function(x) {
-  info <- as_tibble(x)
+  info <- tibble::as_tibble(x)
   # dyn_inputs defined in checks.R
   if (any(info$class %in% dyn_inputs)) {
     res <- rlang::sym(".pred")
