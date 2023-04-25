@@ -32,4 +32,17 @@ test_that("evaluation time", {
   expect_snapshot(
     show_notes(no_usable_times)
   )
+
+  times <- 4:1
+  expect_equal(get_metric_time(metric_set(brier_survival), times), 4)
+  expect_equal(get_metric_time(metric_set(concordance_survival), times), NULL)
+  expect_equal(get_metric_time(metric_set(brier_survival_integrated), times), NULL)
+  expect_equal(
+    get_metric_time(
+      metric_set(brier_survival, brier_survival_integrated, concordance_survival),
+      times
+    ),
+    4
+  )
+
 })
