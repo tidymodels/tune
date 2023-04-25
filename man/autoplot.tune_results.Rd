@@ -9,6 +9,7 @@
   type = c("marginals", "parameters", "performance"),
   metric = NULL,
   width = NULL,
+  eval_time = NULL,
   ...
 )
 }

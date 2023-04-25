@@ -119,6 +119,21 @@ maybe_add_ipcw <- function(.data, model, types) {
   parsnip::.censoring_weights_graf(model, .data)
 }
 
+#' Get time for analysis of dynamic survival metrics
+#' @param metrics A metric set.
+#' @param eval_time A vector of evaluation times.
+#' @export
+#' @keywords internal
+get_metric_time <- function(metrics, eval_time) {
+  info <- tibble::as_tibble(metrics)
+  if (any(info$class == "dynamic_survival_metric")) {
+    eval_time <- eval_time[1]
+  } else {
+    eval_time <- NULL
+  }
+  eval_time
+}
+
 predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
   if (is.null(subgrid)) {
     fn <- "predict.model_fit"

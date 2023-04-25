@@ -262,7 +262,7 @@ tune_bayes_workflow <-
     check_eval_time(eval_time, metrics)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
-    metrics_time <- eval_time[1]
+    metrics_time <- get_metric_time(metrics, eval_time)
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
 
     if (is.null(param_info)) {
