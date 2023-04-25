@@ -103,8 +103,10 @@ model+recipe or model+formula combination across many resamples.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A <code>parsnip</code> model specification or a <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code>.
-No tuning parameters are allowed.</p></dd>
+<dd><p>A <code>parsnip</code> model specification or an unfitted
+<a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflow()</a>. No tuning parameters are allowed; if arguments
+have been marked with <a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a>, their values must be
+<a href="finalize_model.html">finalized</a>.</p></dd>
 
 
 <dt>...</dt>

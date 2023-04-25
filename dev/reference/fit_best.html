@@ -127,9 +127,23 @@ If <code>NULL</code>, this argument will be set to
 <p>The data used for the fit are taken from the <code>splits</code> column. If the split
 column was from a validation split, the combined training and validation sets
 are used.</p>
-<p>This is different to <code><a href="last_fit.html">last_fit()</a></code>: that function requires a finalized model, fits
-the model on the training set defined by <code><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">rsample::initial_split()</a></code>, and
-computes metrics from the test set.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    
+
+
+<p><code><a href="last_fit.html">last_fit()</a></code> is closely related to <code>fit_best()</code>. They both
+give you access to a workflow fitted on the training data but are situated
+somewhat differently in the modeling workflow. <code>fit_best()</code> picks up
+after a tuning function like <code><a href="tune_grid.html">tune_grid()</a></code> to take you from tuning results
+to fitted workflow, ready for you to predict and assess further. <code><a href="last_fit.html">last_fit()</a></code>
+assumes you have made your choice of hyperparameters and finalized your
+workflow to then take you from finalized workflow to fitted workflow and
+further to performance assessment on the test data. While <code>fit_best()</code> gives
+a fitted workflow, <code><a href="last_fit.html">last_fit()</a></code> gives you the performance results. If you
+want the fitted workflow, you can extract it from the result of <code><a href="last_fit.html">last_fit()</a></code>
+via <a href="extract-tune.html">extract_workflow()</a>.</p>
     </div>
 
     <div class="section level2">

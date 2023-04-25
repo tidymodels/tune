@@ -94,8 +94,10 @@ the test set.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A <code>parsnip</code> model specification or a <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code>.
-No tuning parameters are allowed.</p></dd>
+<dd><p>A <code>parsnip</code> model specification or an unfitted
+<a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflow()</a>. No tuning parameters are allowed; if arguments
+have been marked with <a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a>, their values must be
+<a href="finalize_model.html">finalized</a>.</p></dd>
 
 
 <dt>...</dt>
@@ -127,7 +129,9 @@ process.</p></dd>
 
 <p>A single row tibble that emulates the structure of <code><a href="fit_resamples.html">fit_resamples()</a></code>.
 However, a list column called <code>.workflow</code> is also attached with the fitted
-model (and recipe, if any) that used the training set.</p>
+model (and recipe, if any) that used the training set. Helper functions
+for formatting tuning results like <code><a href="collect_predictions.html">collect_metrics()</a></code> and
+<code><a href="collect_predictions.html">collect_predictions()</a></code> can be used with <code>last_fit()</code> output.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -135,6 +139,23 @@ model (and recipe, if any) that used the training set.</p>
 and the final tuning parameters (if any) have been finalized. The next step
 would be to fit using the entire training set and verify performance using
 the test data.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    
+
+
+<p><code>last_fit()</code> is closely related to <code><a href="fit_best.html">fit_best()</a></code>. They both
+give you access to a workflow fitted on the training data but are situated
+somewhat differently in the modeling workflow. <code><a href="fit_best.html">fit_best()</a></code> picks up
+after a tuning function like <code><a href="tune_grid.html">tune_grid()</a></code> to take you from tuning results
+to fitted workflow, ready for you to predict and assess further. <code>last_fit()</code>
+assumes you have made your choice of hyperparameters and finalized your
+workflow to then take you from finalized workflow to fitted workflow and
+further to performance assessment on the test data. While <code><a href="fit_best.html">fit_best()</a></code> gives
+a fitted workflow, <code>last_fit()</code> gives you the performance results. If you
+want the fitted workflow, you can extract it from the result of <code>last_fit()</code>
+via <a href="extract-tune.html">extract_workflow()</a>.</p>
     </div>
 
     <div class="section level2">
@@ -161,13 +182,27 @@ the test data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [24/8]&gt;</span> train/test spl… <span style="color: #949494;">&lt;tibble&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span> <span style="color: #949494;">&lt;tibble&gt;</span>     <span style="color: #949494;">&lt;workflow&gt;</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># test set results</span></span></span>
-<span class="r-in"><span><span class="va">spline_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># test set metrics</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">spline_res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .metric .estimator .estimate .config             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> rmse    standard       3.80  Preprocessor1_Model1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> rsq     standard       0.729 Preprocessor1_Model1</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># test set predictions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="collect_predictions.html">collect_predictions</a></span><span class="op">(</span><span class="va">spline_res</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id               .pred  .row   mpg .config             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> train/test split  22.1     1  21   Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> train/test split  29.6     3  22.8 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> train/test split  13.5     7  14.3 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> train/test split  18.9    10  19.2 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> train/test split  31.0    18  32.4 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> train/test split  15.4    25  19.2 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span> train/test split  31.2    26  27.3 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span> train/test split  27.4    32  21.4 Preprocessor1_Model1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or use a workflow</span></span></span>
 <span class="r-in"><span></span></span>
