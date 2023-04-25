@@ -99,7 +99,9 @@ last_fit.model_fit <- function(object, ...) {
     "{.help [{.fun last_fit}](tune::last_fit)} is not well-defined for \\
      fitted model objects.",
     "i" = "{.help [{.fun last_fit}](tune::last_fit)} takes \\
-           a model specification or unfitted workflow as its first argument."
+           a {.help [model specification](parsnip::model_spec)} or \\
+           {.help [unfitted workflow](workflows::workflow)} as its first \\
+           argument."
   ))
 }
 

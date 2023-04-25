@@ -5,7 +5,7 @@
     Condition
       Error in `last_fit()`:
       ! `last_fit()` (`?tune::last_fit()`) is not well-defined for fitted model objects.
-      i `last_fit()` (`?tune::last_fit()`) takes a model specification or unfitted workflow as its first argument.
+      i `last_fit()` (`?tune::last_fit()`) takes a model specification (`?parsnip::model_spec()`) or unfitted workflow (`?workflows::workflow()`) as its first argument.
 
 # ellipses with last_fit
 
