@@ -4,8 +4,10 @@
 #' the final fit on the entire training set is needed and is then evaluated on
 #' the test set.
 #'
-#' @param object A `parsnip` model specification or a [workflows::workflow()].
-#'   No tuning parameters are allowed.
+#' @param object A `parsnip` model specification or an unfitted
+#'   [workflow()][workflows::workflow]. No tuning parameters are allowed; if arguments
+#'   have been marked with [tune()][hardhat::tune], their values must be
+#'   [finalized][finalize_model].
 #'
 #' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].
@@ -25,9 +27,26 @@
 #'  and the final tuning parameters (if any) have been finalized. The next step
 #'  would be to fit using the entire training set and verify performance using
 #'  the test data.
+#'
+#' @section See also:
+#'
+#' [last_fit()] is closely related to [fit_best()]. They both
+#' give you access to a workflow fitted on the training data but are situated
+#' somewhat differently in the modeling workflow. [fit_best()] picks up
+#' after a tuning function like [tune_grid()] to take you from tuning results
+#' to fitted workflow, ready for you to predict and assess further. [last_fit()]
+#' assumes you have made your choice of hyperparameters and finalized your
+#' workflow to then take you from finalized workflow to fitted workflow and
+#' further to performance assessment on the test data. While [fit_best()] gives
+#' a fitted workflow, [last_fit()] gives you the performance results. If you
+#' want the fitted workflow, you can extract it from the result of [last_fit()]
+#' via [extract_workflow()][extract_workflow.tune_results].
+#'
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
-#' model (and recipe, if any) that used the training set.
+#' model (and recipe, if any) that used the training set. Helper functions
+#' for formatting tuning results like [collect_metrics()] and
+#' [collect_predictions()] can be used with `last_fit()` output.
 #' @examplesIf tune:::should_run_examples()
 #' library(recipes)
 #' library(rsample)
@@ -45,8 +64,11 @@
 #' spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 #' spline_res
 #'
-#' # test set results
-#' spline_res$.metrics[[1]]
+#' # test set metrics
+#' collect_metrics(spline_res)
+#'
+#' # test set predictions
+#' collect_predictions(spline_res)
 #'
 #' # or use a workflow
 #'
@@ -69,6 +91,18 @@ last_fit.default <- function(object, ...) {
     "a model or workflow."
   )
   rlang::abort(msg)
+}
+
+#' @export
+last_fit.model_fit <- function(object, ...) {
+  cli::cli_abort(c(
+    "{.help [{.fun last_fit}](tune::last_fit)} is not well-defined for \\
+     fitted model objects.",
+    "i" = "{.help [{.fun last_fit}](tune::last_fit)} takes \\
+           a {.help [model specification](parsnip::model_spec)} or \\
+           {.help [unfitted workflow](workflows::workflow)} as its first \\
+           argument."
+  ))
 }
 
 #' @export

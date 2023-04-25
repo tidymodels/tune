@@ -20,8 +20,10 @@ last_fit(object, ...)
 \method{last_fit}{workflow}(object, split, ..., metrics = NULL, control = control_last_fit())
 }
 \arguments{
-\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
-No tuning parameters are allowed.}
+\item{object}{A \code{parsnip} model specification or an unfitted
+\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
+have been marked with \link[hardhat:tune]{tune()}, their values must be
+\link[=finalize_model]{finalized}.}
 
 \item{...}{Currently unused.}
 
@@ -39,7 +41,9 @@ process.}
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.
 However, a list column called \code{.workflow} is also attached with the fitted
-model (and recipe, if any) that used the training set.
+model (and recipe, if any) that used the training set. Helper functions
+for formatting tuning results like \code{\link[=collect_metrics]{collect_metrics()}} and
+\code{\link[=collect_predictions]{collect_predictions()}} can be used with \code{last_fit()} output.
 }
 \description{
 \code{\link[=last_fit]{last_fit()}} emulates the process where, after determining the best model,
@@ -52,6 +56,22 @@ and the final tuning parameters (if any) have been finalized. The next step
 would be to fit using the entire training set and verify performance using
 the test data.
 }
+\section{See also}{
+
+
+\code{\link[=last_fit]{last_fit()}} is closely related to \code{\link[=fit_best]{fit_best()}}. They both
+give you access to a workflow fitted on the training data but are situated
+somewhat differently in the modeling workflow. \code{\link[=fit_best]{fit_best()}} picks up
+after a tuning function like \code{\link[=tune_grid]{tune_grid()}} to take you from tuning results
+to fitted workflow, ready for you to predict and assess further. \code{\link[=last_fit]{last_fit()}}
+assumes you have made your choice of hyperparameters and finalized your
+workflow to then take you from finalized workflow to fitted workflow and
+further to performance assessment on the test data. While \code{\link[=fit_best]{fit_best()}} gives
+a fitted workflow, \code{\link[=last_fit]{last_fit()}} gives you the performance results. If you
+want the fitted workflow, you can extract it from the result of \code{\link[=last_fit]{last_fit()}}
+via \link[=extract_workflow.tune_results]{extract_workflow()}.
+}
+
 \examples{
 \dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
@@ -70,8 +90,11 @@ lin_mod <- linear_reg() \%>\%
 spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 spline_res
 
-# test set results
-spline_res$.metrics[[1]]
+# test set metrics
+collect_metrics(spline_res)
+
+# test set predictions
+collect_predictions(spline_res)
 
 # or use a workflow
 

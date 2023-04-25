@@ -58,6 +58,14 @@ test_that("recipe method", {
   )
 })
 
+test_that("model_fit method", {
+  library(parsnip)
+
+  lm_fit <- linear_reg() %>% fit(mpg ~ ., data = mtcars)
+
+  expect_snapshot(last_fit(lm_fit), error = TRUE)
+})
+
 test_that("collect metrics of last fit", {
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
