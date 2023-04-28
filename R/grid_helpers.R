@@ -112,11 +112,19 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   res
 }
 
+trim_ipcw <- function(x) {
+  x$.weight_time <- NULL
+  x$.pred_censored <- NULL
+  x
+}
+
 maybe_add_ipcw <- function(.data, model, types) {
   if (!any(types == "survival")) {
     return(.data)
   }
-  parsnip::.censoring_weights_graf(model, .data)
+  res <- parsnip::.censoring_weights_graf(model, .data)
+  res$.pred <- purrr::map(res$.pred, trim_ipcw)
+  res
 }
 
 #' Get time for analysis of dynamic survival metrics
