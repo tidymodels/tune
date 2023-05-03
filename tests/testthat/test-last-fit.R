@@ -66,6 +66,15 @@ test_that("model_fit method", {
   expect_snapshot(last_fit(lm_fit), error = TRUE)
 })
 
+test_that("workflow method", {
+  library(parsnip)
+  library(workflows)
+
+  lm_fit <- workflow(mpg ~ ., linear_reg()) %>% fit(data = mtcars)
+
+  expect_snapshot(last_fit(lm_fit), error = TRUE)
+})
+
 test_that("collect metrics of last fit", {
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
