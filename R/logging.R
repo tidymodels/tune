@@ -256,12 +256,12 @@ siren <- function(x, type = "info") {
 }
 
 
-tune_log <- function(control, split = NULL, task, type = "success") {
-  if (!control$verbose) {
+tune_log <- function(control, split = NULL, task, type = "success", iter = FALSE) {
+  if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
 
-  if (uses_catalog()) {
+  if (uses_catalog() & !iter) {
     log_catalog(task, type)
     return(NULL)
   }
@@ -291,6 +291,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose <- TRUE
+  control2$verbose_iter <- TRUE
 
   should_catalog <- uses_catalog()
 
@@ -361,8 +362,8 @@ format_msg <- function(loc, msg) {
 
 #' @export
 #' @rdname tune-internal-functions
-.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes) {
-  tune_log(..., type = "info")
+.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, iter = FALSE) {
+  tune_log(..., type = "info", iter = iter)
   tmp <- catcher(.expr)
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
   assign("out_notes", new_notes, envir = parent.frame())
@@ -410,7 +411,7 @@ format_msg <- function(loc, msg) {
 }
 
 log_best <- function(control, iter, info, digits = 4) {
-  if (!control$verbose) {
+  if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
 
@@ -428,16 +429,22 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split = NULL, task = msg, type = "info")
+  tune_log(control, split = NULL, task = msg, type = "info", iter = TRUE)
 }
 
 check_and_log_flow <- function(control, results) {
+  if (!isTRUE(control$verbose_iter)) {
+    return(invisible(NULL))
+  }
+
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      tune_log(control, split = NULL, task = "Halting search", type = "danger")
+      tune_log(control, split = NULL, task = "Halting search",
+               type = "danger", iter = TRUE)
       eval.parent(parse(text = "break"))
     } else {
-      tune_log(control, split = NULL, task = "Skipping to next iteration", type = "danger")
+      tune_log(control, split = NULL, task = "Skipping to next iteration",
+               type = "danger", iter = TRUE)
       eval.parent(parse(text = "next"))
     }
   }
@@ -445,7 +452,7 @@ check_and_log_flow <- function(control, results) {
 }
 
 log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
-  if (!control$verbose) {
+  if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
 
@@ -479,7 +486,7 @@ log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits =
 }
 
 param_msg <- function(control, candidate) {
-  if (!control$verbose) {
+  if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
   candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
@@ -495,7 +502,7 @@ param_msg <- function(control, candidate) {
 
 
 acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
-  if (!control$verbose) {
+  if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
   if (inherits(objective, "conf_bound") && is.function(objective$kappa)) {
@@ -509,7 +516,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split = NULL, task = val, type = "info")
+    tune_log(control, split = NULL, task = val, type = "info", iter = TRUE)
   }
   invisible(NULL)
 }
