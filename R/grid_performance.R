@@ -48,6 +48,8 @@ metrics_info <- function(x) {
 #' @param new_data A data frame or matrix of predictors to process.
 #' @param metrics_info The output of `tune:::metrics_info(metrics)`---only
 #' included as an argument to allow for pre-computing.
+#' @param iter A logical passed to `tune_log()`, giving whether supplied messages
+#' ought to be interpreted as updates on iterative search.
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export

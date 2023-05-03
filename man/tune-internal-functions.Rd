@@ -29,7 +29,7 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
 
 initialize_catalog(control, env = rlang::caller_env())
 
-.catch_and_log(.expr, ..., bad_only = FALSE, notes)
+.catch_and_log(.expr, ..., bad_only = FALSE, notes, iter = FALSE)
 
 .catch_and_log_fit(.expr, ..., notes)
 }
@@ -63,6 +63,9 @@ included as an argument to allow for pre-computing.}
 \item{bad_only}{A logical for whether warnings and errors should be caught.}
 
 \item{notes}{Character data to add to the logging.}
+
+\item{iter}{A logical passed to \code{tune_log()}, giving whether supplied messages
+ought to be interpreted as updates on iterative search.}
 }
 \description{
 These are not to be meant to be invoked directly by users.
