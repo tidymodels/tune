@@ -55,6 +55,7 @@ reference:
     - coord_obs_pred
     - conf_mat_resampled
     - example_ames_knn
+    - starts_with("weight_propensity")
   - title: Developer functions
     contents:
     - merge.recipe
