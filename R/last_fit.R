@@ -141,8 +141,16 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL, control = cont
   last_fit_workflow(object, split, metrics, control)
 }
 
-last_fit_workflow <- function(object, split, metrics, control) {
+last_fit_workflow <- function(object, split, metrics, control, call = rlang::caller_env()) {
   check_no_tuning(object)
+
+  if (workflows::is_trained_workflow(object)) {
+    cli::cli_abort(
+      "`last_fit()` is not well-defined for a fitted workflow.",
+      call = call
+    )
+  }
+
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 
