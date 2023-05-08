@@ -255,13 +255,12 @@ siren <- function(x, type = "info") {
   message(paste(symb, msg))
 }
 
-
-tune_log <- function(control, split = NULL, task, type = "success", iter = FALSE) {
+tune_log <- function(control, split = NULL, task, type = "success", catalog = TRUE) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
 
-  if (uses_catalog() & !iter) {
+  if (uses_catalog() & catalog) {
     log_catalog(task, type)
     return(NULL)
   }
@@ -362,8 +361,8 @@ format_msg <- function(loc, msg) {
 
 #' @export
 #' @rdname tune-internal-functions
-.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, iter = FALSE) {
-  tune_log(..., type = "info", iter = iter)
+.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+  tune_log(..., type = "info", catalog = catalog)
   tmp <- catcher(.expr)
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
   assign("out_notes", new_notes, envir = parent.frame())
@@ -429,7 +428,7 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split = NULL, task = msg, type = "info", iter = TRUE)
+  tune_log(control, split = NULL, task = msg, type = "info", catalog = FALSE)
 }
 
 check_and_log_flow <- function(control, results) {
@@ -440,11 +439,11 @@ check_and_log_flow <- function(control, results) {
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
       tune_log(control, split = NULL, task = "Halting search",
-               type = "danger", iter = TRUE)
+               type = "danger", catalog = FALSE)
       eval.parent(parse(text = "break"))
     } else {
       tune_log(control, split = NULL, task = "Skipping to next iteration",
-               type = "danger", iter = TRUE)
+               type = "danger", catalog = FALSE)
       eval.parent(parse(text = "next"))
     }
   }
@@ -516,7 +515,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split = NULL, task = val, type = "info", iter = TRUE)
+    tune_log(control, split = NULL, task = val, type = "info", catalog = FALSE)
   }
   invisible(NULL)
 }
