@@ -86,7 +86,7 @@
 <span></span>
 <span><span class="fu">initialize_catalog</span><span class="op">(</span><span class="va">control</span>, env <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">.catch_and_log</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, bad_only <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">notes</span><span class="op">)</span></span>
+<span><span class="fu">.catch_and_log</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, bad_only <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">notes</span>, catalog <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">.catch_and_log_fit</span><span class="op">(</span><span class="va">.expr</span>, <span class="va">...</span>, <span class="va">notes</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -149,6 +149,13 @@ included as an argument to allow for pre-computing.</p></dd>
 
 <dt>notes</dt>
 <dd><p>Character data to add to the logging.</p></dd>
+
+
+<dt>catalog</dt>
+<dd><p>A logical passed to <code>tune_log()</code> giving whether the message
+is compatible with the issue cataloger. Defaults to <code>TRUE</code>. Updates that are
+always unique and do not represent a tuning "issue" can bypass the cataloger
+by setting <code>catalog = FALSE</code>.</p></dd>
 
 </dl></div>
 
