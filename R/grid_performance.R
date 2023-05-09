@@ -155,17 +155,27 @@ estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, 
 }
 
 unnest_parameters <- function(x, params = NULL) {
-  # When muti_predict is used, .pred will have the tuning parameter values.
+   if (is.null(params)) {
+    return(x)
+   }
+   
+  # When multi_predict() is used, .pred will have the tuning parameter values.
   # Other (non-submodel) parameters will be outside of 'x'.
   # If this happens, pull the submodel parameters out of .pred and put them at
   # the out level ('x') with the rest (if any)
+  
   outer_nms <- names(x)
-  inner_nms <- names(x$.pred[[1]])
-  has_inner_params <- any(params %in% inner_nms)
   has_pred <- any(outer_nms == ".pred")
-  if (is.null(params) || !has_pred || !has_inner_params) {
+   if (!has_pred) {
     return(x)
   }
+  
+  inner_nms <- names(x$.pred[[1]])
+  has_inner_params <- any(params %in% inner_nms)
+  if (!has_inner_params) {
+    return(x)
+  }
+
   x <- x %>% parsnip::add_rowindex()
 
   others <- x %>% dplyr::select(-.pred)
