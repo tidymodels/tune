@@ -9,7 +9,7 @@
 #' @importFrom glue glue glue_collapse
 #' @importFrom dials is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
-#' @importFrom stats model.matrix model.response model.frame update
+#' @importFrom stats model.matrix model.response model.frame update median
 #' @importFrom yardstick rsq rmse accuracy roc_auc brier_survival
 #' @importFrom tidyr unnest nest
 #' @importFrom GPfit GP_fit
@@ -44,7 +44,9 @@ utils::globalVariables(
     ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
     "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
     ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type",
-    "rowwise", ".best", "location", "msg"
+    "rowwise", ".best", "location", "msg", "..object", ".eval_time",
+    ".pred_survival", ".pred_time", ".weight_censored", "nice_time",
+    "time_metric"
   )
 )
 
