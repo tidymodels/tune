@@ -70,13 +70,18 @@ each row in the original training set has multiple holdout predictions
 training set same has a single predicted value, the results are averaged
 over replicate predictions.
 
-For regression cases, the numeric predictions are simply averaged. For
-classification models, the problem is more complex. When class probabilities
+For regression cases, the numeric predictions are simply averaged.
+
+For classification models, the problem is more complex. When class probabilities
 are used, these are averaged and then re-normalized to make sure that they
 add to one. If hard class predictions also exist in the data, then these are
 determined from the summarized probability estimates (so that they match).
 If only hard class predictions are in the results, then the mode is used to
 summarize.
+
+With censored outcome models, the predicted survival probabilities (if any)
+are averaged while the static predicted event times are summarized using the
+median.
 
 \code{\link[=collect_notes]{collect_notes()}} returns a tibble with columns for the resampling
 indicators, the location (preprocessor, model, etc.), type (error or warning),
