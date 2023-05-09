@@ -518,7 +518,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   x
 }
 
-fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
+fit_gp <- function(dat, pset, metric, control, eval_time = NULL, ...) {
   dat <- dat %>% dplyr::filter(.metric == metric)
 
   if (!is.null(eval_time)) {
