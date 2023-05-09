@@ -401,17 +401,15 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "gr
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
 
+    grid_ctrl <- ctrl
+    grid_ctrl$verbose <- FALSE
     x <- tune_grid(
       wflow,
       resamples = resamples,
       grid = x,
       metrics = metrics,
       param_info = pset,
-      control = control_grid(
-        extract = ctrl$extract,
-        save_pred = ctrl$save_pred,
-        event_level = ctrl$event_level
-      )
+      control = parsnip::condense_control(grid_ctrl, control_grid())
     )
 
     if (ctrl$verbose) {
