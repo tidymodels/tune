@@ -27,6 +27,10 @@ default, all metrics will be shown via facets.}
 \item{width}{A number for the width of the confidence interval bars when
 \code{type = "performance"}. A value of zero prevents them from being shown.}
 
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g. the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{object}.}
+
 \item{...}{For plots with a regular grid, this is passed to \code{format()} and is
 applied to a parameter used to color points. Otherwise, it is not used.}
 }

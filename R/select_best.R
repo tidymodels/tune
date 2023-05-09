@@ -30,6 +30,9 @@
 #' pass the unquoted expression `p` if smaller values of `p` indicate a simpler
 #' model, or `desc(p)` if larger values indicate a simpler model. At
 #' least one term is required for these two functions. See the examples below.
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+#' values should be consistent with the values used to create `x`.
 #' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
 #' @details

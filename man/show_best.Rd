@@ -58,6 +58,10 @@ a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
 
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{x}.}
+
 \item{limit}{The limit of loss of performance that is acceptable (in percent
 units). See details below.}
 }
