@@ -51,6 +51,10 @@ metrics_info <- function(x) {
 #' @param new_data A data frame or matrix of predictors to process.
 #' @param metrics_info The output of `tune:::metrics_info(metrics)`---only
 #' included as an argument to allow for pre-computing.
+#' @param catalog A logical passed to `tune_log()` giving whether the message
+#' is compatible with the issue cataloger. Defaults to `TRUE`. Updates that are
+#' always unique and do not represent a tuning "issue" can bypass the cataloger
+#' by setting `catalog = FALSE`.
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export

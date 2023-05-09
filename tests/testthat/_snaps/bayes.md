@@ -8,10 +8,6 @@
       >  Generating a set of 2 initial parameter results
       v Initialization complete
       
-      
-      -- Iteration 1 -----------------------------------------------------------------
-      
-      i Current best:		rmse=2.418 (@iter 0)
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
@@ -19,7 +15,6 @@
       v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
-      i num_comp=2
       i Estimating performance
       i Fold01: preprocessor 1/1
       v Fold01: preprocessor 1/1
@@ -82,17 +77,11 @@
       i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      (x) Newest results:	rmse=2.666 (+/-0.281)
-      
-      -- Iteration 2 -----------------------------------------------------------------
-      
-      i Current best:		rmse=2.418 (@iter 0)
       i Gaussian process model
       ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
-      i num_comp=5
       i Estimating performance
       i Fold01: preprocessor 1/1
       v Fold01: preprocessor 1/1
@@ -155,7 +144,6 @@
       i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      (x) Newest results:	rmse=2.453 (+/-0.381)
     Output
       # Tuning results
       # 10-fold cross-validation 
@@ -181,10 +169,34 @@
         control = control_bayes(verbose_iter = TRUE))
     Message
       Optimizing rmse using the expected improvement
+      
+      -- Iteration 1 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
       ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 3 candidates
+      i Predicted candidates
+      i num_comp=4
+      i Estimating performance
+      v Estimating performance
+      (x) Newest results:	rmse=2.461 (+/-0.37)
+      
+      -- Iteration 2 -----------------------------------------------------------------
+      
+      i Current best:		rmse=2.418 (@iter 0)
+      i Gaussian process model
       ! Gaussian process model: X should be in range (0, 1)
+      v Gaussian process model
+      i Generating 2 candidates
+      i Predicted candidates
+      i num_comp=5
+      i Estimating performance
+      v Estimating performance
+      (x) Newest results:	rmse=2.453 (+/-0.381)
     Output
       # Tuning results
       # 10-fold cross-validation 

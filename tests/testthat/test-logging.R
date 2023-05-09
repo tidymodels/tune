@@ -82,8 +82,8 @@ test_that("catch and log issues", {
 })
 
 test_that("logging iterations", {
-  ctrl_t <- control_grid(verbose = TRUE)
-  ctrl_f <- control_grid(verbose = FALSE)
+  ctrl_t <- control_bayes(verbose_iter = TRUE)
+  ctrl_f <- control_bayes(verbose_iter = FALSE)
   sc_1 <- list(
     best_val = 7,
     best_iter = 2,
@@ -99,7 +99,7 @@ test_that("logging iterations", {
 })
 
 test_that("logging search info", {
-  ctrl_t <- control_grid(verbose = TRUE)
+  ctrl_t <- control_bayes(verbose_iter = TRUE)
   tb_1 <- tibble::tibble(.mean = 1:3)
 
   expect_silent(tune:::check_and_log_flow(ctrl_t, tb_1))
@@ -114,8 +114,8 @@ test_that("logging search info", {
 })
 
 test_that("current results", {
-  ctrl_t <- control_grid(verbose = TRUE)
-  ctrl_f <- control_grid(verbose = FALSE)
+  ctrl_t <- control_bayes(verbose_iter = TRUE)
+  ctrl_f <- control_bayes(verbose_iter = FALSE)
   tb_2 <-
     tibble::tibble(
       .metric = rep(letters[1:2], each = 4),
@@ -141,8 +141,8 @@ test_that("current results", {
 
 
 test_that("show parameters", {
-  ctrl_t <- control_grid(verbose = TRUE)
-  ctrl_f <- control_grid(verbose = FALSE)
+  ctrl_t <- control_bayes(verbose_iter = TRUE)
+  ctrl_f <- control_bayes(verbose_iter = FALSE)
 
   expect_snapshot(tune:::param_msg(ctrl_t, iris[1, 4:5]))
   expect_silent(tune:::param_msg(ctrl_f, iris[1, 4:5]))
@@ -150,8 +150,8 @@ test_that("show parameters", {
 
 
 test_that("acquisition functions", {
-  ctrl_t <- control_grid(verbose = TRUE)
-  ctrl_f <- control_grid(verbose = FALSE)
+  ctrl_t <- control_bayes(verbose_iter = TRUE)
+  ctrl_f <- control_bayes(verbose_iter = FALSE)
 
   expect_silent(tune:::acq_summarizer(ctrl_t, 1))
   expect_silent(tune:::acq_summarizer(ctrl_t, 1, conf_bound()))
