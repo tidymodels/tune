@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,6 +75,7 @@
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"marginals"</span>, <span class="st">"parameters"</span>, <span class="st">"performance"</span><span class="op">)</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  width <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,6 +101,12 @@ default, all metrics will be shown via facets.</p></dd>
 <dt>width</dt>
 <dd><p>A number for the width of the confidence interval bars when
 <code>type = "performance"</code>. A value of zero prevents them from being shown.</p></dd>
+
+
+<dt>eval_time</dt>
+<dd><p>A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g. the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create <code>object</code>.</p></dd>
 
 
 <dt>...</dt>

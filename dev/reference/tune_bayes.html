@@ -12,7 +12,7 @@ combinations based on previous results."><meta property="og:image" content="http
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,8 @@ combinations based on previous results.</p>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  objective <span class="op">=</span> <span class="fu"><a href="prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  initial <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for workflow</span></span>
@@ -98,7 +99,8 @@ combinations based on previous results.</p>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  objective <span class="op">=</span> <span class="fu"><a href="prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  initial <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -150,6 +152,13 @@ initial results be greater than the number of parameters being optimized.</p></d
 
 <dt>control</dt>
 <dd><p>A control object created by <code><a href="control_bayes.html">control_bayes()</a></code></p></dd>
+
+
+<dt>eval_time</dt>
+<dd><p>A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values should be non-negative and should probably be no greater then the
+largest event time in the training set.</p></dd>
 
 </dl></div>
     <div class="section level2">

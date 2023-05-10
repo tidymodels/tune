@@ -94,6 +94,9 @@
     <loc>https://tune.tidymodels.org/dev/reference/fit_resamples.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/dev/reference/get_metric_time.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/dev/reference/index.html</loc>
   </url>
   <url>

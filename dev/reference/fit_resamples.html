@@ -16,7 +16,7 @@ model+recipe or model+formula combination across many resamples."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,8 @@ model+recipe or model+formula combination across many resamples.</p>
 <span>  <span class="va">resamples</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for workflow</span></span>
@@ -96,7 +97,8 @@ model+recipe or model+formula combination across many resamples.</p>
 <span>  <span class="va">resamples</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_grid.html">control_resamples</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -131,6 +133,13 @@ set of metrics.</p></dd>
 <dt>control</dt>
 <dd><p>A <code><a href="control_grid.html">control_resamples()</a></code> object used to fine tune the resampling
 process.</p></dd>
+
+
+<dt>eval_time</dt>
+<dd><p>A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values should be non-negative and should probably be no great then the
+largest event time in the training set.</p></dd>
 
 </dl></div>
     <div class="section level2">

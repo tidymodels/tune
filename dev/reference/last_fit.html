@@ -14,7 +14,7 @@ the test set."><meta property="og:image" content="https://tune.tidymodels.org/lo
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9001</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,11 +84,19 @@ the test set.</p>
 <span>  <span class="va">split</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for workflow</span></span>
-<span><span class="fu">last_fit</span><span class="op">(</span><span class="va">object</span>, <span class="va">split</span>, <span class="va">...</span>, metrics <span class="op">=</span> <span class="cn">NULL</span>, control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">last_fit</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  <span class="va">split</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -121,6 +129,13 @@ set of metrics.</p></dd>
 <dt>control</dt>
 <dd><p>A <code><a href="control_last_fit.html">control_last_fit()</a></code> object used to fine tune the last fit
 process.</p></dd>
+
+
+<dt>eval_time</dt>
+<dd><p>A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values should be non-negative and should probably be no greater then the
+largest event time in the training set.</p></dd>
 
 </dl></div>
     <div class="section level2">
