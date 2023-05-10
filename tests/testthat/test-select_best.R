@@ -137,8 +137,8 @@ test_that("one-std error rule", {
   )
 
   expect_equal(
-    select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$mean,
-    2.94252798698909
+    select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    "Recipe05"
   )
   expect_equal(
     select_by_one_std_err(knn_results, metric = "accuracy", K)$K,
@@ -193,8 +193,8 @@ test_that("percent loss", {
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
   )
   expect_equal(
-    select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$mean,
-    2.94252798698909
+    select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    "Recipe05"
   )
   expect_equal(
     select_by_pct_loss(knn_results, metric = "accuracy", K)$K,
@@ -248,12 +248,12 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
   skip_on_cran()
 
   set.seed(1)
-  resamples <- bootstraps(mtcars, times = 5)
+  resamples <- rsample::bootstraps(mtcars, times = 5)
 
   set.seed(1)
   tune_res <-
     tune::tune_grid(
-      nearest_neighbor(mode = "regression", neighbors = tune()),
+      parsnip::nearest_neighbor(mode = "regression", neighbors = tune()),
       mpg ~ .,
       resamples,
       metrics = yardstick::metric_set(yardstick::mpe, yardstick::msd)
@@ -358,7 +358,7 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
     select_by_pct_loss(tune_res, metric = "msd", limit = 10, desc(neighbors))$.config,
     tune_res_metrics %>%
       filter(.metric == "msd") %>%
-      rowwise() %>%
+      dplyr::rowwise() %>%
       mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
       ungroup() %>%
       arrange(desc(neighbors)) %>%
@@ -380,7 +380,7 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
     select_by_pct_loss(tune_res, metric = "mpe", limit = 10, desc(neighbors))$.config,
     tune_res_metrics %>%
       filter(.metric == "mpe") %>%
-      rowwise() %>%
+      dplyr::rowwise() %>%
       mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
       ungroup() %>%
       arrange(desc(neighbors)) %>%

@@ -450,12 +450,17 @@ check_and_log_flow <- function(control, results) {
   invisible(NULL)
 }
 
-log_progress <- function(control, x, maximize = TRUE, objective = NULL, digits = 4) {
+log_progress <- function(control, x, maximize = TRUE, objective = NULL,
+                         eval_time = NULL, digits = 4) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
 
   x <- dplyr::filter(x, .metric == objective)
+  if (!is.null(eval_time)) {
+    x <- dplyr::filter(x, .eval_time == eval_time)
+  }
+
   if (maximize) {
     bst <- which.max(x$mean)
   } else {

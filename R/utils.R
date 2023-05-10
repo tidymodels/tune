@@ -63,7 +63,7 @@ should_run_examples <- function(suggests = NULL) {
 # new_tibble() currently doesn't strip attributes
 # https://github.com/tidyverse/tibble/pull/769
 new_bare_tibble <- function(x, ..., class = character()) {
-  x <- new_data_frame(x)
+  x <- vctrs::new_data_frame(x)
   tibble::new_tibble(x, nrow = nrow(x), ..., class = class)
 }
 
@@ -119,6 +119,22 @@ new_bare_tibble <- function(x, ..., class = character()) {
   }
   res
 }
+
+
+#' @export
+#' @rdname tune_accessor
+# This will return any other columns that should be added to the group_by()
+# when computing the final (averaged) resampling estimate
+.get_extra_col_names <- function(x) {
+  res <- character(0)
+  mtrcs <- x$.metrics[[1]]
+  if (any(names(mtrcs) == ".eval_time")) {
+    res <- c(res, ".eval_time")
+  }
+  res
+}
+
+
 
 #' @export
 #' @rdname tune_accessor

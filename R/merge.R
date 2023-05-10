@@ -145,4 +145,3 @@ merger <- function(x, y, ...) {
     dplyr::select(x = ..object)
 }
 
-utils::globalVariables(c("..object"))

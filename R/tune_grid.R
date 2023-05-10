@@ -17,6 +17,10 @@
 #'  parameter sets to be created automatically.
 #' @param metrics A [yardstick::metric_set()] or `NULL`.
 #' @param control An object used to modify the tuning process.
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+#' values should be non-negative and should probably be no greater then the
+#' largest event time in the training set.
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
@@ -250,7 +254,7 @@ tune_grid.default <- function(object, ...) {
 #' @rdname tune_grid
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
-                                 control = control_grid()) {
+                                 control = control_grid(), eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -277,6 +281,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     grid = grid,
     metrics = metrics,
     control = control,
+    eval_time = eval_time
   )
 }
 
@@ -284,7 +289,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL,
-                               control = control_grid()) {
+                               control = control_grid(), eval_time = NULL) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -302,7 +307,8 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
       grid = grid,
       metrics = metrics,
       pset = param_info,
-      control = control
+      control = control,
+      eval_time = eval_time
     )
   .stash_last_result(res)
   res
@@ -316,10 +322,13 @@ tune_grid_workflow <- function(workflow,
                                metrics = NULL,
                                pset = NULL,
                                control = control_grid(),
+                               eval_time = NULL,
                                rng = TRUE) {
   check_rset(resamples)
 
+
   metrics <- check_metrics(metrics, workflow)
+  check_eval_time(eval_time, metrics)
 
   pset <- check_parameters(
     workflow,
@@ -347,6 +356,7 @@ tune_grid_workflow <- function(workflow,
     workflow = workflow,
     metrics = metrics,
     control = control,
+    eval_time = eval_time,
     rng = rng
   )
 

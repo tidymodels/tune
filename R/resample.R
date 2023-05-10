@@ -13,6 +13,11 @@
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
 #'
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+#' values should be non-negative and should probably be no great then the
+#' largest event time in the training set.
+#'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
@@ -71,7 +76,8 @@ fit_resamples.model_spec <- function(object,
                                      resamples,
                                      ...,
                                      metrics = NULL,
-                                     control = control_resamples()) {
+                                     control = control_resamples(),
+                                     eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -95,7 +101,8 @@ fit_resamples.model_spec <- function(object,
     wflow,
     resamples = resamples,
     metrics = metrics,
-    control = control
+    control = control,
+    eval_time = eval_time
   )
 }
 
@@ -106,7 +113,8 @@ fit_resamples.workflow <- function(object,
                                    resamples,
                                    ...,
                                    metrics = NULL,
-                                   control = control_resamples()) {
+                                   control = control_resamples(),
+                                   eval_time = NULL) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_resamples())
@@ -117,6 +125,7 @@ fit_resamples.workflow <- function(object,
       resamples = resamples,
       metrics = metrics,
       control = control,
+      eval_time = eval_time,
       rng = TRUE
     )
   .stash_last_result(res)
@@ -125,7 +134,8 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, control, rng) {
+resample_workflow <- function(workflow, resamples, metrics, control,
+                              eval_time = NULL, rng) {
   check_no_tuning(workflow)
 
   # `NULL` is the signal that we have no grid to tune with
@@ -139,6 +149,7 @@ resample_workflow <- function(workflow, resamples, metrics, control, rng) {
     metrics = metrics,
     pset = pset,
     control = control,
+    eval_time = eval_time,
     rng = rng
   )
 

@@ -20,6 +20,11 @@
 #' @param control A [control_last_fit()] object used to fine tune the last fit
 #'   process.
 #'
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+#' values should be non-negative and should probably be no greater then the
+#' largest event time in the training set.
+#'
 #' @param ... Currently unused.
 #'
 #' @details
@@ -107,7 +112,8 @@ last_fit.model_fit <- function(object, ...) {
 
 #' @export
 #' @rdname last_fit
-last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL, control = control_last_fit()) {
+last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
+                                control = control_last_fit(), eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -127,21 +133,23 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control)
+  last_fit_workflow(wflow, split, metrics, control, eval_time)
 }
 
 
 #' @rdname last_fit
 #' @export
-last_fit.workflow <- function(object, split, ..., metrics = NULL, control = control_last_fit()) {
+last_fit.workflow <- function(object, split, ..., metrics = NULL,
+                              control = control_last_fit(), eval_time = NULL) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control)
+  last_fit_workflow(object, split, metrics, control, eval_time)
 }
 
-last_fit_workflow <- function(object, split, metrics, control, call = rlang::caller_env()) {
+
+last_fit_workflow <- function(object, split, metrics, control, call = rlang::caller_env(), eval_time = NULL) {
   check_no_tuning(object)
 
   if (workflows::is_trained_workflow(object)) {
@@ -163,6 +171,7 @@ last_fit_workflow <- function(object, split, metrics, control, call = rlang::cal
     resamples = resamples,
     metrics = metrics,
     control = control,
+    eval_time = eval_time,
     rng = rng
   )
 

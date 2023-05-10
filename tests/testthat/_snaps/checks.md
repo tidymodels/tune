@@ -116,7 +116,7 @@
       tune:::check_metrics(metric_set1, workflow1)
     Condition
       Error in `tune:::check_metrics()`:
-      ! The parsnip model has `mode = 'regression'`, but `metrics` is a metric set for class / probability metrics.
+      ! The parsnip model has `mode = 'regression'`, but `metrics` is a metric set for a different model mode.
 
 ---
 
@@ -124,7 +124,7 @@
       tune:::check_metrics(metric_set2, workflow2)
     Condition
       Error in `tune:::check_metrics()`:
-      ! The parsnip model has `mode = 'classification'`, but `metrics` is a metric set for regression metrics.
+      ! The parsnip model has `mode = 'classification'`, but `metrics` is a metric set for a different model mode.
 
 # grid control objects
 

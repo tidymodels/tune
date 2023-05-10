@@ -71,10 +71,10 @@
       Warning:
       The `maximize` argument is no longer needed. This value was ignored.
     Output
-      # A tibble: 1 x 11
-            K weight_func exponent .metric  .estimator  mean     n std_err .config .best .bound
-        <int> <chr>          <dbl> <chr>    <chr>      <dbl> <int>   <dbl> <chr>   <dbl>  <dbl>
-      1    25 rank            1.99 accuracy binary     0.819    50 0.00517 Model06 0.819  0.814
+      # A tibble: 1 x 4
+            K weight_func exponent .config
+        <int> <chr>          <dbl> <chr>  
+      1    25 rank            1.99 Model06
 
 ---
 
@@ -158,10 +158,10 @@
       Warning:
       The `maximize` argument is no longer needed. This value was ignored.
     Output
-      # A tibble: 1 x 11
-            K weight_func  exponent .metric  .estimator  mean     n std_err .config .best .loss
-        <int> <chr>           <dbl> <chr>    <chr>      <dbl> <int>   <dbl> <chr>   <dbl> <dbl>
-      1    12 epanechnikov     1.96 accuracy binary     0.806    50 0.00569 Model02 0.819  1.64
+      # A tibble: 1 x 4
+            K weight_func  exponent .config
+        <int> <chr>           <dbl> <chr>  
+      1    12 epanechnikov     1.96 Model02
 
 ---
 

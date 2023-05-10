@@ -1,5 +1,7 @@
 #' Investigate best tuning parameters
 #'
+#' @description
+#'
 #' [show_best()] displays the top sub-models and their performance estimates.
 #'
 #' [select_best()] finds the tuning parameter combination with the best
@@ -28,6 +30,9 @@
 #' pass the unquoted expression `p` if smaller values of `p` indicate a simpler
 #' model, or `desc(p)` if larger values indicate a simpler model. At
 #' least one term is required for these two functions. See the examples below.
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+#' values should be consistent with the values used to create `x`.
 #' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
 #' @details
@@ -70,8 +75,9 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
+show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -88,6 +94,7 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
 
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
+  summary_res <- choose_eval_time(summary_res, x, eval_time)
 
   if (nrow(summary_res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -101,7 +108,8 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, ...) {
     summary_res <- summary_res %>% dplyr::arrange(abs(mean))
   }
   show_ind <- 1:min(nrow(summary_res), n)
-  summary_res %>% dplyr::slice(show_ind)
+  summary_res %>%
+    dplyr::slice(show_ind)
 }
 
 choose_metric <- function(metric, x) {
@@ -133,8 +141,10 @@ select_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_best.tune_results <- function(x, metric = NULL, ...) {
+select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
   metric <- choose_metric(metric, x)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -142,12 +152,9 @@ select_best.tune_results <- function(x, metric = NULL, ...) {
       "This value was ignored."
     ))
   }
-  res <- show_best(x, metric = metric, n = 1)
-  res <- res %>% dplyr::select(-mean, -n, -.metric, -.estimator, -std_err)
-  if (any(names(res) == ".iter")) {
-    res <- res %>% dplyr::select(-.iter)
-  }
-  res
+  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time)
+  res %>% dplyr::select(dplyr::all_of(param_names), .config)
+
 }
 
 #' @export
@@ -164,8 +171,10 @@ select_by_pct_loss.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
+select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, eval_time = NULL) {
   metric <- choose_metric(metric, x)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -182,6 +191,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+  res <- choose_eval_time(res, x, eval_time)
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -220,7 +230,8 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2) {
   res %>%
     dplyr::slice(1:best_index) %>%
     dplyr::filter(.loss < limit) %>%
-    dplyr::slice(1)
+    dplyr::slice(1) %>%
+    dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 #' @export
@@ -237,8 +248,10 @@ select_by_one_std_err.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
+select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
   metric <- choose_metric(metric, x)
+  param_names <- .get_tune_parameter_names(x)
+
   dots <- rlang::enquos(...)
   if (!is.null(dots$maximize)) {
     rlang::warn(paste(
@@ -254,6 +267,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
   res <-
     collect_metrics(x) %>%
     dplyr::filter(.metric == !!metric & !is.na(mean))
+  res <- choose_eval_time(res, x, eval_time)
 
   if (nrow(res) == 0) {
     rlang::abort("No results are available. Please check the value of `metric`.")
@@ -304,7 +318,9 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL) {
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
-  res %>% dplyr::slice(1)
+  res %>%
+    dplyr::slice(1) %>%
+    dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 get_metric_direction <- function(x, metric) {
@@ -323,3 +339,47 @@ get_metric_direction <- function(x, metric) {
 
   directions[[metric]]
 }
+
+middle_eval_time <- function(x) {
+  x <- x[!is.na(x)]
+  times <- unique(x)
+  med_time <- median(x, na.rm = TRUE)
+  ind <- which.min(abs(times - med_time))
+  eval_time <- times[ind]
+  eval_time
+}
+
+
+choose_eval_time <- function(x, object, eval_time) {
+  mtrs <- .get_tune_metrics(object)
+  mtrs <- tibble::as_tibble(mtrs)
+  actual_metrics <- unique(x$.metric)
+  mtrs <- mtrs[mtrs$metric %in% actual_metrics, ]
+
+  # Dynamic and integrated metrics need eval time as an input _but_
+  # only dynamic metrics need them as outputs. So if the metric like
+  # `brier_survival_integrated()` is used, the evaluation time doesn't need
+  # to be specified for computations that use the metrics.
+  if (!any(mtrs$class == "dynamic_survival_metric")) {
+    return(x)
+  }
+  # TODO maybe issue a warning if there are missing values
+  if (is.null(eval_time)) {
+    eval_time <- middle_eval_time(x$.eval_time)
+    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
+    rlang::warn(msg)
+  } else {
+    if (length(eval_time) > 1) {
+      rlang::abort("Please pick a single evaluation time point.")
+    }
+    times <- unique(x$.eval_time)
+    if (!any(times == eval_time)) {
+      msg <- cli::pluralize("No evaluation times matched a value of {eval_time}.")
+      rlang::abort(msg)
+    }
+  }
+  x <- x[x$.eval_time == eval_time, ]
+  x
+}
+
+

@@ -9,6 +9,9 @@
 #' default, all metrics will be shown via facets.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "performance"`. A value of zero prevents them from being shown.
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be chosen (e.g. the time-dependent ROC curve, etc). The
+#' values should be consistent with the values used to create `object`.
 #' @param ... For plots with a regular grid, this is passed to `format()` and is
 #' applied to a parameter used to color points. Otherwise, it is not used.
 #' @return A `ggplot2` object.
@@ -74,6 +77,7 @@ autoplot.tune_results <-
            type = c("marginals", "parameters", "performance"),
            metric = NULL,
            width = NULL,
+           eval_time = NULL,
            ...) {
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
@@ -96,12 +100,12 @@ autoplot.tune_results <-
       p <- plot_param_vs_iter(object)
     } else {
       if (type == "performance") {
-        p <- plot_perf_vs_iter(object, metric, width)
+        p <- plot_perf_vs_iter(object, metric, width, eval_time = eval_time)
       } else {
         if (use_regular_grid_plot(object)) {
-          p <- plot_regular_grid(object, metric = metric, ...)
+          p <- plot_regular_grid(object, metric = metric, eval_time = eval_time, ...)
         } else {
-          p <- plot_marginals(object, metric = metric)
+          p <- plot_marginals(object, metric = metric, eval_time = eval_time)
         }
       }
     }
@@ -153,6 +157,47 @@ get_param_label <- function(x, id_val) {
   }
   res
 }
+
+filter_plot_eval_time <- function(x, eval_time) {
+  if (!any(names(x) == ".eval_time")) {
+    return(x)
+  }
+  if (all(is.na(x$.eval_time))) {
+    return(x %>% dplyr::select(-.eval_time))
+  }
+
+  # TODO check for null and add warning
+  if (is.null(eval_time)) {
+    eval_time <- middle_eval_time(x$.eval_time)
+    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
+    rlang::warn(msg)
+  }
+
+  times <- x$.eval_time
+  is_miss_time <- is.na(times)
+  times <- unique(times[!is_miss_time])
+  time_dif <- setdiff(eval_time, times)
+  if (length(time_dif) > 0) {
+    bad_times <- paste0(format(time_dif, digits = 3), collapse = ", ")
+    msg <- cli::pluralize("One or more chosen evaluation times were not in the results: {bad_times}")
+    rlang::warn(msg)
+  }
+  if (any(is_miss_time)) {
+    keep_times <- tibble::tibble(.eval_time = c(eval_time, NA))
+  } else {
+    keep_times <- tibble::tibble(.eval_time = c(eval_time))
+  }
+  x <-
+    dplyr::inner_join(x, keep_times, by = ".eval_time") %>%
+    dplyr::mutate(
+      nice_time = format(.eval_time, digits = 3),
+      time_metric = paste0(.metric, " @", nice_time),
+      .metric = ifelse(is.na(.eval_time), .metric, time_metric)
+    ) %>%
+    dplyr::select(-nice_time, -time_metric, -.eval_time)
+  x
+}
+
 
 # ------------------------------------------------------------------------------
 
@@ -206,7 +251,7 @@ use_regular_grid_plot <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
+plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL) {
   if (is.null(width)) {
     width <- max(x$.iter) / 75
   }
@@ -215,6 +260,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
   x <- x %>% dplyr::filter(!is.na(mean))
+  x <- filter_plot_eval_time(x, eval_time)
 
   search_iter <-
     x %>%
@@ -244,7 +290,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL) {
   p
 }
 
-plot_param_vs_iter <- function(x) {
+plot_param_vs_iter <- function(x, eval_time = NULL) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
@@ -295,7 +341,7 @@ plot_param_vs_iter <- function(x) {
   p
 }
 
-plot_marginals <- function(x, metric = NULL) {
+plot_marginals <- function(x, metric = NULL, eval_time = NULL) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
@@ -312,6 +358,7 @@ plot_marginals <- function(x, metric = NULL) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
   x <- x %>% dplyr::filter(!is.na(mean))
+  x <- filter_plot_eval_time(x, eval_time)
 
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
@@ -420,7 +467,7 @@ plot_marginals <- function(x, metric = NULL) {
 }
 
 
-plot_regular_grid <- function(x, metric = NULL, ...) {
+plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
   # Collect and filter resampling results
 
   is_race <- inherits(x, "tune_race")
@@ -436,6 +483,7 @@ plot_regular_grid <- function(x, metric = NULL, ...) {
     }
   }
   dat <- dat %>% dplyr::filter(!is.na(mean))
+  dat <- filter_plot_eval_time(dat, eval_time)
   multi_metrics <- length(unique(dat$.metric)) > 1
 
   # ----------------------------------------------------------------------------
