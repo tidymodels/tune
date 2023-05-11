@@ -157,8 +157,8 @@ initial results be greater than the number of parameters being optimized.</p></d
 <dt>eval_time</dt>
 <dd><p>A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no greater then the
-largest event time in the training set.</p></dd>
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -272,6 +272,18 @@ prediction columns that are returned are determined by the type of metric(s)
 requested.</p>
 <p>This list column can be <code>unnested</code> using <code><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">tidyr::unnest()</a></code> or using the
 convenience function <code><a href="collect_predictions.html">collect_predictions()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="censored-regression-models">Censored regression models<a class="anchor" aria-label="anchor" href="#censored-regression-models"></a></h2>
+    
+
+
+<p>With dynamic performance metrics (e.g. Brier or ROC curves), performance is
+calculated for every value of <code>eval_time</code> but the <em>first</em> evaluation time
+given by the user (e.g., <code>eval_time[1]</code>) is used to guide the optimization.</p>
+<p>Also, values of <code>eval_time</code> should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or <code>NA</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="extracting-information">Extracting Information<a class="anchor" aria-label="anchor" href="#extracting-information"></a></h2>
