@@ -56,8 +56,8 @@ parameter sets to be created automatically.}
 
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no greater then the
-largest event time in the training set.}
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).}
 }
 \value{
 An updated version of \code{resamples} with extra list columns for \code{.metrics} and
@@ -209,6 +209,14 @@ every model that is \emph{fit} (as opposed to every model that is \emph{evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.
+}
+
+\section{Censored regression models}{
+
+
+Values of \code{eval_time} should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or \code{NA}).
 }
 
 \examples{

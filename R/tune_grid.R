@@ -19,8 +19,8 @@
 #' @param control An object used to modify the tuning process.
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-#' values should be non-negative and should probably be no greater then the
-#' largest event time in the training set.
+#' values must be non-negative and should probably be no greater than the
+#' largest event time in the training set (See Details below).
 #' @param ... Not currently used.
 #' @return An updated version of `resamples` with extra list columns for `.metrics` and
 #' `.notes` (optional columns are `.predictions` and `.extracts`). `.notes`
@@ -162,6 +162,13 @@
 #' As noted above, in some cases, model predictions can be derived for
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
+#'
+#' @section Censored regression models:
+#'
+#' Values of `eval_time` should be less than the largest observed event
+#' time in the training data. For many non-parametric models, the results beyond
+#' the largest time corresponding to an event are constant (or `NA`).
+#'
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)

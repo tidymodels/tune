@@ -127,6 +127,16 @@
 #'
 #' @inheritSection tune_grid Extracting Information
 #'
+#' @section Censored regression models:
+#'
+#' With dynamic performance metrics (e.g. Brier or ROC curves), performance is
+#' calculated for every value of `eval_time` but the _first_ evaluation time
+#' given by the user (e.g., `eval_time[1]`) is used to guide the optimization.
+#'
+#' Also, values of `eval_time` should be less than the largest observed event
+#' time in the training data. For many non-parametric models, the results beyond
+#' the largest time corresponding to an event are constant (or `NA`).
+#'
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)
