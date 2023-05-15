@@ -1,4 +1,7 @@
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metrics_info) {
+
+predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
+                          metrics_info, eval_time = NULL) {
+
   model <- extract_fit_parsnip(workflow)
 
   new_data <- rsample::assessment(split)
@@ -6,6 +9,12 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
   forged <- forge_from_workflow(new_data, workflow)
   x_vals <- forged$predictors
   y_vals <- forged$outcomes
+
+  # TODO patch since parsnip does not record the column names when Surv objects
+  # are used with fit_xy()
+  if (model$spec$mode == "censored regression") {
+    model$preproc$y_var <- names(y_vals)
+  }
 
   orig_rows <- as.integer(split, data = "assessment")
 
@@ -39,9 +48,11 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
 
   for (type_iter in types) {
     # Regular predictions
-    tmp_res <- predict(model, x_vals, type = type_iter)
+
+    tmp_res <- predict_wrapper(model, x_vals, type_iter, eval_time)
     tmp_res$.row <- orig_rows
-    tmp_res <- vec_cbind(tmp_res, grid)
+    tmp_res <- vctrs::vec_cbind(tmp_res, grid)
+
 
     if (!is.null(submodels)) {
       submod_length <- lengths(submodels)
@@ -49,24 +60,16 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
 
       if (has_submodels) {
         submod_param <- names(submodels)
-        mp_call <-
-          call2(
-            "multi_predict",
-            .ns = "parsnip",
-            object = expr(model),
-            new_data = expr(x_vals),
-            type = type_iter,
-            !!!make_submod_arg(grid, model, submodels)
-          )
+        subgrid <- make_submod_arg(grid, model, submodels)
 
-        tmp_sub <- eval_tidy(mp_call)
+        tmp_sub <- predict_wrapper(model, x_vals, type_iter, eval_time, submodels)
         tmp_sub$.row <- orig_rows
         tmp_sub <- unnest(tmp_sub, cols = dplyr::starts_with(".pred"))
 
         grid_bind <- grid
         grid_bind[, submod_param] <- NULL
 
-        tmp_sub <- vec_cbind(tmp_sub, grid_bind)
+        tmp_sub <- vctrs::vec_cbind(tmp_sub, grid_bind)
         rownames(tmp_sub) <- NULL
         tmp_sub <- dplyr::rename(tmp_sub, !!!make_rename_arg(grid, model, submodels))
         tmp_sub <- tmp_sub[, names(tmp_res)]
@@ -101,18 +104,82 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL, metr
 
     if (.use_case_weights_with_yardstick(case_weights)) {
       case_weights <- rlang::list2(!!case_weights_column_name() := case_weights)
-      case_weights <- new_data_frame(case_weights)
+      case_weights <- vctrs::new_data_frame(case_weights)
       case_weights <- dplyr::mutate(case_weights, .row = orig_rows)
       res <- dplyr::full_join(res, case_weights, by = ".row")
     }
   }
 
+
+  res <- maybe_add_ipcw(res, model, types)
+
   if (!tibble::is_tibble(res)) {
     res <- tibble::as_tibble(res)
   }
+  res
+}
+
+trim_ipcw <- function(x) {
+  x$.weight_time <- NULL
+  x$.pred_censored <- NULL
+  x
+}
+
+maybe_add_ipcw <- function(.data, model, types) {
+  if (!any(types == "survival")) {
+    return(.data)
+  }
+  res <- parsnip::.censoring_weights_graf(model, .data)
+  res$.pred <- purrr::map(res$.pred, trim_ipcw)
+  res
+}
+
+#' Get time for analysis of dynamic survival metrics
+#' @param metrics A metric set.
+#' @param eval_time A vector of evaluation times.
+#' @export
+#' @keywords internal
+get_metric_time <- function(metrics, eval_time) {
+  info <- tibble::as_tibble(metrics)
+  if (any(info$class == "dynamic_survival_metric")) {
+    eval_time <- eval_time[1]
+  } else {
+    eval_time <- NULL
+  }
+  eval_time
+}
+
+predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
+  if (is.null(subgrid)) {
+    fn <- "predict.model_fit"
+  } else {
+    fn <- "multi_predict"
+  }
+
+  cl <-
+    rlang::call2(
+      fn,
+      .ns = "parsnip",
+      object = rlang::expr(model),
+      new_data = rlang::expr(new_data),
+      type = type)
+
+  # Add in censored regression evaluation times (if needed)
+  has_type <- type %in% c("survival", "hazard")
+  if (model$spec$mode == "censored regression" & !is.null(eval_time) & has_type) {
+    cl <- rlang::call_modify(cl, eval_time = eval_time)
+  }
+
+  # When there are sub-models:
+  if (!is.null(subgrid)) {
+    cl <- rlang::call_modify(cl, !!!subgrid)
+  }
+  res <- rlang::eval_tidy(cl)
 
   res
 }
+
+# ------------------------------------------------------------------------------
 
 #' @export
 #' @rdname tune-internal-functions

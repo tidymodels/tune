@@ -19,25 +19,25 @@ show_best(x, ...)
 
 \method{show_best}{default}(x, ...)
 
-\method{show_best}{tune_results}(x, metric = NULL, n = 5, ...)
+\method{show_best}{tune_results}(x, metric = NULL, n = 5, eval_time = NULL, ...)
 
 select_best(x, ...)
 
 \method{select_best}{default}(x, ...)
 
-\method{select_best}{tune_results}(x, metric = NULL, ...)
+\method{select_best}{tune_results}(x, metric = NULL, eval_time = NULL, ...)
 
 select_by_pct_loss(x, ...)
 
 \method{select_by_pct_loss}{default}(x, ...)
 
-\method{select_by_pct_loss}{tune_results}(x, ..., metric = NULL, limit = 2)
+\method{select_by_pct_loss}{tune_results}(x, ..., metric = NULL, limit = 2, eval_time = NULL)
 
 select_by_one_std_err(x, ...)
 
 \method{select_by_one_std_err}{default}(x, ...)
 
-\method{select_by_one_std_err}{tune_results}(x, ..., metric = NULL)
+\method{select_by_one_std_err}{tune_results}(x, ..., metric = NULL, eval_time = NULL)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
@@ -58,6 +58,10 @@ a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
 
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{x}.}
+
 \item{limit}{The limit of loss of performance that is acceptable (in percent
 units). See details below.}
 }
@@ -67,8 +71,7 @@ includes columns for performance metrics.
 }
 \description{
 \code{\link[=show_best]{show_best()}} displays the top sub-models and their performance estimates.
-}
-\details{
+
 \code{\link[=select_best]{select_best()}} finds the tuning parameter combination with the best
 performance values.
 
@@ -78,7 +81,8 @@ error of the numerically optimal results.
 
 \code{\link[=select_by_pct_loss]{select_by_pct_loss()}} selects the most simple model whose loss of
 performance is within some acceptable limit.
-
+}
+\details{
 For percent loss, suppose the best model has an RMSE of 0.75 and a simpler
 model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100},
 or 25 percent. Note that loss will always be non-negative.

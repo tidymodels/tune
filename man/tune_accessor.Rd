@@ -3,6 +3,7 @@
 \name{.get_tune_parameters}
 \alias{.get_tune_parameters}
 \alias{.get_tune_parameter_names}
+\alias{.get_extra_col_names}
 \alias{.get_tune_metrics}
 \alias{.get_tune_metric_names}
 \alias{.get_tune_outcome_names}
@@ -13,6 +14,8 @@
 .get_tune_parameters(x)
 
 .get_tune_parameter_names(x)
+
+.get_extra_col_names(x)
 
 .get_tune_metrics(x)
 

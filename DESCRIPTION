@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 1.1.1.9000
+Version: 1.1.1.9001
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -19,7 +19,7 @@ Depends:
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.0.0),
-    dplyr (>= 1.0.8),
+    dplyr (>= 1.1.0),
     foreach,
     generics (>= 0.1.2),
     ggplot2,
@@ -27,10 +27,10 @@ Imports:
     GPfit,
     hardhat (>= 1.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 1.0.2),
+    parsnip (>= 1.0.4.9006),
     purrr (>= 1.0.0),
     recipes (>= 1.0.4),
-    rlang (>= 1.0.2),
+    rlang (>= 1.1.0),
     rsample (>= 1.0.0),
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
@@ -41,6 +41,7 @@ Imports:
     yardstick (>= 1.0.0)
 Suggests: 
     C50,
+    censored,
     covr,
     kernlab,
     kknn,

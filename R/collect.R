@@ -35,13 +35,18 @@
 #'  training set same has a single predicted value, the results are averaged
 #'  over replicate predictions.
 #'
-#' For regression cases, the numeric predictions are simply averaged. For
-#'  classification models, the problem is more complex. When class probabilities
+#' For regression cases, the numeric predictions are simply averaged.
+#'
+#' For classification models, the problem is more complex. When class probabilities
 #'  are used, these are averaged and then re-normalized to make sure that they
 #'  add to one. If hard class predictions also exist in the data, then these are
 #'  determined from the summarized probability estimates (so that they match).
 #'  If only hard class predictions are in the results, then the mode is used to
 #'  summarize.
+#'
+#' With censored outcome models, the predicted survival probabilities (if any)
+#'  are averaged while the static predicted event times are summarized using the
+#'  median.
 #'
 #' [collect_notes()] returns a tibble with columns for the resampling
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
@@ -210,7 +215,7 @@ prob_summarize <- function(x, p) {
   }
 
   nms <- names(x)
-  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", pred_cols, p))]
+  y_cols <- nms[!(nms %in% c(".row", ".iter", ".config", ".eval_time", pred_cols, p))]
   group_cols <- nms[!(nms %in% pred_cols)]
 
   x <-
@@ -293,10 +298,52 @@ class_summarize <- function(x, p) {
   x
 }
 
+surv_summarize <- function(x, p, y) {
+  pred_cols <- grep("^\\.pred", names(x), value = TRUE)
+  nms <- names(x)
+
+  outcomes <- x[, c(".row", y)] %>% dplyr::slice(1, .by = .row)
+
+  res <- NULL
+
+  # Use the median to summarize the static estimates
+  if (any(pred_cols == ".pred_time")) {
+    res <-
+      dplyr::summarize(
+        tmp,
+        .pred_time = median(.pred_time),
+        .by = c(.row, .config, dplyr::all_of(p))
+      )
+  }
+
+  # Simple mean to summarize dynamic probability predictions
+  if (any(pred_cols == ".pred")) {
+    nest_cols <- c(".eval_time", ".pred_survival", ".weight_censored")
+    tmp <-
+      x %>%
+      dplyr::select(.pred, .config, .row) %>%
+      tidyr::unnest(.pred) %>%
+      dplyr::summarize(
+        .pred_survival = mean(.pred_survival, na.rm = TRUE),
+        .weight_censored = mean(.weight_censored, na.rm = TRUE),
+        .by = c(.row, .eval_time, .config)
+      ) %>%
+      tidyr::nest(.pred = c(dplyr::all_of(nest_cols)), .by = c(.row, .config)) %>%
+      dplyr::relocate(.pred)
+    if (!is.null(res)) {
+      res <- dplyr::full_join(tmp, res, by = c(".row", ".config"))
+    }
+
+  }
+
+  res <- dplyr::full_join(outcomes, res, by = ".row")
+  res[order(res$.row, res$.config), nms]
+}
 
 average_predictions <- function(x, grid = NULL) {
   metric_types <- metrics_info(attr(x, "metrics"))$type
   param_names <- attr(x, "parameters")$id
+  y_nms <- .get_tune_outcome_names(x)
 
   if (!is.null(grid)) {
     grid <- dplyr::select(grid, dplyr::all_of(param_names))
@@ -320,9 +367,21 @@ average_predictions <- function(x, grid = NULL) {
   if (all(metric_types == "numeric")) {
     x <- numeric_summarize(x)
   } else if (any(metric_types == "prob")) {
+    # Note that this will recompute the hard class predictions since the
+    # probability estimates are changing. That's why there is a separate
+    # branch below that summarizes the hard class predictions when those are
+    # the only predictions.
     x <- prob_summarize(x, param_names)
-  } else {
+  } else if (any(metric_types == "class")) {
     x <- class_summarize(x, param_names)
+  } else if (any(metric_types %in% c("survival", "time"))) {
+    x <- surv_summarize(x, param_names, y_nms)
+  } else {
+    msg <- paste(
+      "We don't know about metrics of type:",
+      paste(unique(metric_types), collapse = ", ")
+    )
+    rlang::abort(msg)
   }
 
   if (dplyr::is_grouped_df(x)) {
@@ -372,26 +431,26 @@ collector <- function(x, coll_col = ".predictions") {
   keep_cols <- c(id_cols, keep_cols)
   x <- x[keep_cols]
   coll_col <- x[[coll_col]]
-  sizes <- list_sizes(coll_col)
+  sizes <- vctrs::list_sizes(coll_col)
 
   res <-
-    vec_cbind(
-      vec_rep_each(x[, id_cols], times = sizes),
-      list_unchop(coll_col)
+    vctrs::vec_cbind(
+      vctrs::vec_rep_each(x[, id_cols], times = sizes),
+      vctrs::list_unchop(coll_col)
     )
 
   if (is_iterative) {
     res <-
-      vec_cbind(
+      vctrs::vec_cbind(
         res,
-        vec_rep_each(x[, ".iter"], times = sizes)
+        vctrs::vec_rep_each(x[, ".iter"], times = sizes)
       )
   }
 
-  arrange_cols <- c(".iter", ".config")
+  arrange_cols <- c(".eval_time", ".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
 
-  vec_slice(res, vec_order(res[arrange_cols]))
+  vec_slice(res, vctrs::vec_order(res[arrange_cols]))
 }
 
 #' @export
@@ -401,20 +460,20 @@ collector <- function(x, coll_col = ".predictions") {
 .config_key_from_metrics <- function(x) {
   param_names <- .get_tune_parameter_names(x)
   tibble_metrics <- purrr::map_lgl(x[[".metrics"]], tibble::is_tibble)
-  x <- vec_slice(x, tibble_metrics)
+  x <- vctrs::vec_slice(x, tibble_metrics)
   x <- x[, colnames(x) %in% c(".iter", ".metrics")]
 
   metrics <- x[[".metrics"]]
 
-  out <- list_unchop(metrics)
+  out <- vctrs::list_unchop(metrics)
   out <- out[c(param_names, ".config")]
 
   if (rlang::has_name(x, ".iter")) {
     iter <- x[[".iter"]]
-    out[[".iter"]] <- vec_rep_each(iter, times = list_sizes(metrics))
+    out[[".iter"]] <- vctrs::vec_rep_each(iter, times = vctrs::list_sizes(metrics))
   }
 
-  out <- vec_unique(out)
+  out <- vctrs::vec_unique(out)
 
   out
 }
@@ -425,6 +484,7 @@ collector <- function(x, coll_col = ".predictions") {
 estimate_tune_results <- function(x, col_name = ".metrics", ...) {
   param_names <- .get_tune_parameter_names(x)
   id_names <- grep("^id", names(x), value = TRUE)
+  group_cols <- .get_extra_col_names(x)
 
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
@@ -467,6 +527,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
 
     x <- dplyr::distinct(x)
   }
+
   group_cols <- c(".metric", ".estimator")
   if (".by" %in% names(x)) {
     group_cols <- c(group_cols, ".by")
@@ -490,7 +551,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
       dplyr::full_join(config_key, by = param_names)
   }
 
-  arrange_names <- intersect(c(".iter", ".config"), names(x))
+  arrange_names <- intersect(c(".iter", ".config", ".eval_time"), names(x))
   dplyr::arrange(x, !!!rlang::syms(arrange_names))
 }
 

@@ -127,6 +127,16 @@
 #'
 #' @inheritSection tune_grid Extracting Information
 #'
+#' @section Censored regression models:
+#'
+#' With dynamic performance metrics (e.g. Brier or ROC curves), performance is
+#' calculated for every value of `eval_time` but the _first_ evaluation time
+#' given by the user (e.g., `eval_time[1]`) is used to guide the optimization.
+#'
+#' Also, values of `eval_time` should be less than the largest observed event
+#' time in the training data. For many non-parametric models, the results beyond
+#' the largest time corresponding to an event are constant (or `NA`).
+#'
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)
@@ -192,7 +202,8 @@ tune_bayes.model_spec <- function(object,
                                   metrics = NULL,
                                   objective = exp_improve(),
                                   initial = 5,
-                                  control = control_bayes()) {
+                                  control = control_bayes(),
+                                  eval_time = NULL) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -214,7 +225,7 @@ tune_bayes.model_spec <- function(object,
     wflow,
     resamples = resamples, iter = iter, param_info = param_info,
     metrics = metrics, objective = objective, initial = initial,
-    control = control, ...
+    control = control, eval_time = eval_time, ...
   )
 }
 
@@ -230,7 +241,8 @@ tune_bayes.workflow <-
            metrics = NULL,
            objective = exp_improve(),
            initial = 5,
-           control = control_bayes()) {
+           control = control_bayes(),
+           eval_time = NULL) {
 
     control <- parsnip::condense_control(control, control_bayes())
 
@@ -239,7 +251,7 @@ tune_bayes.workflow <-
         object,
         resamples = resamples, iter = iter, param_info = param_info,
         metrics = metrics, objective = objective, initial = initial,
-        control = control, ...
+        control = control, eval_time = eval_time, ...
       )
     .stash_last_result(res)
     res
@@ -248,7 +260,7 @@ tune_bayes.workflow <-
 tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
-           initial = 5, control = control_bayes(), ...) {
+           initial = 5, control = control_bayes(), eval_time = NULL, ...) {
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -257,8 +269,10 @@ tune_bayes_workflow <-
     rset_info <- pull_rset_attributes(resamples)
 
     metrics <- check_metrics(metrics, object)
+    check_eval_time(eval_time, metrics)
     metrics_data <- metrics_info(metrics)
     metrics_name <- metrics_data$.metric[1]
+    metrics_time <- get_metric_time(metrics, eval_time)
     maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
 
     if (is.null(param_info)) {
@@ -269,7 +283,7 @@ tune_bayes_workflow <-
 
     unsummarized <- check_initial(
       initial, param_info, object, resamples,
-      metrics, control,
+      metrics, control, eval_time,
       checks = "bayes"
     )
 
@@ -310,10 +324,14 @@ tune_bayes_workflow <-
 
     check_time(start_time, control$time_limit)
 
-    score_card <- initial_info(mean_stats, metrics_name, maximize)
+    score_card <- initial_info(mean_stats, metrics_name, maximize, metrics_time)
 
     if (control$verbose_iter) {
-      message_wrap(paste("Optimizing", metrics_name, "using", objective$label))
+      msg <- paste("Optimizing", metrics_name, "using", objective$label)
+      if (!is.null(eval_time)) {
+        msg <- paste(msg, "at evaluation time", format(metrics_time, digits = 3))
+      }
+      message_wrap(msg)
     }
 
     prev_gp_mod <- NULL
@@ -336,13 +354,15 @@ tune_bayes_workflow <-
             mean_stats %>% dplyr::select(-.iter),
             pset = param_info,
             metric = metrics_name,
+            eval_time = metrics_time,
             control = control,
             ...
           ),
           control,
           NULL,
           "Gaussian process model",
-          notes = .notes
+          notes = .notes,
+          catalog = FALSE
         )
 
       gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
@@ -393,7 +413,8 @@ tune_bayes_workflow <-
           candidates = candidates,
           metrics = metrics,
           control = control,
-          param_info = param_info
+          param_info = param_info,
+          eval_time = eval_time
         )
 
       check_time(start_time, control$time_limit)
@@ -415,7 +436,8 @@ tune_bayes_workflow <-
         rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
-        log_progress(control, x = mean_stats, maximize = maximize, objective = metrics_name)
+        log_progress(control, x = mean_stats, maximize = maximize,
+                     objective = metrics_name, eval_time = metrics_time)
       } else {
         if (all_bad) {
           tune_log(control, split = NULL, task = "All models failed", type = "danger")
@@ -506,10 +528,14 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   x
 }
 
-fit_gp <- function(dat, pset, metric, control, ...) {
-  dat <-
-    dat %>%
-    dplyr::filter(.metric == metric) %>%
+fit_gp <- function(dat, pset, metric, control, eval_time = NULL, ...) {
+  dat <- dat %>% dplyr::filter(.metric == metric)
+
+  if (!is.null(eval_time)) {
+    dat <- dat %>% dplyr::filter(.eval_time == eval_time)
+  }
+
+  dat <- dat %>%
     check_gp_data() %>%
     dplyr::select(dplyr::all_of(pset$id), mean)
 
@@ -563,13 +589,14 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     control,
     split = NULL,
     task = paste("Generating", nrow(pred_grid), "candidates"),
-    type = "info"
+    type = "info",
+    catalog = FALSE
   )
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  tune_log(control, split = NULL, task = "Predicted candidates", type = "info")
+  tune_log(control, split = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
@@ -599,8 +626,15 @@ update_score_card <- function(info, iter, results, control) {
   current_val <-
     results %>%
     estimate_tune_results() %>%
-    dplyr::filter(.metric == info$metrics) %>%
-    dplyr::pull(mean)
+    dplyr::filter(.metric == info$metrics)
+
+  if (!is.null(info$eval_time)) {
+    current_val <-
+      current_val %>%
+      dplyr::filter(.eval_time == info$eval_time)
+  }
+
+  current_val <- current_val$mean
 
   if (info$max) {
     is_better <- current_val > info$best_val
@@ -627,7 +661,7 @@ update_score_card <- function(info, iter, results, control) {
 
 
 # save metrics_name and maximize to simplify!!!!!!!!!!!!!!!
-initial_info <- function(stats, metrics, maximize) {
+initial_info <- function(stats, metrics, maximize, eval_time) {
   best_res <-
     stats %>%
     dplyr::filter(.metric == metrics) %>%
@@ -658,7 +692,8 @@ initial_info <- function(stats, metrics, maximize) {
     uncertainty = 0,
     overall_iter = overall_iter,
     metrics = metrics,
-    max = maximize
+    max = maximize,
+    eval_time = eval_time
   )
 }
 
@@ -666,7 +701,8 @@ initial_info <- function(stats, metrics, maximize) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, control, param_info) {
+more_results <- function(object, resamples, candidates, metrics, control,
+                         param_info, eval_time = NULL) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -680,7 +716,8 @@ more_results <- function(object, resamples, candidates, metrics, control, param_
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = control
+        control = control,
+        eval_time = eval_time
       ),
       silent = TRUE
     )

@@ -63,7 +63,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
     grid_distinct <- distinct(grid)
 
     # remove attributes, particularly those tacked on by `expand.grid()`
-    grid_distinct <- new_data_frame(grid_distinct, n = nrow(grid_distinct))
+    grid_distinct <- vctrs::new_data_frame(grid_distinct, n = nrow(grid_distinct))
 
     if (!identical(nrow(grid_distinct), nrow(grid))) {
       rlang::warn(
@@ -346,6 +346,9 @@ check_metrics <- function(x, object) {
            classification = {
              x <- yardstick::metric_set(roc_auc, accuracy)
            },
+           'censored regression' = {
+             x <- yardstick::metric_set(brier_survival)
+           },
            unknown = {
              rlang::abort("Internal error: `check_installs()` should have caught an `unknown` mode.")
            },
@@ -357,27 +360,35 @@ check_metrics <- function(x, object) {
 
   is_numeric_metric_set <- inherits(x, "numeric_metric_set")
   is_class_prob_metric_set <- inherits(x, "class_prob_metric_set")
+  is_surv_metric_set <- inherits(x, c("survival_metric_set"))
 
-  if (!is_numeric_metric_set && !is_class_prob_metric_set) {
+  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
     rlang::abort("The `metrics` argument should be the results of [yardstick::metric_set()].")
   }
 
-  if (mode == "regression" && is_class_prob_metric_set) {
+  if (mode == "regression" && !is_numeric_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'regression'`, ",
-      "but `metrics` is a metric set for class / probability metrics."
+      "but `metrics` is a metric set for a different model mode."
     )
     rlang::abort(msg)
   }
 
-  if (mode == "classification" && is_numeric_metric_set) {
+  if (mode == "classification" && !is_class_prob_metric_set) {
     msg <- paste0(
       "The parsnip model has `mode = 'classification'`, ",
-      "but `metrics` is a metric set for regression metrics."
+      "but `metrics` is a metric set for a different model mode."
     )
     rlang::abort(msg)
   }
 
+  if (mode == "censored regression" && !is_surv_metric_set) {
+    msg <- paste0(
+      "The parsnip model has `mode = 'censored regression'`, ",
+      "but `metrics` is a metric set for a different model mode."
+    )
+    rlang::abort(msg)
+  }
   x
 }
 
@@ -389,7 +400,8 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "grid") {
+check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_time,
+                          checks = "grid") {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
   }
@@ -401,17 +413,16 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, checks = "gr
       tune_log(ctrl, split = NULL, msg, type = "go")
     }
 
+    grid_ctrl <- ctrl
+    grid_ctrl$verbose <- FALSE
     x <- tune_grid(
       wflow,
       resamples = resamples,
       grid = x,
       metrics = metrics,
       param_info = pset,
-      control = control_grid(
-        extract = ctrl$extract,
-        save_pred = ctrl$save_pred,
-        event_level = ctrl$event_level
-      )
+      control = parsnip::condense_control(grid_ctrl, control_grid()),
+      eval_time = eval_time
     )
 
     if (ctrl$verbose) {
@@ -598,3 +609,23 @@ check_no_tuning <- function(x) {
   rlang::abort(msg, call = NULL)
 }
 
+dyn_inputs <- c("integrated_survival_metric", "dynamic_survival_metric")
+
+check_eval_time <- function(eval_time, metrics) {
+  metric_types <- tibble::as_tibble(metrics)$class
+  needs_eval_time <- any(metric_types %in% dyn_inputs)
+  if (!is.null(eval_time) & !needs_eval_time) {
+    rlang::abort(
+      "Evaluation times are only used for dynamic and integrated survival metrics.",
+      call = NULL
+    )
+  }
+  if (is.null(eval_time) & needs_eval_time) {
+    rlang::abort(
+      "One or more metric requires the specification of time points in the `eval_time` argument.",
+      call = NULL
+    )
+  }
+  invisible(NULL)
+
+}

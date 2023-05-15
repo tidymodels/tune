@@ -3,6 +3,7 @@ tune_grid_loop <- function(resamples,
                            workflow,
                            metrics,
                            control,
+                           eval_time = NULL,
                            rng) {
   fn_tune_grid_loop <- tune_grid_loop_tune
 
@@ -17,6 +18,7 @@ tune_grid_loop <- function(resamples,
     workflow,
     metrics,
     control,
+    eval_time,
     rng
   )
 
@@ -36,6 +38,7 @@ tune_grid_loop_tune <- function(resamples,
                                 workflow,
                                 metrics,
                                 control,
+                                eval_time = NULL,
                                 rng) {
   n_resamples <- nrow(resamples)
 
@@ -51,6 +54,7 @@ tune_grid_loop_tune <- function(resamples,
     workflow = workflow,
     metrics = metrics,
     control = control,
+    eval_time = eval_time,
     rng = rng,
     parallel_over = parallel_over
   )
@@ -131,6 +135,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
                                 workflow,
                                 metrics,
                                 control,
+                                eval_time = NULL,
                                 rng,
                                 parallel_over) {
   splits <- resamples$splits
@@ -174,6 +179,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           workflow = workflow,
           metrics = metrics,
           control = control,
+          eval_time = eval_time,
           seed = seed,
           metrics_info = metrics_info,
           params = params
@@ -204,7 +210,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           .errorhandling = "pass",
           .combine = iter_combine
         ) %op% {
-          grid_info_row <- vec_slice(grid_info, row)
+          grid_info_row <- vctrs::vec_slice(grid_info, row)
 
           # Likely want to debug with `debugonce(tune_grid_loop_iter)`
           fn_tune_grid_loop_iter_safely(
@@ -214,6 +220,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             workflow = workflow,
             metrics = metrics,
             control = control,
+            eval_time = eval_time,
             seed = seed,
             metrics_info = metrics_info,
             params = params
@@ -263,9 +270,11 @@ tune_grid_loop_iter <- function(split,
                                 workflow,
                                 metrics,
                                 control,
+                                eval_time = NULL,
                                 seed,
                                 metrics_info = metrics_info(metrics),
                                 params) {
+
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
 
@@ -292,8 +301,8 @@ tune_grid_loop_iter <- function(split,
       location = character(0), type = character(0), note = character(0)
     ))
 
-  model_params <- vec_slice(params, params$source == "model_spec")
-  preprocessor_params <- vec_slice(params, params$source == "recipe")
+  model_params <- vctrs::vec_slice(params, params$source == "model_spec")
+  preprocessor_params <- vctrs::vec_slice(params, params$source == "recipe")
 
   param_names <- params$id
   model_param_names <- model_params$id
@@ -311,7 +320,7 @@ tune_grid_loop_iter <- function(split,
   for (iter_preprocessor in iter_preprocessors) {
     workflow <- workflow_original
 
-    iter_grid_info <- vec_slice(
+    iter_grid_info <- vctrs::vec_slice(
       grid_info,
       grid_info$.iter_preprocessor == iter_preprocessor
     )
@@ -347,7 +356,7 @@ tune_grid_loop_iter <- function(split,
     for (iter_model in iter_models) {
       workflow <- workflow_preprocessed
 
-      iter_grid_info_model <- vec_slice(
+      iter_grid_info_model <- vctrs::vec_slice(
         iter_grid_info,
         iter_grid_info$.iter_model == iter_model
       )
@@ -412,8 +421,8 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics,
-                      iter_submodels, metrics_info = metrics_info),
+        predict_model(split, workflow, iter_grid, metrics, iter_submodels,
+                      metrics_info = metrics_info, eval_time = eval_time),
         control,
         split,
         iter_msg_predictions,
@@ -467,9 +476,11 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        workflow,
                                        metrics,
                                        control,
+                                       eval_time = NULL,
                                        seed,
                                        metrics_info,
                                        params) {
+
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
   # Likely want to debug with `debugonce(tune_grid_loop_iter)`
@@ -479,6 +490,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     workflow,
     metrics,
     control,
+    eval_time,
     seed,
     metrics_info = metrics_info,
     params

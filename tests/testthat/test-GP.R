@@ -19,9 +19,9 @@ test_that("GP fit - svm", {
   svm_gp <-
     tune:::fit_gp(
       collect_metrics(svm_results),
-      svm_set,
-      "accuracy",
-      control_bayes(verbose = TRUE)
+      pset = svm_set,
+      metric = "accuracy",
+      control = control_bayes(verbose = TRUE)
     )
   expect_equal(class(svm_gp), "GP")
   expect_equal(
@@ -61,9 +61,9 @@ test_that("GP scoring", {
   svm_gp <-
     tune:::fit_gp(
       collect_metrics(svm_results),
-      svm_set,
-      "accuracy",
-      ctrl
+      pset = svm_set,
+      metric = "accuracy",
+      control = ctrl
     )
 
   svm_scores <-
