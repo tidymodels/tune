@@ -10,6 +10,8 @@
 \alias{collect_notes.tune_results}
 \alias{collect_extracts}
 \alias{collect_extracts.tune_results}
+\alias{pivot_metrics}
+\alias{pivot_metrics.tune_results}
 \title{Obtain and format results produced by tuning functions}
 \usage{
 collect_predictions(x, ...)
@@ -29,6 +31,10 @@ collect_notes(x, ...)
 collect_extracts(x, ...)
 
 \method{collect_extracts}{tune_results}(x, ...)
+
+pivot_metrics(x, ...)
+
+\method{pivot_metrics}{tune_results}(x, summarize = TRUE, ...)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},
@@ -57,6 +63,10 @@ if any).
 results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
 When not summarized, the additional columns for the resampling identifier(s)
 and \code{.estimate}.
+
+\code{\link[=pivot_metrics]{pivot_metrics()}} collects the metrics and pivots the data so that each
+metric is in a different column. If summarized, the \code{std_err} and \code{n} columns
+are dropped.
 
 For \code{\link[=collect_predictions]{collect_predictions()}}, there are additional columns for the resampling
 identifier(s), columns for the predicted values (e.g., \code{.pred},
@@ -102,6 +112,7 @@ extract_parameter_set_dials(ames_wflow)
 
 # Summarized over resamples
 collect_metrics(ames_grid_search)
+pivot_metrics(ames_grid_search)
 
 # Per-resample values
 collect_metrics(ames_grid_search, summarize = FALSE)

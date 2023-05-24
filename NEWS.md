@@ -6,6 +6,7 @@
 
 * `last_fit()` will now error when supplied a fitted workflow. (#678)
 
+* `pivot_metrics()`, which makes columns for different metrics, was added.
 
 # tune 1.1.1
 

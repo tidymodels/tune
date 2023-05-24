@@ -23,6 +23,10 @@
 #' When not summarized, the additional columns for the resampling identifier(s)
 #' and `.estimate`.
 #'
+#' [pivot_metrics()] collects the metrics and pivots the data so that each
+#' metric is in a different column. If summarized, the `std_err` and `n` columns
+#' are dropped.
+#'
 #' For [collect_predictions()], there are additional columns for the resampling
 #' identifier(s), columns for the predicted values (e.g., `.pred`,
 #' `.pred_class`, etc.), and a column for the outcome(s) using the original
@@ -62,6 +66,7 @@
 #'
 #' # Summarized over resamples
 #' collect_metrics(ames_grid_search)
+#' pivot_metrics(ames_grid_search)
 #'
 #' # Per-resample values
 #' collect_metrics(ames_grid_search, summarize = FALSE)
@@ -606,3 +611,46 @@ collect_extracts.tune_results <- function(x, ...) {
     tidyr::unnest(cols = .extracts)
 }
 
+# ------------------------------------------------------------------------------
+
+#' @export
+#' @rdname collect_predictions
+pivot_metrics <- function(x, ...) {
+  UseMethod("pivot_metrics")
+}
+
+#' @export
+#' @rdname collect_predictions
+pivot_metrics.tune_results <- function(x, summarize = TRUE, ...) {
+  params <- .get_tune_parameter_names(x)
+  id_cols <- c(params, ".config")
+  x_names <- names(x)
+  if (any(x_names == ".iter")) {
+    id_cols <- c(id_cols, ".iter")
+  }
+  if (any(x_names == ".eval_time")) {
+    id_cols <- c(id_cols, ".eval_time")
+  }
+  metrics <- collect_metrics(x, summarize = summarize)
+  metric_nms <- unique(metrics$.metric)
+  if (summarize) {
+    metrics <-
+      tidyr::pivot_wider(
+        metrics,
+        id_cols = c(dplyr::all_of(id_cols)),
+        names_from = .metric,
+        values_from = mean
+      )
+  } else {
+    id_cols <- c(id_cols, grep("^id", x_names, value = TRUE))
+    metrics <-
+      tidyr::pivot_wider(
+        metrics,
+        id_cols = c(dplyr::all_of(id_cols)),
+        names_from = .metric,
+        values_from = .estimate
+      ) %>%
+      dplyr::relocate(dplyr::starts_with("id"))
+  }
+  dplyr::relocate(metrics, dplyr::all_of(metric_nms))
+}
