@@ -13,6 +13,7 @@ int_pctl_metrics(x, ...)
   times = 1001,
   alpha = 0.05,
   allow_par = TRUE,
+  event_level = "first",
   ...
 )
 }
@@ -31,13 +32,36 @@ metrics as the original object.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}
+
+\item{event_level}{A single string. Either \code{"first"} or \code{"second"} to specify
+which level of truth to consider as the "event".}
 }
 \value{
 A tibble of metrics with additional columns for \code{.lower} and
-\code{.upper}. Note that the \code{.estimate} column is likely to be different from the
-results given by \code{\link[=collect_metrics]{collect_metrics()}} since a different estimator is used.
+\code{.upper}.
 }
 \description{
 Using out-of-sample predictions, the bootstrap is used to create percentile
 confidence intervals.
+}
+\details{
+For each model configuration (if any), this function takes bootstrap samples
+of the out-of-sample predicted values. For each bootstrap sample, the metrics
+are computed and these are used to compute confidence intervals.
+See \code{\link[rsample:int_pctl]{rsample::int_pctl()}} and the references therein for more details.
+
+Note that the \code{.estimate} column is likely to be different from the results
+given by \code{\link[=collect_metrics]{collect_metrics()}} since a different estimator is used. Since
+random numbers are used in sampling, set the random number seed prior to
+running this function.
+
+The number of bootstrap samples should be large to have reliable intervals.
+The defaults reflect the fewest samples that should be used.
+
+The computations for each configuration can be extensive. To increase
+computational efficiency parallel processing can be used. The \pkg{foreach}
+package is used here. To execute the resampling iterations in parallel,
+register a parallel backend function. See the documentation for
+\code{\link[foreach:foreach]{foreach::foreach()}} for examples. The \code{allow_par} argument can be used to
+avoid parallelism.
 }
