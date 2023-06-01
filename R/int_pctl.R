@@ -19,6 +19,7 @@ int_pctl_metrics <- function(x, ...) {
   UseMethod("int_pctl_metrics")
 }
 
+# TODO add event_level option
 
 #' @export
 #' @rdname int_pctl_metrics
