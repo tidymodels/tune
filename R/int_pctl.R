@@ -2,7 +2,7 @@
 #'
 #' Using out-of-sample predictions, the bootstrap is used to create percentile
 #' confidence intervals.
-#' @param x A object with class `tune_results` where the `save_pred = TRUE`
+#' @param .data A object with class `tune_results` where the `save_pred = TRUE`
 #' option was used in the control function.
 #' @param metrics A [yardstick::metric_set()]. By default, it uses the same
 #' metrics as the original object.
@@ -35,37 +35,53 @@
 #' register a parallel backend function. See the documentation for
 #' [foreach::foreach()] for examples. The `allow_par` argument can be used to
 #' avoid parallelism.
+#' @seealso [rsample::int_pctl()]
+#' @examplesIf !tune:::is_cran_check() & tune:::should_run_examples("modeldata")
+#' data(Sacramento, package = "modeldata")
+#' library(rsample)
+#' library(parsnip)
 #'
+#' f <- log10(price) ~ beds + baths + sqft + type + latitude + longitude
+#'
+#' set.seed(13)
+#' sac_rs <- vfold_cv(Sacramento)
+#'
+#' lm_res <-
+#'   linear_reg() %>%
+#'   fit_resamples(
+#'     log10(price) ~ beds + baths + sqft + type + latitude + longitude,
+#'     resamples = sac_rs,
+#'     control = control_resamples(save_pred = TRUE)
+#'   )
+#'
+#' set.seed(31)
+#' int_pctl(lm_res)
 #' @export
-int_pctl_metrics <- function(x, ...) {
-  UseMethod("int_pctl_metrics")
-}
+int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
+                                  alpha = 0.05, allow_par = TRUE,
+                                  event_level = "first", ...) {
 
-# TODO deal with eval_time
-# TODO add a parameters argument.
+  # TODO deal with eval_time
+  # TODO add a parameters argument.
 
-#' @export
-#' @rdname int_pctl_metrics
-int_pctl_metrics.tune_results <- function(x, metrics = NULL, times = 1001,
-                                          alpha = 0.05, allow_par = TRUE,
-                                          event_level = "first", ...) {
-  y_nm <- outcome_names(x)
-  param <- .get_tune_parameter_names(x)
+
+  y_nm <- outcome_names(.data)
+  param <- .get_tune_parameter_names(.data)
   key_cols <- c(".config", param)
-  if (any(names(x) == ".iter")) {
+  if (any(names(.data) == ".iter")) {
     key_cols <- c(".config", ".iter", param)
   }
-  keys <- collect_metrics(x) %>% dplyr::distinct(dplyr::pick(dplyr::all_of(key_cols)))
+  keys <- collect_metrics(.data) %>% dplyr::distinct(dplyr::pick(dplyr::all_of(key_cols)))
   if (is.null(metrics)) {
-    metrics <- .get_tune_metrics(x)
+    metrics <- .get_tune_metrics(.data)
   }
 
   res <-
-    collect_predictions(x, summarize = TRUE)%>%
+    collect_predictions(.data, summarize = TRUE)%>%
     dplyr::select(-all_of(param)) %>%
     dplyr::group_nest(.config, .key = "results") %>%
     dplyr::mutate(
-      .seed = sample.int(10000, n()),
+      .seed = sample.int(10000, dplyr::n()),
       results = purrr::map2(
         results,
         .seed,
