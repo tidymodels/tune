@@ -498,3 +498,54 @@ test_that("check parameter finalization", {
   )
   expect_true(inherits(p5, "parameters"))
 })
+
+test_that("pivoting metrics", {
+  library(recipes)
+  library(rsample)
+  library(parsnip)
+
+  res_1 <- pivot_metrics(ames_grid_search)
+  template_1 <- tibble::tibble(
+    rmse = numeric(0),
+    rsq = numeric(0),
+    K = integer(0),
+    weight_func = character(0),
+    dist_power = numeric(0),
+    lon = integer(0),
+    lat = integer(0),
+    .config = character(0)
+  )
+  expect_equal(res_1[0,], template_1)
+  expect_equal(nrow(res_1), 10)
+
+  res_2 <- pivot_metrics(ames_iter_search)
+  template_2 <- tibble::tibble(
+    rmse = numeric(0),
+    rsq = numeric(0),
+    K = integer(0),
+    weight_func = character(0),
+    dist_power = numeric(0),
+    lon = integer(0),
+    lat = integer(0),
+    .config = character(0),
+    .iter = integer(0)
+  )
+  expect_equal(res_2[0,], template_2)
+  expect_equal(nrow(res_2), 20)
+
+  # ------------------------------------------------------------------------------
+
+  set.seed(6735)
+  tr_te_split <- initial_split(mtcars)
+
+  spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_ns(disp)
+
+  lin_mod <- linear_reg() %>%
+    set_engine("lm")
+
+  spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
+  res_3 <- pivot_metrics(spline_res)
+  expect_equal(res_3[0,], tibble::tibble(rmse = numeric(0), rsq = numeric(0)))
+})
+
