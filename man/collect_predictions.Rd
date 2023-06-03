@@ -12,6 +12,7 @@
 \alias{collect_extracts.tune_results}
 \alias{pivot_metrics}
 \alias{pivot_metrics.tune_results}
+\alias{pivot_metrics.last_fit}
 \title{Obtain and format results produced by tuning functions}
 \usage{
 collect_predictions(x, ...)
@@ -35,6 +36,8 @@ collect_extracts(x, ...)
 pivot_metrics(x, ...)
 
 \method{pivot_metrics}{tune_results}(x, summarize = TRUE, ...)
+
+\method{pivot_metrics}{last_fit}(x, ...)
 }
 \arguments{
 \item{x}{The results of \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, \code{\link[=fit_resamples]{fit_resamples()}},

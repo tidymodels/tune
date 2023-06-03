@@ -622,16 +622,17 @@ pivot_metrics <- function(x, ...) {
 #' @export
 #' @rdname collect_predictions
 pivot_metrics.tune_results <- function(x, summarize = TRUE, ...) {
+  metrics <- collect_metrics(x, summarize = summarize)
+  x_names <- names(metrics)
   params <- .get_tune_parameter_names(x)
   id_cols <- c(params, ".config")
-  x_names <- names(x)
+
   if (any(x_names == ".iter")) {
     id_cols <- c(id_cols, ".iter")
   }
   if (any(x_names == ".eval_time")) {
     id_cols <- c(id_cols, ".eval_time")
   }
-  metrics <- collect_metrics(x, summarize = summarize)
   metric_nms <- unique(metrics$.metric)
   if (summarize) {
     metrics <-
@@ -654,3 +655,32 @@ pivot_metrics.tune_results <- function(x, summarize = TRUE, ...) {
   }
   dplyr::relocate(metrics, dplyr::all_of(metric_nms))
 }
+
+#' @export
+#' @rdname collect_predictions
+pivot_metrics.last_fit <- function(x, ...) {
+  metrics <- collect_metrics(x)
+  x_names <- names(metrics)
+  id_cols <- character(0)
+  if (any(x_names == ".eval_time")) {
+    id_cols <- c(id_cols, ".eval_time")
+  }
+  metric_nms <- unique(metrics$.metric)
+  if (identical(id_cols, ".eval_time")) {
+    metrics <-
+      tidyr::pivot_wider(
+        metrics,
+        id_cols = c(.eval_time),
+        names_from = .metric,
+        values_from = .estimate
+      )
+  } else {
+    metrics <-
+      collect_metrics(x) %>%
+      tidyr::pivot_wider(names_from = .metric, values_from = .estimate)
+  }
+  metrics %>%
+    dplyr::select(-.estimator, -.config) %>%
+    dplyr::relocate(dplyr::all_of(metric_nms))
+}
+
