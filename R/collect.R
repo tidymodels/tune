@@ -310,9 +310,9 @@ surv_summarize <- function(x, p, y) {
   if (any(pred_cols == ".pred_time")) {
     res <-
       dplyr::summarize(
-        tmp,
+        x,
         .pred_time = median(.pred_time),
-        .by = c(.row, .config, dplyr::all_of(p))
+        .by = c(.row, .config, dplyr::all_of(p), dplyr::any_of(".iter"))
       )
   }
 
@@ -326,7 +326,7 @@ surv_summarize <- function(x, p, y) {
       dplyr::summarize(
         .pred_survival = mean(.pred_survival, na.rm = TRUE),
         .weight_censored = mean(.weight_censored, na.rm = TRUE),
-        .by = c(.row, .eval_time, .config)
+        .by = c(.row, .eval_time, .config, dplyr::any_of(".iter"))
       ) %>%
       tidyr::nest(.pred = c(dplyr::all_of(nest_cols)), .by = c(.row, .config)) %>%
       dplyr::relocate(.pred)
