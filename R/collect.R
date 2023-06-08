@@ -315,7 +315,7 @@ surv_summarize <- function(x, p, y) {
   if (any(pred_cols == ".pred_time")) {
     res <-
       dplyr::summarize(
-        tmp,
+        x,
         .pred_time = median(.pred_time),
         .by = c(.row, .config, dplyr::all_of(p))
       )
