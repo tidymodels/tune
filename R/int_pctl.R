@@ -2,6 +2,7 @@
 #'
 #' Using out-of-sample predictions, the bootstrap is used to create percentile
 #' confidence intervals.
+#' @inheritParams rlang::args_dots_empty
 #' @param .data A object with class `tune_results` where the `save_pred = TRUE`
 #' option was used in the control function.
 #' @param metrics A [yardstick::metric_set()]. By default, it uses the same
@@ -12,7 +13,6 @@
 #' backend is registered).
 #' @param event_level A single string. Either `"first"` or `"second"` to specify
 #' which level of truth to consider as the "event".
-#' @param ... Not currently used.
 #' @return A tibble of metrics with additional columns for `.lower` and
 #' `.upper`.
 #' @details
@@ -35,6 +35,10 @@
 #' register a parallel backend function. See the documentation for
 #' [foreach::foreach()] for examples. The `allow_par` argument can be used to
 #' avoid parallelism.
+#'
+#' Also, if a censored regression model used numerous evaluation times, the
+#' computations can take a long time unless the times are filtered with the
+#' `eval_time` argument.
 #' @seealso [rsample::int_pctl()]
 #' @examplesIf !tune:::is_cran_check() & tune:::should_run_examples("modeldata")
 #' data(Sacramento, package = "modeldata")
@@ -58,55 +62,31 @@
 #' int_pctl(lm_res)
 #' @export
 int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
+                                  eval_time = NULL, parameters = NULL,
                                   alpha = 0.05, allow_par = TRUE,
                                   event_level = "first", ...) {
 
-  # TODO deal with eval_time
-  # TODO add a parameters argument.
+  rlang::check_dots_empty(...)
 
+  # check eval_time and set default when null
+  eval_time <- default_eval_time(eval_time, .data$.metrics[[1]])
+  .data$.predictions <- filter_eval_times(.data, eval_time)
 
   y_nm <- outcome_names(.data)
-  param <- .get_tune_parameter_names(.data)
-  key_cols <- c(".config", param)
-  if (any(names(.data) == ".iter")) {
-    key_cols <- c(".config", ".iter", param)
-  }
-  keys <- collect_metrics(.data) %>% dplyr::distinct(dplyr::pick(dplyr::all_of(key_cols)))
+
+  config_keys <- get_configs(.data, parameters = parameters)
+  p <- length(config_keys)
+
   if (is.null(metrics)) {
     metrics <- .get_tune_metrics(.data)
   }
 
   res <-
-    collect_predictions(.data, summarize = TRUE)%>%
-    dplyr::select(-all_of(param)) %>%
-    dplyr::group_nest(.config, .key = "results") %>%
-    dplyr::mutate(
-      .seed = sample.int(10000, dplyr::n()),
-      results = purrr::map2(
-        results,
-        .seed,
-        ~ int_comp(.x, .y, times = times, y_nm, metrics, allow_par, event_level)
-      )
-    ) %>%
-    tidyr::unnest(cols = results) %>%
-    dplyr::full_join(keys, by = ".config")
-  res %>%
-    dplyr::select(-.seed) %>%
-    dplyr::relocate(!!!key_cols, .after = .upper)
-}
-
-comp_metrics <- function(split, y, metrics, event_level) {
-  dat <- rsample::analysis(split)
-  info <- metrics_info(metrics)
-  .estimate_metrics(
-    dat,
-    metric = metrics,
-    param_names = NULL,
-    outcome_name = y,
-    event_level = event_level,
-    metrics_info = info
-  ) %>%
-    dplyr::select(term = .metric, estimate = .estimate)
+    purrr::map2_dfr(
+      config_keys, sample.int(10000, p),
+      ~ compute_by_config(.x, .y, .data, metrics, times, allow_par)
+    )
+  res
 }
 
 get_int_p_operator <- function(allow = TRUE) {
@@ -119,23 +99,115 @@ get_int_p_operator <- function(allow = TRUE) {
   res
 }
 
-int_comp <- function(.data, seed, times = 1000, y_name, metrics,
-                     allow_par = TRUE, event_level) {
-  `%op%` <- get_int_p_operator(allow_par)
-  set.seed(seed)
-  rs <- rsample::bootstraps(.data, times = times)
+compute_by_config <- function(config, seed, x, metrics, times, allow_par) {
+  y_nm <- outcome_names(x)
+  preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
-  rs$metrics <-
+  set.seed(seed)
+  rs <- rsample::bootstraps(preds, times = times)
+
+  `%op%` <- get_int_p_operator(allow_par)
+  rs$.metrics <-
     foreach::foreach(
       i = 1:nrow(rs),
       .errorhandling = "pass",
       .packages = c("tune", "rsample")
     )  %op% {
-      comp_metrics(rs$splits[[i]], y_name, metrics, event_level)
+      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
     }
-  rsample::int_pctl(rs, metrics) %>%
+
+  if (is_surv) {
+    # compute by evaluation time
+    res <- int_pctl_dyn_surv(rs, allow_par)
+  } else {
+    res <- rsample::int_pctl(rs, .metrics)
+  }
+  res %>%
     dplyr::mutate(.estimator = "bootstrap") %>%
-    dplyr::select(.metric = term, .estimator, .lower, .estimate, .upper)
+    dplyr::rename(.metric = term) %>%
+    dplyr::relocate(.estimator, .after = .metric) %>%
+    dplyr::select(-.alpha, -.method) %>%
+    cbind(config)
+}
+
+# We have to do the analysis separately for each evaluation time.
+int_pctl_dyn_surv <- function(x, allow_par) {
+  `%op%` <- get_int_p_operator(allow_par)
+  times <- unique(x$.metrics[[1]]$.eval_time)
+  res <-
+    foreach::foreach(
+      i = seq_along(times),
+      .errorhandling = "pass",
+      .packages = c("purrr", "rsample", "dplyr")
+    )  %op% {
+      by_eval_time(times[i], x)
+    }
+  dplyr::bind_rows(res)
+}
+
+by_eval_time <- function(time, x) {
+  times <- dplyr::tibble(.eval_time = time)
+  x$.metrics <- purrr::map(x$.metrics, ~ dplyr::inner_join(.x, times, by = ".eval_time"))
+  rsample::int_pctl(x, .metrics)
+}
+
+
+# ------------------------------------------------------------------------------
+
+get_configs <- function(x, parameters = NULL, as_list = TRUE) {
+  param <- .get_tune_parameter_names(x)
+  config_cols <- c(".config", ".iter", param)
+  config_keys <-
+    collect_metrics(x, summarize = FALSE) %>%
+    dplyr::distinct(dplyr::pick(dplyr::any_of(config_cols)))
+  if (!is.null(parameters)) {
+    merge_cols <- intersect(names(config_keys), names(parameters))
+    config_keys <- dplyr::inner_join(config_keys, parameters, by = merge_cols)
+  }
+  if (as_list) {
+    config_keys <- vctrs::vec_chop(config_keys, as.list(1:nrow(config_keys)))
+  }
+  config_keys
+}
+
+# Compute metrics for a specific configuration
+comp_metrics <- function(split, y, metrics, event_level) {
+  dat <- rsample::analysis(split)
+  info <- metrics_info(metrics)
+
+  res <-
+    .estimate_metrics(
+      dat,
+      metric = metrics,
+      param_names = NULL,
+      outcome_name = y,
+      event_level = event_level,
+      metrics_info = info,
+      eval_time = NA  # TODO I don't think that this is used in the function
+    )
+
+  res %>%
+    dplyr::rename(term = .metric, estimate = .estimate) %>%
+    dplyr::select(-.estimator)
+}
+
+# ------------------------------------------------------------------------------
+
+
+filter_eval_times <- function(x, eval_time = NULL) {
+  if (is.null(eval_time)) {
+    return(x)
+  }
+  purrr::map(x$.predictions, thin_time, times = eval_time)
+}
+
+thin_time <- function(x, times) {
+  x$.pred <- purrr::map(x$.pred, subset_time, times = times)
+  x
+}
+
+subset_time <- function(x, times) {
+  x[x$.eval_time %in% times,]
 }
 
 

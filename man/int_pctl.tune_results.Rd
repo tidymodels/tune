@@ -8,6 +8,8 @@ int_pctl.tune_results(
   .data,
   metrics = NULL,
   times = 1001,
+  eval_time = NULL,
+  parameters = NULL,
   alpha = 0.05,
   allow_par = TRUE,
   event_level = "first",
@@ -31,7 +33,7 @@ backend is registered).}
 \item{event_level}{A single string. Either \code{"first"} or \code{"second"} to specify
 which level of truth to consider as the "event".}
 
-\item{...}{Not currently used.}
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 A tibble of metrics with additional columns for \code{.lower} and
@@ -61,6 +63,10 @@ package is used here. To execute the resampling iterations in parallel,
 register a parallel backend function. See the documentation for
 \code{\link[foreach:foreach]{foreach::foreach()}} for examples. The \code{allow_par} argument can be used to
 avoid parallelism.
+
+Also, if a censored regression model used numerous evaluation times, the
+computations can take a long time unless the times are filtered with the
+\code{eval_time} argument.
 }
 \examples{
 \dontshow{if (!tune:::is_cran_check() & tune:::should_run_examples("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
