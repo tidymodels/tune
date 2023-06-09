@@ -25,6 +25,15 @@ metrics as the original object.}
 
 \item{times}{The number of bootstrap samples.}
 
+\item{eval_time}{A vector of evaluation times for censored regression models.
+\code{NULL} is appropriate otherwise. If \code{NULL} is used with censored models, a
+evaluation time is selected, and a warning is issued.}
+
+\item{parameters}{An optional tibble of tuning parameter values that can be
+used to filter the predicted values before processing. This tibble should
+only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
+if \code{tune("my_param")} was used).}
+
 \item{alpha}{Level of significance.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
@@ -90,6 +99,11 @@ lm_res <-
 set.seed(31)
 int_pctl(lm_res)
 \dontshow{\}) # examplesIf}
+}
+\references{
+Davison, A., & Hinkley, D. (1997). \emph{Bootstrap Methods and their
+Application}. Cambridge: Cambridge University Press.
+doi:10.1017/CBO9780511802843
 }
 \seealso{
 \code{\link[rsample:int_pctl]{rsample::int_pctl()}}

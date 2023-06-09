@@ -13,6 +13,13 @@
 #' backend is registered).
 #' @param event_level A single string. Either `"first"` or `"second"` to specify
 #' which level of truth to consider as the "event".
+#' @param parameters An optional tibble of tuning parameter values that can be
+#'  used to filter the predicted values before processing. This tibble should
+#'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
+#'  if `tune("my_param")` was used).
+#' @param eval_time A vector of evaluation times for censored regression models.
+#' `NULL` is appropriate otherwise. If `NULL` is used with censored models, a
+#' evaluation time is selected, and a warning is issued.
 #' @return A tibble of metrics with additional columns for `.lower` and
 #' `.upper`.
 #' @details
@@ -40,6 +47,9 @@
 #' computations can take a long time unless the times are filtered with the
 #' `eval_time` argument.
 #' @seealso [rsample::int_pctl()]
+#' @references Davison, A., & Hinkley, D. (1997). _Bootstrap Methods and their
+#'  Application_. Cambridge: Cambridge University Press.
+#'  doi:10.1017/CBO9780511802843
 #' @examplesIf !tune:::is_cran_check() & tune:::should_run_examples("modeldata")
 #' data(Sacramento, package = "modeldata")
 #' library(rsample)
@@ -84,9 +94,10 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
   res <-
     purrr::map2_dfr(
       config_keys, sample.int(10000, p),
-      ~ compute_by_config(.x, .y, .data, metrics, times, allow_par)
-    )
-  res
+      ~ compute_by_config(.x, .y, .data, metrics, times, allow_par, event_level)
+    ) %>%
+    dplyr::arrange(.config, .metric)
+  dplyr::as_tibble(res)
 }
 
 get_int_p_operator <- function(allow = TRUE) {
@@ -99,7 +110,7 @@ get_int_p_operator <- function(allow = TRUE) {
   res
 }
 
-compute_by_config <- function(config, seed, x, metrics, times, allow_par) {
+compute_by_config <- function(config, seed, x, metrics, times, allow_par, event_level) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
@@ -116,7 +127,7 @@ compute_by_config <- function(config, seed, x, metrics, times, allow_par) {
       comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
     }
 
-  if (is_surv) {
+  if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
     res <- int_pctl_dyn_surv(rs, allow_par)
   } else {
@@ -196,7 +207,7 @@ comp_metrics <- function(split, y, metrics, event_level) {
 
 filter_eval_times <- function(x, eval_time = NULL) {
   if (is.null(eval_time)) {
-    return(x)
+    return(x$.predictions)
   }
   purrr::map(x$.predictions, thin_time, times = eval_time)
 }

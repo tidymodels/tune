@@ -159,6 +159,9 @@ get_param_label <- function(x, id_val) {
 }
 
 default_eval_time <- function(eval_time, x) {
+  if (!any(names(x) == ".eval_time")) {
+    return(NULL)
+  }
   if (is.null(eval_time)) {
     eval_time <- middle_eval_time(x$.eval_time)
     msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")

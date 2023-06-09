@@ -102,7 +102,7 @@ test_that("percentile intervals - tuning", {
     .config = character(0),
     min_n = numeric(0)
   )
-  expect_snapshot_warning(int_res_1 <- int_pctl(c5_res, times = 200))
+  int_res_1 <- int_pctl(c5_res)
   expect_equal(template, int_res_1[0,])
   expect_equal(3, nrow(int_res_1))
 
@@ -132,11 +132,11 @@ test_that("percentile intervals - tuning", {
     min_n = integer(0)
   )
   set.seed(1)
-  expect_snapshot_warning(int_res_2 <- int_pctl(c5_bo_res, times = 200))
+  int_res_2 <- int_pctl(c5_bo_res)
   expect_equal(template, int_res_2[0,])
   expect_equal(4, nrow(int_res_2))
   set.seed(1)
-  expect_snapshot_warning(int_res_3 <- int_pctl(c5_bo_res, event_level = "second", times = 200))
+  int_res_3 <- int_pctl(c5_bo_res, event_level = "second")
   expect_true(all(int_res_3$.estimate > int_res_2$.estimate))
 
   # ------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ test_that("percentile intervals - tuning", {
     min_n = numeric(0)
   )
   set.seed(2093)
-  expect_snapshot_warning(int_res_4 <- int_pctl(c5_mixed_res, times = 200))
+  int_res_4 <- int_pctl(c5_mixed_res)
   expect_equal(template, int_res_4[0,])
   expect_equal(4, nrow(int_res_4))
 })
