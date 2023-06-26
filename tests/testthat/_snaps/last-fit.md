@@ -12,7 +12,7 @@
     Code
       last_fit(lm_fit)
     Condition
-      Error:
+      Error in `last_fit()`:
       ! `last_fit()` is not well-defined for a fitted workflow.
 
 # ellipses with last_fit
