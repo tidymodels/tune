@@ -149,7 +149,14 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL,
 }
 
 
-last_fit_workflow <- function(object, split, metrics, control, call = rlang::caller_env(), eval_time = NULL) {
+last_fit_workflow <- function(object,
+                              split,
+                              metrics,
+                              control,
+                              eval_time = NULL,
+                              ...,
+                              call = rlang::caller_env()) {
+  rlang::check_dots_empty()
   check_no_tuning(object)
 
   if (workflows::is_trained_workflow(object)) {
