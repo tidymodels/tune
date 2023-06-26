@@ -91,6 +91,13 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   y_vals$.row <- orig_rows
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
+  # Add implicitly grouped metric data, if applicable
+  metrics_by <- get_metrics_by(metrics)
+  if (has_metrics_by(metrics_by)) {
+    new_data$.row <- orig_rows
+    res <- dplyr::full_join(res, new_data[c(metrics_by, ".row")], by = ".row")
+  }
+
   # Add case weights (if needed)
   if (has_case_weights(workflow)) {
     case_weights <- extract_case_weights(new_data, workflow)
@@ -203,6 +210,18 @@ make_rename_arg <- function(grid, model, submodels) {
   res <- list(real_name)
   names(res) <- names(submodels)
   res
+}
+
+get_metrics_by <- function(metric_set) {
+  metrics <- attr(metric_set, "metrics")
+  metrics_by <- purrr::map(metrics, attr, "by")
+  unique(unlist(metrics_by, use.names = FALSE))
+}
+
+# metrics_by is the output of `get_metrics_by()`---it's assumed that wherever
+# `has_metrics_by()` is needed, `get_metrics_by()` output will be needed too.
+has_metrics_by <- function(metrics_by) {
+  length(metrics_by) > 0
 }
 
 # ------------------------------------------------------------------------------
