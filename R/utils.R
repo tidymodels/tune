@@ -131,6 +131,9 @@ new_bare_tibble <- function(x, ..., class = character()) {
   if (any(names(mtrcs) == ".eval_time")) {
     res <- c(res, ".eval_time")
   }
+  if (any(names(mtrcs) == ".by")) {
+    res <- c(res, ".by")
+  }
   res
 }
 
