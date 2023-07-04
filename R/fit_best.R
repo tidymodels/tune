@@ -14,6 +14,12 @@
 #' If `NULL`, this argument will be set to
 #' [`select_best(metric)`][tune::select_best.tune_results].
 #' @param verbose A logical for printing logging.
+#' @param use_validation_set When the resamples embedded in `x` are a split into
+#' training set and validation set, should the validation set be included in the
+#' data set used to train the model. If not, only the training set is used. If
+#' `NULL`, the validation set is not used for resamples originating from
+#' [rsample::validation_set()] while it is used for resamples originating
+#' from [rsample::validation_split()].
 #' @param ... Not currently used.
 #' @details
 #' This function is a shortcut for the manual steps of:
@@ -84,6 +90,7 @@ fit_best.tune_results <- function(x,
                                   metric = NULL,
                                   parameters = NULL,
                                   verbose = FALSE,
+                                  use_validation_set = NULL,
                                   ...) {
   if (length(list(...))) {
     cli::cli_abort(c("x" = "The `...` are not used by this function."))
@@ -120,7 +127,29 @@ fit_best.tune_results <- function(x,
 
   # ----------------------------------------------------------------------------
 
-  dat <- x$splits[[1]]$data
+  if (inherits(x$splits[[1]], "val_split")) {
+    if (is.null(use_validation_set)) {
+      rset_info <- attr(x, "rset_info")
+      originate_from_3way_split <- rset_info$att$origin_3way %||% FALSE
+      if (originate_from_3way_split) {
+        use_validation_set <- FALSE
+      } else {
+        use_validation_set <- TRUE
+      }
+    }
+    if (use_validation_set) {
+      dat <- x$splits[[1]]$data
+    } else {
+      dat <- training(x$splits[[1]])
+    }
+  } else {
+    if (!is.null(use_validation_set)) {
+      rlang::warn(
+        "The option `use_validation_set` is being ignored because the resampling object does not include a validation set."
+      )
+    }
+    dat <- x$splits[[1]]$data
+  }
   if (verbose) {
     cli::cli_inform(c("i" = "Fitting using {nrow(dat)} data points..."))
   }
