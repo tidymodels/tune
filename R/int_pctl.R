@@ -5,6 +5,7 @@
 #' @inheritParams collect_predictions
 #' @inheritParams rlang::args_dots_empty
 #' @inheritParams rsample::int_pctl
+#' @inheritParams rsample::bootstraps
 #' @param .data A object with class `tune_results` where the `save_pred = TRUE`
 #' option was used in the control function.
 #' @param metrics A [yardstick::metric_set()]. By default, it uses the same
@@ -51,8 +52,6 @@
 #' library(rsample)
 #' library(parsnip)
 #'
-#' f <- log10(price) ~ beds + baths + sqft + type + latitude + longitude
-#'
 #' set.seed(13)
 #' sac_rs <- vfold_cv(Sacramento)
 #'
@@ -88,10 +87,11 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
   }
 
   res <-
-    purrr::map2_dfr(
+    purrr::map2(
       config_keys, sample.int(10000, p),
       ~ compute_by_config(.x, .y, .data, metrics, times, allow_par, event_level)
     ) %>%
+    purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
   dplyr::as_tibble(res)
 }

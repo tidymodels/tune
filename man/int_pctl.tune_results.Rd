@@ -23,6 +23,8 @@ option was used in the control function.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}. By default, it uses the same
 metrics as the original object.}
 
+\item{times}{The number of bootstrap samples.}
+
 \item{eval_time}{A vector of evaluation times for censored regression models.
 \code{NULL} is appropriate otherwise. If \code{NULL} is used with censored models, a
 evaluation time is selected, and a warning is issued.}
@@ -80,8 +82,6 @@ computations can take a long time unless the times are filtered with the
 data(Sacramento, package = "modeldata")
 library(rsample)
 library(parsnip)
-
-f <- log10(price) ~ beds + baths + sqft + type + latitude + longitude
 
 set.seed(13)
 sac_rs <- vfold_cv(Sacramento)
