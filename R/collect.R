@@ -528,7 +528,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
     x <- dplyr::distinct(x)
   }
 
-  group_cols <- c(".metric", ".estimator")
+  group_cols <- c(group_cols, ".metric", ".estimator")
   if (".by" %in% names(x)) {
     group_cols <- c(group_cols, ".by")
   }
