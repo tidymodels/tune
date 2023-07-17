@@ -2,21 +2,17 @@
 #'
 #' Using out-of-sample predictions, the bootstrap is used to create percentile
 #' confidence intervals.
+#' @inheritParams collect_predictions
 #' @inheritParams rlang::args_dots_empty
+#' @inheritParams rsample::int_pctl
 #' @param .data A object with class `tune_results` where the `save_pred = TRUE`
 #' option was used in the control function.
 #' @param metrics A [yardstick::metric_set()]. By default, it uses the same
 #' metrics as the original object.
-#' @param times The number of bootstrap samples.
-#' @param alpha Level of significance.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #' backend is registered).
 #' @param event_level A single string. Either `"first"` or `"second"` to specify
 #' which level of truth to consider as the "event".
-#' @param parameters An optional tibble of tuning parameter values that can be
-#'  used to filter the predicted values before processing. This tibble should
-#'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
-#'  if `tune("my_param")` was used).
 #' @param eval_time A vector of evaluation times for censored regression models.
 #' `NULL` is appropriate otherwise. If `NULL` is used with censored models, a
 #' evaluation time is selected, and a warning is issued.
