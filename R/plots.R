@@ -160,7 +160,9 @@ get_param_label <- function(x, id_val) {
 
 default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
   if (!any(names(x) == ".eval_time")) {
-    rlang::warn("The 'eval_time' argument is not needed for this data set.")
+    if (!is.null(eval_time)) {
+      rlang::warn("The 'eval_time' argument is not needed for this data set.")
+    }
     return(NULL)
   }
   if (is.null(eval_time)) {
@@ -179,7 +181,6 @@ filter_plot_eval_time <- function(x, eval_time) {
     return(x %>% dplyr::select(-.eval_time))
   }
 
-  # TODO check for null and add warning
   eval_time <- default_eval_time(eval_time, x)
 
   times <- x$.eval_time

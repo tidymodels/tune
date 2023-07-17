@@ -75,7 +75,7 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
 
   # check eval_time and set default when null
   eval_time <- default_eval_time(eval_time, .data$.metrics[[1]])
-  .data$.predictions <- filter_eval_times(.data, eval_time)
+  .data$.predictions <- filter_predictions_by_eval_time(.data$.predictions, eval_time)
 
   y_nm <- outcome_names(.data)
 
@@ -89,7 +89,7 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
   res <-
     purrr::map2(
       config_keys, sample.int(10000, p),
-      ~ compute_by_config(.x, .y, .data, metrics, times, allow_par, event_level)
+      ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par, event_level)
     ) %>%
     purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
@@ -106,7 +106,7 @@ get_int_p_operator <- function(allow = TRUE) {
   res
 }
 
-compute_by_config <- function(config, seed, x, metrics, times, allow_par, event_level) {
+boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par, event_level) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
@@ -147,12 +147,12 @@ int_pctl_dyn_surv <- function(x, allow_par) {
       .errorhandling = "pass",
       .packages = c("purrr", "rsample", "dplyr")
     )  %op% {
-      by_eval_time(times[i], x)
+      int_pctl_by_eval_time(times[i], x)
     }
   dplyr::bind_rows(res)
 }
 
-by_eval_time <- function(time, x) {
+int_pctl_by_eval_time <- function(time, x) {
   times <- dplyr::tibble(.eval_time = time)
   x$.metrics <- purrr::map(x$.metrics, ~ dplyr::inner_join(.x, times, by = ".eval_time"))
   rsample::int_pctl(x, .metrics)
@@ -201,20 +201,18 @@ comp_metrics <- function(split, y, metrics, event_level) {
 # ------------------------------------------------------------------------------
 
 
-filter_eval_times <- function(x, eval_time = NULL) {
+filter_predictions_by_eval_time <- function(x, eval_time = NULL) {
   if (is.null(eval_time)) {
-    return(x$.predictions)
+    return(x)
   }
-  purrr::map(x$.predictions, thin_time, times = eval_time)
+  purrr::map(x, thin_time, times = eval_time)
 }
 
 thin_time <- function(x, times) {
+  subset_time <- function(x, times) {
+    x[x$.eval_time %in% times,]
+  }
+
   x$.pred <- purrr::map(x$.pred, subset_time, times = times)
   x
 }
-
-subset_time <- function(x, times) {
-  x[x$.eval_time %in% times,]
-}
-
-
