@@ -23,10 +23,9 @@ test_that("percentile intervals - resamples only", {
     .upper = numeric(0),
     .config = character(0)
   )
-  expect_snapshot_warning(int_res_1 <- int_pctl(lm_res, times = 200))
-  expect_equal(template, int_res_1[0,])
-  expect_equal(2, nrow(int_res_1))
-  expect_snapshot_error(sca_rs)
+  expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 200))
+  expect_equal(int_res_1[0,], template)
+  expect_equal(nrow(int_res_1), 2)
 
 })
 
@@ -41,7 +40,6 @@ test_that("percentile intervals - last fit", {
   data(Sacramento, package = "modeldata")
   set.seed(1)
   sac_split <- initial_split(Sacramento)
-  f <- log10(price) ~ beds + baths + sqft + type + latitude + longitude
 
   lm_res <-
     linear_reg() %>%
@@ -59,11 +57,11 @@ test_that("percentile intervals - last fit", {
     .config = character(0)
   )
   set.seed(1)
-  expect_snapshot_warning(int_res_1 <- int_pctl(lm_res, times = 200))
-  expect_equal(template, int_res_1[0,])
-  expect_equal(1, nrow(int_res_1))
+  expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 200))
+  expect_equal(int_res_1[0,], template)
+  expect_equal(nrow(int_res_1), 1)
   set.seed(1)
-  expect_snapshot_warning(int_res_2 <- int_pctl(lm_res, times = 200))
+  expect_snapshot(int_res_2 <- int_pctl(lm_res, times = 200))
   expect_equal(int_res_1, int_res_2)
 })
 
@@ -101,9 +99,10 @@ test_that("percentile intervals - tuning", {
     .config = character(0),
     min_n = numeric(0)
   )
-  int_res_1 <- int_pctl(c5_res)
-  expect_equal(template, int_res_1[0,])
-  expect_equal(3, nrow(int_res_1))
+
+  expect_snapshot(int_res_1 <- int_pctl(c5_res, eval_time = 2))
+  expect_equal(int_res_1[0,], template)
+  expect_equal(nrow(int_res_1), 3)
 
   # ------------------------------------------------------------------------------
 
@@ -132,8 +131,8 @@ test_that("percentile intervals - tuning", {
   )
   set.seed(1)
   int_res_2 <- int_pctl(c5_bo_res)
-  expect_equal(template, int_res_2[0,])
-  expect_equal(4, nrow(int_res_2))
+  expect_equal(int_res_2[0,], template)
+  expect_equal(nrow(int_res_2), 4)
   set.seed(1)
   int_res_3 <- int_pctl(c5_bo_res, event_level = "second")
   expect_true(all(int_res_3$.estimate > int_res_2$.estimate))
@@ -162,7 +161,7 @@ test_that("percentile intervals - tuning", {
   )
   set.seed(2093)
   int_res_4 <- int_pctl(c5_mixed_res)
-  expect_equal(template, int_res_4[0,])
-  expect_equal(4, nrow(int_res_4))
+  expect_equal(int_res_4[0,], template)
+  expect_equal(nrow(int_res_4), 4)
 })
 
