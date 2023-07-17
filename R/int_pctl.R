@@ -155,7 +155,9 @@ int_pctl_dyn_surv <- function(x, allow_par) {
 int_pctl_by_eval_time <- function(time, x) {
   times <- dplyr::tibble(.eval_time = time)
   x$.metrics <- purrr::map(x$.metrics, ~ dplyr::inner_join(.x, times, by = ".eval_time"))
-  rsample::int_pctl(x, .metrics)
+  rsample::int_pctl(x, .metrics) %>%
+    dplyr::mutate(.eval_time = time) %>%
+    dplyr::relocate(.eval_time, .after = term)
 }
 
 

@@ -298,7 +298,7 @@ class_summarize <- function(x, p) {
   x
 }
 
-surv_summarize <- function(x, p, y) {
+surv_summarize <- function(x, param, y) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
   nms <- names(x)
 
@@ -312,7 +312,7 @@ surv_summarize <- function(x, p, y) {
       dplyr::summarize(
         x,
         .pred_time = median(.pred_time),
-        .by = c(.row, .config, dplyr::all_of(p), dplyr::any_of(".iter"))
+        .by = c(.row, .config, dplyr::any_of(param), dplyr::any_of(".iter"))
       )
   }
 
@@ -332,8 +332,9 @@ surv_summarize <- function(x, p, y) {
       dplyr::relocate(.pred)
     if (!is.null(res)) {
       res <- dplyr::full_join(tmp, res, by = c(".row", ".config"))
+    } else {
+      res <- tmp
     }
-
   }
 
   res <- dplyr::full_join(outcomes, res, by = ".row")
