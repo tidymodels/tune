@@ -158,14 +158,14 @@ get_param_label <- function(x, id_val) {
   res
 }
 
-default_eval_time <- function(eval_time, x) {
+default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
   if (!any(names(x) == ".eval_time")) {
     return(NULL)
   }
   if (is.null(eval_time)) {
     eval_time <- middle_eval_time(x$.eval_time)
     msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
-    rlang::warn(msg)
+    rlang::warn(msg, call = call)
   }
   eval_time
 }

@@ -6,7 +6,6 @@ test_that("percentile intervals - resamples only", {
   library(parsnip)
 
   data(Sacramento, package = "modeldata")
-  f <- log10(price) ~ beds + baths + sqft + type + latitude + longitude
   set.seed(13)
   sac_rs <- vfold_cv(Sacramento)
   lm_res <-

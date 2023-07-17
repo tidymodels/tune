@@ -76,7 +76,7 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
                                   alpha = 0.05, allow_par = TRUE,
                                   event_level = "first", ...) {
 
-  rlang::check_dots_empty(...)
+  rlang::check_dots_empty()
 
   # check eval_time and set default when null
   eval_time <- default_eval_time(eval_time, .data$.metrics[[1]])
