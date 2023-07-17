@@ -160,6 +160,7 @@ get_param_label <- function(x, id_val) {
 
 default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
   if (!any(names(x) == ".eval_time")) {
+    rlang::warn("The 'eval_time' argument is not needed for this data set.")
     return(NULL)
   }
   if (is.null(eval_time)) {
