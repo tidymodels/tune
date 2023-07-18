@@ -529,13 +529,10 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
     x <- dplyr::distinct(x)
   }
 
-  group_cols <- c(".metric", ".estimator")
-  if (".by" %in% names(x)) {
-    group_cols <- c(group_cols, ".by")
-  }
   x <- x %>%
     tibble::as_tibble() %>%
-    dplyr::group_by(!!!rlang::syms(param_names), !!!rlang::syms(group_cols)) %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator,
+                    !!!rlang::syms(group_cols)) %>%
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
