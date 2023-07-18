@@ -298,7 +298,7 @@ class_summarize <- function(x, p) {
   x
 }
 
-surv_summarize <- function(x, p, y) {
+surv_summarize <- function(x, param, y) {
   pred_cols <- grep("^\\.pred", names(x), value = TRUE)
   nms <- names(x)
 
@@ -310,9 +310,9 @@ surv_summarize <- function(x, p, y) {
   if (any(pred_cols == ".pred_time")) {
     res <-
       dplyr::summarize(
-        tmp,
+        x,
         .pred_time = median(.pred_time),
-        .by = c(.row, .config, dplyr::all_of(p))
+        .by = c(.row, .config, dplyr::any_of(param), dplyr::any_of(".iter"))
       )
   }
 
@@ -326,14 +326,15 @@ surv_summarize <- function(x, p, y) {
       dplyr::summarize(
         .pred_survival = mean(.pred_survival, na.rm = TRUE),
         .weight_censored = mean(.weight_censored, na.rm = TRUE),
-        .by = c(.row, .eval_time, .config)
+        .by = c(.row, .eval_time, .config, dplyr::any_of(".iter"))
       ) %>%
       tidyr::nest(.pred = c(dplyr::all_of(nest_cols)), .by = c(.row, .config)) %>%
       dplyr::relocate(.pred)
     if (!is.null(res)) {
       res <- dplyr::full_join(tmp, res, by = c(".row", ".config"))
+    } else {
+      res <- tmp
     }
-
   }
 
   res <- dplyr::full_join(outcomes, res, by = ".row")
