@@ -4,11 +4,11 @@ test_that("survival analysis - resampled", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("censored")
 
-  library(dplyr)
-  library(censored)
-  library(modeldata)
-  library(rsample)
-  library(yardstick)
+  suppressPackageStartupMessages(library(dplyr))
+  suppressPackageStartupMessages(library(censored))
+  suppressPackageStartupMessages(library(modeldata))
+  suppressPackageStartupMessages(library(rsample))
+  suppressPackageStartupMessages(library(yardstick))
 
   # ----------------------------------------------------------------------------
 
@@ -51,13 +51,13 @@ test_that("survival analysis - resampled", {
   # ----------------------------------------------------------------------------
   # metrics
 
-  un_sum_met <- collect_metrics(sr_rs_res)
-  sum_met <- collect_metrics(sr_rs_res, summarize = FALSE)
+  un_sum_met <- collect_metrics(sr_rs_res, summarize = FALSE)
+  sum_met <- collect_metrics(sr_rs_res, summarize = TRUE)
 
   ###
 
   expect_equal(
-    un_sum_met %>% slice(0),
+    sum_met %>% slice(0),
     tibble::tibble(
       .metric = character(0),
       .estimator = character(0),
@@ -69,16 +69,16 @@ test_that("survival analysis - resampled", {
     )
   )
   expect_equal(
-    nrow(un_sum_met),
+    nrow(sum_met),
     (2 * length(eval_times)) + 2
     # (num dyn metr * num times) + num_static met
   )
   expect_equal(
-    unique(un_sum_met$.eval_time),
+    unique(sum_met$.eval_time),
     c(10, 100, 150, NA)
   )
   expect_equal(
-    sort(unique(un_sum_met$.metric)),
+    sort(unique(sum_met$.metric)),
     c("brier_survival", "brier_survival_integrated", "concordance_survival",
       "roc_auc_survival")
   )
@@ -86,7 +86,7 @@ test_that("survival analysis - resampled", {
   ###
 
   expect_equal(
-    sum_met %>% slice(0),
+    un_sum_met %>% slice(0),
     tibble::tibble(
       id = character(0),
       .metric = character(0),
@@ -98,7 +98,7 @@ test_that("survival analysis - resampled", {
   )
 
   expect_equal(
-    nrow(sum_met),
+    nrow(un_sum_met),
     (nrow(churn_rs) * 2 * length(eval_times)) + (nrow(churn_rs) * 2)
     # (num resamples * num dyn metr * num times) + (resamples and * num_static met)
   )
@@ -106,8 +106,8 @@ test_that("survival analysis - resampled", {
   # ----------------------------------------------------------------------------
   # Predictions
 
-  un_sum_prd <- collect_predictions(sr_rs_res)
-  sum_prd <- collect_predictions(sr_rs_res, summarize = FALSE)
+  un_sum_prd <- collect_predictions(sr_rs_res, summarize = FALSE)
+  sum_prd <- collect_predictions(sr_rs_res, summarize = TRUE)
 
   ###
 
@@ -152,7 +152,6 @@ test_that("survival analysis - resampled", {
     sum_prd %>% slice(0),
     structure(
       list(
-        id = character(0),
         .pred = list(),
         .row = integer(0),
         .pred_time = numeric(0),
