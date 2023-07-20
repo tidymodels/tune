@@ -1,5 +1,5 @@
 
-test_that("survival analysis", {
+test_that("survival analysis - resampled", {
   skip_on_cran()
   skip_if_not_installed("modeldata")
   skip_if_not_installed("censored")
@@ -32,7 +32,6 @@ test_that("survival analysis", {
   # ----------------------------------------------------------------------------
 
   sr_spec <- survival_reg()
-  sr_tune_spec <- survival_reg(dist = tune())
   eval_times <- c(10, 100, 150)
   event_metrics <- metric_set(brier_survival, brier_survival_integrated,
                               concordance_survival, roc_auc_survival)
@@ -47,17 +46,6 @@ test_that("survival analysis", {
       metrics = event_metrics,
       eval_time = eval_times,
       control = control_resamples(save_pred = TRUE)
-    )
-
-  sr_tune_res <-
-    sr_tune_spec %>%
-    tune_grid(
-      event_time ~ .,
-      resamples = churn_rs,
-      metrics = event_metrics,
-      eval_time = eval_times,
-      grid = tibble(dist = c("loglogistic", "lognormal")),
-      control = control_grid(save_pred = TRUE)
     )
 
   # ----------------------------------------------------------------------------
@@ -123,6 +111,16 @@ test_that("survival analysis", {
 
   ###
 
+  # can't show ptypes with tibbles with Surv objects
+  surv_str <-
+    structure(
+      numeric(0),
+      type = "right",
+      dim = c(0L, 2L),
+      dimnames = list(NULL, c("time", "status")),
+      class = "Surv"
+    )
+
   expect_equal(
     un_sum_prd %>% slice(0),
     structure(
@@ -131,19 +129,80 @@ test_that("survival analysis", {
         .pred = list(),
         .row = integer(0),
         .pred_time = numeric(0),
-        event_time = structure(
-          numeric(0),
-          type = "right",
-          dim = c(0L, 2L),
-          dimnames = list(NULL, c("time", "status")),
-          class = "Surv"
-        ),
+        event_time = surv_str,
         .config = character(0)
       ),
       row.names = integer(0),
       class = c("tbl_df", "tbl", "data.frame")
     )
   )
+  expect_equal(
+    un_sum_prd$.pred[[1]] %>% slice(0),
+    tibble::tibble(
+      .eval_time = numeric(0),
+      .pred_survival = numeric(0),
+      .weight_censored = numeric(0)
+    )
+  )
+  expect_true(inherits(un_sum_prd$.pred[[1]], "tbl_df"))
+
+  ###
+
+  expect_equal(
+    sum_prd %>% slice(0),
+    structure(
+      list(
+        id = character(0),
+        .pred = list(),
+        .row = integer(0),
+        .pred_time = numeric(0),
+        event_time = surv_str,
+        .config = character(0)
+      ),
+      row.names = integer(0),
+      class = c("tbl_df", "tbl", "data.frame")
+    )
+  )
+  expect_equal(
+    sum_prd$.pred[[1]] %>% slice(0),
+    tibble::tibble(
+      .eval_time = numeric(0),
+      .pred_survival = numeric(0),
+      .weight_censored = numeric(0)
+    )
+  )
+  expect_true(inherits(sum_prd$.pred[[1]], "tbl_df"))
+
+  ###
+
+  expect_snapshot(sr_rs_aug <- augment(sr_rs_res))
+  expect_equal(
+    names(sr_rs_aug),
+    c("event_time", "account_length", "voice_mail_plan", ".pred", ".pred_time")
+  )
+  expect_equal(
+    names(sr_rs_aug$.pred[[2]]),
+    c(".eval_time", ".pred_survival", ".weight_censored")
+  )
+
+
+  # ----------------------------------------------------------------------------
+  # show
+
+  expect_snapshot(show_best(sr_rs_res))
+  expect_snapshot(
+    show_best(sr_rs_res, metric = "brier_survival", eval_time = -1),
+    error = TRUE
+  )
+  expect_snapshot(
+    show_best(sr_rs_res, metric = "brier_survival", eval_time = 10)
+  )
+  expect_snapshot(show_best(sr_rs_res, metric = "brier_survival_integrated"))
+  # TODO no warning
+  # expect_snapshot(
+  #   show_best(sr_rs_res, metric = "brier_survival_integrated", eval_time = 10),
+  #   error = TRUE
+  # )
 
 
 })
