@@ -6,6 +6,7 @@
 
 * `last_fit()` will now error when supplied a fitted workflow. (#678)
 
+* A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
 # tune 1.1.1
 

@@ -62,7 +62,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
         submod_param <- names(submodels)
         subgrid <- make_submod_arg(grid, model, submodels)
 
-        tmp_sub <- predict_wrapper(model, x_vals, type_iter, eval_time, submodels)
+        tmp_sub <- predict_wrapper(model, x_vals, type_iter, eval_time, subgrid)
         tmp_sub$.row <- orig_rows
         tmp_sub <- unnest(tmp_sub, cols = dplyr::starts_with(".pred"))
 

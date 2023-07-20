@@ -113,6 +113,21 @@ test_that("tune model only (with recipe, multi-predict)", {
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
 })
 
+test_that("tune model only (without recipe, multi-predict. #695)", {
+  skip_on_cran()
+  skip_if_not_installed("kknn")
+
+  knn_res <-
+    tune_grid(
+      parsnip::nearest_neighbor(mode = "regression", neighbors = tune("k")),
+      mpg ~ .,
+      resamples = rsample::bootstraps(mtcars, 5),
+      grid = 4
+    )
+
+  expect_equal(nrow(knn_res$.notes[[1]]), 0)
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (fairness - include `by` variable as predictor)", {
