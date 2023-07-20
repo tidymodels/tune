@@ -182,14 +182,13 @@ test_that("survival analysis - tuning via grid search", {
   ###
 
   expect_snapshot(sr_rs_aug <- augment(sr_tune_res))
-  # TODO this should include dist
-  # expect_equal(
-  #   names(sr_rs_aug),
-  #   c("event_time", "account_length", "voice_mail_plan", ".pred", ".pred_time")
-  # )
-  # expect_snapshot(
-  #   sr_rs_logn_aug <- augment(sr_tune_res, parameters = tibble(dist = "lognormal"))
-  # )
+  expect_equal(
+    names(sr_rs_aug),
+    c("event_time", "account_length", "voice_mail_plan", ".pred", ".pred_time")
+  )
+  expect_snapshot(
+    sr_rs_logn_aug <- augment(sr_tune_res, parameters = tibble(dist = "lognormal"))
+  )
   expect_equal(
     names(sr_rs_aug$.pred[[2]]),
     c(".eval_time", ".pred_survival", ".weight_censored")

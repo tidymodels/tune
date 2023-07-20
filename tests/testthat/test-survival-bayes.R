@@ -211,13 +211,19 @@ test_that("survival analysis - tuning via Bayesian search", {
   ###
 
   expect_snapshot(sr_rs_aug <- augment(sr_tune_res))
-  # TODO this should include dist
-  # expect_equal(
-  #   names(sr_rs_aug),
-  #   c("event_time", "account_length", "voice_mail_plan", ".pred", ".pred_time")
-  # )
+  expect_equal(
+    names(sr_rs_aug),
+    c("event_time", "account_length", "voice_mail_plan", ".pred", ".pred_time")
+  )
+  grid_settings <-
+    tibble::tribble(
+      ~dist,          ~degree, ~.config,
+      "loglogistic", 5.86595467322692,  "Iter1"
+    )
+
+  # TODO fails
   # expect_snapshot(
-  #   sr_rs_logn_aug <- augment(sr_tune_res, parameters = tibble(dist = "lognormal"))
+  #   sr_rs_logn_aug <- augment(sr_tune_res, parameters = grid_settings)
   # )
   expect_equal(
     names(sr_rs_aug$.pred[[2]]),
