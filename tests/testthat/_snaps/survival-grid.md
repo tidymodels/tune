@@ -11,6 +11,14 @@
 ---
 
     Code
+      sr_rs_logn_aug <- augment(sr_tune_res, parameters = tibble(dist = "lognormal"))
+    Condition
+      Warning:
+      The orginal data had 400 rows but there were 232 hold-out predictions.
+
+---
+
+    Code
       show_best(sr_tune_res)
     Condition
       Warning:
