@@ -175,31 +175,8 @@ last_fit_workflow <- function(object,
     )
   }
 
-
   if (inherits(split, "initial_validation_split")) {
-    if (add_validation_set) {
-      # equivalent to (unexported) rsample:::rsplit() without checks
-      split <- structure(
-        list(
-          data = split$data,
-          in_id = c(split$train_id, split$val_id),
-          out_id = NA
-        ),
-        class = "rsplit"
-      )
-    } else {
-      id_train_test <- seq_len(nrow(split$data))[-sort(split$val_id)]
-      id_train <- match(split$train_id, id_train_test)
-
-      split <- structure(
-        list(
-          data = split$data[-sort(split$val_id), , drop = FALSE],
-          in_id = id_train,
-          out_id = NA
-        ),
-        class = "rsplit"
-      )
-    }
+    split <- prepare_validation_split(split, add_validation_set)
   }
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
@@ -224,4 +201,33 @@ last_fit_workflow <- function(object,
 
   .stash_last_result(res)
   res
+}
+
+
+prepare_validation_split <- function(split, add_validation_set){
+  if (add_validation_set) {
+    # equivalent to (unexported) rsample:::rsplit() without checks
+    split <- structure(
+      list(
+        data = split$data,
+        in_id = c(split$train_id, split$val_id),
+        out_id = NA
+      ),
+      class = "rsplit"
+    )
+  } else {
+    id_train_test <- seq_len(nrow(split$data))[-sort(split$val_id)]
+    id_train <- match(split$train_id, id_train_test)
+
+    split <- structure(
+      list(
+        data = split$data[-sort(split$val_id), , drop = FALSE],
+        in_id = id_train,
+        out_id = NA
+      ),
+      class = "rsplit"
+    )
+  }
+
+  split
 }
