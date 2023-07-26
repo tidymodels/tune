@@ -54,12 +54,16 @@
   )
 
   # lazily register others
-  s3_register("ggplot2::autoplot", "tune_results")
-  s3_register("rsample::.get_fingerprint", "tune_results")
+  vctrs::s3_register("ggplot2::autoplot", "tune_results")
+
+  vctrs::s3_register("rsample::.get_fingerprint", "tune_results")
+  vctrs::s3_register("rsample::int_pctl", "tune_results")
 
   vctrs::s3_register("dplyr::dplyr_reconstruct", "tune_results", method = dplyr_reconstruct_tune_results)
   vctrs::s3_register("dplyr::dplyr_reconstruct", "resample_results", method = dplyr_reconstruct_resample_results)
   vctrs::s3_register("dplyr::dplyr_reconstruct", "iteration_results", method = dplyr_reconstruct_iteration_results)
+
+
 }
 
 # nocov end

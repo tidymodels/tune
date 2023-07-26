@@ -158,6 +158,21 @@ get_param_label <- function(x, id_val) {
   res
 }
 
+default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
+  if (!any(names(x) == ".eval_time")) {
+    if (!is.null(eval_time)) {
+      rlang::warn("The 'eval_time' argument is not needed for this data set.")
+    }
+    return(NULL)
+  }
+  if (is.null(eval_time)) {
+    eval_time <- middle_eval_time(x$.eval_time)
+    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
+    rlang::warn(msg, call = call)
+  }
+  eval_time
+}
+
 filter_plot_eval_time <- function(x, eval_time) {
   if (!any(names(x) == ".eval_time")) {
     return(x)
@@ -166,12 +181,7 @@ filter_plot_eval_time <- function(x, eval_time) {
     return(x %>% dplyr::select(-.eval_time))
   }
 
-  # TODO check for null and add warning
-  if (is.null(eval_time)) {
-    eval_time <- middle_eval_time(x$.eval_time)
-    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
-    rlang::warn(msg)
-  }
+  eval_time <- default_eval_time(eval_time, x)
 
   times <- x$.eval_time
   is_miss_time <- is.na(times)

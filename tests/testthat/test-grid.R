@@ -113,10 +113,26 @@ test_that("tune model only (with recipe, multi-predict)", {
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
 })
 
+test_that("tune model only (without recipe, multi-predict. #695)", {
+  skip_on_cran()
+  skip_if_not_installed("kknn")
+
+  knn_res <-
+    tune_grid(
+      parsnip::nearest_neighbor(mode = "regression", neighbors = tune("k")),
+      mpg ~ .,
+      resamples = rsample::bootstraps(mtcars, 5),
+      grid = 4
+    )
+
+  expect_equal(nrow(knn_res$.notes[[1]]), 0)
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (fairness - include `by` variable as predictor)", {
   skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -156,6 +172,7 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
 
 test_that("tune model only (fairness - don't include `by` variable as predictor)", {
   skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -195,6 +212,7 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
 
 test_that("tune model only (fairness metrics - evaluate across multiple `by`)", {
   skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -235,6 +253,7 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
 
 test_that("tune model only (fairness - evaluate across multiple `by`, same metric)", {
   skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -276,6 +295,7 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
 
 test_that("tune model only (fairness - evaluate only fairness metrics)", {
   skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
