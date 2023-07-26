@@ -15,7 +15,7 @@ fit_best(x, ...)
   metric = NULL,
   parameters = NULL,
   verbose = FALSE,
-  use_validation_set = NULL,
+  add_validation_set = NULL,
   ...
 )
 }
@@ -37,7 +37,7 @@ If \code{NULL}, this argument will be set to
 
 \item{verbose}{A logical for printing logging.}
 
-\item{use_validation_set}{When the resamples embedded in \code{x} are a split into
+\item{add_validation_set}{When the resamples embedded in \code{x} are a split into
 training set and validation set, should the validation set be included in the
 data set used to train the model. If not, only the training set is used. If
 \code{NULL}, the validation set is not used for resamples originating from

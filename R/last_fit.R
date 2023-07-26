@@ -26,7 +26,7 @@
 #' values should be non-negative and should probably be no greater then the
 #' largest event time in the training set.
 #'
-#' @param use_validation_set For 3-way splits into training, validation, and test
+#' @param add_validation_set For 3-way splits into training, validation, and test
 #' set via [rsample::initial_validation_split()], should the validation set be
 #' included in the data set used to train the model. If not, only the training
 #' set is used.
@@ -120,7 +120,7 @@ last_fit.model_fit <- function(object, ...) {
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
                                 control = control_last_fit(), eval_time = NULL,
-                                use_validation_set = FALSE) {
+                                add_validation_set = FALSE) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -140,7 +140,7 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control, eval_time, use_validation_set)
+  last_fit_workflow(wflow, split, metrics, control, eval_time, add_validation_set)
 }
 
 
@@ -148,12 +148,12 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
 #' @export
 last_fit.workflow <- function(object, split, ..., metrics = NULL,
                               control = control_last_fit(), eval_time = NULL,
-                              use_validation_set = FALSE) {
+                              add_validation_set = FALSE) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control, eval_time, use_validation_set)
+  last_fit_workflow(object, split, metrics, control, eval_time, add_validation_set)
 }
 
 
@@ -162,7 +162,7 @@ last_fit_workflow <- function(object,
                               metrics,
                               control,
                               eval_time = NULL,
-                              use_validation_set = FALSE,
+                              add_validation_set = FALSE,
                               ...,
                               call = rlang::caller_env()) {
   rlang::check_dots_empty()
@@ -177,7 +177,7 @@ last_fit_workflow <- function(object,
 
 
   if (inherits(split, "initial_validation_split")) {
-    if (use_validation_set) {
+    if (add_validation_set) {
       # equivalent to (unexported) rsample:::rsplit() without checks
       split <- structure(
         list(

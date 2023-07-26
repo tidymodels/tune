@@ -211,7 +211,7 @@ test_that("last_fit() can include validation set for initial_validation_split ob
 
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
-    last_fit(f, split, use_validation_set = TRUE)
+    last_fit(f, split, add_validation_set = TRUE)
 
   expect_equal(res, .Last.tune.result)
 

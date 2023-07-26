@@ -16,7 +16,7 @@ last_fit(object, ...)
   metrics = NULL,
   control = control_last_fit(),
   eval_time = NULL,
-  use_validation_set = FALSE
+  add_validation_set = FALSE
 )
 
 \method{last_fit}{workflow}(
@@ -26,7 +26,7 @@ last_fit(object, ...)
   metrics = NULL,
   control = control_last_fit(),
   eval_time = NULL,
-  use_validation_set = FALSE
+  add_validation_set = FALSE
 )
 }
 \arguments{
@@ -54,7 +54,7 @@ metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values should be non-negative and should probably be no greater then the
 largest event time in the training set.}
 
-\item{use_validation_set}{For 3-way splits into training, validation, and test
+\item{add_validation_set}{For 3-way splits into training, validation, and test
 set via \code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}, should the validation set be
 included in the data set used to train the model. If not, only the training
 set is used.}

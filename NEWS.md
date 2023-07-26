@@ -6,7 +6,7 @@
 
 * `last_fit()` will now error when supplied a fitted workflow. (#678)
 
-* `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `use_validation_set` to include or exclude the validation set in the dataset used to fit the model.
+* `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model.
 
 
 # tune 1.1.1
