@@ -140,7 +140,7 @@ fit_best.tune_results <- function(x,
     if (add_validation_set) {
       dat <- x$splits[[1]]$data
     } else {
-      dat <- training(x$splits[[1]])
+      dat <- rsample::training(x$splits[[1]])
     }
   } else {
     if (!is.null(add_validation_set)) {
