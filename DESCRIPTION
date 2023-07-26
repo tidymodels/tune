@@ -53,7 +53,7 @@ Suggests:
     xml2
 Remotes:
     tidymodels/yardstick#434,
-    tidymodels/rsample#437
+    tidymodels/rsample
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
