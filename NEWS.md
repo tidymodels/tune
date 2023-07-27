@@ -8,6 +8,8 @@
 
 * A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
+* `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).
+
 # tune 1.1.1
 
 * Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 

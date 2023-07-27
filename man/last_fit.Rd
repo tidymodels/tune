@@ -15,7 +15,8 @@ last_fit(object, ...)
   ...,
   metrics = NULL,
   control = control_last_fit(),
-  eval_time = NULL
+  eval_time = NULL,
+  add_validation_set = FALSE
 )
 
 \method{last_fit}{workflow}(
@@ -24,7 +25,8 @@ last_fit(object, ...)
   ...,
   metrics = NULL,
   control = control_last_fit(),
-  eval_time = NULL
+  eval_time = NULL,
+  add_validation_set = FALSE
 )
 }
 \arguments{
@@ -38,7 +40,8 @@ have been marked with \link[hardhat:tune]{tune()}, their values must be
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
 
-\item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}}.}
+\item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}} or
+\code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
@@ -50,6 +53,11 @@ process.}
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values should be non-negative and should probably be no greater then the
 largest event time in the training set.}
+
+\item{add_validation_set}{For 3-way splits into training, validation, and test
+set via \code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}, should the validation set be
+included in the data set used to train the model. If not, only the training
+set is used.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.

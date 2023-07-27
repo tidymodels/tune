@@ -12,7 +12,8 @@
 #' @param preprocessor A traditional model formula or a recipe created using
 #'   [recipes::recipe()].
 #'
-#' @param split An `rsplit` object created from [rsample::initial_split()].
+#' @param split An `rsplit` object created from [rsample::initial_split()] or
+#' [rsample::initial_validation_split()].
 #'
 #' @param metrics A [yardstick::metric_set()], or `NULL` to compute a standard
 #'   set of metrics.
@@ -24,6 +25,11 @@
 #' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 #' values should be non-negative and should probably be no greater then the
 #' largest event time in the training set.
+#'
+#' @param add_validation_set For 3-way splits into training, validation, and test
+#' set via [rsample::initial_validation_split()], should the validation set be
+#' included in the data set used to train the model. If not, only the training
+#' set is used.
 #'
 #' @param ... Currently unused.
 #'
@@ -113,7 +119,8 @@ last_fit.model_fit <- function(object, ...) {
 #' @export
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
-                                control = control_last_fit(), eval_time = NULL) {
+                                control = control_last_fit(), eval_time = NULL,
+                                add_validation_set = FALSE) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -133,19 +140,20 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control, eval_time)
+  last_fit_workflow(wflow, split, metrics, control, eval_time, add_validation_set)
 }
 
 
 #' @rdname last_fit
 #' @export
 last_fit.workflow <- function(object, split, ..., metrics = NULL,
-                              control = control_last_fit(), eval_time = NULL) {
+                              control = control_last_fit(), eval_time = NULL,
+                              add_validation_set = FALSE) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control, eval_time)
+  last_fit_workflow(object, split, metrics, control, eval_time, add_validation_set)
 }
 
 
@@ -154,6 +162,7 @@ last_fit_workflow <- function(object,
                               metrics,
                               control,
                               eval_time = NULL,
+                              add_validation_set = FALSE,
                               ...,
                               call = rlang::caller_env()) {
   rlang::check_dots_empty()
@@ -166,6 +175,9 @@ last_fit_workflow <- function(object,
     )
   }
 
+  if (inherits(split, "initial_validation_split")) {
+    split <- prepare_validation_split(split, add_validation_set)
+  }
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 
@@ -189,4 +201,33 @@ last_fit_workflow <- function(object,
 
   .stash_last_result(res)
   res
+}
+
+
+prepare_validation_split <- function(split, add_validation_set){
+  if (add_validation_set) {
+    # equivalent to (unexported) rsample:::rsplit() without checks
+    split <- structure(
+      list(
+        data = split$data,
+        in_id = c(split$train_id, split$val_id),
+        out_id = NA
+      ),
+      class = "rsplit"
+    )
+  } else {
+    id_train_test <- seq_len(nrow(split$data))[-sort(split$val_id)]
+    id_train <- match(split$train_id, id_train_test)
+
+    split <- structure(
+      list(
+        data = split$data[-sort(split$val_id), , drop = FALSE],
+        in_id = id_train,
+        out_id = NA
+      ),
+      class = "rsplit"
+    )
+  }
+
+  split
 }
