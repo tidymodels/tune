@@ -85,7 +85,8 @@ the test set.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_validation_set <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for workflow</span></span>
@@ -95,7 +96,8 @@ the test set.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  control <span class="op">=</span> <span class="fu"><a href="control_last_fit.html">control_last_fit</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add_validation_set <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,7 +120,8 @@ have been marked with <a href="https://hardhat.tidymodels.org/reference/tune.htm
 
 
 <dt>split</dt>
-<dd><p>An <code>rsplit</code> object created from <code><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">rsample::initial_split()</a></code>.</p></dd>
+<dd><p>An <code>rsplit</code> object created from <code><a href="https://rsample.tidymodels.org/reference/initial_split.html" class="external-link">rsample::initial_split()</a></code> or
+<code><a href="https://rsample.tidymodels.org/reference/initial_validation_split.html" class="external-link">rsample::initial_validation_split()</a></code>.</p></dd>
 
 
 <dt>metrics</dt>
@@ -136,6 +139,13 @@ process.</p></dd>
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values should be non-negative and should probably be no greater then the
 largest event time in the training set.</p></dd>
+
+
+<dt>add_validation_set</dt>
+<dd><p>For 3-way splits into training, validation, and test
+set via <code><a href="https://rsample.tidymodels.org/reference/initial_validation_split.html" class="external-link">rsample::initial_validation_split()</a></code>, should the validation set be
+included in the data set used to train the model. If not, only the training
+set is used.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -78,7 +78,14 @@ set using tuning parameters associated with the best performance.</p>
 <span><span class="fu">fit_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">fit_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, parameters <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fit_best</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  add_validation_set <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -108,6 +115,15 @@ If <code>NULL</code>, this argument will be set to
 
 <dt>verbose</dt>
 <dd><p>A logical for printing logging.</p></dd>
+
+
+<dt>add_validation_set</dt>
+<dd><p>When the resamples embedded in <code>x</code> are a split into
+training set and validation set, should the validation set be included in the
+data set used to train the model. If not, only the training set is used. If
+<code>NULL</code>, the validation set is not used for resamples originating from
+<code><a href="https://rsample.tidymodels.org/reference/validation_set.html" class="external-link">rsample::validation_set()</a></code> while it is used for resamples originating
+from <code><a href="https://rsample.tidymodels.org/reference/validation_split.html" class="external-link">rsample::validation_split()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
