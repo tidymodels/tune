@@ -2,13 +2,15 @@
 
 * Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function requires that the input be generated with the control option `save_pred = TRUE` and additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model. (#663)
 
-* Disambiguates the `verbose` and `verbose_iter` control options to better align with documented functionality. The former controls logging for general progress updates, while the latter only does so for the Bayesian search process. (#682) 
-
 * `last_fit()` will now error when supplied a fitted workflow. (#678)
 
 * A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
+# tune 1.1.2
+
 * `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).
+
+* Disambiguates the `verbose` and `verbose_iter` control options to better align with documented functionality. The former controls logging for general progress updates, while the latter only does so for the Bayesian search process. (#682) 
 
 # tune 1.1.1
 
