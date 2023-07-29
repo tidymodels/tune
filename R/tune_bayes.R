@@ -342,7 +342,8 @@ tune_bayes_workflow <-
           control,
           NULL,
           "Gaussian process model",
-          notes = .notes
+          notes = .notes,
+          catalog = FALSE
         )
 
       gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
@@ -563,13 +564,14 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     control,
     split = NULL,
     task = paste("Generating", nrow(pred_grid), "candidates"),
-    type = "info"
+    type = "info",
+    catalog = FALSE
   )
 
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  tune_log(control, split = NULL, task = "Predicted candidates", type = "info")
+  tune_log(control, split = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
