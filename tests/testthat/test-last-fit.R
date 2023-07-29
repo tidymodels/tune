@@ -146,3 +146,68 @@ test_that("`last_fit()` when objects need tuning", {
   expect_snapshot_error(last_fit(wflow_2, split))
   expect_snapshot_error(last_fit(wflow_3, split))
 })
+
+test_that("last_fit() excludes validation set for initial_validation_split objects", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata", envir = rlang::current_env())
+
+  set.seed(23598723)
+  split <- rsample::initial_validation_split(ames)
+
+  f <- Sale_Price ~ Gr_Liv_Area + Year_Built
+  lm_fit <- lm(f, data = rsample::training(split))
+  test_pred <- predict(lm_fit, rsample::testing(split))
+  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(Sale_Price), test_pred)
+
+  res <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm") %>%
+    last_fit(f, split)
+
+  expect_equal(res, .Last.tune.result)
+
+  expect_equal(
+    coef(extract_fit_engine(res$.workflow[[1]])),
+    coef(lm_fit),
+    ignore_attr = TRUE
+  )
+  expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
+  expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
+  expect_true(res$.workflow[[1]]$trained)
+  expect_equal(
+    nrow(predict(res$.workflow[[1]], rsample::testing(split))),
+    nrow(rsample::testing(split))
+  )
+})
+
+test_that("last_fit() can include validation set for initial_validation_split objects", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata", envir = rlang::current_env())
+
+  set.seed(23598723)
+  split <- rsample::initial_validation_split(ames)
+
+  f <- Sale_Price ~ Gr_Liv_Area + Year_Built
+  train_val <- rbind(rsample::training(split), rsample::validation(split))
+  lm_fit <- lm(f, data = train_val)
+  test_pred <- predict(lm_fit, rsample::testing(split))
+  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(Sale_Price), test_pred)
+
+  res <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm") %>%
+    last_fit(f, split, add_validation_set = TRUE)
+
+  expect_equal(res, .Last.tune.result)
+
+  expect_equal(
+    coef(extract_fit_engine(res$.workflow[[1]])),
+    coef(lm_fit),
+    ignore_attr = TRUE
+  )
+  expect_equal(res$.metrics[[1]]$.estimate[[2]], rmse_test)
+  expect_equal(res$.predictions[[1]]$.pred, unname(test_pred))
+  expect_true(res$.workflow[[1]]$trained)
+  expect_equal(
+    nrow(predict(res$.workflow[[1]], rsample::testing(split))),
+    nrow(rsample::testing(split))
+  )
+})

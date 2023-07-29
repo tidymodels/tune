@@ -1,3 +1,7 @@
+# tune 1.1.2
+
+* `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).
+
 # tune 1.1.1
 
 * Fixed a bug introduced in tune 1.1.0 in `collect_()` functions where the 

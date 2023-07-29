@@ -14,10 +14,18 @@ last_fit(object, ...)
   split,
   ...,
   metrics = NULL,
-  control = control_last_fit()
+  control = control_last_fit(),
+  add_validation_set = FALSE
 )
 
-\method{last_fit}{workflow}(object, split, ..., metrics = NULL, control = control_last_fit())
+\method{last_fit}{workflow}(
+  object,
+  split,
+  ...,
+  metrics = NULL,
+  control = control_last_fit(),
+  add_validation_set = FALSE
+)
 }
 \arguments{
 \item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.
@@ -28,13 +36,19 @@ No tuning parameters are allowed.}
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
 
-\item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}}.}
+\item{split}{An \code{rsplit} object created from \code{\link[rsample:initial_split]{rsample::initial_split()}} or
+\code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
 \item{control}{A \code{\link[=control_last_fit]{control_last_fit()}} object used to fine tune the last fit
 process.}
+
+\item{add_validation_set}{For 3-way splits into training, validation, and test
+set via \code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}, should the validation set be
+included in the data set used to train the model. If not, only the training
+set is used.}
 }
 \value{
 A single row tibble that emulates the structure of \code{fit_resamples()}.

@@ -63,3 +63,68 @@ test_that("fit_best", {
     fit_best(ames_iter_search)
   )
 })
+
+test_that("fit_best() works with validation split: 3-way split", {
+  skip_if_not_installed("kknn")
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata", envir = rlang::current_env())
+
+  set.seed(23598723)
+  initial_val_split <- rsample::initial_validation_split(ames)
+  val_set <- validation_set(initial_val_split)
+
+  f <- Sale_Price ~ Gr_Liv_Area + Year_Built
+  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  wflow <- workflow(f, knn_mod)
+
+  tune_res <- tune_grid(
+    wflow,
+    grid = tibble(neighbors = c(1, 5)),
+    resamples = val_set,
+    control = control_grid(save_workflow = TRUE)
+  ) %>% suppressWarnings()
+  set.seed(3)
+  fit_on_train <- fit_best(tune_res)
+  pred <- predict(fit_on_train, testing(initial_val_split))
+
+  set.seed(3)
+  exp_fit_on_train <- nearest_neighbor(neighbors = 5) %>%
+    set_mode("regression") %>%
+    fit(f, training(initial_val_split))
+  exp_pred <- predict(exp_fit_on_train, testing(initial_val_split))
+
+  expect_equal(pred, exp_pred)
+})
+
+test_that("fit_best() works with validation split: 2x 2-way splits", {
+  skip_if_not_installed("kknn")
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata", envir = rlang::current_env())
+
+  set.seed(23598723)
+  split <- rsample::initial_split(ames)
+  train_and_val <- training(split)
+  val_set <- rsample::validation_split(train_and_val)
+
+  f <- Sale_Price ~ Gr_Liv_Area + Year_Built
+  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  wflow <- workflow(f, knn_mod)
+
+  tune_res <- tune_grid(
+    wflow,
+    grid = tibble(neighbors = c(1, 5)),
+    resamples = val_set,
+    control = control_grid(save_workflow = TRUE)
+  )
+  set.seed(3)
+  fit_on_train_and_val <- fit_best(tune_res)
+  pred <- predict(fit_on_train_and_val, testing(split))
+
+  set.seed(3)
+  exp_fit_on_train_and_val <- nearest_neighbor(neighbors = 5) %>%
+    set_mode("regression") %>%
+    fit(f, train_and_val)
+  exp_pred <- predict(exp_fit_on_train_and_val, testing(split))
+
+  expect_equal(pred, exp_pred)
+})
