@@ -68,9 +68,8 @@ test_that("model_fit method", {
 
 test_that("workflow method", {
   library(parsnip)
-  library(workflows)
 
-  lm_fit <- workflow(mpg ~ ., linear_reg()) %>% fit(data = mtcars)
+  lm_fit <- workflows::workflow(mpg ~ ., linear_reg()) %>% fit(data = mtcars)
 
   expect_snapshot(last_fit(lm_fit), error = TRUE)
 })
