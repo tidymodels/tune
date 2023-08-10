@@ -3,7 +3,7 @@ test_that("evaluation time", {
   skip_if_not_installed("yardstick", minimum_version = "1.1.0.9000")
 
   suppressPackageStartupMessages(library(tune))
-  library(censored)
+  suppressPackageStartupMessages(library(censored))
   suppressPackageStartupMessages(library(yardstick))
   suppressPackageStartupMessages(library(rsample))
 

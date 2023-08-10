@@ -193,11 +193,10 @@ test_that("regular grid plot", {
 test_that("coord_obs_pred", {
   data(solubility_test, package = "modeldata")
 
-  library(ggplot2)
   p <-
-    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
-    geom_abline(lty = 2) +
-    geom_point(alpha = 0.5)
+    ggplot2::ggplot(solubility_test, ggplot2::aes(x = solubility, y = prediction)) +
+    ggplot2::geom_abline(lty = 2) +
+    ggplot2::geom_point(alpha = 0.5)
 
   rng <- range(solubility_test[[1]], solubility_test[[2]])
 
@@ -212,9 +211,9 @@ test_that("coord_obs_pred", {
 
   solubility_test$solubility[1] <- NA
   p3 <-
-    ggplot(solubility_test, aes(x = solubility, y = prediction)) +
-    geom_abline(lty = 2) +
-    geom_point(alpha = 0.5)
+    ggplot2::ggplot(solubility_test, ggplot2::aes(x = solubility, y = prediction)) +
+    ggplot2::geom_abline(lty = 2) +
+    ggplot2::geom_point(alpha = 0.5)
   expect_snapshot_warning(print(p3 + coord_obs_pred()))
 })
 
