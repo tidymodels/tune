@@ -39,7 +39,7 @@ If \code{NULL}, this argument will be set to
 
 \item{add_validation_set}{When the resamples embedded in \code{x} are a split into
 training set and validation set, should the validation set be included in the
-data set used to train the model. If not, only the training set is used. If
+data set used to train the model? If not, only the training set is used. If
 \code{NULL}, the validation set is not used for resamples originating from
 \code{\link[rsample:validation_set]{rsample::validation_set()}} while it is used for resamples originating
 from \code{\link[rsample:validation_split]{rsample::validation_split()}}.}
@@ -59,10 +59,6 @@ This function is a shortcut for the manual steps of:
   wflow <- finalize_workflow(wflow, best_param)  # or just `finalize_model()`
   wflow_fit <- fit(wflow, data_set)
 }
-
-The data used for the fit are taken from the \code{splits} column. If the split
-column was from a validation split, the combined training and validation sets
-are used.
 }
 \section{See also}{
 

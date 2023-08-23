@@ -16,7 +16,7 @@
 #' @param verbose A logical for printing logging.
 #' @param add_validation_set When the resamples embedded in `x` are a split into
 #' training set and validation set, should the validation set be included in the
-#' data set used to train the model. If not, only the training set is used. If
+#' data set used to train the model? If not, only the training set is used. If
 #' `NULL`, the validation set is not used for resamples originating from
 #' [rsample::validation_set()] while it is used for resamples originating
 #' from [rsample::validation_split()].
@@ -29,10 +29,6 @@
 #'   wflow <- finalize_workflow(wflow, best_param)  # or just `finalize_model()`
 #'   wflow_fit <- fit(wflow, data_set)
 #' }
-#'
-#' The data used for the fit are taken from the `splits` column. If the split
-#' column was from a validation split, the combined training and validation sets
-#' are used.
 #'
 #' @inheritSection last_fit See also
 #'
