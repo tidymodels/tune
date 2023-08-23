@@ -8,8 +8,33 @@
 #' @return A tibble with columns that emulate the structure of
 #' `collect_metrics(summarize = TRUE)`. The `std_err` column is set to missing
 #' values since the standard error of the 632 estimator is unknown.
+#' @examplesIf !tune:::is_cran_check() & tune:::should_run_examples(c("modeldata", "kernlab"))
+#' library(modeldata)
+#' library(rsample)
+#' library(parsnip)
+#' library(yardstick)
+#'
+#' set.seed(1)
+#' tr_dat <- sim_regression(50)
+#' rs <- bootstraps(tr_dat, times = 20, apparent = TRUE)
+#'
+#' svm_spec <- svm_rbf(cost = tune()) %>% set_mode("regression")
+#'
+#' set.seed(2)
+#' svm_res <-
+#'   svm_spec %>%
+#'   tune_grid(
+#'     outcome ~ .,
+#'     resamples = rs,
+#'     grid = 2,
+#'     metrics = metric_set(rmse)
+#'   )
+#'
+#' collect_metrics(svm_res)
+#' bootstrap_632(svm_res)
+#'
 #' @export
-bootstrap_623 <- function(x) {
+bootstrap_632 <- function(x) {
   if (!inherits(x, "tune_results")) {
     rlang::abort("The object must have class 'tune_results'.")
 
