@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.1.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,10 +65,13 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
 <ul><li><p>Added a new function, <code><a href="../reference/compute_metrics.html">compute_metrics()</a></code>, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code>, but this function requires that the input be generated with the control option <code>save_pred = TRUE</code> and additionally takes a <code>metrics</code> argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model. (<a href="https://github.com/tidymodels/tune/issues/663" class="external-link">#663</a>)</p></li>
-<li><p>Disambiguates the <code>verbose</code> and <code>verbose_iter</code> control options to better align with documented functionality. The former controls logging for general progress updates, while the latter only does so for the Bayesian search process. (<a href="https://github.com/tidymodels/tune/issues/682" class="external-link">#682</a>)</p></li>
 <li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> will now error when supplied a fitted workflow. (<a href="https://github.com/tidymodels/tune/issues/678" class="external-link">#678</a>)</p></li>
 <li><p>A method for rsample’s <code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> function that will compute percentile confidence intervals on performance metrics for objects produced by <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code>, <code>tune_*()</code>, and <code><a href="../reference/last_fit.html">last_fit()</a></code>.</p></li>
-<li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> now works with the 3-way validation split objects from <code><a href="https://rsample.tidymodels.org/reference/initial_validation_split.html" class="external-link">rsample::initial_validation_split()</a></code>. <code><a href="../reference/last_fit.html">last_fit()</a></code> and <code><a href="../reference/fit_best.html">fit_best()</a></code> now have a new argument <code>add_validation_set</code> to include or exclude the validation set in the dataset used to fit the model (<a href="https://github.com/tidymodels/tune/issues/701" class="external-link">#701</a>).</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.2" id="tune-112">tune 1.1.2<a class="anchor" aria-label="anchor" href="#tune-112"></a></h2><p class="text-muted">CRAN release: 2023-08-23</p>
+<ul><li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> now works with the 3-way validation split objects from <code><a href="https://rsample.tidymodels.org/reference/initial_validation_split.html" class="external-link">rsample::initial_validation_split()</a></code>. <code><a href="../reference/last_fit.html">last_fit()</a></code> and <code><a href="../reference/fit_best.html">fit_best()</a></code> now have a new argument <code>add_validation_set</code> to include or exclude the validation set in the dataset used to fit the model (<a href="https://github.com/tidymodels/tune/issues/701" class="external-link">#701</a>).</p></li>
+<li><p>Disambiguates the <code>verbose</code> and <code>verbose_iter</code> control options to better align with documented functionality. The former controls logging for general progress updates, while the latter only does so for the Bayesian search process. (<a href="https://github.com/tidymodels/tune/issues/682" class="external-link">#682</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="tune-111">tune 1.1.1<a class="anchor" aria-label="anchor" href="#tune-111"></a></h2><p class="text-muted">CRAN release: 2023-04-11</p>
