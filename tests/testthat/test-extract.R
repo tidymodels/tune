@@ -204,6 +204,25 @@ test_that("check .config in extracts", {
     expect_true(any(names(mt_spln_lm_bo$.extracts[[i]]) == ".config"))
   }
 
+  recipe_only_configs <-
+    full_join(
+      mt_spln_lm_bo %>%
+        filter(id == first(id)) %>%
+        select(.iter, .metrics) %>%
+        unnest(cols = .metrics) %>%
+        filter(.metric == first(.metric)),
+      mt_spln_lm_bo %>%
+        filter(id == first(id)) %>%
+        select(.iter, .extracts) %>%
+        unnest(cols = .extracts),
+      by = c(".iter", "deg_free")
+    )
+
+  expect_equal(
+    recipe_only_configs$.config.x,
+    recipe_only_configs$.config.y
+  )
+
   # recipe and model
   for (i in 1:nrow(mt_spln_knn_grid)) {
     expect_true(any(names(mt_spln_knn_grid$.extracts[[i]]) == ".config"))

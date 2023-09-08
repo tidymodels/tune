@@ -432,6 +432,12 @@ tune_bayes_workflow <-
             ~ dplyr::mutate(., .config = paste0("Iter", i))
           )
         }
+        if (".extracts" %in% names(tmp_res)) {
+          tmp_res[[".extracts"]] <- purrr::map(
+            tmp_res[[".extracts"]],
+            ~ dplyr::mutate(., .config = paste0("Iter", i))
+          )
+        }
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
         rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
