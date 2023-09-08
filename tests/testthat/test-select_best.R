@@ -138,7 +138,7 @@ test_that("one-std error rule", {
 
   expect_equal(
     select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
-    "Recipe05"
+    "Preprocessor05_Model1"
   )
   expect_equal(
     select_by_one_std_err(knn_results, metric = "accuracy", K)$K,
@@ -194,7 +194,7 @@ test_that("percent loss", {
   )
   expect_equal(
     select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
-    "Recipe05"
+    "Preprocessor05_Model1"
   )
   expect_equal(
     select_by_pct_loss(knn_results, metric = "accuracy", K)$K,
