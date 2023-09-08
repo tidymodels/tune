@@ -7,9 +7,9 @@
       The `maximize` argument is no longer needed. This value was ignored.
     Output
       # A tibble: 1 x 5
-        deg_free degree `wt df` `wt degree` .config 
-           <int>  <int>   <int>       <int> <chr>   
-      1       10      2       2           2 Recipe24
+        deg_free degree `wt df` `wt degree` .config              
+           <int>  <int>   <int>       <int> <chr>                
+      1       10      2       2           2 Preprocessor24_Model1
 
 ---
 
@@ -72,9 +72,9 @@
       The `maximize` argument is no longer needed. This value was ignored.
     Output
       # A tibble: 1 x 4
-            K weight_func exponent .config
-        <int> <chr>          <dbl> <chr>  
-      1    25 rank            1.99 Model06
+            K weight_func exponent .config              
+        <int> <chr>          <dbl> <chr>                
+      1    25 rank            1.99 Preprocessor1_Model06
 
 ---
 
@@ -159,9 +159,9 @@
       The `maximize` argument is no longer needed. This value was ignored.
     Output
       # A tibble: 1 x 4
-            K weight_func  exponent .config
-        <int> <chr>           <dbl> <chr>  
-      1    12 epanechnikov     1.96 Model02
+            K weight_func  exponent .config              
+        <int> <chr>           <dbl> <chr>                
+      1    12 epanechnikov     1.96 Preprocessor1_Model02
 
 ---
 

@@ -124,7 +124,7 @@ test_that("parameter plot for iterative search", {
   expect_equal(names(p$data), c(".iter", "name", "value"))
 
   name_vals <- sort(unique(p$data$name))
-  expect_equal(name_vals, c("K", "Piecewise Polynomial Degree"))
+  expect_equal(name_vals, c("K", "Spline Degrees of Freedom"))
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(value))
   expect_equal(p$labels$y, "")
