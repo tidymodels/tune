@@ -2,6 +2,7 @@
 #' @importFrom dplyr all_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
 #' @importFrom dplyr last
+#' @importFrom dplyr across matches
 #' @importFrom purrr map_int
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
