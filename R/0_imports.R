@@ -5,7 +5,7 @@
 #' @importFrom purrr map_int
 #' @importFrom rlang call2 ns_env is_quosure is_quosures quo_get_expr call_name
 #' @importFrom rlang is_false eval_tidy expr sym syms env_get is_function :=
-#' @importFrom rlang is_missing %||%
+#' @importFrom rlang is_missing %||% caller_env
 #' @importFrom glue glue glue_collapse
 #' @importFrom dials is_unknown encode_unit
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
