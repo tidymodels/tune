@@ -3,6 +3,10 @@
 #' @export
 dials::parameters
 
+#' @importFrom dplyr dplyr_reconstruct
+#' @export
+dplyr::dplyr_reconstruct
+
 #' @importFrom ggplot2 autoplot
 #' @export
 ggplot2::autoplot
@@ -34,6 +38,10 @@ generics::augment
 #' @importFrom rsample .get_fingerprint
 #' @export
 rsample::.get_fingerprint
+
+#' @importFrom rsample int_pctl
+#' @export
+rsample::int_pctl
 
 #' @importFrom hardhat extract_spec_parsnip
 #' @export
