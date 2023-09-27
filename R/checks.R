@@ -33,7 +33,7 @@ check_backend_options <- function(backend_options) {
 
 grid_msg <- "`grid` should be a positive integer or a data frame."
 
-check_grid <- function(grid, workflow, pset = NULL) {
+check_grid <- function(grid, workflow, pset = NULL, call = caller_env()) {
   # `NULL` grid is the signal that we are using `fit_resamples()`
   if (is.null(grid)) {
     return(grid)
@@ -111,7 +111,7 @@ check_grid <- function(grid, workflow, pset = NULL) {
     if (grid < 1) {
       rlang::abort(grid_msg)
     }
-    check_workflow(workflow, pset = pset, check_dials = TRUE)
+    check_workflow(workflow, pset = pset, check_dials = TRUE, call = call)
 
     grid <- dials::grid_latin_hypercube(pset, size = grid)
     grid <- dplyr::distinct(grid)
@@ -188,7 +188,7 @@ is_installed <- function(pkg) {
   res
 }
 
-check_installs <- function(x) {
+check_installs <- function(x, call = caller_env()) {
   if (x$engine == "unknown") {
     rlang::abort("Please declare an engine for the model")
   } else {
@@ -201,9 +201,13 @@ check_installs <- function(x) {
   if (length(deps) > 0) {
     is_inst <- purrr::map_lgl(deps, is_installed)
     if (any(!is_inst)) {
-      rlang::abort(c("Some package installs are required: ",
-                     paste0("'", deps[!is_inst], "'", collapse = ", ")
-      ))
+      deps_not_installed <- deps[!is_inst]
+      deps_not_installed <- deps_not_installed[!duplicated(deps_not_installed)]
+      cli::cli_abort(
+        "{cli::qty(deps_not_installed)} Package install{?s} {?is/are} \\
+         required for {.pkg {deps_not_installed}}.",
+        call = call
+      )
     }
   }
 }
@@ -271,7 +275,7 @@ check_param_objects <- function(pset) {
 #' @keywords internal
 #' @rdname empty_ellipses
 #' @param check_dials A logical for check for a NULL parameter object.
-check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
+check_workflow <- function(x, pset = NULL, check_dials = FALSE, call = caller_env()) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
@@ -303,7 +307,7 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE) {
 
   check_extra_tune_parameters(x)
 
-  check_installs(hardhat::extract_spec_parsnip(x))
+  check_installs(hardhat::extract_spec_parsnip(x), call = call)
 
   invisible(NULL)
 }

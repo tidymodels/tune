@@ -135,7 +135,7 @@ fit_resamples.workflow <- function(object,
 # ------------------------------------------------------------------------------
 
 resample_workflow <- function(workflow, resamples, metrics, control,
-                              eval_time = NULL, rng) {
+                              eval_time = NULL, rng, call = caller_env()) {
   check_no_tuning(workflow)
 
   # `NULL` is the signal that we have no grid to tune with
@@ -150,7 +150,8 @@ resample_workflow <- function(workflow, resamples, metrics, control,
     pset = pset,
     control = control,
     eval_time = eval_time,
-    rng = rng
+    rng = rng,
+    call = call
   )
 
   attributes <- attributes(out)
