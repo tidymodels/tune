@@ -71,3 +71,19 @@ test_that("showing notes", {
   expect_snapshot(show_notes(fit_lr))
 
 })
+
+test_that("notes are sorted in the correct order", {
+  # set `apparent = TRUE` so that resamples aren't in alphabetical order by id
+  mt_boots <- bootstraps(mtcars, 3, apparent = TRUE)
+
+  # induce the size zero yardstick error in Bootstrap1
+  mt_boots$splits[[1]]$out_id <- numeric(0)
+
+  suppressMessages({
+    mt_res <- fit_resamples(linear_reg(), mpg ~ ., mt_boots)
+  })
+
+  boots_1_loc <- which(mt_res$id == "Bootstrap1")
+  boots_1_notes <- mt_res$.notes[[boots_1_loc]]
+  expect_equal(nrow(boots_1_notes), 1)
+})

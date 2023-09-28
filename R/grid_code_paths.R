@@ -22,10 +22,14 @@ tune_grid_loop <- function(resamples,
     rng
   )
 
-  resamples <- pull_metrics(resamples, results, control)
-  resamples <- pull_notes(resamples, results, control)
-  resamples <- pull_extracts(resamples, results, control)
-  resamples <- pull_predictions(resamples, results, control)
+  # carry out arranging by id before extracting each element of results (#728)
+  resample_ids <- grep("^id", names(resamples), value = TRUE)
+  id_order <- vctrs::vec_order(resamples[resample_ids])
+
+  resamples <- pull_metrics(resamples, results, control, order = id_order)
+  resamples <- pull_notes(resamples, results, control, order = id_order)
+  resamples <- pull_extracts(resamples, results, control, order = id_order)
+  resamples <- pull_predictions(resamples, results, control, order = id_order)
   resamples <- pull_all_outcome_names(resamples, results)
 
   resamples
