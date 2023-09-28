@@ -531,6 +531,7 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
 
   x <- x %>%
     tibble::as_tibble() %>%
+    vctrs::vec_slice(., .$id != "Apparent") %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator,
                     !!!rlang::syms(group_cols)) %>%
     dplyr::summarize(
