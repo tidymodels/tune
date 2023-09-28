@@ -260,7 +260,8 @@ tune_bayes.workflow <-
 tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
-           initial = 5, control = control_bayes(), eval_time = NULL, ...) {
+           initial = 5, control = control_bayes(), eval_time = NULL, ...,
+           call = caller_env()) {
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -278,7 +279,8 @@ tune_bayes_workflow <-
     if (is.null(param_info)) {
       param_info <- hardhat::extract_parameter_set_dials(object)
     }
-    check_workflow(object, check_dials = is.null(param_info), pset = param_info)
+    check_workflow(object, check_dials = is.null(param_info), pset = param_info,
+                   call = call)
     check_backend_options(control$backend_options)
 
     unsummarized <- check_initial(

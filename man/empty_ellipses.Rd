@@ -27,7 +27,7 @@ check_rset(x)
 
 check_parameters(wflow, pset = NULL, data, grid_names = character(0))
 
-check_workflow(x, pset = NULL, check_dials = FALSE)
+check_workflow(x, pset = NULL, check_dials = FALSE, call = caller_env())
 
 check_metrics(x, object)
 

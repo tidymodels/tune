@@ -330,7 +330,8 @@ tune_grid_workflow <- function(workflow,
                                pset = NULL,
                                control = control_grid(),
                                eval_time = NULL,
-                               rng = TRUE) {
+                               rng = TRUE,
+                               call = caller_env()) {
   check_rset(resamples)
 
 
@@ -344,7 +345,7 @@ tune_grid_workflow <- function(workflow,
     grid_names = names(grid)
   )
 
-  check_workflow(workflow, pset = pset)
+  check_workflow(workflow, pset = pset, call = call)
   check_backend_options(control$backend_options)
 
   grid <- check_grid(
