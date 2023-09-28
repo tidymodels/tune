@@ -29,6 +29,36 @@ test_that("gives same output as collect_metrics() when metrics match", {
   expect_equal(collected_unsum, computed_unsum)
 })
 
+test_that("gives same output as collect_metrics() when metrics match (apparent)", {
+  skip_on_cran()
+  skip_if_not_installed("kknn")
+
+  library(parsnip)
+  library(rsample)
+  library(yardstick)
+
+  m_set <- metric_set(rmse)
+
+  res <-
+    fit_resamples(
+      nearest_neighbor("regression"),
+      mpg ~ cyl + hp,
+      bootstraps(mtcars, 5, apparent = TRUE),
+      metrics = m_set,
+      control = control_grid(save_pred = TRUE)
+    )
+
+  collected_sum <- collect_metrics(res)
+  computed_sum <- compute_metrics(res, m_set)
+
+  expect_equal(collected_sum, computed_sum)
+
+  collected_unsum <- collect_metrics(res, summarize = FALSE)
+  computed_unsum <- compute_metrics(res, m_set, summarize = FALSE)
+
+  expect_equal(collected_unsum, computed_unsum)
+})
+
 test_that("`metrics` argument works (numeric metrics)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
