@@ -1,3 +1,6 @@
+#' @importFrom dplyr dplyr_reconstruct
+dplyr::dplyr_reconstruct
+
 #' @noRd
 #' @export
 dplyr_reconstruct.tune_results <- function(data, template) {

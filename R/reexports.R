@@ -3,10 +3,6 @@
 #' @export
 dials::parameters
 
-#' @importFrom dplyr dplyr_reconstruct
-#' @export
-dplyr::dplyr_reconstruct
-
 #' @importFrom ggplot2 autoplot
 #' @export
 ggplot2::autoplot
