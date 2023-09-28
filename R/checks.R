@@ -201,11 +201,10 @@ check_installs <- function(x, call = caller_env()) {
   if (length(deps) > 0) {
     is_inst <- purrr::map_lgl(deps, is_installed)
     if (any(!is_inst)) {
-      deps_not_installed <- deps[!is_inst]
-      deps_not_installed <- deps_not_installed[!duplicated(deps_not_installed)]
+      needs_installed <- unique(deps[!is_inst])
       cli::cli_abort(
-        "{cli::qty(deps_not_installed)} Package install{?s} {?is/are} \\
-         required for {.pkg {deps_not_installed}}.",
+        "{cli::qty(needs_installed)} Package install{?s} {?is/are} \\
+         required for {.pkg {needs_installed}}.",
         call = call
       )
     }

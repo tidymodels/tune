@@ -179,7 +179,7 @@ test_that("workflow objects", {
   })
 })
 
-test_that("errors informatively with needed package install", {
+test_that("errors informatively when needed package isn't installed", {
   # rstanarm is not installed during CI runs
   # in contexts where it _is_ installed, skip the test.
   skip_if(rlang::is_installed("rstanarm"))

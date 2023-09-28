@@ -84,7 +84,7 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
-# errors informatively with needed package install
+# errors informatively when needed package isn't installed
 
     Code
       check_workflow(stan_wflow)
