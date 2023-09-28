@@ -35,6 +35,10 @@ generics::augment
 #' @export
 rsample::.get_fingerprint
 
+#' @importFrom rsample int_pctl
+#' @export
+rsample::int_pctl
+
 #' @importFrom hardhat extract_spec_parsnip
 #' @export
 hardhat::extract_spec_parsnip

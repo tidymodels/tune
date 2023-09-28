@@ -4,7 +4,7 @@
 \alias{int_pctl.tune_results}
 \title{Bootstrap confidence intervals for performance metrics}
 \usage{
-int_pctl.tune_results(
+\method{int_pctl}{tune_results}(
   .data,
   metrics = NULL,
   times = 1001,
