@@ -22,3 +22,39 @@ test_that("estimate method", {
     compl
   )
 })
+
+test_that("estimate method (with apparent resample)", {
+  skip_on_cran()
+  skip_if_not_installed("kknn")
+
+  library(parsnip)
+  library(rsample)
+  library(yardstick)
+
+  m_set <- metric_set(rmse)
+
+  res <-
+    fit_resamples(
+      nearest_neighbor("regression"),
+      mpg ~ cyl + hp,
+      bootstraps(mtcars, 5, apparent = TRUE),
+      metrics = m_set,
+      control = control_grid(save_pred = TRUE)
+    )
+
+  collected_sum <-
+    collect_metrics(res) %>%
+    select(mean, n, std_err)
+
+  collected_manual <-
+    res %>%
+    dplyr::filter(id != "Apparent") %>%
+    tidyr::unnest(.metrics) %>%
+    summarize(
+      mean = mean(.estimate),
+      n = sum(!is.na(.estimator)),
+      std_err = sd(.estimate) / sqrt(n)
+    )
+
+  expect_equal(collected_sum, collected_manual)
+})

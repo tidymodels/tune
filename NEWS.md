@@ -10,6 +10,8 @@
 
 * Fixes bug where `.config` entries in the `.extracts` column in `tune_bayes()` output didn't align with the entries they ought to in the `.metrics` and `.predictions` columns (#715).
 
+* Metrics from apparent resamples are no longer included when estimating performance with `estimate_tune_results()` (and thus with `collect_metrics(..., summarize = TRUE)` and `compute_metrics(..., summarize = TRUE)`). (#714)
+
 # tune 1.1.2
 
 * `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).
