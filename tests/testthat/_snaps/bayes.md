@@ -11,7 +11,6 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
@@ -78,7 +77,6 @@
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       i Gaussian process model
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
@@ -172,11 +170,10 @@
       
       -- Iteration 1 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.418 (@iter 0)
+      i Current best:		rmse=2.453 (@iter 0)
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
@@ -187,16 +184,15 @@
       
       -- Iteration 2 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.418 (@iter 0)
+      i Current best:		rmse=2.453 (@iter 0)
       i Gaussian process model
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
-      i num_comp=5
+      i num_comp=3
       i Estimating performance
       v Estimating performance
-      (x) Newest results:	rmse=2.453 (+/-0.381)
+      <3 Newest results:	rmse=2.418 (+/-0.357)
     Output
       # Tuning results
       # 10-fold cross-validation 
@@ -229,15 +225,14 @@
       
       -- Iteration 1 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.418 (@iter 0)
+      i Current best:		rmse=2.453 (@iter 0)
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
-      i num_comp=2
+      i num_comp=4
       i Estimating performance
       i Fold01: preprocessor 1/1
       v Fold01: preprocessor 1/1
@@ -300,17 +295,16 @@
       i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      (x) Newest results:	rmse=2.666 (+/-0.281)
+      (x) Newest results:	rmse=2.461 (+/-0.37)
       
       -- Iteration 2 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.418 (@iter 0)
+      i Current best:		rmse=2.453 (@iter 0)
       i Gaussian process model
-      ! Gaussian process model: X should be in range (0, 1)
       v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
-      i num_comp=5
+      i num_comp=3
       i Estimating performance
       i Fold01: preprocessor 1/1
       v Fold01: preprocessor 1/1
@@ -373,7 +367,7 @@
       i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      (x) Newest results:	rmse=2.453 (+/-0.381)
+      <3 Newest results:	rmse=2.418 (+/-0.357)
     Output
       # Tuning results
       # 10-fold cross-validation 
@@ -458,6 +452,7 @@
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
       ! Gaussian process model: X should be in range (0, 1)
+      ! Gaussian process model: X should be in range (0, 1)
 
 # too few starting values
 
@@ -526,25 +521,46 @@
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
+      ! The Gaussian process model is being fit using 1 features but only has 2
+        data points to do so. This may cause errors or a poor model fit.
+      ! Gaussian process model: X should be in range (0, 1)
+      ! For the rsq estimates, 1 missing value was found and removed before fitting
+        the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! For the rsq estimates, 8 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
+      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! For the rsq estimates, 9 missing values were found and removed before
+        fitting the Gaussian process model.
+      ! Gaussian process model: X should be in range (0, 1)
+      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      ! No improvement for 10 iterations; returning current results.
 
 ---
 
@@ -569,4 +585,44 @@
       ! Gaussian process model was not fit.
     Message
       x Optimization stopped prematurely; returning current results.
+
+# tune_bayes() output for `iter` edge cases (#721)
+
+    Code
+      tune_bayes(wf, boots, iter = -1)
+    Condition
+      Error in `tune_bayes()`:
+      ! The `iter` argument must be a non-negative integer.
+
+---
+
+    Code
+      tune_bayes(wf, boots, iter = c(-1, 0, 1))
+    Condition
+      Error in `tune_bayes()`:
+      ! The `iter` argument must be a non-negative integer.
+
+---
+
+    Code
+      tune_bayes(wf, boots, iter = c(0, 1, 2))
+    Condition
+      Error in `tune_bayes()`:
+      ! The `iter` argument must be a non-negative integer.
+
+---
+
+    Code
+      tune_bayes(wf, boots, iter = NA)
+    Condition
+      Error in `tune_bayes()`:
+      ! The `iter` argument must be a non-negative integer.
+
+---
+
+    Code
+      tune_bayes(wf, boots, iter = NULL)
+    Condition
+      Error in `tune_bayes()`:
+      ! The `iter` argument must be a non-negative integer.
 
