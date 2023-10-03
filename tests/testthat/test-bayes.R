@@ -54,6 +54,7 @@ test_that("tune recipe only", {
   expect_false(identical(num_comp, expr(tune())))
   expect_true(res_workflow$trained)
 
+  set.seed(1)
   expect_error(
     suppressMessages(
       tune_bayes(
@@ -70,6 +71,7 @@ test_that("tune recipe only", {
 
 
   # test verbose options
+  set.seed(1)
   expect_snapshot(
     tune_bayes(
       wflow,
@@ -81,6 +83,7 @@ test_that("tune recipe only", {
     )
   )
 
+  set.seed(1)
   expect_snapshot(
     tune_bayes(
       wflow,
@@ -92,6 +95,7 @@ test_that("tune recipe only", {
     )
   )
 
+  set.seed(1)
   expect_snapshot(
     tune_bayes(
       wflow,
@@ -102,8 +106,6 @@ test_that("tune recipe only", {
       control = control_bayes(verbose_iter = TRUE, verbose = TRUE)
     )
   )
-
-
 })
 
 # ------------------------------------------------------------------------------
@@ -533,4 +535,55 @@ test_that("missing performance values", {
         param_info = parameters(dials::cost_complexity(c(0.5, 0)))
       )
   })
+})
+
+# ------------------------------------------------------------------------------
+test_that("tune_bayes() output for `iter` edge cases (#721)", {
+  # for `iter = 0`, ought to match `tune_grid()`
+  boots <- rsample::bootstraps(mtcars)
+  wf <-
+    workflows::workflow(
+      mpg ~ .,
+      parsnip::nearest_neighbor("regression", "kknn", neighbors = tune())
+    )
+
+  ctrl_bayes <- control_bayes(seed = 1)
+
+  set.seed(1)
+  res_bayes <- tune_bayes(wf, boots, iter = 0, initial = 10,
+                          control = ctrl_bayes)
+
+  set.seed(1)
+  res_grid <- tune_grid(wf, boots)
+
+  expect_equal(
+    collect_metrics(res_bayes) %>% dplyr::select(-.iter),
+    collect_metrics(res_grid)
+  )
+
+  # for `iter < 0`, ought to error
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = -1)
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = c(-1, 0, 1))
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = c(0, 1, 2))
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = NA)
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = NULL)
+  )
 })

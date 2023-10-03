@@ -211,7 +211,8 @@ tune_bayes.model_spec <- function(object,
     ))
   }
 
-  control <- parsnip::condense_control(control, control_bayes())
+  # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
+  control <- parsnip::condense_control(control, control_bayes(seed = 1))
 
   wflow <- add_model(workflow(), object)
 
@@ -244,7 +245,8 @@ tune_bayes.workflow <-
            control = control_bayes(),
            eval_time = NULL) {
 
-    control <- parsnip::condense_control(control, control_bayes())
+    # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
+    control <- parsnip::condense_control(control, control_bayes(seed = 1))
 
     res <-
       tune_bayes_workflow(
@@ -260,7 +262,7 @@ tune_bayes.workflow <-
 tune_bayes_workflow <-
   function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
            objective = exp_improve(),
-           initial = 5, control = control_bayes(), eval_time = NULL, ...,
+           initial = 5, control, eval_time = NULL, ...,
            call = caller_env()) {
     start_time <- proc.time()[3]
 
@@ -268,6 +270,8 @@ tune_bayes_workflow <-
 
     check_rset(resamples)
     rset_info <- pull_rset_attributes(resamples)
+
+    check_iter(iter, call = call)
 
     metrics <- check_metrics(metrics, object)
     check_eval_time(eval_time, metrics)
@@ -338,7 +342,7 @@ tune_bayes_workflow <-
 
     prev_gp_mod <- NULL
 
-    for (i in (1:iter) + score_card$overall_iter) {
+    for (i in seq_len(iter) + score_card$overall_iter) {
       .notes <-
         tibble::new_tibble(
           list(location = character(0), type = character(0), note = character(0)),
@@ -494,6 +498,16 @@ create_initial_set <- function(param, n = NULL, checks) {
   dials::grid_latin_hypercube(param, size = n)
 }
 
+check_iter <- function(iter, call) {
+  if (!(is.numeric(iter) && length(iter) == 1L && !is.na(iter) && iter >= 0)) {
+    cli::cli_abort(
+      "The {.arg iter} argument must be a non-negative integer.",
+      call = call
+    )
+  }
+
+  iter
+}
 
 # ------------------------------------------------------------------------------
 

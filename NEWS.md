@@ -12,6 +12,9 @@
 
 * Metrics from apparent resamples are no longer included when estimating performance with `estimate_tune_results()` (and thus with `collect_metrics(..., summarize = TRUE)` and `compute_metrics(..., summarize = TRUE)`). (#714)
 
+* Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output. (#720)
+
+
 # tune 1.1.2
 
 * `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).
