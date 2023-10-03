@@ -544,7 +544,7 @@ test_that("tune_bayes() output for `iter` edge cases (#721)", {
   wf <-
     workflows::workflow(
       mpg ~ .,
-      parsnip::linear_reg(penalty = tune(), engine = "glmnet")
+      parsnip::nearest_neighbor("regression", "kknn", neighbors = tune())
     )
 
   ctrl_bayes <- control_bayes(seed = 1)
