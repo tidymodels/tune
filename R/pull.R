@@ -10,7 +10,7 @@ extract_details <- function(object, extractor) {
 
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
-pulley <- function(resamples, res, col, order = NULL) {
+pulley <- function(resamples, res, col, order) {
   if (all(purrr::map_lgl(res, inherits, "simpleError"))) {
     res <-
       resamples %>%
@@ -22,10 +22,6 @@ pulley <- function(resamples, res, col, order = NULL) {
   all_null <- all(purrr::map_lgl(res, is.null))
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
-
-  if (is.null(order)) {
-    order <- vctrs::vec_order(resamples[id_cols])
-  }
 
   resamples <- vctrs::vec_slice(resamples, order)
 
