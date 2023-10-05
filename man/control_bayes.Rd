@@ -133,3 +133,22 @@ used, there will be multiple rows since the sample data point has been
 evaluated multiple times. This may cause issues when merging the predictions
 with the original data.
 }
+\section{Extracting with submodels}{
+
+
+When making use of submodels, tune can generate predictions and calculate
+metrics for multiple model \code{.config}urations using only one model fit.
+However, this means that if a function was supplied to a
+\link[=control_grid]{control function's} \code{extract} argument, tune can only
+execute that extraction on the one submodel that was fitted. As a result,
+in \code{collect_extracts()} output, tune opts to associate the hyperparameter
+combination used to fit the workflow that results in the extracted object
+with the extracted object, rather than with the \code{.config} entry that
+hyperparameter combination is usually associated with. In output, this
+appears like a hyperparameter entry is recycled across many \code{.config}
+entries---this is intentional.
+
+See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
+more about submodels.
+}
+

@@ -2,6 +2,8 @@
 #'
 #' @inheritParams control_bayes
 #'
+#' @inheritSection collect_predictions Extracting with submodels
+#'
 #' @details
 #'
 #' For `extract`, this function can be used to output the model object, the
@@ -189,6 +191,8 @@ print.control_last_fit <- function(x, ...) {
 #'   backend. Defaults to `NULL` for default backend options.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
+#'
+#' @inheritSection collect_predictions Extracting with submodels
 #'
 #' @details
 #'

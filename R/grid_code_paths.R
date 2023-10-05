@@ -392,8 +392,6 @@ tune_grid_loop_iter <- function(split,
         outcome_names = outcome_names
       )
 
-      # FIXME: I think this might be wrong? Doesn't use submodel parameters,
-      # so `extracts` column doesn't list the correct parameters.
       iter_grid <- dplyr::bind_cols(
         iter_grid_preprocessor,
         iter_grid_model

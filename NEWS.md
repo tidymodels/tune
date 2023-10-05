@@ -14,6 +14,7 @@
 
 * Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output. (#720)
 
+* Improves documentation related to the hyperparameters associated with extracted objects that are generated from submodels. See the "Extracting with submodels" section of `?collect_extracts` to learn more.
 
 # tune 1.1.2
 
