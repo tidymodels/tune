@@ -10,7 +10,7 @@ extract_details <- function(object, extractor) {
 
 # Grab the new results, make sure that they align row-wise with the rsample
 # object and then bind columns
-pulley <- function(resamples, res, col) {
+pulley <- function(resamples, res, col, order) {
   if (all(purrr::map_lgl(res, inherits, "simpleError"))) {
     res <-
       resamples %>%
@@ -22,7 +22,9 @@ pulley <- function(resamples, res, col) {
   all_null <- all(purrr::map_lgl(res, is.null))
 
   id_cols <- grep("^id", names(resamples), value = TRUE)
-  resamples <- dplyr::arrange(resamples, !!!syms(id_cols))
+
+  resamples <- vctrs::vec_slice(resamples, order)
+
   pulled_vals <- purrr::map(res, ~ .x[[col]]) %>% purrr::list_rbind()
 
   if (nrow(pulled_vals) == 0) {
@@ -65,22 +67,22 @@ maybe_repair <- function(x) {
 }
 
 
-pull_metrics <- function(resamples, res, control) {
-  out <- pulley(resamples, res, ".metrics")
+pull_metrics <- function(resamples, res, control, order) {
+  out <- pulley(resamples, res, ".metrics", order = order)
   out$.metrics <- maybe_repair(out$.metrics)
   out
 }
 
-pull_extracts <- function(resamples, res, control) {
+pull_extracts <- function(resamples, res, control, order) {
   if (!is.null(control$extract)) {
-    resamples <- pulley(resamples, res, ".extracts")
+    resamples <- pulley(resamples, res, ".extracts", order = order)
   }
   resamples
 }
 
-pull_predictions <- function(resamples, res, control) {
+pull_predictions <- function(resamples, res, control, order) {
   if (control$save_pred) {
-    resamples <- pulley(resamples, res, ".predictions")
+    resamples <- pulley(resamples, res, ".predictions", order = order)
     resamples$.predictions <- maybe_repair(resamples$.predictions)
   }
   resamples
@@ -126,8 +128,10 @@ ensure_tibble <- function(x) {
   res
 }
 
-pull_notes <- function(resamples, res, control) {
-  resamples$.notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
+pull_notes <- function(resamples, res, control, order) {
+  notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
+  resamples$.notes <- notes[order]
+
   resamples
 }
 

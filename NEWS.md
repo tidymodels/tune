@@ -6,6 +6,8 @@
 
 * `last_fit()` will now error when supplied a fitted workflow. (#678)
 
+* Fixes bug where `.notes` entries were sorted in the wrong order in tuning results for resampling schemes with IDs that aren't already in alphabetical order. (#728)
+
 * A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
 * Fixes bug where `.config` entries in the `.extracts` column in `tune_bayes()` output didn't align with the entries they ought to in the `.metrics` and `.predictions` columns (#715).
