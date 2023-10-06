@@ -16,6 +16,7 @@
 
 * Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output. (#720)
 
+* Introduces an error in `show_best()`, `select_best()`, and `select_by_*()` functions when an `eval_time` argument is passed but will not be used.
 
 # tune 1.1.2
 

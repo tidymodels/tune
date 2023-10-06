@@ -92,6 +92,12 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
     metric <- metrics
   }
 
+  # ensure that `eval_time` isn't silently ignored (#704)
+  metric_tbl <- purrr::pluck(attributes(x), "metrics")
+  metric_tbl <- tibble::as_tibble(metric_tbl)
+  metric_tbl <- vctrs::vec_slice(metric_tbl, metric_tbl$metric == metric)
+  check_eval_time(eval_time, metric_tbl)
+
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
   summary_res <- choose_eval_time(summary_res, x, eval_time)

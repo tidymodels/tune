@@ -126,6 +126,57 @@ test_that("show_best()", {
   })
 })
 
+test_that("show_best respects `eval_time` argument (#704)", {
+  skip_if_not_installed("censored")
+  skip_if_not_installed("modeldata")
+
+  library(censored)
+  library(modeldata)
+  library(rsample)
+  library(yardstick)
+  library(tibble)
+
+  data("mlc_churn")
+
+  mlc_churn <-
+    mlc_churn %>%
+    dplyr::mutate(
+      churned = ifelse(churn == "yes", 1, 0),
+      event_time = Surv(account_length, churned)
+    ) %>%
+    dplyr::select(event_time, account_length, voice_mail_plan) %>%
+    dplyr::slice(1:500)
+
+  set.seed(6941)
+  churn_rs <- bootstraps(mlc_churn, times = 2)
+
+  sr_tune_spec <- survival_reg(dist = tune())
+  eval_times <- c(10, 100, 150)
+  event_metrics <- metric_set(brier_survival, brier_survival_integrated,
+                              concordance_survival, roc_auc_survival)
+  sr_grid <- tibble(dist = c("loglogistic", "lognormal"))
+
+  sr_tune_res <-
+    sr_tune_spec %>%
+    tune_grid(
+      event_time ~ .,
+      resamples = churn_rs,
+      metrics = event_metrics,
+      eval_time = eval_times,
+      grid = sr_grid
+    )
+
+
+  expect_s3_class_bare_tibble(
+    show_best(sr_tune_res, metric = "brier_survival_integrated", eval_time = 10)
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    show_best(sr_tune_res, metric = "concordance_survival", eval_time = 10)
+  )
+})
+
 test_that("one-std error rule", {
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 

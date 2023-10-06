@@ -63,6 +63,14 @@
       Error in `show_best()`:
       ! No `show_best()` exists for this type of object.
 
+# show_best respects `eval_time` argument (#704)
+
+    Code
+      show_best(sr_tune_res, metric = "concordance_survival", eval_time = 10)
+    Condition
+      Error:
+      ! Evaluation times are only used for dynamic and integrated survival metrics.
+
 # one-std error rule
 
     Code
