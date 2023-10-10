@@ -94,7 +94,7 @@ from workflows via the \code{extract} argument to \link[=control_grid]{control f
 \description{
 Obtain and format results produced by tuning functions
 }
-\section{Extracting with submodels}{
+\section{Hyperparameters and extracted objects}{
 
 
 When making use of submodels, tune can generate predictions and calculate

@@ -2,7 +2,7 @@
 #'
 #' @inheritParams control_bayes
 #'
-#' @inheritSection collect_predictions Extracting with submodels
+#' @inheritSection collect_predictions Hyperparameters and extracted objects
 #'
 #' @details
 #'
@@ -192,7 +192,7 @@ print.control_last_fit <- function(x, ...) {
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
 #'
-#' @inheritSection collect_predictions Extracting with submodels
+#' @inheritSection collect_predictions Hyperparameters and extracted objects
 #'
 #' @details
 #'

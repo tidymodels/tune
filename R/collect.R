@@ -56,7 +56,7 @@
 #' indicators, the location (preprocessor, model, etc.), and objects extracted
 #' from workflows via the `extract` argument to [control functions][control_grid()].
 #'
-#' @section Extracting with submodels:
+#' @section Hyperparameters and extracted objects:
 #'
 #' When making use of submodels, tune can generate predictions and calculate
 #' metrics for multiple model `.config`urations using only one model fit.

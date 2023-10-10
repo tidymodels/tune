@@ -133,7 +133,7 @@ used, there will be multiple rows since the sample data point has been
 evaluated multiple times. This may cause issues when merging the predictions
 with the original data.
 }
-\section{Extracting with submodels}{
+\section{Hyperparameters and extracted objects}{
 
 
 When making use of submodels, tune can generate predictions and calculate

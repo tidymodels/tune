@@ -115,7 +115,7 @@ with the original data.
 \code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
 used with \code{\link[=fit_resamples]{fit_resamples()}}.
 }
-\section{Extracting with submodels}{
+\section{Hyperparameters and extracted objects}{
 
 
 When making use of submodels, tune can generate predictions and calculate
