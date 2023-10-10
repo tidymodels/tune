@@ -122,7 +122,7 @@ When making use of submodels, tune can generate predictions and calculate
 metrics for multiple model \code{.config}urations using only one model fit.
 However, this means that if a function was supplied to a
 \link[=control_grid]{control function's} \code{extract} argument, tune can only
-execute that extraction on the one submodel that was fitted. As a result,
+execute that extraction on the one model that was fitted. As a result,
 in \code{collect_extracts()} output, tune opts to associate the hyperparameter
 combination used to fit the workflow that results in the extracted object
 with the extracted object, rather than with the \code{.config} entry that
