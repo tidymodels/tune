@@ -52,9 +52,10 @@
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
 #'
-#' [collect_extracts()] returns a tibble with columns for the resampling
-#' indicators, the location (preprocessor, model, etc.), and objects extracted
-#' from workflows via the `extract` argument to [control functions][control_grid()].
+#' [collect_extracts()] collects objects extracted from fitted workflows
+#' via the `extract` argument to [control functions][control_grid()]. The
+#' function returns a tibble with columns for the resampling
+#' indicators, the location (preprocessor, model, etc.), and extracted objects.
 #'
 #' @section Hyperparameters and extracted objects:
 #'
