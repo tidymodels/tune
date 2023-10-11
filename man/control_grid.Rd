@@ -115,4 +115,23 @@ with the original data.
 \code{\link[=control_resamples]{control_resamples()}} is an alias for \code{\link[=control_grid]{control_grid()}} and is meant to be
 used with \code{\link[=fit_resamples]{fit_resamples()}}.
 }
+\section{Hyperparameters and extracted objects}{
+
+
+When making use of submodels, tune can generate predictions and calculate
+metrics for multiple model \code{.config}urations using only one model fit.
+However, this means that if a function was supplied to a
+\link[=control_grid]{control function's} \code{extract} argument, tune can only
+execute that extraction on the one model that was fitted. As a result,
+in the \code{collect_extracts()} output, tune opts to associate the
+extracted objects with the hyperparameter combination used to
+fit that one model workflow, rather than the hyperparameter
+combination of a submodel. In the output, this appears like
+a hyperparameter entry is recycled across many \code{.config}
+entries---this is intentional.
+
+See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
+more about submodels.
+}
+
 \keyword{internal}

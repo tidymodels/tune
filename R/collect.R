@@ -52,9 +52,28 @@
 #' indicators, the location (preprocessor, model, etc.), type (error or warning),
 #' and the notes.
 #'
-#' [collect_extracts()] returns a tibble with columns for the resampling
-#' indicators, the location (preprocessor, model, etc.), and objects extracted
-#' from workflows via the `extract` argument to [control functions][control_grid()].
+#' [collect_extracts()] collects objects extracted from fitted workflows
+#' via the `extract` argument to [control functions][control_grid()]. The
+#' function returns a tibble with columns for the resampling
+#' indicators, the location (preprocessor, model, etc.), and extracted objects.
+#'
+#' @section Hyperparameters and extracted objects:
+#'
+#' When making use of submodels, tune can generate predictions and calculate
+#' metrics for multiple model `.config`urations using only one model fit.
+#' However, this means that if a function was supplied to a
+#' [control function's][control_grid()] `extract` argument, tune can only
+#' execute that extraction on the one model that was fitted. As a result,
+#' in the `collect_extracts()` output, tune opts to associate the 
+#' extracted objects with the hyperparameter combination used to 
+#' fit that one model workflow, rather than the hyperparameter 
+#' combination of a submodel. In the output, this appears like 
+#' a hyperparameter entry is recycled across many `.config`
+#' entries---this is intentional.
+#'
+#' See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
+#' more about submodels.
+#'
 #' @examplesIf tune:::should_run_examples(suggests = "kknn")
 #' data("example_ames_knn")
 #' # The parameters for the model:

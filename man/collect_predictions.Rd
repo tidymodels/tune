@@ -87,13 +87,33 @@ median.
 indicators, the location (preprocessor, model, etc.), type (error or warning),
 and the notes.
 
-\code{\link[=collect_extracts]{collect_extracts()}} returns a tibble with columns for the resampling
-indicators, the location (preprocessor, model, etc.), and objects extracted
-from workflows via the \code{extract} argument to \link[=control_grid]{control functions}.
+\code{\link[=collect_extracts]{collect_extracts()}} collects objects extracted from fitted workflows
+via the \code{extract} argument to \link[=control_grid]{control functions}. The
+function returns a tibble with columns for the resampling
+indicators, the location (preprocessor, model, etc.), and extracted objects.
 }
 \description{
 Obtain and format results produced by tuning functions
 }
+\section{Hyperparameters and extracted objects}{
+
+
+When making use of submodels, tune can generate predictions and calculate
+metrics for multiple model \code{.config}urations using only one model fit.
+However, this means that if a function was supplied to a
+\link[=control_grid]{control function's} \code{extract} argument, tune can only
+execute that extraction on the one model that was fitted. As a result,
+in the \code{collect_extracts()} output, tune opts to associate the
+extracted objects with the hyperparameter combination used to
+fit that one model workflow, rather than the hyperparameter
+combination of a submodel. In the output, this appears like
+a hyperparameter entry is recycled across many \code{.config}
+entries---this is intentional.
+
+See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
+more about submodels.
+}
+
 \examples{
 \dontshow{if (tune:::should_run_examples(suggests = "kknn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data("example_ames_knn")
