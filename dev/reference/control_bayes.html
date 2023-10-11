@@ -221,6 +221,25 @@ used, there will be multiple rows since the sample data point has been
 evaluated multiple times. This may cause issues when merging the predictions
 with the original data.</p>
     </div>
+    <div class="section level2">
+    <h2 id="hyperparameters-and-extracted-objects">Hyperparameters and extracted objects<a class="anchor" aria-label="anchor" href="#hyperparameters-and-extracted-objects"></a></h2>
+    
+
+
+<p>When making use of submodels, tune can generate predictions and calculate
+metrics for multiple model <code>.config</code>urations using only one model fit.
+However, this means that if a function was supplied to a
+<a href="control_grid.html">control function's</a> <code>extract</code> argument, tune can only
+execute that extraction on the one model that was fitted. As a result,
+in the <code><a href="collect_predictions.html">collect_extracts()</a></code> output, tune opts to associate the
+extracted objects with the hyperparameter combination used to
+fit that one model workflow, rather than the hyperparameter
+combination of a submodel. In the output, this appears like
+a hyperparameter entry is recycled across many <code>.config</code>
+entries---this is intentional.</p>
+<p>See <a href="https://parsnip.tidymodels.org/articles/Submodels.html" class="external-link">https://parsnip.tidymodels.org/articles/Submodels.html</a> to learn
+more about submodels.</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
