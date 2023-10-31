@@ -7,15 +7,15 @@
 #'
 #' @inheritParams last_fit
 #'
-#' @param resamples A resample `rset` created from an `rsample` function such
-#'   as [rsample::vfold_cv()].
+#' @param resamples An `rset` resampling object created from an `rsample`
+#' function, such as [rsample::vfold_cv()].
 #'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
 #'
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-#' values should be non-negative and should probably be no great then the
+#' values should be non-negative and should probably be no greater than the
 #' largest event time in the training set.
 #'
 #' @inheritSection tune_grid Performance Metrics

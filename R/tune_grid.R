@@ -4,10 +4,8 @@
 #'  for a pre-defined set of tuning parameters that correspond to a model or
 #'  recipe across one or more resamples of the data.
 #'
-#' @param object A `parsnip` model specification or a [workflows::workflow()].
-#' @param preprocessor A traditional model formula or a recipe created using
-#'   [recipes::recipe()].
-#' @param resamples An `rset()` object.
+#' @inheritParams last_fit
+#' @inheritParams fit_resamples
 #' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments. Passing this argument can
 #' be useful when parameter ranges need to be customized.
@@ -15,8 +13,8 @@
 #'  data frame should have columns for each parameter being tuned and rows for
 #'  tuning parameter candidates. An integer denotes the number of candidate
 #'  parameter sets to be created automatically.
-#' @param metrics A [yardstick::metric_set()] or `NULL`.
-#' @param control An object used to modify the tuning process.
+#' @param control An object used to modify the tuning process, likely created
+#' by [control_grid()].
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 #' values must be non-negative and should probably be no greater than the

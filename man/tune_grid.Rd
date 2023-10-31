@@ -39,7 +39,8 @@ tune_grid(object, ...)
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
 
-\item{resamples}{An \code{rset()} object.}
+\item{resamples}{An \code{rset} resampling object created from an \code{rsample}
+function, such as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 
 \item{param_info}{A \code{\link[dials:parameters]{dials::parameters()}} object or \code{NULL}. If none is given,
 a parameters set is derived from other arguments. Passing this argument can
@@ -50,7 +51,8 @@ data frame should have columns for each parameter being tuned and rows for
 tuning parameter candidates. An integer denotes the number of candidate
 parameter sets to be created automatically.}
 
-\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} or \code{NULL}.}
+\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
+set of metrics.}
 
 \item{control}{An object used to modify the tuning process.}
 

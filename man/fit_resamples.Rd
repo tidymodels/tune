@@ -38,8 +38,8 @@ have been marked with \link[hardhat:tune]{tune()}, their values must be
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
 
-\item{resamples}{A resample \code{rset} created from an \code{rsample} function such
-as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
+\item{resamples}{An \code{rset} resampling object created from an \code{rsample}
+function, such as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
@@ -49,7 +49,7 @@ process.}
 
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no great then the
+values should be non-negative and should probably be no greater than the
 largest event time in the training set.}
 }
 \description{

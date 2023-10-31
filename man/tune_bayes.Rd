@@ -43,7 +43,8 @@ tune_bayes(object, ...)
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
 
-\item{resamples}{An \code{rset()} object.}
+\item{resamples}{An \code{rset} resampling object created from an \code{rsample}
+function, such as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 
 \item{iter}{The maximum number of search iterations.}
 
@@ -51,9 +52,8 @@ tune_bayes(object, ...)
 a parameters set is derived from other arguments. Passing this argument can
 be useful when parameter ranges need to be customized.}
 
-\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}} object containing information on how
-models will be evaluated for performance. The first metric in \code{metrics} is the
-one that will be optimized.}
+\item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
+set of metrics. The first metric in \code{metrics} is the one that will be optimized.}
 
 \item{objective}{A character string for what metric should be optimized or
 an acquisition function object.}
