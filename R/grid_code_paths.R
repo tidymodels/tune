@@ -401,14 +401,6 @@ tune_grid_loop_iter <- function(split,
         iter_grid_model
       )
 
-      # FIXME: bind_cols() drops number of rows with zero col data frames
-      # because of a bug with vec_cbind()
-      # https://github.com/r-lib/vctrs/issues/1281
-      if (ncol(iter_grid_preprocessor) == 0L && ncol(iter_grid_model) == 0L) {
-        nrow <- nrow(iter_grid_model)
-        iter_grid <- tibble::new_tibble(x = list(), nrow = nrow)
-      }
-
       elt_extract <- .catch_and_log(
         extract_details(workflow, control$extract),
         control,
