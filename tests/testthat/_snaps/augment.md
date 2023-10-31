@@ -12,7 +12,7 @@
       aug_2 <- augment(fit_2)
     Condition
       Warning:
-      The orginal data had 791 rows but there were 593 hold-out predictions.
+      The original data had 791 rows but there were 593 hold-out predictions.
 
 # augment tune_grid
 

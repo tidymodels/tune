@@ -107,7 +107,7 @@ merge_pred <- function(dat, pred, y) {
   if (nrow(pred) != nrow(dat)) {
     rlang::warn(
       paste(
-        "The orginal data had", nrow(dat), "rows but there were",
+        "The original data had", nrow(dat), "rows but there were",
         nrow(pred), "hold-out predictions."
       )
     )
