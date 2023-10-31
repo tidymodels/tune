@@ -157,9 +157,10 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
     if (tune_recipe) {
       rlang::abort(
         paste(
-          "Some tuning parameters require finalization but there are recipe",
-          "parameters that require tuning. Please use `parameters()` to",
-          "finalize the parameter ranges."
+          "Some model parameters require finalization but there are recipe",
+          "parameters that require tuning. Please use ",
+          "`extract_parameter_set_dials()` to set parameter ranges ",
+          "manually and supply the output to the `param_info` argument."
         )
       )
     }

@@ -84,22 +84,6 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
-# errors informatively when needed package isn't installed
-
-    Code
-      check_workflow(stan_wflow)
-    Condition
-      Error:
-      ! Package install is required for rstanarm.
-
----
-
-    Code
-      fit_resamples(stan_wflow, rsample::bootstraps(mtcars))
-    Condition
-      Error in `fit_resamples()`:
-      ! Package install is required for rstanarm.
-
 # workflow objects (will not tune, tidymodels/tune#548)
 
     Code
@@ -362,5 +346,5 @@
       tune:::check_parameters(w4, data = mtcars)
     Condition
       Error in `tune:::check_parameters()`:
-      ! Some tuning parameters require finalization but there are recipe parameters that require tuning. Please use `parameters()` to finalize the parameter ranges.
+      ! Some model parameters require finalization but there are recipe parameters that require tuning. Please use  `extract_parameter_set_dials()` to set parameter ranges  manually and supply the output to the `param_info` argument.
 
