@@ -120,7 +120,8 @@ combinations based on previous results.</p>
 
 
 <dt>resamples</dt>
-<dd><p>An <code>rset()</code> object.</p></dd>
+<dd><p>An <code>rset</code> resampling object created from an <code>rsample</code>
+function, such as <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html" class="external-link">rsample::vfold_cv()</a></code>.</p></dd>
 
 
 <dt>iter</dt>
@@ -134,9 +135,8 @@ be useful when parameter ranges need to be customized.</p></dd>
 
 
 <dt>metrics</dt>
-<dd><p>A <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">yardstick::metric_set()</a></code> object containing information on how
-models will be evaluated for performance. The first metric in <code>metrics</code> is the
-one that will be optimized.</p></dd>
+<dd><p>A <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">yardstick::metric_set()</a></code>, or <code>NULL</code> to compute a standard
+set of metrics. The first metric in <code>metrics</code> is the one that will be optimized.</p></dd>
 
 
 <dt>objective</dt>

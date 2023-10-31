@@ -119,7 +119,8 @@ recipe across one or more resamples of the data.</p>
 
 
 <dt>resamples</dt>
-<dd><p>An <code>rset()</code> object.</p></dd>
+<dd><p>An <code>rset</code> resampling object created from an <code>rsample</code>
+function, such as <code><a href="https://rsample.tidymodels.org/reference/vfold_cv.html" class="external-link">rsample::vfold_cv()</a></code>.</p></dd>
 
 
 <dt>param_info</dt>
@@ -136,7 +137,8 @@ parameter sets to be created automatically.</p></dd>
 
 
 <dt>metrics</dt>
-<dd><p>A <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">yardstick::metric_set()</a></code> or <code>NULL</code>.</p></dd>
+<dd><p>A <code><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">yardstick::metric_set()</a></code>, or <code>NULL</code> to compute a standard
+set of metrics.</p></dd>
 
 
 <dt>control</dt>
