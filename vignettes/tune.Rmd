@@ -44,7 +44,7 @@ ames_test  <- testing(data_split)
 
 For simplicity, the sale price of a house will be modeled as a function of its geo-location. These predictors appear to have nonlinear relationships with the outcome:
 
-```{r geo-plots}
+```{r geo-plots, fig.alt = "A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side facets, and the log sale price is on the y axis. The clouds of points follow highly non-linear trends, traced by a blue trend line."}
 ames_train %>% 
   dplyr::select(Sale_Price, Longitude, Latitude) %>% 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -196,7 +196,7 @@ rmse_vals
 
 Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
 
-```{r rmse-tile}
+```{r rmse-tile, fig.alt = "A ggplot2 line plot. The x axis plots the degrees of freedom alotted to the spline parameter mapped to the longitude, and ranges from 0 to 17. The y axis plots the root mean squared error. Lines are colored by the spline terms for the latitude. Generally, from left to right, each line follows a downward trend, and lines from higher latitude degrees of freedom and centered lower."}
 autoplot(ames_res, metric = "rmse")
 ```
 
@@ -204,7 +204,7 @@ Interestingly, latitude does _not_ do well with degrees of freedom less than 8. 
 
 Let's plot these spline functions over the data for both good and bad values of `deg_free`:  
 
-```{r final-vals}
+```{r final-vals, fig.alt = "A scatterplot much like the first one, except that a smoother, red line, representing a spline term with fewer degrees of freedom, is also plotted. The red line is much smoother but accounts for the less of the variation shown."}
 ames_train %>% 
   dplyr::select(Sale_Price, Longitude, Latitude) %>% 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -280,7 +280,7 @@ knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 2
 
 Visually, the performance gain was:
  
-```{r bo-iter}
+```{r bo-iter, fig.alt = "A ggplot2 dot plot. The x axis plots iterations, ranging from 0 to 20, and the y axis plots root mean squared error. After iteration 0, each point has error bars for the metric value. Generally, the error decreases as the iteration increases."}
 autoplot(knn_search, type = "performance", metric = "rmse")
 ```
 

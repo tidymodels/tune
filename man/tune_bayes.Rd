@@ -36,7 +36,10 @@ tune_bayes(object, ...)
 )
 }
 \arguments{
-\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.}
+\item{object}{A \code{parsnip} model specification or an unfitted
+\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
+have been marked with \link[hardhat:tune]{tune()}, their values must be
+\link[=finalize_model]{finalized}.}
 
 \item{...}{Options to pass to \code{\link[GPfit:GP_fit]{GPfit::GP_fit()}} (mostly for the \code{corr} argument).}
 
@@ -62,7 +65,7 @@ an acquisition function object.}
 from \code{\link[=tune_grid]{tune_grid()}}) or a positive integer. It is suggested that the number of
 initial results be greater than the number of parameters being optimized.}
 
-\item{control}{A control object created by \code{\link[=control_bayes]{control_bayes()}}}
+\item{control}{A control object created by \code{\link[=control_bayes]{control_bayes()}}.}
 
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The

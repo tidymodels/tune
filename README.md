@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# tune <a href='https://tune.tidymodels.org'><img src='man/figures/logo.png' align="right" height="139" /></a>
+# tune <a href='https://tune.tidymodels.org'><img src='man/figures/logo.png' alt='Package hex logo. A black sticker with technicolor dials representing varying parameter values.' align="right" height="139" /></a>
 
 <!-- badges: start -->
 

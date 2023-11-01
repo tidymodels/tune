@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tune <a href='https://tune.tidymodels.org'><img src='man/figures/logo.png' align="right" height="139" /></a>
+# tune <a href='https://tune.tidymodels.org'><img src='man/figures/logo.png' alt='Package hex logo. A black sticker with technicolor dials representing varying parameter values.' align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/tidymodels/tune/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/tune/actions/workflows/R-CMD-check.yaml)

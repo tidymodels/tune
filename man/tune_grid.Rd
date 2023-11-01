@@ -32,7 +32,10 @@ tune_grid(object, ...)
 )
 }
 \arguments{
-\item{object}{A \code{parsnip} model specification or a \code{\link[workflows:workflow]{workflows::workflow()}}.}
+\item{object}{A \code{parsnip} model specification or an unfitted
+\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
+have been marked with \link[hardhat:tune]{tune()}, their values must be
+\link[=finalize_model]{finalized}.}
 
 \item{...}{Not currently used.}
 
@@ -54,7 +57,8 @@ parameter sets to be created automatically.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{An object used to modify the tuning process.}
+\item{control}{An object used to modify the tuning process, likely created
+by \code{\link[=control_grid]{control_grid()}}.}
 
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
