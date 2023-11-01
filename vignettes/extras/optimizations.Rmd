@@ -72,7 +72,8 @@ To evaluate these `r nrow(grid)` candidate models, we would have to compute the 
 alt_grid <- tidyr::nest(grid, data = c(-num_terms))
 alt_grid
 ```
-Only `r nrow(alt_grid)` recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with `num_terms = 1` is created, the model parameters are iteratively tuned: 
+
+When `parallel_over = "resamples"`, the default, only `r nrow(alt_grid)` recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with `num_terms = 1` is created, the model parameters are iteratively tuned: 
 
 ```{r model-param, echo = FALSE}
 alt_grid$data[[1]]
@@ -84,7 +85,7 @@ Also, when using a model formula, the model matrix is only created once per resa
 
 ## Parallel Processing
 
-`tune` allows users, when possible, to use multiple cores or separate machines fit models. Currently, the package parallelizes the _resampling_ loop of grid search^[There will be more options in the future to control this since the current implementation doesn't help for cases when many models are fit over a single resample of the data  (such as a validation set).]. 
+`tune` allows users, when possible, to use multiple cores or separate machines fit models. The package is currently able to parallelize over either the resampling loop of grid search (via `parallel_over = "resamples"` in `control_grid()`, the default) or both the resampling and preprocessing loops (via `parallel_over = "everything"`). When `parallel_over = "everything"`, an outer parallel loop will iterate over resamples and an inner parallel loop will iterate over all unique combinations of preprocessor and model tuning parameters for that specific resample. This will result in the preprocessor being re-processed multiple times, but can be faster if that preprocessing is extremely fast.
 
 The `foreach` package is used to facilitate parallel computations. `foreach` can use a variety of technologies to share the computations and the choice of technology is determined by which _parallel backend_ package is chosen (aka the `do{technology}` packages). For example, the `doMC` package uses the forking mechanism on *unix systems to split the computations across multiple cores. As of this writing, the backend packages are `doFuture`, `doMC`, `doMPI`, `doParallel`, `doRedis`, `doRNG`, `doSNOW`, and `doAzureParallel` (GitHub only). Of these, `doFuture` and `doParallel` are probably the most comprehensive and best supported.
 
