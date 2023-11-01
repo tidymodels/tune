@@ -198,9 +198,10 @@ the recipe:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">3</span>         5 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">4</span>         7 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span>         9 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span></code></pre>
-<p>Only 5 recipes are prepared and, within each, all of the appropriate
-models are fit from the same recipe. In this example, once the recipe
-with <code>num_terms = 1</code> is created, the model parameters are
+<p>When <code>parallel_over = "resamples"</code>, the default, only 5
+recipes are prepared and, within each, all of the appropriate models are
+fit from the same recipe. In this example, once the recipe with
+<code>num_terms = 1</code> is created, the model parameters are
 iteratively tuned:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 70 × 2</span></span></span>
 <span><span class="co">##    neighbors weight_func </span></span>
@@ -226,10 +227,17 @@ once per resample.</p>
 <h2 id="parallel-processing">Parallel Processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
 </h2>
 <p><code>tune</code> allows users, when possible, to use multiple cores
-or separate machines fit models. Currently, the package parallelizes the
-<em>resampling</em> loop of grid search<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;There will be more options in the future to control this
-since the current implementation doesn’t help for cases when many models
-are fit over a single resample of the data (such as a validation set).&lt;/p&gt;"><sup>1</sup></a>.</p>
+or separate machines fit models. The package is currently able to
+parallelize over either the resampling loop of grid search (via
+<code>parallel_over = "resamples"</code> in <code><a href="../../reference/control_grid.html">control_grid()</a></code>,
+the default) or both the resampling and preprocessing loops (via
+<code>parallel_over = "everything"</code>). When
+<code>parallel_over = "everything"</code>, an outer parallel loop will
+iterate over resamples and an inner parallel loop will iterate over all
+unique combinations of preprocessor and model tuning parameters for that
+specific resample. This will result in the preprocessor being
+re-processed multiple times, but can be faster if that preprocessing is
+extremely fast.</p>
 <p>The <code>foreach</code> package is used to facilitate parallel
 computations. <code>foreach</code> can use a variety of technologies to
 share the computations and the choice of technology is determined by
@@ -287,7 +295,6 @@ as a sector.</p>
 Again, this is dependent on the backend package and technology being
 used.</p>
 </div>
-
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>
