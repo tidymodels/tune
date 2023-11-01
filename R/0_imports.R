@@ -34,7 +34,7 @@
 
 utils::globalVariables(
   c(
-    "engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
+    ".", "engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
     "component", "component_id", "id", "control", ".pred", ".metric",
     ".estimator", ".estimate", "n", "note", "object", "splits", "grid",
     "resamples", ".iter", "mean", ".submodels", "metrics", "data", ".mean",
