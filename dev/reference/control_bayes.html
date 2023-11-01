@@ -119,7 +119,13 @@ counter is reset after each uncertainty sample. For example, if <code>uncertain 
 
 
 <dt>seed</dt>
-<dd><p>An integer for controlling the random number stream.</p></dd>
+<dd><p>An integer for controlling the random number stream. Tuning
+functions are sensitive to both the state of RNG set outside of tuning
+functions with <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> as well as the value set here. The value of the
+former determines RNG for the higher-level tuning process, like grid
+generation and setting the value of this argument if left as default. The
+value of this argument determines RNG state in workers for each iteration
+of model fitting, determined by the value of <code>parallel_over</code>.</p></dd>
 
 
 <dt>extract</dt>
