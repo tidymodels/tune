@@ -43,7 +43,13 @@ uncertainty sample is created where a sample with high predicted variance is
 chosen (i.e., in a region that has not yet been explored). The iteration
 counter is reset after each uncertainty sample. For example, if \code{uncertain = 10}, this condition is triggered every 10 samples with no improvement.}
 
-\item{seed}{An integer for controlling the random number stream.}
+\item{seed}{An integer for controlling the random number stream. Tuning
+functions are sensitive to both the state of RNG set outside of tuning
+functions with \code{set.seed()} as well as the value set here. The value of the
+former determines RNG for the higher-level tuning process, like grid
+generation and setting the value of this argument if left as default. The
+value of this argument determines RNG state in workers for each iteration
+of model fitting, determined by the value of \code{parallel_over}.}
 
 \item{extract}{An optional function with at least one argument (or \code{NULL})
 that can be used to retain arbitrary objects from the model fit object,
