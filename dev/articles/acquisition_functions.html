@@ -166,12 +166,12 @@ maximizes the expected improvement.</p>
 <p>Suppose a single parameter were being optimized and that parameter
 was represented using a log10 transformation. Using resampling, suppose
 the accuracy results for three points were evaluated:</p>
-<p><img src="figures/initial.svg"><!-- --></p>
+<p><img src="figures/initial.svg" alt="A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There are three dots, with no immediately discernible trend."></p>
 <p>In the first iteration of Bayesian optimization, these three data
 points are given to the Gaussian process model to produce predictions
 across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel
 below, along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
-<p><img src="figures/iter_1.svg"><!-- --></p>
+<p><img src="figures/iter_1.svg" alt="A ggplot line plot. The data are the same as that plotted above, but a curved line is plotted over the points, now. A shaded region, representing a confidence band, grows wider as the distance in the x axis from an observed parameter value increases. An additional panel is shown below the plot, where a measure called Expected Improvement is plotted on the y axis."></p>
 <p>Notice that the interval width is large in regions far from observed
 data points.</p>
 <p>The bottom panel shows the expected improvement across the range of
@@ -185,7 +185,7 @@ the best performance.</p>
 is then evaluated using cross-validation. The GP model is then updated
 and a new parameter is chosen and so on.</p>
 <p>The results at iteration 20 were:</p>
-<p><img src="figures/iter_20.svg"><!-- --></p>
+<p><img src="figures/iter_20.svg" alt="A ggplot2 dot plot much like the one above, except that an additional 17 points are now plotted. The confidence bands around the newly drawn line are much tighter. The expected improvement reaches higher values only in a much smaller portion of the x axis, now."></p>
 <p>The points shown on the graph indicate that there is a region in the
 neighborhood of 0.01 that appears to produce the best results, and that
 the expected improvement function has driven the optimization to focus
@@ -204,7 +204,7 @@ equation above uses:</p>
 during the search. Using the same three initial results, the procedure
 would end up in the same general location but would have explored more
 values across the total range:</p>
-<p><img src="figures/trade_off_20.svg"><!-- --></p>
+<p><img src="figures/trade_off_20.svg" alt="A plot identical to the one above, though generated with a different parameter value for the trade-off. The expected improvement, in the bottom pane, is nearly always zero, with one narrow section remaining of positive value."></p>
 <p>There are two main strategies for <em>dynamic trade-offs</em> during
 the optimization:</p>
 <ul>

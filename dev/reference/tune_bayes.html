@@ -107,7 +107,10 @@ combinations based on previous results.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>object</dt>
-<dd><p>A <code>parsnip</code> model specification or a <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code>.</p></dd>
+<dd><p>A <code>parsnip</code> model specification or an unfitted
+<a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflow()</a>. No tuning parameters are allowed; if arguments
+have been marked with <a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a>, their values must be
+<a href="finalize_model.html">finalized</a>.</p></dd>
 
 
 <dt>...</dt>
@@ -151,7 +154,7 @@ initial results be greater than the number of parameters being optimized.</p></d
 
 
 <dt>control</dt>
-<dd><p>A control object created by <code><a href="control_bayes.html">control_bayes()</a></code></p></dd>
+<dd><p>A control object created by <code><a href="control_bayes.html">control_bayes()</a></code>.</p></dd>
 
 
 <dt>eval_time</dt>
