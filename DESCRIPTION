@@ -52,8 +52,7 @@ Suggests:
     xgboost,
     xml2
 Remotes:
-    tidymodels/rsample,
-    tidymodels/yardstick#434
+    tidymodels/rsample
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
