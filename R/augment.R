@@ -112,6 +112,11 @@ merge_pred <- function(dat, pred, y) {
       )
     )
   }
+
+  if (!tibble::is_tibble(dat)) {
+    dat <- tibble::as_tibble(dat)
+  }
+
   dat$.row <- 1:nrow(dat)
   dat <- dplyr::left_join(dat, pred, by = ".row")
   dat$.row <- NULL
