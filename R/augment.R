@@ -10,6 +10,8 @@
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
 #' objects only). If `NULL`, `select_best(x)` will be used.
+#' @param eval_time For censored regression models, a vector of time points at
+#' which the survival probability is estimated.
 #' @param ... Not currently used.
 #' @return A data frame with one or more additional columns for model
 #' predictions.
@@ -32,7 +34,7 @@
 #' results.
 #'
 #' @export
-augment.tune_results <- function(x, parameters = NULL, ...) {
+augment.tune_results <- function(x, parameters = NULL, eval_time = NULL, ...) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
@@ -47,7 +49,7 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
   # check/determine best settings
   if (is.null(parameters)) {
     obj_fun <- .get_tune_metric_names(x)[1]
-    parameters <- select_best(x, metric = obj_fun)
+    parameters <- select_best(x, metric = obj_fun, eval_time = eval_time)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
       rlang::abort("'parameters' should be a single row data frame")

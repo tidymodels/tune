@@ -6,7 +6,7 @@
 \alias{augment.last_fit}
 \title{Augment data with holdout predictions}
 \usage{
-\method{augment}{tune_results}(x, parameters = NULL, ...)
+\method{augment}{tune_results}(x, parameters = NULL, eval_time = NULL, ...)
 
 \method{augment}{resample_results}(x, ...)
 
@@ -20,6 +20,9 @@ objects should have used the option \code{save_pred = TRUE}.}
 \item{parameters}{A data frame with a single row that indicates what
 tuning parameters should be used to generate the predictions (for \verb{tune_*()}
 objects only). If \code{NULL}, \code{select_best(x)} will be used.}
+
+\item{eval_time}{For censored regression models, a vector of time points at
+which the survival probability is estimated.}
 
 \item{...}{Not currently used.}
 }
