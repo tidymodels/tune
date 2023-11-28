@@ -76,6 +76,8 @@ show_best.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ...) {
+  # TODO should return the as_tibble(metric_set) results to get the class etc.
+  # TODO new function start
   metric <- choose_metric(metric, x)
 
   dots <- rlang::enquos(...)
@@ -92,8 +94,12 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
     metric <- metrics
   }
 
+  # TODO new function stop
+
   # get estimates/summarise
   summary_res <- summary_res %>% dplyr::filter(.metric == metric)
+
+  # TODO split selecting the req time and seeing if it is in the data
   summary_res <- choose_eval_time(summary_res, x, eval_time)
 
   if (nrow(summary_res) == 0) {
@@ -349,7 +355,8 @@ middle_eval_time <- function(x) {
   eval_time
 }
 
-
+# NOTE this chooses the time and subsets the data; break it up to only select
+# time
 choose_eval_time <- function(x, object, eval_time) {
   mtrs <- .get_tune_metrics(object)
   mtrs <- tibble::as_tibble(mtrs)
