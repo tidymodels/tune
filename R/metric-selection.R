@@ -1,22 +1,16 @@
-# For iterative search and racing, what metric will be optimized?
+#' Tools for selecting metrics and evaluation times
+#'
+#' @param mtr_set A [yardstick::metric_set()].
+#' @param metric A character value for which metric is being used.
+#' @param eval_time An optional vector of times to compute dynamic and/or
+#' integrated metrics.
 #' @keywords internal
 #' @export
 first_metric <- function(mtr_set) {
   tibble::as_tibble(mtr_set)[1,]
 }
 
-# Did the user pass an improper metric (i.e. want rmse but not computed)?
-#' @keywords internal
-#' @export
-check_chosen_metric <- function(metric, mtr_set) {
-  mtr_info <- tibble::as_tibble(mtr_set)
-  in_set <- any(mtr_info$metric == metric)
-  if (!in_set) {
-    cli::cli_abort("metric '{metric}' is not in the metric set.")
-  }
-  invisible(TRUE)
-}
-
+#' @rdname first_metric
 #' @keywords internal
 #' @export
 first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
@@ -54,14 +48,4 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   eval_time
-}
-
-#' @keywords internal
-#' @export
-check_eval_time <- function(eval_time = NULL, all_times = NULL) {
-  if (!is.null(eval_time)) {
-    return(eval_time)
-  }
-
-  all_times <- sort(unique(all_times))
 }
