@@ -18,6 +18,8 @@
 
 * Improves documentation related to the hyperparameters associated with extracted objects that are generated from submodels. See the "Extracting with submodels" section of `?collect_extracts` to learn more.
 
+* An `eval_time` attribute was added to tune objects. There is also a `.get_tune_eval_times()` function.
+
 * `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always returns tibbles (#759).
 
 # tune 1.1.2

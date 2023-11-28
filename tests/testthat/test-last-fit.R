@@ -25,7 +25,7 @@ test_that("formula method", {
     nrow(predict(res$.workflow[[1]], rsample::testing(split))),
     nrow(rsample::testing(split))
   )
-
+  expect_null(.get_tune_eval_times(res))
 
 })
 
