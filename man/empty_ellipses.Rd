@@ -56,6 +56,7 @@ new_iteration_results(
   x,
   parameters,
   metrics,
+  eval_time,
   outcomes = character(0),
   rset_info,
   workflow
@@ -97,6 +98,9 @@ is_workflow(x)
 \item{metrics}{A metric set.}
 
 \item{ctrl}{A \code{control_grid} object.}
+
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc).}
 
 \item{cls}{A character vector of possible classes}
 

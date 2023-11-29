@@ -160,6 +160,7 @@ resample_workflow <- function(workflow, resamples, metrics, control,
     x = out,
     parameters = attributes$parameters,
     metrics = attributes$metrics,
+    eval_time = attributes$eval_time,
     outcomes = attributes$outcomes,
     rset_info = attributes$rset_info,
     workflow = attributes$workflow

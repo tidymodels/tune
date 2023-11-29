@@ -304,6 +304,7 @@ tune_bayes_workflow <-
         x = unsummarized,
         parameters = param_info,
         metrics = metrics,
+        eval_time = eval_time,
         outcomes = outcomes,
         rset_info = rset_info,
         workflow = NULL
@@ -476,6 +477,7 @@ tune_bayes_workflow <-
         x = unsummarized,
         parameters = param_info,
         metrics = metrics,
+        eval_time = eval_time,
         outcomes = outcomes,
         rset_info = rset_info,
         workflow = workflow_output
