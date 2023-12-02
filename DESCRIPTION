@@ -47,6 +47,7 @@ Suggests:
     kknn,
     knitr,
     modeldata,
+    scales,
     spelling,
     testthat (>= 3.0.0),
     xgboost,
