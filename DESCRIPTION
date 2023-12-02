@@ -38,7 +38,7 @@ Imports:
     vctrs (>= 0.6.1),
     withr,
     workflows (>= 1.0.0),
-    yardstick (>= 1.2.0)
+    yardstick (>= 1.2.0.9001)
 Suggests: 
     C50,
     censored,
@@ -51,6 +51,8 @@ Suggests:
     testthat (>= 3.0.0),
     xgboost,
     xml2
+Remotes:
+    tidymodels/yardstick
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
