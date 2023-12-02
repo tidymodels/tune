@@ -1,4 +1,5 @@
 library(tidymodels)
+library(scales)
 library(sessioninfo)
 library(testthat)
 
@@ -34,8 +35,8 @@ get_coefs  <- function(x) {
 }
 
 verb <- FALSE
-g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
-b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
+g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
+b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
 
 # ------------------------------------------------------------------------------
 
@@ -60,7 +61,8 @@ set.seed(8825)
 mt_spln_lm_grid <-
   tune_grid(mt_spln_lm,
             resamples = folds,
-            control = g_ctrl)
+            control =
+              control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs))
 
 set.seed(8825)
 mt_spln_lm_bo <-
@@ -68,7 +70,7 @@ mt_spln_lm_bo <-
     mt_spln_lm,
     resamples = folds,
     iter = 3,
-    control = b_ctrl
+    control = control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
   )
 
 # ------------------------------------------------------------------------------
