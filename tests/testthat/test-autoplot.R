@@ -183,7 +183,7 @@ test_that("regular grid plot", {
   expect_equal(p$labels$x, "Cost")
   expect_equal(p$labels$group, "%^*#")
 
-  expect_equal(class(p$scales$scales[[1]]$trans), "trans")
+  expect_true(grepl("^trans", class(p$scales$scales[[1]]$trans)))
   expect_equal(p$scales$scales[[1]]$trans$name, "log-2")
   expect_equal(unique(p$data$name), "Cost")
 })

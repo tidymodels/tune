@@ -35,8 +35,8 @@ get_coefs  <- function(x) {
 }
 
 verb <- FALSE
-g_ctrl <- control_grid(verbose = verb, save_pred = TRUE)
-b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE)
+g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
+b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
 
 # ------------------------------------------------------------------------------
 
@@ -61,8 +61,7 @@ set.seed(8825)
 mt_spln_lm_grid <-
   tune_grid(mt_spln_lm,
             resamples = folds,
-            control =
-              control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs))
+            control = g_ctrl)
 
 set.seed(8825)
 mt_spln_lm_bo <-
@@ -70,7 +69,7 @@ mt_spln_lm_bo <-
     mt_spln_lm,
     resamples = folds,
     iter = 3,
-    control = control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
+    control = b_ctrl
   )
 
 # ------------------------------------------------------------------------------
