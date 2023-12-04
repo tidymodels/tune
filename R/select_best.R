@@ -118,20 +118,6 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
     dplyr::slice(show_ind)
 }
 
-choose_metric <- function(metric, x) {
-  if (is.null(metric)) {
-    metric_vals <- .get_tune_metric_names(x)
-    metric <- metric_vals[1]
-    if (length(metric_vals) > 1) {
-      msg <- paste0(
-        "No value of `metric` was given; metric '", metric, "' ",
-        "will be used."
-      )
-      rlang::warn(msg)
-    }
-  }
-  metric
-}
 
 #' @export
 #' @rdname show_best
