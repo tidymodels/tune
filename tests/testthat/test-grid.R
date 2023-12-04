@@ -27,6 +27,7 @@ test_that("tune recipe only", {
   expect_equal(res_est$n, rep(10, nrow(grid) * 2))
   expect_false(identical(num_comp, expr(tune())))
   expect_true(res_workflow$trained)
+  expect_null(.get_tune_eval_times(res))
 })
 
 # ------------------------------------------------------------------------------

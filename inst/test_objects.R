@@ -1,4 +1,5 @@
 library(tidymodels)
+library(scales)
 library(sessioninfo)
 library(testthat)
 
