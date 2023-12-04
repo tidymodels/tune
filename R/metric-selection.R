@@ -6,12 +6,51 @@
 #' integrated metrics.
 #' @keywords internal
 #' @export
+choose_metric <- function(x, metric) {
+  mtr_set <- .get_tune_metrics(x)
+  mtr_info <- tibble::as_tibble(mtr_set)
+
+  if (is.null(metric)) {
+    metric <- mtr_info$metric[1]
+    cli::cli_warn("No value of `metric` was given; '{metric}' will be used")
+  } else {
+    metric <- check_mult_metrics(metric)
+    check_right_metric(mtr_info, metric)
+  }
+
+  mtr_info[mtr_info$metric == metric,]
+}
+
+check_mult_metrics <- function(metric) {
+  num_metrics <- length(metric)
+  metric <- metric[1]
+  if (num_metrics > 1) {
+    cli::cli_warn("{num_metrics} metric{?s} were given; '{metric}' will be used")
+  }
+  metric
+}
+
+check_right_metric <- function(mtr_info, metric) {
+  if (!any(mtr_info$metric == metric)) {
+    met_list <- paste0("'", mtr_info$metric, "'", collapse = ", ")
+    cli::cli_abort("'{metric}' was not in the metric set. Please choose from: {met_list}")
+  }
+  invisible(NULL)
+}
+
+is_survival_metric <- function(mtr_info) {
+  any(grepl("_survival_", mtr_info$class))
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
 first_metric <- function(mtr_set) {
   tibble::as_tibble(mtr_set)[1,]
 }
 
-#' @rdname first_metric
-#' @keywords internal
+#' @rdname choose_metric
 #' @export
 first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   num_times <- length(eval_time)
@@ -25,7 +64,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   # Not a survival metric
-  if (!any(grepl("_survival_", mtr_info$class))) {
+  if (!is_survival_metric(mtr_info)) {
     return(NULL)
   }
 
