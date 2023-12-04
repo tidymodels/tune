@@ -50,7 +50,7 @@
 
 ---
 
-    Please check the value of `metric`.
+    'WAT' was not in the metric set. Please choose from: 'rmse', 'rsq'
 
 ---
 
