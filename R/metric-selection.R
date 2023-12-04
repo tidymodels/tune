@@ -4,6 +4,17 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @description
+#' These are developer-facing functions used to compute and validate choices
+#' for performance metrics. For survival analysis models, there are similar
+#' functions for the evaluation time(s) required for dynamic and/or integrated
+#' metrics.
+#'
+#' `choose_metric()` is used with functions such as [show_best()] or
+#' [select_best()] where a single valid metric is required to rank models. If
+#' no value is given by the user, the first metric value is used (with a
+#' warning).
+#'
 #' @keywords internal
 #' @export
 choose_metric <- function(x, metric) {

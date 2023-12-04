@@ -21,6 +21,14 @@ first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
 integrated metrics.}
 }
 \description{
-Tools for selecting metrics and evaluation times
+These are developer-facing functions used to compute and validate choices
+for performance metrics. For survival analysis models, there are similar
+functions for the evaluation time(s) required for dynamic and/or integrated
+metrics.
+
+\code{choose_metric()} is used with functions such as \code{\link[=show_best]{show_best()}} or
+\code{\link[=select_best]{select_best()}} where a single valid metric is required to rank models. If
+no value is given by the user, the first metric value is used (with a
+warning).
 }
 \keyword{internal}
