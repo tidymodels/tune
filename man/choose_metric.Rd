@@ -2,31 +2,23 @@
 % Please edit documentation in R/metric-selection.R
 \name{choose_metric}
 \alias{choose_metric}
-\alias{choose_eval_time}
 \alias{first_metric}
 \alias{first_eval_time}
-\alias{filter_perf_metrics}
 \title{Tools for selecting metrics and evaluation times}
 \usage{
 choose_metric(x, metric, ..., call = rlang::caller_env())
 
-choose_eval_time(x, metric, eval_time = NULL, call = rlang::caller_env())
-
 first_metric(mtr_set)
 
 first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
-
-filter_perf_metrics(x, metric, eval_time)
 }
 \arguments{
 \item{metric}{A character value for which metric is being used.}
 
-\item{call}{The execution environment of a currently running function.}
+\item{mtr_set}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}.}
 
 \item{eval_time}{An optional vector of times to compute dynamic and/or
 integrated metrics.}
-
-\item{mtr_set}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}.}
 }
 \description{
 These are developer-facing functions used to compute and validate choices
@@ -38,13 +30,5 @@ metrics.
 \code{\link[=select_best]{select_best()}} where a single valid metric is required to rank models. If
 no value is given by the user, the first metric value is used (with a
 warning).
-
-For evaluation times, one is only required when the metric type is dynamic
-(e.g. \code{\link[yardstick:brier_survival]{yardstick::brier_survival()}} or \code{\link[yardstick:roc_auc_survival]{yardstick::roc_auc_survival()}}). For
-these metrics, we require a single numeric value that was originally given
-to the function used to produce \code{x} (such as \code{\link[=tune_grid]{tune_grid()}}).
-
-If a time is required and none is given, the first value in the vector
-originally given in the \code{eval_time} argument is used (with a warning).
 }
 \keyword{internal}

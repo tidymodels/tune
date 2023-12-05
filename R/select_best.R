@@ -141,6 +141,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
 
   param_names <- .get_tune_parameter_names(x)
 
+  # TODO make a function
   dots <- rlang::enquos(...)
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
@@ -266,3 +267,4 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
     dplyr::slice(1) %>%
     dplyr::select(dplyr::all_of(param_names), .config)
 }
+
