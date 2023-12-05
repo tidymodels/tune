@@ -149,7 +149,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 3)
-    cli::cli_warn("{.val {num_times}} evaluation times were specified; the first ({.val {print_time}}) will be used.")
+    cli::cli_warn("{.val {num_times}} evaluation times were specified; the first ({print_time}) will be used.")
   }
 
   eval_time
