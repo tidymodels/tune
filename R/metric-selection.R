@@ -4,6 +4,7 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @param call The execution environment of a currently running function.
 #' @description
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
@@ -69,11 +70,11 @@ contains_survival_metric <- function(mtr_info) {
 
 #' @rdname choose_metric
 #' @export
-choose_eval_time <- function(x, metric, eval_time = NULL) {
+choose_eval_time <- function(x, metric, eval_time = NULL, call = rlang::caller_env()) {
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
-  if (!is_survival_metric(mtr_info)) {
+  if (!contains_survival_metric(mtr_info)) {
     return(NULL)
   }
 
@@ -85,7 +86,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL) {
 
   eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time)
 
-  check_right_eval_time(x, eval_time)
+  check_right_eval_time(x, eval_time, call = call)
 
   eval_time
 }
@@ -96,13 +97,13 @@ is_dyn <- function(mtr_set, metric) {
   mtr_cls  == "dynamic_survival_metric"
 }
 
-check_right_eval_time <- function(x, eval_time) {
+check_right_eval_time <- function(x, eval_time, call = rlang::caller_env()) {
   given_times <- .get_tune_eval_times(x)
   if (!is.null(eval_time)) {
     if (!any(eval_time == given_times)) {
       num_times <- length(given_times)
       print_time <- format(eval_time, digits = 3)
-      cli::cli_abort("Evaluation time {print_time} is not in the results.")
+      cli::cli_abort("Evaluation time {.val {print_time}} is not in the results.", call = call)
     }
   }
   invisible(NULL)
@@ -149,7 +150,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 3)
-    cli::cli_warn("{num_times} evaluation times were specified; the first ({print_time}) will be used.")
+    cli::cli_warn("{.val {num_times}} evaluation times were specified; the first ({.val {print_time}}) will be used.")
   }
 
   eval_time
@@ -169,7 +170,7 @@ filter_perf_metrics <- function(x, metric, eval_time) {
     summary_res <- summary_res[summary_res$.eval_time == eval_time, ]
   }
   if (nrow(summary_res) == 0) {
-    cli::cli_abort("No results are available. Please use `collect_metrics()` to see if there were any issues.")
+    cli::cli_abort("No results are available. Please use {.code collect_metrics()} to see if there were any issues.")
   }
 
   summary_res
