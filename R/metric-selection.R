@@ -25,39 +25,45 @@
 #'
 #' @keywords internal
 #' @export
-choose_metric <- function(x, metric) {
+choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
   if (is.null(metric)) {
     metric <- mtr_info$metric[1]
-    cli::cli_warn("No value of `metric` was given; '{metric}' will be used")
+    cli::cli_warn("No value of {.arg metric} was given; {.val {metric}} will be used.", call = call)
   } else {
-    metric <- check_mult_metrics(metric)
-    check_right_metric(mtr_info, metric)
+    metric <- check_mult_metrics(metric, call = call)
+    check_right_metric(mtr_info, metric, call = call)
   }
 
   mtr_info[mtr_info$metric == metric,]
 }
 
-check_mult_metrics <- function(metric) {
+check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
   num_metrics <- length(metric)
   metric <- metric[1]
   if (num_metrics > 1) {
-    cli::cli_warn("{num_metrics} metric{?s} were given; '{metric}' will be used")
+    cli::cli_warn("{num_metrics} metric{?s} were given; {.val {metric}} will be used.", call = call)
   }
   metric
 }
 
-check_right_metric <- function(mtr_info, metric) {
+check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
   if (!any(mtr_info$metric == metric)) {
-    met_list <- paste0("'", mtr_info$metric, "'", collapse = ", ")
-    cli::cli_abort("'{metric}' was not in the metric set. Please choose from: {met_list}")
+    met_list <- paste0("'", , "'", collapse = ", ")
+    cli::cli_abort("'{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
   }
   invisible(NULL)
 }
 
-is_survival_metric <- function(mtr_info) {
+contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
 
@@ -124,7 +130,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   # Not a survival metric
-  if (!is_survival_metric(mtr_info)) {
+  if (!contains_survival_metric(mtr_info)) {
     return(NULL)
   }
 
