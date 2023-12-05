@@ -202,3 +202,18 @@ test_that("selecting single eval time - mixed metric sets - integrated first", {
   expect_null(int_multi)
 })
 
+test_that("selecting an evaluation time", {
+  # much of this is indirectly tested in show/select best
+
+  surv_res <- readRDS(test_path("data", "surv_boost_tree_res.rds"))
+
+  expect_snapshot(
+    choose_eval_time(surv_res, "brier_survival")
+  )
+  expect_snapshot(
+    choose_eval_time(surv_res, "concordance_survival")
+  )
+  expect_snapshot(
+    choose_eval_time(surv_res, "concordance_survival", eval_time = 10)
+  )
+})
