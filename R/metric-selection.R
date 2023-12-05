@@ -19,7 +19,7 @@
 #' @export
 choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
   rlang::check_dots_empty()
-  
+
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
@@ -36,7 +36,7 @@ choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
 
 check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
   rlang::check_dots_empty()
-  
+
   num_metrics <- length(metric)
   metric <- metric[1]
   if (num_metrics > 1) {
@@ -47,7 +47,7 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
 
 check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
   rlang::check_dots_empty()
-  
+
   if (!any(mtr_info$metric == metric)) {
     met_list <- paste0("'", , "'", collapse = ", ")
     cli::cli_abort("'{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
@@ -55,7 +55,7 @@ check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()
   invisible(NULL)
 }
 
-is_survival_metric <- function(mtr_info) {
+contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
 
@@ -81,7 +81,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   # Not a survival metric
-  if (!is_survival_metric(mtr_info)) {
+  if (!contains_survival_metric(mtr_info)) {
     return(NULL)
   }
 

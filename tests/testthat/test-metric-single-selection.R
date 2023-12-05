@@ -33,19 +33,19 @@ test_that("identify survival metrics", {
   expect_false(
     metric_set(rmse) %>%
       as_tibble() %>%
-      tune:::is_survival_metric()
+      tune:::contains_survival_metric()
   )
 
   expect_true(
     metric_set(brier_survival_integrated) %>%
       as_tibble() %>%
-      tune:::is_survival_metric()
+      tune:::contains_survival_metric()
   )
 
   expect_true(
     metric_set(brier_survival, concordance_survival) %>%
       as_tibble() %>%
-      tune:::is_survival_metric()
+      tune:::contains_survival_metric()
   )
 
 })
