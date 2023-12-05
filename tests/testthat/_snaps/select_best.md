@@ -1,39 +1,31 @@
 # select_best()
 
     Code
-      select_best(rcv_results, metric = "rsq", maximize = TRUE)
-    Condition
-      Warning:
-      The `maximize` argument is no longer needed. This value was ignored.
-    Output
-      # A tibble: 1 x 5
-        deg_free degree `wt df` `wt degree` .config              
-           <int>  <int>   <int>       <int> <chr>                
-      1       10      2       2           2 Preprocessor24_Model1
-
----
-
-    Code
       select_best(rcv_results, metric = "random")
     Condition
-      Error in `get_metric_direction()`:
-      ! Please check the value of `metric`.
+      Error in `select_best()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_best(rcv_results, metric = c("rmse", "rsq"))
     Condition
-      Error in `get_metric_direction()`:
-      ! Please specify a single character value for `metric`.
+      Warning in `select_best()`:
+      2 metrics were given; "rmse" will be used.
+    Output
+      # A tibble: 1 x 5
+        deg_free degree `wt df` `wt degree` .config              
+           <int>  <int>   <int>       <int> <chr>                
+      1        6      2       2           1 Preprocessor05_Model1
 
 ---
 
     Code
       best_default_metric <- select_best(rcv_results)
     Condition
-      Warning:
-      No value of `metric` was given; metric 'rmse' will be used.
+      Warning in `select_best()`:
+      No value of `metric` was given; "rmse" will be used.
     Code
       best_rmse <- select_best(rcv_results, metric = "rmse")
 
@@ -50,8 +42,8 @@
     Code
       best_default_metric <- show_best(rcv_results)
     Condition
-      Warning:
-      No value of `metric` was given; metric 'rmse' will be used.
+      Warning in `show_best()`:
+      No value of `metric` was given; "rmse" will be used.
     Code
       best_rmse <- show_best(rcv_results, metric = "rmse")
 
@@ -66,39 +58,31 @@
 # one-std error rule
 
     Code
-      select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE)
-    Condition
-      Warning:
-      The `maximize` argument is no longer needed. This value was ignored.
-    Output
-      # A tibble: 1 x 4
-            K weight_func exponent .config              
-        <int> <chr>          <dbl> <chr>                
-      1    25 rank            1.99 Preprocessor1_Model06
-
----
-
-    Code
       select_by_one_std_err(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `get_metric_direction()`:
-      ! Please check the value of `metric`.
+      Error in `select_by_one_std_err()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Error in `get_metric_direction()`:
-      ! Please specify a single character value for `metric`.
+      Warning in `select_by_one_std_err()`:
+      2 metrics were given; "rmse" will be used.
+    Output
+      # A tibble: 1 x 5
+        deg_free degree `wt df` `wt degree` .config              
+           <int>  <int>   <int>       <int> <chr>                
+      1        6      2       2           1 Preprocessor05_Model1
 
 ---
 
     Code
       select_via_default_metric <- select_by_one_std_err(knn_results, K)
     Condition
-      Warning:
-      No value of `metric` was given; metric 'roc_auc' will be used.
+      Warning in `select_by_one_std_err()`:
+      No value of `metric` was given; "roc_auc" will be used.
     Code
       select_via_roc <- select_by_one_std_err(knn_results, K, metric = "roc_auc")
 
@@ -108,7 +92,7 @@
       select_by_one_std_err(rcv_results, metric = "random")
     Condition
       Error in `select_by_one_std_err()`:
-      ! Please choose at least one tuning parameter to sort in `...`.
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
@@ -153,39 +137,31 @@
 # percent loss
 
     Code
-      select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE)
-    Condition
-      Warning:
-      The `maximize` argument is no longer needed. This value was ignored.
-    Output
-      # A tibble: 1 x 4
-            K weight_func  exponent .config              
-        <int> <chr>           <dbl> <chr>                
-      1    12 epanechnikov     1.96 Preprocessor1_Model02
-
----
-
-    Code
       select_by_pct_loss(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `get_metric_direction()`:
-      ! Please check the value of `metric`.
+      Error in `select_by_pct_loss()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Error in `get_metric_direction()`:
-      ! Please specify a single character value for `metric`.
+      Warning in `select_by_pct_loss()`:
+      2 metrics were given; "rmse" will be used.
+    Output
+      # A tibble: 1 x 5
+        deg_free degree `wt df` `wt degree` .config              
+           <int>  <int>   <int>       <int> <chr>                
+      1        6      2       2           1 Preprocessor05_Model1
 
 ---
 
     Code
       select_via_default_metric <- select_by_pct_loss(knn_results, K)
     Condition
-      Warning:
-      No value of `metric` was given; metric 'roc_auc' will be used.
+      Warning in `select_by_pct_loss()`:
+      No value of `metric` was given; "roc_auc" will be used.
     Code
       select_via_roc <- select_by_pct_loss(knn_results, K, metric = "roc_auc")
 
@@ -195,7 +171,7 @@
       select_by_pct_loss(rcv_results, metric = "random")
     Condition
       Error in `select_by_pct_loss()`:
-      ! Please choose at least one tuning parameter to sort in `...`.
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 

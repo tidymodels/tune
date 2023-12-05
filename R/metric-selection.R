@@ -4,14 +4,69 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @description
+#' These are developer-facing functions used to compute and validate choices
+#' for performance metrics. For survival analysis models, there are similar
+#' functions for the evaluation time(s) required for dynamic and/or integrated
+#' metrics.
+#'
+#' `choose_metric()` is used with functions such as [show_best()] or
+#' [select_best()] where a single valid metric is required to rank models. If
+#' no value is given by the user, the first metric value is used (with a
+#' warning).
+#'
 #' @keywords internal
+#' @export
+choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
+  mtr_set <- .get_tune_metrics(x)
+  mtr_info <- tibble::as_tibble(mtr_set)
+
+  if (is.null(metric)) {
+    metric <- mtr_info$metric[1]
+    cli::cli_warn("No value of {.arg metric} was given; {.val {metric}} will be used.", call = call)
+  } else {
+    metric <- check_mult_metrics(metric, call = call)
+    check_right_metric(mtr_info, metric, call = call)
+  }
+
+  mtr_info[mtr_info$metric == metric,]
+}
+
+check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
+  num_metrics <- length(metric)
+  metric <- metric[1]
+  if (num_metrics > 1) {
+    cli::cli_warn("{num_metrics} metric{?s} were given; {.val {metric}} will be used.", call = call)
+  }
+  metric
+}
+
+check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
+  if (!any(mtr_info$metric == metric)) {
+    cli::cli_abort("{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
+  }
+  invisible(NULL)
+}
+
+contains_survival_metric <- function(mtr_info) {
+  any(grepl("_survival", mtr_info$class))
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
 #' @export
 first_metric <- function(mtr_set) {
   tibble::as_tibble(mtr_set)[1,]
 }
 
-#' @rdname first_metric
-#' @keywords internal
+#' @rdname choose_metric
 #' @export
 first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   num_times <- length(eval_time)
@@ -25,7 +80,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   # Not a survival metric
-  if (!any(grepl("_survival_", mtr_info$class))) {
+  if (!contains_survival_metric(mtr_info)) {
     return(NULL)
   }
 

@@ -1,47 +1,5 @@
 # ------------------------------------------------------------------------------
-# library(tidymodels)
-# set.seed(7898)
-# data_folds <- vfold_cv(mtcars, repeats = 2)
-#
-# base_rec <-
-#   recipe(mpg ~ ., data = mtcars) %>%
-#   step_normalize(all_predictors())
-#
-# disp_rec <-
-#   base_rec %>%
-#   step_bs(disp, degree = tune(), deg_free = tune()) %>%
-#   step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
-#
-# lm_model <-
-#   linear_reg(mode = "regression") %>%
-#   set_engine("lm")
-#
-# cars_wflow <-
-#   workflow() %>%
-#   add_recipe(disp_rec) %>%
-#   add_model(lm_model)
-#
-# cars_set <-
-#   cars_wflow %>%
-#   parameters %>%
-#   update(degree = degree_int(1:2)) %>%
-#   update(deg_free = deg_free(c(2, 10))) %>%
-#   update(`wt degree` = degree_int(1:2)) %>%
-#   update(`wt df` = deg_free(c(2, 10)))
-#
-# set.seed(255)
-# cars_grid <-
-#   cars_set %>%
-#   grid_regular(levels = c(3, 2, 3, 2))
-#
-#
-# cars_res <- tune_grid(cars_wflow,
-#                       resamples = data_folds,
-#                       grid = cars_grid,
-#                       control = control_grid(verbose = TRUE, save_pred = TRUE))
-# saveRDS(cars_res,
-#         file = testthat::test_path("data", "rcv_results.rds"),
-#         version = 2, compress = "xz")
+# objects for these tests are created using inst/test_objects.R
 
 # ------------------------------------------------------------------------------
 
@@ -72,16 +30,13 @@ test_that("select_best()", {
     select_best(rcv_results, metric = "rsq") %>% select(-.config),
     best_rsq
   )
-  expect_snapshot(
-    select_best(rcv_results, metric = "rsq", maximize = TRUE)
-  )
 
   expect_snapshot(error = TRUE, {
     select_best(rcv_results, metric = "random")
   })
-  expect_snapshot(error = TRUE, {
+  expect_snapshot(
     select_best(rcv_results, metric = c("rmse", "rsq"))
-  })
+  )
   expect_snapshot({
     best_default_metric <- select_best(rcv_results)
     best_rmse <- select_best(rcv_results, metric = "rmse")
@@ -145,16 +100,12 @@ test_that("one-std error rule", {
     25L
   )
 
-  expect_snapshot(
-    select_by_one_std_err(knn_results, metric = "accuracy", K, maximize = TRUE)
-  )
-
   expect_snapshot(error = TRUE, {
     select_by_one_std_err(rcv_results, metric = "random", deg_free)
   })
-  expect_snapshot(error = TRUE, {
+  expect_snapshot(
     select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
-  })
+  )
   expect_snapshot({
     select_via_default_metric <- select_by_one_std_err(knn_results, K)
     select_via_roc <- select_by_one_std_err(knn_results, K, metric = "roc_auc")
@@ -201,16 +152,12 @@ test_that("percent loss", {
     12L
   )
 
-  expect_snapshot(
-    select_by_pct_loss(knn_results, metric = "accuracy", K, maximize = TRUE)
-  )
-
   expect_snapshot(error = TRUE, {
     select_by_pct_loss(rcv_results, metric = "random", deg_free)
   })
-  expect_snapshot(error = TRUE, {
+  expect_snapshot(
     select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
-  })
+  )
   expect_snapshot({
     select_via_default_metric <- select_by_pct_loss(knn_results, K)
     select_via_roc <- select_by_pct_loss(knn_results, K, metric = "roc_auc")

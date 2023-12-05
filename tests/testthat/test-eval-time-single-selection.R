@@ -202,13 +202,3 @@ test_that("selecting single eval time - mixed metric sets - integrated first", {
   expect_null(int_multi)
 })
 
-
-test_that("selecting the first metric", {
-  met_1 <- metric_set(rmse)
-  tbl_1 <- tibble::as_tibble(met_1)[1,]
-  met_2 <- metric_set(rmse, ccc)
-  tbl_2 <- tibble::as_tibble(met_2)[1,]
-
-  expect_equal(first_metric(met_1), tbl_1)
-  expect_equal(first_metric(met_2), tbl_2)
-})
