@@ -50,7 +50,7 @@ check_right_metric <- function(mtr_info, metric) {
 }
 
 is_survival_metric <- function(mtr_info) {
-  any(grepl("_survival_", mtr_info$class))
+  any(grepl("_survival", mtr_info$class))
 }
 
 # ------------------------------------------------------------------------------
