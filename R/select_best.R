@@ -146,6 +146,8 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
 
+  eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
+
   summary_res <- filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
@@ -210,6 +212,8 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
   if (length(dots) == 0) {
     rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
   }
+
+  eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
   summary_res <- filter_perf_metrics(x, metric, eval_time)
 
