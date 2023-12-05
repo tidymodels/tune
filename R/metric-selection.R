@@ -15,6 +15,14 @@
 #' no value is given by the user, the first metric value is used (with a
 #' warning).
 #'
+#' For evaluation times, one is only required when the metric type is dynamic
+#' (e.g. [yardstick::brier_survival()] or [yardstick::roc_auc_survival()]). For
+#' these metrics, we require a single numeric value that was originally given
+#' to the function used to produce `x` (such as [tune_grid()]).
+#'
+#' If a time is required and none is given, the first value in the vector
+#' originally given in the `eval_time` argument is used (with a warning).
+#'
 #' @keywords internal
 #' @export
 choose_metric <- function(x, metric) {
@@ -50,7 +58,48 @@ check_right_metric <- function(mtr_info, metric) {
 }
 
 is_survival_metric <- function(mtr_info) {
-  any(grepl("_survival_", mtr_info$class))
+  any(grepl("_survival", mtr_info$class))
+}
+
+#' @rdname choose_metric
+#' @export
+choose_eval_time <- function(x, metric, eval_time = NULL) {
+  mtr_set <- .get_tune_metrics(x)
+  mtr_info <- tibble::as_tibble(mtr_set)
+
+  if (!is_survival_metric(mtr_info)) {
+    return(NULL)
+  }
+
+  # If we need an eval time, set it to the possible values so that
+  # we can choose the first value
+  if (is_dyn(mtr_set, metric) & is.null(eval_time)) {
+    eval_time <- .get_tune_eval_times(x)
+  }
+
+  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time)
+
+  check_right_eval_time(x, eval_time)
+
+  eval_time
+}
+
+is_dyn <- function(mtr_set, metric) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+  mtr_cls <- mtr_info$class[mtr_info$metric == metric]
+  mtr_cls  == "dynamic_survival_metric"
+}
+
+check_right_eval_time <- function(x, eval_time) {
+  given_times <- .get_tune_eval_times(x)
+  if (!is.null(eval_time)) {
+    if (!any(eval_time == given_times)) {
+      num_times <- length(given_times)
+      print_time <- format(eval_time, digits = 3)
+      cli::cli_abort("Evaluation time {print_time} is not in the results.")
+    }
+  }
+  invisible(NULL)
 }
 
 # ------------------------------------------------------------------------------
@@ -94,8 +143,39 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 3)
-    cli::cli_warn("{num_times} evaluation times were available; the first ({print_time}) will be used.")
+    cli::cli_warn("{num_times} evaluation times were specified; the first ({print_time}) will be used.")
   }
 
+  eval_time
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
+filter_perf_metrics <- function(x, metric, eval_time) {
+  summary_res <- estimate_tune_results(x)
+  summary_res <- summary_res[summary_res$.metric == metric, ]
+  is_missing_mean <- is.na(summary_res$mean)
+  summary_res <- summary_res[!is_missing_mean, ]
+
+  if (!is.null(eval_time) && any(colnames(summary_res) == ".eval_time")) {
+    summary_res <- summary_res[summary_res$.eval_time == eval_time, ]
+  }
+  if (nrow(summary_res) == 0) {
+    cli::cli_abort("No results are available. Please use `collect_metrics()` to see if there were any issues.")
+  }
+
+  summary_res
+}
+
+# TODO will be removed shortly
+
+middle_eval_time <- function(x) {
+  x <- x[!is.na(x)]
+  times <- unique(x)
+  med_time <- median(x, na.rm = TRUE)
+  ind <- which.min(abs(times - med_time))
+  eval_time <- times[ind]
   eval_time
 }
