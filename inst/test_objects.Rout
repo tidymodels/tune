@@ -1,7 +1,7 @@
 
-R version 4.0.2 (2020-06-22) -- "Taking Off Again"
-Copyright (C) 2020 The R Foundation for Statistical Computing
-Platform: x86_64-apple-darwin17.0 (64-bit)
+R version 4.3.2 (2023-10-31) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin20 (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,26 +18,34 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(tidymodels)
-── Attaching packages ────────────────────────────────────── tidymodels 0.1.1 ──
-✔ broom     0.7.0          ✔ recipes   0.1.13    
-✔ dials     0.0.9.9000     ✔ rsample   0.0.8.9000
-✔ dplyr     1.0.2          ✔ tibble    3.0.3     
-✔ ggplot2   3.3.2          ✔ tidyr     1.1.2     
-✔ infer     0.5.3          ✔ tune      0.1.1.9000
-✔ modeldata 0.0.2          ✔ workflows 0.2.0.9000
-✔ parsnip   0.1.3          ✔ yardstick 0.0.7     
-✔ purrr     0.3.4          
+── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──
+✔ broom        1.0.5          ✔ recipes      1.0.8     
+✔ dials        1.2.0          ✔ rsample      1.2.0     
+✔ dplyr        1.1.4          ✔ tibble       3.2.1     
+✔ ggplot2      3.4.4          ✔ tidyr        1.3.0     
+✔ infer        1.0.5          ✔ tune         1.1.2.9001
+✔ modeldata    1.2.0          ✔ workflows    1.1.3     
+✔ parsnip      1.1.1.9003     ✔ workflowsets 1.0.1     
+✔ purrr        1.0.2          ✔ yardstick    1.2.0.9001
 ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
 ✖ purrr::discard() masks scales::discard()
 ✖ dplyr::filter()  masks stats::filter()
 ✖ dplyr::lag()     masks stats::lag()
 ✖ recipes::step()  masks stats::step()
+• Dig deeper into tidy modeling with R at https://www.tmwr.org
+> library(scales)
+> library(censored)
+Loading required package: survival
 > library(sessioninfo)
 > library(testthat)
 
 Attaching package: ‘testthat’
 
 The following object is masked from ‘package:tidyr’:
+
+    matches
+
+The following object is masked from ‘package:rsample’:
 
     matches
 
@@ -49,6 +57,7 @@ The following object is masked from ‘package:dplyr’:
 
     matches
 
+> # also will require prodlim, mboost, kknn, and kernlab
 > 
 > # ------------------------------------------------------------------------------
 > # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
@@ -77,7 +86,7 @@ The following object is masked from ‘package:dplyr’:
 > 
 > get_coefs  <- function(x) {
 +   x %>%
-+     pull_workflow_fit() %>%
++     extract_fit_parsnip() %>%
 +     tidy()
 + }
 > 
@@ -109,31 +118,9 @@ The following object is masked from ‘package:dplyr’:
 +   tune_grid(mt_spln_lm,
 +             resamples = folds,
 +             control = g_ctrl)
-! Fold1: recipe  9/10: 'df' was too small; have used 3
-! Fold2: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe  9/10: 'df' was too small; have used 3
-! Fold2: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold2: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold3: recipe  9/10: 'df' was too small; have used 3
-! Fold4: recipe  9/10: 'df' was too small; have used 3
-! Fold5: recipe  1/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  2/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  3/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  4/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  5/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  6/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  7/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  8/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe  9/10: 'df' was too small; have used 3
-! Fold5: recipe  9/10, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold5: recipe 10/10, model 1/1 (predictions): some 'x' values beyond boundary k...
+→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+There were issues with some computations   A: x1                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x1There were issues with some computations   A: x1   B: x1There were issues with some computations   A: x1   B: x3There were issues with some computations   A: x1   B: x5There were issues with some computations   A: x1   B: x7There were issues with some computations   A: x1   B: x9There were issues with some computations   A: x2   B: x10There were issues with some computations   A: x2   B: x11There were issues with some computations   A: x2   B: x13There were issues with some computations   A: x2   B: x16There were issues with some computations   A: x2   B: x18There were issues with some computations   A: x2   B: x20There were issues with some computations   A: x2   B: x20
 > 
 > set.seed(8825)
 > mt_spln_lm_bo <-
@@ -143,32 +130,8 @@ The following object is masked from ‘package:dplyr’:
 +     iter = 3,
 +     control = b_ctrl
 +   )
-! Fold1: recipe 1/5: 'df' was too small; have used 3
-! Fold2: recipe 1/5: 'df' was too small; have used 3
-! Fold2: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/5: 'df' was too small; have used 3
-! Fold4: recipe 1/5: 'df' was too small; have used 3
-! Fold5: recipe 1/5: 'df' was too small; have used 3
-! Fold5: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+→ A | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x4There were issues with some computations   A: x6There were issues with some computations   A: x8There were issues with some computations   A: x10There were issues with some computations   A: x11There were issues with some computations   A: x12There were issues with some computations   A: x13There were issues with some computations   A: x14There were issues with some computations   A: x15There were issues with some computations   A: x16There were issues with some computations   A: x16
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -177,20 +140,12 @@ The following object is masked from ‘package:dplyr’:
 +   tune_grid(
 +     mt_spln_knn,
 +     resamples = folds,
-+     grid = grid_regular(parameters(mt_spln_knn)),
++     grid = grid_regular(extract_parameter_set_dials(mt_spln_knn)),
 +     control = g_ctrl
 +   )
-! Fold1: recipe 1/3: 'df' was too small; have used 3
-! Fold2: recipe 1/3: 'df' was too small; have used 3
-! Fold2: recipe 1/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/3: 'df' was too small; have used 3
-! Fold4: recipe 1/3: 'df' was too small; have used 3
-! Fold5: recipe 1/3: 'df' was too small; have used 3
-! Fold5: recipe 1/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/3, model 1/1 (predictions): some 'x' values beyond boundary kno...
+→ A | error:   No tidy method for objects of class train.kknn
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x4There were issues with some computations   A: x5   B: x2There were issues with some computations   A: x6   B: x3There were issues with some computations   A: x8   B: x3There were issues with some computations   A: x10   B: x3There were issues with some computations   A: x11   B: x3There were issues with some computations   A: x13   B: x3There were issues with some computations   A: x14   B: x5There were issues with some computations   A: x15   B: x6
 > 
 > set.seed(8825)
 > mt_spln_knn_bo <-
@@ -198,27 +153,9 @@ The following object is masked from ‘package:dplyr’:
 +              resamples = folds,
 +              iter = 3,
 +              control = b_ctrl)
-! Fold2: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 5/5, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+→ A | error:   No tidy method for objects of class train.kknn
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x4There were issues with some computations   A: x6                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x6There were issues with some computations   A: x7   B: x1There were issues with some computations   A: x8   B: x2There were issues with some computations   A: x10   B: x4There were issues with some computations   A: x12   B: x5There were issues with some computations   A: x14   B: x5There were issues with some computations   A: x15   B: x5There were issues with some computations   A: x17   B: x5There were issues with some computations   A: x18   B: x5There were issues with some computations   A: x20   B: x5There were issues with some computations   A: x21   B: x6There were issues with some computations   A: x23   B: x7There were issues with some computations   A: x24   B: x8There were issues with some computations   A: x26   B: x10There were issues with some computations   A: x27   B: x10There were issues with some computations   A: x28   B: x11There were issues with some computations   A: x30   B: x11There were issues with some computations   A: x31   B: x12There were issues with some computations   A: x32   B: x12There were issues with some computations   A: x34   B: x13There were issues with some computations   A: x36   B: x14There were issues with some computations   A: x37   B: x14There were issues with some computations   A: x39   B: x15There were issues with some computations   A: x40   B: x16
 > 
 > set.seed(8825)
 > mt_spln_knn_bo_sep <-
@@ -227,44 +164,23 @@ The following object is masked from ‘package:dplyr’:
 +              resamples = folds,
 +              iter = 3,
 +              control = b_ctrl)
-! Fold1: recipe 1/4: 'df' was too small; have used 3
-! Fold2: recipe 1/4: 'df' was too small; have used 3
-! Fold2: recipe 1/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/4, model 1/2 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 2/4, model 2/2 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 3/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold2: recipe 4/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/4: 'df' was too small; have used 3
-! Fold4: recipe 1/4: 'df' was too small; have used 3
-! Fold5: recipe 1/4: 'df' was too small; have used 3
-! Fold5: recipe 1/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/4, model 1/2 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 2/4, model 2/2 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 3/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 4/4, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! The Gaussian process model is being fit using 12 features but only has 5
+→ A | error:   No tidy method for objects of class train.kknn
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x4There were issues with some computations   A: x5                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x5There were issues with some computations   A: x6   B: x1There were issues with some computations   A: x8   B: x2There were issues with some computations   A: x9   B: x3There were issues with some computations   A: x11   B: x5There were issues with some computations   A: x12   B: x5There were issues with some computations   A: x14   B: x5There were issues with some computations   A: x16   B: x5There were issues with some computations   A: x19   B: x5There were issues with some computations   A: x20   B: x5There were issues with some computations   A: x21   B: x6There were issues with some computations   A: x23   B: x7There were issues with some computations   A: x25   B: x9! The Gaussian process model is being fit using 12 features but only has 5
   data points to do so. This may cause errors or a poor model fit.
-! Gaussian process model: did not converge in 10 iterations
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! The Gaussian process model is being fit using 12 features but only has 6
+                                                          → C | warning: did not converge in 10 iterations
+There were issues with some computations   A: x25   B: x9There were issues with some computations   A: x25   B: x10   C: x1There were issues with some computations   A: x26   B: x10   C: x1There were issues with some computations   A: x28   B: x11   C: x1There were issues with some computations   A: x30   B: x11   C: x1! The Gaussian process model is being fit using 12 features but only has 6
   data points to do so. This may cause errors or a poor model fit.
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! The Gaussian process model is being fit using 12 features but only has 7
+There were issues with some computations   A: x31   B: x12   C: x1There were issues with some computations   A: x32   B: x13   C: x1There were issues with some computations   A: x34   B: x13   C: x1! The Gaussian process model is being fit using 12 features but only has 7
   data points to do so. This may cause errors or a poor model fit.
-! Fold1: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1: 'df' was too small; have used 3
-! Fold2: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
-! Fold3: recipe 1/1: 'df' was too small; have used 3
-! Fold4: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1: 'df' was too small; have used 3
-! Fold5: recipe 1/1, model 1/1 (predictions): some 'x' values beyond boundary kno...
+There were issues with some computations   A: x36   B: x14   C: x1There were issues with some computations   A: x38   B: x15   C: x1There were issues with some computations   A: x40   B: x15   C: x1There were issues with some computations   A: x40   B: x16   C: x1
 > 
 > # ------------------------------------------------------------------------------
 > 
 > set.seed(8825)
 > mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
+→ A | error:   No tidy method for objects of class train.kknn
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x4There were issues with some computations   A: x5
 > 
 > set.seed(8825)
 > mt_knn_bo <-
@@ -272,12 +188,14 @@ The following object is masked from ‘package:dplyr’:
 +              resamples = folds,
 +              iter = 3,
 +              control = b_ctrl)
+→ A | error:   No tidy method for objects of class train.kknn
+There were issues with some computations   A: x2There were issues with some computations   A: x4There were issues with some computations   A: x6There were issues with some computations   A: x9There were issues with some computations   A: x11There were issues with some computations   A: x12There were issues with some computations   A: x14There were issues with some computations   A: x16There were issues with some computations   A: x17There were issues with some computations   A: x20There were issues with some computations   A: x20
 > 
 > # ------------------------------------------------------------------------------
 > 
 > save(
 +   list = grep("^mt_", ls(), value = TRUE),
-+   file = test_path("test_objects.RData"),
++   file = test_path("data", "test_objects.RData"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -309,7 +227,7 @@ The following object is masked from ‘package:dplyr’:
 +   add_model(knn_model)
 > 
 > two_class_set <-
-+   parameters(two_class_wflow) %>%
++   extract_parameter_set_dials(two_class_wflow) %>%
 +   update(K = neighbors(c(1, 50))) %>%
 +   update(exponent = dist_power(c(1 / 10, 2)))
 > 
@@ -342,35 +260,35 @@ The following object is masked from ‘package:dplyr’:
 > 
 > saveRDS(
 +   knn_results,
-+   file = testthat::test_path("knn_results.rds"),
++   file = testthat::test_path("data", "knn_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   two_class_set,
-+   file = testthat::test_path("knn_set.rds"),
++   file = testthat::test_path("data", "knn_set.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   two_class_grid,
-+   file = testthat::test_path("knn_grid.rds"),
++   file = testthat::test_path("data", "knn_grid.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   knn_set,
-+   file = testthat::test_path("knn_set.rds"),
++   file = testthat::test_path("data", "knn_set.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > saveRDS(
 +   knn_gp,
-+   file = testthat::test_path("knn_gp.rds"),
++   file = testthat::test_path("data", "knn_gp.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -393,7 +311,7 @@ The following object is masked from ‘package:dplyr’:
 +   add_model(svm_model)
 > 
 > two_class_set <-
-+   parameters(two_class_wflow) %>%
++   extract_parameter_set_dials(two_class_wflow) %>%
 +   update(cost = cost(c(-10, 4)))
 > 
 > set.seed(2494)
@@ -411,25 +329,10 @@ The following object is masked from ‘package:dplyr’:
 +     metrics = class_only,
 +     control = control_grid(save_pred = TRUE)
 +   )
-
-Attaching package: ‘kernlab’
-
-The following object is masked from ‘package:purrr’:
-
-    cross
-
-The following object is masked from ‘package:ggplot2’:
-
-    alpha
-
-The following object is masked from ‘package:scales’:
-
-    alpha
-
 > 
 > saveRDS(
 +   svm_results,
-+   file = testthat::test_path("svm_results.rds"),
++   file = testthat::test_path("data", "svm_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -449,7 +352,7 @@ The following object is masked from ‘package:scales’:
 > 
 > saveRDS(
 +   svm_reg_results,
-+   file = testthat::test_path("svm_reg_results.rds"),
++   file = testthat::test_path("data", "svm_reg_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -487,6 +390,9 @@ The following object is masked from ‘package:scales’:
 +   update(deg_free = deg_free(c(2, 10))) %>%
 +   update(`wt degree` = degree_int(1:2)) %>%
 +   update(`wt df` = deg_free(c(2, 10)))
+Warning message:
+`parameters.workflow()` was deprecated in tune 0.1.6.9003.
+ℹ Please use `hardhat::extract_parameter_set_dials()` instead. 
 > 
 > set.seed(255)
 > cars_grid <-
@@ -501,306 +407,14 @@ The following object is masked from ‘package:scales’:
 +     grid = cars_grid,
 +     control = control_grid(verbose = FALSE, save_pred = TRUE)
 +   )
-! Fold01, Repeat1: recipe 15/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 18/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 33/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold01, Repeat1: recipe 36/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold07, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat1: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold01, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold02, Repeat2: recipe 15/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 18/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 33/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold02, Repeat2: recipe 36/36, model 1/1 (predictions): prediction from a rank-deficient ...
-! Fold06, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold06, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold08, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  1/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  2/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  3/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  4/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  5/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  6/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  7/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  8/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe  9/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 10/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 11/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 12/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 13/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 14/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 15/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 16/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 17/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 18/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 19/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 20/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 21/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 22/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 23/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 24/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 25/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 26/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 27/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 28/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 29/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 30/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 31/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 32/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 33/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 34/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 35/36, model 1/1 (predictions): some 'x' values beyond boundary k...
-! Fold10, Repeat2: recipe 36/36, model 1/1 (predictions): some 'x' values beyond boundary k...
+→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x3There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x4There were issues with some computations   A: x4   B: x2There were issues with some computations   A: x4   B: x4There were issues with some computations   A: x4   B: x5There were issues with some computations   A: x4   B: x7There were issues with some computations   A: x4   B: x9There were issues with some computations   A: x4   B: x10There were issues with some computations   A: x4   B: x11There were issues with some computations   A: x4   B: x13There were issues with some computations   A: x4   B: x14                                                          → C | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases, prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+There were issues with some computations   A: x4   B: x14There were issues with some computations   A: x4   B: x14   C: x1There were issues with some computations   A: x4   B: x15   C: x1There were issues with some computations   A: x4   B: x16   C: x1There were issues with some computations   A: x4   B: x17   C: x2There were issues with some computations   A: x4   B: x18   C: x2There were issues with some computations   A: x4   B: x19   C: x2There were issues with some computations   A: x4   B: x20   C: x2There were issues with some computations   A: x4   B: x22   C: x2There were issues with some computations   A: x4   B: x23   C: x2There were issues with some computations   A: x4   B: x25   C: x2There were issues with some computations   A: x4   B: x26   C: x2There were issues with some computations   A: x4   B: x28   C: x2There were issues with some computations   A: x4   B: x30   C: x2There were issues with some computations   A: x4   B: x31   C: x3There were issues with some computations   A: x4   B: x32   C: x4There were issues with some computations   A: x4   B: x33   C: x4There were issues with some computations   A: x4   B: x34   C: x4There were issues with some computations   A: x4   B: x36   C: x4There were issues with some computations   A: x4   B: x38   C: x4There were issues with some computations   A: x4   B: x40   C: x4There were issues with some computations   A: x4   B: x42   C: x4There were issues with some computations   A: x4   B: x44   C: x4There were issues with some computations   A: x4   B: x46   C: x4There were issues with some computations   A: x4   B: x48   C: x4There were issues with some computations   A: x4   B: x50   C: x4There were issues with some computations   A: x4   B: x52   C: x4There were issues with some computations   A: x4   B: x54   C: x4There were issues with some computations   A: x4   B: x56   C: x4There were issues with some computations   A: x4   B: x58   C: x4There were issues with some computations   A: x4   B: x60   C: x4There were issues with some computations   A: x4   B: x62   C: x4There were issues with some computations   A: x4   B: x64   C: x4There were issues with some computations   A: x4   B: x66   C: x4There were issues with some computations   A: x4   B: x68   C: x4There were issues with some computations   A: x4   B: x69   C: x4There were issues with some computations   A: x4   B: x71   C: x4There were issues with some computations   A: x4   B: x73   C: x4There were issues with some computations   A: x4   B: x75   C: x4There were issues with some computations   A: x4   B: x77   C: x4There were issues with some computations   A: x4   B: x79   C: x4There were issues with some computations   A: x4   B: x81   C: x4There were issues with some computations   A: x4   B: x83   C: x4There were issues with some computations   A: x4   B: x84   C: x4There were issues with some computations   A: x4   B: x86   C: x4There were issues with some computations   A: x4   B: x88   C: x4There were issues with some computations   A: x4   B: x90   C: x4There were issues with some computations   A: x4   B: x92   C: x4There were issues with some computations   A: x4   B: x94   C: x4There were issues with some computations   A: x4   B: x96   C: x4There were issues with some computations   A: x4   B: x97   C: x4There were issues with some computations   A: x4   B: x99   C: x4There were issues with some computations   A: x4   B: x101   C: x4There were issues with some computations   A: x4   B: x103   C: x4There were issues with some computations   A: x4   B: x105   C: x4There were issues with some computations   A: x4   B: x106   C: x4There were issues with some computations   A: x4   B: x108   C: x4There were issues with some computations   A: x4   B: x110   C: x4There were issues with some computations   A: x4   B: x112   C: x4There were issues with some computations   A: x4   B: x113   C: x4There were issues with some computations   A: x4   B: x115   C: x4There were issues with some computations   A: x4   B: x117   C: x4There were issues with some computations   A: x4   B: x118   C: x4There were issues with some computations   A: x4   B: x120   C: x4There were issues with some computations   A: x4   B: x121   C: x4There were issues with some computations   A: x4   B: x122   C: x4There were issues with some computations   A: x4   B: x124   C: x4There were issues with some computations   A: x4   B: x126   C: x4There were issues with some computations   A: x4   B: x128   C: x4There were issues with some computations   A: x4   B: x129   C: x4There were issues with some computations   A: x4   B: x131   C: x4There were issues with some computations   A: x4   B: x133   C: x4There were issues with some computations   A: x4   B: x135   C: x4There were issues with some computations   A: x4   B: x137   C: x4There were issues with some computations   A: x4   B: x139   C: x4There were issues with some computations   A: x4   B: x140   C: x4There were issues with some computations   A: x4   B: x141   C: x4There were issues with some computations   A: x4   B: x142   C: x4There were issues with some computations   A: x4   B: x143   C: x4There were issues with some computations   A: x4   B: x145   C: x4There were issues with some computations   A: x4   B: x146   C: x4There were issues with some computations   A: x4   B: x147   C: x4There were issues with some computations   A: x4   B: x148   C: x4There were issues with some computations   A: x4   B: x149   C: x4There were issues with some computations   A: x4   B: x151   C: x4There were issues with some computations   A: x4   B: x152   C: x4There were issues with some computations   A: x4   B: x154   C: x4There were issues with some computations   A: x4   B: x155   C: x5There were issues with some computations   A: x4   B: x156   C: x6There were issues with some computations   A: x4   B: x158   C: x6There were issues with some computations   A: x4   B: x159   C: x6There were issues with some computations   A: x4   B: x162   C: x6There were issues with some computations   A: x4   B: x164   C: x6There were issues with some computations   A: x4   B: x165   C: x6There were issues with some computations   A: x4   B: x167   C: x6There were issues with some computations   A: x4   B: x169   C: x6There were issues with some computations   A: x4   B: x170   C: x7There were issues with some computations   A: x4   B: x172   C: x7There were issues with some computations   A: x4   B: x172   C: x8There were issues with some computations   A: x5   B: x172   C: x8There were issues with some computations   A: x6   B: x172   C: x8There were issues with some computations   A: x7   B: x172   C: x8There were issues with some computations   A: x8   B: x172   C: x8There were issues with some computations   A: x8   B: x173   C: x8There were issues with some computations   A: x8   B: x174   C: x8There were issues with some computations   A: x8   B: x176   C: x8There were issues with some computations   A: x8   B: x178   C: x8There were issues with some computations   A: x8   B: x180   C: x8There were issues with some computations   A: x8   B: x182   C: x8There were issues with some computations   A: x8   B: x184   C: x8There were issues with some computations   A: x8   B: x186   C: x8There were issues with some computations   A: x8   B: x188   C: x8There were issues with some computations   A: x8   B: x189   C: x8There were issues with some computations   A: x8   B: x191   C: x8There were issues with some computations   A: x8   B: x193   C: x8There were issues with some computations   A: x8   B: x195   C: x8There were issues with some computations   A: x8   B: x197   C: x8There were issues with some computations   A: x8   B: x199   C: x8There were issues with some computations   A: x8   B: x201   C: x8There were issues with some computations   A: x8   B: x203   C: x8There were issues with some computations   A: x8   B: x205   C: x8There were issues with some computations   A: x8   B: x207   C: x8There were issues with some computations   A: x8   B: x209   C: x8There were issues with some computations   A: x8   B: x210   C: x8There were issues with some computations   A: x8   B: x212   C: x8There were issues with some computations   A: x8   B: x214   C: x8There were issues with some computations   A: x8   B: x215   C: x8There were issues with some computations   A: x8   B: x217   C: x8There were issues with some computations   A: x8   B: x219   C: x8There were issues with some computations   A: x8   B: x220   C: x8There were issues with some computations   A: x8   B: x222   C: x8There were issues with some computations   A: x8   B: x224   C: x8There were issues with some computations   A: x8   B: x226   C: x8There were issues with some computations   A: x8   B: x228   C: x8There were issues with some computations   A: x8   B: x230   C: x8There were issues with some computations   A: x8   B: x232   C: x8There were issues with some computations   A: x8   B: x234   C: x8There were issues with some computations   A: x8   B: x236   C: x8There were issues with some computations   A: x8   B: x238   C: x8There were issues with some computations   A: x8   B: x240   C: x8There were issues with some computations   A: x8   B: x241   C: x8There were issues with some computations   A: x8   B: x243   C: x8There were issues with some computations   A: x8   B: x245   C: x8There were issues with some computations   A: x8   B: x246   C: x8There were issues with some computations   A: x8   B: x248   C: x8There were issues with some computations   A: x8   B: x249   C: x8There were issues with some computations   A: x8   B: x250   C: x8There were issues with some computations   A: x8   B: x252   C: x8There were issues with some computations   A: x8   B: x253   C: x8There were issues with some computations   A: x8   B: x254   C: x8There were issues with some computations   A: x8   B: x256   C: x8There were issues with some computations   A: x8   B: x258   C: x8There were issues with some computations   A: x8   B: x259   C: x8There were issues with some computations   A: x8   B: x261   C: x8There were issues with some computations   A: x8   B: x263   C: x8There were issues with some computations   A: x8   B: x264   C: x8There were issues with some computations   A: x8   B: x265   C: x8There were issues with some computations   A: x8   B: x266   C: x8There were issues with some computations   A: x8   B: x268   C: x8There were issues with some computations   A: x8   B: x270   C: x8There were issues with some computations   A: x8   B: x272   C: x8There were issues with some computations   A: x8   B: x273   C: x8There were issues with some computations   A: x8   B: x275   C: x8There were issues with some computations   A: x8   B: x276   C: x8There were issues with some computations   A: x8   B: x278   C: x8There were issues with some computations   A: x8   B: x280   C: x8There were issues with some computations   A: x8   B: x280   C: x8
 > 
 > saveRDS(
 +   rcv_results,
-+   file = testthat::test_path("rcv_results.rds"),
++   file = testthat::test_path("data", "rcv_results.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -823,16 +437,16 @@ The following object is masked from ‘package:scales’:
 > lm_resamples
 # Resampling results
 # 3-fold cross-validation 
-# A tibble: 3 x 4
+# A tibble: 3 × 4
   splits          id    .metrics         .notes          
   <list>          <chr> <list>           <list>          
-1 <split [21/11]> Fold1 <tibble [2 × 3]> <tibble [0 × 1]>
-2 <split [21/11]> Fold2 <tibble [2 × 3]> <tibble [0 × 1]>
-3 <split [22/10]> Fold3 <tibble [2 × 3]> <tibble [0 × 1]>
+1 <split [21/11]> Fold1 <tibble [2 × 4]> <tibble [0 × 3]>
+2 <split [21/11]> Fold2 <tibble [2 × 4]> <tibble [0 × 3]>
+3 <split [22/10]> Fold3 <tibble [2 × 4]> <tibble [0 × 3]>
 > 
 > saveRDS(
 +   lm_resamples,
-+   file = testthat::test_path("lm_resamples.rds"),
++   file = testthat::test_path("data", "lm_resamples.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
@@ -856,113 +470,173 @@ The following object is masked from ‘package:scales’:
 > 
 > set.seed(2934)
 > lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
-! Fold1: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold1: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 3/4, model 1/1 (predictions): prediction from a rank-deficient fi...
-! Fold2: recipe 4/4, model 1/1 (predictions): prediction from a rank-deficient fi...
+→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+There were issues with some computations   A: x1There were issues with some computations   A: x2There were issues with some computations   A: x3There were issues with some computations   A: x5There were issues with some computations   A: x6
 > 
 > saveRDS(
 +   lm_bayes,
-+   file = testthat::test_path("lm_bayes.rds"),
++   file = testthat::test_path("data", "lm_bayes.rds"),
 +   version = 2,
 +   compress = "xz"
 + )
 > 
 > # ------------------------------------------------------------------------------
+> # A single survival model
+> 
+> set.seed(1)
+> sim_dat <- prodlim::SimSurv(200) %>%
++   mutate(event_time = Surv(time, event)) %>%
++   select(event_time, X1, X2)
+> 
+> set.seed(2)
+> sim_rs <- vfold_cv(sim_dat)
+> 
+> time_points <- c(10, 1, 5, 15)
+> 
+> boost_spec <-
++   boost_tree(trees = tune()) %>%
++   set_mode("censored regression") %>%
++   set_engine("mboost")
+> 
+> srv_mtr <-
++   metric_set(
++     brier_survival,
++     roc_auc_survival,
++     brier_survival_integrated,
++     concordance_survival
++   )
+> 
+> set.seed(2193)
+> surv_boost_tree_res <-
++   boost_spec %>%
++   tune_grid(
++     event_time ~ X1 + X2,
++     resamples = sim_rs,
++     grid  = tibble(trees = c(1, 5, 10, 20, 100)),
++     metrics = srv_mtr,
++     eval_time = time_points
++   )
+> 
+> saveRDS(
++   surv_boost_tree_res,
++   file = testthat::test_path("data", "surv_boost_tree_res.rds"),
++   version = 2,
++   compress = "xz"
++ )
+> 
+> 
+> # ------------------------------------------------------------------------------
 > 
 > sessioninfo::session_info()
 ─ Session info ───────────────────────────────────────────────────────────────
- setting  value                       
- version  R version 4.0.2 (2020-06-22)
- os       macOS Mojave 10.14.6        
- system   x86_64, darwin17.0          
- ui       X11                         
- language (EN)                        
- collate  en_US.UTF-8                 
- ctype    en_US.UTF-8                 
- tz       America/Denver              
- date     2020-10-06                  
+ setting  value
+ version  R version 4.3.2 (2023-10-31)
+ os       macOS Ventura 13.5.2
+ system   x86_64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2023-12-04
+ pandoc   3.1.6 @ /usr/local/bin/pandoc
 
 ─ Packages ───────────────────────────────────────────────────────────────────
- package     * version    date       lib source                               
- assertthat    0.2.1      2019-03-21 [1] CRAN (R 4.0.0)                       
- backports     1.1.10     2020-09-15 [1] CRAN (R 4.0.2)                       
- broom       * 0.7.0      2020-07-09 [1] CRAN (R 4.0.0)                       
- class         7.3-17     2020-04-26 [1] CRAN (R 4.0.2)                       
- cli           2.0.2      2020-02-28 [1] CRAN (R 4.0.0)                       
- codetools     0.2-16     2018-12-24 [1] CRAN (R 4.0.2)                       
- colorspace    1.4-1      2019-03-18 [1] CRAN (R 4.0.0)                       
- crayon        1.3.4.9000 2020-09-19 [1] Github (r-lib/crayon@6b3f0c6)        
- dials       * 0.0.9.9000 2020-10-05 [1] Github (tidymodels/dials@2b79300)    
- DiceDesign    1.8-1      2019-07-31 [1] CRAN (R 4.0.0)                       
- digest        0.6.25     2020-02-23 [1] CRAN (R 4.0.0)                       
- dplyr       * 1.0.2      2020-08-18 [1] CRAN (R 4.0.2)                       
- ellipsis      0.3.1      2020-05-15 [1] CRAN (R 4.0.0)                       
- fansi         0.4.1      2020-01-08 [1] CRAN (R 4.0.0)                       
- foreach       1.5.0      2020-03-30 [1] CRAN (R 4.0.0)                       
- furrr         0.1.0      2018-05-16 [1] CRAN (R 4.0.0)                       
- future        1.19.1     2020-09-22 [1] CRAN (R 4.0.2)                       
- generics      0.0.2      2018-11-29 [1] CRAN (R 4.0.0)                       
- ggplot2     * 3.3.2      2020-06-19 [1] CRAN (R 4.0.0)                       
- globals       0.13.0     2020-09-17 [1] CRAN (R 4.0.2)                       
- glue          1.4.2      2020-08-27 [1] CRAN (R 4.0.2)                       
- gower         0.2.2      2020-06-23 [1] CRAN (R 4.0.0)                       
- GPfit         1.0-8      2019-02-08 [1] CRAN (R 4.0.0)                       
- gtable        0.3.0      2019-03-25 [1] CRAN (R 4.0.0)                       
- hardhat       0.1.4      2020-07-02 [1] CRAN (R 4.0.2)                       
- igraph        1.2.5      2020-03-19 [1] CRAN (R 4.0.0)                       
- infer       * 0.5.3      2020-07-14 [1] CRAN (R 4.0.0)                       
- ipred         0.9-9      2019-04-28 [1] CRAN (R 4.0.0)                       
- iterators     1.0.12     2019-07-26 [1] CRAN (R 4.0.0)                       
- kernlab     * 0.9-29     2019-11-12 [1] CRAN (R 4.0.0)                       
- kknn        * 1.3.1      2016-03-26 [1] CRAN (R 4.0.0)                       
- lattice       0.20-41    2020-04-02 [1] CRAN (R 4.0.2)                       
- lava          1.6.8      2020-09-26 [1] CRAN (R 4.0.2)                       
- lhs           1.1.0      2020-09-29 [1] CRAN (R 4.0.2)                       
- lifecycle     0.2.0      2020-03-06 [1] CRAN (R 4.0.0)                       
- listenv       0.8.0      2019-12-05 [1] CRAN (R 4.0.0)                       
- lubridate     1.7.9      2020-06-08 [1] CRAN (R 4.0.0)                       
- magrittr      1.5.0.9000 2020-09-27 [1] Github (tidyverse/magrittr@0221e18)  
- MASS          7.3-53     2020-09-09 [1] CRAN (R 4.0.2)                       
- Matrix        1.2-18     2019-11-27 [1] CRAN (R 4.0.2)                       
- modeldata   * 0.0.2      2020-06-22 [1] CRAN (R 4.0.0)                       
- munsell       0.5.0      2018-06-12 [1] CRAN (R 4.0.0)                       
- nnet          7.3-14     2020-04-26 [1] CRAN (R 4.0.2)                       
- parsnip     * 0.1.3      2020-08-04 [1] CRAN (R 4.0.2)                       
- pillar        1.4.6      2020-07-10 [1] CRAN (R 4.0.0)                       
- pkgconfig     2.0.3      2019-09-22 [1] CRAN (R 4.0.0)                       
- plyr          1.8.6      2020-03-03 [1] CRAN (R 4.0.0)                       
- pROC          1.16.2     2020-03-19 [1] CRAN (R 4.0.0)                       
- prodlim       2019.11.13 2019-11-17 [1] CRAN (R 4.0.0)                       
- purrr       * 0.3.4      2020-04-17 [1] CRAN (R 4.0.0)                       
- R6            2.4.1      2019-11-12 [1] CRAN (R 4.0.0)                       
- Rcpp          1.0.5      2020-07-06 [1] CRAN (R 4.0.0)                       
- recipes     * 0.1.13     2020-06-23 [1] CRAN (R 4.0.2)                       
- rlang         0.4.7      2020-07-09 [1] CRAN (R 4.0.0)                       
- rpart         4.1-15     2019-04-12 [1] CRAN (R 4.0.2)                       
- rsample     * 0.0.8.9000 2020-10-05 [1] Github (tidymodels/rsample@ae99c86)  
- rstudioapi    0.11       2020-02-07 [1] CRAN (R 4.0.0)                       
- scales      * 1.1.1      2020-05-11 [1] CRAN (R 4.0.0)                       
- sessioninfo * 1.1.1      2018-11-05 [1] CRAN (R 4.0.0)                       
- survival      3.2-3      2020-06-13 [1] CRAN (R 4.0.1)                       
- testthat    * 2.3.2      2020-03-02 [1] CRAN (R 4.0.0)                       
- tibble      * 3.0.3      2020-07-10 [1] CRAN (R 4.0.2)                       
- tidymodels  * 0.1.1      2020-07-14 [1] CRAN (R 4.0.2)                       
- tidyr       * 1.1.2      2020-08-27 [1] CRAN (R 4.0.2)                       
- tidyselect    1.1.0      2020-05-11 [1] CRAN (R 4.0.0)                       
- timeDate      3043.102   2018-02-21 [1] CRAN (R 4.0.0)                       
- tune        * 0.1.1.9000 2020-10-06 [1] local                                
- utf8          1.1.4      2018-05-24 [1] CRAN (R 4.0.0)                       
- vctrs         0.3.4      2020-08-29 [1] CRAN (R 4.0.2)                       
- withr         2.3.0      2020-09-22 [1] CRAN (R 4.0.2)                       
- workflows   * 0.2.0.9000 2020-10-05 [1] Github (tidymodels/workflows@40482ae)
- yardstick   * 0.0.7      2020-07-13 [1] CRAN (R 4.0.0)                       
+ package      * version    date (UTC) lib source
+ backports      1.4.1      2021-12-13 [1] CRAN (R 4.3.0)
+ brio           1.1.3      2021-11-30 [1] CRAN (R 4.3.0)
+ broom        * 1.0.5      2023-06-09 [1] CRAN (R 4.3.0)
+ censored     * 0.2.0.9001 2023-12-05 [1] Github (tidymodels/censored@789ca07)
+ class          7.3-22     2023-05-03 [1] CRAN (R 4.3.2)
+ cli            3.6.1      2023-03-23 [1] CRAN (R 4.3.0)
+ codetools      0.2-19     2023-02-01 [1] CRAN (R 4.3.2)
+ colorspace     2.1-0      2023-01-23 [1] CRAN (R 4.3.0)
+ data.table     1.14.8     2023-02-17 [1] CRAN (R 4.3.0)
+ dials        * 1.2.0      2023-04-03 [1] CRAN (R 4.3.0)
+ DiceDesign     1.9        2021-02-13 [1] CRAN (R 4.3.0)
+ digest         0.6.33     2023-07-07 [1] CRAN (R 4.3.0)
+ dplyr        * 1.1.4      2023-11-17 [1] CRAN (R 4.3.0)
+ ellipsis       0.3.2      2021-04-29 [1] CRAN (R 4.3.0)
+ fansi          1.0.5      2023-10-08 [1] CRAN (R 4.3.0)
+ foreach        1.5.2      2022-02-02 [1] CRAN (R 4.3.0)
+ Formula        1.2-5      2023-02-24 [1] CRAN (R 4.3.0)
+ furrr          0.3.1      2022-08-15 [1] CRAN (R 4.3.0)
+ future         1.33.0     2023-07-01 [1] CRAN (R 4.3.0)
+ future.apply   1.11.0     2023-05-21 [1] CRAN (R 4.3.0)
+ generics       0.1.3      2022-07-05 [1] CRAN (R 4.3.0)
+ ggplot2      * 3.4.4      2023-10-12 [1] CRAN (R 4.3.0)
+ globals        0.16.2     2022-11-21 [1] CRAN (R 4.3.0)
+ glue           1.6.2      2022-02-24 [1] CRAN (R 4.3.0)
+ gower          1.0.1      2022-12-22 [1] CRAN (R 4.3.0)
+ GPfit          1.0-8      2019-02-08 [1] CRAN (R 4.3.0)
+ gtable         0.3.4      2023-08-21 [1] CRAN (R 4.3.0)
+ hardhat        1.3.0.9000 2023-12-05 [1] Github (tidymodels/hardhat@ac2dfd0)
+ igraph         1.5.1      2023-08-10 [1] CRAN (R 4.3.0)
+ infer        * 1.0.5      2023-09-06 [1] CRAN (R 4.3.0)
+ inum           1.0-5      2023-03-09 [1] CRAN (R 4.3.0)
+ ipred          0.9-14     2023-03-09 [1] CRAN (R 4.3.0)
+ iterators      1.0.14     2022-02-05 [1] CRAN (R 4.3.0)
+ kernlab      * 0.9-32     2023-01-31 [1] CRAN (R 4.3.0)
+ kknn         * 1.3.1      2016-03-26 [1] CRAN (R 4.3.0)
+ lattice        0.21-9     2023-10-01 [1] CRAN (R 4.3.2)
+ lava           1.7.3      2023-11-04 [1] CRAN (R 4.3.0)
+ lhs            1.1.6      2022-12-17 [1] CRAN (R 4.3.0)
+ libcoin        1.0-10     2023-09-27 [1] CRAN (R 4.3.0)
+ lifecycle      1.0.4      2023-11-07 [1] CRAN (R 4.3.0)
+ listenv        0.9.0      2022-12-16 [1] CRAN (R 4.3.0)
+ lubridate      1.9.3      2023-09-27 [1] CRAN (R 4.3.0)
+ magrittr       2.0.3      2022-03-30 [1] CRAN (R 4.3.0)
+ MASS           7.3-60     2023-05-04 [1] CRAN (R 4.3.2)
+ Matrix         1.6-1.1    2023-09-18 [1] CRAN (R 4.3.2)
+ mboost       * 2.9-8      2023-09-06 [1] CRAN (R 4.3.0)
+ modeldata    * 1.2.0      2023-08-09 [1] CRAN (R 4.3.0)
+ modelenv       0.1.1      2023-03-08 [1] CRAN (R 4.3.0)
+ munsell        0.5.0      2018-06-12 [1] CRAN (R 4.3.0)
+ mvtnorm        1.2-4      2023-11-27 [1] CRAN (R 4.3.0)
+ nnet           7.3-19     2023-05-03 [1] CRAN (R 4.3.2)
+ nnls           1.5        2023-09-11 [1] CRAN (R 4.3.0)
+ parallelly     1.36.0     2023-05-26 [1] CRAN (R 4.3.0)
+ parsnip      * 1.1.1.9003 2023-12-05 [1] Github (tidymodels/parsnip@d65dde2)
+ partykit       1.2-20     2023-04-14 [1] CRAN (R 4.3.0)
+ pillar         1.9.0      2023-03-22 [1] CRAN (R 4.3.0)
+ pkgconfig      2.0.3      2019-09-22 [1] CRAN (R 4.3.0)
+ pkgload        1.3.3      2023-09-22 [1] RSPM (R 4.3.0)
+ prodlim        2023.08.28 2023-08-28 [1] CRAN (R 4.3.0)
+ purrr        * 1.0.2      2023-08-10 [1] CRAN (R 4.3.0)
+ quadprog       1.5-8      2019-11-20 [1] CRAN (R 4.3.0)
+ R6             2.5.1      2021-08-19 [1] CRAN (R 4.3.0)
+ Rcpp           1.0.11     2023-07-06 [1] CRAN (R 4.3.0)
+ recipes      * 1.0.8      2023-08-25 [1] CRAN (R 4.3.0)
+ rlang          1.1.2      2023-11-04 [1] CRAN (R 4.3.0)
+ rpart          4.1.21     2023-10-09 [1] CRAN (R 4.3.2)
+ rsample      * 1.2.0      2023-08-23 [1] CRAN (R 4.3.0)
+ rstudioapi     0.15.0     2023-07-07 [1] CRAN (R 4.3.0)
+ scales       * 1.2.1      2022-08-20 [1] CRAN (R 4.3.0)
+ sessioninfo  * 1.2.2      2021-12-06 [1] CRAN (R 4.3.0)
+ stabs        * 0.6-4      2021-01-29 [1] CRAN (R 4.3.0)
+ survival     * 3.5-7      2023-08-14 [1] CRAN (R 4.3.2)
+ testthat     * 3.2.0      2023-10-06 [1] CRAN (R 4.3.0)
+ tibble       * 3.2.1      2023-03-20 [1] CRAN (R 4.3.0)
+ tidymodels   * 1.1.1      2023-08-24 [1] CRAN (R 4.3.0)
+ tidyr        * 1.3.0      2023-01-24 [1] CRAN (R 4.3.0)
+ tidyselect     1.2.0      2022-10-10 [1] CRAN (R 4.3.0)
+ timechange     0.2.0      2023-01-11 [1] CRAN (R 4.3.0)
+ timeDate       4022.108   2023-01-07 [1] CRAN (R 4.3.0)
+ tune         * 1.1.2.9001 2023-12-05 [1] local
+ utf8           1.2.4      2023-10-22 [1] CRAN (R 4.3.0)
+ vctrs          0.6.4      2023-10-12 [1] CRAN (R 4.3.0)
+ withr          2.5.2      2023-10-30 [1] CRAN (R 4.3.0)
+ workflows    * 1.1.3      2023-02-22 [1] CRAN (R 4.3.0)
+ workflowsets * 1.0.1      2023-04-06 [1] CRAN (R 4.3.0)
+ yardstick    * 1.2.0.9001 2023-12-05 [1] Github (tidymodels/yardstick@2eb9555)
 
-[1] /Library/Frameworks/R.framework/Versions/4.0/Resources/library
+ [1] /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/library
+
+──────────────────────────────────────────────────────────────────────────────
 > 
 > if (!interactive()) {
 +   q("no")
 + }
 > proc.time()
-    user   system  elapsed 
-1469.417    6.036 1479.245 
+   user  system elapsed 
+533.776   3.407 547.800 
