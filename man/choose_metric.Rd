@@ -6,7 +6,7 @@
 \alias{first_eval_time}
 \title{Tools for selecting metrics and evaluation times}
 \usage{
-choose_metric(x, metric)
+choose_metric(x, metric, ..., call = rlang::caller_env())
 
 first_metric(mtr_set)
 

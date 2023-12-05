@@ -1,5 +1,7 @@
 
 test_that("selecting the first metric", {
+  library(yardstick)
+
   met_1 <- metric_set(rmse)
   tbl_1 <- tibble::as_tibble(met_1)[1,]
   met_2 <- metric_set(rmse, ccc)
@@ -29,22 +31,23 @@ test_that("selecting a metric", {
 })
 
 test_that("identify survival metrics", {
+  library(yardstick)
 
   expect_false(
     metric_set(rmse) %>%
-      as_tibble() %>%
+      tibble::as_tibble() %>%
       tune:::contains_survival_metric()
   )
 
   expect_true(
     metric_set(brier_survival_integrated) %>%
-      as_tibble() %>%
+      tibble::as_tibble() %>%
       tune:::contains_survival_metric()
   )
 
   expect_true(
     metric_set(brier_survival, concordance_survival) %>%
-      as_tibble() %>%
+      tibble::as_tibble() %>%
       tune:::contains_survival_metric()
   )
 

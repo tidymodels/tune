@@ -49,8 +49,7 @@ check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()
   rlang::check_dots_empty()
 
   if (!any(mtr_info$metric == metric)) {
-    met_list <- paste0("'", , "'", collapse = ", ")
-    cli::cli_abort("'{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
+    cli::cli_abort("{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
   }
   invisible(NULL)
 }

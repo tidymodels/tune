@@ -3,16 +3,16 @@
     Code
       select_best(rcv_results, metric = "random")
     Condition
-      Error in `check_right_metric()`:
-      ! 'random' was not in the metric set. Please choose from: 'rmse', 'rsq'
+      Error in `select_best()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_best(rcv_results, metric = c("rmse", "rsq"))
     Condition
-      Warning:
-      2 metrics were given; 'rmse' will be used
+      Warning in `select_best()`:
+      2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
@@ -24,8 +24,8 @@
     Code
       best_default_metric <- select_best(rcv_results)
     Condition
-      Warning:
-      No value of `metric` was given; 'rmse' will be used
+      Warning in `select_best()`:
+      No value of `metric` was given; "rmse" will be used.
     Code
       best_rmse <- select_best(rcv_results, metric = "rmse")
 
@@ -42,8 +42,8 @@
     Code
       best_default_metric <- show_best(rcv_results)
     Condition
-      Warning:
-      No value of `metric` was given; 'rmse' will be used
+      Warning in `show_best()`:
+      No value of `metric` was given; "rmse" will be used.
     Code
       best_rmse <- show_best(rcv_results, metric = "rmse")
 
@@ -60,16 +60,16 @@
     Code
       select_by_one_std_err(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `check_right_metric()`:
-      ! 'random' was not in the metric set. Please choose from: 'rmse', 'rsq'
+      Error in `select_by_one_std_err()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_by_one_std_err(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Warning:
-      2 metrics were given; 'rmse' will be used
+      Warning in `select_by_one_std_err()`:
+      2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
@@ -81,8 +81,8 @@
     Code
       select_via_default_metric <- select_by_one_std_err(knn_results, K)
     Condition
-      Warning:
-      No value of `metric` was given; 'roc_auc' will be used
+      Warning in `select_by_one_std_err()`:
+      No value of `metric` was given; "roc_auc" will be used.
     Code
       select_via_roc <- select_by_one_std_err(knn_results, K, metric = "roc_auc")
 
@@ -91,8 +91,8 @@
     Code
       select_by_one_std_err(rcv_results, metric = "random")
     Condition
-      Error in `check_right_metric()`:
-      ! 'random' was not in the metric set. Please choose from: 'rmse', 'rsq'
+      Error in `select_by_one_std_err()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
@@ -139,16 +139,16 @@
     Code
       select_by_pct_loss(rcv_results, metric = "random", deg_free)
     Condition
-      Error in `check_right_metric()`:
-      ! 'random' was not in the metric set. Please choose from: 'rmse', 'rsq'
+      Error in `select_by_pct_loss()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
     Code
       select_by_pct_loss(rcv_results, metric = c("rmse", "rsq"), deg_free)
     Condition
-      Warning:
-      2 metrics were given; 'rmse' will be used
+      Warning in `select_by_pct_loss()`:
+      2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
@@ -160,8 +160,8 @@
     Code
       select_via_default_metric <- select_by_pct_loss(knn_results, K)
     Condition
-      Warning:
-      No value of `metric` was given; 'roc_auc' will be used
+      Warning in `select_by_pct_loss()`:
+      No value of `metric` was given; "roc_auc" will be used.
     Code
       select_via_roc <- select_by_pct_loss(knn_results, K, metric = "roc_auc")
 
@@ -170,8 +170,8 @@
     Code
       select_by_pct_loss(rcv_results, metric = "random")
     Condition
-      Error in `check_right_metric()`:
-      ! 'random' was not in the metric set. Please choose from: 'rmse', 'rsq'
+      Error in `select_by_pct_loss()`:
+      ! "random" was not in the metric set. Please choose from: "rmse" and "rsq".
 
 ---
 
