@@ -141,11 +141,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
 
   param_names <- .get_tune_parameter_names(x)
 
-  # TODO make a function
-  dots <- rlang::enquos(...)
-  if (length(dots) == 0) {
-    rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
-  }
+  check_select_dots(..., call = rlang::caller_env())
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
@@ -171,6 +167,8 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
     ) %>%
     dplyr::ungroup()
 
+
+  dots <- rlang::enquos(...)
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
   if (inherits(summary_res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
@@ -209,10 +207,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 
   param_names <- .get_tune_parameter_names(x)
 
-  dots <- rlang::enquos(...)
-  if (length(dots) == 0) {
-    rlang::abort("Please choose at least one tuning parameter to sort in `...`.")
-  }
+  check_select_dots(..., call = rlang::caller_env())
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
@@ -256,6 +251,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
       dplyr::ungroup()
   }
 
+  dots <- rlang::enquos(...)
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
   if (inherits(summary_res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
@@ -268,3 +264,11 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
     dplyr::select(dplyr::all_of(param_names), .config)
 }
 
+check_select_dots <- function(..., call = rlang::caller_env()) {
+  dots <- rlang::enquos(...)
+  if (length(dots) == 0) {
+    cli::cli_abort("Please choose at least one tuning parameter to sort in {.code ...}.",
+                   call = call)
+  }
+  invisible(NULL)
+}
