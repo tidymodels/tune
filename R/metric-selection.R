@@ -326,8 +326,6 @@ req_eval_times <- function(mtr_set) {
 }
 # nocov end
 
-
-
 # TODO will be removed shortly
 
 middle_eval_time <- function(x) {
