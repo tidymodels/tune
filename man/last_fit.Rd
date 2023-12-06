@@ -26,7 +26,8 @@ last_fit(object, ...)
   metrics = NULL,
   control = control_last_fit(),
   eval_time = NULL,
-  add_validation_set = FALSE
+  add_validation_set = FALSE,
+  call = rlang::caller_env()
 )
 }
 \arguments{

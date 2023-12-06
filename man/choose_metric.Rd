@@ -6,6 +6,8 @@
 \alias{first_metric}
 \alias{first_eval_time}
 \alias{.filter_perf_metrics}
+\alias{check_metrics_arg}
+\alias{check_eval_time_arg}
 \title{Tools for selecting metrics and evaluation times}
 \usage{
 choose_metric(x, metric, ..., call = rlang::caller_env())
@@ -17,6 +19,10 @@ first_metric(mtr_set)
 first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
 
 .filter_perf_metrics(x, metric, eval_time)
+
+check_metrics_arg(mtr_set, wflow, call = rlang::caller_env())
+
+check_eval_time_arg(eval_time, mtr_set, call = rlang::caller_env())
 }
 \arguments{
 \item{x}{An object with class \code{tune_results}.}
@@ -29,8 +35,13 @@ first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
 integrated metrics.}
 
 \item{mtr_set}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}.}
+
+\item{wflow}{A \code{\link[workflows:workflow]{workflows::workflow()}}.}
 }
 \description{
+Tools for selecting metrics and evaluation times
+}
+\details{
 These are developer-facing functions used to compute and validate choices
 for performance metrics. For survival analysis models, there are similar
 functions for the evaluation time(s) required for dynamic and/or integrated

@@ -15,6 +15,40 @@
     Output
       NULL
 
+---
+
+    Code
+      res <- fit_resamples(wflow, rs, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      set.seed(1)
+      res <- tune_grid(wflow_tune, rs, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      set.seed(1)
+      res <- tune_bayes(wflow_tune, rs, iter = 1, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      res <- last_fit(wflow, split, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
 # eval time are checked for classification models
 
     Code
@@ -31,4 +65,38 @@
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
     Output
       NULL
+
+---
+
+    Code
+      res <- fit_resamples(wflow, rs, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      set.seed(1)
+      res <- tune_grid(wflow_tune, rs, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      set.seed(1)
+      res <- tune_bayes(wflow_tune, rs, iter = 1, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+
+---
+
+    Code
+      res <- last_fit(wflow, split, eval_time = times)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 

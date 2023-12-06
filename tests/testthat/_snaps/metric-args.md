@@ -31,6 +31,70 @@
       Error:
       ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
 
+---
+
+    Code
+      fit_resamples(wflow, rs, metrics = met_cls)
+    Condition
+      Error in `fit_resamples()`:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      fit_resamples(wflow, rs, metrics = met_mix_int)
+    Condition
+      Error in `fit_resamples()`:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_grid(wflow_tune, rs, metrics = met_cls)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_grid(wflow_tune, rs, metrics = met_mix_int)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_bayes(wflow_tune, rs, metrics = met_cls)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_bayes(wflow_tune, rs, metrics = met_mix_int)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      last_fit(wflow, split, metrics = met_cls)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      last_fit(wflow, split, metrics = met_mix_int)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+
 # metric inputs are checked for classification models
 
     Code
@@ -61,6 +125,70 @@
 
     Code
       check_metrics_arg(met_mix_int, wflow)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      fit_resamples(wflow, rs, metrics = met_reg)
+    Condition
+      Error in `fit_resamples()`:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      fit_resamples(wflow, rs, metrics = met_mix_int)
+    Condition
+      Error in `fit_resamples()`:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_grid(wflow_tune, rs, metrics = met_reg)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_grid(wflow_tune, rs, metrics = met_mix_int)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_bayes(wflow_tune, rs, metrics = met_reg)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      tune_bayes(wflow_tune, rs, metrics = met_mix_int)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      last_fit(wflow, split, metrics = met_reg)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      last_fit(wflow, split, metrics = met_mix_int)
     Condition
       Error:
       ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
