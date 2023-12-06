@@ -81,7 +81,7 @@ show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
-  summary_res <- filter_perf_metrics(x, metric, eval_time)
+  summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
     summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
@@ -145,7 +145,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
-  summary_res <- filter_perf_metrics(x, metric, eval_time)
+  summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
     best_metric <- max(summary_res$mean, na.rm = TRUE)
@@ -211,7 +211,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
-  summary_res <- filter_perf_metrics(x, metric, eval_time)
+  summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
     best_index <- which.max(summary_res$mean)
