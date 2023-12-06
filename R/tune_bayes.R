@@ -272,12 +272,13 @@ tune_bayes_workflow <-
 
     check_iter(iter, call = call)
 
-    metrics <- check_metrics(metrics, object)
-    check_eval_time(eval_time, metrics)
-    metrics_data <- metrics_info(metrics)
-    metrics_name <- metrics_data$.metric[1]
-    metrics_time <- get_metric_time(metrics, eval_time)
-    maximize <- metrics_data$direction[metrics_data$.metric == metrics_name] == "maximize"
+    metrics <- check_metrics_arg(metrics, object)
+    opt_metric <- first_metric(metrics)
+    metrics_name <- opt_metric$metric
+    maximize <- opt_metric$direction == "maximize"
+
+    eval_time <- check_eval_time_arg(eval_time, metrics)
+    metrics_time <- first_eval_time(metrics, metrics_name, eval_time)
 
     if (is.null(param_info)) {
       param_info <- hardhat::extract_parameter_set_dials(object)
@@ -334,7 +335,7 @@ tune_bayes_workflow <-
 
     if (control$verbose_iter) {
       msg <- paste("Optimizing", metrics_name, "using", objective$label)
-      if (!is.null(eval_time)) {
+      if (!is.null(metrics_time)) {
         msg <- paste(msg, "at evaluation time", format(metrics_time, digits = 3))
       }
       message_wrap(msg)

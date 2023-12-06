@@ -4,8 +4,9 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @param wflow A [workflows::workflow()].
 #' @param call The execution environment of a currently running function.
-#' @description
+#' @details
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
 #' functions for the evaluation time(s) required for dynamic and/or integrated
@@ -174,6 +175,140 @@ filter_perf_metrics <- function(x, metric, eval_time) {
 
   summary_res
 }
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
+check_metrics_arg <- function(mtr_set, wflow, call = rlang::caller_env()) {
+  mode <- extract_spec_parsnip(wflow)$mode
+
+  if (is.null(mtr_set)) {
+    switch(mode,
+           regression = {
+             mtr_set <- yardstick::metric_set(rmse, rsq)
+           },
+           classification = {
+             mtr_set <- yardstick::metric_set(roc_auc, accuracy)
+           },
+           'censored regression' = {
+             mtr_set <- yardstick::metric_set(brier_survival)
+           },
+           unknown = {
+             cli::cli_abort("Cannot use an {.val unknown} mode.", call = call)
+           },
+           cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
+    )
+
+    return(mtr_set)
+  }
+
+  is_numeric_metric_set <- inherits(mtr_set, "numeric_metric_set")
+  is_class_prob_metric_set <- inherits(mtr_set, "class_prob_metric_set")
+  is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
+
+  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
+    cli::cli_abort("The {.val metrics} argument should be the results of
+                   {.fn yardstick::metric_set}.", call = call)
+  }
+
+  if (mode == "regression" && !is_numeric_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.code metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  if (mode == "classification" && !is_class_prob_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.code metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  if (mode == "censored regression" && !is_surv_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.code metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  mtr_set
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
+check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+
+  # Not a survival metric
+  if (!tune:::contains_survival_metric(mtr_info)) {
+    return(NULL)
+  }
+
+  cls <- mtr_info$class
+  uni_cls <- sort(unique(cls))
+  eval_time <- .filter_eval_time(eval_time)
+
+  num_times <- length(eval_time)
+
+  max_times_req <- req_eval_times(mtr_set)
+
+  if (max_times_req > num_times) {
+    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+                   required for the metric type(s) requested: {.val {uni_cls}}.
+                   Only {num_times} unique time{?s} {?was/were} given.",
+                   call = call)
+  }
+
+  eval_time
+}
+
+req_eval_times <- function(mtr_set) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+  cls <- mtr_info$class
+
+  # Default for non-survival and static metrics
+  max_req_times <- 0
+
+  if (any(cls == "dynamic_survival_metric")) {
+    max_req_times <- max(max_req_times, 1)
+  }
+
+  if (any(cls == "integrated_survival_metric")) {
+    max_req_times <- max(max_req_times, 2)
+  }
+
+  max_req_times
+}
+
+# in parsnip
+# nocov start
+.filter_eval_time <- function(eval_time, fail = TRUE) {
+  if (!is.null(eval_time)) {
+    eval_time <- as.numeric(eval_time)
+  }
+  eval_time_0 <- eval_time
+  # will still propagate nulls:
+  eval_time <- eval_time[!is.na(eval_time)]
+  eval_time <- eval_time[eval_time >= 0 & is.finite(eval_time)]
+  eval_time <- unique(eval_time)
+  if (fail && identical(eval_time, numeric(0))) {
+    cli::cli_abort(
+      "There were no usable evaluation times (finite, non-missing, and >= 0).",
+      call = NULL
+    )
+  }
+  if (!identical(eval_time, eval_time_0)) {
+    diffs <- setdiff(eval_time_0, eval_time)
+    cli::cli_warn("There {?was/were} {length(diffs)} inappropriate evaluation
+                  time point{?s} that {?was/were} removed.", call = NULL)
+
+  }
+  eval_time
+}
+# nocov end
+
+
 
 # TODO will be removed shortly
 
