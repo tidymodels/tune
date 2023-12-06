@@ -36,7 +36,7 @@
       dyn_multi <- first_eval_time(met_dyn, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times were specified; the first (0.714) will be used.
+      2 evaluation times were specified during tuning; the first (0.714) will be used.
 
 ---
 
@@ -100,7 +100,7 @@
       dyn_multi <- first_eval_time(met_mix_dyn, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times were specified; the first (0.714) will be used.
+      2 evaluation times were specified during tuning; the first (0.714) will be used.
 
 ---
 
@@ -116,7 +116,7 @@
       dyn_multi <- first_eval_time(met_mix_dyn_all, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times were specified; the first (0.714) will be used.
+      2 evaluation times were specified during tuning; the first (0.714) will be used.
 
 # selecting single eval time - mixed metric sets - integrated first
 
@@ -160,7 +160,7 @@
       choose_eval_time(surv_res, "brier_survival")
     Condition
       Warning:
-      4 evaluation times were specified; the first (10) will be used.
+      4 evaluation times were specified during tuning; the first (10) will be used.
     Output
       [1] 10
 

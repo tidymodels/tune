@@ -35,7 +35,9 @@ choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
 
   if (is.null(metric)) {
     metric <- mtr_info$metric[1]
-    cli::cli_warn("No value of {.arg metric} was given; {.val {metric}} will be used.", call = call)
+    cli::cli_warn("No value of {.arg metric} was given; {.val {metric}}
+                   will be used.",
+                  call = call)
   } else {
     metric <- check_mult_metrics(metric, call = call)
     check_right_metric(mtr_info, metric, call = call)
@@ -50,7 +52,9 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
   num_metrics <- length(metric)
   metric <- metric[1]
   if (num_metrics > 1) {
-    cli::cli_warn("{num_metrics} metric{?s} were given; {.val {metric}} will be used.", call = call)
+    cli::cli_warn("{num_metrics} metric{?s} were given; {.val {metric}} will
+                   be used.",
+                  call = call)
   }
   metric
 }
@@ -59,7 +63,8 @@ check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()
   rlang::check_dots_empty()
 
   if (!any(mtr_info$metric == metric)) {
-    cli::cli_abort("{.val {metric}} was not in the metric set. Please choose from: {.val {mtr_info$metric}}.", call = call)
+    cli::cli_abort("{.val {metric}} was not in the metric set. Please choose
+                    from: {.val {mtr_info$metric}}.", call = call)
   }
   invisible(NULL)
 }
@@ -108,7 +113,8 @@ check_right_eval_time <- function(x, eval_time, call = rlang::caller_env()) {
   if (!is.null(eval_time)) {
     if (!any(eval_time == given_times)) {
       print_time <- format(eval_time, digits = 3)
-      cli::cli_abort("Evaluation time {.val {print_time}} is not in the results.", call = call)
+      cli::cli_abort("Evaluation time {print_time} is not in the results.",
+                     call = call)
     }
   }
   invisible(NULL)
@@ -144,7 +150,8 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   no_time_req <- c("static_survival_metric", "integrated_survival_metric")
   if (mtr_info$class %in% no_time_req) {
     if (num_times > 0) {
-      cli::cli_warn("Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric.")
+      cli::cli_warn("Evaluation times are only required when dynmanic or
+                     integrated metrics are selected as the primary metric.")
     }
     return(NULL)
   }
@@ -155,7 +162,8 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 3)
-    cli::cli_warn("{.val {num_times}} evaluation times were specified; the first ({print_time}) will be used.")
+    cli::cli_warn("{.val {num_times}} evaluation times were specified during
+                   tuning; the first ({print_time}) will be used.")
   }
 
   eval_time
@@ -175,7 +183,8 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
     summary_res <- summary_res[summary_res$.eval_time == eval_time, ]
   }
   if (nrow(summary_res) == 0) {
-    cli::cli_abort("No results are available. Please use {.fun collect_metrics} to see if there were any issues.")
+    cli::cli_abort("No results are available. Please use {.fun collect_metrics}
+                    to see if there were any issues.")
   }
 
   summary_res
