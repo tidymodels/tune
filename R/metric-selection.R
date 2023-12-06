@@ -4,7 +4,7 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
-#' @param call The execution environment of a currently running function.
+#' @param call The call to be displayed in warnings or errors.
 #' @description
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
@@ -100,7 +100,6 @@ check_right_eval_time <- function(x, eval_time, call = rlang::caller_env()) {
   given_times <- .get_tune_eval_times(x)
   if (!is.null(eval_time)) {
     if (!any(eval_time == given_times)) {
-      num_times <- length(given_times)
       print_time <- format(eval_time, digits = 3)
       cli::cli_abort("Evaluation time {.val {print_time}} is not in the results.", call = call)
     }
@@ -159,7 +158,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
 
 #' @rdname choose_metric
 #' @export
-filter_perf_metrics <- function(x, metric, eval_time) {
+.filter_perf_metrics <- function(x, metric, eval_time) {
   summary_res <- estimate_tune_results(x)
   summary_res <- summary_res[summary_res$.metric == metric, ]
   is_missing_mean <- is.na(summary_res$mean)
@@ -169,7 +168,7 @@ filter_perf_metrics <- function(x, metric, eval_time) {
     summary_res <- summary_res[summary_res$.eval_time == eval_time, ]
   }
   if (nrow(summary_res) == 0) {
-    cli::cli_abort("No results are available. Please use {.code collect_metrics()} to see if there were any issues.")
+    cli::cli_abort("No results are available. Please use {.fun collect_metrics} to see if there were any issues.")
   }
 
   summary_res

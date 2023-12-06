@@ -141,7 +141,7 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, ev
 
   param_names <- .get_tune_parameter_names(x)
 
-  check_select_dots(..., call = rlang::caller_env())
+  check_select_dots(...)
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
@@ -207,7 +207,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 
   param_names <- .get_tune_parameter_names(x)
 
-  check_select_dots(..., call = rlang::caller_env())
+  check_select_dots(...)
 
   eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
 
@@ -265,7 +265,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 }
 
 check_select_dots <- function(..., call = rlang::caller_env()) {
-  dots <- rlang::enquos(...)
+  dots <- list(...)
   if (length(dots) == 0) {
     cli::cli_abort("Please choose at least one tuning parameter to sort in {.code ...}.",
                    call = call)
