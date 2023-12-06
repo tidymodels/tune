@@ -4,6 +4,7 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @param x An object with class `tune_results`.
 #' @param call The call to be displayed in warnings or errors.
 #' @description
 #' These are developer-facing functions used to compute and validate choices
@@ -71,11 +72,15 @@ contains_survival_metric <- function(mtr_info) {
 #' @export
 choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::caller_env()) {
   rlang::check_dots_empty()
-  
+
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
   if (!contains_survival_metric(mtr_info)) {
+    if (!is.null(eval_time)) {
+      cli::cli_warn("Evaluation times are only required when the model
+                     mode is {.val censored regression}.")
+    }
     return(NULL)
   }
 

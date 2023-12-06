@@ -5,23 +5,25 @@
 \alias{choose_eval_time}
 \alias{first_metric}
 \alias{first_eval_time}
-\alias{filter_perf_metrics}
+\alias{.filter_perf_metrics}
 \title{Tools for selecting metrics and evaluation times}
 \usage{
 choose_metric(x, metric, ..., call = rlang::caller_env())
 
-choose_eval_time(x, metric, eval_time = NULL, call = rlang::caller_env())
+choose_eval_time(x, metric, eval_time = NULL, ..., call = rlang::caller_env())
 
 first_metric(mtr_set)
 
 first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
 
-filter_perf_metrics(x, metric, eval_time)
+.filter_perf_metrics(x, metric, eval_time)
 }
 \arguments{
+\item{x}{An object with class \code{tune_results}.}
+
 \item{metric}{A character value for which metric is being used.}
 
-\item{call}{The execution environment of a currently running function.}
+\item{call}{The call to be displayed in warnings or errors.}
 
 \item{eval_time}{An optional vector of times to compute dynamic and/or
 integrated metrics.}

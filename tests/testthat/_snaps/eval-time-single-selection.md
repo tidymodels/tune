@@ -181,3 +181,13 @@
     Output
       NULL
 
+---
+
+    Code
+      choose_eval_time(ames_grid_search, "rmse", 1)
+    Condition
+      Warning:
+      Evaluation times are only required when the model mode is "censored regression".
+    Output
+      NULL
+

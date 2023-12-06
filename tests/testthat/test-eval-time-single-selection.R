@@ -217,4 +217,7 @@ test_that("selecting an evaluation time", {
   expect_snapshot(
     choose_eval_time(surv_res, "concordance_survival", eval_time = 10)
   )
+
+  data("example_ames_knn")
+  expect_snapshot(choose_eval_time(ames_grid_search, "rmse", 1))
 })
