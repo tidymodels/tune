@@ -252,7 +252,8 @@ tune_bayes.workflow <-
         object,
         resamples = resamples, iter = iter, param_info = param_info,
         metrics = metrics, objective = objective, initial = initial,
-        control = control, eval_time = eval_time, ...
+        control = control, eval_time = eval_time, ...,
+        call = rlang::caller_env()
       )
     .stash_last_result(res)
     res
@@ -272,12 +273,12 @@ tune_bayes_workflow <-
 
     check_iter(iter, call = call)
 
-    metrics <- check_metrics_arg(metrics, object)
+    metrics <- check_metrics_arg(metrics, object, call = call)
     opt_metric <- first_metric(metrics)
     metrics_name <- opt_metric$metric
     maximize <- opt_metric$direction == "maximize"
 
-    eval_time <- check_eval_time_arg(eval_time, metrics)
+    eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
     metrics_time <- first_eval_time(metrics, metrics_name, eval_time)
 
     if (is.null(param_info)) {

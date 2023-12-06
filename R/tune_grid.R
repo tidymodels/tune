@@ -313,7 +313,8 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
       metrics = metrics,
       pset = param_info,
       control = control,
-      eval_time = eval_time
+      eval_time = eval_time,
+      call = rlang::caller_env()
     )
   .stash_last_result(res)
   res
