@@ -265,7 +265,7 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 }
 
 check_select_dots <- function(..., call = rlang::caller_env()) {
-  dots <- list(...)
+  dots <- rlang::enquos(...)
   if (length(dots) == 0) {
     cli::cli_abort("Please choose at least one tuning parameter to sort in {.code ...}.",
                    call = call)
