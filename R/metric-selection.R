@@ -205,14 +205,12 @@ check_metrics_arg <- function(mtr_set, wflow, call = rlang::caller_env()) {
              mtr_set <- yardstick::metric_set(rmse, rsq)
            },
            classification = {
-             mtr_set <- yardstick::metric_set(roc_auc, accuracy)
+             mtr_set <- yardstick::metric_set(roc_auc, accuracy, brier_class)
            },
            'censored regression' = {
              mtr_set <- yardstick::metric_set(brier_survival)
            },
-           unknown = {
-             cli::cli_abort("Cannot use an {.val unknown} mode.", call = call)
-           },
+           # workflows cannot be set with an unknown mode
            cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
     )
 
@@ -257,7 +255,11 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   mtr_info <- tibble::as_tibble(mtr_set)
 
   # Not a survival metric
-  if (!tune:::contains_survival_metric(mtr_info)) {
+  if (!contains_survival_metric(mtr_info)) {
+    if (!is.null(eval_time)) {
+      cli::cli_warn("Evaluation times are only required when the model
+                     mode is {.val censored regression} (and will be ignored).")
+    }
     return(NULL)
   }
 
