@@ -278,6 +278,12 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
                    call = call)
   }
 
+  if (max_times_req == 0 & num_times > 0) {
+    cli::cli_warn("Evaluation times are only required when dynmanic or
+                   integrated metrics are used (and will be ignored here).")
+    eval_time <- NULL
+  }
+
   eval_time
 }
 
