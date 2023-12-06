@@ -41,7 +41,7 @@ choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
                   call = call)
   } else {
     metric <- check_mult_metrics(metric, call = call)
-    check_right_metric(mtr_info, metric, call = call)
+    check_metric_in_tune_results(mtr_info, metric, call = call)
   }
 
   mtr_info[mtr_info$metric == metric,]
@@ -60,7 +60,7 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
   metric
 }
 
-check_right_metric <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
+check_metric_in_tune_results <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
   rlang::check_dots_empty()
 
   if (!any(mtr_info$metric == metric)) {
@@ -85,7 +85,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
       cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression}.")
+                     mode is {.val censored regression} (and will be ignored).")
     }
     return(NULL)
   }
@@ -98,7 +98,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
 
   eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time)
 
-  check_right_eval_time(x, eval_time, call = call)
+  check_eval_time_in_tune_results(x, eval_time, call = call)
 
   eval_time
 }
@@ -109,7 +109,7 @@ is_dyn <- function(mtr_set, metric) {
   mtr_cls  == "dynamic_survival_metric"
 }
 
-check_right_eval_time <- function(x, eval_time, call = rlang::caller_env()) {
+check_eval_time_in_tune_results <- function(x, eval_time, call = rlang::caller_env()) {
   given_times <- .get_tune_eval_times(x)
   if (!is.null(eval_time)) {
     if (!any(eval_time == given_times)) {
@@ -152,7 +152,8 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   if (mtr_info$class %in% no_time_req) {
     if (num_times > 0) {
       cli::cli_warn("Evaluation times are only required when dynmanic or
-                     integrated metrics are selected as the primary metric.")
+                     integrated metrics are selected as the primary metric
+                     (and will be ignored).")
     }
     return(NULL)
   }
