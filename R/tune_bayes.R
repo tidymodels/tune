@@ -252,8 +252,7 @@ tune_bayes.workflow <-
         object,
         resamples = resamples, iter = iter, param_info = param_info,
         metrics = metrics, objective = objective, initial = initial,
-        control = control, eval_time = eval_time, ...,
-        call = rlang::caller_env()
+        control = control, eval_time = eval_time, ...
       )
     .stash_last_result(res)
     res

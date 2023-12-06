@@ -205,7 +205,7 @@ check_metrics_arg <- function(mtr_set, wflow, call = rlang::caller_env()) {
              mtr_set <- yardstick::metric_set(rmse, rsq)
            },
            classification = {
-             mtr_set <- yardstick::metric_set(roc_auc, accuracy, brier_class)
+             mtr_set <- yardstick::metric_set(roc_auc, accuracy)
            },
            'censored regression' = {
              mtr_set <- yardstick::metric_set(brier_survival)

@@ -141,7 +141,7 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
   }
 
   last_fit_workflow(wflow, split, metrics, control, eval_time,
-                    add_validation_set, call = rlang::caller_env())
+                    add_validation_set)
 }
 
 
@@ -149,14 +149,13 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
 #' @export
 last_fit.workflow <- function(object, split, ..., metrics = NULL,
                               control = control_last_fit(), eval_time = NULL,
-                              add_validation_set = FALSE,
-                              call = rlang::caller_env()) {
+                              add_validation_set = FALSE) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
   last_fit_workflow(object, split, metrics, control, eval_time,
-                    add_validation_set, call = rlang::caller_env())
+                    add_validation_set)
 }
 
 
