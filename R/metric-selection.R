@@ -69,7 +69,9 @@ contains_survival_metric <- function(mtr_info) {
 
 #' @rdname choose_metric
 #' @export
-choose_eval_time <- function(x, metric, eval_time = NULL, call = rlang::caller_env()) {
+choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+  
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
@@ -79,7 +81,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, call = rlang::caller_e
 
   # If we need an eval time, set it to the possible values so that
   # we can choose the first value
-  if (is_dyn(mtr_set, metric) & is.null(eval_time)) {
+  if (is_dyn(mtr_set, metric) && is.null(eval_time)) {
     eval_time <- .get_tune_eval_times(x)
   }
 
