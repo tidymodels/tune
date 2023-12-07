@@ -222,25 +222,25 @@ check_metrics_arg <- function(mtr_set, wflow, call = rlang::caller_env()) {
   is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
 
   if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
-    cli::cli_abort("The {.val metrics} argument should be the results of
+    cli::cli_abort("The {.arg metrics} argument should be the results of
                    {.fn yardstick::metric_set}.", call = call)
   }
 
   if (mode == "regression" && !is_numeric_metric_set) {
     cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.code metrics} is a metric set for a
+                   but the {.arg metrics} is a metric set for a
                    different model mode.", call = call)
   }
 
   if (mode == "classification" && !is_class_prob_metric_set) {
     cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.code metrics} is a metric set for a
+                   but the {.arg metrics} is a metric set for a
                    different model mode.", call = call)
   }
 
   if (mode == "censored regression" && !is_surv_metric_set) {
     cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.code metrics} is a metric set for a
+                   but the {.arg metrics} is a metric set for a
                    different model mode.", call = call)
   }
 

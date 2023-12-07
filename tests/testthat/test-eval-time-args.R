@@ -113,7 +113,7 @@ test_that("eval time are checked for classification models", {
 
 })
 
-test_that("eval time inputs are checked for regression models", {
+test_that("eval time inputs are checked for censored regression models", {
   skip_if_not_installed("censored")
 
   library(parsnip)
