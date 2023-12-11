@@ -38,7 +38,7 @@ Imports:
     vctrs (>= 0.6.1),
     withr,
     workflows (>= 1.0.0),
-    yardstick (>= 1.2.0.9001)
+    yardstick (>= 1.2.0.9002)
 Suggests: 
     C50,
     censored,
