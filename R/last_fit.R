@@ -140,7 +140,8 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control, eval_time, add_validation_set)
+  last_fit_workflow(wflow, split, metrics, control, eval_time,
+                    add_validation_set)
 }
 
 
@@ -153,7 +154,8 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL,
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control, eval_time, add_validation_set)
+  last_fit_workflow(object, split, metrics, control, eval_time,
+                    add_validation_set)
 }
 
 
@@ -191,7 +193,8 @@ last_fit_workflow <- function(object,
     metrics = metrics,
     control = control,
     eval_time = eval_time,
-    rng = rng
+    rng = rng,
+    call = call
   )
 
   res$.workflow <- res$.extracts[[1]][[1]]

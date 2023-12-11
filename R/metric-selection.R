@@ -4,9 +4,10 @@
 #' @param metric A character value for which metric is being used.
 #' @param eval_time An optional vector of times to compute dynamic and/or
 #' integrated metrics.
+#' @param wflow A [workflows::workflow()].
 #' @param x An object with class `tune_results`.
 #' @param call The call to be displayed in warnings or errors.
-#' @description
+#' @details
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
 #' functions for the evaluation time(s) required for dynamic and/or integrated
@@ -189,6 +190,119 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   }
 
   summary_res
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
+check_metrics_arg <- function(mtr_set, wflow, call = rlang::caller_env()) {
+  mode <- extract_spec_parsnip(wflow)$mode
+
+  if (is.null(mtr_set)) {
+    switch(mode,
+           regression = {
+             mtr_set <- yardstick::metric_set(rmse, rsq)
+           },
+           classification = {
+             mtr_set <- yardstick::metric_set(roc_auc, accuracy)
+           },
+           'censored regression' = {
+             mtr_set <- yardstick::metric_set(brier_survival)
+           },
+           # workflows cannot be set with an unknown mode
+           cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
+    )
+
+    return(mtr_set)
+  }
+
+  is_numeric_metric_set <- inherits(mtr_set, "numeric_metric_set")
+  is_class_prob_metric_set <- inherits(mtr_set, "class_prob_metric_set")
+  is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
+
+  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
+    cli::cli_abort("The {.arg metrics} argument should be the results of
+                   {.fn yardstick::metric_set}.", call = call)
+  }
+
+  if (mode == "regression" && !is_numeric_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.arg metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  if (mode == "classification" && !is_class_prob_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.arg metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  if (mode == "censored regression" && !is_surv_metric_set) {
+    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+                   but the {.arg metrics} is a metric set for a
+                   different model mode.", call = call)
+  }
+
+  mtr_set
+}
+
+# ------------------------------------------------------------------------------
+
+#' @rdname choose_metric
+#' @export
+check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+
+  # Not a survival metric
+  if (!contains_survival_metric(mtr_info)) {
+    if (!is.null(eval_time)) {
+      cli::cli_warn("Evaluation times are only required when the model
+                     mode is {.val censored regression} (and will be ignored).")
+    }
+    return(NULL)
+  }
+
+  cls <- mtr_info$class
+  uni_cls <- sort(unique(cls))
+  eval_time <- .filter_eval_time(eval_time)
+
+  num_times <- length(eval_time)
+
+  max_times_req <- req_eval_times(mtr_set)
+
+  if (max_times_req > num_times) {
+    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+                   required for the metric type(s) requested: {.val {uni_cls}}.
+                   Only {num_times} unique time{?s} {?was/were} given.",
+                   call = call)
+  }
+
+  if (max_times_req == 0 & num_times > 0) {
+    cli::cli_warn("Evaluation times are only required when dynmanic or
+                   integrated metrics are used (and will be ignored here).")
+    eval_time <- NULL
+  }
+
+  eval_time
+}
+
+req_eval_times <- function(mtr_set) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+  cls <- mtr_info$class
+
+  # Default for non-survival and static metrics
+  max_req_times <- 0
+
+  if (any(cls == "dynamic_survival_metric")) {
+    max_req_times <- max(max_req_times, 1)
+  }
+
+  if (any(cls == "integrated_survival_metric")) {
+    max_req_times <- max(max_req_times, 2)
+  }
+
+  max_req_times
 }
 
 # TODO will be removed shortly
