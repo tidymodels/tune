@@ -57,6 +57,7 @@ new_iteration_results(
   parameters,
   metrics,
   eval_time,
+  eval_time_target,
   outcomes = character(0),
   rset_info,
   workflow

@@ -15,6 +15,7 @@ test_that("`fit_resamples()` returns a `resample_result` object", {
   expect_equal(result, .Last.tune.result)
 
   expect_null(.get_tune_eval_times(result))
+  expect_null(.get_tune_eval_time_target(result))
 })
 
 test_that("can use `fit_resamples()` with a formula", {

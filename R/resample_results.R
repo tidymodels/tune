@@ -19,6 +19,7 @@ new_resample_results <-
            parameters,
            metrics,
            eval_time,
+           eval_time_target = NULL,
            outcomes = character(0),
            rset_info,
            workflow = NULL) {
@@ -27,6 +28,7 @@ new_resample_results <-
       parameters = parameters,
       metrics = metrics,
       eval_time = eval_time,
+      eval_time_target = eval_time_target,
       outcomes = outcomes,
       rset_info = rset_info,
       workflow = workflow,

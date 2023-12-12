@@ -33,6 +33,7 @@ new_iteration_results <-
            parameters,
            metrics,
            eval_time,
+           eval_time_target,
            outcomes = character(0),
            rset_info,
            workflow) {
@@ -41,6 +42,7 @@ new_iteration_results <-
       parameters = parameters,
       metrics = metrics,
       eval_time = eval_time,
+      eval_time_target = eval_time_target,
       outcomes = outcomes,
       rset_info = rset_info,
       workflow = workflow,
