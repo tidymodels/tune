@@ -28,6 +28,7 @@ test_that("tune recipe only", {
   expect_false(identical(num_comp, expr(tune())))
   expect_true(res_workflow$trained)
   expect_null(.get_tune_eval_times(res))
+  expect_null(.get_tune_eval_time_target(res))
 })
 
 # ------------------------------------------------------------------------------

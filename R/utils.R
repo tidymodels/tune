@@ -176,6 +176,17 @@ new_bare_tibble <- function(x, ..., class = character()) {
   res
 }
 
+#' @export
+#' @rdname tune_accessor
+.get_tune_eval_time_target <- function(x) {
+  x <- attributes(x)
+  if (any(names(x) == "eval_time_target")) {
+    res <- x$eval_time_target
+  } else {
+    res <- NULL
+  }
+  res
+}
 
 #' @export
 #' @rdname tune_accessor

@@ -17,6 +17,7 @@ new_tune_results_from_template <- function(x, to) {
     parameters = attrs$parameters,
     metrics = attrs$metrics,
     eval_time = attrs$eval_time,
+    eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
     rset_info = attrs$rset_info
   )
@@ -107,6 +108,7 @@ new_resample_results_from_template <- function(x, to) {
     parameters = attrs$parameters,
     metrics = attrs$metrics,
     eval_time = attrs$eval_time,
+    eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
     rset_info = attrs$rset_info
   )
@@ -137,6 +139,7 @@ new_iteration_results_from_template <- function(x, to) {
     parameters = attrs$parameters,
     metrics = attrs$metrics,
     eval_time = attrs$eval_time,
+    eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
     rset_info = attrs$rset_info,
     workflow = attrs$workflow

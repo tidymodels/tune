@@ -26,6 +26,7 @@ test_that("formula method", {
     nrow(rsample::testing(split))
   )
   expect_null(.get_tune_eval_times(res))
+  expect_null(.get_tune_eval_time_target(res))
 
 })
 
