@@ -274,11 +274,11 @@ tune_bayes_workflow <-
 
     metrics <- check_metrics_arg(metrics, object, call = call)
     opt_metric <- first_metric(metrics)
-    metrics_name <- opt_metric$metric
+    opt_metric_name <- opt_metric$metric
     maximize <- opt_metric$direction == "maximize"
 
     eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
-    metrics_time <- first_eval_time(metrics, metrics_name, eval_time)
+    opt_metric_time <- first_eval_time(metrics, opt_metric_name, eval_time)
 
     if (is.null(param_info)) {
       param_info <- hardhat::extract_parameter_set_dials(object)
@@ -306,7 +306,7 @@ tune_bayes_workflow <-
         parameters = param_info,
         metrics = metrics,
         eval_time = eval_time,
-        eval_time_target = metrics_time,
+        eval_time_target = opt_metric_time,
         outcomes = outcomes,
         rset_info = rset_info,
         workflow = NULL
@@ -332,12 +332,12 @@ tune_bayes_workflow <-
 
     check_time(start_time, control$time_limit)
 
-    score_card <- initial_info(mean_stats, metrics_name, maximize, metrics_time)
+    score_card <- initial_info(mean_stats, opt_metric_name, maximize, opt_metric_time)
 
     if (control$verbose_iter) {
-      msg <- paste("Optimizing", metrics_name, "using", objective$label)
-      if (!is.null(metrics_time)) {
-        msg <- paste(msg, "at evaluation time", format(metrics_time, digits = 3))
+      msg <- paste("Optimizing", opt_metric_name, "using", objective$label)
+      if (!is.null(opt_metric_time)) {
+        msg <- paste(msg, "at evaluation time", format(opt_metric_time, digits = 3))
       }
       message_wrap(msg)
     }
@@ -361,8 +361,8 @@ tune_bayes_workflow <-
           fit_gp(
             mean_stats %>% dplyr::select(-.iter),
             pset = param_info,
-            metric = metrics_name,
-            eval_time = metrics_time,
+            metric = opt_metric_name,
+            eval_time = opt_metric_time,
             control = control,
             ...
           ),
@@ -451,7 +451,7 @@ tune_bayes_workflow <-
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
         log_progress(control, x = mean_stats, maximize = maximize,
-                     objective = metrics_name, eval_time = metrics_time)
+                     objective = opt_metric_name, eval_time = opt_metric_time)
       } else {
         if (all_bad) {
           tune_log(control, split = NULL, task = "All models failed", type = "danger")
@@ -480,7 +480,7 @@ tune_bayes_workflow <-
         parameters = param_info,
         metrics = metrics,
         eval_time = eval_time,
-        eval_time_target = metrics_time,
+        eval_time_target = opt_metric_time,
         outcomes = outcomes,
         rset_info = rset_info,
         workflow = workflow_output
@@ -686,7 +686,7 @@ update_score_card <- function(info, iter, results, control) {
 # ------------------------------------------------------------------------------
 
 
-# save metrics_name and maximize to simplify!!!!!!!!!!!!!!!
+# save opt_metric_name and maximize to simplify!!!!!!!!!!!!!!!
 initial_info <- function(stats, metrics, maximize, eval_time) {
   best_res <-
     stats %>%
