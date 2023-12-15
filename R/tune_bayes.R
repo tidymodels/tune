@@ -584,9 +584,7 @@ fit_gp <- function(dat, pset, metric, control, eval_time = NULL, ...) {
     gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
   } else {
     tmp_output <- utils::capture.output(
-      withCallingHandlers(
-        gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-      )
+      gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
     )
   }},
     warning = function(w) {
