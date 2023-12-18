@@ -64,10 +64,10 @@
 #' However, this means that if a function was supplied to a
 #' [control function's][control_grid()] `extract` argument, tune can only
 #' execute that extraction on the one model that was fitted. As a result,
-#' in the `collect_extracts()` output, tune opts to associate the 
-#' extracted objects with the hyperparameter combination used to 
-#' fit that one model workflow, rather than the hyperparameter 
-#' combination of a submodel. In the output, this appears like 
+#' in the `collect_extracts()` output, tune opts to associate the
+#' extracted objects with the hyperparameter combination used to
+#' fit that one model workflow, rather than the hyperparameter
+#' combination of a submodel. In the output, this appears like
 #' a hyperparameter entry is recycled across many `.config`
 #' entries---this is intentional.
 #'
@@ -123,7 +123,9 @@ collect_predictions <- function(x, ...) {
 #' @export
 #' @rdname collect_predictions
 collect_predictions.default <- function(x, ...) {
-  rlang::abort("No `collect_predictions()` exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn collect_predictions} exists for {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export
@@ -421,7 +423,9 @@ collect_metrics <- function(x, ...) {
 
 #' @export
 collect_metrics.default <- function(x, ...) {
-  rlang::abort("No `collect_metric()` exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn collect_metrics} exists for {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export
@@ -583,7 +587,9 @@ collect_notes <- function(x, ...) {
 
 #' @export
 collect_notes.default <- function(x, ...) {
-  rlang::abort("No `collect_notes()` exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn collect_notes} exists for {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export
@@ -608,7 +614,9 @@ collect_extracts <- function(x, ...) {
 
 #' @export
 collect_extracts.default <- function(x, ...) {
-  rlang::abort("No `collect_extracts()` exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn collect_extracts} exists for {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export

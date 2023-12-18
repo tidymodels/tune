@@ -1,6 +1,9 @@
 library(tidymodels)
+library(scales)
+library(censored)
 library(sessioninfo)
 library(testthat)
+# also will require prodlim, mboost, kknn, and kernlab
 
 # ------------------------------------------------------------------------------
 # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
@@ -378,6 +381,51 @@ saveRDS(
   version = 2,
   compress = "xz"
 )
+
+# ------------------------------------------------------------------------------
+# A single survival model
+
+set.seed(1)
+sim_dat <- prodlim::SimSurv(200) %>%
+  mutate(event_time = Surv(time, event)) %>%
+  select(event_time, X1, X2)
+
+set.seed(2)
+sim_rs <- vfold_cv(sim_dat)
+
+time_points <- c(10, 1, 5, 15)
+
+boost_spec <-
+  boost_tree(trees = tune()) %>%
+  set_mode("censored regression") %>%
+  set_engine("mboost")
+
+srv_mtr <-
+  metric_set(
+    brier_survival,
+    roc_auc_survival,
+    brier_survival_integrated,
+    concordance_survival
+  )
+
+set.seed(2193)
+surv_boost_tree_res <-
+  boost_spec %>%
+  tune_grid(
+    event_time ~ X1 + X2,
+    resamples = sim_rs,
+    grid  = tibble(trees = c(1, 5, 10, 20, 100)),
+    metrics = srv_mtr,
+    eval_time = time_points
+  )
+
+saveRDS(
+  surv_boost_tree_res,
+  file = testthat::test_path("data", "surv_boost_tree_res.rds"),
+  version = 2,
+  compress = "xz"
+)
+
 
 # ------------------------------------------------------------------------------
 

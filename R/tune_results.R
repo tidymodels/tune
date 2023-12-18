@@ -97,17 +97,28 @@ summarize_notes <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-new_tune_results <- function(x, parameters, metrics, outcomes = character(0), rset_info, ..., class = character()) {
-  new_bare_tibble(
-    x = x,
-    parameters = parameters,
-    metrics = metrics,
-    outcomes = outcomes,
-    rset_info = rset_info,
-    ...,
-    class = c(class, "tune_results")
-  )
-}
+new_tune_results <-
+  function(x,
+           parameters,
+           metrics,
+           eval_time,
+           eval_time_target,
+           outcomes = character(0),
+           rset_info,
+           ...,
+           class = character()) {
+    new_bare_tibble(
+      x = x,
+      parameters = parameters,
+      metrics = metrics,
+      eval_time = eval_time,
+      eval_time_target = eval_time_target,
+      outcomes = outcomes,
+      rset_info = rset_info,
+      ...,
+      class = c(class, "tune_results")
+    )
+  }
 
 is_tune_results <- function(x) {
   inherits(x, "tune_results")

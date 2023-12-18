@@ -57,6 +57,13 @@ test_that("`collect_predictions()` errors informatively if there is no `.predict
   })
 })
 
+test_that("`collect_predictions()` errors informatively applied to unsupported class", {
+  expect_snapshot(
+    error = TRUE,
+    collect_predictions(lm(mpg ~ disp, mtcars))
+  )
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()`, un-averaged", {
@@ -197,6 +204,13 @@ test_that("collecting notes - last_fit", {
   expect_equal(names(nts), c("location", "type", "note"))
 })
 
+test_that("`collect_notes()` errors informatively applied to unsupported class", {
+  expect_snapshot(
+    error = TRUE,
+    collect_notes(lm(mpg ~ disp, mtcars))
+  )
+})
+
 test_that("collecting extracted objects - fit_resamples", {
   # skip pre-R-4.0.0 so that snaps aren't affected by stringsAsFactors change
   skip_if(R.Version()$major < "4")
@@ -218,5 +232,18 @@ test_that("collecting extracted objects - fit_resamples", {
   expect_snapshot(collect_extracts(res_fit))
   expect_snapshot(collect_extracts(res_nothing), error = TRUE)
   expect_snapshot(collect_extracts(res_error))
-  expect_snapshot(collect_extracts("boop"), error = TRUE)
+})
+
+test_that("`collect_extracts()` errors informatively applied to unsupported class", {
+  expect_snapshot(
+    error = TRUE,
+    collect_extracts(lm(mpg ~ disp, mtcars))
+  )
+})
+
+test_that("`collect_metrics()` errors informatively applied to unsupported class", {
+  expect_snapshot(
+    error = TRUE,
+    collect_metrics(lm(mpg ~ disp, mtcars))
+  )
 })

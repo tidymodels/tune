@@ -332,9 +332,8 @@ tune_grid_workflow <- function(workflow,
                                call = caller_env()) {
   check_rset(resamples)
 
-
-  metrics <- check_metrics(metrics, workflow)
-  check_eval_time(eval_time, metrics)
+  metrics <- check_metrics_arg(metrics, workflow, call = call)
+  eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
 
   pset <- check_parameters(
     workflow,
@@ -379,6 +378,8 @@ tune_grid_workflow <- function(workflow,
     x = resamples,
     parameters = pset,
     metrics = metrics,
+    eval_time = eval_time,
+    eval_time_target = NULL,
     outcomes = outcomes,
     rset_info = rset_info,
     workflow = workflow

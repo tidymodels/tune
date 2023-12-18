@@ -133,6 +133,7 @@ test_that("parameter plot for iterative search", {
 
 
 test_that("regular grid plot", {
+  skip_if_not_installed("scales", "1.3.0")
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
   svm_reg_results <- readRDS(test_path("data", "svm_reg_results.rds"))
 
@@ -166,6 +167,7 @@ test_that("regular grid plot", {
   expect_equal(p$labels$y, "rmse")
   expect_equal(p$labels$x, "deg_free")
 
+
   p <- autoplot(svm_reg_results)
   expect_s3_class(p, "ggplot")
   expect_equal(
@@ -183,7 +185,7 @@ test_that("regular grid plot", {
   expect_equal(p$labels$x, "Cost")
   expect_equal(p$labels$group, "%^*#")
 
-  expect_equal(class(p$scales$scales[[1]]$trans), "trans")
+  expect_true(grepl("^trans", class(p$scales$scales[[1]]$trans)))
   expect_equal(p$scales$scales[[1]]$trans$name, "log-2")
   expect_equal(unique(p$data$name), "Cost")
 })

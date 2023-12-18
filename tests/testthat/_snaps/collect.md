@@ -6,6 +6,14 @@
       Error in `collect_predictions()`:
       ! The `.predictions` column does not exist. Refit with the control argument `save_pred = TRUE` to save predictions.
 
+# `collect_predictions()` errors informatively applied to unsupported class
+
+    Code
+      collect_predictions(lm(mpg ~ disp, mtcars))
+    Condition
+      Error in `collect_predictions()`:
+      ! No `collect_predictions()` exists for a <lm> object.
+
 # bad filter grid
 
     Code
@@ -66,6 +74,14 @@
       
       Run `show_notes(.Last.tune.result)` for more information.
 
+# `collect_notes()` errors informatively applied to unsupported class
+
+    Code
+      collect_notes(lm(mpg ~ disp, mtcars))
+    Condition
+      Error in `collect_notes()`:
+      ! No `collect_notes()` exists for a <lm> object.
+
 # collecting extracted objects - fit_resamples
 
     Code
@@ -103,11 +119,19 @@
       4 Bootstrap4 <try-errr [1]> Preprocessor1_Model1
       5 Bootstrap5 <try-errr [1]> Preprocessor1_Model1
 
----
+# `collect_extracts()` errors informatively applied to unsupported class
 
     Code
-      collect_extracts("boop")
+      collect_extracts(lm(mpg ~ disp, mtcars))
     Condition
       Error in `collect_extracts()`:
-      ! No `collect_extracts()` exists for this type of object.
+      ! No `collect_extracts()` exists for a <lm> object.
+
+# `collect_metrics()` errors informatively applied to unsupported class
+
+    Code
+      collect_metrics(lm(mpg ~ disp, mtcars))
+    Condition
+      Error in `collect_metrics()`:
+      ! No `collect_metrics()` exists for a <lm> object.
 
