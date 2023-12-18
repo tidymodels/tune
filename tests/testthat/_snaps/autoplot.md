@@ -4,7 +4,7 @@
       autoplot(knn_results, type = "performance")
     Condition
       Error in `autoplot()`:
-      ! `type = performance` is only used iterative search results.
+      ! `type = performance` is only used with iterative search results.
 
 ---
 
@@ -12,7 +12,7 @@
       autoplot(knn_results, type = "parameters")
     Condition
       Error in `autoplot()`:
-      ! `type = parameters` is only used iterative search results.
+      ! `type = parameters` is only used with iterative search results.
 
 # coord_obs_pred
 
