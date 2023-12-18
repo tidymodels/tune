@@ -578,13 +578,21 @@ fit_gp <- function(dat, pset, metric, control, eval_time = NULL, ...) {
   }
 
   opts <- list(...)
+
+  withCallingHandlers({
   if (any(names(opts) == "trace") && opts$trace) {
     gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
   } else {
     tmp_output <- utils::capture.output(
       gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
     )
-  }
+  }},
+    warning = function(w) {
+      if (w$message == "X should be in range (0, 1)") {
+        rlang::cnd_muffle(w)
+      }
+    }
+  )
 
   gp_fit
 }

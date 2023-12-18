@@ -451,8 +451,6 @@
     Message
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      ! Gaussian process model: X should be in range (0, 1)
-      ! Gaussian process model: X should be in range (0, 1)
 
 # too few starting values
 
@@ -523,42 +521,32 @@
         the Gaussian process model.
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      ! Gaussian process model: X should be in range (0, 1)
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 8 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 9 missing values were found and removed before
         fitting the Gaussian process model.
-      ! Gaussian process model: X should be in range (0, 1)
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! No improvement for 10 iterations; returning current results.
 
