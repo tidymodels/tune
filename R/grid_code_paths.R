@@ -89,6 +89,7 @@ tune_grid_loop_agua <- function(resamples,
                                 workflow,
                                 metrics,
                                 control,
+                                eval_time = NULL,
                                 rng) {
   if (!rlang::is_installed("agua")) {
     rlang::abort("`agua` must be installed to use an h2o parsnip engine.")
@@ -109,6 +110,7 @@ tune_grid_loop_agua <- function(resamples,
     workflow = workflow,
     metrics = metrics,
     control = control,
+    eval_time = eval_time,
     rng = rng,
     parallel_over = parallel_over
   )
