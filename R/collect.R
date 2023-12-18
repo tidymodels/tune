@@ -131,15 +131,6 @@ collect_predictions.default <- function(x, ...) {
 #' @export
 #' @rdname collect_predictions
 collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
-  if (!inherits(x, "tune_results")) {
-    rlang::abort(
-      paste0(
-        "`x` should be an object produced by one of the `tune_*()` functions,",
-        "`fit_resamples()` or `last_fit()`."
-      )
-    )
-  }
-
   names <- colnames(x)
   coll_col <- ".predictions"
 
