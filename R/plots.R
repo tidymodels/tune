@@ -82,7 +82,7 @@ autoplot.tune_results <-
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
     if (!has_iter && type != "marginals") {
-      rlang::abort(paste0("`type = ", type, "` is only used iterative search results."))
+      rlang::abort(paste0("`type = ", type, "` is only used with iterative search results."))
     }
     pset <- .get_tune_parameters(object)
     if (any(is.na(pset$object))) {
