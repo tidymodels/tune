@@ -1,9 +1,13 @@
 
-extract_details <- function(object, extractor) {
+extract_details <- function(object, extractor, split = NULL) {
   if (is.null(extractor)) {
     return(list())
   }
-  extractor(object)
+  if (length(formals(extractor)) > 1) {
+    extractor(object, split)
+  } else {
+    extractor(object)
+  }
 }
 
 # ------------------------------------------------------------------------------

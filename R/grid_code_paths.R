@@ -404,7 +404,7 @@ tune_grid_loop_iter <- function(split,
       )
 
       elt_extract <- .catch_and_log(
-        extract_details(workflow, control$extract),
+        extract_details(workflow, control$extract, split),
         control,
         split,
         paste(iter_msg_model, "(extracts)"),
