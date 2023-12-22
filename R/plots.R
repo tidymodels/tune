@@ -6,7 +6,8 @@
 #'  (each parameter versus search iteration), or `"performance"` (performance
 #'  versus iteration). The latter two choices are only used for [tune_bayes()].
 #' @param metric A character vector or `NULL` for which metric to plot. By
-#' default, all metrics will be shown via facets.
+#' default, all metrics will be shown via facets. Possible options are
+#' the entries in `.metric` column of `collect_metrics(object)`.
 #' @param width A number for the width of the confidence interval bars when
 #' `type = "performance"`. A value of zero prevents them from being shown.
 #' @param eval_time A numeric vector of time points where dynamic event time
@@ -158,6 +159,17 @@ get_param_label <- function(x, id_val) {
   res
 }
 
+paste_param_by <- function(x) {
+  if (".by" %in% colnames(x)) {
+    x <- x %>% dplyr::mutate(.metric = case_when(
+      !is.na(.by) ~ paste0(.metric, "(", .by, ")"),
+      .default = .metric
+    ))
+  }
+
+  x
+}
+
 # TODO remove this.
 default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
   if (!any(names(x) == ".eval_time")) {
@@ -270,6 +282,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL) 
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
+  x <- paste_param_by(x)
   x <- x %>% dplyr::filter(!is.na(mean))
   x <- filter_plot_eval_time(x, eval_time)
 
@@ -368,6 +381,7 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL) {
   if (!is.null(metric)) {
     x <- x %>% dplyr::filter(.metric %in% metric)
   }
+  x <- paste_param_by(x)
   x <- x %>% dplyr::filter(!is.na(mean))
   x <- filter_plot_eval_time(x, eval_time)
 
@@ -493,6 +507,7 @@ plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
       ))
     }
   }
+  dat <- paste_param_by(dat)
   dat <- dat %>% dplyr::filter(!is.na(mean))
   dat <- filter_plot_eval_time(dat, eval_time)
   multi_metrics <- length(unique(dat$.metric)) > 1

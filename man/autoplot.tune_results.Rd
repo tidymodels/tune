@@ -22,7 +22,8 @@ of each predictor versus performance; see Details below), \code{"parameters"}
 versus iteration). The latter two choices are only used for \code{\link[=tune_bayes]{tune_bayes()}}.}
 
 \item{metric}{A character vector or \code{NULL} for which metric to plot. By
-default, all metrics will be shown via facets.}
+default, all metrics will be shown via facets. Possible options are
+the entries in \code{.metric} column of \code{collect_metrics(object)}.}
 
 \item{width}{A number for the width of the confidence interval bars when
 \code{type = "performance"}. A value of zero prevents them from being shown.}

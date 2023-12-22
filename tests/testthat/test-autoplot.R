@@ -228,3 +228,101 @@ test_that("1D regular grid x labels", {
     tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 3)
   expect_equal(autoplot(res)$labels$x, c(cost = "Cost"))
 })
+
+test_that("plot_regular_grid with fairness metrics (#773)", {
+  skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+
+  knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
+  mtcars_fair <- mtcars
+  mtcars_fair$vs <- as.factor(mtcars_fair$vs)
+  mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)
+  mtcars_fair$am <- as.factor(mtcars_fair$am)
+  set.seed(4400)
+  boots <- rsample::bootstraps(mtcars_fair, 3)
+  n_grid <- 3
+
+  set.seed(1)
+  res <- tune_grid(
+    knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
+    metrics =
+      yardstick::metric_set(
+        yardstick::roc_auc,
+        yardstick::demographic_parity(cyl),
+        yardstick::demographic_parity(am)
+      )
+  )
+
+  res_plot <- autoplot(res)
+
+  expect_contains(
+    res_plot$data$.metric,
+    c("demographic_parity(am)", "demographic_parity(cyl)", "roc_auc")
+  )
+})
+
+test_that("plot_marginals with fairness metrics (#773)", {
+  skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+
+  knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune(), weight_func = tune())
+  mtcars_fair <- mtcars
+  mtcars_fair$vs <- as.factor(mtcars_fair$vs)
+  mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)
+  mtcars_fair$am <- as.factor(mtcars_fair$am)
+  set.seed(4400)
+  boots <- rsample::bootstraps(mtcars_fair, 3)
+  n_grid <- 3
+
+  set.seed(1)
+  res <- tune_grid(
+    knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
+    metrics =
+      yardstick::metric_set(
+        yardstick::roc_auc,
+        yardstick::demographic_parity(cyl),
+        yardstick::demographic_parity(am)
+      )
+  )
+
+  res_plot <- autoplot(res)
+
+  expect_contains(
+    res_plot$data$.metric,
+    c("demographic_parity(am)", "demographic_parity(cyl)", "roc_auc")
+  )
+})
+
+test_that("plot_perf_vs_iter with fairness metrics (#773)", {
+  skip_on_cran()
+  skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+
+  knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
+  mtcars_fair <- mtcars
+  mtcars_fair$vs <- as.factor(mtcars_fair$vs)
+  mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)
+  mtcars_fair$am <- as.factor(mtcars_fair$am)
+  set.seed(4400)
+  boots <- rsample::bootstraps(mtcars_fair, 3)
+  n_grid <- 3
+
+  set.seed(1)
+  suppressMessages(
+    res <- tune_bayes(
+      knn, vs ~ mpg + hp + cyl, resamples = boots,
+      metrics =
+        yardstick::metric_set(
+          yardstick::roc_auc,
+          yardstick::demographic_parity(cyl),
+          yardstick::demographic_parity(am)
+        )
+    )
+  )
+
+  res_plot <- autoplot(res, type = "performance")
+
+  expect_contains(
+    res_plot$data$.metric,
+    c("demographic_parity(am)", "demographic_parity(cyl)", "roc_auc")
+  )
+})
