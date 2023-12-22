@@ -247,7 +247,7 @@ test_that("plot_regular_grid with fairness metrics (#773)", {
     knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
     metrics =
       yardstick::metric_set(
-        roc_auc,
+        yardstick::roc_auc,
         yardstick::demographic_parity(cyl),
         yardstick::demographic_parity(am)
       )
@@ -265,7 +265,7 @@ test_that("plot_marginals with fairness metrics (#773)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
 
-  knn <- nearest_neighbor("classification", "kknn", neighbors = tune(), weight_func = tune())
+  knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune(), weight_func = tune())
   mtcars_fair <- mtcars
   mtcars_fair$vs <- as.factor(mtcars_fair$vs)
   mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)
@@ -279,7 +279,7 @@ test_that("plot_marginals with fairness metrics (#773)", {
     knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
     metrics =
       yardstick::metric_set(
-        roc_auc,
+        yardstick::roc_auc,
         yardstick::demographic_parity(cyl),
         yardstick::demographic_parity(am)
       )
@@ -312,7 +312,7 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
       knn, vs ~ mpg + hp + cyl, resamples = boots,
       metrics =
         yardstick::metric_set(
-          roc_auc,
+          yardstick::roc_auc,
           yardstick::demographic_parity(cyl),
           yardstick::demographic_parity(am)
         )
