@@ -8,6 +8,9 @@
 #' [`save_workflow = TRUE`][tune::control_grid] should have been used.
 #' @param metric A character string (or `NULL`) for which metric to optimize. If
 #' `NULL`, the first metric is used.
+#' @param eval_time A numeric vector of time points where dynamic event time
+#' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+#' values should be consistent with the values used to create `x`.
 #' @param parameters An optional 1-row tibble of tuning parameter settings, with
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
@@ -84,6 +87,7 @@ fit_best.default <- function(x, ...) {
 #' @rdname fit_best
 fit_best.tune_results <- function(x,
                                   metric = NULL,
+                                  eval_time = NULL,
                                   parameters = NULL,
                                   verbose = FALSE,
                                   add_validation_set = NULL,
@@ -100,7 +104,7 @@ fit_best.tune_results <- function(x,
     if (is.null(metric)) {
       metric <- .get_tune_metric_names(x)[1]
     }
-    parameters <- select_best(x, metric = metric)
+    parameters <- select_best(x, metric = metric, eval_time = eval_time)
     if (verbose) {
       format_final_param(parameters, metric)
     }
