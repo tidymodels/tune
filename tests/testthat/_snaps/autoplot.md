@@ -18,3 +18,11 @@
 
     Removed 1 rows containing missing values (`geom_point()`).
 
+# regular grid plot
+
+    Code
+      autoplot(res)
+    Condition
+      Error in `plot_regular_grid()`:
+      ! Only one observation per metric was present. Unable to create meaningful plot.
+
