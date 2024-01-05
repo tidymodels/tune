@@ -152,7 +152,7 @@ collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = 
   } else {
     x <- collector(x, coll_col = coll_col)
   }
-  x
+  dplyr::relocate(x, dplyr::starts_with(".pred"))
 }
 
 filter_predictions <- function(x, parameters) {
@@ -355,18 +355,12 @@ surv_summarize <- function(x, param, y) {
         .by = c(.row, .config,
                 dplyr::any_of(param),
                 dplyr::any_of(".iter"))
-      ) %>%
-      dplyr::relocate(dplyr::starts_with(".pred"))
-    if (!is.null(res)) {
-      res <- dplyr::full_join(
-        tmp, res,
-        by = c(
-          .row,
-          .config,
-          dplyr::any_of(param),
-          dplyr::any_of(".iter")
-        )
       )
+
+    if (!is.null(res)) {
+      dot_iter <- grep("\\.iter", nms, value = TRUE)
+      res <-
+        dplyr::full_join(tmp, res, by = c(".row", ".config", param, dot_iter))
     } else {
       res <- tmp
     }

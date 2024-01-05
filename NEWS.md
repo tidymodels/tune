@@ -31,6 +31,7 @@
 
 * `eval_time` and `eval_time_target` attribute was added to tune objects. There are also  `.get_tune_eval_times()` and `.get_tune_eval_time_target()` functions.
 
+* `collect_predictions()` now reorders the columns so that all prediction columns come first. 
 
 # tune 1.1.2
 
