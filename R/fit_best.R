@@ -10,7 +10,9 @@
 #' `NULL`, the first metric is used.
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-#' values should be consistent with the values used to create `x`.
+#' values should be consistent with the values used to create `x`. If the
+#' analysis used a dynamic metric, the `NULL` default will automatically use the
+#' first evaluation time used by `x`.
 #' @param parameters An optional 1-row tibble of tuning parameter settings, with
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
@@ -103,6 +105,11 @@ fit_best.tune_results <- function(x,
   if (is.null(parameters)) {
     if (is.null(metric)) {
       metric <- .get_tune_metric_names(x)[1]
+    }
+    met_set <- .get_tune_metrics(x)
+    if (is.null(eval_time) & is_dyn(met_set, metric)) {
+      # 1st element of NULL is still NULL
+      eval_time <- .get_tune_eval_times(x)[1]
     }
     parameters <- select_best(x, metric = metric, eval_time = eval_time)
     if (verbose) {
