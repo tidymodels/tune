@@ -492,7 +492,10 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL) {
 }
 
 
-plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
+plot_regular_grid <- function(x,
+                              metric = NULL,
+                              eval_time = NULL,
+                              call = rlang::caller_env(), ...) {
   # Collect and filter resampling results
 
   is_race <- inherits(x, "tune_race")
@@ -514,7 +517,8 @@ plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
   if (all(vctrs::vec_count(dat$.metric)$count == 1)) {
     cli::cli_abort(
       "Only one observation per metric was present. \\
-      Unable to create meaningful plot."
+      Unable to create meaningful plot.",
+      call = call
     )
   }
 

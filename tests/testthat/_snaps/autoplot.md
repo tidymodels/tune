@@ -23,6 +23,6 @@
     Code
       autoplot(res)
     Condition
-      Error in `plot_regular_grid()`:
+      Error in `autoplot()`:
       ! Only one observation per metric was present. Unable to create meaningful plot.
 
