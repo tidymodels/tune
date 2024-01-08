@@ -492,7 +492,10 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL) {
 }
 
 
-plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
+plot_regular_grid <- function(x,
+                              metric = NULL,
+                              eval_time = NULL,
+                              call = rlang::caller_env(), ...) {
   # Collect and filter resampling results
 
   is_race <- inherits(x, "tune_race")
@@ -510,6 +513,15 @@ plot_regular_grid <- function(x, metric = NULL, eval_time = NULL, ...) {
   dat <- paste_param_by(dat)
   dat <- dat %>% dplyr::filter(!is.na(mean))
   dat <- filter_plot_eval_time(dat, eval_time)
+
+  if (all(vctrs::vec_count(dat$.metric)$count == 1)) {
+    cli::cli_abort(
+      "Only one observation per metric was present. \\
+      Unable to create meaningful plot.",
+      call = call
+    )
+  }
+
   multi_metrics <- length(unique(dat$.metric)) > 1
 
   # ----------------------------------------------------------------------------
