@@ -13,6 +13,7 @@ fit_best(x, ...)
 \method{fit_best}{tune_results}(
   x,
   metric = NULL,
+  eval_time = NULL,
   parameters = NULL,
   verbose = FALSE,
   add_validation_set = NULL,
@@ -28,6 +29,12 @@ fit_best(x, ...)
 
 \item{metric}{A character string (or \code{NULL}) for which metric to optimize. If
 \code{NULL}, the first metric is used.}
+
+\item{eval_time}{A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{x}. If the
+analysis used a dynamic metric, the \code{NULL} default will automatically use the
+first evaluation time used by \code{x}.}
 
 \item{parameters}{An optional 1-row tibble of tuning parameter settings, with
 a column for each tuning parameter. This tibble should have columns for each
