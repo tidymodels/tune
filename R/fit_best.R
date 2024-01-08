@@ -103,14 +103,18 @@ fit_best.tune_results <- function(x,
   }
 
   if (is.null(parameters)) {
+    met_set <- .get_tune_metrics(x)
+
     if (is.null(metric)) {
       metric <- .get_tune_metric_names(x)[1]
+    } else {
+      check_metric_in_tune_results(tibble::as_tibble(met_set), metric)
     }
-    met_set <- .get_tune_metrics(x)
+
     if (is.null(eval_time) & is_dyn(met_set, metric)) {
-      # 1st element of NULL is still NULL
       eval_time <- .get_tune_eval_times(x)[1]
     }
+
     parameters <- select_best(x, metric = metric, eval_time = eval_time)
     if (verbose) {
       format_final_param(parameters, metric)
