@@ -19,7 +19,7 @@
 
 * Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output. (#720)
 
-* `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always returns tibbles (#759).
+* `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always return tibbles (#759).
 
 ## Other Changes
 
@@ -31,7 +31,7 @@
 
 * `eval_time` and `eval_time_target` attribute was added to tune objects. There are also  `.get_tune_eval_times()` and `.get_tune_eval_time_target()` functions.
 
-* `collect_predictions()` now reorders the columns so that all prediction columns come first. 
+* `collect_predictions()` now reorders the columns so that all prediction columns come first (#798). 
 
 # tune 1.1.2
 
