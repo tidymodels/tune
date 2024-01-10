@@ -27,7 +27,7 @@ test_that("augment fit_resamples", {
   expect_s3_class_bare_tibble(aug_1)
 
   expect_identical(
-    rle(substr(names(aug_1), 1, 1) == ".")$values,
+    rle(grepl("^\\.", names(aug_1)))$values,
     c(TRUE, FALSE)
   )
 
@@ -61,7 +61,7 @@ test_that("augment fit_resamples", {
   expect_s3_class_bare_tibble(aug_2)
 
   expect_identical(
-    rle(substr(names(aug_2), 1, 1) == ".")$values,
+    rle(grepl("^\\.", names(aug_2)))$values,
     c(TRUE, FALSE)
   )
 })
@@ -94,7 +94,7 @@ test_that("augment tune_grid", {
   expect_s3_class_bare_tibble(aug_1)
 
   expect_identical(
-    rle(substr(names(aug_1), 1, 1) == ".")$values,
+    rle(grepl("^\\.", names(aug_1)))$values,
     c(TRUE, FALSE)
   )
 
@@ -155,7 +155,7 @@ test_that("augment last_fit", {
   expect_s3_class_bare_tibble(aug_1)
 
   expect_identical(
-    rle(substr(names(aug_1), 1, 1) == ".")$values,
+    rle(grepl("^\\.", names(aug_1)))$values,
     c(TRUE, FALSE)
   )
 
