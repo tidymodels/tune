@@ -326,3 +326,17 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
     c("demographic_parity(am)", "demographic_parity(cyl)", "roc_auc")
   )
 })
+
+test_that("regular grid plot", {
+  set.seed(1)
+  res <-
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression") %>%
+    tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 1)
+
+  expect_snapshot(
+    error = TRUE,
+    autoplot(res)
+  )
+})

@@ -287,6 +287,7 @@ control_bayes <-
     res
   }
 
+#' @export
 print.control_bayes <- function(x, ...) {
   cat("bayes control object\n")
   invisible(x)
