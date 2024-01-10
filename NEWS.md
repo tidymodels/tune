@@ -22,6 +22,8 @@
 
 * `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always returns tibbles (#759).
 
+* `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now return prediction results in the first columns (#761).
+
 * `autoplot()` will now meaningfully error if only 1 grid point is present, rather than producing a plot. (#775)
 
 # tune 1.1.2

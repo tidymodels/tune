@@ -123,5 +123,7 @@ merge_pred <- function(dat, pred, y) {
   if (all(pred_cols == ".pred")) {
     dat$.resid <- dat[[y]] - dat$.pred
   }
+  dat <- dplyr::relocate(dat, dplyr::starts_with("."))
+
   dat
 }
