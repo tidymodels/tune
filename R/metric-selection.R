@@ -87,7 +87,8 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
       cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).")
+                     mode is {.val censored regression} (and will be ignored).",
+                    call = call)
     }
     return(NULL)
   }
@@ -98,7 +99,8 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
   if (!dyn_metric & !is.null(eval_time)) {
     cli::cli_warn("An evaluation time is only required when a dynamic
                    metric is selected (and {.arg eval_time} will thus be
-                   ignored).")
+                   ignored).",
+                  call = call)
   }
 
   # If we need an eval time, set it to the possible values so that
@@ -267,7 +269,8 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
       cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).")
+                     mode is {.val censored regression} (and will be ignored).",
+                    call = call)
     }
     return(NULL)
   }
@@ -289,7 +292,8 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
 
   if (max_times_req == 0 & num_times > 0) {
     cli::cli_warn("Evaluation times are only required when dynmanic or
-                   integrated metrics are used (and will be ignored here).")
+                   integrated metrics are used (and will be ignored here).",
+                  call = call)
     eval_time <- NULL
   }
 
