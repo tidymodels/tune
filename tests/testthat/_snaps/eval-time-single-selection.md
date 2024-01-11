@@ -77,7 +77,7 @@
       choose_eval_time(surv_res, "concordance_survival", eval_time = 10)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       NULL
 

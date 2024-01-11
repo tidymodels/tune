@@ -316,7 +316,7 @@
       show_best(surv_res, metric = "concordance_survival", eval_time = 1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
@@ -333,7 +333,7 @@
       show_best(surv_res, metric = "concordance_survival", eval_time = 1.1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
@@ -458,7 +458,7 @@
       select_best(surv_res, metric = "concordance_survival", eval_time = 1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -471,7 +471,7 @@
       select_best(surv_res, metric = "concordance_survival", eval_time = 1.1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -590,7 +590,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -604,7 +604,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -726,7 +726,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -740,7 +740,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
