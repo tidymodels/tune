@@ -74,6 +74,8 @@ contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
 
+
+# choose_eval_time() is called by show_best() and select_best()
 #' @rdname choose_metric
 #' @export
 choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::caller_env()) {
@@ -85,14 +87,25 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
       cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).")
+                     mode is {.val censored regression} (and will be ignored).",
+                    call = call)
     }
     return(NULL)
   }
 
+  dyn_metric <- is_dyn(mtr_set, metric)
+
+  # If we don't need an eval time but one is passed:
+  if (!dyn_metric & !is.null(eval_time)) {
+    cli::cli_warn("An evaluation time is only required when a dynamic
+                   metric is selected (and {.arg eval_time} will thus be
+                   ignored).",
+                  call = call)
+  }
+
   # If we need an eval time, set it to the possible values so that
   # we can choose the first value
-  if (is_dyn(mtr_set, metric) && is.null(eval_time)) {
+  if (dyn_metric && is.null(eval_time)) {
     eval_time <- .get_tune_eval_times(x)
   }
 
@@ -129,6 +142,9 @@ first_metric <- function(mtr_set) {
   tibble::as_tibble(mtr_set)[1,]
 }
 
+# first_eval_time() is called by show_best() and select_best() (by way of
+# choose_eval_time()) and directly by functions that need an objective function
+# such as tune_bayes().
 #' @rdname choose_metric
 #' @export
 first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
@@ -150,11 +166,6 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   # Not a metric that requires an eval_time
   no_time_req <- c("static_survival_metric", "integrated_survival_metric")
   if (mtr_info$class %in% no_time_req) {
-    if (num_times > 0) {
-      cli::cli_warn("Evaluation times are only required when dynmanic or
-                     integrated metrics are selected as the primary metric
-                     (and will be ignored).")
-    }
     return(NULL)
   }
 
@@ -164,8 +175,8 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 3)
-    cli::cli_warn("{.val {num_times}} evaluation times were specified during
-                   tuning; the first ({print_time}) will be used.")
+    cli::cli_warn("{.val {num_times}} evaluation times are available; the first
+                   ({print_time}) will be used.")
   }
 
   eval_time
@@ -258,7 +269,8 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
       cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).")
+                     mode is {.val censored regression} (and will be ignored).",
+                    call = call)
     }
     return(NULL)
   }
@@ -280,7 +292,8 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
 
   if (max_times_req == 0 & num_times > 0) {
     cli::cli_warn("Evaluation times are only required when dynmanic or
-                   integrated metrics are used (and will be ignored here).")
+                   integrated metrics are used (and will be ignored here).",
+                  call = call)
     eval_time <- NULL
   }
 
