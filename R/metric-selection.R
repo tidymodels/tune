@@ -96,9 +96,8 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
 
   # If we don't need an eval time but one is passed:
   if (!dyn_metric & !is.null(eval_time)) {
-    cli::cli_warn("Evaluation times are only required when dynmanic or
-                     integrated metrics are selected as the primary metric
-                     (and will be ignored).")
+    cli::cli_warn("An evaluation time is only required when a dynamic 
+                         metric is selected (and {.arg eval_time} will thus be ignored).")
   }
 
   # If we need an eval time, set it to the possible values so that
