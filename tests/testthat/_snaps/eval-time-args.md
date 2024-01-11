@@ -20,7 +20,7 @@
     Code
       res <- fit_resamples(wflow, rs, eval_time = times)
     Condition
-      Warning:
+      Warning in `fit_resamples()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -29,7 +29,7 @@
       set.seed(1)
       res <- tune_grid(wflow_tune, rs, eval_time = times)
     Condition
-      Warning:
+      Warning in `tune_grid()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -38,7 +38,7 @@
       set.seed(1)
       res <- tune_bayes(wflow_tune, rs, iter = 1, eval_time = times)
     Condition
-      Warning:
+      Warning in `tune_bayes()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -46,7 +46,7 @@
     Code
       res <- last_fit(wflow, split, eval_time = times)
     Condition
-      Warning:
+      Warning in `last_fit()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 # eval time are checked for classification models
@@ -71,7 +71,7 @@
     Code
       res <- fit_resamples(wflow, rs, eval_time = times)
     Condition
-      Warning:
+      Warning in `fit_resamples()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -80,7 +80,7 @@
       set.seed(1)
       res <- tune_grid(wflow_tune, rs, eval_time = times)
     Condition
-      Warning:
+      Warning in `tune_grid()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -89,7 +89,7 @@
       set.seed(1)
       res <- tune_bayes(wflow_tune, rs, iter = 1, eval_time = times)
     Condition
-      Warning:
+      Warning in `tune_bayes()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 ---
@@ -97,7 +97,7 @@
     Code
       res <- last_fit(wflow, split, eval_time = times)
     Condition
-      Warning:
+      Warning in `last_fit()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
 
 # eval time inputs are checked for censored regression models
@@ -382,7 +382,7 @@
     Code
       res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 2)
     Condition
-      Warning:
+      Warning in `fit_resamples()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
@@ -445,7 +445,7 @@
     Code
       res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 1:3)
     Condition
-      Warning:
+      Warning in `fit_resamples()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
@@ -562,7 +562,7 @@
     Code
       res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 2)
     Condition
-      Warning:
+      Warning in `tune_grid()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
@@ -625,7 +625,7 @@
     Code
       res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 1:3)
     Condition
-      Warning:
+      Warning in `tune_grid()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
@@ -737,7 +737,7 @@
     Code
       res <- last_fit(wflow, split, metrics = met_stc, eval_time = 2)
     Condition
-      Warning:
+      Warning in `last_fit()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
@@ -800,7 +800,7 @@
     Code
       res <- last_fit(wflow, split, metrics = met_stc, eval_time = 1:3)
     Condition
-      Warning:
+      Warning in `last_fit()`:
       Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
 
 ---
