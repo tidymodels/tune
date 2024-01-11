@@ -2,17 +2,11 @@
 
     Code
       stc_one <- first_eval_time(met_stc, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       stc_multi <- first_eval_time(met_stc, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
@@ -42,49 +36,31 @@
 
     Code
       int_1 <- first_eval_time(met_int, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       int_multi <- first_eval_time(met_int, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 # selecting single eval time - mixed metric sets - static first
 
     Code
       stc_1 <- first_eval_time(met_mix_stc, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       stc_multi <- first_eval_time(met_mix_stc, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       stc_1 <- first_eval_time(met_mix_stc_all, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       stc_multi <- first_eval_time(met_mix_stc_all, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 # selecting single eval time - mixed metric sets - dynamic first
 
@@ -122,9 +98,6 @@
 
     Code
       first_eval_time(met_mix_int, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
     Output
       NULL
 
@@ -132,17 +105,11 @@
 
     Code
       int_multi <- first_eval_time(met_mix_int, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 ---
 
     Code
       first_eval_time(met_mix_int_all, eval_time = times_1)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
     Output
       NULL
 
@@ -150,9 +117,6 @@
 
     Code
       int_multi <- first_eval_time(met_mix_int_all, eval_time = times_2)
-    Condition
-      Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
 
 # selecting an evaluation time
 
