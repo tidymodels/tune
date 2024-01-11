@@ -1,16 +1,6 @@
 # selecting single eval time - pure metric sets
 
     Code
-      stc_one <- first_eval_time(met_stc, eval_time = times_1)
-
----
-
-    Code
-      stc_multi <- first_eval_time(met_stc, eval_time = times_2)
-
----
-
-    Code
       first_eval_time(met_dyn, eval_time = NULL)
     Condition
       Error in `first_eval_time()`:
@@ -31,36 +21,6 @@
     Condition
       Warning:
       2 evaluation times were specified during tuning; the first (0.714) will be used.
-
----
-
-    Code
-      int_1 <- first_eval_time(met_int, eval_time = times_1)
-
----
-
-    Code
-      int_multi <- first_eval_time(met_int, eval_time = times_2)
-
-# selecting single eval time - mixed metric sets - static first
-
-    Code
-      stc_1 <- first_eval_time(met_mix_stc, eval_time = times_1)
-
----
-
-    Code
-      stc_multi <- first_eval_time(met_mix_stc, eval_time = times_2)
-
----
-
-    Code
-      stc_1 <- first_eval_time(met_mix_stc_all, eval_time = times_1)
-
----
-
-    Code
-      stc_multi <- first_eval_time(met_mix_stc_all, eval_time = times_2)
 
 # selecting single eval time - mixed metric sets - dynamic first
 
@@ -93,30 +53,6 @@
     Condition
       Warning:
       2 evaluation times were specified during tuning; the first (0.714) will be used.
-
-# selecting single eval time - mixed metric sets - integrated first
-
-    Code
-      first_eval_time(met_mix_int, eval_time = times_1)
-    Output
-      NULL
-
----
-
-    Code
-      int_multi <- first_eval_time(met_mix_int, eval_time = times_2)
-
----
-
-    Code
-      first_eval_time(met_mix_int_all, eval_time = times_1)
-    Output
-      NULL
-
----
-
-    Code
-      int_multi <- first_eval_time(met_mix_int_all, eval_time = times_2)
 
 # selecting an evaluation time
 
