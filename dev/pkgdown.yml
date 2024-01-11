@@ -5,7 +5,7 @@ articles:
   acquisition_functions: acquisition_functions.html
   optimizations: extras/optimizations.html
   tune: tune.html
-last_built: 2024-01-11T02:25Z
+last_built: 2024-01-11T14:33Z
 urls:
   reference: https://tune.tidymodels.org/reference
   article: https://tune.tidymodels.org/articles
