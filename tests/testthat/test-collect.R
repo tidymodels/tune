@@ -121,8 +121,8 @@ test_that("classification class predictions, averaged", {
   expect_false(dplyr::is_grouped_df(res))
   expect_named(
     collect_predictions(svm_tune, summarize = TRUE),
-    c(".row", "cost value", "Class", ".config", ".iter", ".pred_Class1",
-      ".pred_Class2", ".pred_class")
+    c(".pred_Class1", ".pred_Class2", ".pred_class", ".row", "cost value",
+      "Class", ".config", ".iter")
   )
 
   # pull out an example to test

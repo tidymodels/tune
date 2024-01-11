@@ -152,7 +152,7 @@ collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = 
   } else {
     x <- collector(x, coll_col = coll_col)
   }
-  x
+  dplyr::relocate(x, dplyr::starts_with(".pred"))
 }
 
 filter_predictions <- function(x, parameters) {
@@ -333,17 +333,34 @@ surv_summarize <- function(x, param, y) {
     nest_cols <- c(".eval_time", ".pred_survival", ".weight_censored")
     tmp <-
       x %>%
-      dplyr::select(.pred, .config, .row) %>%
+      dplyr::select(.pred,
+                    .config,
+                    .row,
+                    dplyr::any_of(param),
+                    dplyr::any_of(".iter")) %>%
       tidyr::unnest(.pred) %>%
       dplyr::summarize(
         .pred_survival = mean(.pred_survival, na.rm = TRUE),
         .weight_censored = mean(.weight_censored, na.rm = TRUE),
-        .by = c(.row, .eval_time, .config, dplyr::any_of(".iter"))
+        .by = c(
+          .row,
+          .eval_time,
+          .config,
+          dplyr::any_of(param),
+          dplyr::any_of(".iter")
+        )
       ) %>%
-      tidyr::nest(.pred = c(dplyr::all_of(nest_cols)), .by = c(.row, .config)) %>%
-      dplyr::relocate(.pred)
+      tidyr::nest(
+        .pred = c(dplyr::all_of(nest_cols)),
+        .by = c(.row, .config,
+                dplyr::any_of(param),
+                dplyr::any_of(".iter"))
+      )
+
     if (!is.null(res)) {
-      res <- dplyr::full_join(tmp, res, by = c(".row", ".config"))
+      dot_iter <- grep("\\.iter", nms, value = TRUE)
+      res <-
+        dplyr::full_join(tmp, res, by = c(".row", ".config", param, dot_iter))
     } else {
       res <- tmp
     }
