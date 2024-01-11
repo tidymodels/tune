@@ -27,12 +27,12 @@ test_that("selecting single eval time - pure metric sets", {
   expect_null(first_eval_time(met_stc, eval_time = NULL))
   expect_null(first_eval_time(met_stc, "concordance_survival", eval_time = NULL))
 
-  expect_snapshot(
+  expect_silent(
     stc_one <- first_eval_time(met_stc, eval_time = times_1)
   )
   expect_null(stc_one)
 
-  expect_snapshot(
+  expect_silent(
     stc_multi <- first_eval_time(met_stc, eval_time = times_2)
   )
   expect_null(stc_multi)
@@ -66,12 +66,12 @@ test_that("selecting single eval time - pure metric sets", {
     first_eval_time(met_int, "brier_survival_integrated", eval_time = NULL)
   )
 
-  expect_snapshot(
+  expect_silent(
     int_1 <- first_eval_time(met_int, eval_time = times_1)
   )
   expect_null(int_1)
 
-  expect_snapshot(
+  expect_silent(
     int_multi <- first_eval_time(met_int, eval_time = times_2)
   )
   expect_null(int_multi)
@@ -92,12 +92,12 @@ test_that("selecting single eval time - mixed metric sets - static first", {
     first_eval_time(met_mix_stc, eval_time = NULL)
   )
 
-  expect_snapshot(
+  expect_silent(
     stc_1 <- first_eval_time(met_mix_stc, eval_time = times_1)
   )
   expect_null(stc_1)
 
-  expect_snapshot(
+  expect_silent(
     stc_multi <- first_eval_time(met_mix_stc, eval_time = times_2)
   )
   expect_null(stc_multi)
@@ -109,12 +109,12 @@ test_that("selecting single eval time - mixed metric sets - static first", {
     first_eval_time(met_mix_stc_all, eval_time = NULL)
   )
 
-  expect_snapshot(
+  expect_silent(
     stc_1 <- first_eval_time(met_mix_stc_all, eval_time = times_1)
   )
   expect_null(stc_1)
 
-  expect_snapshot(
+  expect_silent(
     stc_multi <- first_eval_time(met_mix_stc_all, eval_time = times_2)
   )
   expect_null(stc_multi)
@@ -180,10 +180,10 @@ test_that("selecting single eval time - mixed metric sets - integrated first", {
 
   expect_null(first_eval_time(met_mix_int, eval_time = NULL))
 
-  expect_snapshot(
+  expect_silent(
     first_eval_time(met_mix_int, eval_time = times_1)
   )
-  expect_snapshot(
+  expect_silent(
     int_multi <- first_eval_time(met_mix_int, eval_time = times_2)
   )
   expect_null(int_multi)
@@ -193,10 +193,10 @@ test_that("selecting single eval time - mixed metric sets - integrated first", {
 
   expect_null(first_eval_time(met_mix_int_all, eval_time = NULL))
 
-  expect_snapshot(
+  expect_silent(
     first_eval_time(met_mix_int_all, eval_time = times_1)
   )
-  expect_snapshot(
+  expect_silent(
     int_multi <- first_eval_time(met_mix_int_all, eval_time = times_2)
   )
   expect_null(int_multi)

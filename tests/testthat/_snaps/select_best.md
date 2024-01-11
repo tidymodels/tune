@@ -221,7 +221,7 @@
       Warning in `show_best()`:
       No value of `metric` was given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
@@ -266,7 +266,7 @@
       show_best(surv_res, metric = "brier_survival")
     Condition
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
@@ -285,7 +285,7 @@
       Warning in `show_best()`:
       2 metrics were given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
@@ -316,7 +316,7 @@
       show_best(surv_res, metric = "concordance_survival", eval_time = 1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
@@ -333,7 +333,7 @@
       show_best(surv_res, metric = "concordance_survival", eval_time = 1.1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
@@ -358,7 +358,7 @@
       show_best(surv_res, metric = "brier_survival", eval_time = 1:2)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (1) will be used.
+      2 evaluation times are available; the first (1) will be used.
     Output
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time   mean     n std_err .config       
@@ -375,7 +375,7 @@
       show_best(surv_res, metric = "brier_survival", eval_time = 3:4)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (3) will be used.
+      2 evaluation times are available; the first (3) will be used.
       Error in `show_best()`:
       ! Evaluation time 3 is not in the results.
 
@@ -387,7 +387,7 @@
       Warning in `select_best()`:
       No value of `metric` was given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -420,7 +420,7 @@
       select_best(surv_res, metric = "brier_survival")
     Condition
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -435,7 +435,7 @@
       Warning in `select_best()`:
       2 metrics were given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -458,7 +458,7 @@
       select_best(surv_res, metric = "concordance_survival", eval_time = 1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -471,7 +471,7 @@
       select_best(surv_res, metric = "concordance_survival", eval_time = 1.1)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -492,7 +492,7 @@
       select_best(surv_res, metric = "brier_survival", eval_time = 1:2)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (1) will be used.
+      2 evaluation times are available; the first (1) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -505,7 +505,7 @@
       select_best(surv_res, metric = "brier_survival", eval_time = 3:4)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (3) will be used.
+      2 evaluation times are available; the first (3) will be used.
       Error in `show_best()`:
       ! Evaluation time 3 is not in the results.
 
@@ -517,7 +517,7 @@
       Warning in `select_by_one_std_err()`:
       No value of `metric` was given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -550,7 +550,7 @@
       select_by_one_std_err(surv_res, metric = "brier_survival", trees)
     Condition
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -566,7 +566,7 @@
       Warning in `select_by_one_std_err()`:
       2 metrics were given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -590,7 +590,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -604,7 +604,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -627,7 +627,7 @@
       trees)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (1) will be used.
+      2 evaluation times are available; the first (1) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -641,7 +641,7 @@
       trees)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (3) will be used.
+      2 evaluation times are available; the first (3) will be used.
       Error in `select_by_one_std_err()`:
       ! Evaluation time 3 is not in the results.
 
@@ -653,7 +653,7 @@
       Warning in `select_by_pct_loss()`:
       No value of `metric` was given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -686,7 +686,7 @@
       select_by_pct_loss(surv_res, metric = "brier_survival", trees)
     Condition
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -702,7 +702,7 @@
       Warning in `select_by_pct_loss()`:
       2 metrics were given; "brier_survival" will be used.
       Warning:
-      4 evaluation times were specified during tuning; the first (10) will be used.
+      4 evaluation times are available; the first (10) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -726,7 +726,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -740,7 +740,7 @@
         trees)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are selected as the primary metric (and will be ignored).
+      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -761,7 +761,7 @@
       select_by_pct_loss(surv_res, metric = "brier_survival", eval_time = 1:2, trees)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (1) will be used.
+      2 evaluation times are available; the first (1) will be used.
     Output
       # A tibble: 1 x 2
         trees .config             
@@ -774,7 +774,7 @@
       select_by_pct_loss(surv_res, metric = "brier_survival", eval_time = 3:4, trees)
     Condition
       Warning:
-      2 evaluation times were specified during tuning; the first (3) will be used.
+      2 evaluation times are available; the first (3) will be used.
       Error in `select_by_pct_loss()`:
       ! Evaluation time 3 is not in the results.
 
