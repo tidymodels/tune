@@ -6,7 +6,7 @@
 #' fitting.
 #'
 #' To know if your model is capable of using case weights, create a model spec
-#' and run `parsnip:::case_weights_allowed(model_spec)`.
+#' and test it using [parsnip::case_weights_allowed()].
 #'
 #' To use them, you will need a numeric column in your data set that has been
 #' passed through either [hardhat:: importance_weights()] or

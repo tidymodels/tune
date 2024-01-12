@@ -214,7 +214,7 @@ fitting and evaluation whereas Importance weights are only used during
 fitting.
 
 To know if your model is capable of using case weights, create a model spec
-and run \code{parsnip:::case_weights_allowed(model_spec)}.
+and test it using \code{\link[parsnip:case_weights_allowed]{parsnip::case_weights_allowed()}}.
 
 To use them, you will need a numeric column in your data set that has been
 passed through either \code{\link[hardhat:importance_weights]{hardhat:: importance_weights()}} or
