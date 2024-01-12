@@ -20,7 +20,7 @@
       linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr,
       eval_time = 1)
     Condition
-      Warning:
+      Warning in `tune_grid()`:
       Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
       Warning:
       No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
