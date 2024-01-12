@@ -152,7 +152,13 @@ collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = 
   } else {
     x <- collector(x, coll_col = coll_col)
   }
-  dplyr::relocate(x, dplyr::starts_with(".pred"))
+
+  x <- dplyr::relocate(x, dplyr::starts_with(".pred"))
+  if (".pred_class" %in% names(x)) {
+    x <- dplyr::relocate(x, dplyr::any_of(".pred_class"))
+  }
+
+  x
 }
 
 filter_predictions <- function(x, parameters) {
