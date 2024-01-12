@@ -38,7 +38,7 @@
 #'  and the final tuning parameters (if any) have been finalized. The next step
 #'  would be to fit using the entire training set and verify performance using
 #'  the test data.
-#'
+#' @template case-weights
 #' @section See also:
 #'
 #' [last_fit()] is closely related to [fit_best()]. They both
@@ -52,6 +52,7 @@
 #' a fitted workflow, [last_fit()] gives you the performance results. If you
 #' want the fitted workflow, you can extract it from the result of [last_fit()]
 #' via [extract_workflow()][extract_workflow.tune_results].
+#'
 #'
 #' @return A single row tibble that emulates the structure of `fit_resamples()`.
 #' However, a list column called `.workflow` is also attached with the fitted
