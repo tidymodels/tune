@@ -2,7 +2,7 @@
 #' Some models can utilize case weights during training. tidymodels currently
 #' supports two types of case weights: importance weights (doubles) and
 #' frequency weights (integers). Frequency weights are used during model
-#' fitting and evaluation whereas Importance weights are only used during
+#' fitting and evaluation, whereas importance weights are only used during
 #' fitting.
 #'
 #' To know if your model is capable of using case weights, create a model spec
