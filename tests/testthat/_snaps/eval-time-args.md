@@ -177,7 +177,7 @@
       check_eval_time_arg(2, met_stc)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
     Output
       NULL
 
@@ -248,7 +248,7 @@
       check_eval_time_arg(1:3, met_stc)
     Condition
       Warning:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
     Output
       NULL
 
@@ -383,7 +383,7 @@
       res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 2)
     Condition
       Warning in `fit_resamples()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
@@ -446,7 +446,7 @@
       res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 1:3)
     Condition
       Warning in `fit_resamples()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
@@ -563,7 +563,7 @@
       res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 2)
     Condition
       Warning in `tune_grid()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
@@ -626,7 +626,7 @@
       res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 1:3)
     Condition
       Warning in `tune_grid()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
@@ -738,7 +738,7 @@
       res <- last_fit(wflow, split, metrics = met_stc, eval_time = 2)
     Condition
       Warning in `last_fit()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
@@ -801,7 +801,7 @@
       res <- last_fit(wflow, split, metrics = met_stc, eval_time = 1:3)
     Condition
       Warning in `last_fit()`:
-      Evaluation times are only required when dynmanic or integrated metrics are used (and will be ignored here).
+      Evaluation times are only required when dynamic or integrated metrics are used (and will be ignored here).
 
 ---
 
