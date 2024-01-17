@@ -37,6 +37,8 @@
 
 * `autoplot()` will now meaningfully error if only 1 grid point is present, rather than producing a plot. (#775)
 
+* Added notes on case weight usage to several functions (#805)
+
 # tune 1.1.2
 
 * `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).

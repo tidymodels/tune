@@ -58,6 +58,30 @@ resamples. It does not perform any tuning (see \code{\link[=tune_grid]{tune_grid
 \code{\link[=tune_bayes]{tune_bayes()}} for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples.
 }
+\section{Case Weights}{
+
+Some models can utilize case weights during training. tidymodels currently
+supports two types of case weights: importance weights (doubles) and
+frequency weights (integers). Frequency weights are used during model
+fitting and evaluation, whereas importance weights are only used during
+fitting.
+
+To know if your model is capable of using case weights, create a model spec
+and test it using \code{\link[parsnip:case_weights_allowed]{parsnip::case_weights_allowed()}}.
+
+To use them, you will need a numeric column in your data set that has been
+passed through either \code{\link[hardhat:importance_weights]{hardhat:: importance_weights()}} or
+\code{\link[hardhat:frequency_weights]{hardhat::frequency_weights()}}.
+
+For functions such as \code{\link[=fit_resamples]{fit_resamples()}} and the \verb{tune_*()} functions, the
+model must be contained inside of a \code{\link[workflows:workflow]{workflows::workflow()}}. To declare that
+case weights are used, invoke \code{\link[workflows:add_case_weights]{workflows::add_case_weights()}} with the
+corresponding (unquoted) column name.
+
+From there, the packages will appropriately handle the weights during model
+fitting and (if appropriate) performance estimation.
+}
+
 \section{Performance Metrics}{
 
 

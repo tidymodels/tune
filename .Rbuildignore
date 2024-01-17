@@ -17,3 +17,4 @@ _cache$
 ^inst/test_catalog.R
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
+^man-roxygen$

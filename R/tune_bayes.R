@@ -136,6 +136,9 @@
 #' time in the training data. For many non-parametric models, the results beyond
 #' the largest time corresponding to an event are constant (or `NA`).
 #'
+
+#' @template case-weights
+#'
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
 #' library(rsample)
