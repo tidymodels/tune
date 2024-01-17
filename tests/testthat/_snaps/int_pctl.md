@@ -6,6 +6,14 @@
       Warning:
       Recommend at least 1000 non-missing bootstrap resamples for terms: `rmse`, `rsq`.
 
+---
+
+    Code
+      int_pctl(lm_res, times = 2000, metrics = "rmse")
+    Condition
+      Error in `int_pctl()`:
+      ! `metrics` should be a yardstick `metric_set()`.
+
 # percentile intervals - last fit
 
     Code
