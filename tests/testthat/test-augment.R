@@ -26,6 +26,10 @@ test_that("augment fit_resamples", {
   expect_true(sum(names(aug_1) == ".resid") == 0)
   expect_s3_class_bare_tibble(aug_1)
 
+  expect_true(names(aug_1)[1] == ".pred_class")
+  expect_true(names(aug_1)[2] == ".pred_Class1")
+  expect_true(names(aug_1)[3] == ".pred_Class2")
+
   expect_identical(
     rle(grepl("^\\.", names(aug_1)))$values,
     c(TRUE, FALSE)
@@ -60,6 +64,10 @@ test_that("augment fit_resamples", {
   expect_true(sum(names(aug_2) == ".pred_Class2") == 1)
   expect_s3_class_bare_tibble(aug_2)
 
+  expect_true(names(aug_2)[1] == ".pred_class")
+  expect_true(names(aug_2)[2] == ".pred_Class1")
+  expect_true(names(aug_2)[3] == ".pred_Class2")
+
   expect_identical(
     rle(grepl("^\\.", names(aug_2)))$values,
     c(TRUE, FALSE)
@@ -92,6 +100,8 @@ test_that("augment tune_grid", {
   expect_true(sum(names(aug_1) == ".pred") == 1)
   expect_true(sum(names(aug_1) == ".resid") == 1)
   expect_s3_class_bare_tibble(aug_1)
+
+  expect_true(names(aug_1)[1] == ".pred")
 
   expect_identical(
     rle(grepl("^\\.", names(aug_1)))$values,
@@ -134,6 +144,8 @@ test_that("augment tune_grid", {
   expect_true(sum(names(aug_3) == ".pred") == 1)
   expect_true(sum(names(aug_3) == ".resid") == 1)
   expect_s3_class_bare_tibble(aug_3)
+
+  expect_true(names(aug_3)[1] == ".pred")
 })
 
 
@@ -153,6 +165,10 @@ test_that("augment last_fit", {
   expect_true(sum(names(aug_1) == ".pred_Class1") == 1)
   expect_true(sum(names(aug_1) == ".pred_Class2") == 1)
   expect_s3_class_bare_tibble(aug_1)
+
+  expect_true(names(aug_1)[1] == ".pred_class")
+  expect_true(names(aug_1)[2] == ".pred_Class1")
+  expect_true(names(aug_1)[3] == ".pred_Class2")
 
   expect_identical(
     rle(grepl("^\\.", names(aug_1)))$values,
