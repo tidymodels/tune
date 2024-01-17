@@ -18,5 +18,5 @@
 #' corresponding (unquoted) column name.
 #'
 #' From there, the packages will appropriately handle the weights during model
-#' fit and (if appropriate) performance estimation.
+#' fitting and (if appropriate) performance estimation.
 #'
