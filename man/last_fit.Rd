@@ -82,7 +82,7 @@ the test data.
 Some models can utilize case weights during training. tidymodels currently
 supports two types of case weights: importance weights (doubles) and
 frequency weights (integers). Frequency weights are used during model
-fitting and evaluation whereas Importance weights are only used during
+fitting and evaluation, whereas importance weights are only used during
 fitting.
 
 To know if your model is capable of using case weights, create a model spec
@@ -98,7 +98,7 @@ case weights are used, invoke \code{\link[workflows:add_case_weights]{workflows:
 corresponding (unquoted) column name.
 
 From there, the packages will appropriately handle the weights during model
-fit and (if appropriate) performance estimation.
+fitting and (if appropriate) performance estimation.
 }
 
 \section{See also}{

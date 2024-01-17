@@ -35,6 +35,8 @@
 #'   wflow_fit <- fit(wflow, data_set)
 #' }
 #'
+#' @template case-weights
+#'
 #' @inheritSection last_fit See also
 #'
 #' @examplesIf tune:::should_run_examples()
