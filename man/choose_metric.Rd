@@ -2,6 +2,7 @@
 % Please edit documentation in R/metric-selection.R
 \name{choose_metric}
 \alias{choose_metric}
+\alias{check_metric_in_tune_results}
 \alias{choose_eval_time}
 \alias{first_metric}
 \alias{first_eval_time}
@@ -11,6 +12,8 @@
 \title{Tools for selecting metrics and evaluation times}
 \usage{
 choose_metric(x, metric, ..., call = rlang::caller_env())
+
+check_metric_in_tune_results(mtr_info, metric, call = rlang::caller_env())
 
 choose_eval_time(x, metric, eval_time = NULL, ..., call = rlang::caller_env())
 
