@@ -60,9 +60,9 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
   metric
 }
 
-check_metric_in_tune_results <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
-  rlang::check_dots_empty()
-
+#' @rdname choose_metric
+#' @export
+check_metric_in_tune_results <- function(mtr_info, metric, call = rlang::caller_env()) {
   if (!any(mtr_info$metric == metric)) {
     cli::cli_abort("{.val {metric}} was not in the metric set. Please choose
                     from: {.val {mtr_info$metric}}.", call = call)
