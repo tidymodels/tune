@@ -27,6 +27,8 @@ test_that("augment fit_resamples", {
   expect_s3_class_bare_tibble(aug_1)
 
   expect_true(names(aug_1)[1] == ".pred_class")
+  expect_true(names(aug_1)[2] == ".pred_Class1")
+  expect_true(names(aug_1)[3] == ".pred_Class2")
 
   expect_identical(
     rle(grepl("^\\.", names(aug_1)))$values,
@@ -63,6 +65,8 @@ test_that("augment fit_resamples", {
   expect_s3_class_bare_tibble(aug_2)
 
   expect_true(names(aug_2)[1] == ".pred_class")
+  expect_true(names(aug_2)[2] == ".pred_Class1")
+  expect_true(names(aug_2)[3] == ".pred_Class2")
 
   expect_identical(
     rle(grepl("^\\.", names(aug_2)))$values,
@@ -163,6 +167,8 @@ test_that("augment last_fit", {
   expect_s3_class_bare_tibble(aug_1)
 
   expect_true(names(aug_1)[1] == ".pred_class")
+  expect_true(names(aug_1)[2] == ".pred_Class1")
+  expect_true(names(aug_1)[3] == ".pred_Class2")
 
   expect_identical(
     rle(grepl("^\\.", names(aug_1)))$values,
