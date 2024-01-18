@@ -23,9 +23,16 @@ test_that("percentile intervals - resamples only", {
     .upper = numeric(0),
     .config = character(0)
   )
-  expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 200))
+  set.seed(1)
+  expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 500))
   expect_equal(int_res_1[0,], template)
   expect_equal(nrow(int_res_1), 2)
+
+  # check to make sure that alpha works
+  set.seed(1)
+  expect_snapshot(int_res_2 <- int_pctl(lm_res, times = 500, alpha = .25))
+  expect_true(int_res_2$.lower[1] > int_res_1$.lower[1])
+  expect_true(int_res_2$.upper[1] < int_res_1$.upper[1])
 
 })
 
