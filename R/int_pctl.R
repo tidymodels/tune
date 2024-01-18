@@ -162,6 +162,8 @@ fake_term <- function(x) {
   x
 }
 
+# tests in extratests
+# nocov start
 int_pctl_surv <- function(x, allow_par, alpha) {
   `%op%` <- get_int_p_operator(allow_par)
 
@@ -184,6 +186,7 @@ int_pctl_surv <- function(x, allow_par, alpha) {
     dplyr::rename(term = old_term) %>%
     dplyr::relocate(term, dplyr::any_of(".eval_time"))
 }
+# nocov end
 
 # ------------------------------------------------------------------------------
 
