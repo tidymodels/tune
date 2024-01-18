@@ -73,8 +73,27 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
 
   rlang::check_dots_empty()
 
-  # check eval_time and set default when null
-  eval_time <- default_eval_time(eval_time, .data$.metrics[[1]])
+  if (is.null(metrics)) {
+    metrics <- .get_tune_metrics(.data)
+  }
+
+  if (is.null(eval_time)) {
+    eval_time <- .get_tune_eval_times(.data)
+    eval_time <- maybe_choose_eval_time(.data, metrics, eval_time)
+  } else {
+    eval_time <- unique(eval_time)
+    check_eval_time_in_tune_results(.data, eval_time)
+    num_times <- length(eval_time)
+    max_times_req <- req_eval_times(metrics)
+    cls <- tibble::as_tibble(metrics)$class
+    uni_cls <- sort(unique(cls))
+    if (max_times_req > num_times) {
+      cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+                   required for the metric type(s) requested: {.val {uni_cls}}.
+                   Only {num_times} unique time{?s} {?was/were} given.")
+    }
+  }
+
   .data$.predictions <- filter_predictions_by_eval_time(.data$.predictions, eval_time)
 
   y_nm <- outcome_names(.data)
@@ -89,7 +108,8 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
   res <-
     purrr::map2(
       config_keys, sample.int(10000, p),
-      ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par, event_level)
+      ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par,
+                                   event_level, eval_time, alpha)
     ) %>%
     purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
@@ -106,7 +126,8 @@ get_int_p_operator <- function(allow = TRUE) {
   res
 }
 
-boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par, event_level) {
+boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par,
+                                       event_level, eval_time, alpha) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
@@ -120,14 +141,13 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
       .errorhandling = "pass",
       .packages = c("tune", "rsample")
     )  %op% {
-      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
+      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, eval_time)
     }
-
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
-    res <- int_pctl_dyn_surv(rs, allow_par)
+    res <- int_pctl_surv(rs, allow_par, alpha)
   } else {
-    res <- rsample::int_pctl(rs, .metrics)
+    res <- rsample::int_pctl(rs, .metrics, alpha = alpha)
   }
   res %>%
     dplyr::mutate(.estimator = "bootstrap") %>%
@@ -137,29 +157,33 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
     cbind(config)
 }
 
-# We have to do the analysis separately for each evaluation time.
-int_pctl_dyn_surv <- function(x, allow_par) {
+fake_term <- function(x) {
+  x$term <- paste(x$term, format(1:nrow(x)))
+  x
+}
+
+int_pctl_surv <- function(x, allow_par, alpha) {
   `%op%` <- get_int_p_operator(allow_par)
-  times <- unique(x$.metrics[[1]]$.eval_time)
+
+  # int_pctl() expects terms to be unique. For (many) survival models, the
+  # metrics are a combination of the metric name and the evaluation time.
+  # We'll make a phony term value, run int_pctl(), then merge the original values
+  # back in.
+  met_key <- x$.metrics[[1]]
+  met_key$estimate <- NULL
+  met_key$old_term <- met_key$term
+  met_key$order <- 1:nrow(met_key)
+  met_key <- fake_term(met_key)
+
+  x$.metrics <- purrr::map(x$.metrics, ~ fake_term(.x))
   res <-
-    foreach::foreach(
-      i = seq_along(times),
-      .errorhandling = "pass",
-      .packages = c("purrr", "rsample", "dplyr")
-    )  %op% {
-      int_pctl_by_eval_time(times[i], x)
-    }
-  dplyr::bind_rows(res)
+    rsample::int_pctl(x, .metrics, alpha = alpha) %>%
+    dplyr::full_join(met_key, by = "term") %>%
+    dplyr::arrange(order) %>%
+    dplyr::select(-term, -order) %>%
+    dplyr::rename(term = old_term) %>%
+    dplyr::relocate(term, dplyr::any_of(".eval_time"))
 }
-
-int_pctl_by_eval_time <- function(time, x) {
-  times <- dplyr::tibble(.eval_time = time)
-  x$.metrics <- purrr::map(x$.metrics, ~ dplyr::inner_join(.x, times, by = ".eval_time"))
-  rsample::int_pctl(x, .metrics) %>%
-    dplyr::mutate(.eval_time = time) %>%
-    dplyr::relocate(.eval_time, .after = term)
-}
-
 
 # ------------------------------------------------------------------------------
 
@@ -180,7 +204,7 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
 }
 
 # Compute metrics for a specific configuration
-comp_metrics <- function(split, y, metrics, event_level) {
+comp_metrics <- function(split, y, metrics, event_level, eval_time) {
   dat <- rsample::analysis(split)
   info <- metrics_info(metrics)
 
@@ -192,7 +216,7 @@ comp_metrics <- function(split, y, metrics, event_level) {
       outcome_name = y,
       event_level = event_level,
       metrics_info = info,
-      eval_time = NA  # TODO I don't think that this is used in the function
+      eval_time = eval_time
     )
 
   res %>%
