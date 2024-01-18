@@ -22,11 +22,13 @@
       Warning:
       Recommend at least 1000 non-missing bootstrap resamples for term `mae`.
 
-# percentile intervals - tuning
+# percentile intervals - grid + bayes tuning
 
     Code
-      int_res_1 <- int_pctl(c5_res, eval_time = 2)
-    Condition
-      Warning:
-      The 'eval_time' argument is not needed for this data set.
+      int_res_1 <- int_pctl(c5_res)
+
+# percentile intervals - grid tuning with validation set
+
+    Code
+      int_res_1 <- int_pctl(c5_res)
 
