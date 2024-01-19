@@ -3,7 +3,7 @@
     Code
       first_eval_time(met_dyn, eval_time = NULL)
     Condition
-      Error in `first_eval_time()`:
+      Error:
       ! A single evaluation time is required to use this metric.
 
 ---
@@ -11,7 +11,7 @@
     Code
       first_eval_time(met_dyn, "brier_survival", eval_time = NULL)
     Condition
-      Error in `first_eval_time()`:
+      Error:
       ! A single evaluation time is required to use this metric.
 
 ---
@@ -27,7 +27,7 @@
     Code
       first_eval_time(met_mix_dyn, eval_time = NULL)
     Condition
-      Error in `first_eval_time()`:
+      Error:
       ! A single evaluation time is required to use this metric.
 
 ---
@@ -43,7 +43,7 @@
     Code
       first_eval_time(met_mix_dyn_all, eval_time = NULL)
     Condition
-      Error in `first_eval_time()`:
+      Error:
       ! A single evaluation time is required to use this metric.
 
 ---
