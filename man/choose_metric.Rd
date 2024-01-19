@@ -19,7 +19,13 @@ choose_eval_time(x, metric, eval_time = NULL, ..., call = rlang::caller_env())
 
 first_metric(mtr_set)
 
-first_eval_time(mtr_set, metric = NULL, eval_time = NULL)
+first_eval_time(
+  mtr_set,
+  metric = NULL,
+  eval_time = NULL,
+  ...,
+  call = rlang::caller_env()
+)
 
 .filter_perf_metrics(x, metric, eval_time)
 
@@ -31,6 +37,8 @@ check_eval_time_arg(eval_time, mtr_set, call = rlang::caller_env())
 \item{x}{An object with class \code{tune_results}.}
 
 \item{metric}{A character value for which metric is being used.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{call}{The call to be displayed in warnings or errors.}
 

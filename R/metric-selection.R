@@ -7,6 +7,7 @@
 #' @param wflow A [workflows::workflow()].
 #' @param x An object with class `tune_results`.
 #' @param call The call to be displayed in warnings or errors.
+#' @inheritParams rlang::args_dots_empty
 #' @details
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
