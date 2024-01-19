@@ -289,6 +289,27 @@ time in the training data. For many non-parametric models, the results beyond
 the largest time corresponding to an event are constant (or <code>NA</code>).</p>
     </div>
     <div class="section level2">
+    <h2 id="case-weights">Case Weights<a class="anchor" aria-label="anchor" href="#case-weights"></a></h2>
+    
+
+<p>Some models can utilize case weights during training. tidymodels currently
+supports two types of case weights: importance weights (doubles) and
+frequency weights (integers). Frequency weights are used during model
+fitting and evaluation, whereas importance weights are only used during
+fitting.</p>
+<p>To know if your model is capable of using case weights, create a model spec
+and test it using <code><a href="https://parsnip.tidymodels.org/reference/case_weights_allowed.html" class="external-link">parsnip::case_weights_allowed()</a></code>.</p>
+<p>To use them, you will need a numeric column in your data set that has been
+passed through either <code><a href="https://hardhat.tidymodels.org/reference/importance_weights.html" class="external-link">hardhat:: importance_weights()</a></code> or
+<code><a href="https://hardhat.tidymodels.org/reference/frequency_weights.html" class="external-link">hardhat::frequency_weights()</a></code>.</p>
+<p>For functions such as <code><a href="fit_resamples.html">fit_resamples()</a></code> and the <code>tune_*()</code> functions, the
+model must be contained inside of a <code><a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflows::workflow()</a></code>. To declare that
+case weights are used, invoke <code><a href="https://workflows.tidymodels.org/reference/add_case_weights.html" class="external-link">workflows::add_case_weights()</a></code> with the
+corresponding (unquoted) column name.</p>
+<p>From there, the packages will appropriately handle the weights during model
+fitting and (if appropriate) performance estimation.</p>
+    </div>
+    <div class="section level2">
     <h2 id="extracting-information">Extracting Information<a class="anchor" aria-label="anchor" href="#extracting-information"></a></h2>
     
 
