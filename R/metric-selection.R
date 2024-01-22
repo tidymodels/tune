@@ -180,10 +180,10 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., call 
     )
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
-    print_time <- format(eval_time, digits = 3)
+    print_time <- format(eval_time, digits = 5)
     cli::cli_warn(
       "{.val {num_times}} evaluation times are available; the first
-      ({print_time}) will be used.",
+      will be used (i.e. {.code eval_time = {print_time}}).",
       call = call
     )
   }
