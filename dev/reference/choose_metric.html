@@ -77,7 +77,13 @@
 <span></span>
 <span><span class="fu">first_metric</span><span class="op">(</span><span class="va">mtr_set</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">first_eval_time</span><span class="op">(</span><span class="va">mtr_set</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">first_eval_time</span><span class="op">(</span></span>
+<span>  <span class="va">mtr_set</span>,</span>
+<span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">.filter_perf_metrics</span><span class="op">(</span><span class="va">x</span>, <span class="va">metric</span>, <span class="va">eval_time</span><span class="op">)</span></span>
 <span></span>
@@ -94,6 +100,10 @@
 
 <dt>metric</dt>
 <dd><p>A character value for which metric is being used.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>These dots are for future extensions and must be empty.</p></dd>
 
 
 <dt>call</dt>
