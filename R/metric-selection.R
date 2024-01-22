@@ -174,9 +174,9 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
     cli::cli_abort("A single evaluation time is required to use this metric.")
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
-    print_time <- format(eval_time, digits = 3)
+    print_time <- paste0("`eval_time = ", format(eval_time, digits = 5), "`")
     cli::cli_warn("{.val {num_times}} evaluation times are available; the first
-                   ({print_time}) will be used.")
+                   will be used (i.e. {print_time}).")
   }
 
   eval_time
