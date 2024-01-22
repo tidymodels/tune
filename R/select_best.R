@@ -33,6 +33,7 @@
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 #' values should be consistent with the values used to create `x`.
+#' @param call The call to be shown in errors and warnings.
 #' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
 #' @details
@@ -75,11 +76,13 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ...) {
-  metric_info <- choose_metric(x, metric)
+show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..., call = rlang::current_env()) {
+  rlang::check_dots_empty()
+
+  metric_info <- choose_metric(x, metric, call = call)
   metric <- metric_info$metric
 
-  eval_time <- choose_eval_time(x, metric, eval_time = eval_time)
+  eval_time <- choose_eval_time(x, metric, eval_time = eval_time, call = call)
 
   summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
@@ -111,12 +114,14 @@ select_best.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
+  rlang::check_dots_empty()
+
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 
   param_names <- .get_tune_parameter_names(x)
 
-  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time)
+  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time, call = rlang::current_env())
   res %>% dplyr::select(dplyr::all_of(param_names), .config)
 
 }
