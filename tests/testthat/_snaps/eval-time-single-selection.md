@@ -20,7 +20,7 @@
       dyn_multi <- first_eval_time(met_dyn, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times are available; the first (0.714) will be used.
+      2 evaluation times are available; the first will be used (i.e. `eval_time = 0.71429`).
 
 # selecting single eval time - mixed metric sets - dynamic first
 
@@ -36,7 +36,7 @@
       dyn_multi <- first_eval_time(met_mix_dyn, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times are available; the first (0.714) will be used.
+      2 evaluation times are available; the first will be used (i.e. `eval_time = 0.71429`).
 
 ---
 
@@ -52,7 +52,7 @@
       dyn_multi <- first_eval_time(met_mix_dyn_all, eval_time = times_2)
     Condition
       Warning:
-      2 evaluation times are available; the first (0.714) will be used.
+      2 evaluation times are available; the first will be used (i.e. `eval_time = 0.71429`).
 
 # selecting an evaluation time
 
@@ -60,7 +60,7 @@
       choose_eval_time(surv_res, "brier_survival")
     Condition
       Warning:
-      4 evaluation times are available; the first (10) will be used.
+      4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       [1] 10
 
