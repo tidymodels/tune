@@ -220,7 +220,7 @@
     Condition
       Warning in `show_best()`:
       No value of `metric` was given; "brier_survival" will be used.
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 5 x 8
@@ -265,7 +265,7 @@
     Code
       show_best(surv_res, metric = "brier_survival")
     Condition
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 5 x 8
@@ -284,7 +284,7 @@
     Condition
       Warning in `show_best()`:
       2 metrics were given; "brier_survival" will be used.
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 5 x 8
@@ -357,7 +357,7 @@
     Code
       show_best(surv_res, metric = "brier_survival", eval_time = 1:2)
     Condition
-      Warning:
+      Warning in `show_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 5 x 8
@@ -374,7 +374,7 @@
     Code
       show_best(surv_res, metric = "brier_survival", eval_time = 3:4)
     Condition
-      Warning:
+      Warning in `show_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 3`).
       Error in `show_best()`:
       ! Evaluation time 3 is not in the results.
@@ -386,7 +386,7 @@
     Condition
       Warning in `select_best()`:
       No value of `metric` was given; "brier_survival" will be used.
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -419,7 +419,7 @@
     Code
       select_best(surv_res, metric = "brier_survival")
     Condition
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -434,7 +434,7 @@
     Condition
       Warning in `select_best()`:
       2 metrics were given; "brier_survival" will be used.
-      Warning:
+      Warning in `show_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -491,7 +491,7 @@
     Code
       select_best(surv_res, metric = "brier_survival", eval_time = 1:2)
     Condition
-      Warning:
+      Warning in `show_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
@@ -504,7 +504,7 @@
     Code
       select_best(surv_res, metric = "brier_survival", eval_time = 3:4)
     Condition
-      Warning:
+      Warning in `show_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 3`).
       Error in `show_best()`:
       ! Evaluation time 3 is not in the results.
@@ -516,7 +516,7 @@
     Condition
       Warning in `select_by_one_std_err()`:
       No value of `metric` was given; "brier_survival" will be used.
-      Warning:
+      Warning in `select_by_one_std_err()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -549,7 +549,7 @@
     Code
       select_by_one_std_err(surv_res, metric = "brier_survival", trees)
     Condition
-      Warning:
+      Warning in `select_by_one_std_err()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -565,7 +565,7 @@
     Condition
       Warning in `select_by_one_std_err()`:
       2 metrics were given; "brier_survival" will be used.
-      Warning:
+      Warning in `select_by_one_std_err()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -626,7 +626,7 @@
       select_by_one_std_err(surv_res, metric = "brier_survival", eval_time = 1:2,
       trees)
     Condition
-      Warning:
+      Warning in `select_by_one_std_err()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
@@ -640,7 +640,7 @@
       select_by_one_std_err(surv_res, metric = "brier_survival", eval_time = 3:4,
       trees)
     Condition
-      Warning:
+      Warning in `select_by_one_std_err()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 3`).
       Error in `select_by_one_std_err()`:
       ! Evaluation time 3 is not in the results.
@@ -652,7 +652,7 @@
     Condition
       Warning in `select_by_pct_loss()`:
       No value of `metric` was given; "brier_survival" will be used.
-      Warning:
+      Warning in `select_by_pct_loss()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -685,7 +685,7 @@
     Code
       select_by_pct_loss(surv_res, metric = "brier_survival", trees)
     Condition
-      Warning:
+      Warning in `select_by_pct_loss()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -701,7 +701,7 @@
     Condition
       Warning in `select_by_pct_loss()`:
       2 metrics were given; "brier_survival" will be used.
-      Warning:
+      Warning in `select_by_pct_loss()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -760,7 +760,7 @@
     Code
       select_by_pct_loss(surv_res, metric = "brier_survival", eval_time = 1:2, trees)
     Condition
-      Warning:
+      Warning in `select_by_pct_loss()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
@@ -773,7 +773,7 @@
     Code
       select_by_pct_loss(surv_res, metric = "brier_survival", eval_time = 3:4, trees)
     Condition
-      Warning:
+      Warning in `select_by_pct_loss()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 3`).
       Error in `select_by_pct_loss()`:
       ! Evaluation time 3 is not in the results.
