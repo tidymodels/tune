@@ -46,8 +46,10 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
 
   # check/determine best settings
   if (is.null(parameters)) {
-    obj_fun <- .get_tune_metric_names(x)[1]
-    parameters <- select_best(x, metric = obj_fun)
+    metric_info <- choose_metric(x, metric = NULL)
+    metric <- metric_info$metric
+    
+    parameters <- select_best(x, metric)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
       rlang::abort("'parameters' should be a single row data frame")
