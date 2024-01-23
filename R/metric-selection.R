@@ -7,6 +7,7 @@
 #' @param wflow A [workflows::workflow()].
 #' @param x An object with class `tune_results`.
 #' @param call The call to be displayed in warnings or errors.
+#' @inheritParams rlang::args_dots_empty
 #' @details
 #' These are developer-facing functions used to compute and validate choices
 #' for performance metrics. For survival analysis models, there are similar
@@ -125,7 +126,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call 
     eval_time <- .get_tune_eval_times(x)
   }
 
-  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time)
+  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time, call = call)
 
   check_eval_time_in_tune_results(x, eval_time, call = call)
 
@@ -181,7 +182,9 @@ first_metric <- function(mtr_set) {
 # such as tune_bayes().
 #' @rdname choose_metric
 #' @export
-first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
+first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty()
+
   num_times <- length(eval_time)
 
   if (is.null(metric)) {
@@ -205,12 +208,18 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL) {
 
   # checks for dynamic metrics
   if (num_times == 0) {
-    cli::cli_abort("A single evaluation time is required to use this metric.")
+    cli::cli_abort(
+      "A single evaluation time is required to use this metric.",
+      call = call
+    )
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
-    print_time <- paste0("`eval_time = ", format(eval_time, digits = 5), "`")
-    cli::cli_warn("{.val {num_times}} evaluation times are available; the first
-                   will be used (i.e. {print_time}).")
+    print_time <- format(eval_time, digits = 5)
+    cli::cli_warn(
+      "{.val {num_times}} evaluation times are available; the first
+      will be used (i.e. {.code eval_time = {print_time}}).",
+      call = call
+    )
   }
 
   eval_time
