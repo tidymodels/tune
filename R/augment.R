@@ -10,6 +10,10 @@
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
 #' objects only). If `NULL`, `select_best(x)` will be used.
+#' @param evel_time A numeric vector of time points where dynamic event time
+#' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+#' values should be consistent with the values used to create `x`. Used in
+#' `select_best(x)` if `parameters` is `NULL`.
 #' @param ... Not currently used.
 #' @return A data frame with one or more additional columns for model
 #' predictions.
@@ -32,7 +36,7 @@
 #' results.
 #'
 #' @export
-augment.tune_results <- function(x, parameters = NULL, ...) {
+augment.tune_results <- function(x, parameters = NULL, eval_time = NULL, ...) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
@@ -48,8 +52,8 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
   if (is.null(parameters)) {
     metric_info <- choose_metric(x, metric = NULL)
     metric <- metric_info$metric
-    
-    parameters <- select_best(x, metric)
+
+    parameters <- select_best(x, metric = metric, eval_time = eval_time)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
       rlang::abort("'parameters' should be a single row data frame")

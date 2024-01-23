@@ -6,7 +6,7 @@
 \alias{augment.last_fit}
 \title{Augment data with holdout predictions}
 \usage{
-\method{augment}{tune_results}(x, parameters = NULL, ...)
+\method{augment}{tune_results}(x, parameters = NULL, eval_time = NULL, ...)
 
 \method{augment}{resample_results}(x, ...)
 
@@ -22,6 +22,11 @@ tuning parameters should be used to generate the predictions (for \verb{tune_*()
 objects only). If \code{NULL}, \code{select_best(x)} will be used.}
 
 \item{...}{Not currently used.}
+
+\item{evel_time}{A numeric vector of time points where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{x}. Used in
+\code{select_best(x)} if \code{parameters} is \code{NULL}.}
 }
 \value{
 A data frame with one or more additional columns for model
