@@ -17,6 +17,14 @@
 # augment tune_grid
 
     Code
+      aug_1 <- augment(fit_1)
+    Condition
+      Warning in `augment()`:
+      No value of `metric` was given; "rmse" will be used.
+
+---
+
+    Code
       augment(fit_1, parameters = list(cost = 3))
     Condition
       Error in `augment()`:
@@ -37,6 +45,14 @@
     Condition
       Error in `augment()`:
       ! The only two arguments for `augment.tune_results()` are 'x' and 'parameters'. Others were passed: 'cost'
+
+---
+
+    Code
+      aug_3 <- augment(fit_2)
+    Condition
+      Warning in `augment()`:
+      No value of `metric` was given; "rmse" will be used.
 
 # augment last_fit
 

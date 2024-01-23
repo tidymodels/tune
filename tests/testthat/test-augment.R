@@ -16,6 +16,7 @@ test_that("augment fit_resamples", {
     bt1,
     control = control_resamples(save_pred = TRUE)
   )
+
   aug_1 <- augment(fit_1)
   expect_true(nrow(aug_1) == nrow(two_class_dat))
   expect_equal(aug_1[["A"]], two_class_dat[["A"]])
@@ -93,7 +94,10 @@ test_that("augment tune_grid", {
     grid = data.frame(cost = 1:3),
     control = control_grid(save_pred = TRUE)
   )
-  aug_1 <- augment(fit_1)
+
+  expect_snapshot(
+    aug_1 <- augment(fit_1)
+  )
   expect_true(nrow(aug_1) == nrow(mtcars))
   expect_equal(aug_1[["wt"]], mtcars[["wt"]])
   expect_true(sum(!is.na(aug_1$.pred)) == nrow(mtcars))
@@ -137,7 +141,10 @@ test_that("augment tune_grid", {
       control = control_bayes(save_pred = TRUE)
     )
   })
-  aug_3 <- augment(fit_2)
+
+  expect_snapshot(
+    aug_3 <- augment(fit_2)
+  )
   expect_true(nrow(aug_3) == nrow(mtcars))
   expect_equal(aug_3[["wt"]], mtcars[["wt"]])
   expect_true(sum(!is.na(aug_3$.pred)) == nrow(mtcars))
