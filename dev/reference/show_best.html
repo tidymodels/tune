@@ -24,7 +24,7 @@ performance is within some acceptable limit.'><meta property="og:image" content=
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9012</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,14 @@ performance is within some acceptable limit.</p>
 <span><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">show_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, n <span class="op">=</span> <span class="fl">5</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">show_best</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">current_env</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -155,6 +162,10 @@ a warning is issued).</p></dd>
 <dd><p>A numeric vector of time points where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create <code>x</code>.</p></dd>
+
+
+<dt>call</dt>
+<dd><p>The call to be shown in errors and warnings.</p></dd>
 
 
 <dt>limit</dt>
