@@ -10,7 +10,7 @@
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
 #' objects only). If `NULL`, `select_best(x)` will be used.
-#' @param evel_time A numeric vector of time points where dynamic event time
+#' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 #' values should be consistent with the values used to create `x`. Used in
 #' `select_best(x)` if `parameters` is `NULL`.

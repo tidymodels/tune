@@ -21,12 +21,12 @@ objects should have used the option \code{save_pred = TRUE}.}
 tuning parameters should be used to generate the predictions (for \verb{tune_*()}
 objects only). If \code{NULL}, \code{select_best(x)} will be used.}
 
-\item{...}{Not currently used.}
-
-\item{evel_time}{A numeric vector of time points where dynamic event time
+\item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{x}. Used in
 \code{select_best(x)} if \code{parameters} is \code{NULL}.}
+
+\item{...}{Not currently used.}
 }
 \value{
 A data frame with one or more additional columns for model
