@@ -106,6 +106,14 @@ int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
     }
   }
 
+  #  TODO Changes in https://github.com/tidymodels/rsample/pull/465
+  #  will effect how these computations are done since they will
+  #  compute intervals for `terms` as well as any columns that begin
+  #  with a period. This will simply the code considerably for
+  #  survival and non-survival models. We will make this version
+  #  compatible with the future rsample version (but will factor
+  #  this code later).
+
   res <-
     purrr::map2(
       config_keys, sample.int(10000, p),
@@ -166,7 +174,6 @@ fake_term <- function(x) {
 # tests in extratests
 # nocov start
 int_pctl_surv <- function(x, allow_par, alpha) {
-  `%op%` <- get_int_p_operator(allow_par)
 
   # int_pctl() expects terms to be unique. For (many) survival models, the
   # metrics are a combination of the metric name and the evaluation time.
@@ -179,9 +186,13 @@ int_pctl_surv <- function(x, allow_par, alpha) {
   met_key <- fake_term(met_key)
 
   x$.metrics <- purrr::map(x$.metrics, ~ fake_term(.x))
-  res <-
-    rsample::int_pctl(x, .metrics, alpha = alpha) %>%
-    dplyr::full_join(met_key, by = "term") %>%
+  res <- rsample::int_pctl(x, .metrics, alpha = alpha)
+
+  merge_keys <- c("term", grep("^\\.", names(res), value = TRUE))
+  merge_keys <- intersect(merge_keys, names(met_key))
+
+  res <- res %>%
+    dplyr::full_join(met_key, by = merge_keys) %>%
     dplyr::arrange(order) %>%
     dplyr::select(-term, -order) %>%
     dplyr::rename(term = old_term) %>%
