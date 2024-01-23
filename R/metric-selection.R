@@ -74,10 +74,23 @@ check_metric_in_tune_results <- function(mtr_info, metric, call = rlang::caller_
   invisible(NULL)
 }
 
+check_enough_eval_times <- function(eval_time, metrics) {
+  num_times <- length(eval_time)
+  max_times_req <- req_eval_times(metrics)
+  cls <- tibble::as_tibble(metrics)$class
+  uni_cls <- sort(unique(cls))
+  if (max_times_req > num_times) {
+    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+                   required for the metric type(s) requested: {.val {uni_cls}}.
+                   Only {num_times} unique time{?s} {?was/were} given.")
+  }
+
+  invisible(NULL)
+}
+
 contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
-
 
 # choose_eval_time() is called by show_best() and select_best()
 #' @rdname choose_metric
@@ -301,15 +314,10 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   eval_time <- .filter_eval_time(eval_time)
 
   num_times <- length(eval_time)
-
   max_times_req <- req_eval_times(mtr_set)
 
-  if (max_times_req > num_times) {
-    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
-                   required for the metric type(s) requested: {.val {uni_cls}}.
-                   Only {num_times} unique time{?s} {?was/were} given.",
-                   call = call)
-  }
+  # Are there at least a minimal number of evaluation times?
+  check_enough_eval_times(eval_time, mtr_set)
 
   if (max_times_req == 0 & num_times > 0) {
     cli::cli_warn("Evaluation times are only required when dynamic or

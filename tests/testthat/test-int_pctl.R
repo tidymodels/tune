@@ -29,7 +29,7 @@ test_that("percentile intervals - resamples only", {
   expect_equal(nrow(int_res_1), 2)
 
   expect_snapshot(int_pctl(lm_res, times = 2000, metrics = "rmse"), error = TRUE)
-  
+
   # check to make sure that alpha works
   set.seed(1)
   expect_snapshot(int_res_2 <- int_pctl(lm_res, times = 500, alpha = .25))
