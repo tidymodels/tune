@@ -386,7 +386,7 @@
     Condition
       Warning in `select_best()`:
       No value of `metric` was given; "brier_survival" will be used.
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -419,7 +419,7 @@
     Code
       select_best(surv_res, metric = "brier_survival")
     Condition
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -434,7 +434,7 @@
     Condition
       Warning in `select_best()`:
       2 metrics were given; "brier_survival" will be used.
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
@@ -457,7 +457,7 @@
     Code
       select_best(surv_res, metric = "concordance_survival", eval_time = 1)
     Condition
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
@@ -470,7 +470,7 @@
     Code
       select_best(surv_res, metric = "concordance_survival", eval_time = 1.1)
     Condition
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
     Output
       # A tibble: 1 x 2
@@ -483,7 +483,7 @@
     Code
       select_best(surv_res, metric = "brier_survival", eval_time = 1.1)
     Condition
-      Error in `show_best()`:
+      Error in `select_best()`:
       ! Evaluation time 1.1 is not in the results.
 
 ---
@@ -491,7 +491,7 @@
     Code
       select_best(surv_res, metric = "brier_survival", eval_time = 1:2)
     Condition
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
@@ -504,9 +504,9 @@
     Code
       select_best(surv_res, metric = "brier_survival", eval_time = 3:4)
     Condition
-      Warning in `show_best()`:
+      Warning in `select_best()`:
       2 evaluation times are available; the first will be used (i.e. `eval_time = 3`).
-      Error in `show_best()`:
+      Error in `select_best()`:
       ! Evaluation time 3 is not in the results.
 
 # select_by_one_std_err with survival models

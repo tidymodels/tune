@@ -19,7 +19,14 @@ show_best(x, ...)
 
 \method{show_best}{default}(x, ...)
 
-\method{show_best}{tune_results}(x, metric = NULL, n = 5, eval_time = NULL, ...)
+\method{show_best}{tune_results}(
+  x,
+  metric = NULL,
+  n = 5,
+  eval_time = NULL,
+  ...,
+  call = rlang::current_env()
+)
 
 select_best(x, ...)
 
@@ -61,6 +68,8 @@ a warning is issued).}
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{x}.}
+
+\item{call}{The call to be shown in errors and warnings.}
 
 \item{limit}{The limit of loss of performance that is acceptable (in percent
 units). See details below.}
