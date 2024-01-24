@@ -175,59 +175,6 @@ paste_param_by <- function(x) {
   x
 }
 
-# TODO remove this.
-default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
-  if (!any(names(x) == ".eval_time")) {
-    if (!is.null(eval_time)) {
-      rlang::warn("The 'eval_time' argument is not needed for this data set.")
-    }
-    return(NULL)
-  }
-  if (is.null(eval_time)) {
-    eval_time <- middle_eval_time(x$.eval_time)
-    msg <- cli::pluralize("No evaluation time was set; a value of {eval_time} was used.")
-    rlang::warn(msg, call = call)
-  }
-  eval_time
-}
-
-# TODO remove this.
-filter_plot_eval_time <- function(x, eval_time) {
-  if (!any(names(x) == ".eval_time")) {
-    return(x)
-  }
-  if (all(is.na(x$.eval_time))) {
-    return(x %>% dplyr::select(-.eval_time))
-  }
-
-  eval_time <- default_eval_time(eval_time, x)
-
-  times <- x$.eval_time
-  is_miss_time <- is.na(times)
-  times <- unique(times[!is_miss_time])
-  time_dif <- setdiff(eval_time, times)
-  if (length(time_dif) > 0) {
-    bad_times <- paste0(format(time_dif, digits = 3), collapse = ", ")
-    msg <- cli::pluralize("One or more chosen evaluation times were not in the results: {bad_times}")
-    rlang::warn(msg)
-  }
-  if (any(is_miss_time)) {
-    keep_times <- tibble::tibble(.eval_time = c(eval_time, NA))
-  } else {
-    keep_times <- tibble::tibble(.eval_time = c(eval_time))
-  }
-  x <-
-    dplyr::inner_join(x, keep_times, by = ".eval_time") %>%
-    dplyr::mutate(
-      nice_time = format(.eval_time, digits = 3),
-      time_metric = paste0(.metric, " @", nice_time),
-      .metric = ifelse(is.na(.eval_time), .metric, time_metric)
-    ) %>%
-    dplyr::select(-nice_time, -time_metric, -.eval_time)
-  x
-}
-
-
 # ------------------------------------------------------------------------------
 
 is_factorial <- function(x, cutoff = 0.95) {
