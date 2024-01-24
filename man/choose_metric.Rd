@@ -4,6 +4,7 @@
 \alias{choose_metric}
 \alias{check_metric_in_tune_results}
 \alias{choose_eval_time}
+\alias{maybe_choose_eval_time}
 \alias{first_metric}
 \alias{first_eval_time}
 \alias{.filter_perf_metrics}
@@ -15,7 +16,15 @@ choose_metric(x, metric, ..., call = rlang::caller_env())
 
 check_metric_in_tune_results(mtr_info, metric, call = rlang::caller_env())
 
-choose_eval_time(x, metric, eval_time = NULL, ..., call = rlang::caller_env())
+choose_eval_time(
+  x,
+  metric,
+  eval_time = NULL,
+  quietly = FALSE,
+  call = rlang::caller_env()
+)
+
+maybe_choose_eval_time(x, mtr_set, eval_time)
 
 first_metric(mtr_set)
 
@@ -70,5 +79,10 @@ to the function used to produce \code{x} (such as \code{\link[=tune_grid]{tune_g
 
 If a time is required and none is given, the first value in the vector
 originally given in the \code{eval_time} argument is used (with a warning).
+
+\code{maybe_choose_eval_time()} is for cases where multiple evaluation times are
+acceptable but you need to choose a good default. The "maybe" is because
+the function that would use \code{maybe_choose_eval_time()} can accept multiple
+metrics (like \code{\link[=autoplot]{autoplot()}}).
 }
 \keyword{internal}

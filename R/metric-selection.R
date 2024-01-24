@@ -27,6 +27,10 @@
 #' If a time is required and none is given, the first value in the vector
 #' originally given in the `eval_time` argument is used (with a warning).
 #'
+#' `maybe_choose_eval_time()` is for cases where multiple evaluation times are
+#' acceptable but you need to choose a good default. The "maybe" is because
+#' the function that would use `maybe_choose_eval_time()` can accept multiple
+#' metrics (like [autoplot()]).
 #' @keywords internal
 #' @export
 choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
@@ -71,22 +75,34 @@ check_metric_in_tune_results <- function(mtr_info, metric, call = rlang::caller_
   invisible(NULL)
 }
 
+check_enough_eval_times <- function(eval_time, metrics) {
+  num_times <- length(eval_time)
+  max_times_req <- req_eval_times(metrics)
+  cls <- tibble::as_tibble(metrics)$class
+  uni_cls <- sort(unique(cls))
+  if (max_times_req > num_times) {
+    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+                   required for the metric type(s) requested: {.val {uni_cls}}.
+                   Only {num_times} unique time{?s} {?was/were} given.")
+  }
+
+  invisible(NULL)
+}
+
 contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
 
-
 # choose_eval_time() is called by show_best() and select_best()
 #' @rdname choose_metric
 #' @export
-choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::caller_env()) {
-  rlang::check_dots_empty()
+choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
 
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
   if (!contains_survival_metric(mtr_info)) {
-    if (!is.null(eval_time)) {
+    if (!is.null(eval_time) & !quietly) {
       cli::cli_warn("Evaluation times are only required when the model
                      mode is {.val censored regression} (and will be ignored).",
                     call = call)
@@ -97,7 +113,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, ..., call = rlang::cal
   dyn_metric <- is_dyn(mtr_set, metric)
 
   # If we don't need an eval time but one is passed:
-  if (!dyn_metric & !is.null(eval_time)) {
+  if (!dyn_metric & !is.null(eval_time) & !quietly) {
     cli::cli_warn("An evaluation time is only required when a dynamic
                    metric is selected (and {.arg eval_time} will thus be
                    ignored).",
@@ -134,6 +150,24 @@ check_eval_time_in_tune_results <- function(x, eval_time, call = rlang::caller_e
   }
   invisible(NULL)
 }
+
+#' @rdname choose_metric
+#' @export
+maybe_choose_eval_time <- function(x, mtr_set, eval_time) {
+  mtr_info <- tibble::as_tibble(mtr_set)
+  if (any(grepl("integrated", mtr_info$metric))) {
+    return(.get_tune_eval_times(x))
+  }
+  eval_time <- purrr::map(mtr_info$metric, ~ choose_eval_time(x, .x, eval_time = eval_time, quietly = TRUE))
+  no_eval_time <- purrr::map_lgl(eval_time, is.null)
+  if (all(no_eval_time)) {
+    eval_time <- NULL
+  } else {
+    eval_time <- sort(unique(unlist(eval_time)))
+  }
+  eval_time
+}
+
 
 # ------------------------------------------------------------------------------
 
@@ -289,15 +323,10 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   eval_time <- .filter_eval_time(eval_time)
 
   num_times <- length(eval_time)
-
   max_times_req <- req_eval_times(mtr_set)
 
-  if (max_times_req > num_times) {
-    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
-                   required for the metric type(s) requested: {.val {uni_cls}}.
-                   Only {num_times} unique time{?s} {?was/were} given.",
-                   call = call)
-  }
+  # Are there at least a minimal number of evaluation times?
+  check_enough_eval_times(eval_time, mtr_set)
 
   if (max_times_req == 0 & num_times > 0) {
     cli::cli_warn("Evaluation times are only required when dynamic or

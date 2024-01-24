@@ -112,7 +112,7 @@
     Code
       check_eval_time_arg(NULL, met_dyn)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
 
 ---
@@ -120,7 +120,7 @@
     Code
       check_eval_time_arg(NULL, met_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -128,7 +128,7 @@
     Code
       check_eval_time_arg(NULL, met_stc_dyn)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -136,7 +136,7 @@
     Code
       check_eval_time_arg(NULL, met_stc_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -144,7 +144,7 @@
     Code
       check_eval_time_arg(NULL, met_dyn_stc)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -152,7 +152,7 @@
     Code
       check_eval_time_arg(NULL, met_dyn_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -160,7 +160,7 @@
     Code
       check_eval_time_arg(NULL, met_int_stc)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -168,7 +168,7 @@
     Code
       check_eval_time_arg(NULL, met_int_dyn)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -193,7 +193,7 @@
     Code
       check_eval_time_arg(2, met_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -208,7 +208,7 @@
     Code
       check_eval_time_arg(2, met_stc_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -223,7 +223,7 @@
     Code
       check_eval_time_arg(2, met_dyn_int)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -231,7 +231,7 @@
     Code
       check_eval_time_arg(2, met_int_stc)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -239,7 +239,7 @@
     Code
       check_eval_time_arg(2, met_int_dyn)
     Condition
-      Error:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -318,7 +318,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_dyn)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
 
 ---
@@ -326,7 +326,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -334,7 +334,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_stc_dyn)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -342,7 +342,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_stc_int)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -350,7 +350,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_dyn_stc)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -358,7 +358,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_dyn_int)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -366,7 +366,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int_stc)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -374,7 +374,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int_dyn)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -395,7 +395,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int, eval_time = 2)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -408,7 +408,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_stc_int, eval_time = 2)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -421,7 +421,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_dyn_int, eval_time = 2)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -429,7 +429,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int_stc, eval_time = 2)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -437,7 +437,7 @@
     Code
       fit_resamples(wflow, rs, metrics = met_int_dyn, eval_time = 2)
     Condition
-      Error in `fit_resamples()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -498,7 +498,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_dyn)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
 
 ---
@@ -506,7 +506,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -514,7 +514,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_stc_dyn)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -522,7 +522,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_stc_int)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -530,7 +530,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_dyn_stc)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -538,7 +538,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_dyn_int)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -546,7 +546,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int_stc)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -554,7 +554,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int_dyn)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -575,7 +575,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int, eval_time = 2)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -588,7 +588,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_stc_int, eval_time = 2)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -601,7 +601,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_dyn_int, eval_time = 2)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -609,7 +609,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int_stc, eval_time = 2)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -617,7 +617,7 @@
     Code
       tune_grid(wflow_tune, rs, metrics = met_int_dyn, eval_time = 2)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -673,7 +673,7 @@
     Code
       last_fit(wflow, split, metrics = met_dyn)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
 
 ---
@@ -681,7 +681,7 @@
     Code
       last_fit(wflow, split, metrics = met_int)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -689,7 +689,7 @@
     Code
       last_fit(wflow, split, metrics = met_stc_dyn)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -697,7 +697,7 @@
     Code
       last_fit(wflow, split, metrics = met_stc_int)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -705,7 +705,7 @@
     Code
       last_fit(wflow, split, metrics = met_dyn_stc)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -713,7 +713,7 @@
     Code
       last_fit(wflow, split, metrics = met_dyn_int)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -721,7 +721,7 @@
     Code
       last_fit(wflow, split, metrics = met_int_stc)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 0 unique times were given.
 
 ---
@@ -729,7 +729,7 @@
     Code
       last_fit(wflow, split, metrics = met_int_dyn)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 0 unique times were given.
 
 ---
@@ -750,7 +750,7 @@
     Code
       last_fit(wflow, split, metrics = met_int, eval_time = 2)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -763,7 +763,7 @@
     Code
       last_fit(wflow, split, metrics = met_stc_int, eval_time = 2)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -776,7 +776,7 @@
     Code
       last_fit(wflow, split, metrics = met_dyn_int, eval_time = 2)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---
@@ -784,7 +784,7 @@
     Code
       last_fit(wflow, split, metrics = met_int_stc, eval_time = 2)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "integrated_survival_metric" and "static_survival_metric". Only 1 unique time was given.
 
 ---
@@ -792,7 +792,7 @@
     Code
       last_fit(wflow, split, metrics = met_int_dyn, eval_time = 2)
     Condition
-      Error in `last_fit()`:
+      Error in `check_enough_eval_times()`:
       ! At least 2 evaluation times are required for the metric type(s) requested: "dynamic_survival_metric" and "integrated_survival_metric". Only 1 unique time was given.
 
 ---

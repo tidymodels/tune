@@ -3,7 +3,7 @@
     Code
       spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr)
     Condition
-      Error in `tune_grid()`:
+      Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
 
 ---
