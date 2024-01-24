@@ -79,6 +79,7 @@ autoplot.tune_results <-
            metric = NULL,
            width = NULL,
            eval_time = NULL,
+           call = rlang::current_env(),
            ...) {
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
@@ -98,15 +99,15 @@ autoplot.tune_results <-
     }
 
     if (type == "parameters") {
-      p <- plot_param_vs_iter(object)
+      p <- plot_param_vs_iter(object, call)
     } else {
       if (type == "performance") {
-        p <- plot_perf_vs_iter(object, metric, width, eval_time = eval_time)
+        p <- plot_perf_vs_iter(object, metric, width, eval_time = eval_time, call)
       } else {
         if (use_regular_grid_plot(object)) {
-          p <- plot_regular_grid(object, metric = metric, eval_time = eval_time, ...)
+          p <- plot_regular_grid(object, metric = metric, eval_time = eval_time, call, ...)
         } else {
-          p <- plot_marginals(object, metric = metric, eval_time = eval_time)
+          p <- plot_marginals(object, metric = metric, eval_time = eval_time, call)
         }
       }
     }
@@ -161,10 +162,14 @@ get_param_label <- function(x, id_val) {
 
 paste_param_by <- function(x) {
   if (".by" %in% colnames(x)) {
-    x <- x %>% dplyr::mutate(.metric = case_when(
-      !is.na(.by) ~ paste0(.metric, "(", .by, ")"),
-      .default = .metric
-    ))
+    x <-
+      x %>%
+      dplyr::mutate(
+        .metric = case_when(
+          !is.na(.by) ~ paste0(.metric, "(", .by, ")"),
+          .default = .metric
+        )
+      )
   }
 
   x
@@ -186,6 +191,7 @@ default_eval_time <- function(eval_time, x, call = rlang::caller_env()) {
   eval_time
 }
 
+# TODO remove this.
 filter_plot_eval_time <- function(x, eval_time) {
   if (!any(names(x) == ".eval_time")) {
     return(x)
@@ -274,17 +280,20 @@ use_regular_grid_plot <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL) {
+plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
+                              call = rlang::caller_env()) {
   if (is.null(width)) {
     width <- max(x$.iter) / 75
   }
-  x <- estimate_tune_results(x)
-  if (!is.null(metric)) {
-    x <- x %>% dplyr::filter(.metric %in% metric)
-  }
-  x <- paste_param_by(x)
+
+  metric_info <- choose_metric(x, metric, call = call) # TODO add call
+  metric <- metric_info$metric
+
+  eval_time <- choose_eval_time(x, metric, eval_time = eval_time, call = call)# TODO add call
+
+  x <- .filter_perf_metrics(x, metric, eval_time)
   x <- x %>% dplyr::filter(!is.na(mean))
-  x <- filter_plot_eval_time(x, eval_time)
+  x <- paste_param_by(x)
 
   search_iter <-
     x %>%
@@ -314,7 +323,7 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL) 
   p
 }
 
-plot_param_vs_iter <- function(x, eval_time = NULL) {
+plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
@@ -365,7 +374,7 @@ plot_param_vs_iter <- function(x, eval_time = NULL) {
   p
 }
 
-plot_marginals <- function(x, metric = NULL, eval_time = NULL) {
+plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::caller_env()) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
