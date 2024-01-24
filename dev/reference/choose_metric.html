@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9014</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9015</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,15 @@
 <span></span>
 <span><span class="fu">check_metric_in_tune_results</span><span class="op">(</span><span class="va">mtr_info</span>, <span class="va">metric</span>, call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">choose_eval_time</span><span class="op">(</span><span class="va">x</span>, <span class="va">metric</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span>, call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">choose_eval_time</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">metric</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  quietly <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">caller_env</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">maybe_choose_eval_time</span><span class="op">(</span><span class="va">x</span>, <span class="va">mtr_set</span>, <span class="va">eval_time</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">first_metric</span><span class="op">(</span><span class="va">mtr_set</span><span class="op">)</span></span>
 <span></span>
@@ -139,6 +147,10 @@ these metrics, we require a single numeric value that was originally given
 to the function used to produce <code>x</code> (such as <code><a href="tune_grid.html">tune_grid()</a></code>).</p>
 <p>If a time is required and none is given, the first value in the vector
 originally given in the <code>eval_time</code> argument is used (with a warning).</p>
+<p><code>maybe_choose_eval_time()</code> is for cases where multiple evaluation times are
+acceptable but you need to choose a good default. The "maybe" is because
+the function that would use <code>maybe_choose_eval_time()</code> can accept multiple
+metrics (like <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code>).</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
