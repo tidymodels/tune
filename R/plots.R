@@ -333,9 +333,13 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   p <-
     ggplot(x, aes(x = .iter, y = value)) +
     geom_point() +
-    xlab("Iteration") +
-    ylab("") +
-    facet_wrap(~name, scales = "free_y")
+    xlab("Iteration")
+
+  if (length(param_cols) == 1) {
+    p <- p  + ylab(param_cols)
+  } else {
+    p <- p + ylab("") + facet_wrap(~name, scales = "free_y")
+  }
 
   p
 }
