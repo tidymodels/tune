@@ -382,8 +382,11 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
 
   # But there could be NA eval times for non-dynamic metrics
   met <- estimate_tune_results(x) %>% dplyr::filter(.metric %in% metric)
-  if (any(is.na(met$.eval_time))) {
-    eval_time <- unique(c(NA, eval_time))
+
+  if (any(names(met) == ".eval_time")) {
+    if (any(is.na(met$.eval_time))) {
+      eval_time <- unique(c(NA, eval_time))
+    }
   }
   eval_time
 }
