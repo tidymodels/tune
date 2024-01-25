@@ -33,6 +33,8 @@ the entries in \code{.metric} column of \code{collect_metrics(object)}.}
 metrics should be chosen (e.g. the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{object}.}
 
+\item{call}{The call to be displayed in warnings or errors.}
+
 \item{...}{For plots with a regular grid, this is passed to \code{format()} and is
 applied to a parameter used to color points. Otherwise, it is not used.}
 }
