@@ -388,4 +388,13 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
   eval_time
 }
 
-
+check_singular_metric <- function(x, call) {
+  if (all(vctrs::vec_count(x$.metric)$count == 1)) {
+    cli::cli_abort(
+      "Only one observation per metric was present. \\
+      Unable to create meaningful plot.",
+      call = call
+    )
+  }
+  invisible(NULL)
+}

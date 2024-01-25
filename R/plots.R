@@ -356,13 +356,11 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
 
   is_race <- inherits(x, "tune_race")
 
-  x <- collect_metrics(x)
-  if (!is.null(metric)) {
-    x <- x %>% dplyr::filter(.metric %in% metric)
-  }
+  metric <- check_autoplot_metrics(x, metric, call)
+  eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
+
+  x <- process_autoplot_metrics(x, metric, eval_time)
   x <- paste_param_by(x)
-  x <- x %>% dplyr::filter(!is.na(mean))
-  x <- filter_plot_eval_time(x, eval_time)
 
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
@@ -479,27 +477,13 @@ plot_regular_grid <- function(x,
 
   is_race <- inherits(x, "tune_race")
 
-  dat <- collect_metrics(x)
-  if (!is.null(metric)) {
-    dat <- dat %>% dplyr::filter(.metric %in% metric)
-    if (nrow(dat) == 0) {
-      rlang::abort(paste0(
-        "After filtering for metric '", metric, "', there were ",
-        "no data points."
-      ))
-    }
-  }
-  dat <- paste_param_by(dat)
-  dat <- dat %>% dplyr::filter(!is.na(mean))
-  dat <- filter_plot_eval_time(dat, eval_time)
+  metric <- check_autoplot_metrics(x, metric, call)
+  eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
 
-  if (all(vctrs::vec_count(dat$.metric)$count == 1)) {
-    cli::cli_abort(
-      "Only one observation per metric was present. \\
-      Unable to create meaningful plot.",
-      call = call
-    )
-  }
+  dat <- process_autoplot_metrics(x, metric, eval_time)
+  dat <- paste_param_by(dat)
+
+  check_singular_metric(dat, call)
 
   multi_metrics <- length(unique(dat$.metric)) > 1
 
