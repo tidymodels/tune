@@ -375,7 +375,7 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
     if (!any(grepl("survival", metric))){
       return(eval_time)
     }
-    eval_time <- .get_tune_eval_time_target(x)
+    eval_time <- .get_tune_eval_times(x)[1]
   } else {
     check_eval_time_in_tune_results(x, eval_time, call)
   }
