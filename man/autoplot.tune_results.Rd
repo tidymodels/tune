@@ -10,6 +10,7 @@
   metric = NULL,
   width = NULL,
   eval_time = NULL,
+  call = rlang::current_env(),
   ...
 )
 }

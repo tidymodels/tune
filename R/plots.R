@@ -228,7 +228,15 @@ use_regular_grid_plot <- function(x) {
 # ------------------------------------------------------------------------------
 
 process_autoplot_metrics <- function(x, metric, eval_time) {
-  x <- collect_metrics(x) %>%
+  x <- estimate_tune_results(x)
+  # This next line updates the .metric columns to be consistent with what the
+  # metric set produces. For example, in the data, there might be a value of
+  # "demographic_parity" but the metric set knows about
+  # "demographic_parity(cyl)". `paste_param_by()` makes sure that they both
+  # have the same value (if any).
+  x <- paste_param_by(x)
+
+  x <- x %>%
     dplyr::filter(.metric %in% metric) %>%
     dplyr::filter(!is.na(mean))
 
@@ -259,7 +267,6 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
   eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
 
   x <- process_autoplot_metrics(x, metric, eval_time)
-  x <- paste_param_by(x)
 
   search_iter <-
     x %>%
@@ -360,7 +367,6 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
   eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
 
   x <- process_autoplot_metrics(x, metric, eval_time)
-  x <- paste_param_by(x)
 
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
@@ -481,7 +487,6 @@ plot_regular_grid <- function(x,
   eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
 
   dat <- process_autoplot_metrics(x, metric, eval_time)
-  dat <- paste_param_by(dat)
 
   check_singular_metric(dat, call)
 
