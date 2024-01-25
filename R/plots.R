@@ -233,13 +233,32 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
     width <- max(x$.iter) / 75
   }
 
-  metric_info <- choose_metric(x, metric, call = call) # TODO add call
-  metric <- metric_info$metric
+  all_met <- .get_tune_metrics(x)
+  all_info <- tibble::as_tibble(all_met)
+  if (is.null(metric)) {
+    metric <- all_info$metric
+  } else {
+    check_metric_in_tune_results(all_info, metric, call = call)
+  }
 
-  eval_time <- choose_eval_time(x, metric, eval_time = eval_time, call = call)# TODO add call
+  # do we need this?
+  # eval_time <- check_eval_time_arg(eval_time, .get_tune_metrics(x), call)
 
-  x <- .filter_perf_metrics(x, metric, eval_time)
-  x <- x %>% dplyr::filter(!is.na(mean))
+  x <- estimate_tune_results(x) %>%
+    dplyr::filter(.metric %in% metric) %>%
+    dplyr::filter(!is.na(mean))
+
+  if(length(eval_time) > 0) {
+    x <- x %>%
+      filter(.eval_time %in% eval_time) %>%
+      dplyr::mutate(
+        .metric =
+          dplyr::if_else(!is.na(.eval_time),
+                         paste0(.metric, " @", format(.eval_time, digits = 5)),
+                         .metric))
+  }
+
+
   x <- paste_param_by(x)
 
   search_iter <-
