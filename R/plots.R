@@ -227,38 +227,38 @@ use_regular_grid_plot <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
-                              call = rlang::caller_env()) {
-  if (is.null(width)) {
-    width <- max(x$.iter) / 75
-  }
-
-  all_met <- .get_tune_metrics(x)
-  all_info <- tibble::as_tibble(all_met)
-  if (is.null(metric)) {
-    metric <- all_info$metric
-  } else {
-    check_metric_in_tune_results(all_info, metric, call = call)
-  }
-
-  # do we need this?
-  # eval_time <- check_eval_time_arg(eval_time, .get_tune_metrics(x), call)
-
-  x <- estimate_tune_results(x) %>%
+process_autoplot_metrics <- function(x, metric, eval_time) {
+  x <- collect_metrics(x) %>%
     dplyr::filter(.metric %in% metric) %>%
     dplyr::filter(!is.na(mean))
 
-  if(length(eval_time) > 0) {
+  num_eval_times <- length(eval_time[!is.na(eval_time)])
+  has_surv_metric <- any(grepl("survival", metric))
+
+  if(has_surv_metric & num_eval_times > 0) {
     x <- x %>%
-      filter(.eval_time %in% eval_time) %>%
+      dplyr::filter(.eval_time %in% eval_time) %>%
       dplyr::mutate(
         .metric =
           dplyr::if_else(!is.na(.eval_time),
                          paste0(.metric, " @", format(.eval_time, digits = 5)),
                          .metric))
   }
+  x
+}
 
+# ------------------------------------------------------------------------------
 
+plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
+                              call = rlang::caller_env()) {
+  if (is.null(width)) {
+    width <- max(x$.iter) / 75
+  }
+
+  metric <- check_autoplot_metrics(x, metric, call)
+  eval_time <- check_autoplot_eval_times(x, metric, eval_time, call)
+
+  x <- process_autoplot_metrics(x, metric, eval_time)
   x <- paste_param_by(x)
 
   search_iter <-
