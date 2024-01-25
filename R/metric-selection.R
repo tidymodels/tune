@@ -355,14 +355,3 @@ req_eval_times <- function(mtr_set) {
 
   max_req_times
 }
-
-# TODO will be removed shortly
-
-middle_eval_time <- function(x) {
-  x <- x[!is.na(x)]
-  times <- unique(x)
-  med_time <- median(x, na.rm = TRUE)
-  ind <- which.min(abs(times - med_time))
-  eval_time <- times[ind]
-  eval_time
-}
