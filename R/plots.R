@@ -100,6 +100,9 @@ autoplot.tune_results <-
     }
 
     if (type == "parameters") {
+      if (!is.null(eval_time)) {
+        cli::cli_warn("Evaluation times are not required with {.code autoplot(..., type = 'parameters')}.")
+      }
       p <- plot_param_vs_iter(object, call)
     } else {
       if (type == "performance") {
@@ -229,7 +232,11 @@ use_regular_grid_plot <- function(x) {
 # ------------------------------------------------------------------------------
 
 process_autoplot_metrics <- function(x, metric, eval_time) {
+  met_set <- .get_tune_metrics(x)
+  any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(met_set, .x)))
+
   x <- estimate_tune_results(x)
+
   # This next line updates the .metric columns to be consistent with what the
   # metric set produces. For example, in the data, there might be a value of
   # "demographic_parity" but the metric set knows about
@@ -242,9 +249,8 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
     dplyr::filter(!is.na(mean))
 
   num_eval_times <- length(eval_time[!is.na(eval_time)])
-  has_surv_metric <- any(grepl("survival", metric))
 
-  if(has_surv_metric & num_eval_times > 0) {
+  if(any_dyn & num_eval_times > 0) {
     x <- x %>%
       dplyr::filter(.eval_time %in% eval_time) %>%
       dplyr::mutate(
@@ -527,7 +533,7 @@ plot_regular_grid <- function(x,
   # ----------------------------------------------------------------------------
 
   if (g > 5) {
-    return(plot_marginals(x, metric))
+    return(plot_marginals(x, metric, eval_time, call))
   }
 
   # ----------------------------------------------------------------------------
