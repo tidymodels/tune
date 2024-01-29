@@ -14,7 +14,7 @@ set(s))."><meta property="og:image" content="https://tune.tidymodels.org/logo.pn
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9015</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9016</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,9 @@ objects should have used the option <code>save_pred = TRUE</code>.</p></dd>
 <dt>parameters</dt>
 <dd><p>A data frame with a single row that indicates what
 tuning parameters should be used to generate the predictions (for <code>tune_*()</code>
-objects only). If <code>NULL</code>, <code>select_best(x)</code> will be used.</p></dd>
+objects only). If <code>NULL</code>, <code>select_best(x)</code> will be used with the first
+metric and, if applicable, the first evaluation time point, used to
+create <code>x</code>.</p></dd>
 
 
 <dt>...</dt>
