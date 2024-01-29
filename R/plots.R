@@ -347,7 +347,7 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   p <-
     ggplot(x, aes(x = .iter, y = value)) +
     geom_point() +
-    xlab("Iteration") + 
+    xlab("Iteration") +
     scale_x_continuous(breaks = unique(x$.iter))
 
   if (length(param_cols) == 1) {
@@ -640,3 +640,19 @@ plot_regular_grid <- function(x,
 
   p
 }
+
+
+# ------------------------------------------------------------------------------
+
+iter_breaks <- function(x, num = 10) {
+  un_z <- sort(unique(x))
+  n <- length(un_z)
+  if (n < num) {
+    num <- n
+  }
+  brks <- pretty(un_z, n = num)
+  brks <- unique(floor(brks))
+  names(brks) <- attr(brks, "labels")
+  brks
+}
+
