@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9016</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9017</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,6 +88,7 @@
 <li><p><code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code> methods to <code>tune_results</code>, <code>resample_results</code>, and <code>last_fit</code> objects now return prediction results in the first columns (<a href="https://github.com/tidymodels/tune/issues/761" class="external-link">#761</a>).</p></li>
 <li><p><code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> will now meaningfully error if only 1 grid point is present, rather than producing a plot. (<a href="https://github.com/tidymodels/tune/issues/775" class="external-link">#775</a>)</p></li>
 <li><p>Added notes on case weight usage to several functions (<a href="https://github.com/tidymodels/tune/issues/805" class="external-link">#805</a>)</p></li>
+<li><p>For iterative optimization routines, <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> will use integer breaks when <code>type = "performance"</code> or <code>type = "parameters"</code>.</p></li>
 </ul></div>
 </div>
     <div class="section level2">
