@@ -283,7 +283,8 @@ plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
   p <-
     ggplot(x, aes(x = .iter, y = mean)) +
     geom_point() +
-    xlab("Iteration")
+    xlab("Iteration") +
+    scale_x_continuous(breaks = iter_breaks(x$.iter))
 
   if (nrow(search_iter) > 0 & width > 0) {
     p <-
@@ -348,7 +349,7 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
     ggplot(x, aes(x = .iter, y = value)) +
     geom_point() +
     xlab("Iteration") +
-    scale_x_continuous(breaks = unique(x$.iter))
+    scale_x_continuous(breaks = iter_breaks(x$.iter))
 
   if (length(param_cols) == 1) {
     p <- p  + ylab(param_cols)

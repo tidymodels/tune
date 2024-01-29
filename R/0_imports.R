@@ -16,7 +16,7 @@
 #' @importFrom parsnip get_from_env required_pkgs
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
-#' @importFrom ggplot2 facet_grid geom_line aes_string aes_
+#' @importFrom ggplot2 facet_grid geom_line aes_string aes_ scale_x_continuous
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom cli cli_inform cli_warn cli_abort qty
@@ -46,7 +46,8 @@ utils::globalVariables(
     ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type",
     "rowwise", ".best", "location", "msg", "..object", ".eval_time",
     ".pred_survival", ".pred_time", ".weight_censored", "nice_time",
-    "time_metric", ".lower", ".upper", "i", "results", "term", ".alpha", ".method"
+    "time_metric", ".lower", ".upper", "i", "results", "term", ".alpha",
+    ".method", "old_term"
   )
 )
 
