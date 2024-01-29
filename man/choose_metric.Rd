@@ -33,6 +33,7 @@ first_eval_time(
   metric = NULL,
   eval_time = NULL,
   ...,
+  quietly = FALSE,
   call = rlang::caller_env()
 )
 
@@ -53,6 +54,8 @@ check_eval_time_arg(eval_time, mtr_set, call = rlang::caller_env())
 
 \item{eval_time}{An optional vector of times to compute dynamic and/or
 integrated metrics.}
+
+\item{quietly}{Logical. Should warnings be muffled?}
 
 \item{mtr_set}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}.}
 
