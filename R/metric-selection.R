@@ -143,7 +143,7 @@ is_dyn <- function(mtr_set, metric) {
 check_eval_time_in_tune_results <- function(x, eval_time, call = rlang::caller_env()) {
   given_times <- .get_tune_eval_times(x)
   if (!is.null(eval_time)) {
-    if (!any(eval_time == given_times)) {
+    if (!any(eval_time %in% given_times)) {
       print_time <- format(eval_time, digits = 3)
       cli::cli_abort("Evaluation time {print_time} is not in the results.",
                      call = call)
@@ -359,13 +359,48 @@ req_eval_times <- function(mtr_set) {
   max_req_times
 }
 
-# TODO will be removed shortly
+# ------------------------------------------------------------------------------
+# functions for autoplot
 
-middle_eval_time <- function(x) {
-  x <- x[!is.na(x)]
-  times <- unique(x)
-  med_time <- median(x, na.rm = TRUE)
-  ind <- which.min(abs(times - med_time))
-  eval_time <- times[ind]
+check_autoplot_metrics <- function(x, metric, call) {
+  all_met <- .get_tune_metrics(x)
+  all_info <- tibble::as_tibble(all_met)
+  if (is.null(metric)) {
+    metric <- all_info$metric
+  } else {
+    check_metric_in_tune_results(all_info, metric, call = call)
+  }
+  metric
+}
+
+check_autoplot_eval_times <- function(x, metric, eval_time, call) {
+  if (is.null(eval_time)) {
+    if (!any(grepl("survival", metric))) {
+      return(eval_time)
+    }
+    eval_time <- .get_tune_eval_times(x)[1]
+  } else {
+    check_eval_time_in_tune_results(x, eval_time, call)
+  }
+
+  # But there could be NA eval times for non-dynamic metrics
+  met <- estimate_tune_results(x) %>% dplyr::filter(.metric %in% metric)
+
+  if (any(names(met) == ".eval_time")) {
+    if (any(is.na(met$.eval_time))) {
+      eval_time <- unique(c(NA, eval_time))
+    }
+  }
   eval_time
+}
+
+check_singular_metric <- function(x, call) {
+  if (all(vctrs::vec_count(x$.metric)$count == 1)) {
+    cli::cli_abort(
+      "Only one observation per metric was present. \\
+      Unable to create meaningful plot.",
+      call = call
+    )
+  }
+  invisible(NULL)
 }
