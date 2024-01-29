@@ -347,7 +347,8 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   p <-
     ggplot(x, aes(x = .iter, y = value)) +
     geom_point() +
-    xlab("Iteration")
+    xlab("Iteration") + 
+    scale_x_continuous(breaks = unique(x$.iter))
 
   if (length(param_cols) == 1) {
     p <- p  + ylab(param_cols)
