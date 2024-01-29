@@ -9,7 +9,9 @@
 #'  objects should have used the option `save_pred = TRUE`.
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
-#' objects only). If `NULL`, `select_best(x)` will be used.
+#' objects only). If `NULL`, `select_best(x)` will be used with the first 
+#' metric and, if applicable, the first evaluation time point, used to 
+#' create `x`.
 #' @param ... Not currently used.
 #' @return A data frame with one or more additional columns for model
 #' predictions.
@@ -47,7 +49,13 @@ augment.tune_results <- function(x, parameters = NULL, ...) {
   # check/determine best settings
   if (is.null(parameters)) {
     obj_fun <- .get_tune_metric_names(x)[1]
-    parameters <- select_best(x, metric = obj_fun)
+    obj_eval_time <- choose_eval_time(
+      x, 
+      metric = obj_fun, 
+      eval_time = NULL,
+      quietly = TRUE
+    )
+    parameters <- select_best(x, metric = obj_fun, eval_time = obj_eval_time)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
       rlang::abort("'parameters' should be a single row data frame")

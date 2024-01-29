@@ -6,6 +6,7 @@
 #' integrated metrics.
 #' @param wflow A [workflows::workflow()].
 #' @param x An object with class `tune_results`.
+#' @param quietly Logical. Should warnings be muffled?
 #' @param call The call to be displayed in warnings or errors.
 #' @inheritParams rlang::args_dots_empty
 #' @details
@@ -93,7 +94,7 @@ contains_survival_metric <- function(mtr_info) {
   any(grepl("_survival", mtr_info$class))
 }
 
-# choose_eval_time() is called by show_best() and select_best()
+# choose_eval_time() is called by show_best(), select_best(), and augment()
 #' @rdname choose_metric
 #' @export
 choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
@@ -126,7 +127,7 @@ choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call 
     eval_time <- .get_tune_eval_times(x)
   }
 
-  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time, call = call)
+  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time, quietly = quietly, call = call)
 
   check_eval_time_in_tune_results(x, eval_time, call = call)
 
@@ -177,12 +178,12 @@ first_metric <- function(mtr_set) {
   tibble::as_tibble(mtr_set)[1,]
 }
 
-# first_eval_time() is called by show_best() and select_best() (by way of
+# first_eval_time() is called by show_best(), select_best(), and augment() (by way of
 # choose_eval_time()) and directly by functions that need an objective function
 # such as tune_bayes().
 #' @rdname choose_metric
 #' @export
-first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., call = rlang::caller_env()) {
+first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., quietly = FALSE, call = rlang::caller_env()) {
   rlang::check_dots_empty()
 
   num_times <- length(eval_time)
@@ -215,11 +216,13 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., call 
   } else if ( num_times > 1 ) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 5)
-    cli::cli_warn(
-      "{.val {num_times}} evaluation times are available; the first
-      will be used (i.e. {.code eval_time = {print_time}}).",
-      call = call
-    )
+    if (!quietly) {
+      cli::cli_warn(
+        "{.val {num_times}} evaluation times are available; the first
+        will be used (i.e. {.code eval_time = {print_time}}).",
+        call = call
+      )
+    }
   }
 
   eval_time
