@@ -255,9 +255,12 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
       dplyr::filter(.eval_time %in% eval_time) %>%
       dplyr::mutate(
         .metric =
-          dplyr::if_else(!is.na(.eval_time),
-                         paste0(.metric, " @", format(.eval_time, digits = 5)),
-                         .metric))
+          dplyr::if_else(
+            condition = !is.na(.eval_time),
+            true = paste0(.metric, " @", format(.eval_time, digits = 5)),
+            false = .metric
+          )
+      )
   }
   x
 }

@@ -375,7 +375,7 @@ check_autoplot_metrics <- function(x, metric, call) {
 
 check_autoplot_eval_times <- function(x, metric, eval_time, call) {
   if (is.null(eval_time)) {
-    if (!any(grepl("survival", metric))){
+    if (!any(grepl("survival", metric))) {
       return(eval_time)
     }
     eval_time <- .get_tune_eval_times(x)[1]
