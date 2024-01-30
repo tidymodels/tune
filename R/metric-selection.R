@@ -367,9 +367,8 @@ check_autoplot_metrics <- function(x, metric, call) {
   all_info <- tibble::as_tibble(all_met)
   if (is.null(metric)) {
     metric <- all_info$metric
-  } else {
-    check_metric_in_tune_results(all_info, metric, call = call)
   }
+  check_metric_in_tune_results(all_info, metric, call = call)
   metric
 }
 
@@ -380,6 +379,14 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
     }
     eval_time <- .get_tune_eval_times(x)[1]
   } else {
+    any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(.get_tune_metrics(x), .x)))
+    if (!any_dyn) {
+      cli::cli_warn("Evaluation times are only required when the results of a \\
+                     dynamic survival metric are being visualized (and will be \\
+                     ignored).",
+                    call = call)
+      eval_time <- NULL
+    }
     check_eval_time_in_tune_results(x, eval_time, call)
   }
 
