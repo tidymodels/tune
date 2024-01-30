@@ -159,14 +159,14 @@ get_param_label <- function(x, id_val) {
   res
 }
 
-# when visualizing fairness metrics, collapse the
+# When visualizing fairness metrics, collapse the
 # `.metric` and `.by` columns into one string, e.g.
-# `demographic_parity(gender)`. otherwise, `.by` would
+# `demographic_parity(gender)`. Otherwise, `.by` would
 # be ignored, so the same fairness metric applied to
 # different data-columns (e.g. `demographic_parity(gender)` and
 # `demographic_parity(race)`) would be obscured in output.
 #
-# for non-fairness metrics (i.e. observations with `is.na(.by)`),
+# For non-fairness metrics (i.e. observations with `is.na(.by)`),
 # the `.metric` column is unaffected.
 paste_param_by <- function(x) {
   if (".by" %in% colnames(x)) {
