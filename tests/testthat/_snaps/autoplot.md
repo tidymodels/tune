@@ -26,3 +26,11 @@
       Error in `autoplot()`:
       ! Only one observation per metric was present. Unable to create meaningful plot.
 
+# evaluation time warning for non-survival model
+
+    Code
+      foo <- autoplot(res, metric = "rmse", eval_time = 10)
+    Condition
+      Warning in `autoplot()`:
+      Evaluation times are only required when the results of a dynamic survival metric are being visualized (and will be ignored).
+

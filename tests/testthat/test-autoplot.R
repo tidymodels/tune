@@ -340,3 +340,16 @@ test_that("regular grid plot", {
     autoplot(res)
   )
 })
+
+test_that("evaluation time warning for non-survival model", {
+
+  set.seed(1)
+  res <-
+    parsnip::svm_rbf(cost = tune()) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("regression") %>%
+    tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 2)
+
+  expect_snapshot(foo <- autoplot(res, metric = "rmse", eval_time = 10))
+
+})
