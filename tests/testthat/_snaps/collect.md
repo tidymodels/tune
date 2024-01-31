@@ -135,3 +135,19 @@
       Error in `collect_metrics()`:
       ! No `collect_metrics()` exists for a <lm> object.
 
+# `collect_metrics(type)` errors informatively with bad input
+
+    Code
+      collect_metrics(ames_grid_search, type = "boop")
+    Condition
+      Error in `collect_metrics()`:
+      ! `type` must be one of "long" or "wide", not "boop".
+
+---
+
+    Code
+      collect_metrics(ames_grid_search, type = NULL)
+    Condition
+      Error in `collect_metrics()`:
+      ! `type` must be a string or character vector.
+

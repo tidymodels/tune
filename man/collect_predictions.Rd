@@ -20,7 +20,7 @@ collect_predictions(x, ...)
 
 collect_metrics(x, ...)
 
-\method{collect_metrics}{tune_results}(x, summarize = TRUE, ...)
+\method{collect_metrics}{tune_results}(x, summarize = TRUE, type = c("long", "wide"), ...)
 
 collect_notes(x, ...)
 
@@ -45,6 +45,12 @@ types, the method of summarizing predictions is detailed below.}
 used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. \code{"my_param"}
 if \code{tune("my_param")} was used).}
+
+\item{type}{One of \code{"long"} (the default) or \code{"wide"}. When \code{type = "long"},
+output has columns \code{.metric} and one of \code{.estimate} or \code{mean}.
+\code{.estimate}/\code{mean} gives the values for the \code{.metric}. When \code{type = "wide"},
+each metric has its own column and the \code{n} and \code{std_err} columns are removed,
+if they exist.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
@@ -53,10 +59,13 @@ model.
 For \code{\link[=collect_metrics]{collect_metrics()}} and \code{\link[=collect_predictions]{collect_predictions()}}, when unsummarized,
 there are columns for each tuning parameter (using the \code{id} from \code{\link[=tune]{tune()}},
 if any).
-\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator}.  When the
-results are summarized, there are columns for \code{mean}, \code{n}, and \code{std_err}.
-When not summarized, the additional columns for the resampling identifier(s)
-and \code{.estimate}.
+
+\code{\link[=collect_metrics]{collect_metrics()}} also has columns \code{.metric}, and \code{.estimator} by default.
+For \code{\link[=collect_metrics]{collect_metrics()}} methods that have a \code{type} argument, supplying
+\code{type = "wide"} will pivot the output such that each metric has its own
+column. When the results are summarized, there are columns for \code{mean}, \code{n},
+and \code{std_err}. When not summarized, the additional columns for the resampling
+identifier(s) and \code{.estimate}.
 
 For \code{\link[=collect_predictions]{collect_predictions()}}, there are additional columns for the resampling
 identifier(s), columns for the predicted values (e.g., \code{.pred},

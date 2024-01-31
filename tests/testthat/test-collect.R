@@ -247,3 +247,105 @@ test_that("`collect_metrics()` errors informatively applied to unsupported class
     collect_metrics(lm(mpg ~ disp, mtcars))
   )
 })
+
+test_that("`collect_metrics(type)` errors informatively with bad input", {
+  skip_on_cran()
+
+  expect_snapshot(
+    error = TRUE,
+    collect_metrics(ames_grid_search, type = "boop")
+  )
+
+  expect_snapshot(
+    error = TRUE,
+    collect_metrics(ames_grid_search, type = NULL)
+  )
+})
+
+test_that("`pivot_metrics()`, grid search, typical metrics, summarized", {
+  expect_equal(
+    pivot_metrics(ames_grid_search, collect_metrics(ames_grid_search)) %>%
+      dplyr::slice(),
+    tibble::tibble(
+      K = integer(0),
+      weight_func = character(0),
+      dist_power = numeric(0),
+      lon = integer(0),
+      lat = integer(0),
+      .config = character(0),
+      rmse = numeric(0),
+      rsq = numeric(0)
+    )
+  )
+})
+
+test_that("`pivot_metrics()`, grid search, typical metrics, unsummarized", {
+  expect_equal(
+    pivot_metrics(
+      ames_grid_search,
+      collect_metrics(ames_grid_search, summarize = FALSE)
+    ) %>%
+      dplyr::slice(),
+    tibble::tibble(
+      K = integer(0),
+      weight_func = character(0),
+      dist_power = numeric(0),
+      lon = integer(0),
+      lat = integer(0),
+      .config = character(0),
+      id = character(0),
+      rmse = numeric(0),
+      rsq = numeric(0)
+    )
+  )
+})
+
+test_that("`pivot_metrics()`, iterative search, typical metrics, summarized", {
+  expect_equal(
+    pivot_metrics(ames_iter_search, collect_metrics(ames_iter_search)) %>%
+      dplyr::slice(),
+    tibble::tibble(
+      K = integer(0),
+      weight_func = character(0),
+      dist_power = numeric(0),
+      lon = integer(0),
+      lat = integer(0),
+      .config = character(0),
+      .iter = integer(0),
+      rmse = numeric(0),
+      rsq = numeric(0)
+    )
+  )
+})
+
+test_that("`pivot_metrics()`, resampled fits, fairness metrics, summarized", {
+  mtcars_fair <- mtcars
+  mtcars_fair$vs <- as.factor(mtcars_fair$vs)
+  mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)
+  mtcars_fair$am <- as.factor(mtcars_fair$am)
+  set.seed(4400)
+
+  ms <-
+    yardstick::metric_set(
+      yardstick::demographic_parity(cyl),
+      yardstick::demographic_parity(am)
+    )
+
+  res <-
+    fit_resamples(
+      nearest_neighbor("classification"),
+      vs ~ mpg + hp + cyl,
+      rsample::bootstraps(mtcars_fair, 3),
+      metrics = ms
+    )
+
+  expect_equal(
+    pivot_metrics(res, collect_metrics(res)) %>% slice(),
+    tibble::tibble(
+      .config = character(0),
+      `demographic_parity(am)` = integer(0),
+      `demographic_parity(cyl)` = numeric(0),
+    )
+  )
+})
+
