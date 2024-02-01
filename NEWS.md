@@ -2,28 +2,28 @@
 
 ## New Features
 
-* Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function requires that the input be generated with the control option `save_pred = TRUE` and additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model. (#663)
+* Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function requires that the input be generated with the control option `save_pred = TRUE` and additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model (#663).
 
 * A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
 
 ## Bug Fixes
 
-* `last_fit()` will now error when supplied a fitted workflow. (#678)
+* `last_fit()` will now error when supplied a fitted workflow (#678).
 
-* Fixes bug where `.notes` entries were sorted in the wrong order in tuning results for resampling schemes with IDs that aren't already in alphabetical order. (#728)
+* Fixes bug where `.notes` entries were sorted in the wrong order in tuning results for resampling schemes with IDs that aren't already in alphabetical order (#728).
 
 * Fixes bug where `.config` entries in the `.extracts` column in `tune_bayes()` output didn't align with the entries they ought to in the `.metrics` and `.predictions` columns (#715).
 
-* Metrics from apparent resamples are no longer included when estimating performance with `estimate_tune_results()` (and thus with `collect_metrics(..., summarize = TRUE)` and `compute_metrics(..., summarize = TRUE)`). (#714)
+* Metrics from apparent resamples are no longer included when estimating performance with `estimate_tune_results()` (and thus with `collect_metrics(..., summarize = TRUE)` and `compute_metrics(..., summarize = TRUE)`, #714).
 
-* Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output. (#720)
+* Handles edge cases for `tune_bayes()`' `iter` argument more soundly. For `iter = 0`, the output of `tune_bayes()` should match `tune_grid()`, and `tune_bayes()` will now error when `iter < 0`. `tune_bayes()` will now alter the state of RNG slightly differently, resulting in changed Bayesian optimization search output (#720).
 
 * `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always return tibbles (#759).
 
 ## Other Changes
 
-* Improved error message when needed packages aren't installed. (#727)
+* Improved error message when needed packages aren't installed (#727).
 
 * `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now always returns tibbles (#759).
 
@@ -35,9 +35,9 @@
 
 * `augment()` methods to `tune_results`, `resample_results`, and `last_fit` objects now return prediction results in the first columns (#761).
 
-* `autoplot()` will now meaningfully error if only 1 grid point is present, rather than producing a plot. (#775)
+* `autoplot()` will now meaningfully error if only 1 grid point is present, rather than producing a plot (#775).
 
-* Added notes on case weight usage to several functions (#805)
+* Added notes on case weight usage to several functions (#805).
 
 * For iterative optimization routines, `autoplot()` will use integer breaks when `type = "performance"` or `type = "parameters"`.
 
