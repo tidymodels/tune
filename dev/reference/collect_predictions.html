@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9018</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9019</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,7 +80,7 @@
 <span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">x</span>, summarize <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">x</span>, summarize <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"wide"</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">collect_notes</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -117,6 +117,14 @@ used to filter the predicted values before processing. This tibble should
 only have columns for each tuning parameter identifier (e.g. <code>"my_param"</code>
 if <code>tune("my_param")</code> was used).</p></dd>
 
+
+<dt>type</dt>
+<dd><p>One of <code>"long"</code> (the default) or <code>"wide"</code>. When <code>type = "long"</code>,
+output has columns <code>.metric</code> and one of <code>.estimate</code> or <code>mean</code>.
+<code>.estimate</code>/<code>mean</code> gives the values for the <code>.metric</code>. When <code>type = "wide"</code>,
+each metric has its own column and the <code>n</code> and <code>std_err</code> columns are removed,
+if they exist.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -128,11 +136,15 @@ model.</p>
 
 <p>For <code>collect_metrics()</code> and <code>collect_predictions()</code>, when unsummarized,
 there are columns for each tuning parameter (using the <code>id</code> from <code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code>,
-if any).
-<code>collect_metrics()</code> also has columns <code>.metric</code>, and <code>.estimator</code>.  When the
-results are summarized, there are columns for <code>mean</code>, <code>n</code>, and <code>std_err</code>.
-When not summarized, the additional columns for the resampling identifier(s)
-and <code>.estimate</code>.</p>
+if any).</p>
+
+
+<p><code>collect_metrics()</code> also has columns <code>.metric</code>, and <code>.estimator</code> by default.
+For <code>collect_metrics()</code> methods that have a <code>type</code> argument, supplying
+<code>type = "wide"</code> will pivot the output such that each metric has its own
+column. When the results are summarized, there are columns for <code>mean</code>, <code>n</code>,
+and <code>std_err</code>. When not summarized, the additional columns for the resampling
+identifier(s) and <code>.estimate</code>.</p>
 
 
 <p>For <code>collect_predictions()</code>, there are additional columns for the resampling
