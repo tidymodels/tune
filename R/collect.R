@@ -11,6 +11,12 @@
 #'  used to filter the predicted values before processing. This tibble should
 #'  only have columns for each tuning parameter identifier (e.g. `"my_param"`
 #'  if `tune("my_param")` was used).
+#' @param type One of `"long"` (the default) or `"wide"`. When `type = "long"`,
+#'  output has columns `.metric` and one of `.estimate` or `mean`.
+#'  `.estimate`/`mean` gives the values for the `.metric`. When `type = "wide"`,
+#'  each metric has its own column and the `n` and `std_err` columns are removed,
+#'  if they exist.
+#'
 #' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
@@ -18,10 +24,13 @@
 #' For [collect_metrics()] and [collect_predictions()], when unsummarized,
 #' there are columns for each tuning parameter (using the `id` from [tune()],
 #' if any).
-#' [collect_metrics()] also has columns `.metric`, and `.estimator`.  When the
-#' results are summarized, there are columns for `mean`, `n`, and `std_err`.
-#' When not summarized, the additional columns for the resampling identifier(s)
-#' and `.estimate`.
+#'
+#' [collect_metrics()] also has columns `.metric`, and `.estimator` by default.
+#' For [collect_metrics()] methods that have a `type` argument, supplying
+#' `type = "wide"` will pivot the output such that each metric has its own
+#' column. When the results are summarized, there are columns for `mean`, `n`,
+#' and `std_err`. When not summarized, the additional columns for the resampling
+#' identifier(s) and `.estimate`.
 #'
 #' For [collect_predictions()], there are additional columns for the resampling
 #' identifier(s), columns for the predicted values (e.g., `.pred`,
@@ -445,17 +454,39 @@ collect_metrics.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_results <- function(x, summarize = TRUE, ...) {
+collect_metrics.tune_results <- function(x, summarize = TRUE, type = c("long", "wide"), ...) {
+  rlang::arg_match0(type, values = c("long", "wide"))
+
   if (inherits(x, "last_fit")) {
-    return(x$.metrics[[1]])
+    res <- x$.metrics[[1]]
+  } else {
+    if (summarize) {
+      res <- estimate_tune_results(x)
+    } else {
+      res <- collector(x, coll_col = ".metrics")
+    }
   }
 
-  if (summarize) {
-    res <- estimate_tune_results(x)
-  } else {
-    res <- collector(x, coll_col = ".metrics")
+  if (identical(type, "wide")) {
+    res <- pivot_metrics(x, res)
   }
+
   res
+}
+
+pivot_metrics <- function(x, x_metrics) {
+  params <- .get_tune_parameter_names(x)
+  res <- paste_param_by(x_metrics)
+
+  tidyr::pivot_wider(
+    res,
+    id_cols = c(
+      dplyr::any_of(c(params, ".config", ".iter", ".eval_time")),
+      starts_with("id")
+    ),
+    names_from = .metric,
+    values_from = dplyr::any_of(c(".estimate", "mean"))
+  )
 }
 
 collector <- function(x, coll_col = ".predictions") {
