@@ -299,7 +299,7 @@ tune_bayes_workflow <-
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
 
-    evalq({
+    (function() {
     # Return whatever we have if there is a error (or execution is stopped)
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
@@ -491,7 +491,7 @@ tune_bayes_workflow <-
 
     .stash_last_result(res)
     res
-    }) # end of evalq() call
+    })() # end of self calling lambda
   }
 
 create_initial_set <- function(param, n = NULL, checks) {
