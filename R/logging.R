@@ -88,6 +88,13 @@ catalog_is_active <- function() {
 # initializes machinery for the tune catalog inside of an environment.
 # the `env` should be an execution environment that persists throughout the
 # tuning process for a given tuning approach and exits once tuning is completed.
+#
+# this function attaches an exit handler (see `on.exit()`) to the execution
+# environment of the function it's called within, by default. pay close
+# attention when other exit handlers are attached to the same environment;
+# a call to `on.exit()` in `env` after this function is called will cause
+# issues with the catalog. (see #845.)
+#
 #' @rdname tune-internal-functions
 #' @export
 initialize_catalog <- function(control, env = rlang::caller_env()) {
