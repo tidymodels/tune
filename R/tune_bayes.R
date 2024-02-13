@@ -299,6 +299,10 @@ tune_bayes_workflow <-
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
 
+    # Evaluate this portion of the function in a local environment using
+    # `(function() expr)()` so that `on.exit()` doesn't touch the exit
+    # handlers attached to the execution environment of this function
+    # by `initialize_catalog()` (#828, #845).
     (function() {
     # Return whatever we have if there is a error (or execution is stopped)
     on.exit({

@@ -170,6 +170,10 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_splits)
 
+    # Evaluate the call to foreach in a local environment using
+    # `(function() expr)()` so that foreach doesn't touch the exit
+    # handlers attached to the execution environment of this function
+    # by `initialize_catalog()` (#828, #845).
     results <- (function() {
       suppressPackageStartupMessages(
         foreach::foreach(
@@ -204,6 +208,10 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
 
     seeds <- generate_seeds(rng, n_splits * n_grid_info)
 
+    # Evaluate the call to foreach in a local environment using
+    # `(function() expr)()` so that foreach doesn't touch the exit
+    # handlers attached to the execution environment of this function
+    # by `initialize_catalog()` (#828, #845).
     results <- (function() {
       suppressPackageStartupMessages(
         foreach::foreach(
