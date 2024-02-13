@@ -170,39 +170,28 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_splits)
 
-    # We are wrapping in `local()` here because `fn_tune_grid_loop_iter_safely()` adds
-    # on.exit/deferred handlers to our execution frame by passing `tune_env$progress_env`
-    # to cli's progress bar constructor, which then adds an exit handler on that
-    # environment. Because `%op%` evaluates its expression in `eval()` in the calling
-    # environment (i.e. here), the handlers are added in the special frame environment
-    # created by `eval()`. This causes the handler to run much too early. By evaluating in
-    # a local environment, we prevent `defer()`/`on.exit()` from finding the short-lived
-    # context of `%op%`. Instead it looks all the way up here to register the handler.
-
-    results <- local({
-      suppressPackageStartupMessages(
-        foreach::foreach(
-          split = splits,
-          seed = seeds,
-          .packages = packages,
-          .errorhandling = "pass"
-        ) %op% {
-          # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-          fn_tune_grid_loop_iter_safely(
-            fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
-            split = split,
-            grid_info = grid_info,
-            workflow = workflow,
-            metrics = metrics,
-            control = control,
-            eval_time = eval_time,
-            seed = seed,
-            metrics_info = metrics_info,
-            params = params
-          )
-        }
-      )
-    })
+    suppressPackageStartupMessages(
+      results <- foreach::foreach(
+        split = splits,
+        seed = seeds,
+        .packages = packages,
+        .errorhandling = "pass"
+      ) %op% {
+        # Likely want to debug with `debugonce(tune_grid_loop_iter)`
+        fn_tune_grid_loop_iter_safely(
+          fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+          split = split,
+          grid_info = grid_info,
+          workflow = workflow,
+          metrics = metrics,
+          control = control,
+          eval_time = eval_time,
+          seed = seed,
+          metrics_info = metrics_info,
+          params = params
+        )
+      }
+    )
 
     return(results)
   }
@@ -213,8 +202,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
 
     seeds <- generate_seeds(rng, n_splits * n_grid_info)
 
-    results <- local(suppressPackageStartupMessages(
-      foreach::foreach(
+    suppressPackageStartupMessages(
+      results <- foreach::foreach(
         iteration = iterations,
         split = splits,
         .packages = packages,
@@ -243,7 +232,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             params = params
           )
         }
-    ))
+    )
 
     return(results)
   }
