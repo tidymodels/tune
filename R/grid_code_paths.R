@@ -170,28 +170,30 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_splits)
 
-    suppressPackageStartupMessages(
-      results <- foreach::foreach(
-        split = splits,
-        seed = seeds,
-        .packages = packages,
-        .errorhandling = "pass"
-      ) %op% {
-        # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-        fn_tune_grid_loop_iter_safely(
-          fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
-          split = split,
-          grid_info = grid_info,
-          workflow = workflow,
-          metrics = metrics,
-          control = control,
-          eval_time = eval_time,
-          seed = seed,
-          metrics_info = metrics_info,
-          params = params
-        )
-      }
-    )
+    results <- (function() {
+      suppressPackageStartupMessages(
+        foreach::foreach(
+          split = splits,
+          seed = seeds,
+          .packages = packages,
+          .errorhandling = "pass"
+        ) %op% {
+          # Likely want to debug with `debugonce(tune_grid_loop_iter)`
+          fn_tune_grid_loop_iter_safely(
+            fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+            split = split,
+            grid_info = grid_info,
+            workflow = workflow,
+            metrics = metrics,
+            control = control,
+            eval_time = eval_time,
+            seed = seed,
+            metrics_info = metrics_info,
+            params = params
+          )
+        }
+      )
+    })()
 
     return(results)
   }
@@ -202,37 +204,39 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
 
     seeds <- generate_seeds(rng, n_splits * n_grid_info)
 
-    suppressPackageStartupMessages(
-      results <- foreach::foreach(
-        iteration = iterations,
-        split = splits,
-        .packages = packages,
-        .errorhandling = "pass"
-      ) %:%
+    results <- (function() {
+      suppressPackageStartupMessages(
         foreach::foreach(
-          row = rows,
-          seed = slice_seeds(seeds, iteration, n_grid_info),
+          iteration = iterations,
+          split = splits,
           .packages = packages,
-          .errorhandling = "pass",
-          .combine = iter_combine
-        ) %op% {
-          grid_info_row <- vctrs::vec_slice(grid_info, row)
+          .errorhandling = "pass"
+        ) %:%
+          foreach::foreach(
+            row = rows,
+            seed = slice_seeds(seeds, iteration, n_grid_info),
+            .packages = packages,
+            .errorhandling = "pass",
+            .combine = iter_combine
+          ) %op% {
+            grid_info_row <- vctrs::vec_slice(grid_info, row)
 
-          # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-          fn_tune_grid_loop_iter_safely(
-            fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
-            split = split,
-            grid_info = grid_info_row,
-            workflow = workflow,
-            metrics = metrics,
-            control = control,
-            eval_time = eval_time,
-            seed = seed,
-            metrics_info = metrics_info,
-            params = params
-          )
-        }
-    )
+            # Likely want to debug with `debugonce(tune_grid_loop_iter)`
+            fn_tune_grid_loop_iter_safely(
+              fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+              split = split,
+              grid_info = grid_info_row,
+              workflow = workflow,
+              metrics = metrics,
+              control = control,
+              eval_time = eval_time,
+              seed = seed,
+              metrics_info = metrics_info,
+              params = params
+            )
+          }
+      )
+    })()
 
     return(results)
   }
