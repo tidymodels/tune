@@ -51,8 +51,8 @@ process.}
 
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no greater then the
-largest event time in the training set.}
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).}
 
 \item{add_validation_set}{For 3-way splits into training, validation, and test
 set via \code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}, should the validation set be
@@ -115,6 +115,14 @@ further to performance assessment on the test data. While \code{\link[=fit_best]
 a fitted workflow, \code{\link[=last_fit]{last_fit()}} gives you the performance results. If you
 want the fitted workflow, you can extract it from the result of \code{\link[=last_fit]{last_fit()}}
 via \link[=extract_workflow.tune_results]{extract_workflow()}.
+}
+
+\section{Censored regression models}{
+
+
+Values of \code{eval_time} should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or \code{NA}).
 }
 
 \examples{
