@@ -32,7 +32,8 @@
 #' least one term is required for these two functions. See the examples below.
 #' @param eval_time A numeric vector of time points where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-#' values should be consistent with the values used to create `x`.
+#' values should be consistent with the values used to create `x`. The `NULL` 
+#' default will automatically use the first evaluation time used by `x`.
 #' @param call The call to be shown in errors and warnings.
 #' @return A tibble with columns for the parameters. [show_best()] also
 #'  includes columns for performance metrics.
