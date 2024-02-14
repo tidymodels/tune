@@ -32,5 +32,5 @@
       foo <- autoplot(res, metric = "rmse", eval_time = 10)
     Condition
       Warning in `autoplot()`:
-      Evaluation times are only required when the results of a dynamic survival metric are being visualized (and will be ignored).
+      `eval_time` is only used for dynamic survival metrics.
 

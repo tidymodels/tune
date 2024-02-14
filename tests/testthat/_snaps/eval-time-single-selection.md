@@ -77,7 +77,7 @@
       choose_eval_time(surv_res, "concordance_survival", eval_time = 10)
     Condition
       Warning:
-      An evaluation time is only required when a dynamic metric is selected (and `eval_time` will thus be ignored).
+      `eval_time` is only used for dynamic survival metrics.
     Output
       NULL
 
@@ -87,7 +87,7 @@
       choose_eval_time(ames_grid_search, "rmse", 1)
     Condition
       Warning:
-      Evaluation times are only required when the model mode is "censored regression" (and will be ignored).
+      `eval_time` is only used for models with mode "censored regression".
     Output
       NULL
 
