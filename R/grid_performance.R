@@ -101,7 +101,7 @@ metrics_info <- function(x) {
 
 estimate_reg <- function(dat, metric, param_names, outcome_name, case_weights) {
   dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .add = TRUE) %>%
     metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = !!case_weights)
 }
 
@@ -133,7 +133,7 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
   }
 
   dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .add = TRUE) %>%
     metric(
       truth = !!truth,
       estimate = !!estimate,
@@ -149,7 +149,7 @@ estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, 
   #  potentially need to work around submodel parameters since those are within .pred
   dat <- unnest_parameters(dat, param_names)
   dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+    dplyr::group_by(!!!rlang::syms(param_names), .add = TRUE) %>%
     metric(
       truth = !!rlang::sym(outcome_name),
       estimate = !!maybe_estimate(metric),
@@ -162,18 +162,18 @@ unnest_parameters <- function(x, params = NULL) {
    if (is.null(params)) {
     return(x)
    }
-   
+
   # When multi_predict() is used, .pred will have the tuning parameter values.
   # Other (non-submodel) parameters will be outside of 'x'.
   # If this happens, pull the submodel parameters out of .pred and put them at
   # the out level ('x') with the rest (if any)
-  
+
   outer_nms <- names(x)
   has_pred <- any(outer_nms == ".pred")
    if (!has_pred) {
     return(x)
   }
-  
+
   inner_nms <- names(x$.pred[[1]])
   has_inner_params <- any(params %in% inner_nms)
   if (!has_inner_params) {
