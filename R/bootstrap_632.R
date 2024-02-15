@@ -5,6 +5,9 @@
 # multiple times to obtain the "no information rate" for each metric. For
 # survival outcomes, both the time and event indicator are randomized together.
 
+# TODO
+# - consolidate/refactor code to summary and compute by-groups
+# - tighten up filtering across packages to exclude apparent and randomized estimators
 
 # This is designed to work on a single tuning parameter candidate/resample etc.
 
@@ -69,25 +72,98 @@
 c_632 <- 1 - exp(-1)
 c_368 <- 1 - c_632
 
-bootstrap_632 <- function(x) {
+check_bootstrap <- function(x) {
   if (attr(x, "rset_info")$att$class != "bootstraps") {
-
+    cli::cli_abort("The data do not appear to be from a bootstrap ressampling scheme.")
   }
+  invisible(NULL)
+}
+
+check_apparent_present <- function(x) {
+  is_resubstitution <- x$id == "Apparent"
+  if (!any(is_resubstitution)) {
+    cli::cli_abort("The resample does not have resubstitution estimates. \\
+                   Did you use {.code bootstraps(<data>, apparent = TRUE)}?")
+  }
+  invisible(NULL)
+}
+
+get_resubstitution <- function(x) {
   mtr <- collect_metrics(x, summarize = FALSE)
-  is_resub <- mtr$id == "Apparent"
-  if (!any(is_resub)) {
+  check_apparent_present(mtr)
+  is_resubstitution <- mtr$id == "Apparent"
+  keep_cols <- c(".metric", ".estimate", other_metric_cols(mtr))
+  resubstitution <- mtr[is_resubstitution, keep_cols]
+  names(resubstitution)[2] <- ".resubstitution"
+  resubstitution
+}
 
-  }
+other_metric_cols <- function(x) {
+  intersect(names(x), c(".iter", ".config", ".eval_time"))
+}
+
+bootstrap_632 <- function(x) {
+  check_bootstrap(x)
+  mtr <- collect_metrics(x, summarize = FALSE)
+  mtr <- mtr[mtr$id != "Apparent",]
+
+  extra_cols <- other_metric_cols(mtr)
+
+  resubstitution <- get_resubstitution(x)
+
+  mtr <- dplyr::inner_join(mtr, resubstitution, by = c(".metric", extra_cols))
+  mtr$.estimate <- c_632 * mtr$.estimate + c_368 * mtr$.resubstitution
+  mtr$.estimator <- "bootstrap 632"
+  mtr$.resubstitution <- NULL
+
+  # summarize
+  prm_names <- .get_tune_parameter_names(x)
+  by_vars <- c(prm_names, ".estimator", ".metric", extra_cols)
+
+  res <-
+    dplyr::group_by(mtr, !!!rlang::syms(by_vars)) %>%
+    dplyr::summarize(
+      mean = mean(.estimate, na.rm = TRUE),
+      n = sum(!is.na(.estimate)),
+      .groups = "drop"
+    ) %>%
+    dplyr::mutate(std_err = NA_real_) %>%
+    dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
+
+  res[order(res$.config, res$.metric),,drop = FALSE]
+}
+
+
+
+# later, mtr will come out in collect_metrics
+
+bootstrap_632_plus <- function(x, mtr)  {
+  check_bootstrap(x)
+  # mtr <- collect_metrics(x, summarize = FALSE) # To happen later
+  mtr <- mtr[mtr$id != "Apparent",]
+
+  extra_cols <- other_metric_cols(mtr)
   prm_names <- .get_tune_parameter_names(x)
 
-  resub <- mtr[is_resub, c(".metric", ".estimate", ".config")]
-  names(resub)[2] <- ".resub"
+  resubstitution <- get_resubstitution(x)
 
-  y <- dplyr::inner_join(mtr, resub, by = c(".metric", ".config"))
-  y <- y[y$id != "Apparent",]
-  y$.estimate <- c_632 * y$.estimate + c_368 * y$.resub
-  y$.estimator <- "632 rule"
-  y$.resub <- NULL
+  mtr <- dplyr::inner_join(mtr, resubstitution, by = c(".metric", extra_cols))
+
+  randomized <- mtr[is_randomized, c(".metric", ".estimate", ".config", "id")]
+  names(randomized)[2] <- ".randomized"
+
+  real_estimates <- mtr %>% filter(id != "Apparent" & .estimator != "randomized")
+  y <-
+    left_join(real_estimates, resubstitution, by = c(".metric", ".config")) %>%
+    full_join(randomized, by = c(".metric", ".config", "id")) %>%
+    mutate(
+      ror = (.estimate - .resubstitution) / (.randomized - .resubstitution),
+      ror = ifelse(ror < 0, 0, ror),
+      wt = c_632 / (1 - c_368 * ror),
+      .estimate = wt * .estimate + (1 - wt) * .resubstitution,
+      .estimator = "632+"
+    ) %>%
+    dplyr::select(-ror, -wt, -.resubstitution, -.randomized)
 
   # summarize
   extras <- intersect(names(mtr), c(".iter", ".eval_time"))
@@ -98,15 +174,11 @@ bootstrap_632 <- function(x) {
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
-      std_err = sd(.estimate, na.rm = TRUE) / sqrt(n),
       .groups = "drop"
     ) %>%
+    dplyr::mutate(std_err = NA_real_) %>%
     dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
 
-  res[order(res$.config, res$.metric),,drop = FALSE]
-}
-
-bootstrap_632_plus <- function(x)  {
-
+  res
 }
 
