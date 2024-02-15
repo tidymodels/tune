@@ -156,8 +156,21 @@ append_metrics <- function(collection,
     param_names = param_names,
     outcome_name = outcome_name,
     event_level = event_level,
-    metrics_info = metrics_info
-  )
+    metrics_info = metrics_info,
+    eval_time = eval_time)
+
+  estimator <- "632"
+  if (grepl("632", estimator)) {
+    nir <- .no_information_rate(
+      dat = predictions,
+      metric = metrics,
+      param_names = param_names,
+      outcome_name = outcome_name,
+      event_level = event_level,
+      metrics_info = metrics_info,
+      eval_time = eval_time)
+    tmp_est <- dplyr::bind_rows(tmp_est, nir)
+  }
 
   tmp_est <- cbind(tmp_est, labels(split))
 
