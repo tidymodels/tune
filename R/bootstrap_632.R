@@ -22,7 +22,7 @@
 
 .nir_single <-
   function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 20) {
-    met_info <- tune:::metrics_info(metric)
+    met_info <- metrics_info(metric)
     by_vars <- dplyr::group_vars(dat)
     res <-
       purrr::map_dfr(
@@ -70,7 +70,7 @@
 # These are invoked inside of collect_metric's summarize function
 
 c_632 <- 1 - exp(-1)
-c_368 <- 1 - c_632
+c_368 <- exp(-1)
 
 check_bootstrap <- function(x) {
   if (attr(x, "rset_info")$att$class != "bootstraps") {
@@ -88,6 +88,14 @@ check_apparent_present <- function(x) {
   invisible(NULL)
 }
 
+get_randomized <- function(mtr, x = NULL) {
+  # eventually change this to use the original object 'x'
+  is_randomized <- mtr$id != "Apparent" & mtr$.estimator == "randomized"
+  randomized <- mtr[is_randomized, c(".metric", ".estimate", ".config", "id")]
+  names(randomized)[2] <- ".randomized"
+  randomized
+}
+
 get_resubstitution <- function(x) {
   mtr <- collect_metrics(x, summarize = FALSE)
   check_apparent_present(mtr)
@@ -101,6 +109,23 @@ get_resubstitution <- function(x) {
 other_metric_cols <- function(x) {
   intersect(names(x), c(".iter", ".config", ".eval_time"))
 }
+
+resampling_estimator <- function(x) {
+  rs_info <- attr(x, "rset_info")$att
+  if (rs_info$class != "bootstraps") {
+    return("standard")
+  }
+  if (any(names(rs_info) == "estimator")) {
+    estimator <- rs_info$estimator
+  } else {
+    estimator <- "standard"
+  }
+  estimator
+}
+
+# ------------------------------------------------------------------------------
+
+
 
 bootstrap_632 <- function(x) {
   check_bootstrap(x)
@@ -134,7 +159,6 @@ bootstrap_632 <- function(x) {
 }
 
 
-
 # later, mtr will come out in collect_metrics
 
 bootstrap_632_plus <- function(x, mtr)  {
@@ -145,18 +169,14 @@ bootstrap_632_plus <- function(x, mtr)  {
   extra_cols <- other_metric_cols(mtr)
   prm_names <- .get_tune_parameter_names(x)
 
+  ind_estimates <- mtr[mtr$id != "Apparent" & mtr$.estimator != "randomized",]
   resubstitution <- get_resubstitution(x)
+  randomized <- get_randomized(mtr)
 
-  mtr <- dplyr::inner_join(mtr, resubstitution, by = c(".metric", extra_cols))
-
-  randomized <- mtr[is_randomized, c(".metric", ".estimate", ".config", "id")]
-  names(randomized)[2] <- ".randomized"
-
-  real_estimates <- mtr %>% filter(id != "Apparent" & .estimator != "randomized")
-  y <-
-    left_join(real_estimates, resubstitution, by = c(".metric", ".config")) %>%
-    full_join(randomized, by = c(".metric", ".config", "id")) %>%
-    mutate(
+  mtr <-
+    dplyr::inner_join(ind_estimates, resubstitution, by = c(".metric", extra_cols)) %>%
+    dplyr::full_join(randomized, by = c(".metric", ".config", "id")) %>%
+    dplyr::mutate(
       ror = (.estimate - .resubstitution) / (.randomized - .resubstitution),
       ror = ifelse(ror < 0, 0, ror),
       wt = c_632 / (1 - c_368 * ror),
@@ -170,7 +190,7 @@ bootstrap_632_plus <- function(x, mtr)  {
   by_vars <- c(prm_names, ".config", ".estimator", ".metric", extras)
 
   res <-
-    dplyr::group_by(y, !!!rlang::syms(by_vars)) %>%
+    dplyr::group_by(mtr, !!!rlang::syms(by_vars)) %>%
     dplyr::summarize(
       mean = mean(.estimate, na.rm = TRUE),
       n = sum(!is.na(.estimate)),
@@ -179,6 +199,6 @@ bootstrap_632_plus <- function(x, mtr)  {
     dplyr::mutate(std_err = NA_real_) %>%
     dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
 
-  res
+  res[order(res$.config, res$.metric),,drop = FALSE]
 }
 
