@@ -516,6 +516,8 @@ collector <- function(x, coll_col = ".predictions") {
         vctrs::vec_rep_each(x[, ".iter"], times = sizes)
       )
   }
+  res <- res[res$id != "Apparent",]
+  res <- res[res$.estimator != "randomized",]
 
   arrange_cols <- c(".eval_time", ".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
@@ -598,9 +600,11 @@ estimate_tune_results <- function(x, col_name = ".metrics", ...) {
     x <- dplyr::distinct(x)
   }
 
+  x <- x[x$id != "Apparent",]
+  x <- x[x$.estimator != "randomized",]
+
   x <- x %>%
     tibble::as_tibble() %>%
-    vctrs::vec_slice(., .$id != "Apparent") %>%
     dplyr::group_by(!!!rlang::syms(param_names), .metric, .estimator,
                     !!!rlang::syms(group_cols)) %>%
     dplyr::summarize(
