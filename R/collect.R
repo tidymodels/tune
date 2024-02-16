@@ -507,13 +507,14 @@ collector <- function(x, coll_col = ".predictions", excludes = TRUE) {
   id_cols <- colnames(x)[grepl("id", colnames(x))]
   keep_cols <- c(id_cols, keep_cols)
   x <- x[keep_cols]
-  coll_col <- x[[coll_col]]
-  sizes <- vctrs::list_sizes(coll_col)
+
+  coll_data <- x[[coll_col]]
+  sizes <- vctrs::list_sizes(coll_data)
 
   res <-
     vctrs::vec_cbind(
       vctrs::vec_rep_each(x[, id_cols], times = sizes),
-      vctrs::list_unchop(coll_col)
+      vctrs::list_unchop(coll_data)
     )
 
   if (is_iterative) {
@@ -524,7 +525,7 @@ collector <- function(x, coll_col = ".predictions", excludes = TRUE) {
       )
   }
 
-  if (excludes) {
+  if (excludes & coll_col == ".metrics") {
     res <- res[res$id != "Apparent",]
     res <- res[res$.estimator != "randomized",]
   }

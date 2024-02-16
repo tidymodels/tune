@@ -21,7 +21,7 @@
 }
 
 .nir_single <-
-  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 20) {
+  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 50) {
     met_info <- metrics_info(metric)
     by_vars <- dplyr::group_vars(dat)
     res <-
@@ -32,7 +32,7 @@
                              metrics_info = met_info, eval_time = eval_time)
       ) %>%
       dplyr::summarize(
-        .estimate = mean(.estimate, na.rm = TRUE),
+        .estimate = median(.estimate, na.rm = TRUE),
         .by = c(.metric, dplyr::all_of(by_vars))
       )
     res
@@ -42,7 +42,7 @@
 # grouped-on columns
 .no_information_rate <-
   function(dat, metric, param_names, outcome_name, event_level,
-           metrics_info = metrics_info(metrics), eval_time = NULL, times = 20) {
+           metrics_info = metrics_info(metrics), eval_time = NULL, times = 50) {
 
     id_vars <- grep("^id", names(dat), value = TRUE)
     by_vars <- c(param_names, dplyr::group_vars(dat), id_vars)
@@ -99,7 +99,7 @@ get_randomized <- function(mtr, x = NULL) {
 get_resubstitution <- function(x) {
   mtr <- collector(x, coll_col = ".metrics", excludes = FALSE)
   check_apparent_present(mtr)
-  is_resubstitution <- mtr$id == "Apparent"
+  is_resubstitution <- mtr$id == "Apparent" & mtr$.estimator != "randomized"
   keep_cols <- c(".metric", ".estimate", other_metric_cols(mtr))
   resubstitution <- mtr[is_resubstitution, keep_cols]
   names(resubstitution)[2] <- ".resubstitution"
@@ -183,7 +183,7 @@ bootstrap_632_plus <- function(x)  {
       ror = ifelse(ror < 0, 0, ror),
       wt = c_632 / (1 - c_368 * ror),
       .estimate = wt * .estimate + (1 - wt) * .resubstitution,
-      .estimator = "632+"
+      .estimator = "bootstrap 632+"
     ) %>%
     dplyr::select(-ror, -wt, -.resubstitution, -.randomized)
 

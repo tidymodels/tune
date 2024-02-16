@@ -159,7 +159,7 @@ append_metrics <- function(collection,
     metrics_info = metrics_info,
     eval_time = eval_time)
 
-  estimator <- "632"
+  estimator <- "632" # TODO pass this in as a new arg
   if (grepl("632", estimator)) {
     nir <- .no_information_rate(
       dat = predictions,
@@ -168,7 +168,7 @@ append_metrics <- function(collection,
       outcome_name = outcome_name,
       event_level = event_level,
       metrics_info = metrics_info,
-      eval_time = eval_time)
+      eval_time = eval_time) # TODO not an argument
     tmp_est <- dplyr::bind_rows(tmp_est, nir)
   }
 
