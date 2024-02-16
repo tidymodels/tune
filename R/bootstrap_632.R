@@ -97,7 +97,7 @@ get_randomized <- function(mtr, x = NULL) {
 }
 
 get_resubstitution <- function(x) {
-  mtr <- collect_metrics(x, summarize = FALSE)
+  mtr <- collector(x, coll_col = ".metrics", excludes = FALSE)
   check_apparent_present(mtr)
   is_resubstitution <- mtr$id == "Apparent"
   keep_cols <- c(".metric", ".estimate", other_metric_cols(mtr))
@@ -129,7 +129,7 @@ resampling_estimator <- function(x) {
 
 bootstrap_632 <- function(x) {
   check_bootstrap(x)
-  mtr <- collect_metrics(x, summarize = FALSE)
+  mtr <- collector(x, coll_col = ".metrics")
   mtr <- mtr[mtr$id != "Apparent",]
 
   extra_cols <- other_metric_cols(mtr)
@@ -155,15 +155,17 @@ bootstrap_632 <- function(x) {
     dplyr::mutate(std_err = NA_real_) %>%
     dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
 
+  # TODO include .iter and/or .eval_time
+
   res[order(res$.config, res$.metric),,drop = FALSE]
 }
 
 
 # later, mtr will come out in collect_metrics
 
-bootstrap_632_plus <- function(x, mtr)  {
+bootstrap_632_plus <- function(x)  {
   check_bootstrap(x)
-  # mtr <- collect_metrics(x, summarize = FALSE) # To happen later
+  mtr <- collector(x, coll_col = ".metrics", excludes = FALSE)
   mtr <- mtr[mtr$id != "Apparent",]
 
   extra_cols <- other_metric_cols(mtr)
@@ -198,6 +200,8 @@ bootstrap_632_plus <- function(x, mtr)  {
     ) %>%
     dplyr::mutate(std_err = NA_real_) %>%
     dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
+
+  # TODO include .iter and/or .eval_time
 
   res[order(res$.config, res$.metric),,drop = FALSE]
 }
