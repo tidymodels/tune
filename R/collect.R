@@ -142,7 +142,7 @@ collect_predictions.default <- function(x, ...) {
 collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
   names <- colnames(x)
   coll_col <- ".predictions"
-
+# TODO add an estimator argument for "standard", etc
   has_coll_col <- coll_col %in% names
 
   if (!has_coll_col) {

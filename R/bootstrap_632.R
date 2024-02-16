@@ -153,9 +153,8 @@ bootstrap_632 <- function(x) {
       .groups = "drop"
     ) %>%
     dplyr::mutate(std_err = NA_real_) %>%
-    dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
-
-  # TODO include .iter and/or .eval_time
+    dplyr::select(!!prm_names, .metric, dplyr::any_of(".eval_time"), .estimator,
+                  mean, n, std_err, .config, dplyr::any_of(".iter"))
 
   res[order(res$.config, res$.metric),,drop = FALSE]
 }
@@ -199,9 +198,8 @@ bootstrap_632_plus <- function(x)  {
       .groups = "drop"
     ) %>%
     dplyr::mutate(std_err = NA_real_) %>%
-    dplyr::select(!!prm_names, .metric, .estimator, mean, n, std_err, .config)
-
-  # TODO include .iter and/or .eval_time
+    dplyr::select(!!prm_names, .metric, dplyr::any_of(".eval_time"), .estimator,
+                  mean, n, std_err, .config, dplyr::any_of(".iter"))
 
   res[order(res$.config, res$.metric),,drop = FALSE]
 }

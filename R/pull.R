@@ -159,8 +159,10 @@ append_metrics <- function(collection,
     metrics_info = metrics_info,
     eval_time = eval_time)
 
+  split_label <- labels(split)
+
   estimator <- "632" # TODO pass this in as a new arg
-  if (grepl("632", estimator)) {
+  if (grepl("632", estimator) & split_label$id != "Apparent") {
     nir <- .no_information_rate(
       dat = predictions,
       metric = metrics,
@@ -172,7 +174,7 @@ append_metrics <- function(collection,
     tmp_est <- dplyr::bind_rows(tmp_est, nir)
   }
 
-  tmp_est <- cbind(tmp_est, labels(split))
+  tmp_est <- cbind(tmp_est, split_label)
 
   if (!rlang::is_null(.config)) {
     tmp_est <- cbind(tmp_est, .config)
