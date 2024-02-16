@@ -273,8 +273,8 @@ prob_summarize <- function(x, p) {
     dplyr::full_join(totals, by = group_cols) %>%
     dplyr::mutate(
       dplyr::across(dplyr::starts_with(".pred_"),
-      ~ .x / .totals
-    )) %>%
+                    ~ .x / .totals
+      )) %>%
     dplyr::select(-.totals)
 
   # If we started with hard class predictions, recompute them based on the
@@ -461,7 +461,14 @@ collect_metrics.tune_results <- function(x, summarize = TRUE, type = c("long", "
     res <- x$.metrics[[1]]
   } else {
     if (summarize) {
-      res <- estimate_tune_results(x)
+      estimator <- resampling_estimator(x)
+      if (estimator == "bootstrap 632") {
+        res <- bootstrap_632(x)
+      } else if (estimator == "bootstrap 632+") {
+        res <- bootstrap_632_plus(x)
+      } else {
+        res <- estimate_tune_results(x)
+      }
     } else {
       res <- collector(x, coll_col = ".metrics")
     }
@@ -489,7 +496,7 @@ pivot_metrics <- function(x, x_metrics) {
   )
 }
 
-collector <- function(x, coll_col = ".predictions") {
+collector <- function(x, coll_col = ".predictions", excludes = TRUE) {
   is_iterative <- any(colnames(x) == ".iter")
   if (is_iterative) {
     keep_cols <- c(coll_col, ".iter")
@@ -516,8 +523,11 @@ collector <- function(x, coll_col = ".predictions") {
         vctrs::vec_rep_each(x[, ".iter"], times = sizes)
       )
   }
-  res <- res[res$id != "Apparent",]
-  res <- res[res$.estimator != "randomized",]
+
+  if (excludes) {
+    res <- res[res$id != "Apparent",]
+    res <- res[res$.estimator != "randomized",]
+  }
 
   arrange_cols <- c(".eval_time", ".iter", ".config")
   arrange_cols <- arrange_cols[rlang::has_name(res, arrange_cols)]
