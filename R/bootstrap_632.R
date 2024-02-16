@@ -21,7 +21,7 @@
 }
 
 .nir_single <-
-  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 50) {
+  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 20) {
     met_info <- metrics_info(metric)
     by_vars <- dplyr::group_vars(dat)
     res <-
@@ -42,7 +42,7 @@
 # grouped-on columns
 .no_information_rate <-
   function(dat, metric, param_names, outcome_name, event_level,
-           metrics_info = metrics_info(metrics), eval_time = NULL, times = 50) {
+           metrics_info = metrics_info(metrics), eval_time = NULL, times = 20) {
 
     id_vars <- grep("^id", names(dat), value = TRUE)
     by_vars <- c(param_names, dplyr::group_vars(dat), id_vars)
@@ -88,8 +88,8 @@ check_apparent_present <- function(x) {
   invisible(NULL)
 }
 
-get_randomized <- function(mtr, x = NULL) {
-  # eventually change this to use the original object 'x'
+get_randomized <- function(x) {
+  mtr <- collector(x, coll_col = ".metrics", excludes = FALSE)
   is_randomized <- mtr$id != "Apparent" & mtr$.estimator == "randomized"
   randomized <- mtr[is_randomized, c(".metric", ".estimate", ".config", "id")]
   names(randomized)[2] <- ".randomized"
@@ -173,7 +173,7 @@ bootstrap_632_plus <- function(x)  {
 
   ind_estimates <- mtr[mtr$id != "Apparent" & mtr$.estimator != "randomized",]
   resubstitution <- get_resubstitution(x)
-  randomized <- get_randomized(mtr)
+  randomized <- get_randomized(x)
 
   mtr <-
     dplyr::inner_join(ind_estimates, resubstitution, by = c(".metric", extra_cols)) %>%
