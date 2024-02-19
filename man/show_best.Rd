@@ -65,7 +65,7 @@ a warning is issued).}
 
 \item{n}{An integer for the number of top results/rows to return.}
 
-\item{eval_time}{A numeric vector of time points where dynamic event time
+\item{eval_time}{A single numeric time point where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{x}. The \code{NULL}
 default will automatically use the first evaluation time used by \code{x}.}

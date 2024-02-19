@@ -30,7 +30,7 @@ fit_best(x, ...)
 \item{metric}{A character string (or \code{NULL}) for which metric to optimize. If
 \code{NULL}, the first metric is used.}
 
-\item{eval_time}{A numeric vector of time points where dynamic event time
+\item{eval_time}{A single numeric time point where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{x}. The \code{NULL}
 default will automatically use the first evaluation time used by \code{x}.}
