@@ -161,13 +161,8 @@
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
 #'
-#' @section Censored regression models:
-#'
-#' Values of `eval_time` should be less than the largest observed event
-#' time in the training data. For many non-parametric models, the results beyond
-#' the largest time corresponding to an event are constant (or `NA`).
-#'
 #' @template case-weights
+#' @template censored-regression
 #'
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab")
 #' library(recipes)
