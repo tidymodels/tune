@@ -6,21 +6,18 @@
 #' model+recipe or model+formula combination across many resamples.
 #'
 #' @inheritParams last_fit
+#' @inheritParams tune_grid
 #'
 #' @param resamples An `rset` resampling object created from an `rsample`
 #' function, such as [rsample::vfold_cv()].
 #'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
-#'
-#' @param eval_time A numeric vector of time points where dynamic event time
-#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-#' values should be non-negative and should probably be no greater than the
-#' largest event time in the training set.
-#'
+#' 
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
+#' @inheritSection tune_grid Censored regression models
 #' @template case-weights
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
 #' @examplesIf tune:::should_run_examples()

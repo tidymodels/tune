@@ -8,11 +8,6 @@
 #' [`save_workflow = TRUE`][tune::control_grid] should have been used.
 #' @param metric A character string (or `NULL`) for which metric to optimize. If
 #' `NULL`, the first metric is used.
-#' @param eval_time A numeric vector of time points where dynamic event time
-#' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-#' values should be consistent with the values used to create `x`. If the
-#' analysis used a dynamic metric, the `NULL` default will automatically use the
-#' first evaluation time used by `x`.
 #' @param parameters An optional 1-row tibble of tuning parameter settings, with
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
@@ -26,6 +21,7 @@
 #' [rsample::validation_set()] while it is used for resamples originating
 #' from [rsample::validation_split()].
 #' @param ... Not currently used.
+#' @inheritParams select_best
 #' @details
 #' This function is a shortcut for the manual steps of:
 #'

@@ -21,10 +21,7 @@
 #' @param control A [control_last_fit()] object used to fine tune the last fit
 #'   process.
 #'
-#' @param eval_time A numeric vector of time points where dynamic event time
-#' metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-#' values should be non-negative and should probably be no greater then the
-#' largest event time in the training set.
+#' @inheritParams tune_grid
 #'
 #' @param add_validation_set For 3-way splits into training, validation, and test
 #' set via [rsample::initial_validation_split()], should the validation set be
@@ -39,6 +36,7 @@
 #'  would be to fit using the entire training set and verify performance using
 #'  the test data.
 #' @template case-weights
+#' @inheritSection tune_grid Censored regression models
 #' @section See also:
 #'
 #' [last_fit()] is closely related to [fit_best()]. They both
