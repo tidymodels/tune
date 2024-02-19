@@ -8,6 +8,7 @@
 # TODO
 # - consolidate/refactor code to summary and compute by-groups
 # - tighten up filtering across packages to exclude apparent and randomized estimators
+# - update autoplot to use values
 
 # This is designed to work on a single tuning parameter candidate/resample etc.
 
@@ -21,7 +22,7 @@
 }
 
 .nir_single <-
-  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 20) {
+  function(dat, metric, outcome_name, event_level, eval_time = NULL, times = 50) {
     met_info <- metrics_info(metric)
     by_vars <- dplyr::group_vars(dat)
     res <-
@@ -42,7 +43,7 @@
 # grouped-on columns
 .no_information_rate <-
   function(dat, metric, param_names, outcome_name, event_level,
-           metrics_info = metrics_info(metrics), eval_time = NULL, times = 20) {
+           metrics_info = metrics_info(metrics), eval_time = NULL, times = 50) {
 
     id_vars <- grep("^id", names(dat), value = TRUE)
     by_vars <- c(param_names, dplyr::group_vars(dat), id_vars)
@@ -72,8 +73,9 @@
 c_632 <- 1 - exp(-1)
 c_368 <- exp(-1)
 
+is_bootstraps <- function(x) attr(x, "rset_info")$att$class == "bootstraps"
 check_bootstrap <- function(x) {
-  if (attr(x, "rset_info")$att$class != "bootstraps") {
+  if (!is_bootstraps(x)) {
     cli::cli_abort("The data do not appear to be from a bootstrap ressampling scheme.")
   }
   invisible(NULL)

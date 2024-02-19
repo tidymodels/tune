@@ -16,6 +16,11 @@
 #'  `.estimate`/`mean` gives the values for the `.metric`. When `type = "wide"`,
 #'  each metric has its own column and the `n` and `std_err` columns are removed,
 #'  if they exist.
+#' @param estimator How should we estimate the summarized metrics? Possible
+#' values are `”auto"`, `”standard”`, `”632”`, or `”632+”`. The latter two are
+#' specific to bootstrap resampling. A value of  `”standard”` indicates that
+#' basic means and standard errors should be used. Using `”auto"` for
+#' non-bootstrap samples will default to `”standard”`.
 #'
 #' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the
@@ -142,7 +147,6 @@ collect_predictions.default <- function(x, ...) {
 collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
   names <- colnames(x)
   coll_col <- ".predictions"
-# TODO add an estimator argument for "standard", etc
   has_coll_col <- coll_col %in% names
 
   if (!has_coll_col) {
@@ -454,32 +458,33 @@ collect_metrics.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_results <- function(x, summarize = TRUE, type = c("long", "wide"), ...) {
-  rlang::arg_match0(type, values = c("long", "wide"))
+collect_metrics.tune_results <-
+  function(x, summarize = TRUE, type = c("long", "wide"), estimator = "auto", ...) {
+    rlang::arg_match0(type, values = c("long", "wide"))
 
-  if (inherits(x, "last_fit")) {
-    res <- x$.metrics[[1]]
-  } else {
-    if (summarize) {
-      estimator <- resampling_estimator(x)
-      if (estimator == "bootstrap 632") {
-        res <- bootstrap_632(x)
-      } else if (estimator == "bootstrap 632+") {
-        res <- bootstrap_632_plus(x)
-      } else {
-        res <- estimate_tune_results(x)
-      }
+    if (inherits(x, "last_fit")) {
+      res <- x$.metrics[[1]]
     } else {
-      res <- collector(x, coll_col = ".metrics")
+      if (summarize) {
+        estimator <- check_metric_estimator_arg(x, estimator)
+        if (estimator == "632") {
+          res <- bootstrap_632(x)
+        } else if (estimator == "632+") {
+          res <- bootstrap_632_plus(x)
+        } else {
+          res <- estimate_tune_results(x)
+        }
+      } else {
+        res <- collector(x, coll_col = ".metrics")
+      }
     }
-  }
 
-  if (identical(type, "wide")) {
-    res <- pivot_metrics(x, res)
-  }
+    if (identical(type, "wide")) {
+      res <- pivot_metrics(x, res)
+    }
 
-  res
-}
+    res
+  }
 
 pivot_metrics <- function(x, x_metrics) {
   params <- .get_tune_parameter_names(x)
@@ -494,6 +499,24 @@ pivot_metrics <- function(x, x_metrics) {
     names_from = .metric,
     values_from = dplyr::any_of(c(".estimate", "mean"))
   )
+}
+
+check_metric_estimator_arg <- function(x, estimator) {
+  estimator <- rlang::arg_match(estimator, c("auto", "standard", "632", "632+"))
+
+  if (estimator == "auto") {
+    if (!is_bootstraps(x)) {
+      estimator <- "standard"
+    } else {
+      estimator <- attr(x, "rset_info")$att$estimator
+    }
+  }
+
+  if (estimator %in% c("632", "632+")) {
+    check_bootstrap(x)
+    check_apparent_present(x)
+  }
+  estimator
 }
 
 collector <- function(x, coll_col = ".predictions", excludes = TRUE) {

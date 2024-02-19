@@ -20,7 +20,13 @@ collect_predictions(x, ...)
 
 collect_metrics(x, ...)
 
-\method{collect_metrics}{tune_results}(x, summarize = TRUE, type = c("long", "wide"), ...)
+\method{collect_metrics}{tune_results}(
+  x,
+  summarize = TRUE,
+  type = c("long", "wide"),
+  estimator = "auto",
+  ...
+)
 
 collect_notes(x, ...)
 
@@ -51,6 +57,12 @@ output has columns \code{.metric} and one of \code{.estimate} or \code{mean}.
 \code{.estimate}/\code{mean} gives the values for the \code{.metric}. When \code{type = "wide"},
 each metric has its own column and the \code{n} and \code{std_err} columns are removed,
 if they exist.}
+
+\item{estimator}{How should we estimate the summarized metrics? Possible
+values are \verb{”auto"}, \verb{”standard”}, \verb{”632”}, or \verb{”632+”}. The latter two are
+specific to bootstrap resampling. A value of  \verb{”standard”} indicates that
+basic means and standard errors should be used. Using \verb{”auto"} for
+non-bootstrap samples will default to \verb{”standard”}.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the
