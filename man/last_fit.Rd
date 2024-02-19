@@ -151,14 +151,6 @@ want the fitted workflow, you can extract it from the result of \code{\link[=las
 via \link[=extract_workflow.tune_results]{extract_workflow()}.
 }
 
-\section{Censored regression models}{
-
-
-Values of \code{eval_time} should be less than the largest observed event
-time in the training data. For many non-parametric models, the results beyond
-the largest time corresponding to an event are constant (or \code{NA}).
-}
-
 \examples{
 \dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
