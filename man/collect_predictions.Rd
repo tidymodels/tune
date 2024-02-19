@@ -59,10 +59,10 @@ each metric has its own column and the \code{n} and \code{std_err} columns are r
 if they exist.}
 
 \item{estimator}{How should we estimate the summarized metrics? Possible
-values are \verb{”auto"}, \verb{”standard”}, \verb{”632”}, or \verb{”632+”}. The latter two are
-specific to bootstrap resampling. A value of  \verb{”standard”} indicates that
-basic means and standard errors should be used. Using \verb{”auto"} for
-non-bootstrap samples will default to \verb{”standard”}.}
+values are \code{"auto"}, \code{"standard"}, \code{"632"}, or \code{"632+"}. The latter two are
+specific to bootstrap resampling. A value of  \code{"standard"} indicates that
+basic means and standard errors should be used. Using \code{"auto"} for
+non-bootstrap samples will default to \code{"standard"}.}
 }
 \value{
 A tibble. The column names depend on the results and the mode of the

@@ -355,6 +355,8 @@ tune_grid_workflow <- function(workflow,
 
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
+  # TODO This is suss
+  control$.estimator <- get_rset_estimator(resamples)
   resamples <- new_bare_tibble(resamples)
 
   resamples <- tune_grid_loop(

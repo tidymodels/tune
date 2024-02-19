@@ -145,6 +145,7 @@ append_metrics <- function(collection,
                            event_level,
                            split,
                            .config = NULL,
+                           estimator = "standard",
                            metrics_info) {
   if (inherits(predictions, "try-error")) {
     return(collection)
@@ -161,8 +162,7 @@ append_metrics <- function(collection,
 
   split_label <- labels(split)
 
-  estimator <- "632" # TODO pass this in as a new arg
-  if (grepl("632", estimator) & split_label$id != "Apparent") {
+  if (grepl("632+", estimator) & split_label$id != "Apparent") {
     nir <- .no_information_rate(
       dat = predictions,
       metric = metrics,

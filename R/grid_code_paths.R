@@ -452,6 +452,7 @@ tune_grid_loop_iter <- function(split,
         event_level = event_level,
         split = split,
         .config = iter_config,
+        estimator = control$.estimator,
         metrics_info = metrics_info
       )
 

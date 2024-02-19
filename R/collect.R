@@ -17,10 +17,10 @@
 #'  each metric has its own column and the `n` and `std_err` columns are removed,
 #'  if they exist.
 #' @param estimator How should we estimate the summarized metrics? Possible
-#' values are `”auto"`, `”standard”`, `”632”`, or `”632+”`. The latter two are
-#' specific to bootstrap resampling. A value of  `”standard”` indicates that
-#' basic means and standard errors should be used. Using `”auto"` for
-#' non-bootstrap samples will default to `”standard”`.
+#' values are `"auto"`, `"standard"`, `"632"`, or `"632+"`. The latter two are
+#' specific to bootstrap resampling. A value of  `"standard"` indicates that
+#' basic means and standard errors should be used. Using `"auto"` for
+#' non-bootstrap samples will default to `"standard"`.
 #'
 #' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the

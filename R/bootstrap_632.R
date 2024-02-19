@@ -112,6 +112,16 @@ other_metric_cols <- function(x) {
   intersect(names(x), c(".iter", ".config", ".eval_time"))
 }
 
+# Get the estimator from the rset object
+get_rset_estimator <- function(x) {
+  res <- attributes(x)$estimator
+  if (is.null(res)) {
+    res <- "standard"
+  }
+  res
+}
+
+# After the tune_results have received the rsample attributes
 resampling_estimator <- function(x) {
   rs_info <- attr(x, "rset_info")$att
   if (rs_info$class != "bootstraps") {
