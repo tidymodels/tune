@@ -138,8 +138,8 @@ process.</p></dd>
 <dt>eval_time</dt>
 <dd><p>A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no greater than the
-largest event time in the training set.</p></dd>
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -239,6 +239,15 @@ every model that is <em>fit</em> (as opposed to every model that is <em>evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="censored-regression-models">Censored regression models<a class="anchor" aria-label="anchor" href="#censored-regression-models"></a></h2>
+    
+
+
+<p>Values of <code>eval_time</code> should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or <code>NA</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

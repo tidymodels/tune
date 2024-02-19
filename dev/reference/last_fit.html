@@ -137,8 +137,8 @@ process.</p></dd>
 <dt>eval_time</dt>
 <dd><p>A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values should be non-negative and should probably be no greater then the
-largest event time in the training set.</p></dd>
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).</p></dd>
 
 
 <dt>add_validation_set</dt>
@@ -202,6 +202,15 @@ further to performance assessment on the test data. While <code><a href="fit_bes
 a fitted workflow, <code>last_fit()</code> gives you the performance results. If you
 want the fitted workflow, you can extract it from the result of <code>last_fit()</code>
 via <a href="extract-tune.html">extract_workflow()</a>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="censored-regression-models">Censored regression models<a class="anchor" aria-label="anchor" href="#censored-regression-models"></a></h2>
+    
+
+
+<p>Values of <code>eval_time</code> should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or <code>NA</code>).</p>
     </div>
 
     <div class="section level2">

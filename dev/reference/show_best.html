@@ -159,9 +159,10 @@ a warning is issued).</p></dd>
 
 
 <dt>eval_time</dt>
-<dd><p>A numeric vector of time points where dynamic event time
+<dd><p>A single numeric time point where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-values should be consistent with the values used to create <code>x</code>.</p></dd>
+values should be consistent with the values used to create <code>x</code>. The <code>NULL</code>
+default will automatically use the first evaluation time used by <code>x</code>.</p></dd>
 
 
 <dt>call</dt>
