@@ -164,6 +164,34 @@ corresponding (unquoted) column name.</p>
 fitting and (if appropriate) performance estimation.</p>
     </div>
     <div class="section level2">
+    <h2 id="censored-regression-models">Censored Regression Models<a class="anchor" aria-label="anchor" href="#censored-regression-models"></a></h2>
+    
+
+
+<p>Three types of metrics can be used to assess the quality of censored
+regression models:</p><ul><li><p>static: the prediction is independent of time.</p></li>
+<li><p>dynamic: the prediction is a time-specific probability (e.g., survival
+probability) and is measured at one or more particular times.</p></li>
+<li><p>integrated: same as the dynamic metric but returns the integral of the
+different metrics from each time point.</p></li>
+</ul><p>Which metrics are chosen by the user affects how many evaluation times
+should be specified. For example:</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs no `eval_time` value</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(concordance_survival)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs at least one `eval_time`</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival, concordance_survival)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs at least two eval_time` values</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival, brier_survival)</span></code></pre><p></p></div>
+<p>Values of <code>eval_time</code> should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or <code>NA</code>).</p>
+    </div>
+    <div class="section level2">
     <h2 id="performance-metrics">Performance Metrics<a class="anchor" aria-label="anchor" href="#performance-metrics"></a></h2>
     
 
@@ -239,15 +267,6 @@ every model that is <em>fit</em> (as opposed to every model that is <em>evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="censored-regression-models">Censored regression models<a class="anchor" aria-label="anchor" href="#censored-regression-models"></a></h2>
-    
-
-
-<p>Values of <code>eval_time</code> should be less than the largest observed event
-time in the training data. For many non-parametric models, the results beyond
-the largest time corresponding to an event are constant (or <code>NA</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
