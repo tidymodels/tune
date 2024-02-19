@@ -193,18 +193,6 @@ This list column can be \code{unnested} using \code{\link[tidyr:unnest]{tidyr::u
 convenience function \code{\link[=collect_predictions]{collect_predictions()}}.
 }
 
-\section{Censored regression models}{
-
-
-With dynamic performance metrics (e.g. Brier or ROC curves), performance is
-calculated for every value of \code{eval_time} but the \emph{first} evaluation time
-given by the user (e.g., \code{eval_time[1]}) is used to guide the optimization.
-
-Also, values of \code{eval_time} should be less than the largest observed event
-time in the training data. For many non-parametric models, the results beyond
-the largest time corresponding to an event are constant (or \code{NA}).
-}
-
 \section{Case Weights}{
 
 Some models can utilize case weights during training. tidymodels currently
@@ -227,6 +215,48 @@ corresponding (unquoted) column name.
 
 From there, the packages will appropriately handle the weights during model
 fitting and (if appropriate) performance estimation.
+}
+
+\section{Censored Regression Models}{
+
+
+Three types of metrics can be used to assess the quality of censored
+regression models:
+\itemize{
+\item static: the prediction is independent of time.
+\item dynamic: the prediction is a time-specific probability (e.g., survival
+probability) and is measured at one or more particular times.
+\item integrated: same as the dynamic metric but returns the integral of the
+different metrics from each time point.
+}
+
+Which metrics are chosen by the user affects how many evaluation times
+should be specified. For example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{# Needs no `eval_time` value
+metric_set(concordance_survival)
+
+# Needs at least one `eval_time`
+metric_set(brier_survival)
+metric_set(brier_survival, concordance_survival)
+
+# Needs at least two eval_time` values
+metric_set(brier_survival_integrated, concordance_survival)
+metric_set(brier_survival_integrated, concordance_survival)
+metric_set(brier_survival_integrated, concordance_survival, brier_survival)
+}\if{html}{\out{</div>}}
+
+Values of \code{eval_time} should be less than the largest observed event
+time in the training data. For many non-parametric models, the results beyond
+the largest time corresponding to an event are constant (or \code{NA}).
+}
+
+\section{Optimizing Censored Regression Models}{
+
+
+With dynamic performance metrics (e.g. Brier or ROC curves), performance is
+calculated for every value of \code{eval_time} but the \emph{first} evaluation time
+given by the user (e.g., \code{eval_time[1]}) is used to guide the optimization.
 }
 
 \section{Extracting Information}{

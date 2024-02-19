@@ -38,7 +38,9 @@
 #'  and the final tuning parameters (if any) have been finalized. The next step
 #'  would be to fit using the entire training set and verify performance using
 #'  the test data.
+#'
 #' @template case-weights
+#' @template censored-regression
 #' @section See also:
 #'
 #' [last_fit()] is closely related to [fit_best()]. They both
