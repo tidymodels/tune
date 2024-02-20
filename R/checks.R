@@ -619,8 +619,8 @@ check_eval_time <- function(eval_time, metrics) {
   metric_types <- tibble::as_tibble(metrics)$class
   needs_eval_time <- any(metric_types %in% dyn_inputs)
   if (!is.null(eval_time) & !needs_eval_time) {
-    rlang::abort(
-      "Evaluation times are only used for dynamic and integrated survival metrics.",
+    cli::cli_abort(
+      "{.arg eval_time} is only used for dynamic and integrated survival metrics.",
       call = NULL
     )
   }

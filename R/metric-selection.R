@@ -104,9 +104,9 @@ choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call 
 
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time) & !quietly) {
-      cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).",
-                    call = call)
+      cli::cli_warn(
+        "{.arg eval_time} is only used for models with mode {.val censored regression}.",
+        call = call)
     }
     return(NULL)
   }
@@ -115,10 +115,10 @@ choose_eval_time <- function(x, metric, eval_time = NULL, quietly = FALSE, call 
 
   # If we don't need an eval time but one is passed:
   if (!dyn_metric & !is.null(eval_time) & !quietly) {
-    cli::cli_warn("An evaluation time is only required when a dynamic
-                   metric is selected (and {.arg eval_time} will thus be
-                   ignored).",
-                  call = call)
+    cli::cli_warn(
+      "{.arg eval_time} is only used for dynamic survival metrics.",
+      call = call
+    )
   }
 
   # If we need an eval time, set it to the possible values so that
@@ -314,9 +314,10 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   # Not a survival metric
   if (!contains_survival_metric(mtr_info)) {
     if (!is.null(eval_time)) {
-      cli::cli_warn("Evaluation times are only required when the model
-                     mode is {.val censored regression} (and will be ignored).",
-                    call = call)
+      cli::cli_warn(
+        "{.arg eval_time} is only used for models with mode {.val censored regression}.",
+        call = call
+      )
     }
     return(NULL)
   }
@@ -332,9 +333,10 @@ check_eval_time_arg <- function(eval_time, mtr_set, call = rlang::caller_env()) 
   check_enough_eval_times(eval_time, mtr_set)
 
   if (max_times_req == 0 & num_times > 0) {
-    cli::cli_warn("Evaluation times are only required when dynamic or
-                   integrated metrics are used (and will be ignored here).",
-                  call = call)
+    cli::cli_warn(
+      "{.arg eval_time} is only used for dynamic or integrated survival metrics.",
+      call = call
+    )
     eval_time <- NULL
   }
 
@@ -381,10 +383,10 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
   } else {
     any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(.get_tune_metrics(x), .x)))
     if (!any_dyn) {
-      cli::cli_warn("Evaluation times are only required when the results of a \\
-                     dynamic survival metric are being visualized (and will be \\
-                     ignored).",
-                    call = call)
+      cli::cli_warn(
+        "{.arg eval_time} is only used for dynamic survival metrics.",
+        call = call
+      )
       eval_time <- NULL
     }
     check_eval_time_in_tune_results(x, eval_time, call)

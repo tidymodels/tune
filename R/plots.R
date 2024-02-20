@@ -101,7 +101,9 @@ autoplot.tune_results <-
 
     if (type == "parameters") {
       if (!is.null(eval_time)) {
-        cli::cli_warn("Evaluation times are not required with {.code autoplot(..., type = 'parameters')}.")
+        cli::cli_warn(
+          "{.arg eval_time} is not used with {.code autoplot(..., type = 'parameters')}."
+        )
       }
       p <- plot_param_vs_iter(object, call)
     } else {
