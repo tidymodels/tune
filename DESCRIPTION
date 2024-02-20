@@ -27,7 +27,7 @@ Imports:
     GPfit,
     hardhat (>= 1.2.0),
     lifecycle (>= 1.0.0),
-    parsnip (>= 1.1.1.9007),
+    parsnip (>= 1.2.0),
     purrr (>= 1.0.0),
     recipes (>= 1.0.4),
     rlang (>= 1.1.0),
@@ -37,11 +37,11 @@ Imports:
     tidyselect (>= 1.1.2),
     vctrs (>= 0.6.1),
     withr,
-    workflows (>= 1.0.0),
+    workflows (>= 1.1.4),
     yardstick (>= 1.3.0)
 Suggests: 
     C50,
-    censored,
+    censored (>= 0.3.0),
     covr,
     kernlab,
     kknn,
@@ -52,9 +52,6 @@ Suggests:
     testthat (>= 3.0.0),
     xgboost,
     xml2
-Remotes:
-    tidymodels/parsnip,
-    tidymodels/censored
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
