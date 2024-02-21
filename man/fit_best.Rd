@@ -39,7 +39,9 @@ default will automatically use the first evaluation time used by \code{x}.}
 a column for each tuning parameter. This tibble should have columns for each
 tuning parameter identifier (e.g. \code{"my_param"} if \code{tune("my_param")} was used).
 If \code{NULL}, this argument will be set to
-\code{\link[=select_best.tune_results]{select_best(metric)}}.}
+\code{\link[=select_best.tune_results]{select_best(metric, eval_time)}}.
+If not \code{NULL}, \code{parameters} overwrites the specification via \code{metric}, and
+\code{eval_time}.}
 
 \item{verbose}{A logical for printing logging.}
 
