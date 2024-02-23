@@ -66,8 +66,8 @@
 #' set.seed(31)
 #' int_pctl(lm_res)
 #' @export
-int_pctl.tune_results <- function(.data, metrics = NULL, times = 1001,
-                                  eval_time = NULL, parameters = NULL,
+int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
+                                  times = 1001, parameters = NULL,
                                   alpha = 0.05, allow_par = TRUE,
                                   event_level = "first", ...) {
 

@@ -7,8 +7,8 @@
 \method{int_pctl}{tune_results}(
   .data,
   metrics = NULL,
-  times = 1001,
   eval_time = NULL,
+  times = 1001,
   parameters = NULL,
   alpha = 0.05,
   allow_par = TRUE,
@@ -23,11 +23,11 @@ option was used in the control function.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}. By default, it uses the same
 metrics as the original object.}
 
-\item{times}{The number of bootstrap samples.}
-
 \item{eval_time}{A vector of evaluation times for censored regression models.
 \code{NULL} is appropriate otherwise. If \code{NULL} is used with censored models, a
 evaluation time is selected, and a warning is issued.}
+
+\item{times}{The number of bootstrap samples.}
 
 \item{parameters}{An optional tibble of tuning parameter values that can be
 used to filter the predicted values before processing. This tibble should
