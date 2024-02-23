@@ -13,9 +13,9 @@ fit_best(x, ...)
 \method{fit_best}{tune_results}(
   x,
   metric = NULL,
-  eval_time = NULL,
   parameters = NULL,
   verbose = FALSE,
+  eval_time = NULL,
   add_validation_set = NULL,
   ...
 )
@@ -30,18 +30,20 @@ fit_best(x, ...)
 \item{metric}{A character string (or \code{NULL}) for which metric to optimize. If
 \code{NULL}, the first metric is used.}
 
-\item{eval_time}{A single numeric time point where dynamic event time
-metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-values should be consistent with the values used to create \code{x}. The \code{NULL}
-default will automatically use the first evaluation time used by \code{x}.}
-
 \item{parameters}{An optional 1-row tibble of tuning parameter settings, with
 a column for each tuning parameter. This tibble should have columns for each
 tuning parameter identifier (e.g. \code{"my_param"} if \code{tune("my_param")} was used).
 If \code{NULL}, this argument will be set to
-\code{\link[=select_best.tune_results]{select_best(metric)}}.}
+\code{\link[=select_best.tune_results]{select_best(metric, eval_time)}}.
+If not \code{NULL}, \code{parameters} overwrites the specification via \code{metric}, and
+\code{eval_time}.}
 
 \item{verbose}{A logical for printing logging.}
+
+\item{eval_time}{A single numeric time point where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create \code{x}. The \code{NULL}
+default will automatically use the first evaluation time used by \code{x}.}
 
 \item{add_validation_set}{When the resamples embedded in \code{x} are a split into
 training set and validation set, should the validation set be included in the

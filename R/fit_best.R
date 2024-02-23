@@ -12,7 +12,9 @@
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
 #' If `NULL`, this argument will be set to
-#' [`select_best(metric)`][tune::select_best.tune_results].
+#' [`select_best(metric, eval_time)`][tune::select_best.tune_results]. 
+#' If not `NULL`, `parameters` overwrites the specification via `metric`, and 
+#' `eval_time`.
 #' @param verbose A logical for printing logging.
 #' @param add_validation_set When the resamples embedded in `x` are a split into
 #' training set and validation set, should the validation set be included in the
@@ -87,9 +89,9 @@ fit_best.default <- function(x, ...) {
 #' @rdname fit_best
 fit_best.tune_results <- function(x,
                                   metric = NULL,
-                                  eval_time = NULL,
                                   parameters = NULL,
                                   verbose = FALSE,
+                                  eval_time = NULL,
                                   add_validation_set = NULL,
                                   ...) {
   if (length(list(...))) {
@@ -116,6 +118,15 @@ fit_best.tune_results <- function(x,
     parameters <- select_best(x, metric = metric, eval_time = eval_time)
     if (verbose) {
       format_final_param(parameters, metric)
+    }
+  } else {
+    if (!is.null(metric)) {
+      cli::cli_warn("{.arg metric} is being ignored because {.arg parameters}
+      has been specified.")
+    }
+    if (!is.null(eval_time)) {
+      cli::cli_warn("{.arg eval_time} is being ignored because {.arg parameters}
+      has been specified.")
     }
   }
 
