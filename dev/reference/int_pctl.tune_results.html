@@ -76,8 +76,8 @@ confidence intervals.</p>
 <span><span class="fu"><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl</a></span><span class="op">(</span></span>
 <span>  <span class="va">.data</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  times <span class="op">=</span> <span class="fl">1001</span>,</span>
 <span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  times <span class="op">=</span> <span class="fl">1001</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  allow_par <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -98,14 +98,14 @@ option was used in the control function.</p></dd>
 metrics as the original object.</p></dd>
 
 
-<dt>times</dt>
-<dd><p>The number of bootstrap samples.</p></dd>
-
-
 <dt>eval_time</dt>
 <dd><p>A vector of evaluation times for censored regression models.
 <code>NULL</code> is appropriate otherwise. If <code>NULL</code> is used with censored models, a
 evaluation time is selected, and a warning is issued.</p></dd>
+
+
+<dt>times</dt>
+<dd><p>The number of bootstrap samples.</p></dd>
 
 
 <dt>parameters</dt>
