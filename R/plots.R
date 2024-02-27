@@ -78,8 +78,8 @@ autoplot.tune_results <-
   function(object,
            type = c("marginals", "parameters", "performance"),
            metric = NULL,
-           width = NULL,
            eval_time = NULL,
+           width = NULL,
            call = rlang::current_env(),
            ...) {
     type <- match.arg(type)
@@ -108,7 +108,7 @@ autoplot.tune_results <-
       p <- plot_param_vs_iter(object, call)
     } else {
       if (type == "performance") {
-        p <- plot_perf_vs_iter(object, metric, width, eval_time = eval_time, call)
+        p <- plot_perf_vs_iter(object, metric, eval_time = eval_time, width, call)
       } else {
         if (use_regular_grid_plot(object)) {
           p <- plot_regular_grid(object, metric = metric, eval_time = eval_time, call, ...)
@@ -278,7 +278,7 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
 
 # ------------------------------------------------------------------------------
 
-plot_perf_vs_iter <- function(x, metric = NULL, width = NULL, eval_time = NULL,
+plot_perf_vs_iter <- function(x, metric = NULL, eval_time = NULL, width = NULL,
                               call = rlang::caller_env()) {
   if (is.null(width)) {
     width <- max(x$.iter) / 75
