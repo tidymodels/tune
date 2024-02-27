@@ -14,8 +14,8 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_resamples(),
-  eval_time = NULL
+  eval_time = NULL,
+  control = control_resamples()
 )
 
 \method{fit_resamples}{workflow}(
@@ -23,8 +23,8 @@ fit_resamples(object, ...)
   resamples,
   ...,
   metrics = NULL,
-  control = control_resamples(),
-  eval_time = NULL
+  eval_time = NULL,
+  control = control_resamples()
 )
 }
 \arguments{
@@ -44,13 +44,13 @@ function, such as \code{\link[rsample:vfold_cv]{rsample::vfold_cv()}}.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
-process.}
-
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values must be non-negative and should probably be no greater than the
 largest event time in the training set (See Details below).}
+
+\item{control}{A \code{\link[=control_resamples]{control_resamples()}} object used to fine tune the resampling
+process.}
 }
 \description{
 \code{\link[=fit_resamples]{fit_resamples()}} computes a set of performance metrics across one or more
