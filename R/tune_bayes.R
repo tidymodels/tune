@@ -198,10 +198,10 @@ tune_bayes.model_spec <- function(object,
                                   iter = 10,
                                   param_info = NULL,
                                   metrics = NULL,
+                                  eval_time = NULL,
                                   objective = exp_improve(),
                                   initial = 5,
-                                  control = control_bayes(),
-                                  eval_time = NULL) {
+                                  control = control_bayes()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -222,9 +222,15 @@ tune_bayes.model_spec <- function(object,
 
   tune_bayes_workflow(
     wflow,
-    resamples = resamples, iter = iter, param_info = param_info,
-    metrics = metrics, objective = objective, initial = initial,
-    control = control, eval_time = eval_time, ...
+    resamples = resamples, 
+    iter = iter,
+    param_info = param_info,
+    metrics = metrics, 
+    eval_time = eval_time, 
+    objective = objective, 
+    initial = initial,
+    control = control, 
+    ...
   )
 }
 
@@ -238,10 +244,10 @@ tune_bayes.workflow <-
            iter = 10,
            param_info = NULL,
            metrics = NULL,
+           eval_time = NULL,
            objective = exp_improve(),
            initial = 5,
-           control = control_bayes(),
-           eval_time = NULL) {
+           control = control_bayes()) {
 
     # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
     control <- parsnip::condense_control(control, control_bayes(seed = 1))
@@ -249,19 +255,32 @@ tune_bayes.workflow <-
     res <-
       tune_bayes_workflow(
         object,
-        resamples = resamples, iter = iter, param_info = param_info,
-        metrics = metrics, objective = objective, initial = initial,
-        control = control, eval_time = eval_time, ...
+        resamples = resamples, 
+        iter = iter, 
+        param_info = param_info,
+        metrics = metrics, 
+        eval_time = eval_time,
+        objective = objective,
+        initial = initial,
+        control = control,
+        ...
       )
     .stash_last_result(res)
     res
   }
 
-tune_bayes_workflow <-
-  function(object, resamples, iter = 10, param_info = NULL, metrics = NULL,
-           objective = exp_improve(),
-           initial = 5, control, eval_time = NULL, ...,
-           call = caller_env()) {
+tune_bayes_workflow <- function(object, 
+                                resamples,
+                                iter = 10,
+                                param_info = NULL,
+                                metrics = NULL,
+                                eval_time = NULL,
+                                objective = exp_improve(),
+                                initial = 5, 
+                                control,
+                                ...,
+                                call = caller_env()) {
+
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -423,9 +442,9 @@ tune_bayes_workflow <-
           resamples = resamples,
           candidates = candidates,
           metrics = metrics,
+          eval_time = eval_time,
           control = control,
-          param_info = param_info,
-          eval_time = eval_time
+          param_info = param_info
         )
 
       check_time(start_time, control$time_limit)
@@ -557,7 +576,7 @@ encode_set <- function(x, pset, as_matrix = FALSE, ...) {
   x
 }
 
-fit_gp <- function(dat, pset, metric, control, eval_time = NULL, ...) {
+fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
   dat <- dat %>% dplyr::filter(.metric == metric)
 
   if (!is.null(eval_time)) {
@@ -738,8 +757,8 @@ initial_info <- function(stats, metrics, maximize, eval_time) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, control,
-                         param_info, eval_time = NULL) {
+more_results <- function(object, resamples, candidates, metrics, 
+                         eval_time = NULL, control, param_info) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
@@ -753,8 +772,8 @@ more_results <- function(object, resamples, candidates, metrics, control,
         param_info = param_info,
         grid = candidates,
         metrics = metrics,
-        control = control,
-        eval_time = eval_time
+        eval_time = eval_time,
+        control = control
       ),
       silent = TRUE
     )
