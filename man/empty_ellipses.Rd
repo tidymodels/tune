@@ -37,8 +37,8 @@ check_initial(
   wflow,
   resamples,
   metrics,
-  ctrl,
   eval_time,
+  ctrl,
   checks = "grid"
 )
 
@@ -98,10 +98,10 @@ is_workflow(x)
 
 \item{metrics}{A metric set.}
 
-\item{ctrl}{A \code{control_grid} object.}
-
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc).}
+
+\item{ctrl}{A \code{control_grid} object.}
 
 \item{cls}{A character vector of possible classes}
 

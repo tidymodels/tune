@@ -404,7 +404,13 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_time,
+check_initial <- function(x, 
+                          pset, 
+                          wflow, 
+                          resamples,
+                          metrics, 
+                          eval_time,
+                          ctrl,
                           checks = "grid") {
   if (is.null(x)) {
     rlang::abort(bayes_msg)
@@ -424,9 +430,9 @@ check_initial <- function(x, pset, wflow, resamples, metrics, ctrl, eval_time,
       resamples = resamples,
       grid = x,
       metrics = metrics,
+      eval_time = eval_time,
       param_info = pset,
-      control = parsnip::condense_control(grid_ctrl, control_grid()),
-      eval_time = eval_time
+      control = parsnip::condense_control(grid_ctrl, control_grid())
     )
 
     if (ctrl$verbose) {

@@ -306,8 +306,13 @@ tune_bayes_workflow <- function(object,
     check_backend_options(control$backend_options)
 
     unsummarized <- check_initial(
-      initial, param_info, object, resamples,
-      metrics, control, eval_time,
+      initial, 
+      pset = param_info, 
+      wflow = object, 
+      resamples = resamples,
+      metrics = metrics, 
+      eval_time = eval_time,
+      ctrl = control, 
       checks = "bayes"
     )
 
