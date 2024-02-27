@@ -348,7 +348,7 @@ check_metrics <- function(x, object) {
              x <- yardstick::metric_set(rmse, rsq)
            },
            classification = {
-             x <- yardstick::metric_set(roc_auc, accuracy)
+             x <- yardstick::metric_set(roc_auc, accuracy, brier_class)
            },
            'censored regression' = {
              x <- yardstick::metric_set(brier_survival)

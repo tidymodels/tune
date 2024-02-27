@@ -8,6 +8,8 @@
 
 * A method for rsample's `int_pctl()` function that will compute percentile confidence intervals on performance metrics for objects produced by `fit_resamples()`, `tune_*()`, and `last_fit()`. 
 
+* The Brier score is now part of the default metric set for classification models.
+
 
 ## Bug Fixes
 
