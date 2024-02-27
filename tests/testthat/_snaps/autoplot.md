@@ -16,7 +16,7 @@
 
 # coord_obs_pred
 
-    Removed 1 rows containing missing values (`geom_point()`).
+    Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
 
 # regular grid plot
 
