@@ -81,9 +81,9 @@ set using tuning parameters associated with the best performance.</p>
 <span><span class="fu">fit_best</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  add_validation_set <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -106,6 +106,13 @@ set using tuning parameters associated with the best performance.</p>
 <code>NULL</code>, the first metric is used.</p></dd>
 
 
+<dt>eval_time</dt>
+<dd><p>A single numeric time point where dynamic event time
+metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
+values should be consistent with the values used to create <code>x</code>. The <code>NULL</code>
+default will automatically use the first evaluation time used by <code>x</code>.</p></dd>
+
+
 <dt>parameters</dt>
 <dd><p>An optional 1-row tibble of tuning parameter settings, with
 a column for each tuning parameter. This tibble should have columns for each
@@ -118,13 +125,6 @@ If not <code>NULL</code>, <code>parameters</code> overwrites the specification v
 
 <dt>verbose</dt>
 <dd><p>A logical for printing logging.</p></dd>
-
-
-<dt>eval_time</dt>
-<dd><p>A single numeric time point where dynamic event time
-metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-values should be consistent with the values used to create <code>x</code>. The <code>NULL</code>
-default will automatically use the first evaluation time used by <code>x</code>.</p></dd>
 
 
 <dt>add_validation_set</dt>

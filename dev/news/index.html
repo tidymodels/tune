@@ -91,6 +91,10 @@
 <li><p>Added notes on case weight usage to several functions (<a href="https://github.com/tidymodels/tune/issues/805" class="external-link">#805</a>).</p></li>
 <li><p>For iterative optimization routines, <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> will use integer breaks when <code>type = "performance"</code> or <code>type = "parameters"</code>.</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="breaking-change-development-version">Breaking Change<a class="anchor" aria-label="anchor" href="#breaking-change-development-version"></a></h3>
+<ul><li>Several functions gain an <code>eval_time</code> argument for the evaluation time of dynamic metrics for censored regression. The placement of the argument breaks passing-by-position for one or more other arguments to <code><a href="../reference/fit_best.html">fit_best.tune_results()</a></code>, <code><a href="../reference/show_best.html">show_best.tune_results()</a></code>, and the developer-focused <code><a href="../reference/empty_ellipses.html">check_initial()</a></code> (<a href="https://github.com/tidymodels/tune/issues/857" class="external-link">#857</a>).</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="tune-112">tune 1.1.2<a class="anchor" aria-label="anchor" href="#tune-112"></a></h2><p class="text-muted">CRAN release: 2023-08-23</p>

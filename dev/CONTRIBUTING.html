@@ -84,8 +84,8 @@
 <li>If your contribution spans the use of more than one package, consider building <a href="https://github.com/tidymodels/extratests" class="external-link">extratests</a> with your changes to check for breakages and/or adding new tests there. Let us know in your PR if you ran these extra tests.</li>
 <li>Here in the tune package, some test objects take too long to build with every commit. If your contribution changes the structure of tuning or resampling objects, regenerate these test objects using the scripts in <code>inst/examples/</code> as follows:</li>
 </ul><p>In a terminal, run:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD BATCH <span class="at">--vanilla</span> inst/examples/test_objects.R</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> CMD BATCH <span class="at">--vanilla</span> inst/examples/ames_knn.R</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">R</span> CMD BATCH <span class="at">--vanilla</span> inst/examples/test_objects.R</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">R</span> CMD BATCH <span class="at">--vanilla</span> inst/examples/ames_knn.R</span></code></pre></div>
 <p>Then, move the <code>.Rout</code> files to <code>inst/examples/</code>. Check these files before committing them.</p>
 <div class="section level3">
 <h3 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a></h3>

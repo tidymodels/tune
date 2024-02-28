@@ -99,8 +99,8 @@ performance is within some acceptable limit.</p>
 <span><span class="fu">show_best</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">current_env</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -119,7 +119,7 @@ performance is within some acceptable limit.</p>
 <span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, limit <span class="op">=</span> <span class="fl">2</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span>, limit <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">select_by_one_std_err</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -154,15 +154,15 @@ multiple metric and none are given, the first in the metric set is used (and
 a warning is issued).</p></dd>
 
 
-<dt>n</dt>
-<dd><p>An integer for the number of top results/rows to return.</p></dd>
-
-
 <dt>eval_time</dt>
 <dd><p>A single numeric time point where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create <code>x</code>. The <code>NULL</code>
 default will automatically use the first evaluation time used by <code>x</code>.</p></dd>
+
+
+<dt>n</dt>
+<dd><p>An integer for the number of top results/rows to return.</p></dd>
 
 
 <dt>call</dt>

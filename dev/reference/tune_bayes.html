@@ -83,10 +83,10 @@ combinations based on previous results.</p>
 <span>  iter <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param_info <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  objective <span class="op">=</span> <span class="fu"><a href="prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  initial <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for workflow</span></span>
@@ -97,10 +97,10 @@ combinations based on previous results.</p>
 <span>  iter <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  param_info <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metrics <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  objective <span class="op">=</span> <span class="fu"><a href="prob_improve.html">exp_improve</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  initial <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  eval_time <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  control <span class="op">=</span> <span class="fu"><a href="control_bayes.html">control_bayes</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -142,6 +142,13 @@ be useful when parameter ranges need to be customized.</p></dd>
 set of metrics. The first metric in <code>metrics</code> is the one that will be optimized.</p></dd>
 
 
+<dt>eval_time</dt>
+<dd><p>A numeric vector of time points where dynamic event time
+metrics should be computed (e.g. the time-dependent ROC curve, etc). The
+values must be non-negative and should probably be no greater than the
+largest event time in the training set (See Details below).</p></dd>
+
+
 <dt>objective</dt>
 <dd><p>A character string for what metric should be optimized or
 an acquisition function object.</p></dd>
@@ -155,13 +162,6 @@ initial results be greater than the number of parameters being optimized.</p></d
 
 <dt>control</dt>
 <dd><p>A control object created by <code><a href="control_bayes.html">control_bayes()</a></code>.</p></dd>
-
-
-<dt>eval_time</dt>
-<dd><p>A numeric vector of time points where dynamic event time
-metrics should be computed (e.g. the time-dependent ROC curve, etc). The
-values must be non-negative and should probably be no greater than the
-largest event time in the training set (See Details below).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -310,17 +310,17 @@ probability) and is measured at one or more particular times.</p></li>
 different metrics from each time point.</p></li>
 </ul><p>Which metrics are chosen by the user affects how many evaluation times
 should be specified. For example:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs no `eval_time` value</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(concordance_survival)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs at least one `eval_time`</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival, concordance_survival)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Needs at least two eval_time` values</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival, brier_survival)</span></code></pre><p></p></div>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Needs no `eval_time` value</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">metric_set</span>(concordance_survival)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Needs at least one `eval_time`</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival, concordance_survival)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Needs at least two eval_time` values</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">metric_set</span>(brier_survival_integrated, concordance_survival, brier_survival)</span></code></pre><p></p></div>
 <p>Values of <code>eval_time</code> should be less than the largest observed event
 time in the training data. For many non-parametric models, the results beyond
 the largest time corresponding to an event are constant (or <code>NA</code>).</p>
