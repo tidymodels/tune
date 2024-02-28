@@ -41,7 +41,8 @@
 ---
 
     Code
-      conf_mat_resampled(broke_results, select_best(broke_results, "accuracy"))
+      conf_mat_resampled(broke_results, parameters = select_best(broke_results,
+        metric = "accuracy"))
     Condition
       Error in `conf_mat_resampled()`:
       ! Cannot determine the proper outcome name

@@ -21,10 +21,10 @@ show_best(x, ...)
 
 \method{show_best}{tune_results}(
   x,
+  ...,
   metric = NULL,
   eval_time = NULL,
   n = 5,
-  ...,
   call = rlang::current_env()
 )
 
@@ -32,7 +32,7 @@ select_best(x, ...)
 
 \method{select_best}{default}(x, ...)
 
-\method{select_best}{tune_results}(x, metric = NULL, eval_time = NULL, ...)
+\method{select_best}{tune_results}(x, ..., metric = NULL, eval_time = NULL)
 
 select_by_pct_loss(x, ...)
 

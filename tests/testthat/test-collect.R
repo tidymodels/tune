@@ -47,7 +47,7 @@ svm_tune_class$.predictions <-
   )
 attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
-svm_grd <- show_best(svm_tune, "roc_auc") %>% dplyr::select(`cost value`)
+svm_grd <- show_best(svm_tune, metric = "roc_auc") %>% dplyr::select(`cost value`)
 
 # ------------------------------------------------------------------------------
 
