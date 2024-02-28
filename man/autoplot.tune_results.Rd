@@ -6,16 +6,19 @@
 \usage{
 \method{autoplot}{tune_results}(
   object,
+  ...,
   type = c("marginals", "parameters", "performance"),
   metric = NULL,
   eval_time = NULL,
   width = NULL,
-  call = rlang::current_env(),
-  ...
+  call = rlang::current_env()
 )
 }
 \arguments{
 \item{object}{A tibble of results from \code{\link[=tune_grid]{tune_grid()}} or \code{\link[=tune_bayes]{tune_bayes()}}.}
+
+\item{...}{For plots with a regular grid, this is passed to \code{format()} and is
+applied to a parameter used to color points. Otherwise, it is not used.}
 
 \item{type}{A single character value. Choices are \code{"marginals"} (for a plot
 of each predictor versus performance; see Details below), \code{"parameters"}
@@ -34,9 +37,6 @@ values should be consistent with the values used to create \code{object}.}
 \code{type = "performance"}. A value of zero prevents them from being shown.}
 
 \item{call}{The call to be displayed in warnings or errors.}
-
-\item{...}{For plots with a regular grid, this is passed to \code{format()} and is
-applied to a parameter used to color points. Otherwise, it is not used.}
 }
 \value{
 A \code{ggplot2} object.
