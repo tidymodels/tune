@@ -140,6 +140,8 @@ collect_predictions.default <- function(x, ...) {
 #' @export
 #' @rdname collect_predictions
 collect_predictions.tune_results <- function(x, ..., summarize = FALSE, parameters = NULL) {
+  rlang::check_dots_empty()
+  
   names <- colnames(x)
   coll_col <- ".predictions"
 
@@ -455,6 +457,7 @@ collect_metrics.default <- function(x, ...) {
 #' @export
 #' @rdname collect_predictions
 collect_metrics.tune_results <- function(x, ..., summarize = TRUE, type = c("long", "wide")) {
+  rlang::check_dots_empty()
   rlang::arg_match0(type, values = c("long", "wide"))
 
   if (inherits(x, "last_fit")) {
@@ -552,6 +555,7 @@ collector <- function(x, coll_col = ".predictions") {
 #' @keywords internal
 #' @rdname empty_ellipses
 estimate_tune_results <- function(x, ..., col_name = ".metrics") {
+  rlang::check_dots_empty()
   param_names <- .get_tune_parameter_names(x)
   id_names <- grep("^id", names(x), value = TRUE)
   group_cols <- .get_extra_col_names(x)

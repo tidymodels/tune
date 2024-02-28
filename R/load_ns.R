@@ -14,11 +14,13 @@ load_pkgs <- function(x, ..., infra = TRUE) {
 
 #' @export
 load_pkgs.character <- function(x, ...) {
+  rlang::check_dots_empty()
   withr::with_preserve_seed(.load_namespace(x))
 }
 
 #' @export
 load_pkgs.model_spec <- function(x, ..., infra = TRUE) {
+  rlang::check_dots_empty()
   pkgs <- required_pkgs(x)
   if (infra) {
     pkgs <- c(infra_pkgs, pkgs)
@@ -28,6 +30,7 @@ load_pkgs.model_spec <- function(x, ..., infra = TRUE) {
 
 #' @export
 load_pkgs.workflow <- function(x, ..., infra = TRUE) {
+  rlang::check_dots_empty()
   load_pkgs.model_spec(extract_spec_parsnip(x), infra = infra)
 }
 
