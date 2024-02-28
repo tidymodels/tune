@@ -69,6 +69,7 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
 #' @rdname choose_metric
 #' @export
 check_metric_in_tune_results <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty(call = call)
   if (!any(mtr_info$metric == metric)) {
     cli::cli_abort("{.val {metric}} was not in the metric set. Please choose
                     from: {.val {mtr_info$metric}}.", call = call)
@@ -98,7 +99,7 @@ contains_survival_metric <- function(mtr_info) {
 #' @rdname choose_metric
 #' @export
 choose_eval_time <- function(x, metric, ..., eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
-
+  rlang::check_dots_empty(call = call)
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
 
@@ -254,6 +255,7 @@ first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., quiet
 #' @rdname choose_metric
 #' @export
 check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty(call = call)
   mode <- extract_spec_parsnip(wflow)$mode
 
   if (is.null(mtr_set)) {
@@ -309,6 +311,7 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
 #' @rdname choose_metric
 #' @export
 check_eval_time_arg <- function(eval_time, mtr_set, ..., call = rlang::caller_env()) {
+  rlang::check_dots_empty(call = call)
   mtr_info <- tibble::as_tibble(mtr_set)
 
   # Not a survival metric

@@ -288,6 +288,8 @@ check_workflow <- function(x, ..., pset = NULL, check_dials = FALSE, call = call
     rlang::abort("A parsnip model is required.")
   }
 
+  rlang::check_dots_empty(call = call)
+
   if (check_dials) {
     if (is.null(pset)) {
       pset <- hardhat::extract_parameter_set_dials(x)
