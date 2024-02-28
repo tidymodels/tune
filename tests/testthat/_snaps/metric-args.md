@@ -101,8 +101,9 @@
       check_metrics_arg(NULL, wflow)
     Output
       A metric set, consisting of:
-      - `roc_auc()`, a probability metric | direction: maximize
-      - `accuracy()`, a class metric      | direction: maximize
+      - `roc_auc()`, a probability metric     | direction: maximize
+      - `accuracy()`, a class metric          | direction: maximize
+      - `brier_class()`, a probability metric | direction: minimize
 
 ---
 

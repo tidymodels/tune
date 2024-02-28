@@ -328,6 +328,7 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
 })
 
 test_that("regular grid plot", {
+  skip_if_not_installed("ggplot2", minimum_version = "3.5.0")
   set.seed(1)
   res <-
     parsnip::svm_rbf(cost = tune()) %>%
