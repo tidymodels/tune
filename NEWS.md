@@ -43,11 +43,11 @@
 
 * For iterative optimization routines, `autoplot()` will use integer breaks when `type = "performance"` or `type = "parameters"`.
 
-## Breaking Change
+## Breaking Changes
 
 * Several functions gained an `eval_time` argument for the evaluation time of dynamic metrics for censored regression. The placement of the argument breaks passing-by-position for one or more other arguments to `autoplot.tune_results()` and the developer-focused `check_initial()` (#857).
 
-* Ellipses (...) are now used consistently in the package to require optional arguments to be named. For functions that previously had ellipses at the end of the function signature, they have been moved to follow the last argument without a default value: this applies to `augment.tune_results()`, `collect_predictions.tune_results()`, `collect_metrics.tune_results()`, and the developer-focused `estimate_tune_results()`, `load_pkgs()`, and `encode_set()`. Several other functions that previously did not have ellipses in their signatures gained them: this applies to `conf_mat_resampled()` and the developer-focused `check_workflow()`. Optional arguments previously passed by position will now error informatively prompting them to be named (#862).
+* Ellipses (...) are now used consistently in the package to require optional arguments to be named. For functions that previously had ellipses at the end of the function signature, they have been moved to follow the last argument without a default value: this applies to `augment.tune_results()`, `collect_predictions.tune_results()`, `collect_metrics.tune_results()`, and the developer-focused `estimate_tune_results()`, `load_pkgs()`, and `encode_set()`. Several other functions that previously did not have ellipses in their signatures gained them: this applies to `conf_mat_resampled()` and the developer-focused `check_workflow()`. Optional arguments previously passed by position will now error informatively prompting them to be named. These changes don't apply in cases when the ellipses are currently in use to forward arguments to other functions (#863).
 
 # tune 1.1.2
 
