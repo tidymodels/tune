@@ -219,5 +219,5 @@ test_that("selecting an evaluation time", {
   )
 
   data("example_ames_knn")
-  expect_snapshot(choose_eval_time(ames_grid_search, "rmse", 1))
+  expect_snapshot(choose_eval_time(ames_grid_search, "rmse", eval_time = 1))
 })

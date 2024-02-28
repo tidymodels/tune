@@ -84,7 +84,7 @@
 ---
 
     Code
-      choose_eval_time(ames_grid_search, "rmse", 1)
+      choose_eval_time(ames_grid_search, "rmse", eval_time = 1)
     Condition
       Warning:
       `eval_time` is only used for models with mode "censored regression".

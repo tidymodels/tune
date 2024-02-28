@@ -14,11 +14,12 @@
 \usage{
 choose_metric(x, metric, ..., call = rlang::caller_env())
 
-check_metric_in_tune_results(mtr_info, metric, call = rlang::caller_env())
+check_metric_in_tune_results(mtr_info, metric, ..., call = rlang::caller_env())
 
 choose_eval_time(
   x,
   metric,
+  ...,
   eval_time = NULL,
   quietly = FALSE,
   call = rlang::caller_env()
@@ -39,9 +40,9 @@ first_eval_time(
 
 .filter_perf_metrics(x, metric, eval_time)
 
-check_metrics_arg(mtr_set, wflow, call = rlang::caller_env())
+check_metrics_arg(mtr_set, wflow, ..., call = rlang::caller_env())
 
-check_eval_time_arg(eval_time, mtr_set, call = rlang::caller_env())
+check_eval_time_arg(eval_time, mtr_set, ..., call = rlang::caller_env())
 }
 \arguments{
 \item{x}{An object with class \code{tune_results}.}
