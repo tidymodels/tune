@@ -10,7 +10,7 @@ compute_metrics(x, metrics, summarize, event_level, ...)
 
 \method{compute_metrics}{default}(x, metrics, summarize = TRUE, event_level = "first", ...)
 
-\method{compute_metrics}{tune_results}(x, metrics, summarize = TRUE, event_level = "first", ...)
+\method{compute_metrics}{tune_results}(x, metrics, ..., summarize = TRUE, event_level = "first")
 }
 \arguments{
 \item{x}{The results of a tuning function like \code{\link[=tune_grid]{tune_grid()}} or
