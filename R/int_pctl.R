@@ -230,8 +230,7 @@ comp_metrics <- function(split, y, metrics, event_level, eval_time) {
       param_names = NULL,
       outcome_name = y,
       event_level = event_level,
-      metrics_info = info,
-      eval_time = eval_time
+      metrics_info = info
     )
 
   res %>%
