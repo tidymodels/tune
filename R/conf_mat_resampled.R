@@ -5,6 +5,7 @@
 #'
 #' @param x An object with class `tune_results` that was used with a
 #' classification model that was run with `control_*(save_pred = TRUE)`.
+#' @param ... Currently unused, must be empty.
 #' @param parameters A tibble with a single tuning parameter combination. Only
 #' one tuning parameter combination (if any were used) is allowed here.
 #' @param tidy Should the results come back in a tibble (`TRUE`) or a `conf_mat`
@@ -30,7 +31,8 @@
 #' conf_mat_resampled(res)
 #' conf_mat_resampled(res, tidy = FALSE)
 #' @export
-conf_mat_resampled <- function(x, parameters = NULL, tidy = TRUE) {
+conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
+  rlang::check_dots_empty()
   if (!inherits(x, "tune_results")) {
     rlang::abort(
       "The first argument needs to be an object with class 'tune_results'."

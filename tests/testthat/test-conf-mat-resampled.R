@@ -64,6 +64,6 @@ test_that("bad argss", {
   })
 
   expect_snapshot(error = TRUE, {
-    conf_mat_resampled(svm_results)
+    conf_mat_resampled(svm_results, argument_that_doesnt_exist = TRUE)
   })
 })

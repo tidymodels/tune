@@ -50,8 +50,10 @@
 ---
 
     Code
-      conf_mat_resampled(svm_results)
+      conf_mat_resampled(svm_results, argument_that_doesnt_exist = TRUE)
     Condition
       Error in `conf_mat_resampled()`:
-      ! It looks like there are 5 tuning parameter combination(s) in the data. Please use the `parameters` argument to select one combination of parameters.
+      ! `...` must be empty.
+      x Problematic argument:
+      * argument_that_doesnt_exist = TRUE
 
