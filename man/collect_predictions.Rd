@@ -16,11 +16,11 @@ collect_predictions(x, ...)
 
 \method{collect_predictions}{default}(x, ...)
 
-\method{collect_predictions}{tune_results}(x, summarize = FALSE, parameters = NULL, ...)
+\method{collect_predictions}{tune_results}(x, ..., summarize = FALSE, parameters = NULL)
 
 collect_metrics(x, ...)
 
-\method{collect_metrics}{tune_results}(x, summarize = TRUE, type = c("long", "wide"), ...)
+\method{collect_metrics}{tune_results}(x, ..., summarize = TRUE, type = c("long", "wide"))
 
 collect_notes(x, ...)
 

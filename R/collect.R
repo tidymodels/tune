@@ -3,6 +3,7 @@
 #' @param x The results of [tune_grid()], [tune_bayes()], [fit_resamples()],
 #'  or [last_fit()]. For [collect_predictions()], the control option `save_pred
 #'  = TRUE` should have been used.
+#' @param ... Not currently used.
 #' @param summarize A logical; should metrics be summarized over resamples
 #' (`TRUE`) or return the values for each individual resample. Note that, if `x`
 #' is created by [last_fit()], `summarize` has no effect. For the other object
@@ -16,8 +17,7 @@
 #'  `.estimate`/`mean` gives the values for the `.metric`. When `type = "wide"`,
 #'  each metric has its own column and the `n` and `std_err` columns are removed,
 #'  if they exist.
-#'
-#' @param ... Not currently used.
+#' 
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
 #'
@@ -139,7 +139,7 @@ collect_predictions.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
+collect_predictions.tune_results <- function(x, ..., summarize = FALSE, parameters = NULL) {
   names <- colnames(x)
   coll_col <- ".predictions"
 
@@ -454,7 +454,7 @@ collect_metrics.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_results <- function(x, summarize = TRUE, type = c("long", "wide"), ...) {
+collect_metrics.tune_results <- function(x, ..., summarize = TRUE, type = c("long", "wide")) {
   rlang::arg_match0(type, values = c("long", "wide"))
 
   if (inherits(x, "last_fit")) {
