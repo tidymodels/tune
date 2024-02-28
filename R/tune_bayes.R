@@ -547,7 +547,7 @@ check_iter <- function(iter, call) {
 #' @rdname empty_ellipses
 #' @param pset A `parameters` object.
 #' @param as_matrix A logical for the return type.
-encode_set <- function(x, pset, as_matrix = FALSE, ...) {
+encode_set <- function(x, pset, ..., as_matrix = FALSE) {
   # change the numeric variables to the transformed scale (if any)
   has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
   if (any(has_trans)) {

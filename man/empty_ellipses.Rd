@@ -48,7 +48,7 @@ val_class_and_single(x, cls = "numeric", where = NULL)
 
 .config_key_from_metrics(x)
 
-estimate_tune_results(x, col_name = ".metrics", ...)
+estimate_tune_results(x, ..., col_name = ".metrics")
 
 metrics_info(x)
 
@@ -65,7 +65,7 @@ new_iteration_results(
 
 get_tune_colors()
 
-encode_set(x, pset, as_matrix = FALSE, ...)
+encode_set(x, pset, ..., as_matrix = FALSE)
 
 check_time(origin, limit)
 

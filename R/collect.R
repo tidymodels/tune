@@ -551,7 +551,7 @@ collector <- function(x, coll_col = ".predictions") {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-estimate_tune_results <- function(x, col_name = ".metrics", ...) {
+estimate_tune_results <- function(x, ..., col_name = ".metrics") {
   param_names <- .get_tune_parameter_names(x)
   id_names <- grep("^id", names(x), value = TRUE)
   group_cols <- .get_extra_col_names(x)

@@ -4,7 +4,7 @@
 \alias{load_pkgs}
 \title{Quietly load package namespace}
 \usage{
-load_pkgs(x, infra = TRUE, ...)
+load_pkgs(x, ..., infra = TRUE)
 }
 \arguments{
 \item{x}{A character vector of packages.}
