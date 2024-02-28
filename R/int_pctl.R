@@ -150,7 +150,7 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
       .errorhandling = "pass",
       .packages = c("tune", "rsample")
     )  %op% {
-      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, eval_time)
+      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
@@ -219,7 +219,7 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
 }
 
 # Compute metrics for a specific configuration
-comp_metrics <- function(split, y, metrics, event_level, eval_time) {
+comp_metrics <- function(split, y, metrics, event_level) {
   dat <- rsample::analysis(split)
   info <- metrics_info(metrics)
 
