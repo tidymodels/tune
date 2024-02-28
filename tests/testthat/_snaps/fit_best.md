@@ -62,7 +62,9 @@
 
 ---
 
-    x The `...` are not used by this function.
+    `...` must be empty.
+    x Problematic argument:
+    * chickens = 2
 
 ---
 
