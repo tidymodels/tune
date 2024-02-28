@@ -118,7 +118,7 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
     purrr::map2(
       config_keys, sample.int(10000, p),
       ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par,
-                                   event_level, eval_time, alpha)
+                                   event_level, alpha)
     ) %>%
     purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
@@ -136,7 +136,7 @@ get_int_p_operator <- function(allow = TRUE) {
 }
 
 boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par,
-                                       event_level, eval_time, alpha) {
+                                       event_level, alpha) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
