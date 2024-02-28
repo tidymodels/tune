@@ -1,8 +1,6 @@
 #' Plot tuning search results
 #'
 #' @param object A tibble of results from [tune_grid()] or [tune_bayes()].
-#' @param ... For plots with a regular grid, this is passed to `format()` and is
-#' applied to a parameter used to color points. Otherwise, it is not used.
 #' @param type A single character value. Choices are `"marginals"` (for a plot
 #'  of each predictor versus performance; see Details below), `"parameters"`
 #'  (each parameter versus search iteration), or `"performance"` (performance
@@ -16,6 +14,8 @@
 #' metrics should be chosen (e.g. the time-dependent ROC curve, etc). The
 #' values should be consistent with the values used to create `object`.
 #' @param call The call to be displayed in warnings or errors.
+#' @param ... For plots with a regular grid, this is passed to `format()` and is
+#' applied to a parameter used to color points. Otherwise, it is not used.
 #' @return A `ggplot2` object.
 #' @details
 #'
@@ -76,12 +76,12 @@
 #' @export
 autoplot.tune_results <-
   function(object,
-           ...,
            type = c("marginals", "parameters", "performance"),
            metric = NULL,
            eval_time = NULL,
            width = NULL,
-           call = rlang::current_env()) {
+           call = rlang::current_env(),
+           ...) {
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
     if (!has_iter && type != "marginals") {
