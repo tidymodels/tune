@@ -184,7 +184,7 @@ first_metric <- function(mtr_set) {
 # such as tune_bayes().
 #' @rdname choose_metric
 #' @export
-first_eval_time <- function(mtr_set, metric = NULL, eval_time = NULL, ..., quietly = FALSE, call = rlang::caller_env()) {
+first_eval_time <- function(mtr_set, ..., metric = NULL, eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
   rlang::check_dots_empty()
 
   num_times <- length(eval_time)

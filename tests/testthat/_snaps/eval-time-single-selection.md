@@ -9,7 +9,7 @@
 ---
 
     Code
-      first_eval_time(met_dyn, "brier_survival", eval_time = NULL)
+      first_eval_time(met_dyn, metric = "brier_survival", eval_time = NULL)
     Condition
       Error:
       ! A single evaluation time is required to use this metric.

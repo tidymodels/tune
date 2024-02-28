@@ -4,11 +4,13 @@
 \alias{conf_mat_resampled}
 \title{Compute average confusion matrix across resamples}
 \usage{
-conf_mat_resampled(x, parameters = NULL, tidy = TRUE)
+conf_mat_resampled(x, ..., parameters = NULL, tidy = TRUE)
 }
 \arguments{
 \item{x}{An object with class \code{tune_results} that was used with a
 classification model that was run with \code{control_*(save_pred = TRUE)}.}
+
+\item{...}{Currently unused, must be empty.}
 
 \item{parameters}{A tibble with a single tuning parameter combination. Only
 one tuning parameter combination (if any were used) is allowed here.}

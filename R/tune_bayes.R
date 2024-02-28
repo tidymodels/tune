@@ -296,7 +296,7 @@ tune_bayes_workflow <- function(object,
     maximize <- opt_metric$direction == "maximize"
 
     eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
-    opt_metric_time <- first_eval_time(metrics, opt_metric_name, eval_time, call = call)
+    opt_metric_time <- first_eval_time(metrics, metric = opt_metric_name, eval_time = eval_time, call = call)
 
     if (is.null(param_info)) {
       param_info <- hardhat::extract_parameter_set_dials(object)

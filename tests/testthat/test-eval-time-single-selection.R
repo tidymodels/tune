@@ -25,7 +25,7 @@ test_that("selecting single eval time - pure metric sets", {
   # all static; return NULL and add warning if times are given
 
   expect_null(first_eval_time(met_stc, eval_time = NULL))
-  expect_null(first_eval_time(met_stc, "concordance_survival", eval_time = NULL))
+  expect_null(first_eval_time(met_stc, metric = "concordance_survival", eval_time = NULL))
 
   expect_silent(
     stc_one <- first_eval_time(met_stc, eval_time = times_1)
@@ -45,7 +45,7 @@ test_that("selecting single eval time - pure metric sets", {
     error = TRUE
   )
   expect_snapshot(
-    first_eval_time(met_dyn, "brier_survival", eval_time = NULL),
+    first_eval_time(met_dyn, metric = "brier_survival", eval_time = NULL),
     error = TRUE
   )
 
@@ -63,7 +63,7 @@ test_that("selecting single eval time - pure metric sets", {
 
   expect_null(first_eval_time(met_int, eval_time = NULL))
   expect_null(
-    first_eval_time(met_int, "brier_survival_integrated", eval_time = NULL)
+    first_eval_time(met_int, metric = "brier_survival_integrated", eval_time = NULL)
   )
 
   expect_silent(

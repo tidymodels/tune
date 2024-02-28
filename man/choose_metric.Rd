@@ -31,9 +31,9 @@ first_metric(mtr_set)
 
 first_eval_time(
   mtr_set,
+  ...,
   metric = NULL,
   eval_time = NULL,
-  ...,
   quietly = FALSE,
   call = rlang::caller_env()
 )
