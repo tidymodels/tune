@@ -7,12 +7,12 @@
 #' @param x An object resulting from one of the `tune_*()` functions,
 #'  `fit_resamples()`, or `last_fit()`. The control specifications for these
 #'  objects should have used the option `save_pred = TRUE`.
+#' @param ... Not currently used.
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
 #' objects only). If `NULL`, `select_best(x)` will be used with the first 
 #' metric and, if applicable, the first evaluation time point, used to 
 #' create `x`.
-#' @param ... Not currently used.
 #' @return A data frame with one or more additional columns for model
 #' predictions.
 #'
@@ -34,7 +34,7 @@
 #' results.
 #'
 #' @export
-augment.tune_results <- function(x, parameters = NULL, ...) {
+augment.tune_results <- function(x, ..., parameters = NULL) {
   dots <- rlang::list2(...)
   if (length(dots) > 0) {
     rlang::abort(
