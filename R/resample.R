@@ -74,8 +74,8 @@ fit_resamples.model_spec <- function(object,
                                      resamples,
                                      ...,
                                      metrics = NULL,
-                                     control = control_resamples(),
-                                     eval_time = NULL) {
+                                     eval_time = NULL,
+                                     control = control_resamples()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -99,8 +99,8 @@ fit_resamples.model_spec <- function(object,
     wflow,
     resamples = resamples,
     metrics = metrics,
-    control = control,
-    eval_time = eval_time
+    eval_time = eval_time,
+    control = control
   )
 }
 
@@ -111,8 +111,8 @@ fit_resamples.workflow <- function(object,
                                    resamples,
                                    ...,
                                    metrics = NULL,
-                                   control = control_resamples(),
-                                   eval_time = NULL) {
+                                   eval_time = NULL,
+                                   control = control_resamples()) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_resamples())
@@ -122,8 +122,8 @@ fit_resamples.workflow <- function(object,
       workflow = object,
       resamples = resamples,
       metrics = metrics,
-      control = control,
       eval_time = eval_time,
+      control = control,
       rng = TRUE
     )
   .stash_last_result(res)
@@ -132,8 +132,8 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, control,
-                              eval_time = NULL, rng, call = caller_env()) {
+resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL, 
+                              control, rng, call = caller_env()) {
   check_no_tuning(workflow)
 
   # `NULL` is the signal that we have no grid to tune with
@@ -145,9 +145,9 @@ resample_workflow <- function(workflow, resamples, metrics, control,
     resamples = resamples,
     grid = grid,
     metrics = metrics,
+    eval_time = eval_time,
     pset = pset,
     control = control,
-    eval_time = eval_time,
     rng = rng,
     call = call
   )

@@ -43,6 +43,11 @@
 
 * For iterative optimization routines, `autoplot()` will use integer breaks when `type = "performance"` or `type = "parameters"`.
 
+## Breaking Change
+
+* Several functions gain an `eval_time` argument for the evaluation time of dynamic metrics for censored regression. The placement of the argument breaks passing-by-position for one or more other arguments to `fit_best.tune_results()`, `show_best.tune_results()`, and the developer-focused `check_initial()` (#857).
+
+
 # tune 1.1.2
 
 * `last_fit()` now works with the 3-way validation split objects from `rsample::initial_validation_split()`. `last_fit()` and `fit_best()` now have a new argument `add_validation_set` to include or exclude the validation set in the dataset used to fit the model (#701).

@@ -77,7 +77,12 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x, metric = NULL, n = 5, eval_time = NULL, ..., call = rlang::current_env()) {
+show_best.tune_results <- function(x, 
+                                   metric = NULL, 
+                                   eval_time = NULL,
+                                   n = 5, 
+                                   ..., 
+                                   call = rlang::current_env()) {
   rlang::check_dots_empty()
 
   metric_info <- choose_metric(x, metric, call = call)
@@ -141,7 +146,7 @@ select_by_pct_loss.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, limit = 2, eval_time = NULL) {
+select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = NULL, limit = 2) {
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 

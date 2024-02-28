@@ -256,7 +256,7 @@ tune_grid.default <- function(object, ...) {
 #' @rdname tune_grid
 tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
-                                 control = control_grid(), eval_time = NULL) {
+                                 eval_time = NULL, control = control_grid()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
       "To tune a model spec, you must preprocess",
@@ -282,8 +282,8 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
     param_info = param_info,
     grid = grid,
     metrics = metrics,
-    control = control,
-    eval_time = eval_time
+    eval_time = eval_time,
+    control = control
   )
 }
 
@@ -291,7 +291,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 #' @rdname tune_grid
 tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
                                grid = 10, metrics = NULL,
-                               control = control_grid(), eval_time = NULL) {
+                               eval_time = NULL, control = control_grid()) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -308,9 +308,9 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
       resamples = resamples,
       grid = grid,
       metrics = metrics,
+      eval_time = eval_time,
       pset = param_info,
-      control = control,
-      eval_time = eval_time
+      control = control
     )
   .stash_last_result(res)
   res
@@ -322,9 +322,9 @@ tune_grid_workflow <- function(workflow,
                                resamples,
                                grid = 10,
                                metrics = NULL,
+                               eval_time = NULL,
                                pset = NULL,
                                control = control_grid(),
-                               eval_time = NULL,
                                rng = TRUE,
                                call = caller_env()) {
   check_rset(resamples)
@@ -357,8 +357,8 @@ tune_grid_workflow <- function(workflow,
     grid = grid,
     workflow = workflow,
     metrics = metrics,
-    control = control,
     eval_time = eval_time,
+    control = control,
     rng = rng
   )
 

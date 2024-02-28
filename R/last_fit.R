@@ -120,7 +120,7 @@ last_fit.model_fit <- function(object, ...) {
 #' @export
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
-                                control = control_last_fit(), eval_time = NULL,
+                                eval_time = NULL, control = control_last_fit(),
                                 add_validation_set = FALSE) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     rlang::abort(paste(
@@ -141,30 +141,42 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
     wflow <- add_formula(wflow, preprocessor)
   }
 
-  last_fit_workflow(wflow, split, metrics, control, eval_time,
-                    add_validation_set)
+  last_fit_workflow(
+    wflow, 
+    split = split, 
+    metrics = metrics, 
+    eval_time = eval_time,
+    control = control, 
+    add_validation_set = add_validation_set
+  )
 }
 
 
 #' @rdname last_fit
 #' @export
 last_fit.workflow <- function(object, split, ..., metrics = NULL,
-                              control = control_last_fit(), eval_time = NULL,
+                              eval_time = NULL, control = control_last_fit(),
                               add_validation_set = FALSE) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
 
-  last_fit_workflow(object, split, metrics, control, eval_time,
-                    add_validation_set)
+  last_fit_workflow(
+    object, 
+    split = split, 
+    metrics = metrics, 
+    eval_time = eval_time,
+    control = control, 
+    add_validation_set = add_validation_set
+  )
 }
 
 
 last_fit_workflow <- function(object,
                               split,
                               metrics,
-                              control,
                               eval_time = NULL,
+                              control,
                               add_validation_set = FALSE,
                               ...,
                               call = rlang::caller_env()) {
@@ -192,8 +204,8 @@ last_fit_workflow <- function(object,
     workflow = object,
     resamples = resamples,
     metrics = metrics,
-    control = control,
     eval_time = eval_time,
+    control = control,
     rng = rng,
     call = call
   )

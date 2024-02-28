@@ -272,8 +272,9 @@
 # initial values
 
     Code
-      tune:::check_initial(data.frame(), extract_parameter_set_dials(wflow_1),
-      wflow_1, mtfolds, yardstick::metric_set(yardstick::rsq), control_bayes())
+      tune:::check_initial(data.frame(), pset = extract_parameter_set_dials(wflow_1),
+      wflow = wflow_1, resamples = mtfolds, metrics = yardstick::metric_set(
+        yardstick::rsq), ctrl = control_bayes())
     Condition
       Error in `tune:::check_initial()`:
       ! `initial` should be a positive integer or the results of [tune_grid()]

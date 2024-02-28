@@ -22,8 +22,8 @@ show_best(x, ...)
 \method{show_best}{tune_results}(
   x,
   metric = NULL,
-  n = 5,
   eval_time = NULL,
+  n = 5,
   ...,
   call = rlang::current_env()
 )
@@ -38,7 +38,7 @@ select_by_pct_loss(x, ...)
 
 \method{select_by_pct_loss}{default}(x, ...)
 
-\method{select_by_pct_loss}{tune_results}(x, ..., metric = NULL, limit = 2, eval_time = NULL)
+\method{select_by_pct_loss}{tune_results}(x, ..., metric = NULL, eval_time = NULL, limit = 2)
 
 select_by_one_std_err(x, ...)
 
@@ -63,12 +63,12 @@ more details). Not required if a single metric exists in \code{x}. If there are
 multiple metric and none are given, the first in the metric set is used (and
 a warning is issued).}
 
-\item{n}{An integer for the number of top results/rows to return.}
-
 \item{eval_time}{A single numeric time point where dynamic event time
 metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 values should be consistent with the values used to create \code{x}. The \code{NULL}
 default will automatically use the first evaluation time used by \code{x}.}
+
+\item{n}{An integer for the number of top results/rows to return.}
 
 \item{call}{The call to be shown in errors and warnings.}
 

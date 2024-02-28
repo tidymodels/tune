@@ -373,12 +373,12 @@ test_that("initial values", {
 
   grid_1 <- tune:::check_initial(
     2,
-    extract_parameter_set_dials(wflow_1),
-    wflow_1,
-    mtfolds,
-    yardstick::metric_set(yardstick::rsq),
-    control_bayes(),
-    eval_time = NULL
+    pset = extract_parameter_set_dials(wflow_1),
+    wflow = wflow_1,
+    resamples = mtfolds,
+    metrics = yardstick::metric_set(yardstick::rsq),
+    eval_time = NULL,
+    ctrl = control_bayes()
   )
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), nrow(mtfolds))
@@ -387,11 +387,11 @@ test_that("initial values", {
   expect_snapshot(error = TRUE, {
     tune:::check_initial(
       data.frame(),
-      extract_parameter_set_dials(wflow_1),
-      wflow_1,
-      mtfolds,
-      yardstick::metric_set(yardstick::rsq),
-      control_bayes()
+      pset = extract_parameter_set_dials(wflow_1),
+      wflow = wflow_1,
+      resamples = mtfolds,
+      metrics = yardstick::metric_set(yardstick::rsq),
+      ctrl = control_bayes()
     )
   })
 })

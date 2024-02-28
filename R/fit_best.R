@@ -89,9 +89,9 @@ fit_best.default <- function(x, ...) {
 #' @rdname fit_best
 fit_best.tune_results <- function(x,
                                   metric = NULL,
+                                  eval_time = NULL,
                                   parameters = NULL,
                                   verbose = FALSE,
-                                  eval_time = NULL,
                                   add_validation_set = NULL,
                                   ...) {
   if (length(list(...))) {

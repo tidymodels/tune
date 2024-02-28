@@ -16,8 +16,8 @@ tune_grid(object, ...)
   param_info = NULL,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  eval_time = NULL
+  eval_time = NULL,
+  control = control_grid()
 )
 
 \method{tune_grid}{workflow}(
@@ -27,8 +27,8 @@ tune_grid(object, ...)
   param_info = NULL,
   grid = 10,
   metrics = NULL,
-  control = control_grid(),
-  eval_time = NULL
+  eval_time = NULL,
+  control = control_grid()
 )
 }
 \arguments{
@@ -57,13 +57,13 @@ parameter sets to be created automatically.}
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{An object used to modify the tuning process, likely created
-by \code{\link[=control_grid]{control_grid()}}.}
-
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values must be non-negative and should probably be no greater than the
 largest event time in the training set (See Details below).}
+
+\item{control}{An object used to modify the tuning process, likely created
+by \code{\link[=control_grid]{control_grid()}}.}
 }
 \value{
 An updated version of \code{resamples} with extra list columns for \code{.metrics} and

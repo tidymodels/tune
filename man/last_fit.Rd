@@ -14,8 +14,8 @@ last_fit(object, ...)
   split,
   ...,
   metrics = NULL,
-  control = control_last_fit(),
   eval_time = NULL,
+  control = control_last_fit(),
   add_validation_set = FALSE
 )
 
@@ -24,8 +24,8 @@ last_fit(object, ...)
   split,
   ...,
   metrics = NULL,
-  control = control_last_fit(),
   eval_time = NULL,
+  control = control_last_fit(),
   add_validation_set = FALSE
 )
 }
@@ -46,13 +46,13 @@ have been marked with \link[hardhat:tune]{tune()}, their values must be
 \item{metrics}{A \code{\link[yardstick:metric_set]{yardstick::metric_set()}}, or \code{NULL} to compute a standard
 set of metrics.}
 
-\item{control}{A \code{\link[=control_last_fit]{control_last_fit()}} object used to fine tune the last fit
-process.}
-
 \item{eval_time}{A numeric vector of time points where dynamic event time
 metrics should be computed (e.g. the time-dependent ROC curve, etc). The
 values must be non-negative and should probably be no greater than the
 largest event time in the training set (See Details below).}
+
+\item{control}{A \code{\link[=control_last_fit]{control_last_fit()}} object used to fine tune the last fit
+process.}
 
 \item{add_validation_set}{For 3-way splits into training, validation, and test
 set via \code{\link[rsample:initial_validation_split]{rsample::initial_validation_split()}}, should the validation set be
