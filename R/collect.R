@@ -17,7 +17,7 @@
 #'  `.estimate`/`mean` gives the values for the `.metric`. When `type = "wide"`,
 #'  each metric has its own column and the `n` and `std_err` columns are removed,
 #'  if they exist.
-#' 
+#'
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
 #'
@@ -120,7 +120,11 @@
 #'
 #' collect_predictions(resampled) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE) %>% arrange(.row)
-#' collect_predictions(resampled, summarize = TRUE, grid[1, ]) %>% arrange(.row)
+#' collect_predictions(
+#'   resampled,
+#'   summarize = TRUE,
+#'   parameters = grid[1, ]
+#' ) %>% arrange(.row)
 #'
 #' collect_extracts(resampled)
 #'
@@ -141,7 +145,7 @@ collect_predictions.default <- function(x, ...) {
 #' @rdname collect_predictions
 collect_predictions.tune_results <- function(x, ..., summarize = FALSE, parameters = NULL) {
   rlang::check_dots_empty()
-  
+
   names <- colnames(x)
   coll_col <- ".predictions"
 

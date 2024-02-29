@@ -161,7 +161,11 @@ resampled <-
 
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
-collect_predictions(resampled, summarize = TRUE, grid[1, ]) \%>\% arrange(.row)
+collect_predictions(
+  resampled,
+  summarize = TRUE,
+  parameters = grid[1, ]
+) \%>\% arrange(.row)
 
 collect_extracts(resampled)
 \dontshow{\}) # examplesIf}
