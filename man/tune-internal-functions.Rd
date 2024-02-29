@@ -22,8 +22,7 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
   param_names,
   outcome_name,
   event_level,
-  metrics_info = metrics_info(metrics),
-  eval_time = NULL
+  metrics_info = metrics_info(metrics)
 )
 
 .load_namespace(x)

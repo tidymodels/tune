@@ -59,7 +59,7 @@ metrics_info <- function(x) {
 #' @name tune-internal-functions
 #' @export
 .estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level,
-                              metrics_info = metrics_info(metrics), eval_time = NULL) {
+                              metrics_info = metrics_info(metrics)) {
   # The call stack is:
   #
   # tune_grid_loop_iter()

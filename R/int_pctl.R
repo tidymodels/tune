@@ -118,7 +118,7 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
     purrr::map2(
       config_keys, sample.int(10000, p),
       ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par,
-                                   event_level, eval_time, alpha)
+                                   event_level, alpha)
     ) %>%
     purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
@@ -136,7 +136,7 @@ get_int_p_operator <- function(allow = TRUE) {
 }
 
 boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par,
-                                       event_level, eval_time, alpha) {
+                                       event_level, alpha) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
@@ -150,7 +150,7 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
       .errorhandling = "pass",
       .packages = c("tune", "rsample")
     )  %op% {
-      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, eval_time)
+      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
@@ -219,7 +219,7 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
 }
 
 # Compute metrics for a specific configuration
-comp_metrics <- function(split, y, metrics, event_level, eval_time) {
+comp_metrics <- function(split, y, metrics, event_level) {
   dat <- rsample::analysis(split)
   info <- metrics_info(metrics)
 
@@ -230,8 +230,7 @@ comp_metrics <- function(split, y, metrics, event_level, eval_time) {
       param_names = NULL,
       outcome_name = y,
       event_level = event_level,
-      metrics_info = info,
-      eval_time = eval_time
+      metrics_info = info
     )
 
   res %>%
