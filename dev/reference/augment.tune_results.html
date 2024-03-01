@@ -76,7 +76,7 @@ set(s)).</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment</a></span><span class="op">(</span><span class="va">x</span>, parameters <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, parameters <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for resample_results</span></span>
 <span><span class="fu"><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -93,16 +93,16 @@ set(s)).</p>
 objects should have used the option <code>save_pred = TRUE</code>.</p></dd>
 
 
+<dt>...</dt>
+<dd><p>Not currently used.</p></dd>
+
+
 <dt>parameters</dt>
 <dd><p>A data frame with a single row that indicates what
 tuning parameters should be used to generate the predictions (for <code>tune_*()</code>
 objects only). If <code>NULL</code>, <code>select_best(x)</code> will be used with the first
 metric and, if applicable, the first evaluation time point, used to
 create <code>x</code>.</p></dd>
-
-
-<dt>...</dt>
-<dd><p>Not currently used.</p></dd>
 
 </dl></div>
     <div class="section level2">

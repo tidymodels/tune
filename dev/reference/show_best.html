@@ -98,10 +98,10 @@ performance is within some acceptable limit.</p>
 <span><span class="co"># S3 method for tune_results</span></span>
 <span><span class="fu">show_best</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eval_time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  <span class="va">...</span>,</span>
 <span>  call <span class="op">=</span> <span class="fu">rlang</span><span class="fu">::</span><span class="fu"><a href="https://rlang.r-lib.org/reference/stack.html" class="external-link">current_env</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -111,7 +111,7 @@ performance is within some acceptable limit.</p>
 <span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for tune_results</span></span>
-<span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">select_best</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, metric <span class="op">=</span> <span class="cn">NULL</span>, eval_time <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">select_by_pct_loss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
