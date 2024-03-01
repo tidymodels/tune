@@ -10,8 +10,8 @@
 #' @param ... Not currently used.
 #' @param parameters A data frame with a single row that indicates what
 #' tuning parameters should be used to generate the predictions (for `tune_*()`
-#' objects only). If `NULL`, `select_best(x)` will be used with the first 
-#' metric and, if applicable, the first evaluation time point, used to 
+#' objects only). If `NULL`, `select_best(x)` will be used with the first
+#' metric and, if applicable, the first evaluation time point, used to
 #' create `x`.
 #' @return A data frame with one or more additional columns for model
 #' predictions.
@@ -35,23 +35,14 @@
 #'
 #' @export
 augment.tune_results <- function(x, ..., parameters = NULL) {
-  dots <- rlang::list2(...)
-  if (length(dots) > 0) {
-    rlang::abort(
-      paste(
-        "The only two arguments for `augment.tune_results()` are",
-        "'x' and 'parameters'. Others were passed:",
-        paste0("'", names(dots), "'", collapse = ", ")
-      )
-    )
-  }
+  rlang::check_dots_empty()
 
   # check/determine best settings
   if (is.null(parameters)) {
     obj_fun <- .get_tune_metric_names(x)[1]
     obj_eval_time <- choose_eval_time(
-      x, 
-      metric = obj_fun, 
+      x,
+      metric = obj_fun,
       eval_time = NULL,
       quietly = TRUE
     )
@@ -70,16 +61,7 @@ augment.tune_results <- function(x, ..., parameters = NULL) {
 #' @rdname augment.tune_results
 #' @export
 augment.resample_results <- function(x, ...) {
-  dots <- rlang::list2(...)
-  if (length(dots) > 0) {
-    rlang::abort(
-      paste(
-        "The only argument for `augment.fit_resamples()` is",
-        "'x'. Others were passed:",
-        paste0("'", names(dots), "'", collapse = ", ")
-      )
-    )
-  }
+  rlang::check_dots_empty()
 
   pred <- collect_predictions(x, summarize = TRUE)
   y_nm <- .get_tune_outcome_names(x)
@@ -91,16 +73,7 @@ augment.resample_results <- function(x, ...) {
 #' @rdname augment.tune_results
 #' @export
 augment.last_fit <- function(x, ...) {
-  dots <- rlang::list2(...)
-  if (length(dots) > 0) {
-    rlang::abort(
-      paste(
-        "The only argument for `augment.last_fit()` is",
-        "'x'. Others were passed:",
-        paste0("'", names(dots), "'", collapse = ", ")
-      )
-    )
-  }
+  rlang::check_dots_empty()
 
   pred <- collect_predictions(x, summarize = TRUE)
   pred$.row <- 1:nrow(pred)
