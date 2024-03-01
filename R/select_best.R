@@ -15,6 +15,12 @@
 #'  performance is within some acceptable limit.
 #'
 #' @param x The results of [tune_grid()] or [tune_bayes()].
+#' @param ... For [select_by_one_std_err()] and [select_by_pct_loss()], this
+#' argument is passed directly to [dplyr::arrange()] so that the user can sort
+#' the models from *most simple to most complex*. That is, for a parameter `p`,
+#' pass the unquoted expression `p` if smaller values of `p` indicate a simpler
+#' model, or `desc(p)` if larger values indicate a simpler model. At
+#' least one term is required for these two functions. See the examples below.
 #' @param metric A character value for the metric that will be used to sort
 #'  the models. (See
 #'  \url{https://yardstick.tidymodels.org/articles/metric-types.html} for
@@ -24,12 +30,6 @@
 #' @param n An integer for the number of top results/rows to return.
 #' @param limit The limit of loss of performance that is acceptable (in percent
 #' units). See details below.
-#' @param ... For [select_by_one_std_err()] and [select_by_pct_loss()], this
-#' argument is passed directly to [dplyr::arrange()] so that the user can sort
-#' the models from *most simple to most complex*. That is, for a parameter `p`,
-#' pass the unquoted expression `p` if smaller values of `p` indicate a simpler
-#' model, or `desc(p)` if larger values indicate a simpler model. At
-#' least one term is required for these two functions. See the examples below.
 #' @param eval_time A single numeric time point where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
 #' values should be consistent with the values used to create `x`. The `NULL` 
@@ -78,10 +78,10 @@ show_best.default <- function(x, ...) {
 #' @export
 #' @rdname show_best
 show_best.tune_results <- function(x, 
+                                   ...,
                                    metric = NULL, 
                                    eval_time = NULL,
                                    n = 5, 
-                                   ..., 
                                    call = rlang::current_env()) {
   rlang::check_dots_empty()
 
@@ -119,7 +119,7 @@ select_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_best.tune_results <- function(x, metric = NULL, eval_time = NULL, ...) {
+select_best.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
   rlang::check_dots_empty()
 
   metric_info <- choose_metric(x, metric)

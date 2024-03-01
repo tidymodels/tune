@@ -275,7 +275,7 @@ check_param_objects <- function(pset) {
 #' @keywords internal
 #' @rdname empty_ellipses
 #' @param check_dials A logical for check for a NULL parameter object.
-check_workflow <- function(x, pset = NULL, check_dials = FALSE, call = caller_env()) {
+check_workflow <- function(x, ..., pset = NULL, check_dials = FALSE, call = caller_env()) {
   if (!inherits(x, "workflow")) {
     rlang::abort("The `object` argument should be a 'workflow' object.")
   }
@@ -287,6 +287,8 @@ check_workflow <- function(x, pset = NULL, check_dials = FALSE, call = caller_en
   if (!has_spec(x)) {
     rlang::abort("A parsnip model is required.")
   }
+
+  rlang::check_dots_empty(call = call)
 
   if (check_dials) {
     if (is.null(pset)) {

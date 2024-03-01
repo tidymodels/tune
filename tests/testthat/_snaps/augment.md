@@ -4,7 +4,9 @@
       augment(fit_1, hey = "you")
     Condition
       Error in `augment()`:
-      ! The only argument for `augment.fit_resamples()` is 'x'. Others were passed: 'hey'
+      ! `...` must be empty.
+      x Problematic argument:
+      * hey = "you"
 
 ---
 
@@ -36,7 +38,9 @@
       augment(fit_1, cost = 4)
     Condition
       Error in `augment()`:
-      ! The only two arguments for `augment.tune_results()` are 'x' and 'parameters'. Others were passed: 'cost'
+      ! `...` must be empty.
+      x Problematic argument:
+      * cost = 4
 
 # augment last_fit
 
@@ -44,5 +48,7 @@
       augment(fit_1, potato = TRUE)
     Condition
       Error in `augment()`:
-      ! The only argument for `augment.last_fit()` is 'x'. Others were passed: 'potato'
+      ! `...` must be empty.
+      x Problematic argument:
+      * potato = TRUE
 

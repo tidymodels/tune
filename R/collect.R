@@ -3,6 +3,7 @@
 #' @param x The results of [tune_grid()], [tune_bayes()], [fit_resamples()],
 #'  or [last_fit()]. For [collect_predictions()], the control option `save_pred
 #'  = TRUE` should have been used.
+#' @param ... Not currently used.
 #' @param summarize A logical; should metrics be summarized over resamples
 #' (`TRUE`) or return the values for each individual resample. Note that, if `x`
 #' is created by [last_fit()], `summarize` has no effect. For the other object
@@ -17,7 +18,6 @@
 #'  each metric has its own column and the `n` and `std_err` columns are removed,
 #'  if they exist.
 #'
-#' @param ... Not currently used.
 #' @return A tibble. The column names depend on the results and the mode of the
 #' model.
 #'
@@ -120,7 +120,11 @@
 #'
 #' collect_predictions(resampled) %>% arrange(.row)
 #' collect_predictions(resampled, summarize = TRUE) %>% arrange(.row)
-#' collect_predictions(resampled, summarize = TRUE, grid[1, ]) %>% arrange(.row)
+#' collect_predictions(
+#'   resampled,
+#'   summarize = TRUE,
+#'   parameters = grid[1, ]
+#' ) %>% arrange(.row)
 #'
 #' collect_extracts(resampled)
 #'
@@ -139,7 +143,9 @@ collect_predictions.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_predictions.tune_results <- function(x, summarize = FALSE, parameters = NULL, ...) {
+collect_predictions.tune_results <- function(x, ..., summarize = FALSE, parameters = NULL) {
+  rlang::check_dots_empty()
+
   names <- colnames(x)
   coll_col <- ".predictions"
 
@@ -454,7 +460,8 @@ collect_metrics.default <- function(x, ...) {
 
 #' @export
 #' @rdname collect_predictions
-collect_metrics.tune_results <- function(x, summarize = TRUE, type = c("long", "wide"), ...) {
+collect_metrics.tune_results <- function(x, ..., summarize = TRUE, type = c("long", "wide")) {
+  rlang::check_dots_empty()
   rlang::arg_match0(type, values = c("long", "wide"))
 
   if (inherits(x, "last_fit")) {
@@ -551,7 +558,8 @@ collector <- function(x, coll_col = ".predictions") {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-estimate_tune_results <- function(x, col_name = ".metrics", ...) {
+estimate_tune_results <- function(x, ..., col_name = ".metrics") {
+  rlang::check_dots_empty()
   param_names <- .get_tune_parameter_names(x)
   id_names <- grep("^id", names(x), value = TRUE)
   group_cols <- .get_extra_col_names(x)

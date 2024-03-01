@@ -2,13 +2,13 @@ test_that("appropriate return values", {
   svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
   expect_error(
-    cm_1 <- conf_mat_resampled(svm_results, select_best(svm_results, "accuracy")),
+    cm_1 <- conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy")),
     regex = NA
   )
   expect_true(tibble::is_tibble(cm_1))
 
   expect_error(
-    cm_2 <- conf_mat_resampled(svm_results, select_best(svm_results, "accuracy"), tidy = FALSE),
+    cm_2 <- conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy"), tidy = FALSE),
     regex = NA
   )
   expect_equal(class(cm_2), "conf_mat")
@@ -60,10 +60,10 @@ test_that("bad argss", {
   attr(broke_results, "outcomes") <- NULL
 
   expect_snapshot(error = TRUE, {
-    conf_mat_resampled(broke_results, select_best(broke_results, "accuracy"))
+    conf_mat_resampled(broke_results, parameters = select_best(broke_results, metric = "accuracy"))
   })
 
   expect_snapshot(error = TRUE, {
-    conf_mat_resampled(svm_results)
+    conf_mat_resampled(svm_results, argument_that_doesnt_exist = TRUE)
   })
 })

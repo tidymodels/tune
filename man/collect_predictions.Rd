@@ -16,11 +16,11 @@ collect_predictions(x, ...)
 
 \method{collect_predictions}{default}(x, ...)
 
-\method{collect_predictions}{tune_results}(x, summarize = FALSE, parameters = NULL, ...)
+\method{collect_predictions}{tune_results}(x, ..., summarize = FALSE, parameters = NULL)
 
 collect_metrics(x, ...)
 
-\method{collect_metrics}{tune_results}(x, summarize = TRUE, type = c("long", "wide"), ...)
+\method{collect_metrics}{tune_results}(x, ..., summarize = TRUE, type = c("long", "wide"))
 
 collect_notes(x, ...)
 
@@ -161,7 +161,11 @@ resampled <-
 
 collect_predictions(resampled) \%>\% arrange(.row)
 collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
-collect_predictions(resampled, summarize = TRUE, grid[1, ]) \%>\% arrange(.row)
+collect_predictions(
+  resampled,
+  summarize = TRUE,
+  parameters = grid[1, ]
+) \%>\% arrange(.row)
 
 collect_extracts(resampled)
 \dontshow{\}) # examplesIf}

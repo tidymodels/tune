@@ -12,12 +12,12 @@ fit_best(x, ...)
 
 \method{fit_best}{tune_results}(
   x,
+  ...,
   metric = NULL,
   eval_time = NULL,
   parameters = NULL,
   verbose = FALSE,
-  add_validation_set = NULL,
-  ...
+  add_validation_set = NULL
 )
 }
 \arguments{
@@ -25,7 +25,7 @@ fit_best(x, ...)
 \code{\link[=tune_grid]{tune_grid()}}, \code{\link[=tune_bayes]{tune_bayes()}}, etc). The control option
 \code{\link[=control_grid]{save_workflow = TRUE}} should have been used.}
 
-\item{...}{Not currently used.}
+\item{...}{Not currently used, must be empty.}
 
 \item{metric}{A character string (or \code{NULL}) for which metric to optimize. If
 \code{NULL}, the first metric is used.}

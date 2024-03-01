@@ -27,7 +27,7 @@ check_rset(x)
 
 check_parameters(wflow, pset = NULL, data, grid_names = character(0))
 
-check_workflow(x, pset = NULL, check_dials = FALSE, call = caller_env())
+check_workflow(x, ..., pset = NULL, check_dials = FALSE, call = caller_env())
 
 check_metrics(x, object)
 
@@ -48,7 +48,7 @@ val_class_and_single(x, cls = "numeric", where = NULL)
 
 .config_key_from_metrics(x)
 
-estimate_tune_results(x, col_name = ".metrics", ...)
+estimate_tune_results(x, ..., col_name = ".metrics")
 
 metrics_info(x)
 
@@ -65,7 +65,7 @@ new_iteration_results(
 
 get_tune_colors()
 
-encode_set(x, pset, as_matrix = FALSE, ...)
+encode_set(x, pset, ..., as_matrix = FALSE)
 
 check_time(origin, limit)
 
@@ -90,6 +90,8 @@ is_workflow(x)
 
 \item{grid_names}{A character vector of column names from the grid.}
 
+\item{...}{Other options}
+
 \item{check_dials}{A logical for check for a NULL parameter object.}
 
 \item{object}{A \code{workflow} object.}
@@ -106,8 +108,6 @@ metrics should be computed (e.g. the time-dependent ROC curve, etc).}
 \item{cls}{A character vector of possible classes}
 
 \item{where}{A character string for the calling function.}
-
-\item{...}{Other options}
 
 \item{parameters}{A \code{parameters} object.}
 

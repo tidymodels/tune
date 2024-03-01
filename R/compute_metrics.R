@@ -83,9 +83,10 @@ compute_metrics.default <- function(x,
 #' @rdname compute_metrics
 compute_metrics.tune_results <- function(x,
                                          metrics,
+                                         ...,
                                          summarize = TRUE,
-                                         event_level = "first",
-                                         ...) {
+                                         event_level = "first") {
+  rlang::check_dots_empty()
   if (!".predictions" %in% names(x)) {
     rlang::abort(paste0(
       "`x` must have been generated with the ",

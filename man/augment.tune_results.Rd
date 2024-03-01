@@ -6,7 +6,7 @@
 \alias{augment.last_fit}
 \title{Augment data with holdout predictions}
 \usage{
-\method{augment}{tune_results}(x, parameters = NULL, ...)
+\method{augment}{tune_results}(x, ..., parameters = NULL)
 
 \method{augment}{resample_results}(x, ...)
 
@@ -17,13 +17,13 @@
 \code{fit_resamples()}, or \code{last_fit()}. The control specifications for these
 objects should have used the option \code{save_pred = TRUE}.}
 
+\item{...}{Not currently used.}
+
 \item{parameters}{A data frame with a single row that indicates what
 tuning parameters should be used to generate the predictions (for \verb{tune_*()}
 objects only). If \code{NULL}, \code{select_best(x)} will be used with the first
 metric and, if applicable, the first evaluation time point, used to
 create \code{x}.}
-
-\item{...}{Not currently used.}
 }
 \value{
 A data frame with one or more additional columns for model

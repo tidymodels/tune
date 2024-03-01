@@ -296,7 +296,7 @@ tune_bayes_workflow <- function(object,
     maximize <- opt_metric$direction == "maximize"
 
     eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
-    opt_metric_time <- first_eval_time(metrics, opt_metric_name, eval_time, call = call)
+    opt_metric_time <- first_eval_time(metrics, metric = opt_metric_name, eval_time = eval_time, call = call)
 
     if (is.null(param_info)) {
       param_info <- hardhat::extract_parameter_set_dials(object)
@@ -547,7 +547,8 @@ check_iter <- function(iter, call) {
 #' @rdname empty_ellipses
 #' @param pset A `parameters` object.
 #' @param as_matrix A logical for the return type.
-encode_set <- function(x, pset, as_matrix = FALSE, ...) {
+encode_set <- function(x, pset, ..., as_matrix = FALSE) {
+  rlang::check_dots_empty()
   # change the numeric variables to the transformed scale (if any)
   has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
   if (any(has_trans)) {
