@@ -73,6 +73,9 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
 
   rlang::check_dots_empty()
 
+  # performance speedup, enables tidymodels/yardstick#428
+  initialize_catalog(control_resamples(allow_par = TRUE))
+
   if (is.null(metrics)) {
     metrics <- .get_tune_metrics(.data)
   } else {
