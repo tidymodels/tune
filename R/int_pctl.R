@@ -159,12 +159,15 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
   } else {
     res <- rsample::int_pctl(rs, .metrics, alpha = alpha)
   }
-  res %>%
-    dplyr::mutate(.estimator = "bootstrap") %>%
-    dplyr::rename(.metric = term) %>%
-    dplyr::relocate(.estimator, .after = .metric) %>%
-    dplyr::select(-.alpha, -.method) %>%
-    cbind(config)
+
+  res$.metric <- res$term
+  res$term <- NULL
+  res$.estimator <- "bootstrap"
+  res$.alpha <- NULL
+  res$.method <- NULL
+  res <- cbind(res, config)
+  first_cols <- c(".metric", ".estimator")
+  res[c(first_cols, setdiff(names(res), first_cols))]
 }
 
 fake_term <- function(x) {
@@ -237,9 +240,12 @@ comp_metrics <- function(split,
       metrics_info = metrics_info
     )
 
-  res %>%
-    dplyr::rename(term = .metric, estimate = .estimate) %>%
-    dplyr::select(-.estimator)
+  res$term <- res$.metric
+  res$.metric <- NULL
+  res$estimate <- res$.estimate
+  res$.estimate <- NULL
+  res$.estimator <- NULL
+  res
 }
 
 # ------------------------------------------------------------------------------
