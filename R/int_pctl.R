@@ -73,6 +73,9 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
 
   rlang::check_dots_empty()
 
+  # performance speedup, enables tidymodels/yardstick#428
+  initialize_catalog(control_resamples(allow_par = TRUE))
+
   if (is.null(metrics)) {
     metrics <- .get_tune_metrics(.data)
   } else {
@@ -113,12 +116,13 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
   #  survival and non-survival models. We will make this version
   #  compatible with the future rsample version (but will factor
   #  this code later).
+  metrics_info <- metrics_info(metrics)
 
   res <-
     purrr::map2(
       config_keys, sample.int(10000, p),
       ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par,
-                                   event_level, alpha)
+                                   event_level, alpha, metrics_info)
     ) %>%
     purrr::list_rbind() %>%
     dplyr::arrange(.config, .metric)
@@ -136,7 +140,7 @@ get_int_p_operator <- function(allow = TRUE) {
 }
 
 boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par,
-                                       event_level, alpha) {
+                                       event_level, alpha, metrics_info) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
 
@@ -150,7 +154,7 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
       .errorhandling = "pass",
       .packages = c("tune", "rsample")
     )  %op% {
-      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level)
+      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, metrics_info)
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
@@ -158,12 +162,15 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
   } else {
     res <- rsample::int_pctl(rs, .metrics, alpha = alpha)
   }
-  res %>%
-    dplyr::mutate(.estimator = "bootstrap") %>%
-    dplyr::rename(.metric = term) %>%
-    dplyr::relocate(.estimator, .after = .metric) %>%
-    dplyr::select(-.alpha, -.method) %>%
-    cbind(config)
+
+  res$.metric <- res$term
+  res$term <- NULL
+  res$.estimator <- "bootstrap"
+  res$.alpha <- NULL
+  res$.method <- NULL
+  res <- cbind(res, config)
+  first_cols <- c(".metric", ".estimator")
+  res[c(first_cols, setdiff(names(res), first_cols))]
 }
 
 fake_term <- function(x) {
@@ -219,9 +226,12 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
 }
 
 # Compute metrics for a specific configuration
-comp_metrics <- function(split, y, metrics, event_level) {
+comp_metrics <- function(split,
+                         y,
+                         metrics,
+                         event_level,
+                         metrics_info) {
   dat <- rsample::analysis(split)
-  info <- metrics_info(metrics)
 
   res <-
     .estimate_metrics(
@@ -230,12 +240,15 @@ comp_metrics <- function(split, y, metrics, event_level) {
       param_names = NULL,
       outcome_name = y,
       event_level = event_level,
-      metrics_info = info
+      metrics_info = metrics_info
     )
 
-  res %>%
-    dplyr::rename(term = .metric, estimate = .estimate) %>%
-    dplyr::select(-.estimator)
+  res$term <- res$.metric
+  res$.metric <- NULL
+  res$estimate <- res$.estimate
+  res$.estimate <- NULL
+  res$.estimator <- NULL
+  res
 }
 
 # ------------------------------------------------------------------------------
