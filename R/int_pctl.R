@@ -34,11 +34,10 @@
 #' The defaults reflect the fewest samples that should be used.
 #'
 #' The computations for each configuration can be extensive. To increase
-#' computational efficiency parallel processing can be used. The \pkg{foreach}
+#' computational efficiency parallel processing can be used. The \pkg{future}
 #' package is used here. To execute the resampling iterations in parallel,
-#' register a parallel backend function. See the documentation for
-#' [foreach::foreach()] for examples. The `allow_par` argument can be used to
-#' avoid parallelism.
+#' specify a [plan][future::plan] with future first. The `allow_par` argument
+#' can be used to avoid parallelism.
 #'
 #' Also, if a censored regression model used numerous evaluation times, the
 #' computations can take a long time unless the times are filtered with the
@@ -130,11 +129,16 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
 }
 
 get_int_p_operator <- function(allow = TRUE) {
-  is_par <- foreach::getDoParWorkers() > 1
+  is_par <- foreach::getDoParWorkers() > 1 || future::nbrOfWorkers() > 1
   if (allow && is_par) {
-    res <- foreach::`%dopar%`
+    res <- switch(
+      # note some backends can return +Inf
+      min(future::nbrOfWorkers(), 2),
+      list(op = foreach::`%dopar%`, is_future = FALSE),
+      list(op = doFuture::`%dofuture%`, is_future = TRUE)
+    )
   } else {
-    res <- foreach::`%do%`
+    res <- list(foreach::`%do%`, is_future = FALSE)
   }
   res
 }
@@ -147,13 +151,25 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
   set.seed(seed)
   rs <- rsample::bootstraps(preds, times = times)
 
-  `%op%` <- get_int_p_operator(allow_par)
+  do_op <- get_int_p_operator(allow_par)
+  `%op%` <- do_op[[1]]
+  is_future <- do_op[[2]]
+
+  args_res <- list(i = 1:nrow(rs))
+  if (is_future) {
+    args_res <- c(
+      args_res,
+      list(.options.future = list(seed = NULL, packages = c("tune", "rsample")))
+    )
+  } else {
+    args_res <- c(
+      args_res,
+      list(.packages = c("tune", "rsample"), .errorhandling = "pass")
+    )
+  }
+
   rs$.metrics <-
-    foreach::foreach(
-      i = 1:nrow(rs),
-      .errorhandling = "pass",
-      .packages = c("tune", "rsample")
-    )  %op% {
+    rlang::exec(foreach::foreach, !!!args_res) %op% {
       comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, metrics_info)
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {

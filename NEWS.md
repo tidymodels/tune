@@ -2,6 +2,8 @@
 
 ## New Features
 
+* Introduced support for parallel processing using the [future](https://www.futureverse.org/) framework. The tune package previously supported parallelism with foreach, and users can use either framework for now. In a future release, tune will begin the deprecation cycle for parallelism with foreach, so we encourage users to begin migrating their code now. See [the _Parallel Processing_ section in the "Optimizations" article](https://tune.tidymodels.org/articles/extras/optimizations.html#parallel-processing) to learn more (#866).
+
 * Added a `type` argument to `collect_metrics()` to indicate the desired output format. The default, `type = "long"`, returns output as before, while `type = "wide"` pivots the output such that each metric has its own column (#839).
 
 * Added a new function, `compute_metrics()`, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from `collect_metrics()`, but this function requires that the input be generated with the control option `save_pred = TRUE` and additionally takes a `metrics` argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model (#663).

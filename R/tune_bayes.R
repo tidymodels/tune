@@ -41,9 +41,9 @@
 #'
 #' @section Parallel Processing:
 #'
-#' The `foreach` package is used here. To execute the resampling iterations in
-#' parallel, register a parallel backend function. See the documentation for
-#' [foreach::foreach()] for examples.
+#' tune supports parallel processing with the \pkg{future} package. To execute
+#' the resampling iterations in parallel, specify a [plan][future::plan] with
+#' future first. The `allow_par` argument can be used to avoid parallelism.
 #'
 #' For the most part, warnings generated during training are shown as they occur
 #' and are associated with a specific resample when
@@ -222,14 +222,14 @@ tune_bayes.model_spec <- function(object,
 
   tune_bayes_workflow(
     wflow,
-    resamples = resamples, 
+    resamples = resamples,
     iter = iter,
     param_info = param_info,
-    metrics = metrics, 
-    eval_time = eval_time, 
-    objective = objective, 
+    metrics = metrics,
+    eval_time = eval_time,
+    objective = objective,
     initial = initial,
-    control = control, 
+    control = control,
     ...
   )
 }
@@ -255,10 +255,10 @@ tune_bayes.workflow <-
     res <-
       tune_bayes_workflow(
         object,
-        resamples = resamples, 
-        iter = iter, 
+        resamples = resamples,
+        iter = iter,
         param_info = param_info,
-        metrics = metrics, 
+        metrics = metrics,
         eval_time = eval_time,
         objective = objective,
         initial = initial,
@@ -269,14 +269,14 @@ tune_bayes.workflow <-
     res
   }
 
-tune_bayes_workflow <- function(object, 
+tune_bayes_workflow <- function(object,
                                 resamples,
                                 iter = 10,
                                 param_info = NULL,
                                 metrics = NULL,
                                 eval_time = NULL,
                                 objective = exp_improve(),
-                                initial = 5, 
+                                initial = 5,
                                 control,
                                 ...,
                                 call = caller_env()) {
@@ -306,13 +306,13 @@ tune_bayes_workflow <- function(object,
     check_backend_options(control$backend_options)
 
     unsummarized <- check_initial(
-      initial, 
-      pset = param_info, 
-      wflow = object, 
+      initial,
+      pset = param_info,
+      wflow = object,
       resamples = resamples,
-      metrics = metrics, 
+      metrics = metrics,
       eval_time = eval_time,
-      ctrl = control, 
+      ctrl = control,
       checks = "bayes"
     )
 
@@ -763,7 +763,7 @@ initial_info <- function(stats, metrics, maximize, eval_time) {
 # ------------------------------------------------------------------------------
 
 
-more_results <- function(object, resamples, candidates, metrics, 
+more_results <- function(object, resamples, candidates, metrics,
                          eval_time = NULL, control, param_info) {
   tune_log(control, split = NULL, task = "Estimating performance", type = "info")
 

@@ -1,4 +1,6 @@
 test_that("determine foreach operator", {
+  skip_if(foreach::getDoParWorkers() > 1 || future::nbrOfWorkers() > 1)
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -17,8 +19,8 @@ test_that("determine foreach operator", {
     workflows::add_recipe(spline_rec) %>%
     workflows::add_model(glmn)
 
-  expect_equal(tune:::get_operator(object = chi_wflow), foreach::`%do%`)
-  expect_equal(tune:::get_operator(FALSE, chi_wflow), foreach::`%do%`)
+  expect_equal(tune:::get_operator(object = chi_wflow)[[1]], foreach::`%do%`)
+  expect_equal(tune:::get_operator(FALSE, chi_wflow)[[1]], foreach::`%do%`)
 })
 
 # ------------------------------------------------------------------------------

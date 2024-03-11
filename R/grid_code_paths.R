@@ -162,7 +162,9 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   # doParallel and PSOCK clusters.
   fn_tune_grid_loop_iter_safely <- tune_grid_loop_iter_safely
 
-  `%op%` <- get_operator(control$allow_par, workflow)
+  do_op <- get_operator(control$allow_par, workflow)
+  `%op%` <- do_op[[1]]
+  is_future <- do_op[[2]]
   `%:%` <- foreach::`%:%`
 
   rlang::local_options(doFuture.rng.onMisuse = "ignore")
@@ -175,13 +177,28 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
     # handlers attached to the execution environment of this function
     # by `initialize_catalog()` (#828, #845, #846).
     results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
+      # Rather than generating them programmatically, write each `foreach()`
+      # call out since `foreach()` `substitute()`s its dots. Note that
+      # doFuture will error when passed `.packages`.
+      if (is_future) {
+        for_each <-
+          foreach::foreach(
+            split = splits,
+            seed = seeds,
+            .options.future = list(seed = NULL, packages = packages)
+          )
+      } else {
+        for_each <-
+          foreach::foreach(
+            split = splits,
+            seed = seeds,
+            .packages = packages,
+            .errorhandling = "pass"
+          )
+      }
+
       suppressPackageStartupMessages(
-        foreach::foreach(
-          split = splits,
-          seed = seeds,
-          .packages = packages,
-          .errorhandling = "pass"
-        ) %op% {
+        for_each %op% {
           # Likely want to debug with `debugonce(tune_grid_loop_iter)`
           fn_tune_grid_loop_iter_safely(
             fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
@@ -213,20 +230,41 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
     # handlers attached to the execution environment of this function
     # by `initialize_catalog()` (#828, #845, #846).
     results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
-      suppressPackageStartupMessages(
-        foreach::foreach(
-          iteration = iterations,
-          split = splits,
-          .packages = packages,
-          .errorhandling = "pass"
-        ) %:%
+      # Rather than generating them programmatically, write each `foreach()`
+      # call out since `foreach()` `substitute()`s its dots. Note that
+      # doFuture will error when passed `.packages`.
+      if (is_future) {
+        for_each <-
+          foreach::foreach(
+            split = splits,
+            iteration = iterations,
+            .options.future = list(seed = NULL, packages = packages)
+          ) %:%
           foreach::foreach(
             row = rows,
+            .combine = iter_combine,
+            seed = slice_seeds(seeds, iteration, n_grid_info),
+            .options.future = list(seed = NULL, packages = packages)
+          )
+      } else {
+        for_each <-
+          foreach::foreach(
+            split = splits,
+            iteration = iterations,
+            .packages = packages,
+            .errorhandling = "pass"
+          ) %:%
+          foreach::foreach(
+            row = rows,
+            .combine = iter_combine,
             seed = slice_seeds(seeds, iteration, n_grid_info),
             .packages = packages,
-            .errorhandling = "pass",
-            .combine = iter_combine
-          ) %op% {
+            .errorhandling = "pass"
+          )
+      }
+
+      suppressPackageStartupMessages(
+        for_each %op% {
             grid_info_row <- vctrs::vec_slice(grid_info, row)
 
             # Likely want to debug with `debugonce(tune_grid_loop_iter)`
