@@ -155,21 +155,26 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
   `%op%` <- do_op[[1]]
   is_future <- do_op[[2]]
 
-  args_res <- list(i = 1:nrow(rs))
+  # Rather than generating them programmatically, write each `foreach()`
+  # call out since `foreach()` `substitute()`s its dots. Note that
+  # doFuture will error when passed `.packages`.
   if (is_future) {
-    args_res <- c(
-      args_res,
-      list(.options.future = list(seed = NULL, packages = c("tune", "rsample")))
-    )
+    for_each <-
+      foreach::foreach(
+        i = 1:nrow(rs),
+        .options.future = list(seed = NULL, packages = c("tune", "rsample"))
+      )
   } else {
-    args_res <- c(
-      args_res,
-      list(.packages = c("tune", "rsample"), .errorhandling = "pass")
-    )
+    for_each <-
+      foreach::foreach(
+        i = 1:nrow(rs),
+        .packages = c("tune", "rsample"),
+        .errorhandling = "pass"
+      )
   }
 
   rs$.metrics <-
-    rlang::exec(foreach::foreach, !!!args_res) %op% {
+    for_each %op% {
       comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, metrics_info)
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
