@@ -3,7 +3,7 @@
 
 # object should be a workflow
 allow_parallelism <- function(allow = TRUE, object = NULL) {
-  is_par <- foreach::getDoParWorkers() > 1
+  is_par <- foreach::getDoParWorkers() > 1 || future::nbrOfWorkers() > 1
   if (!is.null(object)) {
     pkgs <- required_pkgs(object)
     blacklist <- c("keras", "rJava")
@@ -21,9 +21,14 @@ allow_parallelism <- function(allow = TRUE, object = NULL) {
 
 get_operator <- function(allow = TRUE, object) {
   if (allow_parallelism(allow, object)) {
-    res <- foreach::`%dopar%`
+    res <- switch(
+      # note some backends can return +Inf
+      min(future::nbrOfWorkers(), 2),
+      list(op = foreach::`%dopar%`, is_future = FALSE),
+      list(op = doFuture::`%dofuture%`, is_future = TRUE)
+    )
   } else {
-    res <- foreach::`%do%`
+    res <- list(op = foreach::`%do%`, is_future = FALSE)
   }
 
   res

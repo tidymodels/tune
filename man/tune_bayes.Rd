@@ -101,9 +101,9 @@ The best combination is evaluated using resampling and the process continues.
 \section{Parallel Processing}{
 
 
-The \code{foreach} package is used here. To execute the resampling iterations in
-parallel, register a parallel backend function. See the documentation for
-\code{\link[foreach:foreach]{foreach::foreach()}} for examples.
+tune supports parallel processing with the \pkg{future} package. To execute
+the resampling iterations in parallel, specify a \link[future:plan]{plan} with
+future first. The \code{allow_par} argument can be used to avoid parallelism.
 
 For the most part, warnings generated during training are shown as they occur
 and are associated with a specific resample when

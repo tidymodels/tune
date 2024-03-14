@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 1.1.2.9021
+Version: 1.1.2.9022
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -19,8 +19,10 @@ Depends:
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.0.0),
+    doFuture (>= 1.0.0),
     dplyr (>= 1.1.0),
     foreach,
+    future (>= 1.33.0),
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),

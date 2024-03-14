@@ -67,11 +67,10 @@ The number of bootstrap samples should be large to have reliable intervals.
 The defaults reflect the fewest samples that should be used.
 
 The computations for each configuration can be extensive. To increase
-computational efficiency parallel processing can be used. The \pkg{foreach}
+computational efficiency parallel processing can be used. The \pkg{future}
 package is used here. To execute the resampling iterations in parallel,
-register a parallel backend function. See the documentation for
-\code{\link[foreach:foreach]{foreach::foreach()}} for examples. The \code{allow_par} argument can be used to
-avoid parallelism.
+specify a \link[future:plan]{plan} with future first. The \code{allow_par} argument
+can be used to avoid parallelism.
 
 Also, if a censored regression model used numerous evaluation times, the
 computations can take a long time unless the times are filtered with the
