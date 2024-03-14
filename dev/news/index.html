@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9021</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,8 @@
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
 <div class="section level3">
 <h3 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
-<ul><li><p>Added a <code>type</code> argument to <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> to indicate the desired output format. The default, <code>type = "long"</code>, returns output as before, while <code>type = "wide"</code> pivots the output such that each metric has its own column (<a href="https://github.com/tidymodels/tune/issues/839" class="external-link">#839</a>).</p></li>
+<ul><li><p>Introduced support for parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> framework. The tune package previously supported parallelism with foreach, and users can use either framework for now. In a future release, tune will begin the deprecation cycle for parallelism with foreach, so we encourage users to begin migrating their code now. See <a href="https://tune.tidymodels.org/articles/extras/optimizations.html#parallel-processing">the <em>Parallel Processing</em> section in the “Optimizations” article</a> to learn more (<a href="https://github.com/tidymodels/tune/issues/866" class="external-link">#866</a>).</p></li>
+<li><p>Added a <code>type</code> argument to <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> to indicate the desired output format. The default, <code>type = "long"</code>, returns output as before, while <code>type = "wide"</code> pivots the output such that each metric has its own column (<a href="https://github.com/tidymodels/tune/issues/839" class="external-link">#839</a>).</p></li>
 <li><p>Added a new function, <code><a href="../reference/compute_metrics.html">compute_metrics()</a></code>, that allows for computing new metrics after evaluating against resamples. The arguments and output formats are closely related to those from <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code>, but this function requires that the input be generated with the control option <code>save_pred = TRUE</code> and additionally takes a <code>metrics</code> argument with a metric set for new metrics to compute. This allows for computing new performance metrics without requiring users to re-fit and re-predict from each model (<a href="https://github.com/tidymodels/tune/issues/663" class="external-link">#663</a>).</p></li>
 <li><p>A method for rsample’s <code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> function that will compute percentile confidence intervals on performance metrics for objects produced by <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code>, <code>tune_*()</code>, and <code><a href="../reference/last_fit.html">last_fit()</a></code>.</p></li>
 <li><p>The Brier score is now part of the default metric set for classification models.</p></li>

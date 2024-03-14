@@ -12,7 +12,7 @@ confidence intervals."><meta property="og:image" content="https://tune.tidymodel
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9021</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -153,11 +153,10 @@ running this function.</p>
 <p>The number of bootstrap samples should be large to have reliable intervals.
 The defaults reflect the fewest samples that should be used.</p>
 <p>The computations for each configuration can be extensive. To increase
-computational efficiency parallel processing can be used. The <span class="pkg">foreach</span>
+computational efficiency parallel processing can be used. The <span class="pkg">future</span>
 package is used here. To execute the resampling iterations in parallel,
-register a parallel backend function. See the documentation for
-<code><a href="https://rdrr.io/pkg/foreach/man/foreach.html" class="external-link">foreach::foreach()</a></code> for examples. The <code>allow_par</code> argument can be used to
-avoid parallelism.</p>
+specify a <a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a> with future first. The <code>allow_par</code> argument
+can be used to avoid parallelism.</p>
 <p>Also, if a censored regression model used numerous evaluation times, the
 computations can take a long time unless the times are filtered with the
 <code>eval_time</code> argument.</p>

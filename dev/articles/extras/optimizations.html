@@ -38,7 +38,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9021</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9022</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -224,7 +224,7 @@ parameters will be evaluated without unnecessary re-fitting.</p>
 once per resample.</p>
 </div>
 <div class="section level2">
-<h2 id="parallel-processing">Parallel Processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
+<h2 id="parallel-processing">Parallel processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
 </h2>
 <p><code>tune</code> allows users, when possible, to use multiple cores
 or separate machines fit models. The package is currently able to
@@ -238,37 +238,49 @@ unique combinations of preprocessor and model tuning parameters for that
 specific resample. This will result in the preprocessor being
 re-processed multiple times, but can be faster if that preprocessing is
 extremely fast.</p>
-<p>The <code>foreach</code> package is used to facilitate parallel
-computations. <code>foreach</code> can use a variety of technologies to
-share the computations and the choice of technology is determined by
-which <em>parallel backend</em> package is chosen (aka the
-<code>do{technology}</code> packages). For example, the
-<code>doMC</code> package uses the forking mechanism on *unix systems to
-split the computations across multiple cores. As of this writing, the
-backend packages are <code>doFuture</code>, <code>doMC</code>,
+<p>tune supports parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> framework. future
+supports a variety of technologies to share the computations and the
+choice of technology is determined by the chosen <em>plan</em>. To run
+tuning code in parallel, just provide a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> and tune
+will take care of the rest. For example:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="foreach-legacy">foreach (legacy)<a class="anchor" aria-label="anchor" href="#foreach-legacy"></a>
+</h3>
+<p>Before the 1.2.0 release, tune supported parallelism using the
+foreach framework. Support has been deprecated for backends registered
+for foreach and will be fully removed in an upcoming release. foreach
+can use a variety of technologies to share the computations and the
+choice of technology is determined by which <em>parallel backend</em>
+package is chosen (aka the <code>do{technology}</code> packages). For
+example, the <code>doMC</code> package uses the forking mechanism on
+Unix-like systems to split the computations across multiple cores. As of
+this writing, the backend packages are <code>doMC</code>,
 <code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>,
-<code>doRNG</code>, <code>doSNOW</code>, and
-<code>doAzureParallel</code> (GitHub only). Of these,
-<code>doFuture</code> and <code>doParallel</code> are probably the most
-comprehensive and best supported.</p>
+<code>doSNOW</code>, and <code>doAzureParallel</code> (GitHub only).</p>
 <p>Registering a parallel backend is also somewhat dependent of the
 package. For <code>doParallel</code>, one could use:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
-<p>Other options exist in <code>doParallel</code>.</p>
-<p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html" class="external-link">declare
-the method</a>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doFuture.futureverse.org" class="external-link">doFuture</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://doFuture.futureverse.org/reference/registerDoFuture.html" class="external-link">registerDoFuture</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">cluster</span>, workers <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></code></pre></div>
+<p>To <strong>transition from foreach to future</strong>, remove lines
+loading any foreach backend packages <code>library(do*)</code> as well
+as lines registering that technology with <code>registerDo*()</code>,
+and add the following lines:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
+<p>Switch out <code>multisession</code> for another strategy if
+desired.</p>
+</div>
+<div class="section level3">
+<h3 id="in-practice">In practice<a class="anchor" aria-label="anchor" href="#in-practice"></a>
+</h3>
 <p>One downside to parallel processing is that the different
 technologies handle inputs and outputs differently. For example,
 multicore forking <em>tends</em> to carry the loaded packages and
@@ -278,7 +290,7 @@ the <code>pkg</code> option in <code><a href="../../reference/control_grid.html"
 <p>Some helpful advice to avoid errors in parallel processing is to not
 use variables in the global environment. These may not be found when the
 code is run inside of a worker process. For example:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span></span>
 <span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -294,6 +306,7 @@ as a sector.</p>
 <code><a href="../../reference/tune_grid.html">tune_grid()</a></code> will not be seen when running in parallel.
 Again, this is dependent on the backend package and technology being
 used.</p>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
