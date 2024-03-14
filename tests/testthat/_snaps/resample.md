@@ -22,11 +22,11 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `fit()`:
-        ! Can't subset columns that don't exist.
+        ! Can't select columns that don't exist.
         x Column `foobar` doesn't exist.
       x Fold2: preprocessor 1/1:
         Error in `fit()`:
-        ! Can't subset columns that don't exist.
+        ! Can't select columns that don't exist.
         x Column `foobar` doesn't exist.
     Condition
       Warning:
