@@ -161,13 +161,13 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
   if (is_future) {
     for_each <-
       foreach::foreach(
-        i = 1:nrow(rs),
+        i = seq_len(nrow(rs)),
         .options.future = list(seed = NULL, packages = c("tune", "rsample"))
       )
   } else {
     for_each <-
       foreach::foreach(
-        i = 1:nrow(rs),
+        i = seq_len(nrow(rs)),
         .packages = c("tune", "rsample"),
         .errorhandling = "pass"
       )
