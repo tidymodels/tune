@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.1.2.9022</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.0.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,8 +64,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.0" id="tune-120">tune 1.2.0<a class="anchor" aria-label="anchor" href="#tune-120"></a></h2><p class="text-muted">CRAN release: 2024-03-20</p>
 <div class="section level3">
-<h3 id="new-features-development-version">New Features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0"></a></h3>
 <ul><li><p>tune now fully supports models in the “censored regression” mode. These models can be fit, tuned, and evaluated like the regression and classification modes. <a href="https://www.tidymodels.org/learn/#category=survival%20analysis" class="external-link">tidymodels.org</a> has more information and tutorials on how to work with survival analysis models.</p></li>
 <li><p>Introduced support for parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> framework. The tune package previously supported parallelism with foreach, and users can use either framework for now. In a future release, tune will begin the deprecation cycle for parallelism with foreach, so we encourage users to begin migrating their code now. See <a href="https://tune.tidymodels.org/articles/extras/optimizations.html#parallel-processing">the <em>Parallel Processing</em> section in the “Optimizations” article</a> to learn more (<a href="https://github.com/tidymodels/tune/issues/866" class="external-link">#866</a>).</p></li>
 <li><p>Added a <code>type</code> argument to <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> to indicate the desired output format. The default, <code>type = "long"</code>, returns output as before, while <code>type = "wide"</code> pivots the output such that each metric has its own column (<a href="https://github.com/tidymodels/tune/issues/839" class="external-link">#839</a>).</p></li>
@@ -74,7 +77,7 @@
 <li><p>The Brier score is now part of the default metric set for classification models.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-1-2-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-2-0"></a></h3>
 <ul><li><p><code><a href="../reference/last_fit.html">last_fit()</a></code> will now error when supplied a fitted workflow (<a href="https://github.com/tidymodels/tune/issues/678" class="external-link">#678</a>).</p></li>
 <li><p>Fixes bug where <code>.notes</code> entries were sorted in the wrong order in tuning results for resampling schemes with IDs that aren’t already in alphabetical order (<a href="https://github.com/tidymodels/tune/issues/728" class="external-link">#728</a>).</p></li>
 <li><p>Fixes bug where <code>.config</code> entries in the <code>.extracts</code> column in <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> output didn’t align with the entries they ought to in the <code>.metrics</code> and <code>.predictions</code> columns (<a href="https://github.com/tidymodels/tune/issues/715" class="external-link">#715</a>).</p></li>
@@ -83,7 +86,7 @@
 <li><p><code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code> methods to <code>tune_results</code>, <code>resample_results</code>, and <code>last_fit</code> objects now always return tibbles (<a href="https://github.com/tidymodels/tune/issues/759" class="external-link">#759</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-development-version">Other Changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<h3 id="other-changes-1-2-0">Other Changes<a class="anchor" aria-label="anchor" href="#other-changes-1-2-0"></a></h3>
 <ul><li><p>Improved error message when needed packages aren’t installed (<a href="https://github.com/tidymodels/tune/issues/727" class="external-link">#727</a>).</p></li>
 <li><p><code><a href="https://generics.r-lib.org/reference/augment.html" class="external-link">augment()</a></code> methods to <code>tune_results</code>, <code>resample_results</code>, and <code>last_fit</code> objects now always returns tibbles (<a href="https://github.com/tidymodels/tune/issues/759" class="external-link">#759</a>).</p></li>
 <li><p>Improves documentation related to the hyperparameters associated with extracted objects that are generated from submodels. See the “Extracting with submodels” section of <code><a href="../reference/collect_predictions.html">?collect_extracts</a></code> to learn more.</p></li>
@@ -95,7 +98,7 @@
 <li><p>For iterative optimization routines, <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> will use integer breaks when <code>type = "performance"</code> or <code>type = "parameters"</code>.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-1-2-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-2-0"></a></h3>
 <ul><li><p>Several functions gained an <code>eval_time</code> argument for the evaluation time of dynamic metrics for censored regression. The placement of the argument breaks passing-by-position for one or more other arguments to <code><a href="../reference/autoplot.tune_results.html">autoplot.tune_results()</a></code> and the developer-focused <code><a href="../reference/empty_ellipses.html">check_initial()</a></code> (<a href="https://github.com/tidymodels/tune/issues/857" class="external-link">#857</a>).</p></li>
 <li><p>Ellipses (…) are now used consistently in the package to require optional arguments to be named. For functions that previously had ellipses at the end of the function signature, they have been moved to follow the last argument without a default value: this applies to <code><a href="../reference/augment.tune_results.html">augment.tune_results()</a></code>, <code><a href="../reference/collect_predictions.html">collect_predictions.tune_results()</a></code>, <code><a href="../reference/collect_predictions.html">collect_metrics.tune_results()</a></code>, <code><a href="../reference/show_best.html">select_best.tune_results()</a></code>, <code><a href="../reference/show_best.html">show_best.tune_results()</a></code>, and the developer-focused <code><a href="../reference/empty_ellipses.html">estimate_tune_results()</a></code>, <code><a href="../reference/load_pkgs.html">load_pkgs()</a></code>, and <code><a href="../reference/empty_ellipses.html">encode_set()</a></code>. Several other functions that previously did not have ellipses in their signatures gained them: this applies to <code><a href="../reference/conf_mat_resampled.html">conf_mat_resampled()</a></code> and the developer-focused <code><a href="../reference/empty_ellipses.html">check_workflow()</a></code>. Optional arguments previously passed by position will now error informatively prompting them to be named. These changes don’t apply in cases when the ellipses are currently in use to forward arguments to other functions (<a href="https://github.com/tidymodels/tune/issues/863" class="external-link">#863</a>).</p></li>
 </ul></div>
