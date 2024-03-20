@@ -2,6 +2,8 @@
 
 ## New Features
 
+* tune now fully supports models in the "censored regression"" mode. These models can be fit, tuned, and evaluated like the regression and classification modes. [`tidymodels.org`](https://www.tidymodels.org/learn/#category=survival%20analysis) has more information and tutorials on how to work with survival analysis models.
+
 * Introduced support for parallel processing using the [future](https://www.futureverse.org/) framework. The tune package previously supported parallelism with foreach, and users can use either framework for now. In a future release, tune will begin the deprecation cycle for parallelism with foreach, so we encourage users to begin migrating their code now. See [the _Parallel Processing_ section in the "Optimizations" article](https://tune.tidymodels.org/articles/extras/optimizations.html#parallel-processing) to learn more (#866).
 
 * Added a `type` argument to `collect_metrics()` to indicate the desired output format. The default, `type = "long"`, returns output as before, while `type = "wide"` pivots the output such that each metric has its own column (#839).
