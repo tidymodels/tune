@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 1.2.0
 
 ## New Features
 
