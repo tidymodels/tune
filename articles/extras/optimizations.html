@@ -15,9 +15,9 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../../apple-touch-icon-60x60.png">
 <script src="../../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../../deps/Source_Sans_Pro-0.4.7/font.css" rel="stylesheet">
-<link href="../../deps/Source_Code_Pro-0.4.7/font.css" rel="stylesheet">
+<link href="../../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../../deps/Source_Sans_Pro-0.4.9/font.css" rel="stylesheet">
+<link href="../../deps/Source_Code_Pro-0.4.9/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../../pkgdown.js"></script><meta property="og:title" content="Optimizations and parallel processing">
@@ -37,7 +37,7 @@
     
     <a class="navbar-brand me-2" href="../../index.html">tune</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,9 +197,10 @@ the recipe:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">3</span>         5 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">4</span>         7 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">5</span>         9 <span style="color: #949494;">&lt;tibble [70 × 2]&gt;</span></span></span></code></pre>
-<p>Only 5 recipes are prepared and, within each, all of the appropriate
-models are fit from the same recipe. In this example, once the recipe
-with <code>num_terms = 1</code> is created, the model parameters are
+<p>When <code>parallel_over = "resamples"</code>, the default, only 5
+recipes are prepared and, within each, all of the appropriate models are
+fit from the same recipe. In this example, once the recipe with
+<code>num_terms = 1</code> is created, the model parameters are
 iteratively tuned:</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 70 × 2</span></span></span>
 <span><span class="co">##    neighbors weight_func </span></span>
@@ -222,44 +223,63 @@ parameters will be evaluated without unnecessary re-fitting.</p>
 once per resample.</p>
 </div>
 <div class="section level2">
-<h2 id="parallel-processing">Parallel Processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
+<h2 id="parallel-processing">Parallel processing<a class="anchor" aria-label="anchor" href="#parallel-processing"></a>
 </h2>
 <p><code>tune</code> allows users, when possible, to use multiple cores
-or separate machines fit models. Currently, the package parallelizes the
-<em>resampling</em> loop of grid search<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;There will be more options in the future to control this
-since the current implementation doesn’t help for cases when many models
-are fit over a single resample of the data (such as a validation set).&lt;/p&gt;"><sup>1</sup></a>.</p>
-<p>The <code>foreach</code> package is used to facilitate parallel
-computations. <code>foreach</code> can use a variety of technologies to
-share the computations and the choice of technology is determined by
-which <em>parallel backend</em> package is chosen (aka the
-<code>do{technology}</code> packages). For example, the
-<code>doMC</code> package uses the forking mechanism on *unix systems to
-split the computations across multiple cores. As of this writing, the
-backend packages are <code>doFuture</code>, <code>doMC</code>,
+or separate machines fit models. The package is currently able to
+parallelize over either the resampling loop of grid search (via
+<code>parallel_over = "resamples"</code> in <code><a href="../../reference/control_grid.html">control_grid()</a></code>,
+the default) or both the resampling and preprocessing loops (via
+<code>parallel_over = "everything"</code>). When
+<code>parallel_over = "everything"</code>, an outer parallel loop will
+iterate over resamples and an inner parallel loop will iterate over all
+unique combinations of preprocessor and model tuning parameters for that
+specific resample. This will result in the preprocessor being
+re-processed multiple times, but can be faster if that preprocessing is
+extremely fast.</p>
+<p>tune supports parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> framework. future
+supports a variety of technologies to share the computations and the
+choice of technology is determined by the chosen <em>plan</em>. To run
+tuning code in parallel, just provide a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> and tune
+will take care of the rest. For example:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="foreach-legacy">foreach (legacy)<a class="anchor" aria-label="anchor" href="#foreach-legacy"></a>
+</h3>
+<p>Before the 1.2.0 release, tune supported parallelism using the
+foreach framework. Support has been deprecated for backends registered
+for foreach and will be fully removed in an upcoming release. foreach
+can use a variety of technologies to share the computations and the
+choice of technology is determined by which <em>parallel backend</em>
+package is chosen (aka the <code>do{technology}</code> packages). For
+example, the <code>doMC</code> package uses the forking mechanism on
+Unix-like systems to split the computations across multiple cores. As of
+this writing, the backend packages are <code>doMC</code>,
 <code>doMPI</code>, <code>doParallel</code>, <code>doRedis</code>,
-<code>doRNG</code>, <code>doSNOW</code>, and
-<code>doAzureParallel</code> (GitHub only). Of these,
-<code>doFuture</code> and <code>doParallel</code> are probably the most
-comprehensive and best supported.</p>
+<code>doSNOW</code>, and <code>doAzureParallel</code> (GitHub only).</p>
 <p>Registering a parallel backend is also somewhat dependent of the
 package. For <code>doParallel</code>, one could use:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span></span>
 <span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
-<p>Other options exist in <code>doParallel</code>.</p>
-<p><code>doFuture</code> uses a function called <code>plan</code> to <a href="https://cran.r-project.org/web/packages/doFuture/vignettes/doFuture.html" class="external-link">declare
-the method</a>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://doFuture.futureverse.org" class="external-link">doFuture</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://doFuture.futureverse.org/reference/registerDoFuture.html" class="external-link">registerDoFuture</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makeCluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">cluster</span>, workers <span class="op">=</span> <span class="va">cl</span><span class="op">)</span></span></code></pre></div>
+<p>To <strong>transition from foreach to future</strong>, remove lines
+loading any foreach backend packages <code>library(do*)</code> as well
+as lines registering that technology with <code>registerDo*()</code>,
+and add the following lines:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
+<p>Switch out <code>multisession</code> for another strategy if
+desired.</p>
+</div>
+<div class="section level3">
+<h3 id="in-practice">In practice<a class="anchor" aria-label="anchor" href="#in-practice"></a>
+</h3>
 <p>One downside to parallel processing is that the different
 technologies handle inputs and outputs differently. For example,
 multicore forking <em>tends</em> to carry the loaded packages and
@@ -269,7 +289,7 @@ the <code>pkg</code> option in <code><a href="../../reference/control_grid.html"
 <p>Some helpful advice to avoid errors in parallel processing is to not
 use variables in the global environment. These may not be found when the
 code is run inside of a worker process. For example:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span></span>
 <span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
@@ -286,7 +306,7 @@ as a sector.</p>
 Again, this is dependent on the backend package and technology being
 used.</p>
 </div>
-
+</div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
 </div>

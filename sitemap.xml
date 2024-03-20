@@ -43,7 +43,13 @@
     <loc>https://tune.tidymodels.org/reference/autoplot.tune_results.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/choose_metric.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/collect_predictions.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/compute_metrics.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/conf_mat_resampled.html</loc>
@@ -94,7 +100,13 @@
     <loc>https://tune.tidymodels.org/reference/fit_resamples.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/reference/get_metric_time.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://tune.tidymodels.org/reference/int_pctl.tune_results.html</loc>
   </url>
   <url>
     <loc>https://tune.tidymodels.org/reference/last_fit.html</loc>

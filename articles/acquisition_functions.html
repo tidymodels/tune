@@ -16,9 +16,9 @@ exploration of the parameter space during Bayesian optimization.
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.7/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.7/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.9/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.9/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Acquisition functions">
@@ -39,7 +39,7 @@ exploration of the parameter space during Bayesian optimization.
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,12 +165,12 @@ maximizes the expected improvement.</p>
 <p>Suppose a single parameter were being optimized and that parameter
 was represented using a log10 transformation. Using resampling, suppose
 the accuracy results for three points were evaluated:</p>
-<p><img src="figures/initial.svg"><!-- --></p>
+<p><img src="figures/initial.svg" alt="A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There are three dots, with no immediately discernible trend."></p>
 <p>In the first iteration of Bayesian optimization, these three data
 points are given to the Gaussian process model to produce predictions
 across a wider range of values. The fitted curve (i.e. <span class="math inline">\(\mu(\theta)\)</span>) is shown on the top panel
 below, along with approximate 95% credible intervals <span class="math inline">\(\mu(\theta) \pm 1.96 \sigma(\theta)\)</span>:</p>
-<p><img src="figures/iter_1.svg"><!-- --></p>
+<p><img src="figures/iter_1.svg" alt="A ggplot line plot. The data are the same as that plotted above, but a curved line is plotted over the points, now. A shaded region, representing a confidence band, grows wider as the distance in the x axis from an observed parameter value increases. An additional panel is shown below the plot, where a measure called Expected Improvement is plotted on the y axis."></p>
 <p>Notice that the interval width is large in regions far from observed
 data points.</p>
 <p>The bottom panel shows the expected improvement across the range of
@@ -184,7 +184,7 @@ the best performance.</p>
 is then evaluated using cross-validation. The GP model is then updated
 and a new parameter is chosen and so on.</p>
 <p>The results at iteration 20 were:</p>
-<p><img src="figures/iter_20.svg"><!-- --></p>
+<p><img src="figures/iter_20.svg" alt="A ggplot2 dot plot much like the one above, except that an additional 17 points are now plotted. The confidence bands around the newly drawn line are much tighter. The expected improvement reaches higher values only in a much smaller portion of the x axis, now."></p>
 <p>The points shown on the graph indicate that there is a region in the
 neighborhood of 0.01 that appears to produce the best results, and that
 the expected improvement function has driven the optimization to focus
@@ -203,7 +203,7 @@ equation above uses:</p>
 during the search. Using the same three initial results, the procedure
 would end up in the same general location but would have explored more
 values across the total range:</p>
-<p><img src="figures/trade_off_20.svg"><!-- --></p>
+<p><img src="figures/trade_off_20.svg" alt="A plot identical to the one above, though generated with a different parameter value for the trade-off. The expected improvement, in the bottom pane, is nearly always zero, with one narrow section remaining of positive value."></p>
 <p>There are two main strategies for <em>dynamic trade-offs</em> during
 the optimization:</p>
 <ul>
