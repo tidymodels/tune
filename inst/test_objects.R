@@ -171,10 +171,10 @@ knn_results <-
 knn_set <- two_class_set
 
 knn_gp <-
-  tune:::fit_gp(collect_metrics(knn_results),
-                knn_set,
-                "accuracy",
-                control_bayes()
+  tune:::fit_gp(dat = collect_metrics(knn_results),
+                pset = knn_set,
+                metric = "accuracy",
+                control = control_bayes()
   )
 
 saveRDS(
