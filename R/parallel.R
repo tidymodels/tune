@@ -29,19 +29,23 @@ get_operator <- function(allow = TRUE, object) {
     )
 
     if (!res[["is_future"]]) {
-      cli::cli_warn(c(
-        "!" = "{.pkg tune} detected a parallel backend registered with \\
-               foreach but no backend registered with future.",
-        "i" = "Support for parallel processing with foreach was \\
-               soft-deprecated in {.pkg tune} 1.2.1.",
-        "i" = "See {.help [?parallelism](tune::parallelism)} to learn more."
-      ))
+      warn_foreach_deprecation()
     }
   } else {
     res <- list(op = foreach::`%do%`, is_future = FALSE)
   }
 
   res
+}
+
+warn_foreach_deprecation <- function() {
+  cli::cli_warn(c(
+    "!" = "{.pkg tune} detected a parallel backend registered with \\
+               foreach but no backend registered with future.",
+    "i" = "Support for parallel processing with foreach was \\
+               soft-deprecated in {.pkg tune} 1.2.1.",
+    "i" = "See {.help [?parallelism](tune::parallelism)} to learn more."
+  ))
 }
 
 #' Support for parallel processing in tune
