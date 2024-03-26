@@ -38,21 +38,33 @@ test_that("log issues", {
   note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
 
   expect_snapshot(
-    expect_equal(
-      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
-      dplyr::bind_rows(note_1, note_2)
-    )
+    problems_1 <-
+      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
   )
+
+  expect_equal(
+    dplyr::select(problems_1, -trace),
+    dplyr::bind_rows(note_1, note_2)
+  )
+
+  expect_null(problems_1$trace[[1]])
+  expect_s3_class(problems_1$trace[[2]], "rlang_trace")
 
   expect_silent(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
 
   note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
   expect_snapshot(
-    expect_equal(
-      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
-      dplyr::bind_rows(note_1, note_3)
-    )
+    problems_2 <-
+      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
   )
+
+  expect_equal(
+    dplyr::select(problems_2, -trace),
+    dplyr::bind_rows(note_1, note_3)
+  )
+
+  expect_null(problems_2$trace[[1]])
+  expect_s3_class(problems_2$trace[[2]], "rlang_trace")
 })
 
 

@@ -148,16 +148,16 @@
       # A tibble: 30 x 5
          splits         id     .metrics         .notes           .iter
          <list>         <chr>  <list>           <list>           <int>
-       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 4]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 4]>     0
       # i 20 more rows
 
 ---
@@ -199,16 +199,16 @@
       # A tibble: 30 x 5
          splits         id     .metrics         .notes           .iter
          <list>         <chr>  <list>           <list>           <int>
-       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 4]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 4]>     0
       # i 20 more rows
 
 ---
@@ -374,16 +374,16 @@
       # A tibble: 30 x 5
          splits         id     .metrics         .notes           .iter
          <list>         <chr>  <list>           <list>           <int>
-       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>     0
-       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>     0
-      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>     0
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 4]>     0
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 4]>     0
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 4]>     0
       # i 20 more rows
 
 # tune model only - failure in recipe is caught elegantly
