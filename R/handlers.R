@@ -3,10 +3,29 @@
 catcher <- function(expr) {
   signals <- list()
   add_cond <- function(cnd) {
-    signals <<- append(signals, list(cnd))
+    signals <<- append(signals, list(rlang::cnd_entrace(cnd)))
     rlang::cnd_muffle(cnd)
   }
 
-  res <- try(withCallingHandlers(warning = add_cond, expr), silent = TRUE)
+  res <-
+    rlang::try_fetch(
+      expr,
+      warning = add_cond,
+      error = function(e) {
+        structure(
+          catch_message(e),
+          class = "try-error",
+          # if a simple error, add a traceback.
+          # otherwise, pass the condition right along.
+          condition = rlang::`%||%`(rlang::cnd_entrace(e), e)
+        )
+      }
+    )
+
   list(res = res, signals = signals)
+}
+
+# A simplified version of the error handler supplied in `try()` source
+catch_message <- function(e) {
+  paste0("Error in ", deparse(conditionCall(e)), ": ", conditionMessage(e), "\n")
 }

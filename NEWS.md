@@ -1,5 +1,10 @@
 # tune (development version)
 
+* The package will now log a backtrace for errors and warnings that
+  occur during tuning. When a tuning process encounters issues, see the new 
+  `trace` column in the `collect_notes(.Last.tune.result)` output to find
+  precisely where the error occurred (#873).
+
 # tune 1.2.0
 
 ## New Features

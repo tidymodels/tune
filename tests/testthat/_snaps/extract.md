@@ -49,9 +49,9 @@
       # A tibble: 3 x 5
         splits          id         .metrics         .notes           .extracts       
         <list>          <chr>      <list>           <list>           <list>          
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -69,9 +69,9 @@
       # A tibble: 3 x 5
         splits          id         .metrics         .notes           .extracts       
         <list>          <chr>      <list>           <list>           <list>          
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -89,9 +89,9 @@
       # A tibble: 3 x 5
         splits          id         .metrics         .notes           .extracts       
         <list>          <chr>      <list>           <list>           <list>          
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [2 x 3]> <tibble [1 x 2]>
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [2 x 4]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [2 x 4]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [2 x 4]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -110,9 +110,9 @@
       # A tibble: 3 x 5
         splits          id         .metrics         .notes           .extracts       
         <list>          <chr>      <list>           <list>           <list>          
-      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 3]> <tibble [1 x 2]>
-      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [0 x 3]> <tibble [1 x 2]>
-      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [0 x 3]> <tibble [1 x 2]>
+      1 <split [32/13]> Bootstrap1 <tibble [2 x 4]> <tibble [1 x 4]> <tibble [1 x 2]>
+      2 <split [32/17]> Bootstrap2 <tibble [2 x 4]> <tibble [0 x 4]> <tibble [1 x 2]>
+      3 <split [32/11]> Bootstrap3 <tibble [2 x 4]> <tibble [0 x 4]> <tibble [1 x 2]>
       
       There were issues with some computations:
       
@@ -125,17 +125,17 @@
     Code
       res_extract_warning$.notes[[1]]
     Output
-      # A tibble: 1 x 3
-        location                               type    note 
-        <chr>                                  <chr>   <chr>
-      1 preprocessor 1/1, model 1/1 (extracts) warning AHHH 
+      # A tibble: 1 x 4
+        location                               type    note  trace              
+        <chr>                                  <chr>   <chr> <list>             
+      1 preprocessor 1/1, model 1/1 (extracts) warning AHHH  <rlng_trc [46 x 5]>
 
 ---
 
     Code
       res_extract_error$.extracts[[1]]$.extracts[[1]]
     Output
-      [1] "Error in extractor(object) : AHHH\n"
+      [1] "Error in extractor(object): AHHH\n"
       attr(,"class")
       [1] "try-error"
       attr(,"condition")
@@ -146,17 +146,17 @@
     Code
       res_extract_error$.notes[[1]]
     Output
-      # A tibble: 1 x 3
-        location                               type  note                            
-        <chr>                                  <chr> <chr>                           
-      1 preprocessor 1/1, model 1/1 (extracts) error Error in extractor(object): AHHH
+      # A tibble: 1 x 4
+        location                               type  note                   trace     
+        <chr>                                  <chr> <chr>                  <list>    
+      1 preprocessor 1/1, model 1/1 (extracts) error Error in extractor(ob~ <rlng_trc>
 
 ---
 
     Code
       res_extract_both$.extracts[[1]]$.extracts[[1]]
     Output
-      [1] "Error in extractor(object) : AHHH\n"
+      [1] "Error in extractor(object): AHHH\n"
       attr(,"class")
       [1] "try-error"
       attr(,"condition")
@@ -167,7 +167,7 @@
     Code
       res_extract_error_once$.extracts[[1]]$.extracts[[1]]
     Output
-      [1] "Error in extractor(object) : oh no\n"
+      [1] "Error in extractor(object): oh no\n"
       attr(,"class")
       [1] "try-error"
       attr(,"condition")

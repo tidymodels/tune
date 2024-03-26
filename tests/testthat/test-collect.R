@@ -178,7 +178,7 @@ test_that("collecting notes - fit_resamples", {
   nts <- collect_notes(lm_splines)
   expect_true(all(nts$type == "warning"))
   expect_true(all(grepl("rank", nts$note)))
-  expect_equal(names(nts), c("id", "location", "type", "note"))
+  expect_equal(names(nts), c("id", "location", "type", "note", "trace"))
 })
 
 test_that("collecting notes - last_fit", {
@@ -201,7 +201,7 @@ test_that("collecting notes - last_fit", {
   nts <- collect_notes(lst)
   expect_true(all(nts$type == "warning"))
   expect_true(all(grepl("rank", nts$note)))
-  expect_equal(names(nts), c("location", "type", "note"))
+  expect_equal(names(nts), c("location", "type", "note", "trace"))
 })
 
 test_that("`collect_notes()` errors informatively applied to unsupported class", {
