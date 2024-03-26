@@ -124,6 +124,9 @@
     <loc>https://tune.tidymodels.org/dev/reference/outcome_names.html</loc>
   </url>
   <url>
+    <loc>https://tune.tidymodels.org/dev/reference/parallelism.html</loc>
+  </url>
+  <url>
     <loc>https://tune.tidymodels.org/dev/reference/parameters.workflow.html</loc>
   </url>
   <url>

@@ -275,7 +275,12 @@ this is the default for regression problems).</p>
 as &lt;code&gt;Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude&lt;/code&gt;.
 A recipe is not required.&lt;/p&gt;"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span></code></pre></div>
 <p>The object is similar to the <code>rsample</code> object but with one
 or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -452,6 +457,11 @@ here.</p></li>
 <span>                         param_info <span class="op">=</span> <span class="va">knn_param</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">❯</span> <span style="color: #000000;"> Generating a set of 5 initial parameter results</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Initialization complete</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
@@ -461,6 +471,11 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4773 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
@@ -469,6 +484,11 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4769 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
@@ -477,6 +497,11 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4776 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
@@ -485,54 +510,99 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4765 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4787 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4792 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4775 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4769 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4771 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4742 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4752 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4779 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
+<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
+<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No improvement for 10 iterations; returning current results.</span></span></code></pre></div>
 <p>Visually, the performance gain was:</p>
