@@ -13,7 +13,7 @@
 #'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
-#' 
+#'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
@@ -132,7 +132,7 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL, 
+resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL,
                               control, rng, call = caller_env()) {
   check_no_tuning(workflow)
 
@@ -162,6 +162,7 @@ resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL,
     eval_time_target = NULL,
     outcomes = attributes$outcomes,
     rset_info = attributes$rset_info,
-    workflow = attributes$workflow
+    workflow = attributes$workflow,
+    fit_times = attributes$fit_times
   )
 }

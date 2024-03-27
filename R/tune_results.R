@@ -105,6 +105,7 @@ new_tune_results <-
            eval_time_target,
            outcomes = character(0),
            rset_info,
+           fit_times,
            ...,
            class = character()) {
     new_bare_tibble(
@@ -115,6 +116,7 @@ new_tune_results <-
       eval_time_target = eval_time_target,
       outcomes = outcomes,
       rset_info = rset_info,
+      fit_times = fit_times,
       ...,
       class = c(class, "tune_results")
     )

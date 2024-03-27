@@ -56,6 +56,11 @@ Suggests:
     xml2
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
+Remotes:
+    tidymodels/hardhat@extract_fit_time,
+    tidymodels/recipes@extract_fit_time,
+    tidymodels/parsnip@extract_fit_time,
+    tidymodels/workflows@extract_fit_time
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US

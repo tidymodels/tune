@@ -368,6 +368,8 @@ tune_grid_workflow <- function(workflow,
 
   outcomes <- reduce_all_outcome_names(resamples)
   resamples[[".all_outcome_names"]] <- NULL
+  fit_times <- reduce_all_fit_times(resamples)
+  resamples[[".fit_times"]] <- NULL
 
   workflow <- set_workflow(workflow, control)
 
@@ -379,7 +381,8 @@ tune_grid_workflow <- function(workflow,
     eval_time_target = NULL,
     outcomes = outcomes,
     rset_info = rset_info,
-    workflow = workflow
+    workflow = workflow,
+    fit_times = fit_times
   )
 }
 

@@ -37,6 +37,9 @@
 #' @param x A `tune_results` object.
 #' @param estimated A logical for whether the original (unfit) recipe or the
 #' fitted recipe should be returned.
+#' @param summarize For `extract_fit_time()`, whether to summarize elapsed times
+#' across `process_id`s. When `summarize = TRUE`, each row represents the
+#' elapsed time for a fit of the workflow's preprocessor or model.
 #' @param ... Not currently used.
 #' @details
 #' These functions supersede `extract_model()`.
@@ -146,4 +149,29 @@ extract_mold.tune_results <- function(x, ...) {
 #' @rdname extract-tune
 extract_preprocessor.tune_results <- function(x, ...) {
   extract_preprocessor(extract_workflow(x))
+}
+
+#' @export
+#' @rdname extract-tune
+extract_fit_time.tune_results <- function(x, ..., summarize = FALSE) {
+  res <- attr(x, "fit_times")
+
+  if (is.null(res)) {
+    cli::cli_abort(c(
+     "x" = "Unable to locate fit times for the supplied tuning result {.arg x}.",
+     "i" = "Tuning results generated before {.pkg tune} 1.2.1 do not contain \\
+            fit times."
+    ))
+  }
+
+  if (isTRUE(summarize)) {
+    res <-
+      res %>%
+      dplyr::group_by(dplyr::across(dplyr::starts_with("id")), stage, .config) %>%
+      dplyr::summarize(time = sum(time)) %>%
+      dplyr::ungroup() %>%
+      dplyr::relocate(.config, .after = dplyr::everything())
+  }
+
+  res
 }

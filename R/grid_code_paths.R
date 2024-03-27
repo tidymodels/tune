@@ -29,6 +29,7 @@ tune_grid_loop <- function(resamples,
   resamples <- pull_metrics(resamples, results, control, order = id_order)
   resamples <- pull_notes(resamples, results, control, order = id_order)
   resamples <- pull_extracts(resamples, results, control, order = id_order)
+  resamples <- pull_fit_times(resamples, results, control, order = id_order)
   resamples <- pull_predictions(resamples, results, control, order = id_order)
   resamples <- pull_all_outcome_names(resamples, results)
 
@@ -300,12 +301,14 @@ iter_combine <- function(...) {
 
   metrics <- purrr::map(results, ~ .x[[".metrics"]])
   extracts <- purrr::map(results, ~ .x[[".extracts"]])
+  fit_times <- purrr::map(results, ~ .x[[".fit_times"]])
   predictions <- purrr::map(results, ~ .x[[".predictions"]])
   all_outcome_names <- purrr::map(results, ~ .x[[".all_outcome_names"]])
   notes <- purrr::map(results, ~ .x[[".notes"]])
 
   metrics <- vec_c(!!!metrics)
   extracts <- vec_c(!!!extracts)
+  fit_times <- vec_c(!!!fit_times)
   predictions <- vec_c(!!!predictions)
   all_outcome_names <- vec_c(!!!all_outcome_names)
   notes <- vec_c(!!!notes)
@@ -313,6 +316,7 @@ iter_combine <- function(...) {
   list(
     .metrics = metrics,
     .extracts = extracts,
+    .fit_times = fit_times,
     .predictions = predictions,
     .all_outcome_names = all_outcome_names,
     .notes = notes
@@ -350,6 +354,7 @@ tune_grid_loop_iter <- function(split,
 
   out_metrics <- NULL
   out_extracts <- NULL
+  out_fit_times <- NULL
   out_predictions <- NULL
   out_all_outcome_names <- list()
   out_notes <-
@@ -466,6 +471,8 @@ tune_grid_loop_iter <- function(split,
       )
       elt_extract <- make_extracts(elt_extract, iter_grid, split, .config = iter_config)
       out_extracts <- append_extracts(out_extracts, elt_extract)
+      elt_fit_times <- make_fit_times(workflow, iter_grid, split, iter_config)
+      out_fit_times <- append_fit_times(out_fit_times, elt_fit_times)
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
@@ -511,6 +518,7 @@ tune_grid_loop_iter <- function(split,
   list(
     .metrics = out_metrics,
     .extracts = out_extracts,
+    .fit_times = out_fit_times,
     .predictions = out_predictions,
     .all_outcome_names = out_all_outcome_names,
     .notes = out_notes

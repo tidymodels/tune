@@ -35,7 +35,18 @@ pulley <- function(resamples, res, col, order) {
     return(res)
   }
 
-  pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
+  if (identical(col, ".fit_times")) {
+    pulled_vals <- tidyr::unnest(pulled_vals, cols = ".fit_times")
+    pulled_vals <-
+      tidyr::nest(
+        pulled_vals,
+        data = dplyr::everything(),
+        .by = dplyr::starts_with("id")
+      )
+  } else {
+    pulled_vals <- tidyr::nest(pulled_vals, data = -starts_with("id"))
+  }
+
   names(pulled_vals)[ncol(pulled_vals)] <- col
 
   res <- new_bare_tibble(resamples)
@@ -80,6 +91,12 @@ pull_extracts <- function(resamples, res, control, order) {
   resamples
 }
 
+pull_fit_times <- function(resamples, res, control, order) {
+  resamples <- pulley(resamples, res, ".fit_times", order = order)
+
+  resamples
+}
+
 pull_predictions <- function(resamples, res, control, order) {
   if (control$save_pred) {
     resamples <- pulley(resamples, res, ".predictions", order = order)
@@ -117,6 +134,13 @@ reduce_all_outcome_names <- function(resamples) {
   outcome_names <- all_outcome_names[[1L]]
 
   outcome_names
+}
+
+reduce_all_fit_times <- function(resamples) {
+  fit_times <- resamples$.fit_times
+  fit_times <- dplyr::bind_rows(fit_times)
+
+  fit_times
 }
 
 ensure_tibble <- function(x) {
@@ -196,6 +220,10 @@ append_extracts <- function(collection, extracts) {
   dplyr::bind_rows(collection, extracts)
 }
 
+append_fit_times <- function(collection, fit_times) {
+  dplyr::bind_rows(collection, fit_times)
+}
+
 make_extracts <- function(extract, grid, split, .config = NULL) {
   extracts <- dplyr::bind_cols(grid, labels(split))
   extracts$.extracts <- list(extract)
@@ -205,6 +233,17 @@ make_extracts <- function(extract, grid, split, .config = NULL) {
   }
 
   extracts
+}
+
+make_fit_times <- function(workflow, grid, split, .config = NULL) {
+  fit_times <- dplyr::bind_cols(grid, labels(split))
+  fit_times$.fit_times <- list(extract_fit_time(workflow, summarize = FALSE))
+
+  if (!rlang::is_null(.config)) {
+    fit_times <- cbind(fit_times, .config)
+  }
+
+  fit_times
 }
 
 append_outcome_names <- function(all_outcome_names, outcome_names) {

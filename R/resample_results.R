@@ -22,7 +22,8 @@ new_resample_results <-
            eval_time_target = NULL,
            outcomes = character(0),
            rset_info,
-           workflow = NULL) {
+           workflow = NULL,
+           fit_times) {
     new_tune_results(
       x = x,
       parameters = parameters,
@@ -32,6 +33,7 @@ new_resample_results <-
       outcomes = outcomes,
       rset_info = rset_info,
       workflow = workflow,
+      fit_times = fit_times,
       class = "resample_results"
     )
   }

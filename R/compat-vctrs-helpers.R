@@ -19,7 +19,8 @@ new_tune_results_from_template <- function(x, to) {
     eval_time = attrs$eval_time,
     eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
-    rset_info = attrs$rset_info
+    rset_info = attrs$rset_info,
+    fit_times = attrs$fit_times
   )
 }
 
@@ -110,7 +111,8 @@ new_resample_results_from_template <- function(x, to) {
     eval_time = attrs$eval_time,
     eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
-    rset_info = attrs$rset_info
+    rset_info = attrs$rset_info,
+    fit_times = attrs$fit_times
   )
 }
 
@@ -142,7 +144,8 @@ new_iteration_results_from_template <- function(x, to) {
     eval_time_target = attrs$eval_time_target,
     outcomes = attrs$outcomes,
     rset_info = attrs$rset_info,
-    workflow = attrs$workflow
+    workflow = attrs$workflow,
+    fit_times = attrs$fit_times
   )
 }
 

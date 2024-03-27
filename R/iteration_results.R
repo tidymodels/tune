@@ -36,7 +36,8 @@ new_iteration_results <-
            eval_time_target,
            outcomes = character(0),
            rset_info,
-           workflow) {
+           workflow,
+           fit_times) {
     new_tune_results(
       x = x,
       parameters = parameters,
@@ -46,6 +47,7 @@ new_iteration_results <-
       outcomes = outcomes,
       rset_info = rset_info,
       workflow = workflow,
+      fit_times = fit_times,
       class = "iteration_results"
     )
   }

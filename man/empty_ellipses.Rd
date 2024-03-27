@@ -60,7 +60,8 @@ new_iteration_results(
   eval_time_target,
   outcomes = character(0),
   rset_info,
-  workflow
+  workflow,
+  fit_times
 )
 
 get_tune_colors()

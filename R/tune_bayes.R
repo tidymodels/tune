@@ -316,6 +316,8 @@ tune_bayes_workflow <- function(object,
       checks = "bayes"
     )
 
+    fit_times <- tryCatch(extract_fit_time(unsummarized), error = function(e) NULL)
+
     # Pull outcome names from initialization run
     outcomes <- peek_tune_results_outcomes(unsummarized)
 
@@ -336,7 +338,8 @@ tune_bayes_workflow <- function(object,
         eval_time_target = opt_metric_time,
         outcomes = outcomes,
         rset_info = rset_info,
-        workflow = NULL
+        workflow = NULL,
+        fit_times = fit_times
       )
 
       .stash_last_result(out)
@@ -479,6 +482,7 @@ tune_bayes_workflow <- function(object,
           )
         }
         unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
+        fit_times <- dplyr::bind_rows(fit_times, extract_fit_time(tmp_res))
         rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
         score_card <- update_score_card(score_card, i, tmp_res)
@@ -515,7 +519,8 @@ tune_bayes_workflow <- function(object,
         eval_time_target = opt_metric_time,
         outcomes = outcomes,
         rset_info = rset_info,
-        workflow = workflow_output
+        workflow = workflow_output,
+        fit_times = fit_times
       )
 
     .stash_last_result(res)

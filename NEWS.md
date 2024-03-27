@@ -7,6 +7,9 @@
   `trace` column in the `collect_notes(.Last.tune.result)` output to find
   precisely where the error occurred (#873).
 
+* New `extract_fit_time()` method has been added that returns the time it took to
+  evaluate against resamples. (#191)
+
 # tune 1.2.0
 
 ## New Features

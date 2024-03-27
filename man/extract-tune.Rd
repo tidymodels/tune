@@ -10,6 +10,7 @@
 \alias{extract_fit_engine.tune_results}
 \alias{extract_mold.tune_results}
 \alias{extract_preprocessor.tune_results}
+\alias{extract_fit_time.tune_results}
 \title{Extract elements of \code{tune} objects}
 \usage{
 \method{extract_workflow}{last_fit}(x, ...)
@@ -27,6 +28,8 @@
 \method{extract_mold}{tune_results}(x, ...)
 
 \method{extract_preprocessor}{tune_results}(x, ...)
+
+\method{extract_fit_time}{tune_results}(x, ..., summarize = FALSE)
 }
 \arguments{
 \item{x}{A \code{tune_results} object.}
@@ -35,6 +38,10 @@
 
 \item{estimated}{A logical for whether the original (unfit) recipe or the
 fitted recipe should be returned.}
+
+\item{summarize}{For \code{extract_fit_time()}, whether to summarize elapsed times
+across \code{process_id}s. When \code{summarize = TRUE}, each row represents the
+elapsed time for a fit of the workflow's preprocessor or model.}
 }
 \value{
 The extracted value from the \code{tune} tune_results, \code{x}, as described in the
