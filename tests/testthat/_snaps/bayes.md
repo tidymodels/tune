@@ -523,6 +523,12 @@
         data points to do so. This may cause errors or a poor model fit.
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
+      ! For the rsq estimates, 1 missing value was found and removed before fitting
+        the Gaussian process model.
+      ! For the rsq estimates, 1 missing value was found and removed before fitting
+        the Gaussian process model.
+      ! For the rsq estimates, 1 missing value was found and removed before fitting
+        the Gaussian process model.
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
@@ -539,16 +545,6 @@
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
       ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! For the rsq estimates, 7 missing values were found and removed before
-        fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! For the rsq estimates, 8 missing values were found and removed before
-        fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! For the rsq estimates, 9 missing values were found and removed before
-        fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! No improvement for 10 iterations; returning current results.
 
 ---
 
