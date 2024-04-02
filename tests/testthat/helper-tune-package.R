@@ -37,26 +37,35 @@ helper_objects_tune <- function() {
 # There were issues with some computations   A: x5
 # There were issues with some computations   A: x5
 #
-# ...we just want what the interactive user would see, e.g.:
+# ...we just want to see the unique issues, e.g.
 #
 # > A | error:   AHHhH
-# There were issues with some computations   A: x5
-catalog_lines <- function(pattern) {
-  local({
-    # A local variable; once we've found the line with the intended pattern,
-    # don't print it anymore
-    found_pattern <- FALSE
-    # Return function to pass to `expect_snapshot(transform)`
-    function(lines) {
-      matches <- grepl(pattern, lines, fixed = TRUE)
-      if (any(matches) & !found_pattern) {
-        found_pattern <<- TRUE
-        # Possible that there may be more than one match; return the last
-        return(lines[max(which(matches))])
-      }
+catalog_lines <- function(lines) {
+  lines[grepl("^>", lines)]
+}
 
-      # Otherwise, we're looking for the unique messages
-      lines[grepl("^>", lines)]
+# Make a new binding to prevent infinite recursion when the original is mocked.
+initialize_catalog_ <- tune:::initialize_catalog
+
+# Sets a new exit handler on `initialize_catalog()` that stores the summary
+# of issues before it's cleared along with the progress bar. Together with
+# the above, we can test the full catalog output.
+redefer_initialize_catalog <- function(test_env) {
+  local({
+    function(control, env = rlang::caller_env()) {
+      initialize_catalog_(control, env)
+
+      withr::defer(
+        assign(
+          "catalog_summary_test",
+          tune:::tune_env$progress_env$catalog_summary,
+          test_env
+        ),
+        envir = env,
+        priority = "first"
+      )
+
+      NULL
     }
   })
 }

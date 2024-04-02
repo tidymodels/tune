@@ -210,7 +210,13 @@
     Message
       > A | warning: ope! yikes.
       > B | error:   AHHhH
-      There were issues with some computations   A: x5   B: x5
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
 
 # interactive logger works (fit_resamples, rlang warning + error)
 
@@ -224,7 +230,13 @@
     Message
       > A | warning: ope! yikes. (but rlang)
       > B | error:   AHHhH (but rlang)
-      There were issues with some computations   A: x5   B: x5
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
 
 # interactive logger works (fit_resamples, multiline)
 
@@ -235,7 +247,13 @@
     Message
       > A | warning: hmmm what's happening
       > B | error:   aHHHksdjvndiuf
-      There were issues with some computations   A: x5   B: x5
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
 
 # interactive logger works (fit_resamples, occasional error)
 
@@ -245,7 +263,13 @@
         extract = later))
     Message
       > A | error:   this errors now! ha!
-      There were issues with some computations   A: x2
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x2
 
 # interactive logger works (fit_resamples, occasional error + warning)
 
@@ -259,7 +283,13 @@
     Message
       > A | error:   oh no
       > B | error:   this errors now! ha!
-      There were issues with some computations   A: x1   B: x6
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x1   B: x6
 
 # interactive logger works (fit_resamples, many distinct errors)
 
@@ -273,7 +303,13 @@
       > C | error:   error number 3
       > D | error:   error number 4
       > E | error:   error number 5
-      There were issues with some computations   A: x1   B: x1   C: x1   D: x1   E: x1
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x1   B: x1   C: x1   D: x1   E: x1
 
 # interactive logger works (tune grid, error)
 
@@ -283,7 +319,13 @@
       control = control_grid(extract = raise_error))
     Message
       > A | error:   AHHhH
-      There were issues with some computations   A: x5
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5
 
 # interactive logger works (bayesian, error)
 
@@ -293,5 +335,11 @@
         40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
       > A | error:   AHHhH
-      There were issues with some computations   A: x30
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x30
 
