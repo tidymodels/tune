@@ -223,7 +223,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
@@ -244,7 +244,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
@@ -271,7 +271,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = raise_multiline_conditions)
@@ -301,7 +301,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = later)
@@ -345,7 +345,7 @@ test_that("interactive logger works (fit_resamples, occasional error + warning)"
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
         control = control_resamples(extract = function(x) {once(); later()})
@@ -376,7 +376,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
   expect_snapshot(
     {res_fit <-
       fit_resamples(
-        parsnip::decision_tree(mode = "regression"),
+        parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = numbered)
@@ -396,15 +396,13 @@ test_that("interactive logger works (tune grid, error)", {
   expect_snapshot(
     {res_fit <-
       tune_grid(
-        parsnip::decision_tree(
-          cost_complexity = tune(), min_n = tune(), mode = "regression"
-        ),
+        parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         grid = 5,
         control = control_grid(extract = raise_error)
     )},
-    transform = catalog_lines("A: x25")
+    transform = catalog_lines("A: x5")
   )
 })
 
@@ -419,15 +417,13 @@ test_that("interactive logger works (bayesian, error)", {
   expect_snapshot(
     {res_grid <-
       tune_bayes(
-        parsnip::decision_tree(
-          cost_complexity = tune(), min_n = tune(), mode = "regression"
-        ),
+        parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         initial = 5,
         iter = 5,
         control = control_bayes(extract = raise_error)
     )},
-    transform = catalog_lines("A: x50")
+    transform = catalog_lines("A: x30")
   )
 })

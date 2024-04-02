@@ -201,7 +201,7 @@
 # interactive logger works (fit_resamples, warning + error)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = function(x) {
           raise_warning()
@@ -215,7 +215,7 @@
 # interactive logger works (fit_resamples, rlang warning + error)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = function(x) {
           raise_warning_rl()
@@ -229,7 +229,7 @@
 # interactive logger works (fit_resamples, multiline)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = raise_multiline_conditions))
     Message
@@ -240,7 +240,7 @@
 # interactive logger works (fit_resamples, occasional error)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = later))
     Message
@@ -250,7 +250,7 @@
 # interactive logger works (fit_resamples, occasional error + warning)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
       control = control_resamples(extract = function(x) {
         once()
@@ -264,7 +264,7 @@
 # interactive logger works (fit_resamples, many distinct errors)
 
     Code
-      res_fit <- fit_resamples(parsnip::decision_tree(mode = "regression"),
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = numbered))
     Message
@@ -278,20 +278,20 @@
 # interactive logger works (tune grid, error)
 
     Code
-      res_fit <- tune_grid(parsnip::decision_tree(cost_complexity = tune(), min_n = tune(),
-      mode = "regression"), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72,
-        40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
+      res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), grid = 5,
+      control = control_grid(extract = raise_error))
     Message
       > A | error:   AHHhH
-      There were issues with some computations   A: x25
+      There were issues with some computations   A: x5
 
 # interactive logger works (bayesian, error)
 
     Code
-      res_grid <- tune_bayes(parsnip::decision_tree(cost_complexity = tune(), min_n = tune(),
-      mode = "regression"), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72,
+      res_grid <- tune_bayes(parsnip::nearest_neighbor("regression", "kknn",
+        neighbors = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72,
         40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
       > A | error:   AHHhH
-      There were issues with some computations   A: x50
+      There were issues with some computations   A: x30
 
