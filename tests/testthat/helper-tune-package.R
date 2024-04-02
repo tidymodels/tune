@@ -41,7 +41,11 @@ helper_objects_tune <- function() {
 #
 # > A | error:   AHHhH
 # There were issues with some computations   A: x5
-catalog_lines <- function(pattern) {
+#
+# On CI, we only test:
+#
+# > A | error:   AHHhH
+catalog_lines <- function(pattern, context) {
   local({
     # A local variable; once we've found the line with the intended pattern,
     # don't print it anymore
@@ -49,7 +53,7 @@ catalog_lines <- function(pattern) {
     # Return function to pass to `expect_snapshot(transform)`
     function(lines) {
       matches <- grepl(pattern, lines, fixed = TRUE)
-      if (any(matches) & !found_pattern) {
+      if (any(matches) & !found_pattern & !identical(context, "CI")) {
         found_pattern <<- TRUE
         # Possible that there may be more than one match; return the last
         return(lines[max(which(matches))])
@@ -60,3 +64,7 @@ catalog_lines <- function(pattern) {
     }
   })
 }
+
+# `ci_context = "CI"` will test against snapshots in `_snaps/CI`, otherwise
+# NULL which will test as usual
+ci_context <- switch(Sys.getenv("CI"), "true" = "CI")
