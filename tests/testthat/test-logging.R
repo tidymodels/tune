@@ -229,8 +229,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
         control = control_resamples(
           extract = function(x) {raise_warning(); raise_error()})
     )},
-    transform = catalog_lines("A: x5   B: x5", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x5   B: x5")
   )
 })
 
@@ -252,8 +251,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
           extract = function(x) {raise_warning_rl(); raise_error_rl()}
         )
     )},
-    transform = catalog_lines("A: x5   B: x5", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x5   B: x5")
   )
 })
 
@@ -278,8 +276,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = raise_multiline_conditions)
     )},
-    transform = catalog_lines("A: x5   B: x5", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x5   B: x5")
   )
 })
 
@@ -309,8 +306,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = later)
     )},
-    transform = catalog_lines("A: x2", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x2")
   )
 })
 
@@ -354,8 +350,7 @@ test_that("interactive logger works (fit_resamples, occasional error + warning)"
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
         control = control_resamples(extract = function(x) {once(); later()})
     )},
-    transform = catalog_lines("A: x1   B: x6", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x1   B: x6")
   )
 })
 
@@ -386,8 +381,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(extract = numbered)
     )},
-    transform = catalog_lines("A: x1   B: x1   C: x1   D: x1   E: x1", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x1   B: x1   C: x1   D: x1   E: x1")
   )
 })
 
@@ -408,8 +402,7 @@ test_that("interactive logger works (tune grid, error)", {
         grid = 5,
         control = control_grid(extract = raise_error)
     )},
-    transform = catalog_lines("A: x5", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x5")
   )
 })
 
@@ -431,7 +424,6 @@ test_that("interactive logger works (bayesian, error)", {
         iter = 5,
         control = control_bayes(extract = raise_error)
     )},
-    transform = catalog_lines("A: x30", ci_context),
-    variant = ci_context
+    transform = catalog_lines("A: x30")
   )
 })
