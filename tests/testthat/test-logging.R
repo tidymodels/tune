@@ -211,3 +211,223 @@ test_that("message_wrap", {
     crayon = TRUE
   )
 })
+
+test_that("interactive logger works (fit_resamples, warning + error)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+
+  raise_warning <- function(x) {warning("ope! yikes.")}
+  raise_error <- function(x) {stop("AHHhH")}
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        control = control_resamples(
+          extract = function(x) {raise_warning(); raise_error()})
+    )},
+    transform = catalog_lines("A: x5   B: x5")
+  )
+})
+
+test_that("interactive logger works (fit_resamples, rlang warning + error)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+
+  raise_warning_rl <- function(x) {rlang::warn("ope! yikes. (but rlang)")}
+  raise_error_rl <- function(x) {rlang::abort("AHHhH (but rlang)")}
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        control = control_resamples(
+          extract = function(x) {raise_warning_rl(); raise_error_rl()}
+        )
+    )},
+    transform = catalog_lines("A: x5   B: x5")
+  )
+})
+
+
+test_that("interactive logger works (fit_resamples, multiline)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+
+  raise_multiline_conditions <- function(x) {
+    cli::cli_warn(c("hmmm what's happening", "uuuhhHhH"))
+    cli::cli_abort(c("aHHHksdjvndiuf", "!" = "),:"))
+    x
+  }
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        control = control_resamples(extract = raise_multiline_conditions)
+    )},
+    transform = catalog_lines("A: x5   B: x5")
+  )
+})
+
+test_that("interactive logger works (fit_resamples, occasional error)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+
+  raise_error_later <- function() {local({
+    count <- 0
+    function(x) {
+      count <<- count + 1
+      if (count > 3) {
+        stop("this errors now! ha!")
+      }
+      "hi"
+    }
+  })}
+  later <- raise_error_later()
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        control = control_resamples(extract = later)
+    )},
+    transform = catalog_lines("A: x2")
+  )
+})
+
+test_that("interactive logger works (fit_resamples, occasional error + warning)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+
+  raise_error_once <- function() {local({
+    first <- TRUE
+    function(x) {
+      if (first) {
+        first <<- FALSE
+        stop("oh no")
+      }
+
+      "hi"
+    }
+  })}
+
+  raise_error_later <- function() {local({
+    count <- 0
+    function(x) {
+      count <<- count + 1
+      if (count > 3) {
+        stop("this errors now! ha!")
+      }
+      "hi"
+    }
+  })}
+
+  once <- raise_error_once()
+  later <- raise_error_later()
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
+        control = control_resamples(extract = function(x) {once(); later()})
+    )},
+    transform = catalog_lines("A: x1   B: x6")
+  )
+})
+
+
+test_that("interactive logger works (fit_resamples, many distinct errors)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+  # Enough characters to see 'E: x1'
+  rlang::local_options(cli.width = 84)
+
+  raise_error_numbered <- function() {local({
+    count <- 0
+    function(x) {
+      count <<- count + 1
+      stop(paste0("error number ", count))
+      "hi"
+    }
+  })}
+  numbered <- raise_error_numbered()
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      fit_resamples(
+        parsnip::decision_tree(mode = "regression"),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        control = control_resamples(extract = numbered)
+    )},
+    transform = catalog_lines("A: x1   B: x1   C: x1   D: x1   E: x1")
+  )
+})
+
+test_that("interactive logger works (tune grid, error)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+
+  raise_error <- function(x) {stop("AHHhH")}
+
+  set.seed(1)
+  expect_snapshot(
+    {res_fit <-
+      tune_grid(
+        parsnip::decision_tree(
+          cost_complexity = tune(), min_n = tune(), mode = "regression"
+        ),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        grid = 5,
+        control = control_grid(extract = raise_error)
+    )},
+    transform = catalog_lines("A: x25")
+  )
+})
+
+test_that("interactive logger works (bayesian, error)", {
+  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  local_mocked_bindings(is_testing = function() {FALSE})
+  skip_on_cran()
+
+  raise_error <- function(x) {stop("AHHhH")}
+
+  set.seed(1)
+  expect_snapshot(
+    {res_grid <-
+      tune_bayes(
+        parsnip::decision_tree(
+          cost_complexity = tune(), min_n = tune(), mode = "regression"
+        ),
+        Sale_Price ~ .,
+        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+        initial = 5,
+        iter = 5,
+        control = control_bayes(extract = raise_error)
+    )},
+    transform = catalog_lines("A: x50")
+  )
+})

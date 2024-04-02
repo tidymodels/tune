@@ -26,3 +26,37 @@ helper_objects_tune <- function() {
     svm_mod = svm_mod
   )
 }
+
+# When not interactive, the cli progress bar is occasionally "reset" at random
+# intervals throughout tuning, which means that intermediate counts may appear
+# in snapshots. In an output like:
+#
+# > A | error:   AHHhH
+# There were issues with some computations   A: x2
+# There were issues with some computations   A: x4
+# There were issues with some computations   A: x5
+# There were issues with some computations   A: x5
+#
+# ...we just want what the interactive user would see, e.g.:
+#
+# > A | error:   AHHhH
+# There were issues with some computations   A: x5
+catalog_lines <- function(pattern) {
+  local({
+    # A local variable; once we've found the line with the intended pattern,
+    # don't print it anymore
+    found_pattern <- FALSE
+    # Return function to pass to `expect_snapshot(transform)`
+    function(lines) {
+      matches <- grepl(pattern, lines, fixed = TRUE)
+      if (any(matches) & !found_pattern) {
+        found_pattern <<- TRUE
+        # Possible that there may be more than one match; return the last
+        return(lines[max(which(matches))])
+      }
+
+      # Otherwise, we're looking for the unique messages
+      lines[grepl("^>", lines)]
+    }
+  })
+}
