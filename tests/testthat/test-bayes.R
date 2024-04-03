@@ -508,7 +508,8 @@ test_that("missing performance values", {
     parsnip::set_mode("regression")
 
   set.seed(1)
-  folds <- rsample::validation_split(ames, prop = .9)
+  split <- rsample::initial_validation_split(ames)
+  folds <- rsample::validation_set(split)
 
   expect_snapshot({
     set.seed(1)

@@ -102,9 +102,9 @@ test_that("fit_best() works with validation split: 2x 2-way splits", {
   data(ames, package = "modeldata", envir = rlang::current_env())
 
   set.seed(23598723)
-  split <- rsample::initial_split(ames)
-  train_and_val <- training(split)
-  val_set <- rsample::validation_split(train_and_val)
+  split <- initial_validation_split(ames)
+  train <- training(split)
+  val_set <- validation_set(split)
 
   f <- Sale_Price ~ Gr_Liv_Area + Year_Built
   knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
@@ -123,7 +123,7 @@ test_that("fit_best() works with validation split: 2x 2-way splits", {
   set.seed(3)
   exp_fit_on_train_and_val <- nearest_neighbor(neighbors = 5) %>%
     set_mode("regression") %>%
-    fit(f, train_and_val)
+    fit(f, train)
   exp_pred <- predict(exp_fit_on_train_and_val, testing(split))
 
   expect_equal(pred, exp_pred)
@@ -140,7 +140,7 @@ test_that(
       bootstraps(mtcars),
       control = control_grid(save_workflow = TRUE)
    )
-   
+
    tune_params <- select_best(res, metric = "rmse")
    expect_snapshot(
     manual_wf <- fit_best(res, metric = "rmse", parameters = tune_params)
