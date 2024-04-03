@@ -55,7 +55,7 @@ utils::globalVariables(
 
 release_bullets <- function() {
   c(
-    "Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`.",
+    "**Do this before checks!**. Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`.",
     "Confirm issue cataloger gives expected output in `inst/test_catalog.R`."
   )
 }
