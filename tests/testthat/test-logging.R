@@ -334,7 +334,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
   expect_snapshot(catalog_summary_test)
 })
 
-test_that("interactive logger works (fit_resamples, occasional error + warning)", {
+test_that("interactive logger works (fit_resamples, occasional errors)", {
   skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},

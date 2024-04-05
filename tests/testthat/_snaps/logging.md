@@ -271,7 +271,7 @@
     Output
       A: x2
 
-# interactive logger works (fit_resamples, occasional error + warning)
+# interactive logger works (fit_resamples, occasional errors)
 
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
