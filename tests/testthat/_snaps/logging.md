@@ -314,9 +314,9 @@
 # interactive logger works (tune grid, error)
 
     Code
-      res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
-      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), grid = 5,
-      control = control_grid(extract = raise_error))
+      res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn",
+        dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
+        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
     Message
       > A | error:   AHHhH
 
@@ -325,14 +325,14 @@
     Code
       catalog_summary_test
     Output
-      A: x5
+      A: x25
 
 # interactive logger works (bayesian, error)
 
     Code
       res_grid <- tune_bayes(parsnip::nearest_neighbor("regression", "kknn",
-        neighbors = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72,
-        40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
+        dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
+        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
       > A | error:   AHHhH
 
@@ -341,5 +341,5 @@
     Code
       catalog_summary_test
     Output
-      A: x30
+      A: x50
 

@@ -437,7 +437,7 @@ test_that("interactive logger works (tune grid, error)", {
   expect_snapshot(
     {res_fit <-
       tune_grid(
-        parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
+        parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         grid = 5,
@@ -465,7 +465,7 @@ test_that("interactive logger works (bayesian, error)", {
   expect_snapshot(
     {res_grid <-
       tune_bayes(
-        parsnip::nearest_neighbor("regression", "kknn", neighbors = tune()),
+        parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         initial = 5,
