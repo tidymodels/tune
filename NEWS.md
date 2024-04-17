@@ -1,5 +1,7 @@
 # tune (development version)
 
+* Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).
+
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866).
 
 * The package will now log a backtrace for errors and warnings that
