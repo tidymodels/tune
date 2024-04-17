@@ -225,6 +225,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
 
     seeds <- generate_seeds(rng, n_splits * n_grid_info)
 
+    slice_seeds <- slice_seeds
+
     # Evaluate the call to foreach in a local environment using a clone of
     # the current environment so that foreach doesn't touch the exit
     # handlers attached to the execution environment of this function
@@ -243,7 +245,6 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           foreach::foreach(
             row = rows,
             .combine = iter_combine,
-            seed = slice_seeds(seeds, iteration, n_grid_info),
             .options.future = list(seed = NULL, packages = packages)
           )
       } else {
@@ -257,7 +258,6 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           foreach::foreach(
             row = rows,
             .combine = iter_combine,
-            seed = slice_seeds(seeds, iteration, n_grid_info),
             .packages = packages,
             .errorhandling = "pass"
           )
@@ -266,6 +266,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
       suppressPackageStartupMessages(
         for_each %op% {
             grid_info_row <- vctrs::vec_slice(grid_info, row)
+            seed <- slice_seeds(seeds, iteration, n_grid_info)[[1]]
 
             # Likely want to debug with `debugonce(tune_grid_loop_iter)`
             fn_tune_grid_loop_iter_safely(
