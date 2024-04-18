@@ -129,6 +129,10 @@ get_int_p_operator <- function(allow = TRUE) {
       list(op = foreach::`%dopar%`, is_future = FALSE),
       list(op = doFuture::`%dofuture%`, is_future = TRUE)
     )
+
+    if (!res[["is_future"]]) {
+      warn_foreach_deprecation()
+    }
   } else {
     res <- list(foreach::`%do%`, is_future = FALSE)
   }

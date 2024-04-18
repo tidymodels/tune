@@ -71,16 +71,16 @@
 # log issues
 
     Code
-      expect_equal(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE),
-      dplyr::bind_rows(note_1, note_2))
+      problems_1 <- tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1,
+        bad_only = FALSE)
     Message
       x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      expect_equal(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE),
-      dplyr::bind_rows(note_1, note_3))
+      problems_2 <- tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3,
+        bad_only = FALSE)
     Message
       ! Fold01: toledo: NaNs produced
 
@@ -197,4 +197,149 @@
       tune:::acq_summarizer(ctrl_t, 1, prob_improve(I))
     Message
       i Trade-off value: 1
+
+# interactive logger works (fit_resamples, warning + error)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
+        extract = function(x) {
+          raise_warning()
+          raise_error()
+        }))
+    Message
+      > A | warning: ope! yikes.
+      > B | error:   AHHhH
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
+
+# interactive logger works (fit_resamples, rlang warning + error)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
+        extract = function(x) {
+          raise_warning_rl()
+          raise_error_rl()
+        }))
+    Message
+      > A | warning: ope! yikes. (but rlang)
+      > B | error:   AHHhH (but rlang)
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
+
+# interactive logger works (fit_resamples, multiline)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
+        extract = raise_multiline_conditions))
+    Message
+      > A | warning: hmmm what's happening
+      > B | error:   aHHHksdjvndiuf
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x5   B: x5
+
+# interactive logger works (fit_resamples, occasional error)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
+        extract = later))
+    Message
+      > A | error:   this errors now! ha!
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x2
+
+# interactive logger works (fit_resamples, occasional errors)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
+      control = control_resamples(extract = function(x) {
+        once()
+        later()
+      }))
+    Message
+      > A | error:   oh no
+      > B | error:   this errors now! ha!
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x1   B: x6
+
+# interactive logger works (fit_resamples, many distinct errors)
+
+    Code
+      res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
+      Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
+        extract = numbered))
+    Message
+      > A | error:   error number 1
+      > B | error:   error number 2
+      > C | error:   error number 3
+      > D | error:   error number 4
+      > E | error:   error number 5
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x1   B: x1   C: x1   D: x1   E: x1
+
+# interactive logger works (tune grid, error)
+
+    Code
+      res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn",
+        dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
+        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
+    Message
+      > A | error:   AHHhH
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x25
+
+# interactive logger works (bayesian, error)
+
+    Code
+      res_grid <- tune_bayes(parsnip::nearest_neighbor("regression", "kknn",
+        dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
+        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
+    Message
+      > A | error:   AHHhH
+
+---
+
+    Code
+      catalog_summary_test
+    Output
+      A: x50
 

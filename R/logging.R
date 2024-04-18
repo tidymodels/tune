@@ -307,8 +307,10 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     wrn_msg <- unique(wrn_msg)
     wrn_msg <- paste(wrn_msg, collapse = ", ")
 
+    wrn_traces <- purrr::map(wrn, `$`, "trace")
+
     wrn_msg <- tibble::new_tibble(
-      list(location = loc, type = "warning", note = wrn_msg),
+      list(location = loc, type = "warning", note = wrn_msg, trace = list(wrn_traces[[1]])),
       nrow = 1
     )
 
@@ -322,15 +324,16 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
     }
   }
   if (inherits(res$res, "try-error")) {
+    err_cnd <- attr(res$res, "condition")
     if (should_catalog) {
-      err_msg <- conditionMessage(attr(res$res, "condition"))
+      err_msg <- conditionMessage(err_cnd)
     } else {
-      err_msg <- as.character(attr(res$res, "condition"))
+      err_msg <- as.character(err_cnd)
       err_msg <- gsub("\n$", "", err_msg)
     }
 
     err_msg <- tibble::new_tibble(
-      list(location = loc, type = "error", note = err_msg),
+      list(location = loc, type = "error", note = err_msg, trace = list(err_cnd$trace)),
       nrow = 1
     )
 

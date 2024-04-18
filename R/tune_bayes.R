@@ -374,7 +374,12 @@ tune_bayes_workflow <- function(object,
     for (i in seq_len(iter) + score_card$overall_iter) {
       .notes <-
         tibble::new_tibble(
-          list(location = character(0), type = character(0), note = character(0)),
+          list(
+            location = character(0),
+            type = character(0),
+            note = character(0),
+            trace = list()
+          ),
           nrow = 0
         )
 

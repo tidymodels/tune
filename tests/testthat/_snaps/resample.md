@@ -92,8 +92,8 @@
       # A tibble: 2 x 4
         splits          id    .metrics         .notes          
         <list>          <chr> <list>           <list>          
-      1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 3]>
-      2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 3]>
+      1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 4]>
+      2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 4]>
 
 # argument order gives errors for recipe/formula
 
@@ -126,8 +126,8 @@
       # A tibble: 2 x 4
         splits          id    .metrics         .notes          
         <list>          <chr> <list>           <list>          
-      1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 3]>
-      2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 3]>
+      1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 4]>
+      2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 4]>
 
 # `fit_resamples()` when objects need tuning
 

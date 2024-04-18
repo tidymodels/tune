@@ -6,6 +6,19 @@
 
 # tune 1.2.0
 
+* Addressed issue where tuning functions would raise the error `object 'iteration' not found` with `plan(multisession)` and the control option `parallel_over = "everything"` (#888).
+
+* Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).
+
+* The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866).
+
+* The package will now log a backtrace for errors and warnings that
+  occur during tuning. When a tuning process encounters issues, see the new 
+  `trace` column in the `collect_notes(.Last.tune.result)` output to find
+  precisely where the error occurred (#873).
+
+# tune 1.2.0
+
 ## New Features
 
 * tune now fully supports models in the "censored regression" mode. These models can be fit, tuned, and evaluated like the regression and classification modes. [tidymodels.org](https://www.tidymodels.org/learn/#category=survival%20analysis) has more information and tutorials on how to work with survival analysis models.

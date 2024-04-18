@@ -66,14 +66,14 @@
       # A tibble: 10 x 4
          splits         id     .metrics         .notes          
          <list>         <chr>  <list>           <list>          
-       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>
-       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>
-       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>
-       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>
-       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>
-       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>
-       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>
-       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>
-       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>
-      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>
+       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 4]>
+       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 4]>
+       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 4]>
+       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 4]>
+       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 4]>
+       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 4]>
+       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 4]>
+       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 4]>
+       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 4]>
+      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 4]>
 

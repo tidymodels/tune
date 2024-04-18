@@ -56,6 +56,7 @@ reference:
     - conf_mat_resampled
     - example_ames_knn
     - starts_with("int_pctl")
+    - parallelism
   - title: Developer functions
     contents:
     - merge.recipe

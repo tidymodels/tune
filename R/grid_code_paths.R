@@ -358,7 +358,10 @@ tune_grid_loop_iter <- function(split,
   out_all_outcome_names <- list()
   out_notes <-
     tibble::new_tibble(list(
-      location = character(0), type = character(0), note = character(0)
+      location = character(0),
+      type = character(0),
+      note = character(0),
+      trace = list()
     ))
 
   model_params <- vctrs::vec_slice(params, params$source == "model_spec")
