@@ -2,6 +2,7 @@
 
 * Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).
 
+* Addressed issue where tuning functions would raise the error `object 'iteration' not found` with `plan(multisession)` and the control option `parallel_over = "everything"` (#888).
 
 # tune 1.2.0
 
