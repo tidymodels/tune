@@ -167,7 +167,13 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
 
   rs$.metrics <-
     for_each %op% {
-      comp_metrics(rs$splits[[i]], y_nm, metrics, event_level, metrics_info)
+      asNamespace("tune")$comp_metrics(
+        rs$splits[[i]],
+        y_nm,
+        metrics,
+        event_level,
+        metrics_info
+      )
     }
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time

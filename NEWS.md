@@ -1,3 +1,8 @@
+# tune 1.2.1
+
+* Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).
+
+
 # tune 1.2.0
 
 ## New Features
