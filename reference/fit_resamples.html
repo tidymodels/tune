@@ -12,11 +12,11 @@ model+recipe or model+formula combination across many resamples."><meta property
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-none" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -300,11 +300,11 @@ grid has a separate R object associated with it.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   splits         id    .metrics         .notes           .predictions    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [25/7]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [7 × 4]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [25/7]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [7 × 4]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 3]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> <span style="color: #949494;">&lt;split [25/7]&gt;</span> Fold1 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [7 × 4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> <span style="color: #949494;">&lt;split [25/7]&gt;</span> Fold2 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [7 × 4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold3 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold4 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> <span style="color: #949494;">&lt;split [26/6]&gt;</span> Fold5 <span style="color: #949494;">&lt;tibble [2 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span> <span style="color: #949494;">&lt;tibble [6 × 4]&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">spline_res</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
@@ -330,11 +330,11 @@ grid has a separate R object associated with it.</p>
    </div>
   <footer><div class="container">
   <div class="pkgdown-footer-left">
-  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>.</p>
+  <p></p><p>Developed by <a href="https://github.com/topepo" class="external-link">Max Kuhn</a>, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" width="62" style="margin-bottom: 3px;"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
   </div></footer></body></html>
