@@ -58,7 +58,7 @@ Suggests:
 Remotes:
     tidymodels/container#12, 
     tidymodels/workflows#225,
-    tidymodels/hardhat#248
+    tidymodels/hardhat
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
