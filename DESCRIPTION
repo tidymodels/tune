@@ -18,6 +18,7 @@ Depends:
     R (>= 4.0)
 Imports:
     cli (>= 3.3.0),
+    container,
     dials (>= 1.0.0),
     doFuture (>= 1.0.0),
     dplyr (>= 1.1.0),
@@ -54,6 +55,10 @@ Suggests:
     testthat (>= 3.0.0),
     xgboost,
     xml2
+Remotes:
+    tidymodels/container#12, 
+    tidymodels/workflows#225,
+    tidymodels/hardhat#248
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3

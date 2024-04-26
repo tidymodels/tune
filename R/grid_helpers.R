@@ -608,6 +608,25 @@ compute_config_ids <- function(data, id_preprocessor) {
   out
 }
 
+should_internal_split <- function(workflow) {
+  has_postprocessor(workflow) && postprocessor_requires_training(workflow)
+}
+
+postprocessor_requires_training <- function(workflow) {
+  # todo: `extract_postprocessor(workflow)` would fail here
+  container <- workflow$post$actions$container$container
+
+  operations_are_calibration <-
+    vapply(
+      container$operations,
+      rlang::inherits_any,
+      logical(1),
+      c("numeric_calibration", "probability_calibration")
+    )
+
+  any(operations_are_calibration)
+}
+
 # ------------------------------------------------------------------------------
 
 has_preprocessor <- function(workflow) {
@@ -626,6 +645,10 @@ has_preprocessor_formula <- function(workflow) {
 
 has_preprocessor_variables <- function(workflow) {
   "variables" %in% names(workflow$pre$actions)
+}
+
+has_postprocessor <- function(workflow) {
+  "container" %in% names(workflow$post$actions)
 }
 
 has_case_weights <- function(workflow) {
