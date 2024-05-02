@@ -56,7 +56,7 @@ Suggests:
     xgboost,
     xml2
 Remotes:
-    tidymodels/container#12, 
+    tidymodels/container, 
     tidymodels/workflows#225,
     tidymodels/hardhat
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
