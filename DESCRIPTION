@@ -18,7 +18,6 @@ Depends:
     R (>= 4.0)
 Imports:
     cli (>= 3.3.0),
-    container,
     dials (>= 1.0.0),
     doFuture (>= 1.0.0),
     dplyr (>= 1.1.0),
@@ -35,6 +34,7 @@ Imports:
     recipes (>= 1.0.4),
     rlang (>= 1.1.0),
     rsample (>= 1.2.0),
+    tailor,
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
     tidyselect (>= 1.1.2),
@@ -56,7 +56,7 @@ Suggests:
     xgboost,
     xml2
 Remotes:
-    tidymodels/container, 
+    tidymodels/tailor, 
     tidymodels/workflows#225,
     tidymodels/hardhat
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,

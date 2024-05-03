@@ -614,11 +614,11 @@ should_internal_split <- function(workflow) {
 
 postprocessor_requires_training <- function(workflow) {
   # todo: `extract_postprocessor(workflow)` would fail here
-  container <- workflow$post$actions$container$container
+  tailor <- workflow$post$actions$tailor$tailor
 
   operations_are_calibration <-
     vapply(
-      container$operations,
+      tailor$operations,
       rlang::inherits_any,
       logical(1),
       c("numeric_calibration", "probability_calibration")
@@ -648,7 +648,7 @@ has_preprocessor_variables <- function(workflow) {
 }
 
 has_postprocessor <- function(workflow) {
-  "container" %in% names(workflow$post$actions)
+  "tailor" %in% names(workflow$post$actions)
 }
 
 has_case_weights <- function(workflow) {
