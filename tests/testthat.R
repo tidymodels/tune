@@ -12,6 +12,14 @@ library(tune)
 # CRAN.
 
 if (identical(Sys.getenv("NOT_CRAN"), "true")) { # emulates `testthat:::on_cran()`
+  # `FUTURE_PLAN` environmental variable is set by `R-CMD-check-parallel.yaml`
+  # GitHub Action.
+  future_plan <- Sys.getenv("FUTURE_PLAN")
+  if (!identical(future_plan, "")) {
+    cat(paste0("Using future plan: ", future_plan, " \n"))
+    plan(future_plan, workers = 2)
+  }
+
   if (requireNamespace("xml2")) {
     test_check("tune", reporter = MultiReporter$new(reporters = list(JunitReporter$new(file = "test-results.xml"), CheckReporter$new())))
   } else {
