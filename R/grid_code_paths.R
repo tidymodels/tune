@@ -4,7 +4,8 @@ tune_grid_loop <- function(resamples,
                            metrics,
                            control,
                            eval_time = NULL,
-                           rng) {
+                           rng,
+                           rset_info) {
   fn_tune_grid_loop <- tune_grid_loop_tune
 
   if (workflow_uses_agua(workflow)) {
@@ -19,7 +20,8 @@ tune_grid_loop <- function(resamples,
     metrics,
     control,
     eval_time,
-    rng
+    rng,
+    rset_info
   )
 
   # carry out arranging by id before extracting each element of results (#728)
@@ -43,7 +45,8 @@ tune_grid_loop_tune <- function(resamples,
                                 metrics,
                                 control,
                                 eval_time = NULL,
-                                rng) {
+                                rng,
+                                rset_info) {
   n_resamples <- nrow(resamples)
 
   parallel_over <- control$parallel_over
@@ -60,7 +63,8 @@ tune_grid_loop_tune <- function(resamples,
     control = control,
     eval_time = eval_time,
     rng = rng,
-    parallel_over = parallel_over
+    parallel_over = parallel_over,
+    rset_info = rset_info
   )
 }
 
@@ -143,7 +147,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
                                 control,
                                 eval_time = NULL,
                                 rng,
-                                parallel_over) {
+                                parallel_over,
+                                rset_info) {
   splits <- resamples$splits
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
@@ -210,7 +215,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
             eval_time = eval_time,
             seed = seed,
             metrics_info = metrics_info,
-            params = params
+            params = params,
+            rset_info = rset_info
           )
         }
       )
@@ -282,7 +288,8 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
               eval_time = eval_time,
               seed = seed,
               metrics_info = metrics_info,
-              params = params
+              params = params,
+              rset_info = rset_info
             )
           }
       )
@@ -333,7 +340,8 @@ tune_grid_loop_iter <- function(split,
                                 eval_time = NULL,
                                 seed,
                                 metrics_info = metrics_info(metrics),
-                                params) {
+                                params,
+                                rset_info = NULL) {
   # `split` may be overwritten later on to create an "internal" split for
   # post-processing. however, we want the original split to persist so we can
   # use it (particularly `labels(split_orig)`) in logging
@@ -596,7 +604,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
                                        eval_time = NULL,
                                        seed,
                                        metrics_info,
-                                       params) {
+                                       params,
+                                       rset_info) {
 
   fn_tune_grid_loop_iter_wrapper <- super_safely(fn_tune_grid_loop_iter)
 
@@ -610,7 +619,8 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
     eval_time,
     seed,
     metrics_info = metrics_info,
-    params
+    params,
+    rset_info
   )
 
   error <- result$error
