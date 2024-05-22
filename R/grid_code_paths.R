@@ -539,9 +539,9 @@ tune_grid_loop_iter <- function(split,
         # todo: .fit_post currently takes in `assessment(split)` rather than
         # a set of predictions, meaning that we predict on `assessment(split)`
         # twice :(
-        internal_assessment <- assessment(split)
+        internal_assessment <- rsample::assessment(split)
         workflow_with_post <-
-          .fit_post(workflow, dplyr::bind_cols(assessment(split)))
+          .fit_post(workflow, dplyr::bind_cols(rsample::assessment(split)))
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
 
