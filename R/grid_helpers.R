@@ -608,25 +608,6 @@ compute_config_ids <- function(data, id_preprocessor) {
   out
 }
 
-should_internal_split <- function(workflow) {
-  has_postprocessor(workflow) && postprocessor_requires_training(workflow)
-}
-
-postprocessor_requires_training <- function(workflow) {
-  # todo: `extract_postprocessor(workflow)` would fail here
-  tailor <- workflow$post$actions$tailor$tailor
-
-  operations_are_calibration <-
-    vapply(
-      tailor$operations,
-      rlang::inherits_any,
-      logical(1),
-      c("numeric_calibration", "probability_calibration")
-    )
-
-  any(operations_are_calibration)
-}
-
 # ------------------------------------------------------------------------------
 
 has_preprocessor <- function(workflow) {

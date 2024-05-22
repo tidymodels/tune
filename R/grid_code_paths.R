@@ -377,7 +377,7 @@ tune_grid_loop_iter <- function(split,
 
   training <- rsample::analysis(split)
 
-  if (should_internal_split(workflow)) {
+  if (workflows::should_inner_split(workflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "internal" analysis and
     # assessment set.
@@ -484,7 +484,7 @@ tune_grid_loop_iter <- function(split,
       )
 
       # to-do: this currently doesn't include the trained post-processor.
-      # we could either `if (!should_internal_split())` here and the opposite
+      # we could either `if (!should_inner_split())` here and the opposite
       # condition later OR just extract later than we used to (possibly meaning
       # that failing to predict means no extracts).
       elt_extract <- .catch_and_log(
@@ -515,7 +515,7 @@ tune_grid_loop_iter <- function(split,
         next
       }
 
-      if (should_internal_split(workflow)) {
+      if (should_inner_split(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
         # are the predictions from the internal assessment set rather than the
         # assessment set (i.e. `assessment(split_orig)`)
