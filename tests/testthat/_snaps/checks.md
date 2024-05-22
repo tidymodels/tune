@@ -14,6 +14,14 @@
       Error in `tune:::check_rset()`:
       ! Nested resampling is not currently supported with tune.
 
+---
+
+    Code
+      tune:::check_rset(obj_permut)
+    Condition
+      Error in `tune:::check_rset()`:
+      ! Permutation samples are not suitable for tuning.
+
 # grid objects
 
     Code

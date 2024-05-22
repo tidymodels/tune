@@ -16,6 +16,9 @@ check_rset <- function(x) {
   if (inherits(x, "nested_cv")) {
     rlang::abort("Nested resampling is not currently supported with tune.")
   }
+  if (inherits(x, "permutations")) {
+    rlang::abort("Permutation samples are not suitable for tuning.")
+  }
   invisible(NULL)
 }
 
