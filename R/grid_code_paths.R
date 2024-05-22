@@ -515,7 +515,7 @@ tune_grid_loop_iter <- function(split,
         next
       }
 
-      if (should_inner_split(workflow)) {
+      if (workflows::should_inner_split(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
         # are the predictions from the internal assessment set rather than the
         # assessment set (i.e. `assessment(split_orig)`)
