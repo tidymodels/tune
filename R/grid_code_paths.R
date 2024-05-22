@@ -398,7 +398,9 @@ tune_grid_loop_iter <- function(split,
     # * the model (including the post-processor) generates predictions on the
     #   assessment set (not internal, i.e. `assessment(split)`) and those
     #   predictions are assessed with performance metrics
-    split <- rsample::initial_split(training)
+    # todo: check if workflow's `method` is incompatible with `class(split)`?
+    split_args <- c(rset_info$att, list(prop = workflow$actions$tailor$prop))
+    split <- rsample::inner_split(split, split_args = split_args)
     # todo: this should have a better name (analysis?) -- needs to be
     # `training` right now to align with the `training` above
     training <- rsample::analysis(split)
