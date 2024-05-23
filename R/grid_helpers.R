@@ -91,6 +91,14 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   y_vals$.row <- orig_rows
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
+  if (has_postprocessor(workflow)) {
+    post <- extract_postprocessor(workflow)
+
+    if (tailor_fully_trained(post)) {
+      res <- predict(post, res)
+    }
+  }
+
   # Add implicitly grouped metric data, if applicable
   metrics_by <- get_metrics_by(metrics)
   if (has_metrics_by(metrics_by)) {
