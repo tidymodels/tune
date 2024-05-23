@@ -399,7 +399,7 @@ tune_grid_loop_iter <- function(split,
     #   assessment set (not internal, i.e. `assessment(split)`) and those
     #   predictions are assessed with performance metrics
     # todo: check if workflow's `method` is incompatible with `class(split)`?
-    split_args <- c(rset_info$att, list(prop = workflow$actions$tailor$prop))
+    split_args <- c(rset_info$att, list(prop = workflow$post$actions$tailor$prop))
     split <- rsample::inner_split(split, split_args = split_args)
     # todo: this should have a better name (analysis?) -- needs to be
     # `training` right now to align with the `training` above
@@ -493,20 +493,18 @@ tune_grid_loop_iter <- function(split,
         iter_grid_model
       )
 
-      # to-do: this currently doesn't include the trained post-processor.
-      # we could either `if (!should_inner_split())` here and the opposite
-      # condition later OR just extract later than we used to (possibly meaning
-      # that failing to predict means no extracts).
-      elt_extract <- .catch_and_log(
-        extract_details(workflow, control$extract),
-        control,
-        split_orig,
-        paste(iter_msg_model, "(extracts)"),
-        bad_only = TRUE,
-        notes = out_notes
-      )
-      elt_extract <- make_extracts(elt_extract, iter_grid, split_orig, .config = iter_config)
-      out_extracts <- append_extracts(out_extracts, elt_extract)
+      if (!workflows::should_inner_split(workflow)) {
+        elt_extract <- .catch_and_log(
+          extract_details(workflow, control$extract),
+          control,
+          split_orig,
+          paste(iter_msg_model, "(extracts)"),
+          bad_only = TRUE,
+          notes = out_notes
+        )
+        elt_extract <- make_extracts(elt_extract, iter_grid, split_orig, .config = iter_config)
+        out_extracts <- append_extracts(out_extracts, elt_extract)
+      }
 
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
@@ -544,6 +542,19 @@ tune_grid_loop_iter <- function(split,
           .fit_post(workflow, dplyr::bind_cols(rsample::assessment(split)))
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
+
+        # run extract function on workflow with trained postprocessor
+        elt_extract <- .catch_and_log(
+          extract_details(workflow_with_post, control$extract),
+          control,
+          split_orig,
+          paste(iter_msg_model, "(extracts)"),
+          bad_only = TRUE,
+          notes = out_notes
+        )
+        elt_extract <- make_extracts(elt_extract, iter_grid, split_orig, .config = iter_config)
+        out_extracts <- append_extracts(out_extracts, elt_extract)
+
 
         # generate predictions on the assessment set (not internal,
         # i.e. `assessment(split_orig)`) from the model and apply the
