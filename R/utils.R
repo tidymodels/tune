@@ -67,19 +67,6 @@ new_bare_tibble <- function(x, ..., class = character()) {
   tibble::new_tibble(x, nrow = nrow(x), ..., class = class)
 }
 
-# copied from workflows. todo: should actually live in tailor
-tailor_fully_trained <- function(x) {
-  if (length(x$operations) == 0L) {
-    return(FALSE)
-  }
-
-  all(purrr::map_lgl(x$operations, tailor_operation_trained))
-}
-
-tailor_operation_trained <- function(x) {
-  isTRUE(x$trained)
-}
-
 # a helper that takes in a .config vector and returns the corresponding `.iter`.
 # entries from initial results, e.g. `Model1_Preprocessor3`, are assigned
 # `.iter = 0`.

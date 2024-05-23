@@ -94,7 +94,7 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   if (has_postprocessor(workflow)) {
     post <- extract_postprocessor(workflow)
 
-    if (tailor_fully_trained(post)) {
+    if (tailor::tailor_fully_trained(post)) {
       res <- predict(post, res)
     }
   }
