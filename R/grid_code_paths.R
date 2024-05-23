@@ -399,6 +399,9 @@ tune_grid_loop_iter <- function(split,
     #   assessment set (not internal, i.e. `assessment(split)`) and those
     #   predictions are assessed with performance metrics
     # todo: check if workflow's `method` is incompatible with `class(split)`?
+    # todo: workflow's `method` is currently ignored in favor of the one
+    # automatically dispatched to from `split`. consider this is combination
+    # with above todo.
     split_args <- c(rset_info$att, list(prop = workflow$post$actions$tailor$prop))
     split <- rsample::inner_split(split, split_args = split_args)
     # todo: this should have a better name (analysis?) -- needs to be
