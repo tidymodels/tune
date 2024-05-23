@@ -56,7 +56,7 @@ Suggests:
     xgboost,
     xml2
 Remotes:
-    tidymodels/rsample#483,
+    tidymodels/rsample,
     tidymodels/tailor, 
     tidymodels/workflows#225,
     tidymodels/hardhat
