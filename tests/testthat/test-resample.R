@@ -170,16 +170,21 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
 
   tune_wflow <-
     collect_extracts(tune_res) %>%
-    slice(1) %>%
-    pull(.extracts)
+    pull(.extracts) %>%
+    `[[`(1)
 
+  # mock `tune::tune_grid_loop_iter`'s RNG scheme
   set.seed(1)
-  wflow_res <- fit(wflow, rsample::analysis(folds$splits[[1]]))
+  seed <- generate_seeds(TRUE, 1)[[1]]
+  old_kind <- RNGkind()[[1]]
+  assign(".Random.seed", seed, envir = globalenv())
+
+  wflow_res <- generics::fit(wflow, rsample::analysis(folds$splits[[1]]))
   wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
 
-  # todo: we'd like to `expect_equal()` the fits and predictions here, but
-  # they still differ slightly
-  expect_true(TRUE)
+  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
+  expect_equal(tune_preds$.pred, wflow_preds$.pred)
+  expect_equal(tune_wflow, wflow_res)
 })
 
 # Error capture ----------------------------------------------------------------
