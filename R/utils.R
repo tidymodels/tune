@@ -78,7 +78,7 @@ new_bare_tibble <- function(x, ..., class = character()) {
   .iter
 }
 
-`%||%` <- function (x, y) {if (is_null(x)) y else x}
+`%||%` <- function (x, y) {if (rlang::is_null(x)) y else x}
 
 ## -----------------------------------------------------------------------------
 
