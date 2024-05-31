@@ -143,7 +143,7 @@ append_metrics <- function(collection,
                            param_names,
                            outcome_name,
                            event_level,
-                           split,
+                           split_labels,
                            .config = NULL,
                            metrics_info) {
   if (inherits(predictions, "try-error")) {
@@ -159,7 +159,7 @@ append_metrics <- function(collection,
     metrics_info = metrics_info
   )
 
-  tmp_est <- cbind(tmp_est, labels(split))
+  tmp_est <- cbind(tmp_est, split_labels)
 
   if (!rlang::is_null(.config)) {
     tmp_est <- cbind(tmp_est, .config)
@@ -168,7 +168,7 @@ append_metrics <- function(collection,
   dplyr::bind_rows(collection, tmp_est)
 }
 
-append_predictions <- function(collection, predictions, split, control, .config = NULL) {
+append_predictions <- function(collection, predictions, split_labels, control, .config = NULL) {
   if (!control$save_pred) {
     return(NULL)
   }
@@ -176,7 +176,7 @@ append_predictions <- function(collection, predictions, split, control, .config 
     return(collection)
   }
 
-  predictions <- vec_cbind(predictions, labels(split))
+  predictions <- vec_cbind(predictions, split_labels)
 
   if (!rlang::is_null(.config)) {
     by <- setdiff(names(.config), ".config")
@@ -196,8 +196,8 @@ append_extracts <- function(collection, extracts) {
   dplyr::bind_rows(collection, extracts)
 }
 
-make_extracts <- function(extract, grid, split, .config = NULL) {
-  extracts <- dplyr::bind_cols(grid, labels(split))
+make_extracts <- function(extract, grid, split_labels, .config = NULL) {
+  extracts <- dplyr::bind_cols(grid, split_labels)
   extracts$.extracts <- list(extract)
 
   if (!rlang::is_null(.config)) {
