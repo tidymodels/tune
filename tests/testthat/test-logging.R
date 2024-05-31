@@ -74,21 +74,56 @@ test_that("catch and log issues", {
   null <- NULL
 
   expect_snapshot(
-    out_1 <- .catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_1 <- .catch_and_log(
+      log("a"),
+      control = ctrl_f,
+      split = rs,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- .catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
+  expect_silent(out_2 <- .catch_and_log(
+    log(1),
+    control = ctrl_f,
+    split = rs,
+    "toledo",
+    bad_only = FALSE,
+    notes = null
+  ))
   expect_true(out_2 == 0)
   expect_snapshot(
-    out_3 <- .catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_3 <- .catch_and_log(
+      log(-1),
+      control = ctrl_f,
+      split = rs,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(is.nan(out_3))
   expect_snapshot(
-    out_5 <- .catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_5 <- .catch_and_log(
+      log("a"),
+      control = ctrl_f,
+      split = NULL,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(inherits(out_5, "try-error"))
   expect_snapshot(
-    out_6 <- .catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_6 <- .catch_and_log(
+      log(-1),
+      control = ctrl_f,
+      split = NULL,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(is.nan(out_6))
 })

@@ -85,31 +85,32 @@
 # catch and log issues
 
     Code
-      out_1 <- .catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE,
-      notes = null)
+      out_1 <- .catch_and_log(log("a"), control = ctrl_f, split = rs, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      out_3 <- .catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+      out_3 <- .catch_and_log(log(-1), control = ctrl_f, split = rs, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       ! Fold01: toledo: NaNs produced
 
 ---
 
     Code
-      out_5 <- .catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE,
-      notes = null)
+      out_5 <- .catch_and_log(log("a"), control = ctrl_f, split = NULL, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       x toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      out_6 <- .catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE,
-      notes = null)
+      out_6 <- .catch_and_log(log(-1), control = ctrl_f, split = NULL, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       ! toledo: NaNs produced
 
