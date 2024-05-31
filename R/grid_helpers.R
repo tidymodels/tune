@@ -1,10 +1,8 @@
 
-predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
-                          metrics_info, eval_time = NULL) {
+predict_model <- function(new_data, orig_rows, workflow, grid, metrics,
+                          submodels = NULL, metrics_info, eval_time = NULL) {
 
   model <- extract_fit_parsnip(workflow)
-
-  new_data <- rsample::assessment(split)
 
   forged <- forge_from_workflow(new_data, workflow)
   x_vals <- forged$predictors
@@ -15,8 +13,6 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   if (model$spec$mode == "censored regression") {
     model$preproc$y_var <- names(y_vals)
   }
-
-  orig_rows <- as.integer(split, data = "assessment")
 
   if (length(orig_rows) != nrow(x_vals)) {
     msg <- paste0(
