@@ -91,6 +91,14 @@ predict_model <- function(split, workflow, grid, metrics, submodels = NULL,
   y_vals$.row <- orig_rows
   res <- dplyr::full_join(res, y_vals, by = ".row")
 
+  if (has_postprocessor(workflow)) {
+    post <- extract_postprocessor(workflow)
+
+    if (tailor::tailor_fully_trained(post)) {
+      res <- predict(post, res)
+    }
+  }
+
   # Add implicitly grouped metric data, if applicable
   metrics_by <- get_metrics_by(metrics)
   if (has_metrics_by(metrics_by)) {
@@ -626,6 +634,10 @@ has_preprocessor_formula <- function(workflow) {
 
 has_preprocessor_variables <- function(workflow) {
   "variables" %in% names(workflow$pre$actions)
+}
+
+has_postprocessor <- function(workflow) {
+  "tailor" %in% names(workflow$post$actions)
 }
 
 has_case_weights <- function(workflow) {

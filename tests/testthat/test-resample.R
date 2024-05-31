@@ -135,6 +135,58 @@ test_that("extracted workflow is finalized", {
   expect_true(result_workflow$trained)
 })
 
+test_that("can use `fit_resamples()` with a workflow - postprocessor (requires training)", {
+  skip_if_not_installed("tailor")
+
+  y <- seq(0, 7, .001)
+  dat <- data.frame(y = y, x = y + (y-3)^2)
+
+  dat
+
+  folds <- rsample::vfold_cv(dat, v = 2)
+
+  wflow <-
+    workflows::workflow(
+      y ~ x,
+      parsnip::linear_reg()
+    ) %>%
+    workflows::add_tailor(
+      tailor::tailor("regression") %>% tailor::adjust_numeric_calibration("linear"),
+      prop = 2/3,
+      method = class(folds$splits[[1]])
+    )
+
+  set.seed(1)
+  tune_res <-
+    fit_resamples(
+      wflow,
+      folds,
+      control = control_resamples(save_pred = TRUE, extract = identity)
+    )
+
+  tune_preds <-
+    collect_predictions(tune_res) %>%
+    dplyr::filter(id == "Fold1")
+
+  tune_wflow <-
+    collect_extracts(tune_res) %>%
+    pull(.extracts) %>%
+    `[[`(1)
+
+  # mock `tune::tune_grid_loop_iter`'s RNG scheme
+  set.seed(1)
+  seed <- generate_seeds(TRUE, 1)[[1]]
+  old_kind <- RNGkind()[[1]]
+  assign(".Random.seed", seed, envir = globalenv())
+
+  wflow_res <- generics::fit(wflow, rsample::analysis(folds$splits[[1]]))
+  wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
+
+  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
+  expect_equal(tune_preds$.pred, wflow_preds$.pred)
+  expect_equal(tune_wflow, wflow_res)
+})
+
 # Error capture ----------------------------------------------------------------
 
 test_that("failure in recipe is caught elegantly", {

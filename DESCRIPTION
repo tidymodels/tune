@@ -51,9 +51,15 @@ Suggests:
     modeldata,
     scales,
     spelling,
+    tailor,
     testthat (>= 3.0.0),
     xgboost,
     xml2
+Remotes:
+    tidymodels/rsample,
+    tidymodels/tailor, 
+    tidymodels/workflows,
+    tidymodels/hardhat
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3

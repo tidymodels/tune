@@ -359,7 +359,8 @@ tune_grid_workflow <- function(workflow,
     metrics = metrics,
     eval_time = eval_time,
     control = control,
-    rng = rng
+    rng = rng,
+    rset_info = rset_info
   )
 
   if (is_cataclysmic(resamples)) {
