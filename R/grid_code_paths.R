@@ -539,8 +539,7 @@ tune_grid_loop_iter <- function(split,
         # a set of predictions, meaning that we predict on `assessment(split)`
         # twice :(
         potato <- rsample::assessment(split)
-        workflow_with_post <-
-          .fit_post(workflow, dplyr::bind_cols(potato))
+        workflow_with_post <- .fit_post(workflow, potato)
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
 
