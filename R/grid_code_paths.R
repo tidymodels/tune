@@ -346,6 +346,7 @@ tune_grid_loop_iter <- function(split,
   # post-processing. however, we want the original split to persist so we can
   # use it (particularly `labels(split_orig)`) in logging
   split_orig <- split
+  split_labels <- labels(split)
 
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
@@ -434,7 +435,7 @@ tune_grid_loop_iter <- function(split,
     workflow <- .catch_and_log(
       .expr = .fit_pre(workflow, analysis),
       control,
-      split_orig,
+      split_labels,
       iter_msg_preprocessor,
       notes = out_notes
     )
@@ -469,7 +470,7 @@ tune_grid_loop_iter <- function(split,
       workflow <- .catch_and_log_fit(
         .expr = .fit_model(workflow, control_workflow),
         control,
-        split_orig,
+        split_labels,
         iter_msg_model,
         notes = out_notes
       )
@@ -498,12 +499,12 @@ tune_grid_loop_iter <- function(split,
         elt_extract <- .catch_and_log(
           extract_details(workflow, control$extract),
           control,
-          split_orig,
+          split_labels,
           paste(iter_msg_model, "(extracts)"),
           bad_only = TRUE,
           notes = out_notes
         )
-        elt_extract <- make_extracts(elt_extract, iter_grid, split_orig, .config = iter_config)
+        elt_extract <- make_extracts(elt_extract, iter_grid, split_labels, .config = iter_config)
         out_extracts <- append_extracts(out_extracts, elt_extract)
       }
 
@@ -513,7 +514,7 @@ tune_grid_loop_iter <- function(split,
         predict_model(split, workflow, iter_grid, metrics, iter_submodels,
                       metrics_info = metrics_info, eval_time = eval_time),
         control,
-        split_orig,
+        split_labels,
         iter_msg_predictions,
         bad_only = TRUE,
         notes = out_notes
@@ -548,12 +549,12 @@ tune_grid_loop_iter <- function(split,
         elt_extract <- .catch_and_log(
           extract_details(workflow_with_post, control$extract),
           control,
-          split_orig,
+          split_labels,
           paste(iter_msg_model, "(extracts)"),
           bad_only = TRUE,
           notes = out_notes
         )
-        elt_extract <- make_extracts(elt_extract, iter_grid, split_orig, .config = iter_config)
+        elt_extract <- make_extracts(elt_extract, iter_grid, split_labels, .config = iter_config)
         out_extracts <- append_extracts(out_extracts, elt_extract)
 
 
@@ -565,7 +566,7 @@ tune_grid_loop_iter <- function(split,
                         iter_submodels, metrics_info = metrics_info,
                         eval_time = eval_time),
           control,
-          split_orig,
+          split_labels,
           paste(iter_msg_model, "(predictions with post-processor)"),
           bad_only = TRUE,
           notes = out_notes
@@ -581,7 +582,7 @@ tune_grid_loop_iter <- function(split,
         param_names = param_names,
         outcome_name = outcome_names,
         event_level = event_level,
-        split = split_orig,
+        split_labels = split_labels,
         .config = iter_config,
         metrics_info = metrics_info
       )
@@ -591,7 +592,7 @@ tune_grid_loop_iter <- function(split,
       out_predictions <- append_predictions(
         collection = out_predictions,
         predictions = iter_predictions,
-        split = split_orig,
+        split_labels = split_labels,
         control = control,
         .config = iter_config_metrics
       )
@@ -657,7 +658,7 @@ tune_grid_loop_iter_safely <- function(fn_tune_grid_loop_iter,
 
   problems <- list(res = res, signals = warnings)
 
-  notes <- log_problems(notes, control, split, "internal", problems)
+  notes <- log_problems(notes, control, labels(split), "internal", problems)
 
   # Need an output template
   if (!is.null(error)) {

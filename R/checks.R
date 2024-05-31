@@ -175,7 +175,7 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
       msg <- paste0(msg, "s: ", paste0("'", unk_names, "'", collapse = ", "))
     }
 
-    tune_log(list(verbose = TRUE), split = NULL, msg, type = "info")
+    tune_log(list(verbose = TRUE), split_labels = NULL, msg, type = "info")
 
     x <- workflows::.fit_pre(wflow, data)$pre$mold$predictors
     pset$object <- purrr::map(pset$object, dials::finalize, x = x)
@@ -409,11 +409,11 @@ bayes_msg <- "`initial` should be a positive integer or the results of [tune_gri
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x, 
-                          pset, 
-                          wflow, 
+check_initial <- function(x,
+                          pset,
+                          wflow,
                           resamples,
-                          metrics, 
+                          metrics,
                           eval_time,
                           ctrl,
                           checks = "grid") {
@@ -425,7 +425,7 @@ check_initial <- function(x,
     if (ctrl$verbose) {
       message()
       msg <- paste0(" Generating a set of ", nrow(x), " initial parameter results")
-      tune_log(ctrl, split = NULL, msg, type = "go")
+      tune_log(ctrl, split_labels = NULL, msg, type = "go")
     }
 
     grid_ctrl <- ctrl
@@ -441,7 +441,7 @@ check_initial <- function(x,
     )
 
     if (ctrl$verbose) {
-      tune_log(ctrl, split = NULL, "Initialization complete", type = "success")
+      tune_log(ctrl, split_labels = NULL, "Initialization complete", type = "success")
       message()
     }
   } else {

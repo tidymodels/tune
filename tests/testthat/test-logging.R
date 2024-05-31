@@ -15,7 +15,7 @@ test_that("low-level messages", {
 test_that("tune_log", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
 
   expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "go"))
   expect_snapshot(tune_log(ctrl_t, NULL, task = "cube", type = "go"))
@@ -28,7 +28,7 @@ test_that("tune_log", {
 test_that("log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
 
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
 
   res_1 <- catcher(log("a"))
   res_2 <- catcher(log(1))
@@ -70,14 +70,14 @@ test_that("log issues", {
 
 test_that("catch and log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
   null <- NULL
 
   expect_snapshot(
     out_1 <- .catch_and_log(
       log("a"),
       control = ctrl_f,
-      split = rs,
+      split_labels = rs,
       "toledo",
       bad_only = FALSE,
       notes = null
@@ -87,7 +87,7 @@ test_that("catch and log issues", {
   expect_silent(out_2 <- .catch_and_log(
     log(1),
     control = ctrl_f,
-    split = rs,
+    split_labels = rs,
     "toledo",
     bad_only = FALSE,
     notes = null
@@ -97,7 +97,7 @@ test_that("catch and log issues", {
     out_3 <- .catch_and_log(
       log(-1),
       control = ctrl_f,
-      split = rs,
+      split_labels = rs,
       "toledo",
       bad_only = FALSE,
       notes = null
@@ -108,7 +108,7 @@ test_that("catch and log issues", {
     out_5 <- .catch_and_log(
       log("a"),
       control = ctrl_f,
-      split = NULL,
+      split_labels = NULL,
       "toledo",
       bad_only = FALSE,
       notes = null
@@ -119,7 +119,7 @@ test_that("catch and log issues", {
     out_6 <- .catch_and_log(
       log(-1),
       control = ctrl_f,
-      split = NULL,
+      split_labels = NULL,
       "toledo",
       bad_only = FALSE,
       notes = null
