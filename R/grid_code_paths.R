@@ -342,10 +342,6 @@ tune_grid_loop_iter <- function(split,
                                 metrics_info = metrics_info(metrics),
                                 params,
                                 split_args = NULL) {
-  # `split` may be overwritten later on to create an "inner" split for
-  # post-processing. however, we want the original split to persist so we can
-  # use it (particularly `labels(split_orig)`) in logging
-  split_orig <- split
   split_labels <- labels(split)
 
   load_pkgs(workflow)
@@ -384,21 +380,23 @@ tune_grid_loop_iter <- function(split,
   model_param_names <- model_params$id
   preprocessor_param_names <- preprocessor_params$id
 
-  analysis <- rsample::analysis(split)
+  # inline rsample::assessment so that we can pass indices to `predict_model()`
+  assessment_rows <- as.integer(split, data = "assessment")
+  assessment <- vctrs::vec_slice(split$data, assessment_rows)
 
   if (workflows::should_inner_split(workflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "inner" analysis and
     # assessment set.
     # * the preprocessor and model (excluding the post-processor) are fitted
-    # on `analysis(split)`, the inner analysis set (just referred to as analysis)
-    # * that model generates predictions on `assessment(split)`, the
-    #   potato set
+    #   on `analysis(inner_split(split))`, the inner analysis set (just
+    #   referred to as analysis)
+    # * that model generates predictions on `assessment(inner_split(split))`,
+    #   the potato set
     # * the post-processor is trained on the predictions generated from the
     #   potato set
     # * the model (including the post-processor) generates predictions on the
-    #   assessment set (not inner, i.e. `assessment(split_orig)`) and those
-    #   predictions are assessed with performance metrics
+    #   assessment set and those predictions are assessed with performance metrics
     # todo: check if workflow's `method` is incompatible with `class(split)`?
     # todo: workflow's `method` is currently ignored in favor of the one
     # automatically dispatched to from `split`. consider this is combination
@@ -406,7 +404,18 @@ tune_grid_loop_iter <- function(split,
     split_args <- c(split_args, list(prop = workflow$post$actions$tailor$prop))
     split <- rsample::inner_split(split, split_args = split_args)
     analysis <- rsample::analysis(split)
+
+    # inline rsample::assessment so that we can pass indices to `predict_model()`
+    potato_rows <- as.integer(split, data = "assessment")
+    potato <- vctrs::vec_slice(split$data, potato_rows)
+  } else {
+    analysis <- rsample::analysis(split)
+
+    potato_rows <- NULL
+    potato <- NULL
   }
+
+  rm(split)
 
   # ----------------------------------------------------------------------------
   # Preprocessor loop
@@ -511,7 +520,8 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(split, workflow, iter_grid, metrics, iter_submodels,
+        predict_model(potato %||% assessment, potato_rows %||% assessment_rows,
+                      workflow, iter_grid, metrics, iter_submodels,
                       metrics_info = metrics_info, eval_time = eval_time),
         control,
         split_labels,
@@ -528,18 +538,11 @@ tune_grid_loop_iter <- function(split,
       if (workflows::should_inner_split(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
         # are the predictions from the potato set rather than the
-        # assessment set (i.e. `assessment(split_orig)`)
+        # assessment set
 
         # train the post-processor on the predictions generated from the model
         # on the potato set
-        # todo: this is the same assessment set that `predict_model` makes.
-        # we're ad-hoc `augment()`ing here, but would be nice to just have
-        # those predictors
         # todo: needs a `.catch_and_log`
-        # todo: .fit_post currently takes in `assessment(split)` rather than
-        # a set of predictions, meaning that we predict on `assessment(split)`
-        # twice :(
-        potato <- rsample::assessment(split)
         workflow_with_post <- .fit_post(workflow, potato)
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
@@ -556,13 +559,11 @@ tune_grid_loop_iter <- function(split,
         elt_extract <- make_extracts(elt_extract, iter_grid, split_labels, .config = iter_config)
         out_extracts <- append_extracts(out_extracts, elt_extract)
 
-
-        # generate predictions on the assessment set (not inner,
-        # i.e. `assessment(split_orig)`) from the model and apply the
+        # generate predictions on the assessment set from the model and apply the
         # post-processor to those predictions to generate updated predictions
         iter_predictions <- .catch_and_log(
-          predict_model(split_orig, workflow_with_post, iter_grid, metrics,
-                        iter_submodels, metrics_info = metrics_info,
+          predict_model(assessment, assessment_rows, workflow_with_post, iter_grid,
+                        metrics, iter_submodels, metrics_info = metrics_info,
                         eval_time = eval_time),
           control,
           split_labels,
