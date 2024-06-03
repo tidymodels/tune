@@ -262,7 +262,7 @@ siren <- function(x, type = "info") {
   message(paste(symb, msg))
 }
 
-tune_log <- function(control, split = NULL, task, type = "success", catalog = TRUE) {
+tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -272,9 +272,8 @@ tune_log <- function(control, split = NULL, task, type = "success", catalog = TR
     return(NULL)
   }
 
-  if (!is.null(split)) {
-    labs <- labels(split)
-    labs <- rev(unlist(labs))
+  if (!is.null(split_labels)) {
+    labs <- rev(unlist(split_labels))
     labs <- paste0(labs, collapse = ", ")
     labs <- paste0(labs, ": ")
   } else {
@@ -293,7 +292,7 @@ is_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
 
-log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
+log_problems <- function(notes, control, split_labels, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
   control2 <- control
   control2$verbose <- TRUE
@@ -320,7 +319,7 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
       tune_catalog(dplyr::filter(notes, type == "warning" & location == loc))
     } else {
       wrn_msg <- format_msg(loc, wrn_msg$note)
-      tune_log(control2, split, wrn_msg, type = "warning")
+      tune_log(control2, split_labels, wrn_msg, type = "warning")
     }
   }
   if (inherits(res$res, "try-error")) {
@@ -343,11 +342,11 @@ log_problems <- function(notes, control, split, loc, res, bad_only = FALSE) {
       tune_catalog(dplyr::filter(notes, type == "error" & location == loc))
     } else {
       err_msg <- format_msg(loc, err_msg$note)
-      tune_log(control2, split, err_msg, type = "danger")
+      tune_log(control2, split_labels, err_msg, type = "danger")
     }
   } else {
     if (!bad_only) {
-      tune_log(control, split, loc, type = "success")
+      tune_log(control, split_labels, loc, type = "success")
     }
   }
   notes
@@ -438,7 +437,7 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split = NULL, task = msg, type = "info", catalog = FALSE)
+  tune_log(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
 }
 
 check_and_log_flow <- function(control, results) {
@@ -448,11 +447,11 @@ check_and_log_flow <- function(control, results) {
 
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      tune_log(control, split = NULL, task = "Halting search",
+      tune_log(control, split_labels = NULL, task = "Halting search",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "break"))
     } else {
-      tune_log(control, split = NULL, task = "Skipping to next iteration",
+      tune_log(control, split_labels = NULL, task = "Skipping to next iteration",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "next"))
     }
@@ -530,7 +529,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split = NULL, task = val, type = "info", catalog = FALSE)
+    tune_log(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
   }
   invisible(NULL)
 }

@@ -1,7 +1,7 @@
 # low-level messages
 
     Code
-      tune:::siren("a", "werewolf")
+      siren("a", "werewolf")
     Condition
       Error in `match.arg()`:
       ! 'arg' should be one of "warning", "go", "danger", "success", "info"
@@ -9,42 +9,42 @@
 ---
 
     Code
-      tune:::siren("bat", "info")
+      siren("bat", "info")
     Message
       i bat
 
 ---
 
     Code
-      tune:::siren("bat", "go")
+      siren("bat", "go")
     Message
       > bat
 
 ---
 
     Code
-      tune:::siren("bat", "danger")
+      siren("bat", "danger")
     Message
       x bat
 
 ---
 
     Code
-      tune:::siren("bat", "warning")
+      siren("bat", "warning")
     Message
       ! bat
 
 ---
 
     Code
-      tune:::siren("bat", "success")
+      siren("bat", "success")
     Message
       v bat
 
 # tune_log
 
     Code
-      tune:::tune_log(ctrl_t, rs, task = "cube", type = "go")
+      tune_log(ctrl_t, rs, task = "cube", type = "go")
     Message
       > Fold01: cube
     Output
@@ -53,7 +53,7 @@
 ---
 
     Code
-      tune:::tune_log(ctrl_t, NULL, task = "cube", type = "go")
+      tune_log(ctrl_t, NULL, task = "cube", type = "go")
     Message
       > cube
     Output
@@ -62,7 +62,7 @@
 ---
 
     Code
-      tune:::tune_log(ctrl_t, rs, task = "cube", type = "success")
+      tune_log(ctrl_t, rs, task = "cube", type = "success")
     Message
       v Fold01: cube
     Output
@@ -71,55 +71,53 @@
 # log issues
 
     Code
-      problems_1 <- tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1,
-        bad_only = FALSE)
+      problems_1 <- log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
     Message
       x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      problems_2 <- tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3,
-        bad_only = FALSE)
+      problems_2 <- log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
     Message
       ! Fold01: toledo: NaNs produced
 
 # catch and log issues
 
     Code
-      out_1 <- tune:::.catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE,
-      notes = null)
+      out_1 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = rs, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      out_3 <- tune:::.catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE,
-      notes = null)
+      out_3 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = rs, "toledo",
+      bad_only = FALSE, notes = null)
     Message
       ! Fold01: toledo: NaNs produced
 
 ---
 
     Code
-      out_5 <- tune:::.catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE,
-      notes = null)
+      out_5 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = NULL,
+      "toledo", bad_only = FALSE, notes = null)
     Message
       x toledo: Error in log("a"): non-numeric argument to mathematical function
 
 ---
 
     Code
-      out_6 <- tune:::.catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE,
-      notes = null)
+      out_6 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = NULL,
+      "toledo", bad_only = FALSE, notes = null)
     Message
       ! toledo: NaNs produced
 
 # logging iterations
 
     Code
-      tune:::log_best(ctrl_t, 10, sc_1)
+      log_best(ctrl_t, 10, sc_1)
     Message
       
       -- Iteration 10 ----------------------------------------------------------------
@@ -131,7 +129,7 @@
 # logging search info
 
     Code
-      tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
     Message
       x Skipping to next iteration
     Condition
@@ -141,8 +139,7 @@
 ---
 
     Code
-      tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(
-        1))
+      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
     Message
       x Halting search
     Condition
@@ -152,49 +149,49 @@
 # current results
 
     Code
-      tune:::log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a")
+      log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a")
     Message
       (x) Newest results:	a=4 (+/-0.4)
 
 ---
 
     Code
-      tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b")
+      log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b")
     Message
       <3 Newest results:	b=8 (+/-0.8)
 
 ---
 
     Code
-      tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a")
+      log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a")
     Message
       <3 Newest results:	a=4 (+/-0.4)
 
 # show parameters
 
     Code
-      tune:::param_msg(ctrl_t, iris[1, 4:5])
+      param_msg(ctrl_t, iris[1, 4:5])
     Message
       i Petal.Width=0.2, Species=setosa
 
 # acquisition functions
 
     Code
-      tune:::acq_summarizer(ctrl_t, 1, conf_bound(I))
+      acq_summarizer(ctrl_t, 1, conf_bound(I))
     Message
       i Kappa value: 1
 
 ---
 
     Code
-      tune:::acq_summarizer(ctrl_t, 1, exp_improve(I))
+      acq_summarizer(ctrl_t, 1, exp_improve(I))
     Message
       i Trade-off value: 1
 
 ---
 
     Code
-      tune:::acq_summarizer(ctrl_t, 1, prob_improve(I))
+      acq_summarizer(ctrl_t, 1, prob_improve(I))
     Message
       i Trade-off value: 1
 

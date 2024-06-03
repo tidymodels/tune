@@ -1,45 +1,45 @@
 test_that("low-level messages", {
   expect_snapshot(
     error = TRUE,
-    tune:::siren("a", "werewolf")
+    siren("a", "werewolf")
   )
-  expect_snapshot(tune:::siren("bat", "info"))
-  expect_snapshot(tune:::siren("bat", "go"))
-  expect_snapshot(tune:::siren("bat", "danger"))
-  expect_snapshot(tune:::siren("bat", "warning"))
+  expect_snapshot(siren("bat", "info"))
+  expect_snapshot(siren("bat", "go"))
+  expect_snapshot(siren("bat", "danger"))
+  expect_snapshot(siren("bat", "warning"))
 
   skip_on_os("windows")
-  expect_snapshot(tune:::siren("bat", "success"))
+  expect_snapshot(siren("bat", "success"))
 })
 
 test_that("tune_log", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
 
-  expect_snapshot(tune:::tune_log(ctrl_t, rs, task = "cube", type = "go"))
-  expect_snapshot(tune:::tune_log(ctrl_t, NULL, task = "cube", type = "go"))
-  expect_silent(tune:::tune_log(ctrl_f, NULL, task = "cube", type = "go"))
+  expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "go"))
+  expect_snapshot(tune_log(ctrl_t, NULL, task = "cube", type = "go"))
+  expect_silent(tune_log(ctrl_f, NULL, task = "cube", type = "go"))
 
   skip_on_os("windows")
-  expect_snapshot(tune:::tune_log(ctrl_t, rs, task = "cube", type = "success"))
+  expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "success"))
 })
 
 test_that("log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
 
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
 
-  res_1 <- tune:::catcher(log("a"))
-  res_2 <- tune:::catcher(log(1))
-  res_3 <- tune:::catcher(log(-1))
+  res_1 <- catcher(log("a"))
+  res_2 <- catcher(log(1))
+  res_3 <- catcher(log(-1))
 
   note_1 <- tibble::tibble(location = "Roshar", type = "Alethi", note = "I'm a stick")
   note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
 
   expect_snapshot(
     problems_1 <-
-      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
+      log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
   )
 
   expect_equal(
@@ -50,12 +50,12 @@ test_that("log issues", {
   expect_null(problems_1$trace[[1]])
   expect_s3_class(problems_1$trace[[2]], "rlang_trace")
 
-  expect_silent(tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
+  expect_silent(log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
 
   note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
   expect_snapshot(
     problems_2 <-
-      tune:::log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
+      log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
   )
 
   expect_equal(
@@ -70,25 +70,60 @@ test_that("log issues", {
 
 test_that("catch and log issues", {
   ctrl_f <- control_grid(verbose = FALSE)
-  rs <- rsample::vfold_cv(mtcars)$splits[[1]]
+  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
   null <- NULL
 
   expect_snapshot(
-    out_1 <- tune:::.catch_and_log(log("a"), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_1 <- .catch_and_log(
+      log("a"),
+      control = ctrl_f,
+      split_labels = rs,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- tune:::.catch_and_log(log(1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null))
+  expect_silent(out_2 <- .catch_and_log(
+    log(1),
+    control = ctrl_f,
+    split_labels = rs,
+    "toledo",
+    bad_only = FALSE,
+    notes = null
+  ))
   expect_true(out_2 == 0)
   expect_snapshot(
-    out_3 <- tune:::.catch_and_log(log(-1), ctrl_f, rs, "toledo", bad_only = FALSE, notes = null)
+    out_3 <- .catch_and_log(
+      log(-1),
+      control = ctrl_f,
+      split_labels = rs,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(is.nan(out_3))
   expect_snapshot(
-    out_5 <- tune:::.catch_and_log(log("a"), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_5 <- .catch_and_log(
+      log("a"),
+      control = ctrl_f,
+      split_labels = NULL,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(inherits(out_5, "try-error"))
   expect_snapshot(
-    out_6 <- tune:::.catch_and_log(log(-1), ctrl_f, NULL, "toledo", bad_only = FALSE, notes = null)
+    out_6 <- .catch_and_log(
+      log(-1),
+      control = ctrl_f,
+      split_labels = NULL,
+      "toledo",
+      bad_only = FALSE,
+      notes = null
+    )
   )
   expect_true(is.nan(out_6))
 })
@@ -106,22 +141,22 @@ test_that("logging iterations", {
     max = FALSE
   )
 
-  expect_snapshot(tune:::log_best(ctrl_t, 10, sc_1))
-  expect_silent(tune:::log_best(ctrl_f, 10, sc_1))
+  expect_snapshot(log_best(ctrl_t, 10, sc_1))
+  expect_silent(log_best(ctrl_f, 10, sc_1))
 })
 
 test_that("logging search info", {
   ctrl_t <- control_bayes(verbose_iter = TRUE)
   tb_1 <- tibble::tibble(.mean = 1:3)
 
-  expect_silent(tune:::check_and_log_flow(ctrl_t, tb_1))
+  expect_silent(check_and_log_flow(ctrl_t, tb_1))
   expect_snapshot(
     error = TRUE,
-    tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
   )
   expect_snapshot(
     error = TRUE,
-    tune:::check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
   )
 })
 
@@ -137,17 +172,17 @@ test_that("current results", {
     )
 
   expect_snapshot(
-    tune:::log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a")
+    log_progress(ctrl_t, tb_2, maximize = FALSE, objective = "a")
   )
   expect_snapshot(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b")
+    log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "b")
   )
-  expect_silent(tune:::log_progress(ctrl_f, tb_2, maximize = TRUE, objective = "a"))
+  expect_silent(log_progress(ctrl_f, tb_2, maximize = TRUE, objective = "a"))
 
   skip_on_os("windows")
 
   expect_snapshot(
-    tune:::log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a")
+    log_progress(ctrl_t, tb_2, maximize = TRUE, objective = "a")
   )
 })
 
@@ -156,8 +191,8 @@ test_that("show parameters", {
   ctrl_t <- control_bayes(verbose_iter = TRUE)
   ctrl_f <- control_bayes(verbose_iter = FALSE)
 
-  expect_snapshot(tune:::param_msg(ctrl_t, iris[1, 4:5]))
-  expect_silent(tune:::param_msg(ctrl_f, iris[1, 4:5]))
+  expect_snapshot(param_msg(ctrl_t, iris[1, 4:5]))
+  expect_silent(param_msg(ctrl_f, iris[1, 4:5]))
 })
 
 
@@ -165,12 +200,12 @@ test_that("acquisition functions", {
   ctrl_t <- control_bayes(verbose_iter = TRUE)
   ctrl_f <- control_bayes(verbose_iter = FALSE)
 
-  expect_silent(tune:::acq_summarizer(ctrl_t, 1))
-  expect_silent(tune:::acq_summarizer(ctrl_t, 1, conf_bound()))
-  expect_silent(tune:::acq_summarizer(ctrl_f, 1, conf_bound()))
-  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, conf_bound(I)))
-  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, exp_improve(I)))
-  expect_snapshot(tune:::acq_summarizer(ctrl_t, 1, prob_improve(I)))
+  expect_silent(acq_summarizer(ctrl_t, 1))
+  expect_silent(acq_summarizer(ctrl_t, 1, conf_bound()))
+  expect_silent(acq_summarizer(ctrl_f, 1, conf_bound()))
+  expect_snapshot(acq_summarizer(ctrl_t, 1, conf_bound(I)))
+  expect_snapshot(acq_summarizer(ctrl_t, 1, exp_improve(I)))
+  expect_snapshot(acq_summarizer(ctrl_t, 1, prob_improve(I)))
 })
 
 ## -----------------------------------------------------------------------------
@@ -213,7 +248,7 @@ test_that("message_wrap", {
 })
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -240,7 +275,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
 })
 
 test_that("interactive logger works (fit_resamples, rlang warning + error)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -269,7 +304,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
 
 
 test_that("interactive logger works (fit_resamples, multiline)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -299,7 +334,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
 })
 
 test_that("interactive logger works (fit_resamples, occasional error)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -335,7 +370,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
 })
 
 test_that("interactive logger works (fit_resamples, occasional errors)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -387,7 +422,7 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
 
 
 test_that("interactive logger works (fit_resamples, many distinct errors)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -424,7 +459,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
 })
 
 test_that("interactive logger works (tune grid, error)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -451,7 +486,7 @@ test_that("interactive logger works (tune grid, error)", {
 })
 
 test_that("interactive logger works (bayesian, error)", {
-  skip_if(tune:::allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
