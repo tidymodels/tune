@@ -384,7 +384,7 @@ tune_grid_loop_iter <- function(split,
   assessment_rows <- as.integer(split, data = "assessment")
   assessment <- vctrs::vec_slice(split$data, assessment_rows)
 
-  if (workflows::should_inner_split(workflow)) {
+  if (workflows::.should_inner_split(workflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "inner" analysis and
     # assessment set.
@@ -504,7 +504,7 @@ tune_grid_loop_iter <- function(split,
         iter_grid_model
       )
 
-      if (!workflows::should_inner_split(workflow)) {
+      if (!workflows::.should_inner_split(workflow)) {
         elt_extract <- .catch_and_log(
           extract_details(workflow, control$extract),
           control,
@@ -535,7 +535,7 @@ tune_grid_loop_iter <- function(split,
         next
       }
 
-      if (workflows::should_inner_split(workflow)) {
+      if (workflows::.should_inner_split(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
         # are the predictions from the potato set rather than the
         # assessment set
