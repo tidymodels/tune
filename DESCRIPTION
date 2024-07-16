@@ -58,8 +58,7 @@ Suggests:
 Remotes:
     tidymodels/rsample,
     tidymodels/tailor, 
-    tidymodels/workflows,
-    tidymodels/hardhat
+    tidymodels/workflows
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
