@@ -6,7 +6,6 @@ Codecov
 Davison
 Disambiguates
 EI
-foreach
 Hinkley
 Isomap
 Lifecycle
@@ -15,10 +14,12 @@ Olshen
 PSOCK
 RNGkind
 Wadsworth
+backtrace
 cdot
 doi
 el
 finetune
+foreach
 frac
 geo
 ggplot

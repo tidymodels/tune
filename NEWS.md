@@ -4,6 +4,8 @@
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
+* When automatic grids are used, [dials::grid_space_filling()] is now used (instead of [dials::grid_latin_hypercube()]).
+
 # tune 1.2.1
 
 * Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).

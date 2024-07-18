@@ -4,8 +4,8 @@
       fit_best(knn_pca_res, verbose = TRUE)
     Output
       Using rmse as the metric, the optimal parameters were:
-        neighbors: 10
-        num_comp:  3
+        neighbors: 1
+        num_comp:  4
       
     Message
       i Fitting using 161 data points...
@@ -23,13 +23,13 @@
       -- Model -----------------------------------------------------------------------
       
       Call:
-      kknn::train.kknn(formula = ..y ~ ., data = data, ks = min_rows(10L,     data, 5))
+      kknn::train.kknn(formula = ..y ~ ., data = data, ks = min_rows(1L,     data, 5))
       
       Type of response variable: continuous
-      minimal mean absolute error: 1.690086
-      Minimal mean squared error: 4.571625
+      minimal mean absolute error: 1.015528
+      Minimal mean squared error: 2.448261
       Best kernel: optimal
-      Best k: 10
+      Best k: 1
 
 ---
 

@@ -170,7 +170,7 @@ test_that("tune model and recipe", {
   grid_3 <-
     extract_parameter_set_dials(wflow_3) %>%
     update(num_comp = dials::num_comp(c(2, 5))) %>%
-    dials::grid_latin_hypercube(size = 4)
+    dials::grid_space_filling(size = 4)
 
   expect_error(
     res_3_1 <- tune_grid(
