@@ -7,7 +7,6 @@
 \alias{parameters}
 \alias{autoplot}
 \alias{required_pkgs}
-\alias{tune}
 \alias{tunable}
 \alias{tune_args}
 \alias{min_grid}
@@ -37,7 +36,7 @@ below to see their documentation.
 
   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 
-  \item{hardhat}{\code{\link[hardhat:hardhat-extract]{extract_fit_engine}}, \code{\link[hardhat:hardhat-extract]{extract_fit_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_mold}}, \code{\link[hardhat:hardhat-extract]{extract_parameter_set_dials}}, \code{\link[hardhat:hardhat-extract]{extract_preprocessor}}, \code{\link[hardhat:hardhat-extract]{extract_recipe}}, \code{\link[hardhat:hardhat-extract]{extract_spec_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_workflow}}, \code{\link[hardhat]{tune}}}
+  \item{hardhat}{\code{\link[hardhat:hardhat-extract]{extract_fit_engine}}, \code{\link[hardhat:hardhat-extract]{extract_fit_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_mold}}, \code{\link[hardhat:hardhat-extract]{extract_parameter_set_dials}}, \code{\link[hardhat:hardhat-extract]{extract_preprocessor}}, \code{\link[hardhat:hardhat-extract]{extract_recipe}}, \code{\link[hardhat:hardhat-extract]{extract_spec_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_workflow}}}
 
   \item{rsample}{\code{\link[rsample:get_fingerprint]{.get_fingerprint}}, \code{\link[rsample]{int_pctl}}}
 }}

@@ -11,6 +11,7 @@ ggplot2::autoplot
 #' @export
 generics::required_pkgs
 
+#' @noRd
 #' @importFrom hardhat tune
 #' @export
 hardhat::tune
