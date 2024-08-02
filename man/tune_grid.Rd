@@ -107,9 +107,8 @@ end of processing.
 \section{Parameter Grids}{
 
 
-If no tuning grid is provided, a semi-random grid (via
-\code{\link[dials:grid_max_entropy]{dials::grid_latin_hypercube()}}) is created with 10 candidate parameter
-combinations.
+If no tuning grid is provided, a grid (via \code{\link[dials:grid_space_filling]{dials::grid_space_filling()}}) is
+created with 10 candidate parameter combinations.
 
 When provided, the grid should have column names for each parameter and
 these should be named by the parameter name or \code{id}. For example, if a

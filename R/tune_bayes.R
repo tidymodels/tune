@@ -531,7 +531,7 @@ create_initial_set <- function(param, n = NULL, checks) {
   if (any(checks == "bayes")) {
     check_bayes_initial_size(nrow(param), n)
   }
-  dials::grid_latin_hypercube(param, size = n)
+  dials::grid_space_filling(param, size = n)
 }
 
 check_iter <- function(iter, call) {
@@ -632,7 +632,7 @@ fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
 
 pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   pred_grid <-
-    dials::grid_latin_hypercube(pset, size = size) %>%
+    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") %>%
     dplyr::distinct()
 
   if (!is.null(current)) {
