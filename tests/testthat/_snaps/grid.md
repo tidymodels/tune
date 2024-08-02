@@ -27,11 +27,11 @@
       }, save_pred = TRUE))
     Message
       x Fold1: preprocessor 1/1:
-        Error in `get_all_predictors()`:
-        ! The following predictors were not found in `data`: 'z'.
+        Error in `hardhat::mold()`:
+        ! The following predictor was not found in `data`: "z".
       x Fold2: preprocessor 1/1:
-        Error in `get_all_predictors()`:
-        ! The following predictors were not found in `data`: 'z'.
+        Error in `hardhat::mold()`:
+        ! The following predictor was not found in `data`: "z".
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -66,14 +66,14 @@
       # A tibble: 10 x 4
          splits         id     .metrics         .notes          
          <list>         <chr>  <list>           <list>          
-       1 <split [28/4]> Fold01 <tibble [4 x 5]> <tibble [0 x 3]>
-       2 <split [28/4]> Fold02 <tibble [4 x 5]> <tibble [0 x 3]>
-       3 <split [29/3]> Fold03 <tibble [4 x 5]> <tibble [0 x 3]>
-       4 <split [29/3]> Fold04 <tibble [4 x 5]> <tibble [0 x 3]>
-       5 <split [29/3]> Fold05 <tibble [4 x 5]> <tibble [0 x 3]>
-       6 <split [29/3]> Fold06 <tibble [4 x 5]> <tibble [0 x 3]>
-       7 <split [29/3]> Fold07 <tibble [4 x 5]> <tibble [0 x 3]>
-       8 <split [29/3]> Fold08 <tibble [4 x 5]> <tibble [0 x 3]>
-       9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 3]>
-      10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 3]>
+       1 <split [28/4]> Fold01 <tibble [6 x 5]> <tibble [0 x 3]>
+       2 <split [28/4]> Fold02 <tibble [6 x 5]> <tibble [0 x 3]>
+       3 <split [29/3]> Fold03 <tibble [6 x 5]> <tibble [0 x 3]>
+       4 <split [29/3]> Fold04 <tibble [6 x 5]> <tibble [0 x 3]>
+       5 <split [29/3]> Fold05 <tibble [6 x 5]> <tibble [0 x 3]>
+       6 <split [29/3]> Fold06 <tibble [6 x 5]> <tibble [0 x 3]>
+       7 <split [29/3]> Fold07 <tibble [6 x 5]> <tibble [0 x 3]>
+       8 <split [29/3]> Fold08 <tibble [6 x 5]> <tibble [0 x 3]>
+       9 <split [29/3]> Fold09 <tibble [6 x 5]> <tibble [0 x 3]>
+      10 <split [29/3]> Fold10 <tibble [6 x 5]> <tibble [0 x 3]>
 

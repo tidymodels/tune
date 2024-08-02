@@ -329,12 +329,21 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
 
 test_that("regular grid plot", {
   skip_if_not_installed("ggplot2", minimum_version = "3.5.0")
-  set.seed(1)
-  res <-
+
+  svm_spec <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%
-    parsnip::set_mode("regression") %>%
-    tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = 1)
+    parsnip::set_mode("regression")
+
+  svm_grid <-
+    svm_spec %>%
+    extract_parameter_set_dials() %>%
+    dials::grid_regular(levels = 1)
+
+  set.seed(1)
+  res <-
+    svm_spec %>%
+    tune_grid(mpg ~ ., resamples = rsample::vfold_cv(mtcars, v = 5), grid = svm_grid)
 
   expect_snapshot(
     error = TRUE,

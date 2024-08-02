@@ -2,6 +2,8 @@
 
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866).
 
+* When automatic grids are used, `dials::grid_space_filling()` is now used (instead of `dials::grid_latin_hypercube()`). Overall, the new function produces optimized designs (not depending on random numbers). When using Bayesian models, we will use a Latin Hypercube since we produce 5,000 candidates, which is too slow to do with pre-optimized designs. 
+
 # tune 1.2.1
 
 * Addressed issue in `int_pctl()` where the function would error when parallelized using `makePSOCKcluster()` (#885).

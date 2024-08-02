@@ -113,7 +113,7 @@ check_grid <- function(grid, workflow, pset = NULL, call = caller_env()) {
     }
     check_workflow(workflow, pset = pset, check_dials = TRUE, call = call)
 
-    grid <- dials::grid_latin_hypercube(pset, size = grid)
+    grid <- dials::grid_space_filling(pset, size = grid)
     grid <- dplyr::distinct(grid)
   }
 
