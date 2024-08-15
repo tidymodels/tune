@@ -88,11 +88,10 @@ basic usage, grid search, and model optimization.
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>tune</code> package helps optimize the modeling process.
-Users can <em>tag</em> arguments in recipes and model objects for
-optimization. The search routines in <code>tune</code> can discover
-these arguments and evaluate candidate values until a combination with
-good performance is found.</p>
+<p>The tune package helps optimize the modeling process. Users can
+<em>tag</em> arguments in recipes and model objects for optimization.
+The search routines in tune can discover these arguments and evaluate
+candidate values until a combination with good performance is found.</p>
 <p>As an example, let’s model the Ames housing data:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
@@ -162,15 +161,15 @@ and collect the parameters that have been flagged for tuning.</p>
 <span><span class="co">#&gt;  identifier     type    object</span></span>
 <span><span class="co">#&gt;     long df deg_free nparam[+]</span></span>
 <span><span class="co">#&gt;      lat df deg_free nparam[+]</span></span></code></pre></div>
-<p>The <code>dials</code> package has default ranges for many
-parameters. The generic parameter function for <code>deg_free</code> has
-a fairly small range:</p>
+<p>The dials package has default ranges for many parameters. The generic
+parameter function for <code><a href="https://dials.tidymodels.org/reference/deg_free.html" class="external-link">deg_free()</a></code> has a fairly small
+range:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dials.tidymodels.org/reference/deg_free.html" class="external-link">deg_free</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Degrees of Freedom (quantitative)</span></span>
 <span><span class="co">#&gt; Range: [1, 5]</span></span></code></pre></div>
-<p>However, there is a <code>dials</code> function that is more
-appropriate for splines:</p>
+<p>However, there is a function in dials that is more appropriate for
+splines:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dials.tidymodels.org/reference/degree.html" class="external-link">spline_degree</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Spline Degrees of Freedom (quantitative)</span></span>
@@ -205,8 +204,8 @@ model works.</p></li>
 performance (which could be a simple validation set).</p></li>
 </ul>
 <p>To make the grid, a data frame is needed with column names matching
-the “identifier” column above. There are several <code>dials</code>
-functions to created grids (named <code>grid_*</code>). For example, a
+the “identifier” column above. There are several functions in dials to
+created grids (named <code>grid_*()</code>). For example, a
 space-filling design can be created by:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spline_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dials.tidymodels.org/reference/grid_max_entropy.html" class="external-link">grid_max_entropy</a></span><span class="op">(</span><span class="va">ames_param</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
@@ -237,7 +236,7 @@ regular grid:</p>
 <span><span class="va">spline_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>`long df` <span class="op">=</span> <span class="va">df_vals</span>, `lat df` <span class="op">=</span> <span class="va">df_vals</span><span class="op">)</span></span></code></pre></div>
 <p>Note that a 2-degree-of-freedom model is a simple quadratic fit.</p>
 <p>There are two other ingredients that are required before tuning.</p>
-<p>First is a model specification. Using <code>parsnip</code>, a basic
+<p>First is a model specification. Using functions in parsnip, a basic
 linear model can be used:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lm_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/linear_reg.html" class="external-link">linear_reg</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://parsnip.tidymodels.org/reference/set_engine.html" class="external-link">set_engine</a></span><span class="op">(</span><span class="st">"lm"</span><span class="op">)</span></span></code></pre></div>
@@ -280,7 +279,7 @@ or more extra columns:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> <span style="color: #949494;">&lt;split [1979/218]&gt;</span> Fold09 <span style="color: #949494;">&lt;tibble [162 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> <span style="color: #949494;">&lt;split [1980/217]&gt;</span> Fold10 <span style="color: #949494;">&lt;tibble [162 × 6]&gt;</span> <span style="color: #949494;">&lt;tibble [0 × 4]&gt;</span></span></span></code></pre></div>
 <p>The <code>.metrics</code> column has all of the holdout performance
-estimates<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;&lt;code&gt;tune&lt;/code&gt; has default measures of performance
+estimates<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;the tune package has default measures of performance
 that it uses if none are specified. Here the RMSE and R&lt;sup&gt;2&lt;/sup&gt; are
 estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option.&lt;/p&gt;"><sup>2</sup></a> for each parameter combination:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
