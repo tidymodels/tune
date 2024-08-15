@@ -25,7 +25,7 @@ doParallel::registerDoParallel()
 
 ## Introduction 
 
-The `tune` package helps optimize the modeling process. Users can _tag_ arguments in recipes and model objects for optimization. The search routines in `tune` can discover these arguments and evaluate candidate values until a combination with good performance is found. 
+The tune package helps optimize the modeling process. Users can _tag_ arguments in recipes and model objects for optimization. The search routines in tune can discover these arguments and evaluate candidate values until a combination with good performance is found. 
 
 As an example, let's model the Ames housing data:
 
@@ -88,13 +88,13 @@ The function `dials::parameters()` can detect and collect the parameters that ha
 parameters(ames_rec)
 ```
 
-The `dials` package has default ranges for many parameters. The generic parameter function for `deg_free` has a fairly small range:
+The dials package has default ranges for many parameters. The generic parameter function for `deg_free()` has a fairly small range:
 
 ```{r df}
 deg_free()
 ```
 
-However, there is a `dials` function that is more appropriate for splines:
+However, there is a function in dials that is more appropriate for splines:
 
 ```{r sdf}
 spline_degree()
@@ -123,7 +123,7 @@ Grid search uses a pre-defined set of candidate parameters and evaluates these u
  
  * A resampling scheme that can be used to appropriately measure performance (which could be a simple validation set). 
 
-To make the grid, a data frame is needed with column names matching the "identifier" column above. There are several `dials` functions to created grids (named `grid_*`). For example, a space-filling design can be created by:
+To make the grid, a data frame is needed with column names matching the "identifier" column above. There are several functions in dials to created grids (named `grid_*()`). For example, a space-filling design can be created by:
 
 ```{r sf-grid}
 spline_grid <- grid_max_entropy(ames_param, size = 10)
@@ -142,7 +142,7 @@ Note that a 2-degree-of-freedom model is a simple quadratic fit.
 
 There are two other ingredients that are required before tuning. 
 
-First is a model specification. Using `parsnip`, a basic linear model can be used:
+First is a model specification. Using functions in parsnip, a basic linear model can be used:
 
 ```{r mod}
 lm_mod <- linear_reg() %>% set_engine("lm")
@@ -171,7 +171,7 @@ The object is similar to the `rsample` object but with one or more extra columns
 ames_res
 ```
 
-The `.metrics` column has all of the holdout performance estimates^[`tune` has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `metrics` option.] for each parameter combination: 
+The `.metrics` column has all of the holdout performance estimates^[the tune package has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `metrics` option.] for each parameter combination: 
 
 ```{r res-ex}
 ames_res$.metrics[[1]]
