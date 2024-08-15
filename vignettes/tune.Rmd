@@ -82,10 +82,10 @@ ames_rec <-
   step_ns(Latitude,  deg_free = tune("lat df"))
 ```
 
-The function `dials::parameters()` can detect and collect the parameters that have been flagged for tuning:
+The function `hardhat::extract_parameter_set_dials()` can detect and collect the parameters that have been flagged for tuning. *This method replaces the function `dials::parameters()` deprecated in tune 0.1.6.9003
 
 ```{r p-set}
-parameters(ames_rec)
+hardhat::extract_parameter_set_dials(ames_rec)
 ```
 
 The `dials` package has default ranges for many parameters. The generic parameter function for `deg_free` has a fairly small range:
@@ -105,7 +105,7 @@ The parameter objects can be easily changed using the `update()` function:
 ```{r updated}
 ames_param <- 
   ames_rec %>% 
-  parameters() %>% 
+  extract_parameter_set_dials() %>% 
   update(
     `long df` = spline_degree(), 
     `lat df` = spline_degree()
@@ -248,7 +248,7 @@ From this, the parameter set can be used to modify the range and values of param
 ```{r knn-set}
 knn_param <- 
   knn_wflow %>% 
-  parameters() %>% 
+  extract_parameter_set_dials() %>% 
     update(
     `long df` = spline_degree(c(2, 18)), 
     `lat df` = spline_degree(c(2, 18)),
