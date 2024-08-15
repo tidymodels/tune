@@ -211,10 +211,10 @@ the optimization:</p>
 functions. For expected improvement, this can be done using
 <code>exp_improve(trade_off = foo())</code>. <code>foo()</code> should
 be a function whose first parameter is the current iteration number.
-When <code>tune</code> invokes this function, only the first argument is
-used. A good strategy might be to set <code>trade_off</code> to some
-non-zero value at the start of the search and incrementally approach
-zero after a reasonable period.</p></li>
+When tune invokes this function, only the first argument is used. A good
+strategy might be to set <code>trade_off</code> to some non-zero value
+at the start of the search and incrementally approach zero after a
+reasonable period.</p></li>
 <li><p><code><a href="../reference/control_bayes.html">control_bayes()</a></code> has an option for doing an
 additional <em>uncertainty sample</em> when no improvements have been
 found. This is a technique from the active learning literature where new
