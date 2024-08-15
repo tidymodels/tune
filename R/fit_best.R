@@ -13,8 +13,8 @@
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
 #' If `NULL`, this argument will be set to
-#' [`select_best(metric, eval_time)`][tune::select_best.tune_results]. 
-#' If not `NULL`, `parameters` overwrites the specification via `metric`, and 
+#' [`select_best(metric, eval_time)`][tune::select_best.tune_results].
+#' If not `NULL`, `parameters` overwrites the specification via `metric`, and
 #' `eval_time`.
 #' @param verbose A logical for printing logging.
 #' @param add_validation_set When the resamples embedded in `x` are a split into
@@ -144,6 +144,8 @@ fit_best.tune_results <- function(x,
   }
 
   # ----------------------------------------------------------------------------
+
+  was_split_trimmed(x$splits[[1]])
 
   if (inherits(x$splits[[1]], "val_split")) {
     if (is.null(add_validation_set)) {

@@ -30,6 +30,7 @@
 #' @export
 control_grid <- function(verbose = FALSE, allow_par = TRUE,
                          extract = NULL, save_pred = FALSE,
+                         trim_splits = FALSE,
                          pkgs = NULL, save_workflow = FALSE,
                          event_level = "first",
                          parallel_over = NULL,
@@ -55,6 +56,7 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
     allow_par = allow_par,
     extract = extract,
     save_pred = save_pred,
+    trim_splits = trim_splits,
     pkgs = pkgs,
     save_workflow = save_workflow,
     event_level = event_level,
@@ -88,6 +90,7 @@ control_resamples <- control_grid
 #' @export
 control_last_fit <- function(
     verbose = FALSE,
+    trim_splits = FALSE,
     event_level = "first",
     allow_par = FALSE
 ) {
@@ -98,6 +101,7 @@ control_last_fit <- function(
   control <-
     control_resamples(
       verbose = verbose,
+      trim_splits = FALSE,
       allow_par = allow_par,
       event_level = event_level,
       extract = extr,
@@ -229,6 +233,7 @@ control_bayes <-
            seed = sample.int(10^5, 1),
            extract = NULL,
            save_pred = FALSE,
+           trim_splits = FALSE,
            time_limit = NA,
            pkgs = NULL,
            save_workflow = FALSE,
@@ -274,6 +279,7 @@ control_bayes <-
         seed = seed,
         extract = extract,
         save_pred = save_pred,
+        trim_splits = FALSE,
         time_limit = time_limit,
         pkgs = pkgs,
         save_workflow = save_workflow,

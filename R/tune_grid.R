@@ -372,6 +372,8 @@ tune_grid_workflow <- function(workflow,
 
   workflow <- set_workflow(workflow, control)
 
+  resamples <- trim_split_columm(resamples, control)
+
   new_tune_results(
     x = resamples,
     parameters = pset,
@@ -428,5 +430,38 @@ set_workflow <- function(workflow, control) {
     workflow
   } else {
     NULL
+  }
+}
+
+# ------------------------------------------------------------------------------
+
+trim_split <- function(split) {
+  split$data <- split$data[0,]
+  split$in_id <- integer(0)
+  if ( !is.na(split$out_id) ) {
+    split$out_id <- integer(0)
+  }
+  split
+}
+
+trim_split_columm <- function(x, ctrl) {
+  if ( !ctrl$trim_splits ) {
+    return(x)
+  }
+  x$splits <- purrr::map(x$splits, trim_split)
+  x
+}
+
+was_split_trimmed <- function(split, error = TRUE) {
+  n <- nrow(split$data)
+  if (identical(n, 0L)) {
+    res <- TRUE
+  } else {
+    res <- FALSE
+  }
+  if (TRUE & error) {
+    cli::cli_abort("The split contains no {.code data} object. \\
+                   Was {.code trim_splits} set to {.code TRUE} in the \\
+                   control function?")
   }
 }
