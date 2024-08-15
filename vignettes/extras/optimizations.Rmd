@@ -14,13 +14,13 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidymodels)
 ```
 
-`tune` attempts to evaluate the candidate models in the shortest amount of time. This vignette is a summary of those approaches. 
+The tune package attempts to evaluate the candidate models in the shortest amount of time. This vignette is a summary of those approaches. 
 
 ## Sub-model speed-ups
 
 For some types of models, such as boosted models or regularized models, the number of models that are actually _fit_ can be far less than the number of models evaluated. For example, suppose a boosted tree is fit with 1000 trees. Many boosting implementations let the user make predictions for any number of trees less than what was originally fit (1000 in this example). This "sub-model trick" can greatly speed up the training time for many models (e.g. see [this example](https://topepo.github.io/caret/using-your-own-model-in-train.html#illustrative-example-2-something-more-complicated---logitboost) in the `caret` documentation). 
 
-In order to know what models allow this, the `parsnip` package contains a `multi_predict()` function that enables this feature. Printing the S3 methods for it lists the possible models:
+In order to know what models allow this, the parsnip package contains a `multi_predict()` function that enables this feature. Printing the S3 methods for it lists the possible models:
 
 ```{r submodels}
 library(tidymodels)
@@ -85,7 +85,7 @@ Also, when using a model formula, the model matrix is only created once per resa
 
 ## Parallel processing
 
-`tune` allows users, when possible, to use multiple cores or separate machines fit models. The package is currently able to parallelize over either the resampling loop of grid search (via `parallel_over = "resamples"` in `control_grid()`, the default) or both the resampling and preprocessing loops (via `parallel_over = "everything"`). When `parallel_over = "everything"`, an outer parallel loop will iterate over resamples and an inner parallel loop will iterate over all unique combinations of preprocessor and model tuning parameters for that specific resample. This will result in the preprocessor being re-processed multiple times, but can be faster if that preprocessing is extremely fast.
+The tune package allows users, when possible, to use multiple cores or separate machines to fit models. The package is currently able to parallelize over either the resampling loop of grid search (via `parallel_over = "resamples"` in `control_grid()`, the default) or both the resampling and preprocessing loops (via `parallel_over = "everything"`). When `parallel_over = "everything"`, an outer parallel loop will iterate over resamples and an inner parallel loop will iterate over all unique combinations of preprocessor and model tuning parameters for that specific resample. This will result in the preprocessor being re-processed multiple times, but can be faster if that preprocessing is extremely fast.
 
 tune supports parallel processing using the [future](https://www.futureverse.org/) framework. future supports a variety of technologies to share the computations and the choice of technology is determined by the chosen _plan_. To run tuning code in parallel, just provide a `plan()` and tune will take care of the rest. For example:
 
@@ -96,9 +96,9 @@ plan(multisession)
 
 ### foreach (legacy)
 
-Before the 1.2.0 release, tune supported parallelism using the foreach framework. Support has been deprecated for backends registered for foreach and will be fully removed in an upcoming release. foreach can use a variety of technologies to share the computations and the choice of technology is determined by which _parallel backend_ package is chosen (aka the `do{technology}` packages). For example, the `doMC` package uses the forking mechanism on Unix-like systems to split the computations across multiple cores. As of this writing, the backend packages are `doMC`, `doMPI`, `doParallel`, `doRedis`, `doSNOW`, and `doAzureParallel` (GitHub only).
+Before the 1.2.0 release, tune supported parallelism using the foreach framework. Support has been deprecated for backends registered for foreach and will be fully removed in an upcoming release. foreach can use a variety of technologies to share the computations and the choice of technology is determined by which _parallel backend_ package is chosen (aka the `do{technology}` packages). For example, the doMC package uses the forking mechanism on Unix-like systems to split the computations across multiple cores. As of this writing, the backend packages are doMC, doMPI, doParallel, doRedis, doSNOW, and doAzureParallel (GitHub only).
 
-Registering a parallel backend is also somewhat dependent of the package. For `doParallel`, one could use:
+Registering a parallel backend is also somewhat dependent of the package. For doParallel, one could use:
 
 ```{r doPar, eval = FALSE}
 all_cores <- parallel::detectCores(logical = FALSE)
