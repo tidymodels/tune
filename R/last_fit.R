@@ -38,7 +38,7 @@
 #'
 #' @template case-weights
 #' @template censored-regression
-#' 
+#'
 #' @section See also:
 #'
 #' [last_fit()] is closely related to [fit_best()]. They both
@@ -68,7 +68,7 @@
 #' tr_te_split <- initial_split(mtcars)
 #'
 #' spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
-#'   step_ns(disp)
+#'   step_spline_natural(disp)
 #'
 #' lin_mod <- linear_reg() %>%
 #'   set_engine("lm")
@@ -142,11 +142,11 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
   }
 
   last_fit_workflow(
-    wflow, 
-    split = split, 
-    metrics = metrics, 
+    wflow,
+    split = split,
+    metrics = metrics,
     eval_time = eval_time,
-    control = control, 
+    control = control,
     add_validation_set = add_validation_set
   )
 }
@@ -162,11 +162,11 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL,
   control <- parsnip::condense_control(control, control_last_fit())
 
   last_fit_workflow(
-    object, 
-    split = split, 
-    metrics = metrics, 
+    object,
+    split = split,
+    metrics = metrics,
     eval_time = eval_time,
-    control = control, 
+    control = control,
     add_validation_set = add_validation_set
   )
 }

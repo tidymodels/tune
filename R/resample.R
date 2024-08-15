@@ -13,7 +13,7 @@
 #'
 #' @param control A [control_resamples()] object used to fine tune the resampling
 #'   process.
-#' 
+#'
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
@@ -30,8 +30,8 @@
 #' folds <- vfold_cv(mtcars, v = 5)
 #'
 #' spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
-#'   step_ns(disp) %>%
-#'   step_ns(wt)
+#'   step_spline_natural(disp) %>%
+#'   step_spline_natural(wt)
 #'
 #' lin_mod <- linear_reg() %>%
 #'   set_engine("lm")
@@ -132,7 +132,7 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL, 
+resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL,
                               control, rng, call = caller_env()) {
   check_no_tuning(workflow)
 

@@ -110,7 +110,7 @@
 #'
 #' spline_rec <-
 #'   recipe(mpg ~ ., data = mtcars) %>%
-#'   step_ns(disp, deg_free = tune("df"))
+#'   step_spline_natural(disp, deg_free = tune("df"))
 #'
 #' grid <- tibble(df = 3:6)
 #'

@@ -50,8 +50,8 @@ merge(pca_rec, pca_grid)
 
 spline_rec <-
   recipe(mpg ~ ., data = mtcars) \%>\%
-  step_ns(disp, deg_free = tune("disp df")) \%>\%
-  step_ns(wt, deg_free = tune("wt df"))
+  step_spline_natural(disp, deg_free = tune("disp df")) \%>\%
+  step_spline_natural(wt, deg_free = tune("wt df"))
 
 spline_grid <-
   tribble(

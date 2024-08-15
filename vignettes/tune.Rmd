@@ -63,14 +63,14 @@ We can tag these parameters for optimization using the `tune()` function:
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
   step_log(Gr_Liv_Area, base = 10) %>% 
-  step_ns(Longitude, Latitude, deg_free = tune())
+  step_spline_natural(Longitude, Latitude, deg_free = tune())
 ```
 
 The package can detect these parameters and optimize them. 
 
 However, based on the plot above, the potential _amount_ of non-linearity between the sale price and the predictors might be different. For example, longitude might require more flexibility than latitude.  The recipe above would constrain the nonlinearity of the predictors to be the same. We can probably do better than that.  
 
-To accomplish this, individual `step_ns()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
+To accomplish this, individual `step_spline_natural()` terms can be added to the recipe for each predictor. However, we want these to be identifiable; using the same syntax as above, we can't tell the difference between the two `deg_free` parameters. 
 
 `tune()` has an option to provide a text annotation so that each tuning parameter has a unique identifier:
 
@@ -78,8 +78,8 @@ To accomplish this, individual `step_ns()` terms can be added to the recipe for 
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
   step_log(Gr_Liv_Area, base = 10) %>% 
-  step_ns(Longitude, deg_free = tune("long df")) %>% 
-  step_ns(Latitude,  deg_free = tune("lat df"))
+  step_spline_natural(Longitude, deg_free = tune("long df")) %>% 
+  step_spline_natural(Latitude,  deg_free = tune("lat df"))
 ```
 
 The function `extract_parameter_set_dials()` can detect and collect the parameters that have been flagged for tuning.
