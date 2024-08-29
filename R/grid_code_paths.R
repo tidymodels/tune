@@ -181,7 +181,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
     # the current environment so that foreach doesn't touch the exit
     # handlers attached to the execution environment of this function
     # by `initialize_catalog()` (#828, #845, #846).
-    results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
+    results <- rlang::locally({
       # Rather than generating them programmatically, write each `foreach()`
       # call out since `foreach()` `substitute()`s its dots. Note that
       # doFuture will error when passed `.packages`.
@@ -240,7 +240,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
     # the current environment so that foreach doesn't touch the exit
     # handlers attached to the execution environment of this function
     # by `initialize_catalog()` (#828, #845, #846).
-    results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
+    results <- rlang::locally({
       # Rather than generating them programmatically, write each `foreach()`
       # call out since `foreach()` `substitute()`s its dots. Note that
       # doFuture will error when passed `.packages`.
