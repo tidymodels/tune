@@ -20,7 +20,6 @@
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom cli cli_inform cli_warn cli_abort qty
-#' @importFrom foreach foreach getDoParName %dopar%
 #' @importFrom tibble obj_sum size_sum
 
 

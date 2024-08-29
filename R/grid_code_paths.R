@@ -162,140 +162,31 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   n_splits <- length(splits)
   n_grid_info <- nrow(grid_info)
 
-  # Must assign `tune:::tune_grid_loop_iter_safely()` to a function in
-  # this function environment so foreach can find it. Mainly an issue with
-  # doParallel and PSOCK clusters.
-  fn_tune_grid_loop_iter_safely <- tune_grid_loop_iter_safely
-
-  do_op <- get_operator(control$allow_par, workflow)
-  `%op%` <- do_op[[1]]
-  is_future <- do_op[[2]]
-  `%:%` <- foreach::`%:%`
-
-  rlang::local_options(doFuture.rng.onMisuse = "ignore")
+  rlang::local_options(future.rng.onMisuse = "ignore")
 
   if (identical(parallel_over, "resamples")) {
     seeds <- generate_seeds(rng, n_splits)
 
-    # Evaluate the call to foreach in a local environment using a clone of
-    # the current environment so that foreach doesn't touch the exit
-    # handlers attached to the execution environment of this function
-    # by `initialize_catalog()` (#828, #845, #846).
-    results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
-      # Rather than generating them programmatically, write each `foreach()`
-      # call out since `foreach()` `substitute()`s its dots. Note that
-      # doFuture will error when passed `.packages`.
-      if (is_future) {
-        for_each <-
-          foreach::foreach(
-            split = splits,
-            seed = seeds,
-            .options.future = list(seed = NULL, packages = packages)
-          )
-      } else {
-        for_each <-
-          foreach::foreach(
-            split = splits,
-            seed = seeds,
-            .packages = packages,
-            .errorhandling = "pass"
-          )
-      }
-
-      suppressPackageStartupMessages(
-        for_each %op% {
-          # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-          fn_tune_grid_loop_iter_safely(
-            fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
-            split = split,
-            grid_info = grid_info,
-            workflow = workflow,
-            metrics = metrics,
-            control = control,
-            eval_time = eval_time,
-            seed = seed,
-            metrics_info = metrics_info,
-            params = params,
-            split_args = split_args
-          )
-        }
+    return(
+      furrr::future_map2(
+        splits,
+        seeds,
+        ~tune_grid_loop_iter_safely(
+          fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
+          split = .x,
+          grid_info = grid_info,
+          workflow = workflow,
+          metrics = metrics,
+          control = control,
+          eval_time = eval_time,
+          seed = .y,
+          metrics_info = metrics_info,
+          params = params,
+          split_args = split_args
+        ),
+        .options = furrr::furrr_options(packages = packages)
       )
-    })
-
-    return(results)
-  }
-
-  if (identical(parallel_over, "everything")) {
-    iterations <- seq_len(n_splits)
-    rows <- seq_len(n_grid_info)
-
-    seeds <- generate_seeds(rng, n_splits * n_grid_info)
-
-    # Make `slice_seeds` available in the environment that foreach will
-    # search for it in; resolves issue with PSOCK/multisession parallelism
-    # (#888, #889).
-    slice_seeds <- slice_seeds
-
-    # Evaluate the call to foreach in a local environment using a clone of
-    # the current environment so that foreach doesn't touch the exit
-    # handlers attached to the execution environment of this function
-    # by `initialize_catalog()` (#828, #845, #846).
-    results <- rlang::with_env(rlang::env_clone(rlang::current_env()), {
-      # Rather than generating them programmatically, write each `foreach()`
-      # call out since `foreach()` `substitute()`s its dots. Note that
-      # doFuture will error when passed `.packages`.
-      if (is_future) {
-        for_each <-
-          foreach::foreach(
-            split = splits,
-            iteration = iterations,
-            .options.future = list(seed = NULL, packages = packages)
-          ) %:%
-          foreach::foreach(
-            row = rows,
-            .combine = iter_combine,
-            .options.future = list(seed = NULL, packages = packages)
-          )
-      } else {
-        for_each <-
-          foreach::foreach(
-            split = splits,
-            iteration = iterations,
-            .packages = packages,
-            .errorhandling = "pass"
-          ) %:%
-          foreach::foreach(
-            row = rows,
-            .combine = iter_combine,
-            .packages = packages,
-            .errorhandling = "pass"
-          )
-      }
-
-      suppressPackageStartupMessages(
-        for_each %op% {
-            grid_info_row <- vctrs::vec_slice(grid_info, row)
-            seed <- slice_seeds(seeds, iteration, n_grid_info)[[1]]
-
-            # Likely want to debug with `debugonce(tune_grid_loop_iter)`
-            fn_tune_grid_loop_iter_safely(
-              fn_tune_grid_loop_iter = fn_tune_grid_loop_iter,
-              split = split,
-              grid_info = grid_info_row,
-              workflow = workflow,
-              metrics = metrics,
-              control = control,
-              eval_time = eval_time,
-              seed = seed,
-              metrics_info = metrics_info,
-              params = params,
-              split_args = split_args
-            )
-          }
-      )
-    })
-
-    return(results)
+    )
   }
 
   rlang::abort("Invalid `parallel_over`.", .internal = TRUE)
