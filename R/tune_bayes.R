@@ -281,6 +281,7 @@ tune_bayes_workflow <- function(object,
                                 ...,
                                 call = caller_env()) {
 
+    clear_gp_results()
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -879,5 +880,13 @@ save_gp_results <- function(x, pset, ctrl, i, iter) {
   if (inherits(res, "try-error")) {
     rlang::warn(paste("Could not save GP results:", as.character(res)))
   }
+  invisible(res)
+}
+
+
+clear_gp_results <- function() {
+  gp_files <-
+    list.files(tempdir(), pattern = "gp_candidates_", full.names = TRUE)
+  res <- try(unlink(gp_files), silent = TRUE)
   invisible(res)
 }
