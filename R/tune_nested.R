@@ -66,13 +66,14 @@ tune_nested.workflow <- function(object, resamples, fn = "tune_grid",
                                  .control = control_nested(), ...) {
 
 
-  control <- parsnip::condense_control(control, control_grid())
+  # TODO extend this using what is in `fn`
+  .control <- parsnip::condense_control(.control, control_grid())
 
   res <-
     tune_nested_workflow(
       object,
       resamples = resamples,
-      .control = control,
+      .control = .control,
       ...
     )
   .stash_last_result(res)
