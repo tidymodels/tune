@@ -408,8 +408,6 @@ tune_bayes_workflow <- function(object,
 
       gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
 
-      save_gp_results(gp_mod, param_info, control, i, iter)
-
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
@@ -437,6 +435,8 @@ tune_bayes_workflow <- function(object,
       check_time(start_time, control$time_limit)
 
       check_and_log_flow(control, candidates)
+
+      save_gp_results(gp_mod, param_info, control, i, iter, candidates, score_card)
 
       candidates <- pick_candidate(candidates, score_card, control)
       if (score_card$uncertainty >= control$uncertain) {
@@ -869,14 +869,15 @@ reup_rs <- function(resamples, res) {
 
 ## -----------------------------------------------------------------------------
 
-save_gp_results <- function(x, pset, ctrl, i, iter) {
+save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
   if (!ctrl$save_gp_scoring) {
     return(invisible(NULL))
   }
 
   nm <- recipes::names0(iter, "gp_candidates_")[i]
-  file_name <- paste0(nm, ".RData")
-  res <- try(save(x, pset, i, file = file.path(tempdir(), file_name)), silent = TRUE)
+  file_name <- glue::glue("{tempdir()}/{nm}.RData")
+  res <- try(save(x, pset, i, candidates, score_card, file = file_name),
+             silent = TRUE)
   if (inherits(res, "try-error")) {
     rlang::warn(paste("Could not save GP results:", as.character(res)))
   }

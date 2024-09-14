@@ -125,6 +125,7 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
 }
 
 #' @export
+# NOTE `maximize` is the direction of the metric, not the acquisition function
 predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
   check_direction(maximize)
   check_best(best)
