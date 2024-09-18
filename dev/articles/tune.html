@@ -133,25 +133,25 @@ these results to set reasonable values.</p>
 <code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">Longitude</span>, <span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_spline_natural.html" class="external-link">step_spline_natural</a></span><span class="op">(</span><span class="va">Longitude</span>, <span class="va">Latitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The package can detect these parameters and optimize them.</p>
 <p>However, based on the plot above, the potential <em>amount</em> of
 non-linearity between the sale price and the predictors might be
 different. For example, longitude might require more flexibility than
 latitude. The recipe above would constrain the nonlinearity of the
 predictors to be the same. We can probably do better than that.</p>
-<p>To accomplish this, individual <code><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns()</a></code> terms can be
-added to the recipe for each predictor. However, we want these to be
-identifiable; using the same syntax as above, we can’t tell the
-difference between the two <code>deg_free</code> parameters.</p>
+<p>To accomplish this, individual <code><a href="https://recipes.tidymodels.org/reference/step_spline_natural.html" class="external-link">step_spline_natural()</a></code>
+terms can be added to the recipe for each predictor. However, we want
+these to be identifiable; using the same syntax as above, we can’t tell
+the difference between the two <code>deg_free</code> parameters.</p>
 <p><code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code> has an option to provide a text annotation so
 that each tuning parameter has a unique identifier:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_rec</span> <span class="op">&lt;-</span> </span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">Gr_Liv_Area</span> <span class="op">+</span> <span class="va">Longitude</span> <span class="op">+</span> <span class="va">Latitude</span>, data <span class="op">=</span> <span class="va">ames_train</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_log.html" class="external-link">step_log</a></span><span class="op">(</span><span class="va">Gr_Liv_Area</span>, base <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"long df"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_ns.html" class="external-link">step_ns</a></span><span class="op">(</span><span class="va">Latitude</span>,  deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"lat df"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_spline_natural.html" class="external-link">step_spline_natural</a></span><span class="op">(</span><span class="va">Longitude</span>, deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"long df"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_spline_natural.html" class="external-link">step_spline_natural</a></span><span class="op">(</span><span class="va">Latitude</span>,  deg_free <span class="op">=</span> <span class="fu"><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune</a></span><span class="op">(</span><span class="st">"lat df"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The function <code><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials()</a></code> can detect
 and collect the parameters that have been flagged for tuning.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -287,16 +287,16 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 6</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config              </span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">5</span> Preprocessor01_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.683  Preprocessor01_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        2 rmse    standard      0.098<span style="text-decoration: underline;">5</span> Preprocessor02_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        2 rsq     standard      0.683  Preprocessor02_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        2 rmse    standard      0.097<span style="text-decoration: underline;">3</span> Preprocessor03_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        2 rsq     standard      0.690  Preprocessor03_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        2 rmse    standard      0.096<span style="text-decoration: underline;">2</span> Preprocessor04_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard      0.697  Preprocessor04_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard      0.096<span style="text-decoration: underline;">0</span> Preprocessor05_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard      0.699  Preprocessor05_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">0</span> Preprocessor01_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.686  Preprocessor01_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        2 rmse    standard      0.097<span style="text-decoration: underline;">9</span> Preprocessor02_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        2 rsq     standard      0.687  Preprocessor02_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        2 rmse    standard      0.096<span style="text-decoration: underline;">6</span> Preprocessor03_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        2 rsq     standard      0.695  Preprocessor03_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        2 rmse    standard      0.095<span style="text-decoration: underline;">6</span> Preprocessor04_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard      0.701  Preprocessor04_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard      0.095<span style="text-decoration: underline;">4</span> Preprocessor05_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard      0.703  Preprocessor05_Model1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>To get the average metric value for each parameter combination,
 <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
@@ -306,16 +306,16 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 8</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config     </span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.100     10 0.001<span style="text-decoration: underline;">45</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.674     10 0.007<span style="text-decoration: underline;">77</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        2 rmse    standard   0.100     10 0.001<span style="text-decoration: underline;">53</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        2 rsq     standard   0.675     10 0.008<span style="text-decoration: underline;">14</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        2 rmse    standard   0.099<span style="text-decoration: underline;">4</span>    10 0.001<span style="text-decoration: underline;">61</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        2 rsq     standard   0.680     10 0.008<span style="text-decoration: underline;">85</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        2 rmse    standard   0.098<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">59</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard   0.684     10 0.009<span style="text-decoration: underline;">46</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard   0.099<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard   0.683     10 0.010<span style="text-decoration: underline;">1</span>  Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">40</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.678     10 0.007<span style="text-decoration: underline;">37</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        2 rmse    standard   0.099<span style="text-decoration: underline;">6</span>    10 0.001<span style="text-decoration: underline;">49</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        2 rsq     standard   0.680     10 0.007<span style="text-decoration: underline;">72</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        2 rmse    standard   0.098<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">55</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        2 rsq     standard   0.685     10 0.008<span style="text-decoration: underline;">32</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        2 rmse    standard   0.098<span style="text-decoration: underline;">3</span>    10 0.001<span style="text-decoration: underline;">55</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard   0.687     10 0.008<span style="text-decoration: underline;">98</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard   0.098<span style="text-decoration: underline;">5</span>    10 0.001<span style="text-decoration: underline;">62</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard   0.686     10 0.009<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10
 resamples. The best RMSE values corresponded to:</p>
@@ -485,7 +485,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">8 data points to do so. This may cause errors or a poor model fit.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4765 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4766 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -496,7 +496,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4787 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4786 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -507,7 +507,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4793 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4792 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -573,7 +573,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4780 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4782 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -583,7 +583,6 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">Gaussian process model: did not converge in 10 iterations</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4789 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
@@ -596,7 +595,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4791 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4789 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -629,7 +628,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4785 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4784 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -640,7 +639,7 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4759 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4758 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
@@ -649,28 +648,7 @@ here.</p></li>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4779 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4757 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> No improvement for 10 iterations; returning current results.</span></span></code></pre></div>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">knn_search</span>, type <span class="op">=</span> <span class="st">"performance"</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></code></pre></div>
@@ -680,20 +658,20 @@ here.</p></li>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">knn_search</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.metric</span> <span class="op">==</span> <span class="st">"rmse"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 11</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 11</span></span></span>
 <span><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .metric .estimator   mean</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        13 triangular          5        6 rmse    standard   0.081<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        13 triangular          5        7 rmse    standard   0.082<span style="text-decoration: underline;">0</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        11 triangular          6        6 rmse    standard   0.082<span style="text-decoration: underline;">0</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         6 triangular          5        6 rmse    standard   0.082<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        14 triangular          5        5 rmse    standard   0.082<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        13 triangular          6        6 rmse    standard   0.082<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        13 triangular          2        5 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         9 gaussian            5        5 rmse    standard   0.082<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        15 inv                 3        6 rmse    standard   0.083<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16 inv                 2        5 rmse    standard   0.083<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        11 triangular          9        8 rmse    standard   0.082<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         7 triangular          8        7 rmse    standard   0.082<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        15 triangular          7        7 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        10 inv                 8        8 rmse    standard   0.082<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        11 inv                 6        8 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        11 triangular          2        6 rmse    standard   0.083<span style="text-decoration: underline;">0</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        14 triangular          8        9 rmse    standard   0.083<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         5 inv                 2        6 rmse    standard   0.083<span style="text-decoration: underline;">6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         3 rectangular         6        6 rmse    standard   0.084<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        29 inv                 7        6 rmse    standard   0.085<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></span></span></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the
 nonlinear terms created by the recipe.</p>
