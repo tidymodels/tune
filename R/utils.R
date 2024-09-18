@@ -251,3 +251,52 @@ pretty.tune_results <- function(x, ...) {
   invisible(NULL)
 }
 
+# metric sets (of type function) keep the metric functions they need in their
+# environment. if the metric function was defined in the global environment,
+# future/foreach will not export the needed metric functions.
+encapsulate_metrics <- function(metrics) {
+  metrics_env <- rlang::fn_env(metrics)
+  metrics_env[["fns"]] <-
+    imap(
+      metrics_env[["fns"]],
+      inject_dependencies
+    )
+
+  for (metric_env in metrics_env[["fns"]]) {
+    rlang::env_bind(metrics_env, !!!as.list(metric_env))
+  }
+
+  rlang::fn_env(metrics) <- metrics_env
+
+  # attributes(metrics)[["metrics"]] <-
+  #   imap(
+  #     attributes(metrics)[["metrics"]],
+  #     inject_dependencies
+  #   )
+
+  metrics
+}
+
+inject_dependencies <- function(metric, metric_name) {
+  env <- rlang::new_environment(parent = rlang::ns_env("yardstick"))
+  globals <- codetools::findGlobals(metric)
+
+  if ("UseMethod" %in% globals) {
+    globals <- suppressWarnings(methods(metric))
+  }
+
+  for (name in globals) {
+    if (rlang::env_has(environment(metric), name)) {
+      obj <- rlang::env_get(environment(metric), name)
+      if (is.function(obj)) {
+        env[[name]] <- inject_dependencies(obj, name)
+      } else {
+        env[[name]] <- obj
+      }
+    }
+  }
+
+  environment(metric) <- env
+
+  metric
+}

@@ -153,6 +153,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
   packages <- c(control$pkgs, required_pkgs(workflow))
   grid_info <- compute_grid_info(workflow, grid)
   metrics_info <- metrics_info(metrics)
+  metrics <- encapsulate_metrics(metrics)
   params <- hardhat::extract_parameter_set_dials(workflow)
 
   if (!catalog_is_active()) {
@@ -190,7 +191,11 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
           foreach::foreach(
             split = splits,
             seed = seeds,
-            .options.future = list(seed = NULL, packages = packages)
+            .options.future =
+              list(
+                seed = NULL,
+                packages = packages
+              )
           )
       } else {
         for_each <-
@@ -276,6 +281,9 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
         for_each %op% {
             grid_info_row <- vctrs::vec_slice(grid_info, row)
             seed <- slice_seeds(seeds, iteration, n_grid_info)[[1]]
+            # for (fn in rlang::fn_env(metrics)[["fns"]]) {
+            #   methods(fn)
+            # }
 
             # Likely want to debug with `debugonce(tune_grid_loop_iter)`
             fn_tune_grid_loop_iter_safely(
@@ -343,6 +351,12 @@ tune_grid_loop_iter <- function(split,
                                 params,
                                 split_args = NULL) {
   split_labels <- labels(split)
+  # for (fn in rlang::fn_env(metrics)[["fns"]]) {
+  #   rlang::env_bind(rlang::current_env(), !!!as.list(rlang::fn_env(fn)))
+  # }
+  # cli::cli_abort("current bindings are {names(rlang::current_env())}")
+  # cli::cli_abort("methods('pauc') is {methods('pauc')}")
+
 
   load_pkgs(workflow)
   .load_namespace(control$pkgs)
