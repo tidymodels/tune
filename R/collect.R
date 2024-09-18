@@ -83,7 +83,7 @@
 #' See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
 #' more about submodels.
 #'
-#' @examplesIf tune:::should_run_examples(suggests = "kknn")
+#' @examplesIf tune:::should_run_examples(suggests = c("kknn", "splines2"))
 #' data("example_ames_knn")
 #' # The parameters for the model:
 #' extract_parameter_set_dials(ames_wflow)

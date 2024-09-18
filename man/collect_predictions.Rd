@@ -124,7 +124,7 @@ more about submodels.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = "kknn")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = c("kknn", "splines2"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 data("example_ames_knn")
 # The parameters for the model:
 extract_parameter_set_dials(ames_wflow)
