@@ -1,7 +1,7 @@
 
 test_that("percentile intervals - resamples only", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("rsample", minimum_version = "1.1.1.9000")
+  skip_if_not_installed("rsample", minimum_version = "1.2.1.9000")
   library(rsample)
   library(parsnip)
 
