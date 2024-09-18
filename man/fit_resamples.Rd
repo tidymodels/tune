@@ -216,8 +216,8 @@ set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
 
 spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
-  step_ns(disp) \%>\%
-  step_ns(wt)
+  step_spline_natural(disp) \%>\%
+  step_spline_natural(wt)
 
 lin_mod <- linear_reg() \%>\%
   set_engine("lm")

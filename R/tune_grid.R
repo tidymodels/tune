@@ -181,8 +181,8 @@
 #'
 #' spline_rec <-
 #'   recipe(mpg ~ ., data = mtcars) %>%
-#'   step_ns(disp, deg_free = tune("disp")) %>%
-#'   step_ns(wt, deg_free = tune("wt"))
+#'   step_spline_natural(disp, deg_free = tune("disp")) %>%
+#'   step_spline_natural(wt, deg_free = tune("wt"))
 #'
 #' lin_mod <-
 #'   linear_reg() %>%

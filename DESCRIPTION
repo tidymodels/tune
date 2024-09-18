@@ -51,6 +51,7 @@ Suggests:
     modeldata,
     scales,
     spelling,
+    splines2,
     tailor,
     testthat (>= 3.0.0),
     xgboost,
