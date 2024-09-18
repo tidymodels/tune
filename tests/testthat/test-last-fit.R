@@ -266,3 +266,41 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
 
   expect_equal(last_fit_preds[".pred"], wflow_preds)
 })
+
+test_that("can use `last_fit()` with a workflow - postprocessor (requires training)", {
+  skip_if_not_installed("tailor")
+
+  y <- seq(0, 7, .001)
+  dat <- data.frame(y = y, x = y + (y-3)^2)
+
+  dat
+
+  set.seed(1)
+  split <- rsample::initial_split(dat)
+
+  wflow <-
+    workflows::workflow(
+      y ~ x,
+      parsnip::linear_reg()
+    ) %>%
+    workflows::add_tailor(
+      tailor::tailor("regression") %>% tailor::adjust_numeric_range(lower_limit = 1),
+      prop = 2/3,
+      method = class(split)
+    )
+
+  set.seed(1)
+  last_fit_res <-
+    last_fit(
+      wflow,
+      split
+    )
+
+  last_fit_preds <- collect_predictions(last_fit_res)
+
+  set.seed(1)
+  wflow_res <- generics::fit(wflow, rsample::analysis(split))
+  wflow_preds <- predict(wflow_res, rsample::assessment(split))
+
+  expect_equal(last_fit_preds[".pred"], wflow_preds)
+})
