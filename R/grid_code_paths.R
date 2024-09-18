@@ -504,7 +504,7 @@ tune_grid_loop_iter <- function(split,
         iter_grid_model
       )
 
-      if (!workflows::.should_inner_split(workflow)) {
+      if (!has_postprocessor(workflow)) {
         elt_extract <- .catch_and_log(
           extract_details(workflow, control$extract),
           control,
@@ -535,7 +535,7 @@ tune_grid_loop_iter <- function(split,
         next
       }
 
-      if (workflows::.should_inner_split(workflow)) {
+      if (has_postprocessor(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
         # are the predictions from the potato set rather than the
         # assessment set
@@ -543,7 +543,11 @@ tune_grid_loop_iter <- function(split,
         # train the post-processor on the predictions generated from the model
         # on the potato set
         # todo: needs a `.catch_and_log`
-        workflow_with_post <- .fit_post(workflow, potato)
+        #
+        # if the postprocessor does not require training, then `potato` will
+        # be NULL and nothing other than the column names is learned from
+        # `assessment`.
+        workflow_with_post <- .fit_post(workflow, potato %||% assessment)
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
 
