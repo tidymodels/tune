@@ -392,9 +392,9 @@ tune_grid_loop_iter <- function(split,
     #   on `analysis(inner_split(split))`, the inner analysis set (just
     #   referred to as analysis)
     # * that model generates predictions on `assessment(inner_split(split))`,
-    #   the potato set
+    #   the calibration set
     # * the post-processor is trained on the predictions generated from the
-    #   potato set
+    #   calibration set
     # * the model (including the post-processor) generates predictions on the
     #   assessment set and those predictions are assessed with performance metrics
     # todo: check if workflow's `method` is incompatible with `class(split)`?
@@ -406,13 +406,13 @@ tune_grid_loop_iter <- function(split,
     analysis <- rsample::analysis(split)
 
     # inline rsample::assessment so that we can pass indices to `predict_model()`
-    potato_rows <- as.integer(split, data = "assessment")
-    potato <- vctrs::vec_slice(split$data, potato_rows)
+    calibration_rows <- as.integer(split, data = "assessment")
+    calibration <- vctrs::vec_slice(split$data, calibration_rows)
   } else {
     analysis <- rsample::analysis(split)
 
-    potato_rows <- NULL
-    potato <- NULL
+    calibration_rows <- NULL
+    calibration <- NULL
   }
 
   rm(split)
@@ -520,7 +520,7 @@ tune_grid_loop_iter <- function(split,
       iter_msg_predictions <- paste(iter_msg_model, "(predictions)")
 
       iter_predictions <- .catch_and_log(
-        predict_model(potato %||% assessment, potato_rows %||% assessment_rows,
+        predict_model(calibration %||% assessment, calibration_rows %||% assessment_rows,
                       workflow, iter_grid, metrics, iter_submodels,
                       metrics_info = metrics_info, eval_time = eval_time),
         control,
@@ -537,17 +537,17 @@ tune_grid_loop_iter <- function(split,
 
       if (has_postprocessor(workflow)) {
         # note that, since we're training a postprocessor, `iter_predictions`
-        # are the predictions from the potato set rather than the
+        # are the predictions from the calibration set rather than the
         # assessment set
 
         # train the post-processor on the predictions generated from the model
-        # on the potato set
+        # on the calibration set
         # todo: needs a `.catch_and_log`
         #
-        # if the postprocessor does not require training, then `potato` will
+        # if the postprocessor does not require training, then `calibration` will
         # be NULL and nothing other than the column names is learned from
         # `assessment`.
-        workflow_with_post <- .fit_post(workflow, potato %||% assessment)
+        workflow_with_post <- .fit_post(workflow, calibration %||% assessment)
 
         workflow_with_post <- .fit_finalize(workflow_with_post)
 
