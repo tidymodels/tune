@@ -151,9 +151,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
       parsnip::linear_reg()
     ) %>%
     workflows::add_tailor(
-      tailor::tailor("regression") %>% tailor::adjust_numeric_calibration("linear"),
-      prop = 2/3,
-      method = class(folds$splits[[1]])
+      tailor::tailor() %>% tailor::adjust_numeric_calibration("linear")
     )
 
   set.seed(1)
@@ -178,8 +176,20 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
   seed <- generate_seeds(TRUE, 1)[[1]]
   old_kind <- RNGkind()[[1]]
   assign(".Random.seed", seed, envir = globalenv())
+  withr::defer(RNGkind(kind = old_kind))
 
-  wflow_res <- generics::fit(wflow, rsample::analysis(folds$splits[[1]]))
+  inner_split_1 <-
+    rsample::inner_split(
+      folds$splits[[1]],
+      split_args = list(v = 2, repeats = 1, breaks = 4, pool = 0.1)
+    )
+
+  wflow_res <-
+    generics::fit(
+      wflow,
+      rsample::analysis(inner_split_1),
+      calibration = rsample::assessment(inner_split_1)
+    )
   wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
 
   tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
@@ -201,7 +211,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
       parsnip::linear_reg()
     ) %>%
     workflows::add_tailor(
-      tailor::tailor("regression") %>% tailor::adjust_numeric_range(lower_limit = 1)
+      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = 1)
     )
 
   set.seed(1)

@@ -384,7 +384,7 @@ tune_grid_loop_iter <- function(split,
   assessment_rows <- as.integer(split, data = "assessment")
   assessment <- vctrs::vec_slice(split$data, assessment_rows)
 
-  if (workflows::.should_inner_split(workflow)) {
+  if (workflows::.workflow_includes_calibration(workflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "inner" analysis and
     # assessment set.
@@ -397,11 +397,6 @@ tune_grid_loop_iter <- function(split,
     #   calibration set
     # * the model (including the post-processor) generates predictions on the
     #   assessment set and those predictions are assessed with performance metrics
-    # todo: check if workflow's `method` is incompatible with `class(split)`?
-    # todo: workflow's `method` is currently ignored in favor of the one
-    # automatically dispatched to from `split`. consider this is combination
-    # with above todo.
-    split_args <- c(split_args, list(prop = workflow$post$actions$tailor$prop))
     split <- rsample::inner_split(split, split_args = split_args)
     analysis <- rsample::analysis(split)
 

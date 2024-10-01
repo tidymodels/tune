@@ -246,9 +246,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       parsnip::linear_reg()
     ) %>%
     workflows::add_tailor(
-      tailor::tailor("regression") %>% tailor::adjust_numeric_calibration("linear"),
-      prop = 2/3,
-      method = class(split)
+      tailor::tailor() %>% tailor::adjust_numeric_calibration("linear")
     )
 
   set.seed(1)
@@ -261,13 +259,21 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   last_fit_preds <- collect_predictions(last_fit_res)
 
   set.seed(1)
-  wflow_res <- generics::fit(wflow, rsample::analysis(split))
+  inner_split <- rsample::inner_split(split, split_args = list())
+
+  set.seed(1)
+  wflow_res <-
+    generics::fit(
+      wflow,
+      rsample::analysis(inner_split),
+      calibration = rsample::assessment(inner_split)
+    )
   wflow_preds <- predict(wflow_res, rsample::assessment(split))
 
   expect_equal(last_fit_preds[".pred"], wflow_preds)
 })
 
-test_that("can use `last_fit()` with a workflow - postprocessor (requires training)", {
+test_that("can use `last_fit()` with a workflow - postprocessor (does not require training)", {
   skip_if_not_installed("tailor")
 
   y <- seq(0, 7, .001)
@@ -284,9 +290,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       parsnip::linear_reg()
     ) %>%
     workflows::add_tailor(
-      tailor::tailor("regression") %>% tailor::adjust_numeric_range(lower_limit = 1),
-      prop = 2/3,
-      method = class(split)
+      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = 1)
     )
 
   set.seed(1)
