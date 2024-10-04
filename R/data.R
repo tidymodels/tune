@@ -33,8 +33,8 @@
 #'   step_other(Neighborhood, threshold = .1)  %>%
 #'   step_dummy(all_nominal()) %>%
 #'   step_zv(all_predictors()) %>%
-#'   step_ns(Longitude, deg_free = tune("lon")) %>%
-#'   step_ns(Latitude, deg_free = tune("lat"))
+#'   step_spline_natural(Longitude, deg_free = tune("lon")) %>%
+#'   step_spline_natural(Latitude, deg_free = tune("lat"))
 #'
 #' knn_model <-
 #'   nearest_neighbor(

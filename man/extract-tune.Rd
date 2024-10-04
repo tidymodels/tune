@@ -81,7 +81,7 @@ set.seed(6735)
 tr_te_split <- initial_split(mtcars)
 
 spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
-  step_ns(disp)
+  step_spline_natural(disp)
 
 lin_mod <- linear_reg() \%>\%
   set_engine("lm")
