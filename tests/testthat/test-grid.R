@@ -583,6 +583,122 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   )
 })
 
+test_that("can postprocess in `tune_grid()` (with calibration)", {
+  skip_if_not_installed("tailor")
+
+  y <- seq(0, 7, .001)
+  dat <- data.frame(y = y, x = y + (y-3)^2)
+
+  dat
+
+  folds <- rsample::vfold_cv(dat, v = 2)
+
+  wflow <-
+    workflows::workflow(
+      y ~ x,
+      parsnip::linear_reg()
+    ) %>%
+    workflows::add_tailor(
+      tailor::tailor() %>%
+        tailor::adjust_numeric_calibration("linear", method = tune())
+    )
+
+  set.seed(1)
+  tune_res <-
+    tune_grid(
+      wflow,
+      folds,
+      control = control_resamples(save_pred = TRUE, extract = identity)
+    )
+
+  skip("still need to define what 'success' is")
+
+  tune_preds <-
+    collect_predictions(tune_res) %>%
+    dplyr::filter(id == "Fold1")
+
+  tune_wflow <-
+    collect_extracts(tune_res) %>%
+    pull(.extracts) %>%
+    `[[`(1)
+
+  # mock `tune::tune_grid_loop_iter`'s RNG scheme
+  set.seed(1)
+  seed <- generate_seeds(TRUE, 1)[[1]]
+  old_kind <- RNGkind()[[1]]
+  assign(".Random.seed", seed, envir = globalenv())
+  withr::defer(RNGkind(kind = old_kind))
+
+  inner_split_1 <-
+    rsample::inner_split(
+      folds$splits[[1]],
+      split_args = list(v = 2, repeats = 1, breaks = 4, pool = 0.1)
+    )
+
+  wflow_res <-
+    generics::fit(
+      wflow,
+      rsample::analysis(inner_split_1),
+      calibration = rsample::assessment(inner_split_1)
+    )
+  wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
+
+  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
+  expect_equal(tune_preds$.pred, wflow_preds$.pred)
+  expect_equal(tune_wflow, wflow_res)
+})
+
+test_that("can postprocess in `tune_grid()` (no calibration)", {
+  skip_if_not_installed("tailor")
+
+  y <- seq(0, 7, .001)
+  dat <- data.frame(y = y, x = y + (y-3)^2)
+
+  folds <- rsample::vfold_cv(dat, v = 2)
+
+  wflow <-
+    workflows::workflow(
+      y ~ x,
+      parsnip::linear_reg()
+    ) %>%
+    workflows::add_tailor(
+      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = tune())
+    )
+
+  set.seed(1)
+  tune_res <-
+    tune_grid(
+      wflow,
+      folds,
+      control = control_resamples(save_pred = TRUE, extract = identity)
+    )
+
+  skip("still need to define what 'success' is")
+
+  tune_preds <-
+    collect_predictions(tune_res) %>%
+    dplyr::filter(id == "Fold1")
+
+  tune_wflow <-
+    collect_extracts(tune_res) %>%
+    pull(.extracts) %>%
+    `[[`(1)
+
+  # mock `tune::tune_grid_loop_iter`'s RNG scheme
+  set.seed(1)
+  seed <- generate_seeds(TRUE, 1)[[1]]
+  old_kind <- RNGkind()[[1]]
+  assign(".Random.seed", seed, envir = globalenv())
+
+  wflow_res <- generics::fit(wflow, rsample::analysis(folds$splits[[1]]))
+  wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
+
+  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
+  expect_equal(tune_preds$.pred, wflow_preds$.pred)
+  expect_equal(tune_wflow, wflow_res)
+})
+
+
 test_that("argument order gives errors for recipes", {
   helper_objects <- helper_objects_tune()
 
