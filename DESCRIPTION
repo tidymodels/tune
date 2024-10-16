@@ -57,9 +57,10 @@ Suggests:
     xgboost,
     xml2
 Remotes:
+    tidymodels/dials#358,
     tidymodels/rsample,
-    tidymodels/tailor, 
-    tidymodels/workflows
+    tidymodels/tailor#51, 
+    tidymodels/workflows#266
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
