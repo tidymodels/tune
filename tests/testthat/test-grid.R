@@ -427,13 +427,15 @@ test_that('tune model and recipe (parallel_over = "everything")', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = tune())
+    step_spline_b(disp, deg_free = tune())
 
   model <- linear_reg(mode = "regression") %>%
     set_engine("lm")
@@ -475,6 +477,8 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
@@ -482,7 +486,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   # NA values not allowed in recipe
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = NA_real_)
+    step_spline_b(disp, deg_free = NA_real_)
 
   cars_grid <- tibble(cost = c(0.01, 0.02))
 
@@ -542,13 +546,15 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = tune())
+    step_spline_b(disp, deg_free = tune())
 
 
   # NA values not allowed in recipe

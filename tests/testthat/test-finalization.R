@@ -1,5 +1,6 @@
 test_that("cannot finalize with recipe parameters", {
   skip_if_not_installed("randomForest")
+  skip_if_not_installed("splines2")
 
   set.seed(21983)
   rs <- rsample::vfold_cv(mtcars)
@@ -11,11 +12,11 @@ test_that("cannot finalize with recipe parameters", {
 
   rec_1 <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = tune())
+    recipes::step_spline_natural(disp, deg_free = tune())
 
   rec_2 <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = 3)
+    recipes::step_spline_natural(disp, deg_free = 3)
 
   expect_snapshot(error = TRUE, {
     mod_1 %>% tune_grid(rec_1, resamples = rs, grid = 3)
@@ -31,6 +32,8 @@ test_that("cannot finalize with recipe parameters", {
 
 test_that("skip error if grid is supplied", {
   skip_if_not_installed("randomForest")
+  skip_if_not_installed("splines2")
+
 
   set.seed(21983)
   rs <- rsample::vfold_cv(mtcars)
@@ -42,7 +45,7 @@ test_that("skip error if grid is supplied", {
 
   rec_1 <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = tune())
+    recipes::step_spline_natural(disp, deg_free = tune())
 
   grid <- tibble::tibble(mtry = 1:3, deg_free = c(3, 3, 4), min_n = c(5, 4, 6))
 
@@ -55,13 +58,16 @@ test_that("skip error if grid is supplied", {
 
 
 test_that("finalize recipe step with multiple tune parameters", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data(biomass, package = "modeldata")
 
   model_spec <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
   rec <- recipes::recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, data = biomass) %>%
-    recipes::step_bs(carbon, hydrogen, deg_free = tune(), degree = tune())
+    recipes::step_spline_b(carbon, hydrogen, deg_free = tune(), degree = tune())
 
   best <- tibble(deg_free = 2, degree = 1, .config = "Preprocessor1_Model1")
 

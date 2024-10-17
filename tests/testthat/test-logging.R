@@ -249,6 +249,9 @@ test_that("message_wrap", {
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -275,6 +278,9 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
 })
 
 test_that("interactive logger works (fit_resamples, rlang warning + error)", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
@@ -305,6 +311,9 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
 
 test_that("interactive logger works (fit_resamples, multiline)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -335,6 +344,9 @@ test_that("interactive logger works (fit_resamples, multiline)", {
 
 test_that("interactive logger works (fit_resamples, occasional error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -371,6 +383,9 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
 
 test_that("interactive logger works (fit_resamples, occasional errors)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -423,6 +438,9 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
 
 test_that("interactive logger works (fit_resamples, many distinct errors)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -460,6 +478,9 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
 
 test_that("interactive logger works (tune grid, error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
@@ -487,6 +508,9 @@ test_that("interactive logger works (tune grid, error)", {
 
 test_that("interactive logger works (bayesian, error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
+
   local_mocked_bindings(
     is_testing = function() {FALSE},
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())

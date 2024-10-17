@@ -193,6 +193,8 @@ test_that("regular grid plot", {
 
 
 test_that("coord_obs_pred", {
+  skip_if_not_installed("modeldata")
+
   data(solubility_test, package = "modeldata")
 
   p <-

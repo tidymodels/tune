@@ -274,6 +274,7 @@ test_that("tune model and recipe (multi-predict)", {
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
   skip("test is not implemented for tune_bayes()")
+  skip_if_not_installed("splines2")
 
   # With tune_grid() this tests for NA values in the grid.
   # This is not applicable for tune_bayes().
@@ -282,7 +283,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = tune())
+    recipes::step_spline_b(disp, deg_free = tune())
 
   model <- parsnip::linear_reg(mode = "regression") %>%
     parsnip::set_engine("lm")
@@ -323,12 +324,14 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   # NA values not allowed in recipe
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = NA_real_)
+    recipes::step_spline_b(disp, deg_free = NA_real_)
 
   expect_snapshot({
     cars_res <- tune_bayes(
@@ -363,6 +366,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
   skip("test is not implemented for tune_bayes()")
+  skip_if_not_installed("splines2")
 
   # With tune_grid() this tests for NA values in the grid.
   # This is not applicable for tune_bayes().
@@ -371,7 +375,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = tune())
+    recipes::step_spline_b(disp, deg_free = tune())
 
 
   # NA values not allowed in recipe
@@ -501,6 +505,7 @@ test_that("too few starting values", {
 test_that("missing performance values", {
   skip_if(new_rng_snapshots)
   skip_if(packageVersion("dplyr") < "1.1.1")
+  skip_if_not_installed("modeldata")
 
   data(ames, package = "modeldata")
 

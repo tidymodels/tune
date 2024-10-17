@@ -35,12 +35,14 @@ test_that("can use `fit_resamples()` with a formula", {
 })
 
 test_that("can use `fit_resamples()` with a recipe", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- linear_reg() %>%
     set_engine("lm")
@@ -59,12 +61,14 @@ test_that("can use `fit_resamples()` with a recipe", {
 })
 
 test_that("can use `fit_resamples()` with a workflow - recipe", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -248,11 +252,13 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
 # Error capture ----------------------------------------------------------------
 
 test_that("failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = NA_real_)
+    recipes::step_spline_natural(disp, deg_free = NA_real_)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -426,12 +432,14 @@ test_that("ellipses with fit_resamples", {
 })
 
 test_that("argument order gives errors for recipe/formula", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -447,6 +455,8 @@ test_that("argument order gives errors for recipe/formula", {
 
 
 test_that("retain extra attributes", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -488,7 +498,7 @@ test_that("retain extra attributes", {
 
 
 test_that("`fit_resamples()` when objects need tuning", {
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)

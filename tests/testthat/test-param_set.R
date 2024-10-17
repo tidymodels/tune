@@ -17,6 +17,9 @@ check_param_set_tibble <- function(x) {
 # ------------------------------------------------------------------------------
 
 test_that("parameters.recipe() still works after deprecation", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   withr::local_options(lifecycle_verbosity = "quiet")
 
   data("Chicago", package = "modeldata")
@@ -24,7 +27,7 @@ test_that("parameters.recipe() still works after deprecation", {
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   spline_info <- dials::parameters(spline_rec)
   check_param_set_tibble(spline_info)
