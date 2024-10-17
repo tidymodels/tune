@@ -34,6 +34,7 @@ Imports:
     recipes (>= 1.0.4),
     rlang (>= 1.1.0),
     rsample (>= 1.2.1.9000),
+    tailor,
     tibble (>= 3.1.0),
     tidyr (>= 1.2.0),
     tidyselect (>= 1.1.2),
@@ -52,7 +53,6 @@ Suggests:
     scales,
     spelling,
     splines2,
-    tailor,
     testthat (>= 3.0.0),
     xgboost,
     xml2

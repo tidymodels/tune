@@ -13,8 +13,8 @@
 #' a column for each tuning parameter. This tibble should have columns for each
 #' tuning parameter identifier (e.g. `"my_param"` if `tune("my_param")` was used).
 #' If `NULL`, this argument will be set to
-#' [`select_best(metric, eval_time)`][tune::select_best.tune_results]. 
-#' If not `NULL`, `parameters` overwrites the specification via `metric`, and 
+#' [`select_best(metric, eval_time)`][tune::select_best.tune_results].
+#' If not `NULL`, `parameters` overwrites the specification via `metric`, and
 #' `eval_time`.
 #' @param verbose A logical for printing logging.
 #' @param add_validation_set When the resamples embedded in `x` are a split into
@@ -43,32 +43,34 @@
 #' library(parsnip)
 #' library(dplyr)
 #'
-#' data(meats, package = "modeldata")
-#' meats <- meats %>% select(-water, -fat)
+#' if (rlang::is_installed("modeldata")) {
+#'   data(meats, package = "modeldata")
+#'   meats <- meats %>% select(-water, -fat)
 #'
-#' set.seed(1)
-#' meat_split <- initial_split(meats)
-#' meat_train <- training(meat_split)
-#' meat_test  <- testing(meat_split)
+#'   set.seed(1)
+#'   meat_split <- initial_split(meats)
+#'   meat_train <- training(meat_split)
+#'   meat_test  <- testing(meat_split)
 #'
-#' set.seed(2)
-#' meat_rs <- vfold_cv(meat_train, v = 10)
+#'   set.seed(2)
+#'   meat_rs <- vfold_cv(meat_train, v = 10)
 #'
-#' pca_rec <-
-#'   recipe(protein ~ ., data = meat_train) %>%
-#'   step_normalize(all_numeric_predictors()) %>%
-#'   step_pca(all_numeric_predictors(), num_comp = tune())
+#'   pca_rec <-
+#'     recipe(protein ~ ., data = meat_train) %>%
+#'     step_normalize(all_numeric_predictors()) %>%
+#'     step_pca(all_numeric_predictors(), num_comp = tune())
 #'
-#' knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+#'   knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
 #'
-#' ctrl <- control_grid(save_workflow = TRUE)
+#'   ctrl <- control_grid(save_workflow = TRUE)
 #'
-#' set.seed(128)
-#' knn_pca_res <-
-#'   tune_grid(knn_mod, pca_rec, resamples = meat_rs, grid = 10, control = ctrl)
+#'   set.seed(128)
+#'   knn_pca_res <-
+#'     tune_grid(knn_mod, pca_rec, resamples = meat_rs, grid = 10, control = ctrl)
 #'
-#' knn_fit <- fit_best(knn_pca_res, verbose = TRUE)
-#' predict(knn_fit, meat_test)
+#'   knn_fit <- fit_best(knn_pca_res, verbose = TRUE)
+#'   predict(knn_fit, meat_test)
+#' }
 #' @return A fitted workflow.
 #' @export
 fit_best <- function(x, ...) {
