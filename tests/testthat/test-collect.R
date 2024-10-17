@@ -130,6 +130,9 @@ test_that("regression predictions, averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("classification class predictions, averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   all_res <- collect_predictions(svm_tune_class)
   res <- collect_predictions(svm_tune_class, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))

@@ -99,6 +99,8 @@ test_that("tune model only (with variables)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe, multi-predict)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
