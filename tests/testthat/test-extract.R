@@ -1,5 +1,7 @@
 
 test_that("tune recipe only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -29,6 +31,8 @@ test_that("tune recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -154,6 +158,8 @@ test_that("mis-specified extract function", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)

@@ -1,4 +1,6 @@
 test_that("tune recipe only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -34,6 +36,8 @@ test_that("tune recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -65,6 +69,8 @@ test_that("tune model only (with recipe)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with variables)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -341,6 +347,8 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -381,6 +389,8 @@ test_that("tune model and recipe", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe (multi-predict)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -403,6 +413,8 @@ test_that("tune model and recipe (multi-predict)", {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (parallel_over = "everything")', {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -433,6 +445,7 @@ test_that('tune model and recipe (parallel_over = "everything")', {
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
   skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
 
   helper_objects <- helper_objects_tune()
 
@@ -483,6 +496,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 
 test_that("tune model only - failure in recipe is caught elegantly", {
   skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
 
   helper_objects <- helper_objects_tune()
 
@@ -519,6 +533,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
@@ -552,6 +568,7 @@ test_that("tune model only - failure in formula is caught elegantly", {
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
   skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
 
   helper_objects <- helper_objects_tune()
 
@@ -595,6 +612,8 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives errors for recipes", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE, {
@@ -607,6 +626,8 @@ test_that("argument order gives errors for recipes", {
 })
 
 test_that("argument order gives errors for formula", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE, {
@@ -615,6 +636,8 @@ test_that("argument order gives errors for formula", {
 })
 
 test_that("ellipses with tune_grid", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   wflow <- workflow() %>%
@@ -640,6 +663,8 @@ test_that("determining the grid type", {
 
 
 test_that("retain extra attributes", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)

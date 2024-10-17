@@ -98,6 +98,9 @@ test_that("`collect_predictions()`, un-averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("bad filter grid", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   expect_snapshot(
     error = TRUE,
     collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
@@ -150,6 +153,9 @@ test_that("classification class predictions, averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("classification class and prob predictions, averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   all_res <- collect_predictions(svm_tune)
   res <- collect_predictions(svm_tune, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))

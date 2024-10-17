@@ -12,11 +12,11 @@ test_that("rsample objects", {
 # ------------------------------------------------------------------------------
 
 test_that("grid objects", {
-  data("Chicago", package = "modeldata")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("splines2")
   skip_if_not_installed("kernlab")
-
+  data("Chicago", package = "modeldata")
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
