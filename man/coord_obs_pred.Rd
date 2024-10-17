@@ -30,18 +30,19 @@ For regression models, \code{coord_obs_pred()} can be used in a ggplot to make t
 x- and y-axes have the same exact scale along with an aspect ratio of one.
 }
 \examples{
-if (rlang::is_installed("modeldata")) {
-  data(solubility_test, package = "modeldata")
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# example code
+data(solubility_test, package = "modeldata")
 
-  library(ggplot2)
-  p <- ggplot(solubility_test, aes(x = solubility, y = prediction)) +
-    geom_abline(lty = 2) +
-    geom_point(alpha = 0.5)
+library(ggplot2)
+p <- ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+  geom_abline(lty = 2) +
+  geom_point(alpha = 0.5)
 
-  p
+p
 
-  p + coord_fixed()
+p + coord_fixed()
 
-  p + coord_obs_pred()
-}
+p + coord_obs_pred()
+\dontshow{\}) # examplesIf}
 }

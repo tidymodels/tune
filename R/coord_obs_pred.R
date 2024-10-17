@@ -36,21 +36,20 @@ CoordObsPred <-
 #' may show up in places such as the axes, the legend, the plot title, or the
 #' plot margins.
 #' @return A `ggproto` object.
-#' @examples
-#' if (rlang::is_installed("modeldata")) {
-#'   data(solubility_test, package = "modeldata")
+#' @examplesIf rlang::is_installed("modeldata")
+#' # example code
+#' data(solubility_test, package = "modeldata")
 #'
-#'   library(ggplot2)
-#'   p <- ggplot(solubility_test, aes(x = solubility, y = prediction)) +
-#'     geom_abline(lty = 2) +
-#'     geom_point(alpha = 0.5)
+#' library(ggplot2)
+#' p <- ggplot(solubility_test, aes(x = solubility, y = prediction)) +
+#'   geom_abline(lty = 2) +
+#'   geom_point(alpha = 0.5)
 #'
-#'   p
+#' p
 #'
-#'   p + coord_fixed()
+#' p + coord_fixed()
 #'
-#'   p + coord_obs_pred()
-#' }
+#' p + coord_obs_pred()
 #' @export
 coord_obs_pred <-
   function(ratio = 1,

@@ -45,45 +45,45 @@
 #' description section.
 #'
 #' @name extract-tune
-#' @examples
-#' if (rlang::is_installed("splines2")) {
-#'   library(recipes)
-#'   library(rsample)
-#'   library(parsnip)
+#' @examplesIf rlang::is_installed("splines2")
+#' # example code
 #'
-#'   set.seed(6735)
-#'   tr_te_split <- initial_split(mtcars)
+#' library(recipes)
+#' library(rsample)
+#' library(parsnip)
 #'
-#'   spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
-#'     step_spline_natural(disp)
+#' set.seed(6735)
+#' tr_te_split <- initial_split(mtcars)
 #'
-#'   lin_mod <- linear_reg() %>%
-#'     set_engine("lm")
+#' spline_rec <- recipe(mpg ~ ., data = mtcars) %>%
+#'   step_spline_natural(disp)
 #'
-#'   spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
+#' lin_mod <- linear_reg() %>%
+#'   set_engine("lm")
 #'
-#'   extract_preprocessor(spline_res)
+#' spline_res <- last_fit(lin_mod, spline_rec, split = tr_te_split)
 #'
-#'   # The `spec` is the parsnip spec before it has been fit.
-#'   # The `fit` is the fitted parsnip model.
-#'   extract_spec_parsnip(spline_res)
-#'   extract_fit_parsnip(spline_res)
-#'   extract_fit_engine(spline_res)
+#' extract_preprocessor(spline_res)
 #'
-#'   # The mold is returned from `hardhat::mold()`, and contains the
-#'   # predictors, outcomes, and information about the preprocessing
-#'   # for use on new data at `predict()` time.
-#'   extract_mold(spline_res)
+#' # The `spec` is the parsnip spec before it has been fit.
+#' # The `fit` is the fitted parsnip model.
+#' extract_spec_parsnip(spline_res)
+#' extract_fit_parsnip(spline_res)
+#' extract_fit_engine(spline_res)
 #'
-#'   # A useful shortcut is to extract the fitted recipe from the workflow
+#' # The mold is returned from `hardhat::mold()`, and contains the
+#' # predictors, outcomes, and information about the preprocessing
+#' # for use on new data at `predict()` time.
+#' extract_mold(spline_res)
+#'
+#' # A useful shortcut is to extract the fitted recipe from the workflow
+#' extract_recipe(spline_res)
+#'
+#' # That is identical to
+#' identical(
+#'   extract_mold(spline_res)$blueprint$recipe,
 #'   extract_recipe(spline_res)
-#'
-#'   # That is identical to
-#'   identical(
-#'     extract_mold(spline_res)$blueprint$recipe,
-#'     extract_recipe(spline_res)
-#'  )
-#' }
+#' )
 NULL
 
 #' @export

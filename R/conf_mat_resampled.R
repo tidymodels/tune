@@ -11,27 +11,27 @@
 #' @param tidy Should the results come back in a tibble (`TRUE`) or a `conf_mat`
 #' object like `yardstick::conf_mat()` (`FALSE`)?
 #' @return A tibble or `conf_mat` with the average cell count across resamples.
-#' @examples
+#' @examplesIf rlang::is_installed("modeldata")
+#' # example code
+#'
 #' library(parsnip)
 #' library(rsample)
 #' library(dplyr)
-#' if (rlang::is_installed("modeldata")) {
 #'
-#'   data(two_class_dat, package = "modeldata")
+#' data(two_class_dat, package = "modeldata")
 #'
-#'   set.seed(2393)
-#'   res <-
-#'     logistic_reg() %>%
-#'     set_engine("glm") %>%
-#'     fit_resamples(
-#'       Class ~ .,
-#'       resamples = vfold_cv(two_class_dat, v = 3),
-#'       control = control_resamples(save_pred = TRUE)
-#'     )
+#' set.seed(2393)
+#' res <-
+#'   logistic_reg() %>%
+#'   set_engine("glm") %>%
+#'   fit_resamples(
+#'     Class ~ .,
+#'     resamples = vfold_cv(two_class_dat, v = 3),
+#'     control = control_resamples(save_pred = TRUE)
+#'   )
 #'
-#'   conf_mat_resampled(res)
-#'   conf_mat_resampled(res, tidy = FALSE)
-#' }
+#' conf_mat_resampled(res)
+#' conf_mat_resampled(res, tidy = FALSE)
 #' @export
 conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   rlang::check_dots_empty()
