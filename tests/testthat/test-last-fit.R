@@ -233,6 +233,7 @@ test_that("last_fit() can include validation set for initial_validation_split ob
 
 test_that("can use `last_fit()` with a workflow - postprocessor (requires training)", {
   skip_if_not_installed("tailor")
+  skip_if_not_installed("mgcv")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
