@@ -15,6 +15,7 @@ test_that("grid objects", {
   data("Chicago", package = "modeldata")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
 
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -371,6 +372,8 @@ test_that("Bayes control objects", {
 # ------------------------------------------------------------------------------
 
 test_that("initial values", {
+  skip_if_not_installed("kernlab")
+
   svm_mod <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%

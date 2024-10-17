@@ -222,6 +222,8 @@ test_that("coord_obs_pred", {
 })
 
 test_that("1D regular grid x labels", {
+  skip_if_not_installed("kernlab")
+
   set.seed(1)
   res <-
     parsnip::svm_rbf(cost = tune()) %>%
@@ -334,6 +336,7 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
 
 test_that("regular grid plot", {
   skip_if_not_installed("ggplot2", minimum_version = "3.5.0")
+  skip_if_not_installed("kernlab")
 
   svm_spec <-
     parsnip::svm_rbf(cost = tune()) %>%
@@ -357,6 +360,7 @@ test_that("regular grid plot", {
 })
 
 test_that("evaluation time warning for non-survival model", {
+  skip_if_not_installed("kernlab")
 
   set.seed(1)
   res <-

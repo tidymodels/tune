@@ -1,4 +1,4 @@
-if (rlang::is_installed(c("modeldata", "splines2"))) {
+if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
 
   data(two_class_dat, package = "modeldata")
 
