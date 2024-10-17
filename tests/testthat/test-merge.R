@@ -143,6 +143,7 @@ test_that("umerged recipe merge", {
 
 
 test_that("model spec merges", {
+  library(parsnip)
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)

@@ -1,4 +1,6 @@
 test_that("eval time inputs are checked for regression models", {
+  skip_if_not_installed("kknn")
+
   library(parsnip)
   library(workflows)
   library(yardstick)

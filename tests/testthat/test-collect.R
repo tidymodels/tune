@@ -333,6 +333,8 @@ test_that("`pivot_metrics()`, iterative search, typical metrics, summarized", {
 })
 
 test_that("`pivot_metrics()`, resampled fits, fairness metrics, summarized", {
+  skip_if_not_installed("kknn")
+
   mtcars_fair <- mtcars
   mtcars_fair$vs <- as.factor(mtcars_fair$vs)
   mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)

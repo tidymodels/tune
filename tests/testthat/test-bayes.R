@@ -547,6 +547,8 @@ test_that("missing performance values", {
 
 # ------------------------------------------------------------------------------
 test_that("tune_bayes() output for `iter` edge cases (#721)", {
+  skip_if_not_installed("kknn")
+
   # for `iter = 0`, ought to match `tune_grid()`
   boots <- rsample::bootstraps(mtcars)
   wf <-

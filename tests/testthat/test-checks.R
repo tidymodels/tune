@@ -25,7 +25,7 @@ test_that("grid objects", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_splines_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")

@@ -553,6 +553,7 @@ test_that("multinomial regression grid reduction - glmnet", {
 
 
 test_that("nearest neighbors grid reduction - kknn", {
+
   mod <- parsnip::nearest_neighbor() %>% parsnip::set_engine("kknn")
 
   # A typical grid
