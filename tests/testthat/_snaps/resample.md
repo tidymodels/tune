@@ -5,12 +5,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
       x Fold2: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.

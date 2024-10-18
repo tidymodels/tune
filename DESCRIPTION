@@ -31,7 +31,7 @@ Imports:
     lifecycle (>= 1.0.0),
     parsnip (>= 1.2.0),
     purrr (>= 1.0.0),
-    recipes (>= 1.0.4),
+    recipes (>= 1.1.0.9001),
     rlang (>= 1.1.0),
     rsample (>= 1.2.1.9000),
     tailor,
