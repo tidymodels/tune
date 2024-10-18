@@ -57,6 +57,7 @@ Suggests:
     xgboost,
     xml2
 Remotes:
+    tidymodels/recipes,
     tidymodels/rsample,
     tidymodels/tailor, 
     tidymodels/workflows
