@@ -11,7 +11,15 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
+if (rlang::is_installed(c("tidymodels", "kknn", "modeldata", "splines2"))) {
+  run <- TRUE
+} else {
+  cv_splits <- NULL
+  run <- FALSE
+}
+
 knitr::opts_chunk$set(
+  eval = run,
   digits = 3,
   collapse = TRUE,
   comment = "#>"

@@ -45,7 +45,9 @@
 #' description section.
 #'
 #' @name extract-tune
-#' @examples
+#' @examplesIf rlang::is_installed("splines2")
+#' # example code
+#'
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

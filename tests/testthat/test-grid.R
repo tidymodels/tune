@@ -1,4 +1,6 @@
 test_that("tune recipe only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -34,6 +36,8 @@ test_that("tune recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -65,6 +69,8 @@ test_that("tune model only (with recipe)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with variables)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -93,6 +99,8 @@ test_that("tune model only (with variables)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe, multi-predict)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -135,6 +143,7 @@ test_that("tune model only (without recipe, multi-predict. #695)", {
 test_that("tune model only (fairness - include `by` variable as predictor)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -175,6 +184,7 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
 test_that("tune model only (fairness - don't include `by` variable as predictor)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -215,6 +225,7 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
 test_that("tune model only (fairness metrics - evaluate across multiple `by`)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -256,6 +267,7 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
 test_that("tune model only (fairness - evaluate across multiple `by`, same metric)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -298,6 +310,7 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
 test_that("tune model only (fairness - evaluate only fairness metrics)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -336,6 +349,8 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -376,6 +391,8 @@ test_that("tune model and recipe", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe (multi-predict)", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -398,6 +415,8 @@ test_that("tune model and recipe (multi-predict)", {
 # ------------------------------------------------------------------------------
 
 test_that('tune model and recipe (parallel_over = "everything")', {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
@@ -427,13 +446,16 @@ test_that('tune model and recipe (parallel_over = "everything")', {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = tune())
+    step_spline_b(disp, deg_free = tune())
 
   model <- linear_reg(mode = "regression") %>%
     set_engine("lm")
@@ -475,6 +497,9 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
@@ -482,7 +507,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 
   # NA values not allowed in recipe
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = NA_real_)
+    step_spline_b(disp, deg_free = NA_real_)
 
   cars_grid <- tibble(cost = c(0.01, 0.02))
 
@@ -510,6 +535,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
@@ -542,13 +569,16 @@ test_that("tune model only - failure in formula is caught elegantly", {
 })
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipe(mpg ~ ., data = mtcars) %>%
-    step_bs(disp, deg_free = tune())
+    step_spline_b(disp, deg_free = tune())
 
 
   # NA values not allowed in recipe
@@ -584,6 +614,8 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
 })
 
 test_that("argument order gives errors for recipes", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE, {
@@ -596,6 +628,8 @@ test_that("argument order gives errors for recipes", {
 })
 
 test_that("argument order gives errors for formula", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   expect_snapshot(error = TRUE, {
@@ -604,6 +638,8 @@ test_that("argument order gives errors for formula", {
 })
 
 test_that("ellipses with tune_grid", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   wflow <- workflow() %>%
@@ -629,6 +665,8 @@ test_that("determining the grid type", {
 
 
 test_that("retain extra attributes", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)

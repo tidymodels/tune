@@ -12,8 +12,11 @@ test_that("rsample objects", {
 # ------------------------------------------------------------------------------
 
 test_that("grid objects", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
   data("Chicago", package = "modeldata")
-
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -23,7 +26,7 @@ test_that("grid objects", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -88,10 +91,12 @@ test_that("grid objects", {
 })
 
 test_that("Unknown `grid` columns are caught", {
+  skip_if_not_installed("splines2")
+
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
-  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_spline_b(rec, x, deg_free = tune())
   rec <- recipes::step_pca(rec, x, num_comp = tune())
 
   model <- parsnip::linear_reg()
@@ -109,10 +114,12 @@ test_that("Unknown `grid` columns are caught", {
 })
 
 test_that("Missing required `grid` columns are caught", {
+  skip_if_not_installed("splines2")
+
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
-  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_spline_b(rec, x, deg_free = tune())
   rec <- recipes::step_pca(rec, x, num_comp = tune())
 
   model <- parsnip::linear_reg()
@@ -200,10 +207,11 @@ test_that("errors informatively when needed package isn't installed", {
 
 test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   skip_if_not_installed("glmnet")
+  skip_if_not_installed("splines2")
 
   # one recipe without tuning, one with:
   rec_bare <- recipes::recipe(ridership ~ ., data = head(Chicago, 30))
-  rec_tune <- rec_bare %>% recipes::step_ns(temp_max, deg_free = tune())
+  rec_tune <- rec_bare %>% recipes::step_spline_natural(temp_max, deg_free = tune())
 
   # well-defined:
   lr_lm_0 <- parsnip::linear_reg()
@@ -261,6 +269,8 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
 # ------------------------------------------------------------------------------
 
 test_that("yardstick objects", {
+  skip_if_not_installed("splines2")
+
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -270,7 +280,7 @@ test_that("yardstick objects", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -362,6 +372,8 @@ test_that("Bayes control objects", {
 # ------------------------------------------------------------------------------
 
 test_that("initial values", {
+  skip_if_not_installed("kernlab")
+
   svm_mod <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%
@@ -429,9 +441,11 @@ test_that("validation helpers", {
 # ------------------------------------------------------------------------------
 
 test_that("check parameter finalization", {
+  skip_if_not_installed("splines2")
+
   rec <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = 3)
+    recipes::step_spline_natural(disp, deg_free = 3)
   rec_tune <- rec %>% recipes::step_pca(recipes::all_predictors(), num_comp = tune())
   f <- mpg ~ .
   rf1 <-

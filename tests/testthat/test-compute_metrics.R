@@ -118,6 +118,7 @@ test_that("`metrics` argument works (numeric metrics)", {
 test_that("`metrics` argument works (compatible class metric types)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
+  skip_if_not_installed("modeldata")
 
   library(parsnip)
   library(rsample)
@@ -186,6 +187,7 @@ test_that("`metrics` argument works (compatible class metric types)", {
 test_that("`metrics` argument works (differing class metric types)", {
   skip_on_cran()
   skip_if_not_installed("kknn")
+  skip_if_not_installed("modeldata")
 
   library(parsnip)
   library(rsample)

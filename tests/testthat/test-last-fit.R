@@ -149,9 +149,11 @@ test_that("same results of last_fit() and fit() (#300)", {
 
 
 test_that("`last_fit()` when objects need tuning", {
+  skip_if_not_installed("splines2")
+
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)
@@ -231,6 +233,7 @@ test_that("last_fit() can include validation set for initial_validation_split ob
 
 test_that("can use `last_fit()` with a workflow - postprocessor (requires training)", {
   skip_if_not_installed("tailor")
+  skip_if_not_installed("mgcv")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)

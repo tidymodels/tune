@@ -193,6 +193,8 @@ test_that("regular grid plot", {
 
 
 test_that("coord_obs_pred", {
+  skip_if_not_installed("modeldata")
+
   data(solubility_test, package = "modeldata")
 
   p <-
@@ -220,6 +222,8 @@ test_that("coord_obs_pred", {
 })
 
 test_that("1D regular grid x labels", {
+  skip_if_not_installed("kernlab")
+
   set.seed(1)
   res <-
     parsnip::svm_rbf(cost = tune()) %>%
@@ -232,6 +236,7 @@ test_that("1D regular grid x labels", {
 test_that("plot_regular_grid with fairness metrics (#773)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -264,6 +269,7 @@ test_that("plot_regular_grid with fairness metrics (#773)", {
 test_that("plot_marginals with fairness metrics (#773)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune(), weight_func = tune())
   mtcars_fair <- mtcars
@@ -296,6 +302,7 @@ test_that("plot_marginals with fairness metrics (#773)", {
 test_that("plot_perf_vs_iter with fairness metrics (#773)", {
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
+  skip_if_not_installed("kknn")
 
   knn <- parsnip::nearest_neighbor("classification", "kknn", neighbors = tune())
   mtcars_fair <- mtcars
@@ -329,6 +336,7 @@ test_that("plot_perf_vs_iter with fairness metrics (#773)", {
 
 test_that("regular grid plot", {
   skip_if_not_installed("ggplot2", minimum_version = "3.5.0")
+  skip_if_not_installed("kernlab")
 
   svm_spec <-
     parsnip::svm_rbf(cost = tune()) %>%
@@ -352,6 +360,7 @@ test_that("regular grid plot", {
 })
 
 test_that("evaluation time warning for non-survival model", {
+  skip_if_not_installed("kernlab")
 
   set.seed(1)
   res <-

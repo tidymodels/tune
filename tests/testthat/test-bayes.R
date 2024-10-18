@@ -113,6 +113,8 @@ test_that("tune recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe)", {
+  skip_if_not_installed("kernlab")
+
   set.seed(4400)
   wflow <- workflow() %>%
     add_recipe(rec_no_tune_1) %>%
@@ -142,6 +144,8 @@ test_that("tune model only (with recipe)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with variables)", {
+  skip_if_not_installed("kernlab")
+
   set.seed(4400)
 
   wflow <- workflow() %>%
@@ -176,6 +180,8 @@ test_that("tune model only (with variables)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only (with recipe, multi-predict)", {
+  skip_if_not_installed("kernlab")
+
   skip_on_cran()
 
   set.seed(4400)
@@ -210,6 +216,8 @@ test_that("tune model only (with recipe, multi-predict)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
+  skip_if_not_installed("kernlab")
+
   set.seed(4400)
   wflow <- workflow() %>%
     add_recipe(rec_tune_1) %>%
@@ -242,6 +250,7 @@ test_that("tune model and recipe", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe (multi-predict)", {
+  skip_if_not_installed("kernlab")
   skip_on_cran()
 
   set.seed(4400)
@@ -274,6 +283,7 @@ test_that("tune model and recipe (multi-predict)", {
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
   skip("test is not implemented for tune_bayes()")
+  skip_if_not_installed("splines2")
 
   # With tune_grid() this tests for NA values in the grid.
   # This is not applicable for tune_bayes().
@@ -282,7 +292,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = tune())
+    recipes::step_spline_b(disp, deg_free = tune())
 
   model <- parsnip::linear_reg(mode = "regression") %>%
     parsnip::set_engine("lm")
@@ -323,12 +333,15 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
+
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   # NA values not allowed in recipe
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = NA_real_)
+    recipes::step_spline_b(disp, deg_free = NA_real_)
 
   expect_snapshot({
     cars_res <- tune_bayes(
@@ -342,6 +355,8 @@ test_that("tune model only - failure in recipe is caught elegantly", {
 })
 
 test_that("tune model only - failure in formula is caught elegantly", {
+  skip_if_not_installed("kernlab")
+
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -363,6 +378,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
 
 test_that("tune model and recipe - failure in recipe is caught elegantly", {
   skip("test is not implemented for tune_bayes()")
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
 
   # With tune_grid() this tests for NA values in the grid.
   # This is not applicable for tune_bayes().
@@ -371,7 +388,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_bs(disp, deg_free = tune())
+    recipes::step_spline_b(disp, deg_free = tune())
 
 
   # NA values not allowed in recipe
@@ -419,6 +436,8 @@ test_that("argument order gives an error for recipes", {
 })
 
 test_that("argument order gives an error for formula", {
+  skip_if_not_installed("kernlab")
+
   expect_snapshot(error = TRUE, {
     tune_bayes(
       mpg ~ .,
@@ -501,6 +520,7 @@ test_that("too few starting values", {
 test_that("missing performance values", {
   skip_if(new_rng_snapshots)
   skip_if(packageVersion("dplyr") < "1.1.1")
+  skip_if_not_installed("modeldata")
 
   data(ames, package = "modeldata")
 
@@ -542,6 +562,8 @@ test_that("missing performance values", {
 
 # ------------------------------------------------------------------------------
 test_that("tune_bayes() output for `iter` edge cases (#721)", {
+  skip_if_not_installed("kknn")
+
   # for `iter = 0`, ought to match `tune_grid()`
   boots <- rsample::bootstraps(mtcars)
   wf <-

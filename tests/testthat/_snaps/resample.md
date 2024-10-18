@@ -4,13 +4,13 @@
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
       x Fold1: preprocessor 1/1:
-        Error in `step_ns()`:
-        Caused by error in `if (...) NULL`:
-        ! missing value where TRUE/FALSE needed
+        Error in `step_spline_natural()`:
+        Caused by error in `glue()`:
+        ! Expecting '}'
       x Fold2: preprocessor 1/1:
-        Error in `step_ns()`:
-        Caused by error in `if (...) NULL`:
-        ! missing value where TRUE/FALSE needed
+        Error in `step_spline_natural()`:
+        Caused by error in `glue()`:
+        ! Expecting '}'
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.

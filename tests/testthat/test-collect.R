@@ -1,57 +1,63 @@
-data(two_class_dat, package = "modeldata")
+if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
 
-# ------------------------------------------------------------------------------
+  data(two_class_dat, package = "modeldata")
 
-set.seed(6735)
-rep_folds <- rsample::vfold_cv(mtcars, v = 2, repeats = 2)
+  # ------------------------------------------------------------------------------
 
-spline_rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-  recipes::step_ns(disp, deg_free = 3)
+  set.seed(6735)
+  rep_folds <- rsample::vfold_cv(mtcars, v = 2, repeats = 2)
 
-lin_mod <- parsnip::linear_reg() %>%
-  parsnip::set_engine("lm")
+  spline_rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_spline_natural(disp, deg_free = 3)
 
-lm_splines <-
-  fit_resamples(
-    lin_mod,
-    spline_rec,
-    rep_folds,
-    control = control_grid(save_pred = TRUE)
-  )
+  lin_mod <- parsnip::linear_reg() %>%
+    parsnip::set_engine("lm")
 
-set.seed(93114)
-rep_folds_class <- rsample::vfold_cv(two_class_dat, v = 2, repeats = 3)
-
-svm_mod <-
-  parsnip::svm_rbf(cost = tune("cost value")) %>%
-  parsnip::set_engine("kernlab") %>%
-  parsnip::set_mode("classification")
-
-suppressMessages(
-  svm_tune <-
-    tune_bayes(
-      svm_mod,
-      Class ~ .,
-      rep_folds_class,
-      initial = 2,
-      iter = 2,
-      control = control_bayes(save_pred = TRUE)
+  lm_splines <-
+    fit_resamples(
+      lin_mod,
+      spline_rec,
+      rep_folds,
+      control = control_grid(save_pred = TRUE)
     )
-)
 
-svm_tune_class <- svm_tune
-svm_tune_class$.predictions <-
-  purrr::map(
-    svm_tune_class$.predictions,
-    ~ .x %>% dplyr::select(-.pred_Class1, -.pred_Class2)
+  set.seed(93114)
+  rep_folds_class <- rsample::vfold_cv(two_class_dat, v = 2, repeats = 3)
+
+  svm_mod <-
+    parsnip::svm_rbf(cost = tune("cost value")) %>%
+    parsnip::set_engine("kernlab") %>%
+    parsnip::set_mode("classification")
+
+  suppressMessages(
+    svm_tune <-
+      tune_bayes(
+        svm_mod,
+        Class ~ .,
+        rep_folds_class,
+        initial = 2,
+        iter = 2,
+        control = control_bayes(save_pred = TRUE)
+      )
   )
-attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
-svm_grd <- show_best(svm_tune, metric = "roc_auc") %>% dplyr::select(`cost value`)
+  svm_tune_class <- svm_tune
+  svm_tune_class$.predictions <-
+    purrr::map(
+      svm_tune_class$.predictions,
+      ~ .x %>% dplyr::select(-.pred_Class1, -.pred_Class2)
+    )
+  attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
+
+  svm_grd <- show_best(svm_tune, metric = "roc_auc") %>% dplyr::select(`cost value`)
+}
 
 # ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()` errors informatively if there is no `.predictions` column", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   expect_snapshot(error = TRUE, {
     collect_predictions(lm_splines %>% dplyr::select(-.predictions))
   })
@@ -67,10 +73,13 @@ test_that("`collect_predictions()` errors informatively applied to unsupported c
 # ------------------------------------------------------------------------------
 
 test_that("`collect_predictions()`, un-averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   res <- collect_predictions(lm_splines)
   exp_res <-
     unnest(lm_splines %>% dplyr::select(.predictions, starts_with("id")),
-      cols = c(.predictions)
+           cols = c(.predictions)
     ) %>% dplyr::select(all_of(names(res)))
   expect_equal(res, exp_res)
 
@@ -89,6 +98,9 @@ test_that("`collect_predictions()`, un-averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("bad filter grid", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   expect_snapshot(
     error = TRUE,
     collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
@@ -101,6 +113,9 @@ test_that("bad filter grid", {
 # ------------------------------------------------------------------------------
 
 test_that("regression predictions, averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   all_res <- collect_predictions(lm_splines)
   res <- collect_predictions(lm_splines, summarize = TRUE)
   expect_equal(nrow(res), nrow(mtcars))
@@ -115,6 +130,9 @@ test_that("regression predictions, averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("classification class predictions, averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   all_res <- collect_predictions(svm_tune_class)
   res <- collect_predictions(svm_tune_class, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
@@ -138,6 +156,9 @@ test_that("classification class predictions, averaged", {
 # ------------------------------------------------------------------------------
 
 test_that("classification class and prob predictions, averaged", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kernlab")
+
   all_res <- collect_predictions(svm_tune)
   res <- collect_predictions(svm_tune, summarize = TRUE)
   expect_equal(nrow(res), nrow(two_class_dat) * nrow(svm_grd))
@@ -162,6 +183,8 @@ test_that("classification class and prob predictions, averaged", {
 test_that("collecting notes - fit_resamples", {
   skip_if(new_rng_snapshots)
   skip_if(rankdeficient_version)
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
 
   mtcars2 <- mtcars %>% mutate(wt2 = wt)
   set.seed(1)
@@ -319,6 +342,8 @@ test_that("`pivot_metrics()`, iterative search, typical metrics, summarized", {
 })
 
 test_that("`pivot_metrics()`, resampled fits, fairness metrics, summarized", {
+  skip_if_not_installed("kknn")
+
   mtcars_fair <- mtcars
   mtcars_fair$vs <- as.factor(mtcars_fair$vs)
   mtcars_fair$cyl <- as.factor(mtcars_fair$cyl)

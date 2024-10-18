@@ -1,4 +1,6 @@
 test_that("eval time inputs are checked for regression models", {
+  skip_if_not_installed("kknn")
+
   library(parsnip)
   library(workflows)
   library(yardstick)
@@ -61,6 +63,8 @@ test_that("eval time are checked for classification models", {
   library(workflows)
   library(yardstick)
   library(rsample)
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("kknn")
 
   data(two_class_dat, package = "modeldata")
   wflow <- workflow(Class ~ A + B, logistic_reg())

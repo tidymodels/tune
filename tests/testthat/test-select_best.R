@@ -193,6 +193,7 @@ test_that("percent loss", {
 
 test_that("select_by_* can handle metrics with direction == 'zero'", {
   skip_on_cran()
+  skip_if_not_installed("kknn")
 
   set.seed(1)
   resamples <- rsample::bootstraps(mtcars, times = 5)

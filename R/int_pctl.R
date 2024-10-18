@@ -46,24 +46,26 @@
 #' @references Davison, A., & Hinkley, D. (1997). _Bootstrap Methods and their
 #'  Application_. Cambridge: Cambridge University Press.
 #'  doi:10.1017/CBO9780511802843
-#' @examplesIf !tune:::is_cran_check() & tune:::should_run_examples("modeldata")
-#' data(Sacramento, package = "modeldata")
-#' library(rsample)
-#' library(parsnip)
+#' @examplesIf !tune:::is_cran_check()
+#' if (rlang::is_installed("modeldata")) {
+#'   data(Sacramento, package = "modeldata")
+#'   library(rsample)
+#'   library(parsnip)
 #'
-#' set.seed(13)
-#' sac_rs <- vfold_cv(Sacramento)
+#'   set.seed(13)
+#'   sac_rs <- vfold_cv(Sacramento)
 #'
-#' lm_res <-
-#'   linear_reg() %>%
-#'   fit_resamples(
-#'     log10(price) ~ beds + baths + sqft + type + latitude + longitude,
-#'     resamples = sac_rs,
-#'     control = control_resamples(save_pred = TRUE)
-#'   )
+#'   lm_res <-
+#'     linear_reg() %>%
+#'     fit_resamples(
+#'       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
+#'       resamples = sac_rs,
+#'       control = control_resamples(save_pred = TRUE)
+#'     )
 #'
-#' set.seed(31)
-#' int_pctl(lm_res)
+#'   set.seed(31)
+#'   int_pctl(lm_res)
+#' }
 #' @export
 int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
                                   times = 1001, parameters = NULL,

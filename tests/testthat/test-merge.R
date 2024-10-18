@@ -1,4 +1,7 @@
 test_that("recipe merges", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -9,7 +12,7 @@ test_that("recipe merges", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   spline_grid <-
     tibble::tribble(
       ~imputation, ~threshold, ~deg_free, ~degree,
@@ -47,6 +50,9 @@ test_that("recipe merges", {
 })
 
 test_that("partially recipe merge", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -57,7 +63,7 @@ test_that("partially recipe merge", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   spline_grid <-
     tibble::tribble(
       ~imputation, ~threshold, ~deg_free, ~degree,
@@ -95,6 +101,9 @@ test_that("partially recipe merge", {
 })
 
 test_that("umerged recipe merge", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -105,7 +114,7 @@ test_that("umerged recipe merge", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
   expect_error(
@@ -134,6 +143,7 @@ test_that("umerged recipe merge", {
 
 
 test_that("model spec merges", {
+  library(parsnip)
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)

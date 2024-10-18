@@ -11,7 +11,9 @@
 #' @param tidy Should the results come back in a tibble (`TRUE`) or a `conf_mat`
 #' object like `yardstick::conf_mat()` (`FALSE`)?
 #' @return A tibble or `conf_mat` with the average cell count across resamples.
-#' @examples
+#' @examplesIf rlang::is_installed("modeldata")
+#' # example code
+#'
 #' library(parsnip)
 #' library(rsample)
 #' library(dplyr)

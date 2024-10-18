@@ -275,7 +275,7 @@ the largest time corresponding to an event are constant (or \code{NA}).
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = "kernlab")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = "kernlab") & rlang::is_installed("splines2")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
