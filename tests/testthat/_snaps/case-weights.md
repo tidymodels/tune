@@ -5,7 +5,7 @@
     Condition
       Error in `.use_case_weights_with_yardstick()`:
       ! Unknown case weights object contains a number instead of an object with a case weight class.
-      i Define a `.use_case_weights_with_yardstick()()` method for this type to declare whether or not these case weights should be passed on to yardstick.
+      i Define a `.use_case_weights_with_yardstick()` method for this type to declare whether or not these case weights should be passed on to yardstick.
       i See `?.use_case_weights_with_yardstick` for more information.
 
 # `extract_case_weights()` errors if `col` doesn't exist

@@ -5,12 +5,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
       x Fold2: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -39,10 +39,10 @@
     Message
       x Fold1: preprocessor 1/1, model 1/1:
         Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a `factor`, not a ...
+        ! For a classification model, the outcome should be a <factor>, not a ...
       x Fold2: preprocessor 1/1, model 1/1:
         Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a `factor`, not a ...
+        ! For a classification model, the outcome should be a <factor>, not a ...
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -53,7 +53,8 @@
       result <- tune_grid(lin_mod, mpg ~ ., folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # `tune_grid()` falls back to `fit_resamples()` - workflow variables
 
@@ -61,7 +62,8 @@
       result <- tune_grid(wf, folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # `tune_grid()` ignores `grid` if there are no tuning parameters
 
@@ -69,7 +71,8 @@
       result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # cannot autoplot `fit_resamples()` results
 
@@ -131,16 +134,16 @@
 
 # `fit_resamples()` when objects need tuning
 
-    2 arguments have been tagged for tuning in these components: model_spec and recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    2 arguments have been tagged for tuning in these components: model_spec and recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: model_spec. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: model_spec.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 

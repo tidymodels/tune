@@ -30,7 +30,7 @@
                        {.obj_type_friendly {x}} instead of an object with a
                        case weight class."),
     i = paste0(
-      "Define a {.fn .use_case_weights_with_yardstick()} method for this type to ",
+      "Define a {.fn .use_case_weights_with_yardstick} method for this type to ",
       "declare whether or not these case weights should be passed on to yardstick."
     ),
     i = "See `?.use_case_weights_with_yardstick` for more information."

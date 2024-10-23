@@ -58,7 +58,7 @@
       tune:::check_grid(grid, workflow)
     Condition
       Error in `tune:::check_grid()`:
-      ! The provided `grid` has the following parameter columns that have not been marked for tuning by `tune()`: 'other1', 'other2'.
+      ! The provided grid has 2 parameter columns (`other1` and `other2`) that have not been marked for tuning by `tune()`.
 
 # Missing required `grid` columns are caught
 
@@ -66,7 +66,7 @@
       tune:::check_grid(grid, workflow)
     Condition
       Error in `tune:::check_grid()`:
-      ! The provided `grid` is missing the following parameter columns that have been marked for tuning by `tune()`: 'deg_free'.
+      ! The provided grid is missing the following 1 parameter column that has been marked for tuning by `tune()`: "deg_free".
 
 # workflow objects
 
@@ -74,7 +74,7 @@
       tune:::check_workflow(x = wflow_2, check_dials = TRUE)
     Condition
       Error in `tune:::check_workflow()`:
-      ! The workflow has arguments whose ranges are not finalized: 'mtry'
+      ! The workflow has arguments whose ranges are not finalized: "mtry".
 
 ---
 
@@ -91,22 +91,6 @@
     Condition
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
-
-# errors informatively when needed package isn't installed
-
-    Code
-      check_workflow(stan_wflow)
-    Condition
-      Error:
-      ! Package install is required for rstanarm.
-
----
-
-    Code
-      fit_resamples(stan_wflow, rsample::bootstraps(mtcars))
-    Condition
-      Error in `fit_resamples()`:
-      ! Package install is required for rstanarm.
 
 # workflow objects (will not tune, tidymodels/tune#548)
 
@@ -132,7 +116,7 @@
       tune:::check_metrics(yardstick::rmse, chi_wflow)
     Condition
       Error in `tune:::check_metrics()`:
-      ! The `metrics` argument should be the results of [yardstick::metric_set()].
+      ! The `metrics` argument should be the results of `yardstick::metric_set()`.
 
 # metrics must match the parsnip engine
 
@@ -301,7 +285,7 @@
         yardstick::rsq), ctrl = control_bayes())
     Condition
       Error in `tune:::check_initial()`:
-      ! `initial` should be a positive integer or the results of [tune_grid()]
+      ! `initial` should be a positive integer or the results of `tune_grid()`
 
 # Acquisition function objects
 
@@ -349,21 +333,21 @@
       expect_error(p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(
         0)), regex = NA)
     Message
-      i Creating pre-processing data to finalize unknown parameter: mtry
+      i Creating pre-processing data to finalize 1 unknown parameter: "mtry"
 
 ---
 
     Code
       expect_error(p2 <- tune:::check_parameters(w2, data = mtcars), regex = NA)
     Message
-      i Creating pre-processing data to finalize unknown parameter: mtry
+      i Creating pre-processing data to finalize 1 unknown parameter: "mtry"
 
 ---
 
     Code
       expect_error(p3_a <- tune:::check_parameters(w3, data = mtcars), regex = NA)
     Message
-      i Creating pre-processing data to finalize unknown parameter: mtry
+      i Creating pre-processing data to finalize 1 unknown parameter: "mtry"
 
 ---
 
@@ -371,5 +355,6 @@
       tune:::check_parameters(w4, data = mtcars)
     Condition
       Error in `tune:::check_parameters()`:
-      ! Some model parameters require finalization but there are recipe parameters that require tuning. Please use  `extract_parameter_set_dials()` to set parameter ranges  manually and supply the output to the `param_info` argument.
+      ! Some model parameters require finalization but there are recipe parameters that require tuning.
+      i Please use `extract_parameter_set_dials()` to set parameter ranges manually and supply the output to the `param_info` argument.
 

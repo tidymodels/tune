@@ -393,12 +393,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
       x Fold2: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `glue()`:
-        ! Expecting '}'
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -485,28 +485,30 @@
     Code
       tune:::check_bayes_initial_size(5, 1, FALSE)
     Condition
-      Error:
+      Error in `tune:::check_bayes_initial_size()`:
       ! There are 5 tuning parameters and 1 grid point was requested.
-      * The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
+      i The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
+      i 
 
 ---
 
     Code
       tune:::check_bayes_initial_size(5, 1, TRUE)
     Condition
-      Error:
+      Error in `tune:::check_bayes_initial_size()`:
       ! There are 5 tuning parameters and 1 grid point was requested.
-      * The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
-      * With racing, only completely resampled parameters are used.
+      i The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
+      i With racing, only completely resampled parameters are used.
 
 ---
 
     Code
       tune:::check_bayes_initial_size(1, 1, FALSE)
     Condition
-      Error:
+      Error in `tune:::check_bayes_initial_size()`:
       ! There is 1 tuning parameter and 1 grid point was requested.
-      * The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
+      i The GP model requires 2+ initial points. For best performance, supply more initial points than there are tuning parameters.
+      i 
 
 # missing performance values
 
