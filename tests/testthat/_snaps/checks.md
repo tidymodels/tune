@@ -303,46 +303,6 @@
       Error in `tune:::check_initial()`:
       ! `initial` should be a positive integer or the results of [tune_grid()]
 
-# Acquisition function objects
-
-    Code
-      tune:::check_direction(1)
-    Condition
-      Error in `tune:::check_direction()`:
-      ! `maximize` should be a single logical.
-
----
-
-    Code
-      tune:::check_direction(rep(TRUE, 2))
-    Condition
-      Error in `tune:::check_direction()`:
-      ! `maximize` should be a single logical.
-
----
-
-    Code
-      tune:::check_best(FALSE)
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
----
-
-    Code
-      tune:::check_best(rep(2, 2))
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
----
-
-    Code
-      tune:::check_best(NA)
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
 # check parameter finalization
 
     Code
