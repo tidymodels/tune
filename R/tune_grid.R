@@ -360,7 +360,10 @@ tune_grid_workflow <- function(workflow,
   )
 
   if (is_cataclysmic(resamples)) {
-    rlang::warn("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
+    cli::cli_warn(
+      "All models failed. Run {.code show_notes(.Last.tune.result)} for more
+       information."
+    )
   }
 
   outcomes <- reduce_all_outcome_names(resamples)

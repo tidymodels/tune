@@ -21,7 +21,7 @@
       linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong")
     Condition
       Warning:
-      The `...` are not used in this function but one or more objects were passed: 'something'
+      The `...` are not used in this function but 1 object was passed: "something"
     Output
       # Resampling results
       # Manual resampling 

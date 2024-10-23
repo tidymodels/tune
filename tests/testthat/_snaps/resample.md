@@ -109,7 +109,7 @@
       lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong")
     Condition
       Warning:
-      The `...` are not used in this function but one or more objects were passed: 'something'
+      The `...` are not used in this function but 1 object was passed: "something"
     Output
       # Resampling results
       # 2-fold cross-validation 

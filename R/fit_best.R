@@ -160,8 +160,9 @@ fit_best.tune_results <- function(x,
     }
   } else {
     if (!is.null(add_validation_set)) {
-      rlang::warn(
-        "The option `add_validation_set` is being ignored because the resampling object does not include a validation set."
+      cli::cli_warn(
+        "The option {.arg add_validation_set} is being ignored because the
+         resampling object does not include a validation set."
       )
     }
     dat <- x$splits[[1]]$data

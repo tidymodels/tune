@@ -118,7 +118,10 @@ check_empty_dots <- function(...) {
     cli::cli_abort("'{.arg estimated}' should be a named argument.")
   }
   if (length(opts) > 0) {
-    cli::cli_abort("The {.arg ...} are not used in this function.")
+    cli::cli_warn(
+      "The {.code ...} are not used in this function but {length(opts)}
+       object{?s} {?was/were} passed: {.val {names(opts)}}"
+    )
   }
   invisible(NULL)
 }

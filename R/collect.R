@@ -181,17 +181,9 @@ filter_predictions <- function(x, parameters) {
   }
   params <- attr(x, "parameters")
   if (is.null(params)) {
-    rlang::warn(
-      paste(
-        strwrap(
-          paste(
-            "The object is missing some attributes; it is probably from",
-            "an earlier version of `tune`. The predictions can't be filtered."
-          ),
-          prefix = ""
-        ),
-        collapse = "\n"
-      )
+    cli::cli_warn("The object is missing some attributes; it is probably from an
+                   earlier version of {.pkg tune}. The predictions can't be
+                   filtered."
     )
 
     return(x)

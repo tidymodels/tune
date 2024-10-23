@@ -873,7 +873,8 @@ save_gp_results <- function(x, pset, ctrl, i, iter) {
   file_name <- paste0(nm, ".RData")
   res <- try(save(x, pset, i, file = file.path(tempdir(), file_name)), silent = TRUE)
   if (inherits(res, "try-error")) {
-    rlang::warn(paste("Could not save GP results:", as.character(res)))
+    err <- cli::format_error(as.character(res))
+    cli::cli_warn("Could not save GP results: {err}")
   }
   invisible(res)
 }
