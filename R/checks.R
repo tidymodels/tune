@@ -493,26 +493,6 @@ get_objective_name <- function(x, metrics) {
   x
 }
 
-
-# ------------------------------------------------------------------------------
-# acq functions
-
-check_direction <- function(x) {
-  if (!is.logical(x) || length(x) != 1) {
-    rlang::abort("`maximize` should be a single logical.")
-  }
-  invisible(NULL)
-}
-
-
-check_best <- function(x) {
-  if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
-    rlang::abort("`best` should be a single, non-missing numeric.")
-  }
-  invisible(NULL)
-}
-
-
 # ------------------------------------------------------------------------------
 
 check_class_or_null <- function(x, cls = "numeric") {
