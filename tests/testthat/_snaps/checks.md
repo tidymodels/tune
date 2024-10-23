@@ -291,22 +291,22 @@
 # check parameter finalization
 
     Code
-      expect_error(p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(
-        0)), regex = NA)
+      expect_no_error(p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(
+        0)))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 
 ---
 
     Code
-      expect_error(p2 <- tune:::check_parameters(w2, data = mtcars), regex = NA)
+      expect_no_error(p2 <- tune:::check_parameters(w2, data = mtcars))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 
 ---
 
     Code
-      expect_error(p3_a <- tune:::check_parameters(w3, data = mtcars), regex = NA)
+      expect_no_error(p3_a <- tune:::check_parameters(w3, data = mtcars))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 

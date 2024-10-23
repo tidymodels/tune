@@ -206,7 +206,7 @@ test_that("coord_obs_pred", {
 
   p2 <- p + coord_obs_pred()
 
-  expect_error(print(p2), regexp = NA)
+  expect_no_error(print(p2))
 
   expect_true(inherits(p2$coordinates, "CoordObsPred"))
   expect_equal(p2$coordinates$limits$x, rng)

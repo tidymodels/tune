@@ -57,7 +57,7 @@ test_that("tune recipe only", {
   expect_null(.get_tune_eval_time_target(res))
 
   set.seed(1)
-  expect_error(
+  expect_no_error(
     suppressMessages(
       tune_bayes(
         wflow,
@@ -67,8 +67,7 @@ test_that("tune recipe only", {
         iter = iter2,
         corr = list(type = "matern", nu = 3 / 2)
       )
-    ),
-    regexp = NA
+    )
   )
 
 
