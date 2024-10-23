@@ -23,9 +23,8 @@ test_that("cannot finalize with recipe parameters", {
   })
 
   set.seed(987323)
-  expect_error(
-    suppressMessages(mod_1 %>% tune_grid(rec_2, resamples = rs, grid = 3)),
-    regex = NA
+  expect_no_error(
+    suppressMessages(mod_1 %>% tune_grid(rec_2, resamples = rs, grid = 3))
   )
 })
 
@@ -50,9 +49,8 @@ test_that("skip error if grid is supplied", {
   grid <- tibble::tibble(mtry = 1:3, deg_free = c(3, 3, 4), min_n = c(5, 4, 6))
 
   set.seed(987323)
-  expect_error(
-    mod_1 %>% tune_grid(rec_1, resamples = rs, grid = grid),
-    regex = NA
+  expect_no_error(
+    mod_1 %>% tune_grid(rec_1, resamples = rs, grid = grid)
   )
 })
 

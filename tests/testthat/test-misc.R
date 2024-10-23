@@ -49,9 +49,8 @@ test_that("in-line formulas on outcome", {
     add_formula(log(mpg) ~ .) %>%
     add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
-  expect_error(
-    f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars)),
-    regex = NA
+  expect_no_error(
+    f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars))
   )
   expect_true(inherits(f1, "resample_results"))
 
@@ -60,9 +59,8 @@ test_that("in-line formulas on outcome", {
     add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_log(mpg)) %>%
     add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
-  expect_error(
-    f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars)),
-    regex = NA
+  expect_no_error(
+    f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars))
   )
   expect_true(inherits(f2, "resample_results"))
 })
@@ -70,7 +68,7 @@ test_that("in-line formulas on outcome", {
 # ------------------------------------------------------------------------------
 
 test_that("empty ellipses", {
-  expect_error(tune:::empty_ellipses(), regexp = NA)
+  expect_no_error(tune:::empty_ellipses())
   expect_snapshot(tune:::empty_ellipses(a = 1))
 })
 
