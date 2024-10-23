@@ -38,15 +38,15 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   # Any added arguments should also be added in superset control functions
   # in other packages
 
-  # add options for  seeds per resample
+  # add options for seeds per resample
+  check_bool(verbose)
+  check_bool(allow_par)
+  check_bool(save_pred)
+  check_bool(save_workflow)
+  check_string(event_level)
+  check_character(pkgs, allow_null = TRUE)
+  check_function(extract, allow_null = TRUE)
 
-  val_class_and_single(verbose, "logical", "control_grid()")
-  val_class_and_single(allow_par, "logical", "control_grid()")
-  val_class_and_single(save_pred, "logical", "control_grid()")
-  val_class_and_single(save_workflow, "logical", "control_grid()")
-  val_class_and_single(event_level, "character", "control_grid()")
-  val_class_or_null(pkgs, "character", "control_grid()")
-  val_class_or_null(extract, "function", "control_grid()")
   val_parallel_over(parallel_over, "control_grid()")
 
 
@@ -241,26 +241,27 @@ control_bayes <-
     # in other packages
 
     # add options for seeds per resample
+    check_bool(verbose)
+    check_bool(verbose_iter)
+    check_bool(allow_par)
+    check_bool(save_pred)
+    check_bool(save_workflow)
+    check_bool(save_gp_scoring)
+    check_character(pkgs, allow_null = TRUE)
+    check_function(extract, allow_null = TRUE)
+    check_number_whole(no_improve, min = 0, allow_infinite = TRUE)
+    check_number_whole(uncertain, min = 0, allow_infinite = TRUE)
+    check_number_whole(seed)
 
-    val_class_and_single(verbose, "logical", "control_bayes()")
-    val_class_and_single(verbose_iter, "logical", "control_bayes()")
-    val_class_and_single(save_pred, "logical", "control_bayes()")
-    val_class_and_single(save_gp_scoring, "logical", "control_bayes()")
-    val_class_and_single(save_workflow, "logical", "control_bayes()")
-    val_class_and_single(no_improve, c("numeric", "integer"), "control_bayes()")
-    val_class_and_single(uncertain, c("numeric", "integer"), "control_bayes()")
-    val_class_and_single(seed, c("numeric", "integer"), "control_bayes()")
-    val_class_or_null(extract, "function", "control_bayes()")
-    val_class_and_single(time_limit, c("logical", "numeric"), "control_bayes()")
-    val_class_or_null(pkgs, "character", "control_bayes()")
-    val_class_and_single(event_level, "character", "control_bayes()")
+    check_time_limit_arg(time_limit)
+
     val_parallel_over(parallel_over, "control_bayes()")
-    val_class_and_single(allow_par, "logical", "control_bayes()")
 
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
-      cli::cli_alert_warning(
-        "Uncertainty sample scheduled after {uncertain} poor iterations but the search will stop after {no_improve}."
+      cli::cli_warn(
+        "Uncertainty sample scheduled after {uncertain} poor iterations but the
+         search will stop after {no_improve}."
       )
     }
 
@@ -296,12 +297,10 @@ print.control_bayes <- function(x, ...) {
 # ------------------------------------------------------------------------------
 
 val_parallel_over <- function(parallel_over, where) {
-  if (is.null(parallel_over)) {
-    return(invisible(NULL))
+  check_string(parallel_over, allow_null = TRUE)
+  if (!is.null(parallel_over)) {
+    rlang::arg_match0(parallel_over, c("resamples", "everything"), "parallel_over")
   }
-
-  val_class_and_single(parallel_over, "character", where)
-  rlang::arg_match0(parallel_over, c("resamples", "everything"), "parallel_over")
 
   invisible(NULL)
 }

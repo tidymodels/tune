@@ -140,7 +140,7 @@ test_that("extracted workflow is finalized", {
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (requires training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
@@ -202,7 +202,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (no training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
@@ -277,8 +277,7 @@ test_that("failure in recipe is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(any(grepl("Expecting", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -309,8 +308,7 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the variables part
-  expect_true(any(grepl("foobar", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -339,8 +337,7 @@ test_that("classification models generate correct error message", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(all(grepl("outcome should be a `factor`", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
