@@ -7,7 +7,7 @@ library(yardstick)
 
 test_that("showing notes", {
   skip_if_not_installed("modeldata")
-  skip_if(rankdeficient_version)
+  skip_if(!rankdeficient_version)
 
   data(Chicago, package = "modeldata")
 

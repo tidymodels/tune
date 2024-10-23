@@ -22,7 +22,7 @@
 #' @importFrom cli cli_inform cli_warn cli_abort qty
 #' @importFrom foreach foreach getDoParName %dopar%
 #' @importFrom tibble obj_sum size_sum
-
+#' @import rlang
 
 # ------------------------------------------------------------------------------
 # Only a small number of functions in workflows.

@@ -15,6 +15,13 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
+---
+
+    Code
+      note
+    Output
+      [1] "Error in `step_spline_natural()`:\nCaused by error in `spline_msg()`:\n! Error in if (df < 2) { : missing value where TRUE/FALSE needed"
+
 # failure in variables tidyselect specification is caught elegantly
 
     Code
@@ -32,6 +39,13 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
+---
+
+    Code
+      note
+    Output
+      [1] "Error in `fit()`:\n! Can't select columns that don't exist.\nx Column `foobar` doesn't exist."
+
 # classification models generate correct error message
 
     Code
@@ -46,6 +60,13 @@
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
+
+---
+
+    Code
+      note
+    Output
+      [1] "Error in `check_outcome()`:\n! For a classification model, the outcome should be a <factor>, not a double vector."
 
 # `tune_grid()` falls back to `fit_resamples()` - formula
 

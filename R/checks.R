@@ -489,26 +489,6 @@ get_objective_name <- function(x, metrics) {
   x
 }
 
-
-# ------------------------------------------------------------------------------
-# acq functions
-
-check_direction <- function(x) {
-  if (!is.logical(x) || length(x) != 1) {
-    rlang::abort("`maximize` should be a single logical.")
-  }
-  invisible(NULL)
-}
-
-
-check_best <- function(x) {
-  if (!is.numeric(x) || length(x) != 1 || is.na(x)) {
-    rlang::abort("`best` should be a single, non-missing numeric.")
-  }
-  invisible(NULL)
-}
-
-
 # ------------------------------------------------------------------------------
 
 check_class_or_null <- function(x, cls = "numeric") {
@@ -533,6 +513,7 @@ val_class_or_null <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
+# TODO remove this once finetune is updated
 
 check_class_and_single <- function(x, cls = "numeric") {
   isTRUE(inherits(x, cls) & length(x) == 1)
@@ -554,7 +535,7 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-
+# TODO remove this once finetune is updated
 
 # Check the data going into the GP. If there are all missing values, fail. If some
 # are missing, remove them and send a warning. If all metrics are the same, fail.
@@ -640,4 +621,12 @@ check_eval_time <- function(eval_time, metrics) {
   }
   invisible(NULL)
 
+}
+
+check_time_limit_arg <- function(x, call = rlang::caller_env()) {
+  if (!inherits(x, c("logical", "numeric")) || length(x) != 1L) {
+    cli::cli_abort("{.arg time_limit} should be either a single numeric or
+                    logical value.", call = call)
+  }
+  invisible(NULL)
 }

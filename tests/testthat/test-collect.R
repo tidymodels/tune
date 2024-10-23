@@ -182,7 +182,7 @@ test_that("classification class and prob predictions, averaged", {
 
 test_that("collecting notes - fit_resamples", {
   skip_if(new_rng_snapshots)
-  skip_if(rankdeficient_version)
+  skip_if(!rankdeficient_version)
   skip_if_not_installed("modeldata")
   skip_if_not_installed("splines2")
 
@@ -205,7 +205,7 @@ test_that("collecting notes - fit_resamples", {
 })
 
 test_that("collecting notes - last_fit", {
-  skip_if(rankdeficient_version)
+  skip_if(!rankdeficient_version)
 
   options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
