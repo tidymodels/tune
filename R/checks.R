@@ -517,6 +517,7 @@ val_class_or_null <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
+# TODO remove this once finetune is updated
 
 check_class_and_single <- function(x, cls = "numeric") {
   isTRUE(inherits(x, cls) & length(x) == 1)
@@ -538,7 +539,7 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-
+# TODO remove this once finetune is updated
 
 # Check the data going into the GP. If there are all missing values, fail. If some
 # are missing, remove them and send a warning. If all metrics are the same, fail.
@@ -623,4 +624,12 @@ check_eval_time <- function(eval_time, metrics) {
   }
   invisible(NULL)
 
+}
+
+check_time_limit_arg <- function(x, call = rlang::caller_env()) {
+  if (!inherits(x, c("logical", "numeric")) || length(x) > 1) {
+    cli::cli_abort("{.arg time_limit} should be either a single numeric or
+                    logical value.", call = call)
+  }
+  invisible(NULL)
 }

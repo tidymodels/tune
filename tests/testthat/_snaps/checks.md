@@ -92,22 +92,6 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
-# errors informatively when needed package isn't installed
-
-    Code
-      check_workflow(stan_wflow)
-    Condition
-      Error:
-      ! Package install is required for rstanarm.
-
----
-
-    Code
-      fit_resamples(stan_wflow, rsample::bootstraps(mtcars))
-    Condition
-      Error in `fit_resamples()`:
-      ! Package install is required for rstanarm.
-
 # workflow objects (will not tune, tidymodels/tune#548)
 
     Code
@@ -163,48 +147,48 @@
     Code
       control_grid(verbose = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_grid(verbose = rep(TRUE, 2))
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not a logical vector.
 
 ---
 
     Code
       control_grid(allow_par = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'allow_par' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `allow_par` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_grid(save_pred = "no")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'save_pred' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `save_pred` must be `TRUE` or `FALSE`, not the string "no".
 
 ---
 
     Code
       control_grid(extract = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'extract' should be a function or NULL in `control_grid()`
+      Error in `control_grid()`:
+      ! `extract` must be a function or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_grid(pkgs = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'pkgs' should be a character or NULL in `control_grid()`
+      Error in `control_grid()`:
+      ! `pkgs` must be a character vector or `NULL`, not `Inf`.
 
 # Bayes control objects
 
@@ -219,79 +203,80 @@
     Code
       control_bayes(verbose = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_bayes(verbose = rep(TRUE, 2))
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not a logical vector.
 
 ---
 
     Code
       control_bayes(no_improve = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'no_improve' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `no_improve` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(uncertain = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'uncertain' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `uncertain` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(seed = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'seed' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `seed` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(save_pred = "no")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'save_pred' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `save_pred` must be `TRUE` or `FALSE`, not the string "no".
 
 ---
 
     Code
       control_bayes(extract = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'extract' should be a function or NULL in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `extract` must be a function or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_bayes(pkgs = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'pkgs' should be a character or NULL in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `pkgs` must be a character vector or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_bayes(time_limit = "a")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'time_limit' should be a single logical or numeric value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `time_limit` should be either a single numeric or logical value.
 
 ---
 
     Code
       tmp <- control_bayes(no_improve = 2, uncertain = 5)
-    Message
-      ! Uncertainty sample scheduled after 5 poor iterations but the search will stop after 2.
+    Condition
+      Warning:
+      Uncertainty sample scheduled after 5 poor iterations but the search will stop after 2.
 
 # initial values
 
