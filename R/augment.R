@@ -49,7 +49,7 @@ augment.tune_results <- function(x, ..., parameters = NULL) {
     parameters <- select_best(x, metric = obj_fun, eval_time = obj_eval_time)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
-      rlang::abort("'parameters' should be a single row data frame")
+      cli::cli_abort("{.arg parameters} should be a single row data frame.")
     }
   }
 
@@ -86,11 +86,9 @@ merge_pred <- function(dat, pred, y) {
   pred <- pred[order(pred$.row), ]
   pred <- pred[, c(".row", pred_cols)]
   if (nrow(pred) != nrow(dat)) {
-    rlang::warn(
-      paste(
-        "The original data had", nrow(dat), "rows but there were",
-        nrow(pred), "hold-out predictions."
-      )
+    cli::cli_warn(
+      "The original data had {nrow(dat)} rows but there were {nrow(pred)}
+       hold-out predictions."
     )
   }
 

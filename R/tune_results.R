@@ -126,13 +126,15 @@ is_tune_results <- function(x) {
 
 peek_tune_results_outcomes <- function(x) {
   if (!is_tune_results(x)) {
-    rlang::abort("Internal error: `outcomes` can only be extracted from 'tune_results'.")
+    cli::cli_abort("Internal error: {.arg outcomes} can only be extracted from
+                   {.cls tune_results}.")
   }
 
   out <- attr(x, "outcomes", exact = TRUE)
 
   if (is.null(out)) {
-    rlang::abort("'tune_results' object doesn't have an 'outcomes' attribute.")
+    cli::cli_abort("The object of type {.cls tune_results} object doesn't have an
+                    {.code outcomes} attribute.")
   }
 
   out

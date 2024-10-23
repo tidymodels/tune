@@ -32,7 +32,7 @@
 #' units). See details below.
 #' @param eval_time A single numeric time point where dynamic event time
 #' metrics should be chosen (e.g., the time-dependent ROC curve, etc). The
-#' values should be consistent with the values used to create `x`. The `NULL` 
+#' values should be consistent with the values used to create `x`. The `NULL`
 #' default will automatically use the first evaluation time used by `x`.
 #' @param call The call to be shown in errors and warnings.
 #' @return A tibble with columns for the parameters. [show_best()] also
@@ -72,16 +72,16 @@ show_best <- function(x, ...) {
 #' @export
 #' @rdname show_best
 show_best.default <- function(x, ...) {
-  rlang::abort("No `show_best()` exists for this type of object.")
+  cli::cli_abort("No {.fn show_best} exists for this type of object.")
 }
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x, 
+show_best.tune_results <- function(x,
                                    ...,
-                                   metric = NULL, 
+                                   metric = NULL,
                                    eval_time = NULL,
-                                   n = 5, 
+                                   n = 5,
                                    call = rlang::current_env()) {
   rlang::check_dots_empty()
 
@@ -114,7 +114,7 @@ select_best <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_best.default <- function(x, ...) {
-  rlang::abort("No `select_best()` exists for this type of object.")
+  cli::cli_abort("No {.fn select_best} exists for this type of object.")
 }
 
 #' @export
@@ -141,7 +141,7 @@ select_by_pct_loss <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_pct_loss.default <- function(x, ...) {
-  rlang::abort("No `select_by_pct_loss()` exists for this type of object.")
+  cli::cli_abort("No {.fn select_by_pct_loss} exists for this type of object.")
 }
 
 #' @export
@@ -207,7 +207,7 @@ select_by_one_std_err <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err.default <- function(x, ...) {
-  rlang::abort("No `select_by_one_std_err()` exists for this type of object.")
+  cli::cli_abort("No {.fn select_by_one_std_err} exists for this type of object.")
 }
 
 #' @export

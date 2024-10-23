@@ -30,7 +30,7 @@
       compute_metrics("boop", metric_set(rsq))
     Condition
       Error in `compute_metrics()`:
-      ! No `compute_metrics()` method exists for this type of object.
+      ! No `compute_metrics()` method exists for a string.
 
 ---
 

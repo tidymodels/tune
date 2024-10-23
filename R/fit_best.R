@@ -78,10 +78,8 @@ fit_best <- function(x, ...) {
 #' @export
 #' @rdname fit_best
 fit_best.default <- function(x, ...) {
-  cls <- class(x)
   cli::cli_abort(
-    "There is no `fit_best()` method for an object with \\
-     {cli::qty(cls)} class{?es} {.var {cls}}."
+    "No {.fn fit_best} exists for {.obj_type_friendly {x}}."
   )
 }
 
@@ -162,8 +160,9 @@ fit_best.tune_results <- function(x,
     }
   } else {
     if (!is.null(add_validation_set)) {
-      rlang::warn(
-        "The option `add_validation_set` is being ignored because the resampling object does not include a validation set."
+      cli::cli_warn(
+        "The option {.arg add_validation_set} is being ignored because the
+         resampling object does not include a validation set."
       )
     }
     dat <- x$splits[[1]]$data

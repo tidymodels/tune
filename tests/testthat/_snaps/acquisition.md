@@ -12,7 +12,7 @@
       conf_bound(function() 1)
     Condition
       Error in `conf_bound()`:
-      ! The `trade_off` function should have at least one argument.
+      ! The `trade_off()` function should have at least one argument.
 
 ---
 
@@ -36,7 +36,7 @@
       prob_improve(function() 1)
     Condition
       Error in `prob_improve()`:
-      ! The `trade_off` function should have at least one argument.
+      ! The `trade_off()` function should have at least one argument.
 
 ---
 
@@ -76,7 +76,7 @@
       exp_improve(function() 2)
     Condition
       Error in `exp_improve()`:
-      ! The `trade_off` function should have at least one argument.
+      ! The `trade_off()` function should have at least one argument.
 
 ---
 

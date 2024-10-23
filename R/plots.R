@@ -85,18 +85,16 @@ autoplot.tune_results <-
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
     if (!has_iter && type != "marginals") {
-      rlang::abort(paste0("`type = ", type, "` is only used with iterative search results."))
+      cli::cli_abort("{.code type = {type}} is only used with
+                      iterative search results.")
     }
     pset <- .get_tune_parameters(object)
     if (any(is.na(pset$object))) {
       p_names <- pset$id[is.na(pset$object)]
-      msg <-
-        paste0(
-          "Some parameters do not have corresponding parameter objects ",
-          "and cannot be used with `autoplot()`: ",
-          paste0("'", p_names, "'", collapse = ", ")
-        )
-      rlang::abort(msg)
+      cli::cli_abort(
+        "Some parameters do not have corresponding parameter objects and
+         cannot be used with {.fn autoplot}: {.arg {p_names}}."
+      )
     }
 
     if (type == "parameters") {
@@ -122,7 +120,7 @@ autoplot.tune_results <-
 
 #' @export
 autoplot.resample_results <- function(object, ...) {
-  rlang::abort("There is no `autoplot()` implementation for `resample_results`.")
+  cli::cli_abort("There is no {.fn autoplot} implementation for {.cls resample_results}.")
 }
 
 # ------------------------------------------------------------------------------
@@ -322,7 +320,8 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    rlang::abort("`autoplot()` requires objects made with tune version 0.1.0 or later.")
+    cli::cli_abort("{.fn autoplot} requires objects made with {.pkg tune}
+                    version 0.1.0 or later.")
   }
 
   # ----------------------------------------------------------------------------
@@ -378,7 +377,8 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    rlang::abort("`autoplot()` requires objects made with tune version 0.1.0 or later.")
+    cli::cli_abort("{.fn autoplot} requires objects made with {.pkg tune}
+                   version 0.1.0 or later.")
   }
 
   # ----------------------------------------------------------------------------
@@ -408,10 +408,10 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
     num_param_cols <- param_cols[is_num]
     chr_param_cols <- param_cols[!is_num]
     if (length(chr_param_cols) > 1) {
-      rlang::abort("Currently cannot autoplot grids with 2+ non-numeric parameters.")
+      cli::cli_abort("Currently cannot autoplot grids with 2+ non-numeric parameters.")
     }
     if (length(num_param_cols) == 0) {
-      rlang::abort("Currently cannot autoplot grids with only non-numeric parameters.")
+      cli::cli_abort("Currently cannot autoplot grids with only non-numeric parameters.")
     }
     num_val <- num_val[param_cols %in% chr_param_cols]
     names(num_val) <- chr_param_cols
@@ -521,7 +521,8 @@ plot_regular_grid <- function(x,
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    rlang::abort("`autoplot()` requires objects made with tune version 0.1.0 or later.")
+    cli::cli_abort("The {.fn autoplot} function requires objects made with
+                    {.pkg tune} version 0.1.0 or later.")
   }
 
   grd <- dat %>% dplyr::select(all_of(param_cols))

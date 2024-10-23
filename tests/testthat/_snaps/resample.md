@@ -74,7 +74,8 @@
       result <- tune_grid(lin_mod, mpg ~ ., folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # `tune_grid()` falls back to `fit_resamples()` - workflow variables
 
@@ -82,7 +83,8 @@
       result <- tune_grid(wf, folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # `tune_grid()` ignores `grid` if there are no tuning parameters
 
@@ -90,7 +92,8 @@
       result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds)
     Condition
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
 
 # cannot autoplot `fit_resamples()` results
 
@@ -98,7 +101,7 @@
       autoplot(result)
     Condition
       Error in `autoplot()`:
-      ! There is no `autoplot()` implementation for `resample_results`.
+      ! There is no `autoplot()` implementation for <resample_results>.
 
 # ellipses with fit_resamples
 
@@ -106,7 +109,7 @@
       lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong")
     Condition
       Warning:
-      The `...` are not used in this function but one or more objects were passed: 'something'
+      The `...` are not used in this function but 1 object was passed: "something"
     Output
       # Resampling results
       # 2-fold cross-validation 
@@ -122,7 +125,7 @@
       fit_resamples(rec, lin_mod, folds)
     Condition
       Error in `fit_resamples()`:
-      ! The first argument to [fit_resamples()] should be either a model or workflow.
+      ! The first argument to `fit_resamples()` should be either a model or workflow, not a <recipe> object.
 
 ---
 
@@ -130,7 +133,7 @@
       fit_resamples(mpg ~ ., lin_mod, folds)
     Condition
       Error in `fit_resamples()`:
-      ! The first argument to [fit_resamples()] should be either a model or workflow.
+      ! The first argument to `fit_resamples()` should be either a model or workflow, not a <formula> object.
 
 # retain extra attributes
 
@@ -152,16 +155,16 @@
 
 # `fit_resamples()` when objects need tuning
 
-    2 arguments have been tagged for tuning in these components: model_spec and recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    2 arguments have been tagged for tuning in these components: model_spec and recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: model_spec. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: model_spec.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 

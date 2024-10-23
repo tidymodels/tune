@@ -5,8 +5,7 @@
         `%^*#` = 1))
     Condition
       Error in `filter_parameters()`:
-      ! collect_metrics should have class 'tune_results'.
-      * svm_reg_results should have class 'tune_results'.
+      ! `x` should have class <tune_results>; a tibble was passed.
 
 ---
 
@@ -14,7 +13,7 @@
       filter_parameters(svm_reg_results, parameters = tibble::tibble(soup = 1))
     Condition
       Error in `filter_by_join()`:
-      ! There are no columns in 'parameters' that match with svm_reg_results
+      ! There are no columns in `parameters` that match with "svm_reg_results".
 
 ---
 

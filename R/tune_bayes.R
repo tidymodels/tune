@@ -182,11 +182,10 @@ tune_bayes <- function(object, ...) {
 
 #' @export
 tune_bayes.default <- function(object, ...) {
-  msg <- paste0(
-    "The first argument to [tune_bayes()] should be either ",
-    "a model or workflow."
+  cli::cli_abort(
+    "The first argument to {.fn tune_bayes} should be either a model or workflow,
+    not {.obj_type_friendly {object}}."
   )
-  rlang::abort(msg)
 }
 
 #' @export
@@ -203,10 +202,7 @@ tune_bayes.model_spec <- function(object,
                                   initial = 5,
                                   control = control_bayes()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste(
-      "To tune a model spec, you must preprocess",
-      "with a formula or recipe"
-    ))
+    cli::cli_abort(tune_pp_msg)
   }
 
   # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
@@ -839,7 +835,7 @@ check_time <- function(origin, limit) {
   }
   now_time <- proc.time()[3]
   if (now_time - origin >= limit * 60) {
-    rlang::abort(paste("The time limit of", limit, "minutes has been reached."))
+    cli::cli_abort("The time limit of {limit} minute{?s} has been reached.")
   }
   invisible(NULL)
 }
@@ -877,7 +873,8 @@ save_gp_results <- function(x, pset, ctrl, i, iter) {
   file_name <- paste0(nm, ".RData")
   res <- try(save(x, pset, i, file = file.path(tempdir(), file_name)), silent = TRUE)
   if (inherits(res, "try-error")) {
-    rlang::warn(paste("Could not save GP results:", as.character(res)))
+    err <- cli::format_error(as.character(res))
+    cli::cli_warn("Could not save GP results: {err}")
   }
   invisible(res)
 }

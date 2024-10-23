@@ -102,7 +102,7 @@ get_fixed_args <- function(info) {
 
 get_submodel_info <- function(spec) {
   if (is.null(spec$engine)) {
-    rlang::abort("Please set the model's engine.")
+    cli::cli_abort("Please set the model's engine.")
   }
   param_info <-
     get_from_env(paste0(class(spec)[1], "_args")) %>%
@@ -255,7 +255,7 @@ min_grid.linear_reg <- function(x, grid, ...) {
 
 no_penalty <- function(x, nm) {
   if (length(nm) == 0 || all(colnames(x) != nm)) {
-    rlang::abort("At least one penalty value is required for glmnet.")
+    cli::cli_abort("At least one penalty value is required for {.pkg glmnet}.")
   }
   invisible(NULL)
 }

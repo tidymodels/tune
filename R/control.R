@@ -312,7 +312,7 @@ new_backend_options <- function(..., class = character()) {
   out <- rlang::list2(...)
 
   if (any(rlang::names2(out) == "")) {
-    rlang::abort("All backend options must be named.")
+    cli::cli_abort("All backend options must be named.")
   }
 
   structure(out, class = c(class, "tune_backend_options"))

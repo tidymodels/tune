@@ -96,7 +96,8 @@ tune_grid_loop_agua <- function(resamples,
                                 eval_time = NULL,
                                 rng) {
   if (!rlang::is_installed("agua")) {
-    rlang::abort("`agua` must be installed to use an h2o parsnip engine.")
+    cli::cli_abort("The {.pkg agua} package must be installed to use an h2o
+                   parsnip engine.")
   }
 
   parallel_over <- control$parallel_over
@@ -126,7 +127,8 @@ parallel_over_finalize_agua <- function(parallel_over) {
   }
 
   if (!identical(parallel_over, "resamples")) {
-    rlang::abort("`agua` only supports `parallel_over = \"resamples\".")
+    cli::cli_abort("The {.arg agua} package only supports
+                   {.code parallel_over = 'resamples'}.")
   }
 
   parallel_over
@@ -298,7 +300,7 @@ tune_grid_loop_impl <- function(fn_tune_grid_loop_iter,
     return(results)
   }
 
-  rlang::abort("Invalid `parallel_over`.", .internal = TRUE)
+  cli::cli_abort("Invalid {.arg parallel_over}.", .internal = TRUE)
 }
 
 # ------------------------------------------------------------------------------

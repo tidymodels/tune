@@ -98,11 +98,10 @@ last_fit <- function(object, ...) {
 
 #' @export
 last_fit.default <- function(object, ...) {
-  msg <- paste0(
-    "The first argument to [last_fit()] should be either ",
-    "a model or workflow."
+  cli::cli_abort(
+    "The first argument to {.fn last_fit} should be either a model or workflow,
+    not {.obj_type_friendly {object}}."
   )
-  rlang::abort(msg)
 }
 
 #' @export
@@ -117,16 +116,17 @@ last_fit.model_fit <- function(object, ...) {
   ))
 }
 
+tune_pp_msg <- "To tune a model specification, you must preprocess with a
+                formula, recipe, or {.pkg dplyr} selectors, not
+                {.obj_type_friendly {preprocessor}}."
+
 #' @export
 #' @rdname last_fit
 last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
                                 eval_time = NULL, control = control_last_fit(),
                                 add_validation_set = FALSE) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste(
-      "To tune a model spec, you must preprocess",
-      "with a formula or recipe"
-    ))
+    cli::cli_abort(tune_pp_msg)
   }
 
   control <- parsnip::condense_control(control, control_last_fit())

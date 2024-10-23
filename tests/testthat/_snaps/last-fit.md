@@ -21,7 +21,7 @@
       linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong")
     Condition
       Warning:
-      The `...` are not used in this function but one or more objects were passed: 'something'
+      The `...` are not used in this function but 1 object was passed: "something"
     Output
       # Resampling results
       # Manual resampling 
@@ -36,7 +36,7 @@
       last_fit(rec, lin_mod, split)
     Condition
       Error in `last_fit()`:
-      ! The first argument to [last_fit()] should be either a model or workflow.
+      ! The first argument to `last_fit()` should be either a model or workflow, not a <recipe> object.
 
 ---
 
@@ -44,20 +44,20 @@
       last_fit(f, lin_mod, split)
     Condition
       Error in `last_fit()`:
-      ! The first argument to [last_fit()] should be either a model or workflow.
+      ! The first argument to `last_fit()` should be either a model or workflow, not a <formula> object.
 
 # `last_fit()` when objects need tuning
 
-    2 arguments have been tagged for tuning in these components: model_spec and recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    2 arguments have been tagged for tuning in these components: model_spec and recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: model_spec. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: model_spec.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
 ---
 
-    1 argument has been tagged for tuning in this component: recipe. 
-    Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
+    1 argument has been tagged for tuning in this component: recipe.
+    i Please use one of the tuning functions (e.g. `tune_grid()`) to optimize them.
 
