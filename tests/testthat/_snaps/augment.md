@@ -22,7 +22,7 @@
       augment(fit_1, parameters = list(cost = 3))
     Condition
       Error in `augment()`:
-      ! 'parameters' should be a single row data frame
+      ! `parameters` should be a single row data frame.
 
 ---
 
@@ -30,7 +30,7 @@
       augment(fit_1, parameters = data.frame(cost = 3:4))
     Condition
       Error in `augment()`:
-      ! 'parameters' should be a single row data frame
+      ! `parameters` should be a single row data frame.
 
 ---
 

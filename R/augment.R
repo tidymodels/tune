@@ -49,7 +49,7 @@ augment.tune_results <- function(x, ..., parameters = NULL) {
     parameters <- select_best(x, metric = obj_fun, eval_time = obj_eval_time)
   } else {
     if (!is.data.frame(parameters) || nrow(parameters) > 1) {
-      rlang::abort("'parameters' should be a single row data frame")
+      cli::cli_abort("{.arg parameters} should be a single row data frame.")
     }
   }
 

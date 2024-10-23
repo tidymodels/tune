@@ -26,15 +26,17 @@
 #' @export
 .use_case_weights_with_yardstick.default <- function(x) {
   message <- c(
-    paste0("Unknown case weights object with class <", class(x)[[1]], ">. "),
+    cli::format_inline("Unknown case weights object contains
+                       {.obj_type_friendly {x}} instead of an object with a
+                       case weight class."),
     i = paste0(
-      "Define a `.use_case_weights_with_yardstick()` method for this type to ",
+      "Define a {.fn .use_case_weights_with_yardstick()} method for this type to ",
       "declare whether or not these case weights should be passed on to yardstick."
     ),
     i = "See `?.use_case_weights_with_yardstick` for more information."
   )
 
-  rlang::abort(message)
+  cli::cli_abort(message)
 }
 
 #' @rdname dot-use_case_weights_with_yardstick
@@ -55,7 +57,7 @@ extract_case_weights <- function(data, workflow) {
   col <- extract_case_weights_col(workflow)
 
   if (!rlang::is_quosure(col)) {
-    rlang::abort("`col` must exist and be a quosure at this point.", .internal = TRUE)
+    cli::cli_abort("{.arg col} must exist and be a quosure at this point.", .internal = TRUE)
   }
 
   loc <- eval_select_case_weights(col, data)
@@ -63,10 +65,10 @@ extract_case_weights <- function(data, workflow) {
   case_weights <- data[[loc]]
 
   if (!hardhat::is_case_weights(case_weights)) {
-    rlang::abort(paste0(
-      "Case weights must be a supported case weights type, as determined by ",
-      "`hardhat::is_case_weights()`."
-    ))
+    cli::cli_abort(
+      "Case weights must be a supported case weights type, as determined by
+      {.fn hardhat::is_case_weights}."
+    )
   }
 
   case_weights
@@ -96,12 +98,11 @@ eval_select_case_weights <- function(col,
   )
 
   if (length(loc) != 1L) {
-    message <- paste0(
-      "`col` must specify exactly one column from ",
-      "`data` to extract case weights from."
+    cli::cli_abort(
+      "{.arg col} must specify exactly one column from {.arg data} to
+       extract case weights from.",
+      call = call
     )
-
-    rlang::abort(message, call = call)
   }
 
   loc
