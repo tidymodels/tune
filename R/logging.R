@@ -32,15 +32,9 @@
 #' @export
 message_wrap <-
   function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
-    if (!is.character(x) || length(x) > 1) {
-      rlang::abort("'x' should be a single character string.")
-    }
-    if (!is.null(color_text) && !is.function(color_text)) {
-      rlang::abort("'color_text' should be null or a function.")
-    }
-    if (!is.null(color_prefix) && !is.function(color_prefix)) {
-      rlang::abort("'color_prefix' should be null or a function.")
-    }
+    check_string(x)
+    check_function(color_text, allow_null = TRUE)
+    check_function(color_prefix, allow_null = TRUE)
     n <- nchar(prefix)
     if (n > 0) {
       buffer <- paste0(rep(" ", n + 1), collapse = "")

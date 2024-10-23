@@ -5,34 +5,34 @@
     Message
       x Fold01: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold02: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold03: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold04: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold05: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold06: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold07: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold08: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold09: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
       x Fold10: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
-        ! The following required column is missing from `new_data` in step 'st...
+        ! The following required column is missing from `new_data`: date.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -43,25 +43,25 @@
       show_notes(res_roles)
     Output
       unique notes:
-      --------------------------------------------------------------------------------
+      -----------------------------------------------------------------
       Error in `step_date()`:
-      ! The following required column is missing from `new_data` in step 'step_date': date.
+      ! The following required column is missing from `new_data`: date.
 
 ---
 
     Code
       res_simple <- simple_wflow %>% fit_resamples(rs)
     Message
-      ! Fold01: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold02: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold03: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold04: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold05: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold06: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold07: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold08: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold09: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
-      ! Fold10: preprocessor 1/1, model 1/1 (predictions): prediction from a rank-deficient fit may be misleading
+      ! Fold01: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold02: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold03: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold04: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold05: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold06: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold07: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold08: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold09: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      ! Fold10: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 
 ---
 
@@ -69,8 +69,8 @@
       show_notes(res_simple)
     Output
       unique notes:
-      ------------------------------------------------------
-      prediction from a rank-deficient fit may be misleading
+      ---------------------------------------------------------------------------
+      prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 
 ---
 
