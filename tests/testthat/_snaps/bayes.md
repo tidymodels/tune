@@ -432,7 +432,7 @@
       param_info = extract_parameter_set_dials(rec_tune_1), iter = iter1, initial = iter2)
     Condition
       Error in `tune_bayes()`:
-      ! The first argument to [tune_bayes()] should be either a model or workflow.
+      ! The first argument to `tune_bayes()` should be either a model or workflow, not a <recipe> object.
 
 # argument order gives an error for formula
 
@@ -441,7 +441,7 @@
       param_info = extract_parameter_set_dials(svm_mod), initial = iter1, iter = iter2)
     Condition
       Error in `tune_bayes()`:
-      ! The first argument to [tune_bayes()] should be either a model or workflow.
+      ! The first argument to `tune_bayes()` should be either a model or workflow, not a <formula> object.
 
 # retain extra attributes and saved GP candidates
 

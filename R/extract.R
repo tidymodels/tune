@@ -115,10 +115,10 @@ extract_recipe.tune_results <- function(x, ..., estimated = TRUE) {
 check_empty_dots <- function(...) {
   opts <- list(...)
   if (any(names(opts) == "estimated")) {
-    rlang::abort("'estimated' should be a named argument.")
+    cli::cli_abort("'{.arg estimated}' should be a named argument.")
   }
   if (length(opts) > 0) {
-    rlang::abort("'...' are not used in this function.")
+    cli::cli_abort("The {.arg ...} are not used in this function.")
   }
   invisible(NULL)
 }

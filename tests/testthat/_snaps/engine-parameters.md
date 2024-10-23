@@ -12,7 +12,7 @@
       p <- autoplot(rf_tune)
     Condition
       Error in `autoplot()`:
-      ! Some parameters do not have corresponding parameter objects and cannot be used with `autoplot()`: 'corr.bias'
+      ! Some parameters do not have corresponding parameter objects and cannot be used with `autoplot()`: `corr.bias`.
 
 ---
 

@@ -76,10 +76,9 @@ metrics_info <- function(x) {
   types <- unique(metrics_info$type)
 
   if (length(outcome_name) > 1L) {
-    rlang::abort(paste0(
-      "Internal error: Multiple outcomes are not ",
-      "supported in `.estimate_metrics()`."
-    ))
+    cli::cli_abort(
+      "Internal error: Multiple outcomes are not supported in {.fn .estimate_metrics}."
+    )
   }
 
   if (case_weights_column_name() %in% names(dat)) {
@@ -95,7 +94,7 @@ metrics_info <- function(x) {
   } else if (all(types == "time" | types == "survival")) {
     estimate_surv(dat, metric, param_names, outcome_name, case_weights, types)
   } else {
-    rlang::abort("Metric type not yet supported by tune.")
+    cli::cli_abort("Metric type not yet supported by {.pkg tune}.")
   }
 }
 
@@ -127,7 +126,8 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
       } else if (identical(event_level, "second")) {
         probs <- probs[[2]]
       } else {
-        rlang::abort("`event_level` must be either 'first' or 'second'.")
+        cli::cli_abort("{.arg event_level} must be either {.val first} or
+                        {.val second}.")
       }
     }
   }
@@ -162,18 +162,18 @@ unnest_parameters <- function(x, params = NULL) {
    if (is.null(params)) {
     return(x)
    }
-   
+
   # When multi_predict() is used, .pred will have the tuning parameter values.
   # Other (non-submodel) parameters will be outside of 'x'.
   # If this happens, pull the submodel parameters out of .pred and put them at
   # the out level ('x') with the rest (if any)
-  
+
   outer_nms <- names(x)
   has_pred <- any(outer_nms == ".pred")
    if (!has_pred) {
     return(x)
   }
-  
+
   inner_nms <- names(x$.pred[[1]])
   has_inner_params <- any(params %in% inner_nms)
   if (!has_inner_params) {

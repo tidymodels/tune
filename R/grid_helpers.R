@@ -15,25 +15,22 @@ predict_model <- function(new_data, orig_rows, workflow, grid, metrics,
   }
 
   if (length(orig_rows) != nrow(x_vals)) {
-    msg <- paste0(
-      "Some assessment set rows are not available at ",
-      "prediction time. "
-    )
+    msg <- "Some assessment set rows are not available at prediction time."
 
     if (has_preprocessor_recipe(workflow)) {
-      msg <- paste0(
-        msg,
-        "Consider using `skip = TRUE` on any recipe steps that remove rows ",
-        "to avoid calling them on the assessment set."
-      )
+      msg <-
+        c(
+          msg,
+          i = cli::format_inline(
+            "Consider using {.code skip = TRUE} on any recipe steps that
+             remove rows to avoid calling them on the assessment set."
+          )
+        )
     } else {
-      msg <- paste0(
-        msg,
-        "Did your preprocessing steps filter or remove rows?"
-      )
+      msg <- c(msg, i = "Did your preprocessing steps filter or remove rows?")
     }
 
-    rlang::abort(msg)
+    cli::cli_abort(msg)
   }
 
   # Determine the type of prediction that is required
@@ -326,7 +323,8 @@ compute_grid_info <- function(workflow, grid) {
     if (any_parameters_preprocessor) {
       compute_grid_info_preprocessor(workflow, grid, parameters_model)
     } else {
-      rlang::abort("Internal error: `workflow` should have some tunable parameters if `grid` is not `NULL`.")
+      cli::cli_abort("Internal error: {.arg workflow} should have some tunable
+                     parameters if {.arg grid} is not {.code NULL}.")
     }
   }
 }

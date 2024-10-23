@@ -244,11 +244,10 @@ tune_grid <- function(object, ...) {
 
 #' @export
 tune_grid.default <- function(object, ...) {
-  msg <- paste0(
-    "The first argument to [tune_grid()] should be either ",
-    "a model or workflow."
+  cli::cli_abort(
+    "The first argument to {.fn tune_grid} should be either a model or workflow,
+    not {.obj_type_friendly {object}}."
   )
-  rlang::abort(msg)
 }
 
 #' @export
@@ -257,10 +256,7 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
                                  param_info = NULL, grid = 10, metrics = NULL,
                                  eval_time = NULL, control = control_grid()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste(
-      "To tune a model spec, you must preprocess",
-      "with a formula or recipe"
-    ))
+    cli::cli_abort(tune_pp_msg)
   }
 
   control <- parsnip::condense_control(control, control_grid())
@@ -298,7 +294,7 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
   # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
   # used when no tuning is required
   if (is.null(grid)) {
-    rlang::abort(grid_msg)
+    cli::cli_abort(grid_msg)
   }
 
   res <-

@@ -43,7 +43,7 @@
         mtcars, v = 2))
     Condition
       Error in `tune_grid()`:
-      ! The first argument to [tune_grid()] should be either a model or workflow.
+      ! The first argument to `tune_grid()` should be either a model or workflow, not a <recipe> object.
 
 # argument order gives errors for formula
 
@@ -51,7 +51,7 @@
       tune_grid(mpg ~ ., helper_objects$lm_mod, rsample::vfold_cv(mtcars, v = 2))
     Condition
       Error in `tune_grid()`:
-      ! The first argument to [tune_grid()] should be either a model or workflow.
+      ! The first argument to `tune_grid()` should be either a model or workflow, not a <formula> object.
 
 # ellipses with tune_grid
 

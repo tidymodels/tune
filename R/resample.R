@@ -60,11 +60,10 @@ fit_resamples <- function(object, ...) {
 
 #' @export
 fit_resamples.default <- function(object, ...) {
-  msg <- paste0(
-    "The first argument to [fit_resamples()] should be either ",
-    "a model or workflow."
+  cli::cli_abort(
+    "The first argument to {.fn fit_resamples} should be either a model or workflow,
+    not {.obj_type_friendly {object}}."
   )
-  rlang::abort(msg)
 }
 
 #' @export
@@ -77,10 +76,7 @@ fit_resamples.model_spec <- function(object,
                                      eval_time = NULL,
                                      control = control_resamples()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste(
-      "To tune a model spec, you must preprocess",
-      "with a formula or recipe"
-    ))
+    cli::cli_abort(tune_pp_msg)
   }
 
   control <- parsnip::condense_control(control, control_resamples())

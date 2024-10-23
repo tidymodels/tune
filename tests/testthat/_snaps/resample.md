@@ -101,7 +101,7 @@
       autoplot(result)
     Condition
       Error in `autoplot()`:
-      ! There is no `autoplot()` implementation for `resample_results`.
+      ! There is no `autoplot()` implementation for <resample_results>.
 
 # ellipses with fit_resamples
 
@@ -125,7 +125,7 @@
       fit_resamples(rec, lin_mod, folds)
     Condition
       Error in `fit_resamples()`:
-      ! The first argument to [fit_resamples()] should be either a model or workflow.
+      ! The first argument to `fit_resamples()` should be either a model or workflow, not a <recipe> object.
 
 ---
 
@@ -133,7 +133,7 @@
       fit_resamples(mpg ~ ., lin_mod, folds)
     Condition
       Error in `fit_resamples()`:
-      ! The first argument to [fit_resamples()] should be either a model or workflow.
+      ! The first argument to `fit_resamples()` should be either a model or workflow, not a <formula> object.
 
 # retain extra attributes
 

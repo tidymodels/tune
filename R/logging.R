@@ -390,7 +390,8 @@ format_msg <- function(loc, msg) {
   }
 
   if (!is_workflow(result)) {
-    rlang::abort("Internal error: Model result is not a workflow!")
+    cli::cli_abort("Internal error: Model result is not a workflow, but
+                   not {.obj_type_friendly {object}.")
   }
 
   # Extract the parsnip model from the fitted workflow

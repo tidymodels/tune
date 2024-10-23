@@ -78,10 +78,8 @@ fit_best <- function(x, ...) {
 #' @export
 #' @rdname fit_best
 fit_best.default <- function(x, ...) {
-  cls <- class(x)
   cli::cli_abort(
-    "There is no `fit_best()` method for an object with \\
-     {cli::qty(cls)} class{?es} {.var {cls}}."
+    "No {.fn fit_best} exists for {.obj_type_friendly {x}}."
   )
 }
 

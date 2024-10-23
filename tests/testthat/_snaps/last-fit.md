@@ -36,7 +36,7 @@
       last_fit(rec, lin_mod, split)
     Condition
       Error in `last_fit()`:
-      ! The first argument to [last_fit()] should be either a model or workflow.
+      ! The first argument to `last_fit()` should be either a model or workflow, not a <recipe> object.
 
 ---
 
@@ -44,7 +44,7 @@
       last_fit(f, lin_mod, split)
     Condition
       Error in `last_fit()`:
-      ! The first argument to [last_fit()] should be either a model or workflow.
+      ! The first argument to `last_fit()` should be either a model or workflow, not a <formula> object.
 
 # `last_fit()` when objects need tuning
 
