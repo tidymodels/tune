@@ -410,20 +410,6 @@ test_that("initial values", {
 
 # ------------------------------------------------------------------------------
 
-
-test_that("Acquisition function objects", {
-  expect_null(tune:::check_direction(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_direction(1))
-  expect_snapshot(error = TRUE, tune:::check_direction(rep(TRUE, 2)))
-
-  expect_null(tune:::check_best(1))
-  expect_snapshot(error = TRUE, tune:::check_best(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_best(rep(2, 2)))
-  expect_snapshot(error = TRUE, tune:::check_best(NA))
-})
-
-# ------------------------------------------------------------------------------
-
 test_that("validation helpers", {
   expect_true(tune:::check_class_or_null("a", "character"))
   expect_true(tune:::check_class_or_null(letters, "character"))
