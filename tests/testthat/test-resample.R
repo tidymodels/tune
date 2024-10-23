@@ -140,7 +140,7 @@ test_that("extracted workflow is finalized", {
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (requires training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
@@ -202,7 +202,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (no training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
