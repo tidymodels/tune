@@ -55,7 +55,7 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      rlang::abort("The `trade_off` function should have at least one argument.")
+      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -115,7 +115,7 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      rlang::abort("The `trade_off` function should have at least one argument.")
+      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -166,7 +166,7 @@ conf_bound <- function(kappa = 0.1) {
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
     if (length(farg) == 0) {
-      rlang::abort("The `trade_off` function should have at least one argument.")
+      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
     }
     lab <- paste(lab, "with variable kappa values.")
   }
