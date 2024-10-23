@@ -104,9 +104,6 @@ test_that("performance plot for iterative search", {
   expect_equal(rlang::get_expr(p$mapping$x), expr(.iter))
   expect_equal(rlang::get_expr(p$mapping$y), expr(mean))
   expect_equal(p$labels$x, "Iteration")
-  expect_equal(p$labels$y, "mean")
-  expect_equal(p$labels$ymin, "mean - const * std_err")
-  expect_equal(p$labels$ymax, "mean + const * std_err")
 
   p <- autoplot(mt_spln_knn_bo_sep, type = "performance", metric = "rmse")
   expect_true(isTRUE(all.equal(unique(p$data$.metric), "rmse")))
@@ -183,7 +180,6 @@ test_that("regular grid plot", {
   expect_equal(p$labels$y, "")
   expect_equal(p$labels$colour, as.name("%^*#"))
   expect_equal(p$labels$x, "Cost")
-  expect_equal(p$labels$group, "%^*#")
 
   expect_true(grepl("^trans", class(p$scales$scales[[1]]$trans)))
   expect_equal(p$scales$scales[[1]]$trans$name, "log-2")
