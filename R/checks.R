@@ -627,7 +627,7 @@ check_eval_time <- function(eval_time, metrics) {
 }
 
 check_time_limit_arg <- function(x, call = rlang::caller_env()) {
-  if (!inherits(x, c("logical", "numeric")) || length(x) > 1) {
+  if (!inherits(x, c("logical", "numeric")) || length(x) != 1L) {
     cli::cli_abort("{.arg time_limit} should be either a single numeric or
                     logical value.", call = call)
   }
