@@ -59,7 +59,7 @@ Suggests:
 Remotes:
     tidymodels/rsample,
     tidymodels/tailor,
-    tidymodels/workflows.
+    tidymodels/workflows,
     tidymodels/recipes
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
