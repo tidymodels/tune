@@ -277,8 +277,7 @@ test_that("failure in recipe is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(any(grepl("Expecting", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -309,8 +308,7 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the variables part
-  expect_true(any(grepl("foobar", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -339,8 +337,7 @@ test_that("classification models generate correct error message", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(all(grepl("outcome should be a `factor`", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
