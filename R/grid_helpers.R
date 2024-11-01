@@ -307,6 +307,8 @@ compute_grid_info <- function(workflow, grid) {
     return(out)
   }
 
+  grid <- tibble::as_tibble(grid)
+
   parameters <- hardhat::extract_parameter_set_dials(workflow)
   parameters_model <- dplyr::filter(parameters, source == "model_spec")
   parameters_preprocessor <- dplyr::filter(parameters, source == "recipe")
