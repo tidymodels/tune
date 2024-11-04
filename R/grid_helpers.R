@@ -319,27 +319,39 @@ compute_grid_info <- function(workflow, grid) {
   res <- min_grid(extract_spec_parsnip(workflow), grid)
 
   if (any_parameters_preprocessor) {
-    res$.iter_preprocessor <- seq_len(nrow(res))
+    res$.iter_preprocessor <-
+      vctrs::vec_group_id(res[parameters_preprocessor$id])
+    attr(res$.iter_preprocessor, "n") <- NULL
   } else {
     res$.iter_preprocessor <- 1L
   }
 
   res$.msg_preprocessor <-
     new_msgs_preprocessor(
-      seq_len(max(res$.iter_preprocessor)),
+      res$.iter_preprocessor,
       max(res$.iter_preprocessor)
     )
 
   if (nrow(res) != nrow(grid) ||
       (any_parameters_model && !any_parameters_preprocessor)) {
-    res$.iter_model <- seq_len(dplyr::n_distinct(res[parameters_model$id]))
+    res$.iter_model <- vctrs::vec_group_id(res[parameters_model$id])
+    attr(res$.iter_model, "n") <- NULL
   } else {
     res$.iter_model <- 1L
   }
 
   res$.iter_config <- list(list())
+  shift_submodels <- integer(length(unique(res$.iter_preprocessor)))
   for (row in seq_len(nrow(res))) {
-    res$.iter_config[row] <- list(iter_config(res[row, ]))
+    res_row <- res[row, ]
+    iter_config <- iter_config(
+      res_row,
+      shift = shift_submodels[res_row$.iter_preprocessor]
+    )
+    shift_submodels[res_row$.iter_preprocessor] <-
+      shift_submodels[res_row$.iter_preprocessor] +
+      length(res_row$.submodels[[1]])
+    res$.iter_config[row] <- list(iter_config)
   }
 
   res$.msg_model <-
@@ -348,19 +360,18 @@ compute_grid_info <- function(workflow, grid) {
   res
 }
 
-iter_config <- function(res_row) {
+iter_config <- function(res_row, shift) {
   submodels <- res_row$.submodels[[1]]
-  if (identical(submodels, list())) {
-    models <- res_row$.iter_model
-  } else {
-    models <- seq_len(length(submodels[[1]]) + 1)
+  model_configs <- res_row$.iter_model
+  if (!identical(submodels, list())) {
+    model_configs <- model_configs + seq_len(length(submodels[[1]]) + 1L) - 1
   }
 
   paste0(
     "Preprocessor",
     res_row$.iter_preprocessor,
     "_Model",
-    format_with_padding(models)
+    format_with_padding(shift + model_configs)
   )
 }
 

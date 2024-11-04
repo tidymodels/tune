@@ -169,3 +169,115 @@ test_that("compute_grid_info - recipe and model (with submodels)", {
   )
   expect_equal(nrow(res), 3)
 })
+
+test_that("compute_grid_info - recipe and model (with and without submodels)", {
+  library(workflows)
+  library(parsnip)
+  library(recipes)
+  library(dials)
+
+  rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
+  spec <- boost_tree(mode = "regression", trees = tune(), loss_reduction = tune())
+
+  wflow <- workflow()
+  wflow <- add_model(wflow, spec)
+  wflow <- add_recipe(wflow, rec)
+
+  # use grid_regular to (partially) trigger submodel trick
+  set.seed(1)
+  param_set <- extract_parameter_set_dials(wflow)
+  grid <- bind_rows(grid_regular(param_set), grid_space_filling(param_set))
+  res <- compute_grid_info(wflow, grid)
+
+  expect_equal(length(unique(res$.iter_preprocessor)), 5)
+  expect_equal(
+    unique(res$.msg_preprocessor),
+    paste0("preprocessor ", 1:5, "/5")
+  )
+  expect_equal(res$trees, c(rep(max(grid$trees), 10), 1))
+  expect_equal(res$.iter_model, c(rep(1:3, each = 3), 4, 5))
+  expect_equal(
+    res$.iter_config[1:3],
+    list(
+      c("Preprocessor1_Model1", "Preprocessor1_Model2", "Preprocessor1_Model3", "Preprocessor1_Model4"),
+      c("Preprocessor2_Model1", "Preprocessor2_Model2", "Preprocessor2_Model3"),
+      c("Preprocessor3_Model1", "Preprocessor3_Model2", "Preprocessor3_Model3")
+    )
+  )
+  expect_equal(res$.msg_model[1:3], paste0("preprocessor ", 1:3, "/5, model 1/5"))
+  expect_equal(
+    res$.submodels[1:3],
+    list(
+      list(trees = c(1L, 1000L, 1000L)),
+      list(trees = c(1L, 1000L)),
+      list(trees = c(1L, 1000L))
+    )
+  )
+  expect_named(
+    res,
+    c(".iter_preprocessor", ".msg_preprocessor", "deg_free", "trees",
+      "loss_reduction", ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    ignore.order = TRUE
+  )
+  expect_equal(nrow(res), 11)
+})
+
+test_that("compute_grid_info - model (with and without submodels)", {
+  library(workflows)
+  library(parsnip)
+  library(recipes)
+  library(dials)
+
+  rec <- recipe(mpg ~ ., mtcars)
+  spec <- mars(num_terms = tune(), prod_degree = tune(), prune_method = tune()) %>%
+    set_mode("classification") %>%
+    set_engine("earth")
+
+  wflow <- workflow()
+  wflow <- add_model(wflow, spec)
+  wflow <- add_recipe(wflow, rec)
+
+  set.seed(123)
+  params_grid <- grid_space_filling(
+    num_terms() %>% range_set(c(1L, 12L)),
+    prod_degree(),
+    prune_method(values = c("backward", "none", "forward")),
+    size = 7,
+    type = "latin_hypercube"
+  )
+
+  res <- compute_grid_info(wflow, params_grid)
+
+  expect_equal(res$.iter_preprocessor, rep(1, 5))
+  expect_equal(res$.msg_preprocessor, rep("preprocessor 1/1", 5))
+  expect_equal(length(unique(res$num_terms)), 5)
+  expect_equal(res$.iter_model, 1:5)
+  expect_equal(
+    res$.iter_config,
+    list(
+      c("Preprocessor1_Model1", "Preprocessor1_Model2"),
+      c("Preprocessor1_Model3", "Preprocessor1_Model4"),
+      "Preprocessor1_Model5", "Preprocessor1_Model6", "Preprocessor1_Model7"
+    )
+  )
+  expect_equal(
+    unique(res$.msg_model),
+    paste0("preprocessor 1/1, model ", 1:5,"/5")
+  )
+  expect_equal(
+    res$.submodels,
+    list(
+      list(num_terms = c(1)),
+      list(num_terms = c(3)),
+      list(), list(), list()
+    )
+  )
+  expect_named(
+    res,
+    c(".iter_preprocessor", ".msg_preprocessor", "num_terms", "prod_degree",
+      "prune_method", ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    ignore.order = TRUE
+  )
+  expect_equal(nrow(res), 5)
+})
+
