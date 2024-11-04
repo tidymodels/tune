@@ -289,6 +289,8 @@ test_that("compute_grid_info - recipe and model (no submodels but has inner grid
 
   set.seed(1)
 
+  helper_objects <- helper_objects_tune()
+
   wflow <- workflow() %>%
     add_recipe(helper_objects$rec_tune_1) %>%
     add_model(helper_objects$svm_mod)
