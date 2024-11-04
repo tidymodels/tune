@@ -195,7 +195,7 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
     paste0("preprocessor ", 1:5, "/5")
   )
   expect_equal(res$trees, c(rep(max(grid$trees), 10), 1))
-  expect_equal(res$.iter_model, c(rep(1:3, each = 3), 4, 5))
+  expect_equal(unique(res$.iter_model), 1:3)
   expect_equal(
     res$.iter_config[1:3],
     list(
@@ -204,7 +204,7 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
       c("Preprocessor3_Model1", "Preprocessor3_Model2", "Preprocessor3_Model3")
     )
   )
-  expect_equal(res$.msg_model[1:3], paste0("preprocessor ", 1:3, "/5, model 1/5"))
+  expect_equal(res$.msg_model[1:3], paste0("preprocessor ", 1:3, "/5, model 1/3"))
   expect_equal(
     res$.submodels[1:3],
     list(
@@ -281,3 +281,47 @@ test_that("compute_grid_info - model (with and without submodels)", {
   expect_equal(nrow(res), 5)
 })
 
+test_that("compute_grid_info - recipe and model (no submodels but has inner grid)", {
+  library(workflows)
+  library(parsnip)
+  library(recipes)
+  library(dials)
+
+  set.seed(1)
+
+  wflow <- workflow() %>%
+    add_recipe(helper_objects$rec_tune_1) %>%
+    add_model(helper_objects$svm_mod)
+
+  pset <- extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(1, 3)))
+
+  grid <- dials::grid_regular(pset, levels = 3)
+
+  res <- compute_grid_info(wflow, grid)
+
+  expect_equal(res$.iter_preprocessor, rep(1:3, each = 3))
+  expect_equal(res$.msg_preprocessor, rep(paste0("preprocessor ", 1:3, "/3"), each = 3))
+  expect_equal(res$.iter_model, rep(1:3, times = 3))
+  expect_equal(
+    res$.iter_config,
+    as.list(paste0(
+      rep(paste0("Preprocessor", 1:3, "_Model"), each = 3),
+      rep(1:3, times = 3)
+    ))
+  )
+  expect_equal(
+    unique(res$.msg_model),
+    paste0(
+      rep(paste0("preprocessor ", 1:3, "/3, model "), each = 3),
+      paste0(rep(1:3, times = 3), "/3")
+    )
+  )
+  expect_named(
+    res,
+    c("cost", "num_comp", ".submodels", ".iter_preprocessor", ".msg_preprocessor",
+      ".iter_model", ".iter_config", ".msg_model"),
+    ignore.order = TRUE
+  )
+  expect_equal(nrow(res), 9)
+})

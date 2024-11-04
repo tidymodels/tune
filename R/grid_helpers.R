@@ -322,8 +322,10 @@ compute_grid_info <- function(workflow, grid) {
     res$.iter_preprocessor <-
       vctrs::vec_group_id(res[parameters_preprocessor$id])
     attr(res$.iter_preprocessor, "n") <- NULL
+    model_iters_needed <- duplicated(res$.iter_preprocessor)
   } else {
     res$.iter_preprocessor <- 1L
+    model_iters_needed <- TRUE
   }
 
   res$.msg_preprocessor <-
@@ -332,12 +334,17 @@ compute_grid_info <- function(workflow, grid) {
       max(res$.iter_preprocessor)
     )
 
-  if (nrow(res) != nrow(grid) ||
-      (any_parameters_model && !any_parameters_preprocessor)) {
-    res$.iter_model <- vctrs::vec_group_id(res[parameters_model$id])
-    attr(res$.iter_model, "n") <- NULL
-  } else {
-    res$.iter_model <- 1L
+  res$.iter_model <- 1L
+
+  if (any_parameters_model) {
+    model_iter_ids <- vctrs::vec_group_id(
+      res[model_iters_needed, parameters_model$id]
+    )
+    res$.iter_model[model_iters_needed] <- model_iter_ids + 1
+  }
+
+  if (isTRUE(model_iters_needed)) {
+    res$.iter_model <- res$.iter_model - 1
   }
 
   res$.iter_config <- list(list())
