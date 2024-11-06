@@ -360,6 +360,8 @@ compute_grid_info <- function(workflow, grid) {
       length(res_row$.submodels[[1]])
     res$.iter_config[row] <- list(iter_config)
   }
+  res$.iter_config <- format_.iter_config(res$.iter_config)
+
 
   res$.msg_model <-
     new_msgs_model(i = res$.iter_model, n = max(res$.iter_model), res$.msg_preprocessor)
@@ -374,12 +376,25 @@ iter_config <- function(res_row, shift) {
     model_configs <- model_configs + seq_len(length(submodels[[1]]) + 1L) - 1
   }
 
-  paste0(
-    "Preprocessor",
-    res_row$.iter_preprocessor,
-    "_Model",
-    format_with_padding(shift + model_configs)
+  # return separately so new .iter_model can be passed through
+  # `format_with_padding with all iterations`
+  list(
+    config = paste0(
+      "Preprocessor",
+      res_row$.iter_preprocessor,
+      "_Model"
+    ),
+    model_config = shift + model_configs
   )
+}
+
+format_.iter_config <- function(x) {
+  res <- dplyr::bind_rows(x, .id = "idx")
+  res$model_config <- format_with_padding(res$model_config)
+  res$.iter_config <- paste0(res$config, res$model_config)
+  res <- tidyr::nest(res, .by = "idx")
+
+  purrr::map(res$data, ~.x$.iter_config)
 }
 
 # This generates a "dummy" grid_info object that has the same
