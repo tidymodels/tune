@@ -77,24 +77,26 @@ computations can take a long time unless the times are filtered with the
 \code{eval_time} argument.
 }
 \examples{
-\dontshow{if (!tune:::is_cran_check() & tune:::should_run_examples("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-data(Sacramento, package = "modeldata")
-library(rsample)
-library(parsnip)
+\dontshow{if (!tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+if (rlang::is_installed("modeldata")) {
+  data(Sacramento, package = "modeldata")
+  library(rsample)
+  library(parsnip)
 
-set.seed(13)
-sac_rs <- vfold_cv(Sacramento)
+  set.seed(13)
+  sac_rs <- vfold_cv(Sacramento)
 
-lm_res <-
-  linear_reg() \%>\%
-  fit_resamples(
-    log10(price) ~ beds + baths + sqft + type + latitude + longitude,
-    resamples = sac_rs,
-    control = control_resamples(save_pred = TRUE)
-  )
+  lm_res <-
+    linear_reg() \%>\%
+    fit_resamples(
+      log10(price) ~ beds + baths + sqft + type + latitude + longitude,
+      resamples = sac_rs,
+      control = control_resamples(save_pred = TRUE)
+    )
 
-set.seed(31)
-int_pctl(lm_res)
+  set.seed(31)
+  int_pctl(lm_res)
+}
 \dontshow{\}) # examplesIf}
 }
 \references{

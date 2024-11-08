@@ -59,7 +59,7 @@
 #' model (and recipe, if any) that used the training set. Helper functions
 #' for formatting tuning results like [collect_metrics()] and
 #' [collect_predictions()] can be used with `last_fit()` output.
-#' @examplesIf tune:::should_run_examples()
+#' @examplesIf tune:::should_run_examples() & rlang::is_installed("splines2")
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

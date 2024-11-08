@@ -1,5 +1,6 @@
 test_that("fit_best", {
   skip_if_not_installed("kknn")
+  skip_if_not_installed("modeldata")
 
   library(recipes)
   library(rsample)

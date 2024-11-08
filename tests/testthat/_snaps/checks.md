@@ -147,48 +147,48 @@
     Code
       control_grid(verbose = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_grid(verbose = rep(TRUE, 2))
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not a logical vector.
 
 ---
 
     Code
       control_grid(allow_par = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'allow_par' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `allow_par` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_grid(save_pred = "no")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'save_pred' should be a single logical value in `control_grid()`
+      Error in `control_grid()`:
+      ! `save_pred` must be `TRUE` or `FALSE`, not the string "no".
 
 ---
 
     Code
       control_grid(extract = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'extract' should be a function or NULL in `control_grid()`
+      Error in `control_grid()`:
+      ! `extract` must be a function or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_grid(pkgs = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'pkgs' should be a character or NULL in `control_grid()`
+      Error in `control_grid()`:
+      ! `pkgs` must be a character vector or `NULL`, not `Inf`.
 
 # Bayes control objects
 
@@ -203,79 +203,80 @@
     Code
       control_bayes(verbose = 1)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not the number 1.
 
 ---
 
     Code
       control_bayes(verbose = rep(TRUE, 2))
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'verbose' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `verbose` must be `TRUE` or `FALSE`, not a logical vector.
 
 ---
 
     Code
       control_bayes(no_improve = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'no_improve' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `no_improve` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(uncertain = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'uncertain' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `uncertain` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(seed = FALSE)
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'seed' should be a single numeric or integer value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `seed` must be a whole number, not `FALSE`.
 
 ---
 
     Code
       control_bayes(save_pred = "no")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'save_pred' should be a single logical value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `save_pred` must be `TRUE` or `FALSE`, not the string "no".
 
 ---
 
     Code
       control_bayes(extract = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'extract' should be a function or NULL in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `extract` must be a function or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_bayes(pkgs = Inf)
     Condition
-      Error in `val_class_or_null()`:
-      ! Argument 'pkgs' should be a character or NULL in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `pkgs` must be a character vector or `NULL`, not `Inf`.
 
 ---
 
     Code
       control_bayes(time_limit = "a")
     Condition
-      Error in `val_class_and_single()`:
-      ! Argument 'time_limit' should be a single logical or numeric value in `control_bayes()`
+      Error in `control_bayes()`:
+      ! `time_limit` should be either a single numeric or logical value.
 
 ---
 
     Code
       tmp <- control_bayes(no_improve = 2, uncertain = 5)
-    Message
-      ! Uncertainty sample scheduled after 5 poor iterations but the search will stop after 2.
+    Condition
+      Warning:
+      Uncertainty sample scheduled after 5 poor iterations but the search will stop after 2.
 
 # initial values
 
@@ -287,65 +288,25 @@
       Error in `tune:::check_initial()`:
       ! `initial` should be a positive integer or the results of [tune_grid()]
 
-# Acquisition function objects
-
-    Code
-      tune:::check_direction(1)
-    Condition
-      Error in `tune:::check_direction()`:
-      ! `maximize` should be a single logical.
-
----
-
-    Code
-      tune:::check_direction(rep(TRUE, 2))
-    Condition
-      Error in `tune:::check_direction()`:
-      ! `maximize` should be a single logical.
-
----
-
-    Code
-      tune:::check_best(FALSE)
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
----
-
-    Code
-      tune:::check_best(rep(2, 2))
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
----
-
-    Code
-      tune:::check_best(NA)
-    Condition
-      Error in `tune:::check_best()`:
-      ! `best` should be a single, non-missing numeric.
-
 # check parameter finalization
 
     Code
-      expect_error(p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(
-        0)), regex = NA)
+      expect_no_error(p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(
+        0)))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 
 ---
 
     Code
-      expect_error(p2 <- tune:::check_parameters(w2, data = mtcars), regex = NA)
+      expect_no_error(p2 <- tune:::check_parameters(w2, data = mtcars))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 
 ---
 
     Code
-      expect_error(p3_a <- tune:::check_parameters(w3, data = mtcars), regex = NA)
+      expect_no_error(p3_a <- tune:::check_parameters(w3, data = mtcars))
     Message
       i Creating pre-processing data to finalize unknown parameter: mtry
 

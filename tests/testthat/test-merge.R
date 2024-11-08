@@ -1,4 +1,7 @@
 test_that("recipe merges", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -9,7 +12,7 @@ test_that("recipe merges", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   spline_grid <-
     tibble::tribble(
       ~imputation, ~threshold, ~deg_free, ~degree,
@@ -25,9 +28,8 @@ test_that("recipe merges", {
       4L,      0.025,       12L,      1L
     )
 
-  expect_error(
-    spline_updated <- merge(spline_rec, spline_grid),
-    NA
+  expect_no_error(
+    spline_updated <- merge(spline_rec, spline_grid)
   )
   check_merged_tibble(spline_updated)
   for (i in 1:nrow(spline_grid)) {
@@ -47,6 +49,9 @@ test_that("recipe merges", {
 })
 
 test_that("partially recipe merge", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -57,7 +62,7 @@ test_that("partially recipe merge", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   spline_grid <-
     tibble::tribble(
       ~imputation, ~threshold, ~deg_free, ~degree,
@@ -73,9 +78,8 @@ test_that("partially recipe merge", {
       4L,      0.025,       12L,      1L
     )
 
-  expect_error(
-    spline_updated <- merge(spline_rec, spline_grid[, -1]),
-    NA
+  expect_no_error(
+    spline_updated <- merge(spline_rec, spline_grid[, -1])
   )
   check_merged_tibble(spline_updated, complete = FALSE)
   for (i in 1:nrow(spline_grid)) {
@@ -95,6 +99,9 @@ test_that("partially recipe merge", {
 })
 
 test_that("umerged recipe merge", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+
   data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
@@ -105,12 +112,11 @@ test_that("umerged recipe merge", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
-  expect_error(
-    spline_updated <- merge(spline_rec, bst_grid),
-    NA
+  expect_no_error(
+    spline_updated <- merge(spline_rec, bst_grid)
   )
   check_merged_tibble(spline_updated, complete = FALSE)
   for (i in 1:nrow(bst_grid)) {
@@ -134,14 +140,14 @@ test_that("umerged recipe merge", {
 
 
 test_that("model spec merges", {
+  library(parsnip)
   bst_model <-
     parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
   bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
-  expect_error(
-    bst_updated <- merge(bst_model, bst_grid),
-    NA
+  expect_no_error(
+    bst_updated <- merge(bst_model, bst_grid)
   )
   check_merged_tibble(bst_updated, "model_spec")
   for (i in 1:nrow(bst_grid)) {
@@ -180,9 +186,8 @@ test_that("partially model spec merge", {
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
   bst_grid <- tibble::tibble("funky name \n" = 1:4, rules = rep(c(TRUE, FALSE), each = 2))
 
-  expect_error(
-    bst_updated <- merge(bst_model, bst_grid[, -1]),
-    NA
+  expect_no_error(
+    bst_updated <- merge(bst_model, bst_grid[, -1])
   )
   check_merged_tibble(bst_updated, "model_spec", complete = FALSE)
   for (i in 1:nrow(bst_grid)) {
@@ -204,9 +209,8 @@ test_that("umerged model spec merge", {
 
   other_grid <- bst_grid
   names(bst_grid) <- letters[1:2]
-  expect_error(
-    bst_not_updated <- merge(bst_model, other_grid),
-    NA
+  expect_no_error(
+    bst_not_updated <- merge(bst_model, other_grid)
   )
   check_merged_tibble(bst_not_updated, "model_spec", complete = FALSE)
   # for (i in 1:nrow(other_grid)) {

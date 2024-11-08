@@ -1,5 +1,7 @@
 test_that("determine foreach operator", {
   skip_if(foreach::getDoParWorkers() > 1 || future::nbrOfWorkers() > 1)
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
 
   data("Chicago", package = "modeldata")
   spline_rec <-
@@ -11,7 +13,7 @@ test_that("determine foreach operator", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
   chi_wflow <-
@@ -47,9 +49,8 @@ test_that("in-line formulas on outcome", {
     add_formula(log(mpg) ~ .) %>%
     add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
-  expect_error(
-    f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars)),
-    regex = NA
+  expect_no_error(
+    f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars))
   )
   expect_true(inherits(f1, "resample_results"))
 
@@ -58,9 +59,8 @@ test_that("in-line formulas on outcome", {
     add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_log(mpg)) %>%
     add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
 
-  expect_error(
-    f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars)),
-    regex = NA
+  expect_no_error(
+    f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars))
   )
   expect_true(inherits(f2, "resample_results"))
 })
@@ -68,7 +68,7 @@ test_that("in-line formulas on outcome", {
 # ------------------------------------------------------------------------------
 
 test_that("empty ellipses", {
-  expect_error(tune:::empty_ellipses(), regexp = NA)
+  expect_no_error(tune:::empty_ellipses())
   expect_snapshot(tune:::empty_ellipses(a = 1))
 })
 

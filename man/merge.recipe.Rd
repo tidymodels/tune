@@ -26,7 +26,7 @@ A tibble with a column \code{x} that has as many rows as were in \code{y}.
 \pkg{parsnip} model or recipe.
 }
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = c("xgboost", "modeldata"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = c("xgboost", "modeldata", "splines2"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(tibble)
 library(recipes)
 library(parsnip)

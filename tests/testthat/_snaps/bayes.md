@@ -392,13 +392,13 @@
       cars_res <- tune_bayes(svm_mod, preprocessor = rec, resamples = data_folds)
     Message
       x Fold1: preprocessor 1/1:
-        Error in `step_bs()`:
-        Caused by error in `if (...) NULL`:
-        ! missing value where TRUE/FALSE needed
+        Error in `step_spline_b()`:
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
       x Fold2: preprocessor 1/1:
-        Error in `step_bs()`:
-        Caused by error in `if (...) NULL`:
-        ! missing value where TRUE/FALSE needed
+        Error in `step_spline_b()`:
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.

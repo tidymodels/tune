@@ -35,12 +35,14 @@ test_that("can use `fit_resamples()` with a formula", {
 })
 
 test_that("can use `fit_resamples()` with a recipe", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- linear_reg() %>%
     set_engine("lm")
@@ -59,12 +61,14 @@ test_that("can use `fit_resamples()` with a recipe", {
 })
 
 test_that("can use `fit_resamples()` with a workflow - recipe", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -136,7 +140,7 @@ test_that("extracted workflow is finalized", {
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (requires training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
@@ -198,7 +202,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (no training)", {
-  skip_if_not_installed("tailor")
+  skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
@@ -248,11 +252,13 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
 # Error capture ----------------------------------------------------------------
 
 test_that("failure in recipe is caught elegantly", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = NA_real_)
+    recipes::step_spline_natural(disp, deg_free = NA_real_)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -271,8 +277,7 @@ test_that("failure in recipe is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(any(grepl("missing value where", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -303,8 +308,7 @@ test_that("failure in variables tidyselect specification is caught elegantly", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the variables part
-  expect_true(any(grepl("foobar", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -333,8 +337,7 @@ test_that("classification models generate correct error message", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(all(grepl("outcome should be a `factor`", note)))
+  expect_snapshot(note)
 
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
@@ -426,12 +429,14 @@ test_that("ellipses with fit_resamples", {
 })
 
 test_that("argument order gives errors for recipe/formula", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp) %>%
-    recipes::step_ns(wt)
+    recipes::step_spline_natural(disp) %>%
+    recipes::step_spline_natural(wt)
 
   lin_mod <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
@@ -447,6 +452,8 @@ test_that("argument order gives errors for recipe/formula", {
 
 
 test_that("retain extra attributes", {
+  skip_if_not_installed("splines2")
+
   set.seed(6735)
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -488,7 +495,7 @@ test_that("retain extra attributes", {
 
 
 test_that("`fit_resamples()` when objects need tuning", {
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_ns(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)

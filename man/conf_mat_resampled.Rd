@@ -26,6 +26,9 @@ For classification problems, \code{conf_mat_resampled()} computes a separate
 confusion matrix for each resample then averages the cell counts.
 }
 \examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# example code
+
 library(parsnip)
 library(rsample)
 library(dplyr)
@@ -44,4 +47,5 @@ res <-
 
 conf_mat_resampled(res)
 conf_mat_resampled(res, tidy = FALSE)
+\dontshow{\}) # examplesIf}
 }

@@ -3,7 +3,7 @@ test_that("rsample objects", {
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = rsample::bootstraps())
   obj_permut <- rsample::permutations(mtcars, hp)
-  expect_error(tune:::check_rset(obj_cv), regexp = NA)
+  expect_no_error(tune:::check_rset(obj_cv))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_loo))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_nst))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_permut))
@@ -12,8 +12,11 @@ test_that("rsample objects", {
 # ------------------------------------------------------------------------------
 
 test_that("grid objects", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("splines2")
+  skip_if_not_installed("kernlab")
   data("Chicago", package = "modeldata")
-
+  data("Chicago", package = "modeldata")
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -23,7 +26,7 @@ test_that("grid objects", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -66,7 +69,7 @@ test_that("grid objects", {
     add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_error(grid_2 <- tune:::check_grid(6, wflow_1), NA)
+  expect_no_error(grid_2 <- tune:::check_grid(6, wflow_1))
   expect_equal(nrow(grid_2), 6)
   expect_true(inherits(grid_2, "data.frame"))
 
@@ -88,10 +91,12 @@ test_that("grid objects", {
 })
 
 test_that("Unknown `grid` columns are caught", {
+  skip_if_not_installed("splines2")
+
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
-  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_spline_b(rec, x, deg_free = tune())
   rec <- recipes::step_pca(rec, x, num_comp = tune())
 
   model <- parsnip::linear_reg()
@@ -109,10 +114,12 @@ test_that("Unknown `grid` columns are caught", {
 })
 
 test_that("Missing required `grid` columns are caught", {
+  skip_if_not_installed("splines2")
+
   data <- data.frame(x = 1:2, y = 1:2)
 
   rec <- recipes::recipe(y ~ x, data = data)
-  rec <- recipes::step_bs(rec, x, deg_free = tune())
+  rec <- recipes::step_spline_b(rec, x, deg_free = tune())
   rec <- recipes::step_pca(rec, x, num_comp = tune())
 
   model <- parsnip::linear_reg()
@@ -200,10 +207,11 @@ test_that("errors informatively when needed package isn't installed", {
 
 test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   skip_if_not_installed("glmnet")
+  skip_if_not_installed("splines2")
 
   # one recipe without tuning, one with:
   rec_bare <- recipes::recipe(ridership ~ ., data = head(Chicago, 30))
-  rec_tune <- rec_bare %>% recipes::step_ns(temp_max, deg_free = tune())
+  rec_tune <- rec_bare %>% recipes::step_spline_natural(temp_max, deg_free = tune())
 
   # well-defined:
   lr_lm_0 <- parsnip::linear_reg()
@@ -218,17 +226,15 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   lr_glmnet_2 <- lr_lm_2 %>% parsnip::set_engine("glmnet")
 
   # don't error when supplied tune args make sense given engine / steps
-  expect_error_na <- function(x) {testthat::expect_error(x, regexp = NA)}
+  expect_no_error(check_workflow(workflow(rec_bare, lr_lm_0)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_0)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_1)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_2)))
 
-  expect_error_na(check_workflow(workflow(rec_bare, lr_lm_0)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_0)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_1)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_2)))
-
-  expect_error_na(check_workflow(workflow(rec_tune, lr_lm_0)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_0)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_1)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_2)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_lm_0)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_0)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_1)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_2)))
 
   # error when supplied tune args don't make sense given engine / steps
   expect_error_nt <- function(x) {testthat::expect_error(x, class = "not_tunable_error")}
@@ -261,6 +267,8 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
 # ------------------------------------------------------------------------------
 
 test_that("yardstick objects", {
+  skip_if_not_installed("splines2")
+
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
     recipes::step_date(date) %>%
@@ -270,7 +278,7 @@ test_that("yardstick objects", {
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_bs(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -311,7 +319,7 @@ test_that("metrics must match the parsnip engine", {
 # ------------------------------------------------------------------------------
 
 test_that("grid control objects", {
-  expect_error(control_grid(), NA)
+  expect_no_error(control_grid())
   expect_snapshot(error = TRUE, control_grid(tomato = 1))
   expect_snapshot(error = TRUE, control_grid(verbose = 1))
   expect_snapshot(error = TRUE, control_grid(verbose = rep(TRUE, 2)))
@@ -320,18 +328,18 @@ test_that("grid control objects", {
   expect_snapshot(error = TRUE, control_grid(extract = Inf))
   expect_snapshot(error = TRUE, control_grid(pkgs = Inf))
 
-  expect_error(control_grid(verbose = TRUE), NA)
-  expect_error(control_grid(allow_par = FALSE), NA)
-  expect_error(control_grid(save_pred = TRUE), NA)
-  expect_error(control_grid(extract = NULL), NA)
-  expect_error(control_grid(extract = I), NA)
-  expect_error(control_grid(pkgs = NULL), NA)
-  expect_error(control_grid(pkgs = letters), NA)
+  expect_no_error(control_grid(verbose = TRUE))
+  expect_no_error(control_grid(allow_par = FALSE))
+  expect_no_error(control_grid(save_pred = TRUE))
+  expect_no_error(control_grid(extract = NULL))
+  expect_no_error(control_grid(extract = I))
+  expect_no_error(control_grid(pkgs = NULL))
+  expect_no_error(control_grid(pkgs = letters))
   expect_s3_class(control_grid(), c("control_grid", "control_resamples"))
 })
 
 test_that("Bayes control objects", {
-  expect_error(control_bayes(), NA)
+  expect_no_error(control_bayes())
   expect_snapshot(error = TRUE, control_bayes(tomato = 1))
   expect_snapshot(error = TRUE, control_bayes(verbose = 1))
   expect_snapshot(error = TRUE, control_bayes(verbose = rep(TRUE, 2)))
@@ -347,21 +355,23 @@ test_that("Bayes control objects", {
     tmp <- control_bayes(no_improve = 2, uncertain = 5)
   )
 
-  expect_error(control_bayes(verbose = TRUE), NA)
-  expect_error(control_bayes(no_improve = 2), NA)
-  expect_error(control_bayes(uncertain = 2), NA)
-  expect_error(control_bayes(save_pred = TRUE), NA)
-  expect_error(control_bayes(extract = NULL), NA)
-  expect_error(control_bayes(extract = I), NA)
-  expect_error(control_bayes(pkgs = NULL), NA)
-  expect_error(control_bayes(pkgs = letters), NA)
-  expect_error(control_bayes(time_limit = 2), NA)
+  expect_no_error(control_bayes(verbose = TRUE))
+  expect_no_error(control_bayes(no_improve = 2))
+  expect_no_error(control_bayes(uncertain = 2))
+  expect_no_error(control_bayes(save_pred = TRUE))
+  expect_no_error(control_bayes(extract = NULL))
+  expect_no_error(control_bayes(extract = I))
+  expect_no_error(control_bayes(pkgs = NULL))
+  expect_no_error(control_bayes(pkgs = letters))
+  expect_no_error(control_bayes(time_limit = 2))
   expect_s3_class(control_bayes(), "control_bayes")
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("initial values", {
+  skip_if_not_installed("kernlab")
+
   svm_mod <-
     parsnip::svm_rbf(cost = tune()) %>%
     parsnip::set_engine("kernlab") %>%
@@ -400,20 +410,6 @@ test_that("initial values", {
 
 # ------------------------------------------------------------------------------
 
-
-test_that("Acquisition function objects", {
-  expect_null(tune:::check_direction(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_direction(1))
-  expect_snapshot(error = TRUE, tune:::check_direction(rep(TRUE, 2)))
-
-  expect_null(tune:::check_best(1))
-  expect_snapshot(error = TRUE, tune:::check_best(FALSE))
-  expect_snapshot(error = TRUE, tune:::check_best(rep(2, 2)))
-  expect_snapshot(error = TRUE, tune:::check_best(NA))
-})
-
-# ------------------------------------------------------------------------------
-
 test_that("validation helpers", {
   expect_true(tune:::check_class_or_null("a", "character"))
   expect_true(tune:::check_class_or_null(letters, "character"))
@@ -429,9 +425,11 @@ test_that("validation helpers", {
 # ------------------------------------------------------------------------------
 
 test_that("check parameter finalization", {
+  skip_if_not_installed("splines2")
+
   rec <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_ns(disp, deg_free = 3)
+    recipes::step_spline_natural(disp, deg_free = 3)
   rec_tune <- rec %>% recipes::step_pca(recipes::all_predictors(), num_comp = tune())
   f <- mpg ~ .
   rf1 <-
@@ -448,16 +446,14 @@ test_that("check parameter finalization", {
     add_model(rf1)
 
   expect_snapshot(
-    expect_error(
-      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0)),
-      regex = NA
+    expect_no_error(
+      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0))
     )
   )
   expect_false(any(dials::has_unknowns(p1$object)))
 
-  expect_error(
-    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry"),
-    regex = NA
+  expect_no_error(
+    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry")
   )
 
   w2 <-
@@ -466,9 +462,8 @@ test_that("check parameter finalization", {
     add_model(rf1)
 
   expect_snapshot(
-    expect_error(
-      p2 <- tune:::check_parameters(w2, data = mtcars),
-      regex = NA
+    expect_no_error(
+      p2 <- tune:::check_parameters(w2, data = mtcars)
     )
   )
   expect_false(any(dials::has_unknowns(p2$object)))
@@ -480,9 +475,8 @@ test_that("check parameter finalization", {
   p3 <- extract_parameter_set_dials(w3)
 
   expect_snapshot(
-    expect_error(
-      p3_a <- tune:::check_parameters(w3, data = mtcars),
-      regex = NA
+    expect_no_error(
+      p3_a <- tune:::check_parameters(w3, data = mtcars)
     )
   )
   expect_false(any(dials::has_unknowns(p3_a$object)))
@@ -500,9 +494,8 @@ test_that("check parameter finalization", {
     extract_parameter_set_dials(w4) %>%
     update(mtry = dials::mtry(c(1, 10)))
 
-  expect_error(
-    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars),
-    regex = NA
+  expect_no_error(
+    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars)
   )
   expect_true(inherits(p4_b, "parameters"))
 
@@ -511,9 +504,8 @@ test_that("check parameter finalization", {
     add_recipe(rec_tune) %>%
     add_model(lm1)
 
-  expect_error(
-    p5 <- tune:::check_parameters(w5, data = mtcars),
-    regex = NA
+  expect_no_error(
+    p5 <- tune:::check_parameters(w5, data = mtcars)
   )
   expect_true(inherits(p5, "parameters"))
 })

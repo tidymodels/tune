@@ -45,7 +45,9 @@
 #' description section.
 #'
 #' @name extract-tune
-#' @examples
+#' @examplesIf rlang::is_installed("splines2")
+#' # example code
+#'
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -107,9 +109,7 @@ extract_spec_parsnip.tune_results <- function(x, ...) {
 #' @rdname extract-tune
 extract_recipe.tune_results <- function(x, ..., estimated = TRUE) {
   check_empty_dots(...)
-  if (!rlang::is_bool(estimated)) {
-    rlang::abort("`estimated` must be a single `TRUE` or `FALSE`.")
-  }
+  check_bool(estimated)
   extract_recipe(extract_workflow(x), estimated = estimated)
 }
 check_empty_dots <- function(...) {

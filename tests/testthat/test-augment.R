@@ -1,8 +1,10 @@
-data(two_class_dat, package = "modeldata")
-
-# ------------------------------------------------------------------------------
 
 test_that("augment fit_resamples", {
+  skip_if_not_installed("modeldata")
+  data(two_class_dat, package = "modeldata")
+
+  # ------------------------------------------------------------------------------
+
   lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
 
   set.seed(1)
@@ -40,6 +42,11 @@ test_that("augment fit_resamples", {
 
 
 test_that("augment fit_resamples", {
+  skip_if_not_installed("modeldata")
+  data(two_class_dat, package = "modeldata")
+
+  # ------------------------------------------------------------------------------
+
   skip_if(new_rng_snapshots)
   lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
 
@@ -152,6 +159,11 @@ test_that("augment tune_grid", {
 # ------------------------------------------------------------------------------
 
 test_that("augment last_fit", {
+  skip_if_not_installed("modeldata")
+  data(two_class_dat, package = "modeldata")
+
+  # ------------------------------------------------------------------------------
+
   lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
   set.seed(1)
   split <- rsample::initial_split(two_class_dat)

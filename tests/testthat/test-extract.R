@@ -1,5 +1,7 @@
 
 test_that("tune recipe only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -8,17 +10,16 @@ test_that("tune recipe only", {
     extract_recipe(x) %>% tidy(number = 2)
   }
   before_kind <- RNGkind()[[1]]
-  expect_error(
+  expect_no_error(
     res_1_1 <-
       workflow() %>%
       add_recipe(helper_objects$rec_tune_1) %>%
       add_model(helper_objects$lm_mod) %>%
-      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1)),
-    NA
+      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1))
   )
   after_kind <- RNGkind()[[1]]
   expect_equal(before_kind, after_kind)
-  expect_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts), NA)
+  expect_no_error(extract_1_1 <- dplyr::bind_rows(res_1_1$.extracts))
 
   expect_true(all(names(extract_1_1) == c("num_comp", ".extracts", ".config")))
   expect_true(
@@ -29,6 +30,8 @@ test_that("tune recipe only", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model only", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -38,7 +41,7 @@ test_that("tune model only", {
     tibble(index = mod@alphaindex[[1]], estimate = mod@coef[[1]])
   }
 
-  expect_error(
+  expect_no_error(
     res_2_1 <-
       workflow() %>%
       add_recipe(helper_objects$rec_no_tune_1) %>%
@@ -47,10 +50,9 @@ test_that("tune model only", {
         resamples = mt_folds,
         grid = 2,
         control = control_grid(extract = extr_2_1)
-      ),
-    NA
+      )
   )
-  expect_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts), NA)
+  expect_no_error(extract_2_1 <- dplyr::bind_rows(res_2_1$.extracts))
 
   expect_true(all(names(extract_2_1) == c("cost", ".extracts", ".config")))
   expect_true(
@@ -65,7 +67,7 @@ test_that("tune model only", {
   }
 
   # should not fail:
-  expect_error(
+  expect_no_error(
     res_2_2 <-
       workflow() %>%
       add_recipe(helper_objects$rec_tune_1) %>%
@@ -74,15 +76,13 @@ test_that("tune model only", {
         resamples = mt_folds,
         grid = 2,
         control = control_grid(extract = extr_2_2)
-      ),
-    NA
+      )
   )
 
-  expect_error(
+  expect_no_error(
     extract_2_2 <-
       dplyr::bind_rows(res_2_2$.extracts) %>%
-      tidyr::unnest(cols = c(.extracts)),
-    NA
+      tidyr::unnest(cols = c(.extracts))
   )
   expect_true(all(!extract_2_2$is_null_rec))
 })
@@ -154,6 +154,8 @@ test_that("mis-specified extract function", {
 # ------------------------------------------------------------------------------
 
 test_that("tune model and recipe", {
+  skip_if_not_installed("kernlab")
+
   helper_objects <- helper_objects_tune()
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
@@ -172,16 +174,15 @@ test_that("tune model and recipe", {
     update(num_comp = dials::num_comp(c(2, 5))) %>%
     dials::grid_space_filling(size = 4)
 
-  expect_error(
+  expect_no_error(
     res_3_1 <- tune_grid(
       wflow_3,
       resamples = mt_folds,
       grid = grid_3,
       control = control_grid(extract = extr_3_1)
-    ),
-    NA
+    )
   )
-  expect_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts), NA)
+  expect_no_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts))
 
   expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts", ".config")))
   expect_true(

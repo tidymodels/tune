@@ -20,7 +20,7 @@
 #' @template case-weights
 #' @template censored-regression
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
-#' @examplesIf tune:::should_run_examples()
+#' @examplesIf tune:::should_run_examples() & rlang::is_installed("splines2")
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

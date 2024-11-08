@@ -87,6 +87,7 @@ compute_metrics.tune_results <- function(x,
                                          summarize = TRUE,
                                          event_level = "first") {
   rlang::check_dots_empty()
+  check_bool(summarize)
   if (!".predictions" %in% names(x)) {
     rlang::abort(paste0(
       "`x` must have been generated with the ",
@@ -112,10 +113,6 @@ compute_metrics.tune_results <- function(x,
       "i" = "To save predictions for {new_metrics_info$type} metrics, \\
              generate {.arg x} with metrics of that type."
     ))
-  }
-
-  if (!inherits(summarize, "logical") || length(summarize) != 1L) {
-    rlang::abort("The `summarize` argument must be a single logical value.")
   }
 
   param_names <- .get_tune_parameter_names(x)

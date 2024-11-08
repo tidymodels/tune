@@ -74,8 +74,8 @@ print.prob_improve <- function(x, ...) {
 #' @export
 predict.prob_improve <-
   function(object, new_data, maximize, iter, best, ...) {
-    check_direction(maximize)
-    check_best(best)
+    check_bool(maximize)
+    check_number_decimal(best, allow_infinite = FALSE)
 
     if (is.function(object$trade_off)) {
       trade_off <- object$trade_off(iter)
@@ -127,8 +127,8 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
 #' @export
 # NOTE `maximize` is the direction of the metric, not the acquisition function
 predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
-  check_direction(maximize)
-  check_best(best)
+  check_bool(maximize)
+  check_number_decimal(best, allow_infinite = FALSE)
 
   if (is.function(object$trade_off)) {
     trade_off <- object$trade_off(iter)
@@ -178,7 +178,7 @@ conf_bound <- function(kappa = 0.1) {
 
 #' @export
 predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
-  check_direction(maximize)
+  check_bool(maximize)
 
   if (is.function(object$kappa)) {
     kappa <- object$kappa(iter)

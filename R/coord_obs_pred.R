@@ -36,7 +36,8 @@ CoordObsPred <-
 #' may show up in places such as the axes, the legend, the plot title, or the
 #' plot margins.
 #' @return A `ggproto` object.
-#' @examples
+#' @examplesIf rlang::is_installed("modeldata")
+#' # example code
 #' data(solubility_test, package = "modeldata")
 #'
 #' library(ggplot2)
