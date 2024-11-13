@@ -204,9 +204,9 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   expect_equal(
     res$.iter_config[res$.iter_preprocessor == 1],
     list(
-      c("Preprocessor1_Model1", "Preprocessor1_Model2", "Preprocessor1_Model3", "Preprocessor1_Model4"),
-      c("Preprocessor1_Model5", "Preprocessor1_Model6", "Preprocessor1_Model7"),
-      c("Preprocessor1_Model8", "Preprocessor1_Model9", "Preprocessor1_Model10")
+      c("Preprocessor1_Model01", "Preprocessor1_Model02", "Preprocessor1_Model03", "Preprocessor1_Model04"),
+      c("Preprocessor1_Model05", "Preprocessor1_Model06", "Preprocessor1_Model07"),
+      c("Preprocessor1_Model08", "Preprocessor1_Model09", "Preprocessor1_Model10")
     )
   )
   expect_equal(
