@@ -357,7 +357,8 @@ compute_grid_info <- function(workflow, grid) {
     dplyr::group_nest(.iter_preprocessor, keep = TRUE) %>%
     dplyr::mutate(
       .iter_config = purrr::map(data, make_iter_config),
-      .model = purrr::map(data, ~ tibble::tibble(.iter_model = seq_len(nrow(.x))))
+      .model = purrr::map(data, ~ tibble::tibble(.iter_model = seq_len(nrow(.x)))),
+      .num_models = purrr::map_int(.model, nrow)
     ) %>%
     dplyr::select(-.iter_preprocessor) %>%
     tidyr::unnest(cols = c(data, .model, .iter_config)) %>%
@@ -366,10 +367,11 @@ compute_grid_info <- function(workflow, grid) {
 
   res$.msg_model <-
     new_msgs_model(i = res$.iter_model,
-                   n = max(res$.iter_model),
+                   n = res$.num_models,
                    res$.msg_preprocessor)
 
   res %>%
+    dplyr::select(-.num_models) %>%
     dplyr::relocate(dplyr::starts_with(".msg"))
 }
 
