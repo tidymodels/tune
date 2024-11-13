@@ -330,7 +330,7 @@ compute_grid_info <- function(workflow, grid) {
       dplyr::arrange(!!!syms_pre) %>%
       dplyr::mutate(
         .iter_preprocessor = dplyr::row_number(),
-        .lab_pre = recipes::names0(max(dplyr::n()), "Preprocessor")
+        .lab_pre = paste0("Preprocessor", 1:dplyr::n())
       )
     res <-
       dplyr::full_join(res, pp_df, by = parameters_preprocessor$id) %>%
@@ -377,7 +377,7 @@ make_iter_config <- function(dat) {
   # Compute labels for the models *within* each preprocessing loop.
   num_submodels <- purrr::map_int(dat$.submodels, ~ length(unlist(.x)))
   num_models <- sum(num_submodels + 1) # +1 for the model being trained
-  .mod_label <- recipes::names0(num_models, "Model")
+  .mod_label <- paste0("Model", 1:num_models)
   .iter_config <- paste(dat$.lab_pre[1], .mod_label, sep = "_")
   .iter_config <- vctrs::vec_chop(.iter_config, sizes = num_submodels + 1)
   tibble::tibble(.iter_config  = .iter_config)
