@@ -189,7 +189,9 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   # use grid_regular to (partially) trigger submodel trick
   set.seed(1)
   param_set <- extract_parameter_set_dials(wflow)
-  grid <- bind_rows(grid_regular(param_set), grid_space_filling(param_set))
+  grid <-
+    bind_rows(grid_regular(param_set), grid_space_filling(param_set)) %>%
+    arrange(deg_free, loss_reduction, trees)
   res <- compute_grid_info(wflow, grid)
 
   expect_equal(length(unique(res$.iter_preprocessor)), 5)
@@ -200,14 +202,17 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   expect_equal(sort(res$trees), sort(c(rep(max(grid$trees), 10), 1)))
   expect_equal(unique(res$.iter_model), 1:3)
   expect_equal(
-    res$.iter_config[1:3],
+    res$.iter_config[res$.iter_preprocessor == 1],
     list(
       c("Preprocessor1_Model1", "Preprocessor1_Model2", "Preprocessor1_Model3", "Preprocessor1_Model4"),
-      c("Preprocessor2_Model1", "Preprocessor2_Model2", "Preprocessor2_Model3"),
-      c("Preprocessor3_Model1", "Preprocessor3_Model2", "Preprocessor3_Model3")
+      c("Preprocessor1_Model5", "Preprocessor1_Model6", "Preprocessor1_Model7"),
+      c("Preprocessor1_Model8", "Preprocessor1_Model9", "Preprocessor1_Model10")
     )
   )
-  expect_equal(res$.msg_model[1:3], paste0("preprocessor ", 1:3, "/5, model 1/3"))
+  expect_equal(
+    res$.msg_model[res$.iter_preprocessor == 1],
+    paste0("preprocessor 1/5, model ", 1:3, "/3")
+  )
   expect_equal(
     res$.submodels[1:3],
     list(
@@ -215,6 +220,12 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
       list(trees = c(1L, 1000L)),
       list(trees = c(1L, 1000L))
     )
+  )
+  expect_equal(
+    res %>%
+      mutate(num_models = purrr::map_int(.iter_config, length)) %>%
+      summarize(n = sum(num_models), .by = c(deg_free)),
+    grid %>% count(deg_free)
   )
   expect_named(
     res,
