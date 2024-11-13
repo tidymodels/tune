@@ -531,7 +531,12 @@ create_initial_set <- function(param, n = NULL, checks) {
   if (any(checks == "bayes")) {
     check_bayes_initial_size(nrow(param), n)
   }
-  dials::grid_space_filling(param, size = n)
+  if (n == 1) {
+    res <- dials::grid_random(param, size = n)
+  } else {
+    res <- dials::grid_space_filling(param, size = n)
+  }
+  res
 }
 
 check_iter <- function(iter, call) {

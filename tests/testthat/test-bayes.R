@@ -611,3 +611,19 @@ test_that("tune_bayes() output for `iter` edge cases (#721)", {
     tune_bayes(wf, boots, iter = NULL)
   )
 })
+
+test_that("1-point grid (#962)", {
+  skip_if_not_installed("dials", minimum_version = "1.3.0")
+
+  expect_silent({
+    set.seed(1)
+    grid <- tune:::create_initial_set(
+      dials::parameters(dials::penalty(), dials::deg_free()),
+      n = 1,
+      checks = "none"
+    )
+  })
+  expect_equal(nrow(grid), 1L)
+})
+
+
