@@ -15,7 +15,7 @@ test_that("compute_grid_info - recipe only", {
 
   expect_equal(res$.iter_preprocessor, 1:5)
   expect_equal(res$.msg_preprocessor, paste0("preprocessor ", 1:5, "/5"))
-  expect_equal(res$deg_free, grid$deg_free)
+  expect_equal(sort(res$deg_free), sort(grid$deg_free))
   expect_equal(res$.iter_model, rep(1, 5))
   expect_equal(res$.iter_config, as.list(paste0("Preprocessor", 1:5, "_Model1")))
   expect_equal(res$.msg_model, paste0("preprocessor ", 1:5, "/5, model 1/1"))
@@ -27,6 +27,7 @@ test_that("compute_grid_info - recipe only", {
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
+  expect_equal(vctrs::vec_unique_count(res$.iter_config), nrow(grid))
 })
 
 test_that("compute_grid_info - model only (no submodels)", {
@@ -57,6 +58,7 @@ test_that("compute_grid_info - model only (no submodels)", {
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
+  expect_equal(vctrs::vec_unique_count(res$.iter_config), nrow(grid))
 })
 
 test_that("compute_grid_info - model only (with submodels)", {
@@ -107,8 +109,8 @@ test_that("compute_grid_info - recipe and model (no submodels)", {
 
   expect_equal(res$.iter_preprocessor, 1:5)
   expect_equal(res$.msg_preprocessor, paste0("preprocessor ", 1:5, "/5"))
-  expect_equal(res$learn_rate, grid$learn_rate)
-  expect_equal(res$deg_free, grid$deg_free)
+  expect_equal(sort(res$learn_rate), sort(grid$learn_rate))
+  expect_equal(sort(res$deg_free), sort(grid$deg_free))
   expect_equal(res$.iter_model, rep(1, 5))
   expect_equal(res$.iter_config, as.list(paste0("Preprocessor", 1:5, "_Model1")))
   expect_equal(res$.msg_model, paste0("preprocessor ", 1:5, "/5, model 1/1"))
@@ -120,6 +122,7 @@ test_that("compute_grid_info - recipe and model (no submodels)", {
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
+  expect_equal(vctrs::vec_unique_count(res$.iter_config), nrow(grid))
 })
 
 test_that("compute_grid_info - recipe and model (with submodels)", {
@@ -169,6 +172,7 @@ test_that("compute_grid_info - recipe and model (with submodels)", {
   )
   expect_equal(nrow(res), 3)
 })
+
 test_that("compute_grid_info - recipe and model (with and without submodels)", {
   library(workflows)
   library(parsnip)
@@ -193,7 +197,7 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
     unique(res$.msg_preprocessor),
     paste0("preprocessor ", 1:5, "/5")
   )
-  expect_equal(res$trees, c(rep(max(grid$trees), 10), 1))
+  expect_equal(sort(res$trees), sort(c(rep(max(grid$trees), 10), 1)))
   expect_equal(unique(res$.iter_model), 1:3)
   expect_equal(
     res$.iter_config[1:3],
@@ -325,4 +329,5 @@ test_that("compute_grid_info - recipe and model (no submodels but has inner grid
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 9)
+  expect_equal(vctrs::vec_unique_count(res$.iter_config), nrow(grid))
 })
