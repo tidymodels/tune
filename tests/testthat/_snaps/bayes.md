@@ -446,6 +446,13 @@
 # retain extra attributes and saved GP candidates
 
     Code
+      setdiff(new_obj, current_objs)
+    Output
+      [1] "candidates" "gp_fit"     "i"          "score_card"
+
+---
+
+    Code
       res2 <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,
         iter = iter2, control = control_bayes(save_workflow = TRUE))
     Message
