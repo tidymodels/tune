@@ -393,12 +393,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
       x Fold2: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
+        Caused by error in `spline_msg()`:
+        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -415,10 +415,10 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `get_all_predictors()`:
-        ! The following predictor was not found in `data`: "z".
+        ! The following predictors were not found in `data`: 'z'.
       x Fold2: preprocessor 1/1:
         Error in `get_all_predictors()`:
-        ! The following predictor was not found in `data`: "z".
+        ! The following predictors were not found in `data`: 'z'.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -444,13 +444,6 @@
       ! The first argument to [tune_bayes()] should be either a model or workflow.
 
 # retain extra attributes and saved GP candidates
-
-    Code
-      setdiff(new_obj, current_objs)
-    Output
-      [1] "candidates_1" "gp_fit_1"     "i"            "iter"         "score_card_1"
-
----
 
     Code
       res2 <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,

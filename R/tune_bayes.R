@@ -874,22 +874,12 @@ save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
     return(invisible(NULL))
   }
 
-  # numerate the objects that change from iters
-  chr_iter <- recipes::names0(iter, "")[i]
-  gp_name <- glue::glue("gp_fit_{chr_iter}")
-  assign(gp_name, x)
-  can_name <- glue::glue("candidates_{chr_iter}")
-  assign(can_name, candidates)
-  score_name <- glue::glue("score_card_{chr_iter}")
-  assign(score_name, score_card)
-
-  file_name <- glue::glue("{tempdir()}/gp_candidates_{chr_iter}.RData")
-
-  saves <- c("i", "iter", "pset", gp_name, can_name, score_name)
-
-  res <- try(save(list = saves, file = file_name), silent = TRUE)
+  nm <- recipes::names0(iter, "gp_candidates_")[i]
+  file_name <- glue::glue("{tempdir()}/{nm}.RData")
+  res <- try(save(x, pset, i, candidates, score_card, file = file_name),
+             silent = TRUE)
   if (inherits(res, "try-error")) {
-    cli::cli_warn("Could not save GP results at iteration {i}: {as.character(res))}")
+    rlang::warn(paste("Could not save GP results:", as.character(res)))
   }
   invisible(res)
 }
