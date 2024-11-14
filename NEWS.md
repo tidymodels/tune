@@ -4,7 +4,7 @@
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
-* When automatic grids are used, `dials::grid_space_filling()` is now used (instead of `dials::grid_latin_hypercube()`). Overall, the new function produces optimized designs (not depending on random numbers). When using Bayesian models, we will use a Latin Hypercube since we produce 5,000 candidates, which is too slow to do with pre-optimized designs. 
+* When automatic grids are used, `dials::grid_space_filling()` is now used (instead of `dials::grid_latin_hypercube()`). There is an exception: when `grid = 1`, `dials::grid_random()` is used to avoid warnings. Overall, the new function produces optimized designs (not depending on random numbers). When using Bayesian models, we will use a Latin Hypercube since we produce 5,000 candidates, which is too slow to do with pre-optimized designs. (#962) 
 
 # tune 1.2.1
 
