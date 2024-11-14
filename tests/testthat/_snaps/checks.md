@@ -92,6 +92,22 @@
       Error in `tune:::check_workflow()`:
       ! A parsnip model is required.
 
+# errors informatively when needed package isn't installed
+
+    Code
+      check_workflow(stan_wflow)
+    Condition
+      Error:
+      ! Package install is required for rstanarm.
+
+---
+
+    Code
+      fit_resamples(stan_wflow, rsample::bootstraps(mtcars))
+    Condition
+      Error in `fit_resamples()`:
+      ! Package install is required for rstanarm.
+
 # workflow objects (will not tune, tidymodels/tune#548)
 
     Code

@@ -318,50 +318,71 @@ compute_grid_info <- function(workflow, grid) {
 
   res <- min_grid(extract_spec_parsnip(workflow), grid)
 
+  syms_pre <- rlang::syms(parameters_preprocessor$id)
+  syms_mod <- rlang::syms(parameters_model$id)
+
+  # ----------------------------------------------------------------------------
+  # Create an order of execution to train the preprocessor (if any). This will
+  # define a loop over any preprocessing tuning parameter combinations.
   if (any_parameters_preprocessor) {
-    res$.iter_preprocessor <- seq_len(nrow(res))
+    pp_df <-
+      dplyr::distinct(res, !!!syms_pre) %>%
+      dplyr::arrange(!!!syms_pre) %>%
+      dplyr::mutate(
+        .iter_preprocessor = dplyr::row_number(),
+        .lab_pre = recipes::names0(max(dplyr::n()), "Preprocessor")
+      )
+    res <-
+      dplyr::full_join(res, pp_df, by = parameters_preprocessor$id) %>%
+      dplyr::arrange(.iter_preprocessor)
   } else {
     res$.iter_preprocessor <- 1L
+    res$.lab_pre <- "Preprocessor1"
   }
 
+  # Make the label shown in the grid and in loggining
   res$.msg_preprocessor <-
     new_msgs_preprocessor(
-      seq_len(max(res$.iter_preprocessor)),
+      res$.iter_preprocessor,
       max(res$.iter_preprocessor)
     )
 
-  if (nrow(res) != nrow(grid) ||
-      (any_parameters_model && !any_parameters_preprocessor)) {
-    res$.iter_model <- seq_len(dplyr::n_distinct(res[parameters_model$id]))
-  } else {
-    res$.iter_model <- 1L
-  }
+  # ----------------------------------------------------------------------------
+  # Now make a similar iterator across models. Conditioning on each unique
+  # preprocessing candidate set, make an iterator for the model candidate sets
+  # (if any)
 
-  res$.iter_config <- list(list())
-  for (row in seq_len(nrow(res))) {
-    res$.iter_config[row] <- list(iter_config(res[row, ]))
-  }
+  res <-
+    res %>%
+    dplyr::group_nest(.iter_preprocessor, keep = TRUE) %>%
+    dplyr::mutate(
+      .iter_config = purrr::map(data, make_iter_config),
+      .model = purrr::map(data, ~ tibble::tibble(.iter_model = seq_len(nrow(.x)))),
+      .num_models = purrr::map_int(.model, nrow)
+    ) %>%
+    dplyr::select(-.iter_preprocessor) %>%
+    tidyr::unnest(cols = c(data, .model, .iter_config)) %>%
+    dplyr::select(-.lab_pre) %>%
+    dplyr::relocate(dplyr::starts_with(".iter"))
 
   res$.msg_model <-
-    new_msgs_model(i = res$.iter_model, n = max(res$.iter_model), res$.msg_preprocessor)
+    new_msgs_model(i = res$.iter_model,
+                   n = res$.num_models,
+                   res$.msg_preprocessor)
 
-  res
+  res %>%
+    dplyr::select(-.num_models) %>%
+    dplyr::relocate(dplyr::starts_with(".msg"))
 }
 
-iter_config <- function(res_row) {
-  submodels <- res_row$.submodels[[1]]
-  if (identical(submodels, list())) {
-    models <- res_row$.iter_model
-  } else {
-    models <- seq_len(length(submodels[[1]]) + 1)
-  }
-
-  paste0(
-    "Preprocessor",
-    res_row$.iter_preprocessor,
-    "_Model",
-    format_with_padding(models)
-  )
+make_iter_config <- function(dat) {
+  # Compute labels for the models *within* each preprocessing loop.
+  num_submodels <- purrr::map_int(dat$.submodels, ~ length(unlist(.x)))
+  num_models <- sum(num_submodels + 1) # +1 for the model being trained
+  .mod_label <- recipes::names0(num_models, "Model")
+  .iter_config <- paste(dat$.lab_pre[1], .mod_label, sep = "_")
+  .iter_config <- vctrs::vec_chop(.iter_config, sizes = num_submodels + 1)
+  tibble::tibble(.iter_config  = .iter_config)
 }
 
 # This generates a "dummy" grid_info object that has the same
