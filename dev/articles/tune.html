@@ -285,18 +285,18 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 6</span></span></span>
-<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config             </span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">0</span> Preprocessor1_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.686  Preprocessor1_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        2 rmse    standard      0.097<span style="text-decoration: underline;">9</span> Preprocessor2_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        2 rsq     standard      0.687  Preprocessor2_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        2 rmse    standard      0.096<span style="text-decoration: underline;">6</span> Preprocessor3_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        2 rsq     standard      0.695  Preprocessor3_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        2 rmse    standard      0.095<span style="text-decoration: underline;">6</span> Preprocessor4_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        2 rsq     standard      0.701  Preprocessor4_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        2 rmse    standard      0.095<span style="text-decoration: underline;">4</span> Preprocessor5_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        2 rsq     standard      0.703  Preprocessor5_Model1</span></span>
+<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config              </span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">0</span> Preprocessor01_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.686  Preprocessor01_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard      0.097<span style="text-decoration: underline;">3</span> Preprocessor02_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard      0.691  Preprocessor02_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard      0.096<span style="text-decoration: underline;">1</span> Preprocessor03_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard      0.701  Preprocessor03_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard      0.092<span style="text-decoration: underline;">9</span> Preprocessor04_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard      0.722  Preprocessor04_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard      0.092<span style="text-decoration: underline;">1</span> Preprocessor05_Model1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard      0.727  Preprocessor05_Model1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>To get the average metric value for each parameter combination,
 <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
@@ -306,16 +306,16 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 8</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config     </span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">33</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        4 rsq     standard   0.678     10 0.006<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         4        4 rmse    standard   0.099<span style="text-decoration: underline;">5</span>    10 0.001<span style="text-decoration: underline;">42</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         4        4 rsq     standard   0.680     10 0.007<span style="text-decoration: underline;">01</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         6        4 rmse    standard   0.098<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">47</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         6        4 rsq     standard   0.685     10 0.007<span style="text-decoration: underline;">63</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8        4 rmse    standard   0.098<span style="text-decoration: underline;">4</span>    10 0.001<span style="text-decoration: underline;">48</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         8        4 rsq     standard   0.687     10 0.008<span style="text-decoration: underline;">39</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        10        4 rmse    standard   0.098<span style="text-decoration: underline;">4</span>    10 0.001<span style="text-decoration: underline;">54</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        10        4 rsq     standard   0.687     10 0.009<span style="text-decoration: underline;">09</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">40</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.678     10 0.007<span style="text-decoration: underline;">37</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">33</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard   0.678     10 0.006<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard   0.098<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">24</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard   0.685     10 0.007<span style="text-decoration: underline;">33</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard   0.096<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard   0.698     10 0.006<span style="text-decoration: underline;">66</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard   0.096<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">14</span> Preprocesso…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard   0.699     10 0.006<span style="text-decoration: underline;">59</span> Preprocesso…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10
 resamples. The best RMSE values corresponded to:</p>
