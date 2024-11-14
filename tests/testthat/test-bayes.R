@@ -481,7 +481,10 @@ test_that("retain extra attributes and saved GP candidates", {
 
   files <- list.files(path = tempdir(), pattern = "^gp_candidates")
   expect_true(length(files) == iter2)
-
+  current_objs <- c(ls(), "current_objs")
+  load(file.path(tempdir(), "gp_candidates_1.RData"))
+  new_obj <- ls()
+  expect_snapshot(setdiff(new_obj, current_objs))
 
   expect_snapshot(
     res2 <- tune_bayes(
