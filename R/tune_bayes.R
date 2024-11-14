@@ -876,10 +876,11 @@ save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
 
   nm <- recipes::names0(iter, "gp_candidates_")[i]
   file_name <- glue::glue("{tempdir()}/{nm}.RData")
-  res <- try(save(x, pset, i, candidates, score_card, file = file_name),
+  gp_fit <- x
+  res <- try(save(gp_fit, pset, i, candidates, score_card, file = file_name),
              silent = TRUE)
   if (inherits(res, "try-error")) {
-    rlang::warn(paste("Could not save GP results:", as.character(res)))
+    cli::cli_warn("Could not save GP results at iteration {i}: {as.character(res))}")
   }
   invisible(res)
 }
