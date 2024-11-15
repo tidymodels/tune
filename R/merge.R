@@ -75,6 +75,12 @@ merge.model_spec <- function(x, y, ...) {
   merger(x, y, ...)
 }
 
+#' @export
+#' @rdname merge.recipe
+merge.tailor <- function(x, y, ...) {
+  merger(x, y, ...)
+}
+
 update_model <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset %>% dplyr::filter(id == i & source == "model_spec")
@@ -108,6 +114,16 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
   object
 }
 
+update_tailor <- function(grid, object, pset, adjustment_id, nms, ...) {
+  for (i in nms) {
+    param_info <- pset %>% dplyr::filter(id == i & source == "tailor")
+    if (nrow(param_info) == 1) {
+      idx <- which(adjustment_id == param_info$component_id)
+      object$adjustments[[idx]][["arguments"]][[param_info$name]] <- grid[[i]]
+    }
+  }
+  object
+}
 
 merger <- function(x, y, ...) {
   if (!is.data.frame(y)) {
@@ -127,9 +143,12 @@ merger <- function(x, y, ...) {
   if (inherits(x, "recipe")) {
     updater <- update_recipe
     step_ids <- purrr::map_chr(x$steps, ~ .x$id)
-  } else {
+  } else if (inherits(x, "model_spec")) {
     updater <- update_model
     step_ids <- NULL
+  } else {
+    updater <- update_tailor
+    step_ids <- purrr::map_chr(x$adjustments, ~class(.x)[1])
   }
 
   if (!any(grid_name %in% pset$id)) {

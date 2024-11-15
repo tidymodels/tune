@@ -326,3 +326,13 @@ min_grid.pls <- fit_max_value
 #' @export min_grid.poisson_reg
 #' @rdname min_grid
 min_grid.poisson_reg <- fit_max_value
+
+
+# When `min_grid()` is applied to grids with additional columns for
+# postprocessors, we need to nest the postprocessor columns into
+# .submodels to effectively enable the submodel trick.
+# See: https://gist.github.com/simonpcouch/28d984cdcc3fc6d22ff776ed8740004e
+nest_min_grid <- function(min_grid, post_params) {
+  # TODO
+  min_grid
+}

@@ -375,10 +375,12 @@ tune_grid_loop_iter <- function(split,
 
   model_params <- vctrs::vec_slice(params, params$source == "model_spec")
   preprocessor_params <- vctrs::vec_slice(params, params$source == "recipe")
+  postprocessor_params <- vctrs::vec_slice(params, params$source == "tailor")
 
   param_names <- params$id
   model_param_names <- model_params$id
   preprocessor_param_names <- preprocessor_params$id
+  postprocessor_param_names <- postprocessor_params$id
 
   # inline rsample::assessment so that we can pass indices to `predict_model()`
   assessment_rows <- as.integer(split, data = "assessment")
@@ -542,34 +544,62 @@ tune_grid_loop_iter <- function(split,
         # if the postprocessor does not require training, then `calibration` will
         # be NULL and nothing other than the column names is learned from
         # `assessment`.
-        workflow_with_post <- .fit_post(workflow, calibration %||% assessment)
 
-        workflow_with_post <- .fit_finalize(workflow_with_post)
+        # --------------------------------------------------------------------------
+        # Postprocessor loop
+        iter_postprocessors <- iter_grid_info_model[[".iter_postprocessor"]]
 
-        # run extract function on workflow with trained postprocessor
-        elt_extract <- .catch_and_log(
-          extract_details(workflow_with_post, control$extract),
-          control,
-          split_labels,
-          paste(iter_msg_model, "(extracts)"),
-          bad_only = TRUE,
-          notes = out_notes
-        )
-        elt_extract <- make_extracts(elt_extract, iter_grid, split_labels, .config = iter_config)
-        out_extracts <- append_extracts(out_extracts, elt_extract)
+        workflow_pre_and_model <- workflow
 
-        # generate predictions on the assessment set from the model and apply the
-        # post-processor to those predictions to generate updated predictions
-        iter_predictions <- .catch_and_log(
-          predict_model(assessment, assessment_rows, workflow_with_post, iter_grid,
-                        metrics, iter_submodels, metrics_info = metrics_info,
-                        eval_time = eval_time),
-          control,
-          split_labels,
-          paste(iter_msg_model, "(predictions with post-processor)"),
-          bad_only = TRUE,
-          notes = out_notes
-        )
+        for (iter_postprocessor in iter_postprocessors) {
+          workflow <- workflow_pre_and_model
+
+          iter_grid_info_postprocessor <- vctrs::vec_slice(
+            iter_grid_info_model,
+            iter_grid_info_model$.iter_postprocessor == iter_postprocessor
+          )
+
+          iter_grid_postprocessor <- iter_grid_info_postprocessor[, postprocessor_param_names]
+
+          iter_msg_postprocessor <- iter_grid_postprocessor[[".msg_postprocessor"]]
+          iter_config <- iter_grid_info_postprocessor[[".iter_config_post"]][[1L]]
+
+          workflow <- finalize_workflow_postprocessor(workflow, iter_grid_postprocessor)
+
+          workflow_with_post <- .fit_post(workflow, calibration %||% assessment)
+
+          workflow_with_post <- .fit_finalize(workflow_with_post)
+
+          iter_grid <- dplyr::bind_cols(
+            iter_grid_preprocessor,
+            iter_grid_model,
+            iter_grid_postprocessor
+          )
+
+          # run extract function on workflow with trained postprocessor
+          elt_extract <- .catch_and_log(
+            extract_details(workflow_with_post, control$extract),
+            control,
+            split_labels,
+            paste(iter_msg_model, "(extracts)"),
+            bad_only = TRUE,
+            notes = out_notes
+          )
+          elt_extract <- make_extracts(elt_extract, iter_grid, split_labels, .config = iter_config)
+          out_extracts <- append_extracts(out_extracts, elt_extract)
+
+          # generate predictions on the assessment set from the model and apply the
+          # post-processor to those predictions to generate updated predictions
+          iter_predictions <- .catch_and_log(
+            predict_model(assessment, assessment_rows, workflow_with_post, iter_grid,
+                          metrics, iter_submodels, metrics_info = metrics_info,
+                          eval_time = eval_time),
+            control,
+            split_labels,
+            paste(iter_msg_postprocessor, "(predictions with post-processor)"),
+            bad_only = TRUE,
+            notes = out_notes
+          )
 
         # now, assess those predictions with performance metrics
       }
@@ -595,6 +625,7 @@ tune_grid_loop_iter <- function(split,
         control = control,
         .config = iter_config_metrics
       )
+      } # postprocessor loop
     } # model loop
   } # preprocessor loop
 
