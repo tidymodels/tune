@@ -133,7 +133,7 @@ peek_tune_results_outcomes <- function(x) {
   out <- attr(x, "outcomes", exact = TRUE)
 
   if (is.null(out)) {
-    cli::cli_abort("The object of type {.cls tune_results} object doesn't have an
+    cli::cli_abort("The object of type {.cls tune_results} doesn't have an
                     {.code outcomes} attribute.")
   }
 

@@ -153,7 +153,7 @@ collect_predictions.tune_results <- function(x, ..., summarize = FALSE, paramete
 
   if (!has_coll_col) {
     cli::cli_abort(
-      "The {.code .predictions} column does not exist. Please refit with the
+      "The {.field .predictions} column does not exist. Please refit with the
       control argument {.code save_pred = TRUE} to save predictions."
     )
   }
@@ -181,9 +181,9 @@ filter_predictions <- function(x, parameters) {
   }
   params <- attr(x, "parameters")
   if (is.null(params)) {
-    cli::cli_warn("The object is missing some attributes; it is probably from an
-                   earlier version of {.pkg tune}. The predictions can't be
-                   filtered."
+    cli::cli_warn(
+      "The object is missing some attributes; it is probably from an earlier 
+       version of {.pkg tune}. The predictions can't be filtered."
     )
 
     return(x)
@@ -192,7 +192,7 @@ filter_predictions <- function(x, parameters) {
   param_names <- params$id
   parameters <- dplyr::select(parameters, dplyr::any_of(param_names))
   if (ncol(parameters) != length(param_names)) {
-    cli::cli_abort("The {.arg parameters} argument should only have columns:
+    cli::cli_abort("{.arg parameters} should only have columns:
                     {.val {param_names}}.")
   }
   x$.predictions <-

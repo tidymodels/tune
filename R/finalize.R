@@ -55,7 +55,7 @@ finalize_model <- function(x, parameters) {
 #' @rdname finalize_model
 finalize_recipe <- function(x, parameters) {
   if (!inherits(x, "recipe")) {
-    cli::cli_abort("{.arg x} should be recipe, not {.obj_type_friendly {x}}.")
+    cli::cli_abort("{.arg x} should be a recipe, not {.obj_type_friendly {x}}.")
   }
   check_final_param(parameters)
   pset <-

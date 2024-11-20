@@ -77,7 +77,8 @@ metrics_info <- function(x) {
 
   if (length(outcome_name) > 1L) {
     cli::cli_abort(
-      "Internal error: Multiple outcomes are not supported in {.fn .estimate_metrics}."
+      "Multiple outcomes are not supported in {.fn .estimate_metrics}.",
+      .internal = TRUE
     )
   }
 

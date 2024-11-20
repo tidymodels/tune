@@ -21,10 +21,10 @@ predict_model <- function(new_data, orig_rows, workflow, grid, metrics,
       msg <-
         c(
           msg,
-          i = cli::format_inline(
+          i = 
             "Consider using {.code skip = TRUE} on any recipe steps that
              remove rows to avoid calling them on the assessment set."
-          )
+          
         )
     } else {
       msg <- c(msg, i = "Did your preprocessing steps filter or remove rows?")

@@ -57,7 +57,7 @@ filter_parameters <- function(x, ..., parameters = NULL) {
   check_filter_dots(rlang::enquos(...))
   # check for type
   if (!inherits(x, "tune_results")) {
-    cli::cli_abort("{.arg x} should have class {.cls tune_results};
+    cli::cli_abort("{.arg {caller_arg(x)}} should have class {.cls tune_results};
                     {.obj_type_friendly {x}} was passed.")
   }
   x <- filter_by_join(x, parameters, nm = cl_x)

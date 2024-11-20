@@ -62,7 +62,7 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
     if (nrow(param_combos) > 1) {
       cli::cli_abort(
         "It looks like there are {nrow(param_combos)} tuning parameter
-        combination{?s} in the data. Please use the {.arg parameters}
+        combination in the data. Please use the {.arg parameters}
         argument to select one combination of parameters."
       )
     }

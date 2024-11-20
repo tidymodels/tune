@@ -26,14 +26,13 @@
 #' @export
 .use_case_weights_with_yardstick.default <- function(x) {
   message <- c(
-    cli::format_inline("Unknown case weights object contains
-                       {.obj_type_friendly {x}} instead of an object with a
-                       case weight class."),
+    "Unknown case weights object contains {.obj_type_friendly {x}} instead 
+    of an object with a case weight class.",
     i = paste0(
       "Define a {.fn .use_case_weights_with_yardstick} method for this type to ",
       "declare whether or not these case weights should be passed on to yardstick."
     ),
-    i = "See `?.use_case_weights_with_yardstick` for more information."
+    i = "See {.help .use_case_weights_with_yardstick} for more information."
   )
 
   cli::cli_abort(message)
