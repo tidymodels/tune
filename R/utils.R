@@ -8,11 +8,24 @@
 empty_ellipses <- function(...) {
   dots <- rlang::enquos(...)
   if (length(dots) > 0) {
-
-    cli::cli_warn(
-      "The {.code ...} are not used in this function but {length(dots)}
-       object{?s} {?was/were} passed: {.val {names(dots)}}"
-    )
+    nms <- names(dots)
+    no_name <- nms == ""
+    if (!any(no_name)) {
+      cli::cli_warn(
+        "The {.code ...} are not used in this function but {length(dots)}
+         object{?s} {?was/were} passed: {.val {names(dots)}}"
+      )
+    } else if (all(no_name)) {
+      cli::cli_warn(
+        "The {.code ...} are not used in this function but {length(dots)}
+         unnamed object{?s} {?was/were} passed."
+      )
+    } else {
+      cli::cli_warn(
+        "The {.code ...} are not used in this function but {length(dots)}
+         object{?s} {?was/were} passed."
+      )
+    }
   }
   invisible(NULL)
 }
