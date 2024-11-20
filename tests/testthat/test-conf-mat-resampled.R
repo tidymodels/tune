@@ -1,15 +1,19 @@
 test_that("appropriate return values", {
   svm_results <- readRDS(test_path("data", "svm_results.rds"))
 
-  expect_error(
-    cm_1 <- conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy")),
-    regex = NA
+  expect_no_error(
+    cm_1 <-
+      conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy"))
   )
   expect_true(tibble::is_tibble(cm_1))
 
-  expect_error(
-    cm_2 <- conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy"), tidy = FALSE),
-    regex = NA
+  expect_no_error(
+    cm_2 <-
+      conf_mat_resampled(
+        svm_results,
+        parameters = select_best(svm_results, metric = "accuracy"),
+        tidy = FALSE
+      )
   )
   expect_equal(class(cm_2), "conf_mat")
 

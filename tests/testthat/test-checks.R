@@ -3,7 +3,7 @@ test_that("rsample objects", {
   obj_loo <- rsample::loo_cv(mtcars)
   obj_nst <- rsample::nested_cv(mtcars, obj_cv, inside = rsample::bootstraps())
   obj_permut <- rsample::permutations(mtcars, hp)
-  expect_error(tune:::check_rset(obj_cv), regexp = NA)
+  expect_no_error(tune:::check_rset(obj_cv))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_loo))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_nst))
   expect_snapshot(error = TRUE, tune:::check_rset(obj_permut))
@@ -69,7 +69,7 @@ test_that("grid objects", {
     add_model(svm_mod) %>%
     add_recipe(bare_rec)
 
-  expect_error(grid_2 <- tune:::check_grid(6, wflow_1), NA)
+  expect_no_error(grid_2 <- tune:::check_grid(6, wflow_1))
   expect_equal(nrow(grid_2), 6)
   expect_true(inherits(grid_2, "data.frame"))
 
@@ -226,17 +226,15 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   lr_glmnet_2 <- lr_lm_2 %>% parsnip::set_engine("glmnet")
 
   # don't error when supplied tune args make sense given engine / steps
-  expect_error_na <- function(x) {testthat::expect_error(x, regexp = NA)}
+  expect_no_error(check_workflow(workflow(rec_bare, lr_lm_0)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_0)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_1)))
+  expect_no_error(check_workflow(workflow(rec_bare, lr_glmnet_2)))
 
-  expect_error_na(check_workflow(workflow(rec_bare, lr_lm_0)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_0)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_1)))
-  expect_error_na(check_workflow(workflow(rec_bare, lr_glmnet_2)))
-
-  expect_error_na(check_workflow(workflow(rec_tune, lr_lm_0)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_0)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_1)))
-  expect_error_na(check_workflow(workflow(rec_tune, lr_glmnet_2)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_lm_0)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_0)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_1)))
+  expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_2)))
 
   # error when supplied tune args don't make sense given engine / steps
   expect_error_nt <- function(x) {testthat::expect_error(x, class = "not_tunable_error")}
@@ -321,7 +319,7 @@ test_that("metrics must match the parsnip engine", {
 # ------------------------------------------------------------------------------
 
 test_that("grid control objects", {
-  expect_error(control_grid(), NA)
+  expect_no_error(control_grid())
   expect_snapshot(error = TRUE, control_grid(tomato = 1))
   expect_snapshot(error = TRUE, control_grid(verbose = 1))
   expect_snapshot(error = TRUE, control_grid(verbose = rep(TRUE, 2)))
@@ -330,18 +328,18 @@ test_that("grid control objects", {
   expect_snapshot(error = TRUE, control_grid(extract = Inf))
   expect_snapshot(error = TRUE, control_grid(pkgs = Inf))
 
-  expect_error(control_grid(verbose = TRUE), NA)
-  expect_error(control_grid(allow_par = FALSE), NA)
-  expect_error(control_grid(save_pred = TRUE), NA)
-  expect_error(control_grid(extract = NULL), NA)
-  expect_error(control_grid(extract = I), NA)
-  expect_error(control_grid(pkgs = NULL), NA)
-  expect_error(control_grid(pkgs = letters), NA)
+  expect_no_error(control_grid(verbose = TRUE))
+  expect_no_error(control_grid(allow_par = FALSE))
+  expect_no_error(control_grid(save_pred = TRUE))
+  expect_no_error(control_grid(extract = NULL))
+  expect_no_error(control_grid(extract = I))
+  expect_no_error(control_grid(pkgs = NULL))
+  expect_no_error(control_grid(pkgs = letters))
   expect_s3_class(control_grid(), c("control_grid", "control_resamples"))
 })
 
 test_that("Bayes control objects", {
-  expect_error(control_bayes(), NA)
+  expect_no_error(control_bayes())
   expect_snapshot(error = TRUE, control_bayes(tomato = 1))
   expect_snapshot(error = TRUE, control_bayes(verbose = 1))
   expect_snapshot(error = TRUE, control_bayes(verbose = rep(TRUE, 2)))
@@ -357,15 +355,15 @@ test_that("Bayes control objects", {
     tmp <- control_bayes(no_improve = 2, uncertain = 5)
   )
 
-  expect_error(control_bayes(verbose = TRUE), NA)
-  expect_error(control_bayes(no_improve = 2), NA)
-  expect_error(control_bayes(uncertain = 2), NA)
-  expect_error(control_bayes(save_pred = TRUE), NA)
-  expect_error(control_bayes(extract = NULL), NA)
-  expect_error(control_bayes(extract = I), NA)
-  expect_error(control_bayes(pkgs = NULL), NA)
-  expect_error(control_bayes(pkgs = letters), NA)
-  expect_error(control_bayes(time_limit = 2), NA)
+  expect_no_error(control_bayes(verbose = TRUE))
+  expect_no_error(control_bayes(no_improve = 2))
+  expect_no_error(control_bayes(uncertain = 2))
+  expect_no_error(control_bayes(save_pred = TRUE))
+  expect_no_error(control_bayes(extract = NULL))
+  expect_no_error(control_bayes(extract = I))
+  expect_no_error(control_bayes(pkgs = NULL))
+  expect_no_error(control_bayes(pkgs = letters))
+  expect_no_error(control_bayes(time_limit = 2))
   expect_s3_class(control_bayes(), "control_bayes")
 })
 
@@ -448,16 +446,14 @@ test_that("check parameter finalization", {
     add_model(rf1)
 
   expect_snapshot(
-    expect_error(
-      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0)),
-      regex = NA
+    expect_no_error(
+      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0))
     )
   )
   expect_false(any(dials::has_unknowns(p1$object)))
 
-  expect_error(
-    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry"),
-    regex = NA
+  expect_no_error(
+    p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = "mtry")
   )
 
   w2 <-
@@ -466,9 +462,8 @@ test_that("check parameter finalization", {
     add_model(rf1)
 
   expect_snapshot(
-    expect_error(
-      p2 <- tune:::check_parameters(w2, data = mtcars),
-      regex = NA
+    expect_no_error(
+      p2 <- tune:::check_parameters(w2, data = mtcars)
     )
   )
   expect_false(any(dials::has_unknowns(p2$object)))
@@ -480,9 +475,8 @@ test_that("check parameter finalization", {
   p3 <- extract_parameter_set_dials(w3)
 
   expect_snapshot(
-    expect_error(
-      p3_a <- tune:::check_parameters(w3, data = mtcars),
-      regex = NA
+    expect_no_error(
+      p3_a <- tune:::check_parameters(w3, data = mtcars)
     )
   )
   expect_false(any(dials::has_unknowns(p3_a$object)))
@@ -500,9 +494,8 @@ test_that("check parameter finalization", {
     extract_parameter_set_dials(w4) %>%
     update(mtry = dials::mtry(c(1, 10)))
 
-  expect_error(
-    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars),
-    regex = NA
+  expect_no_error(
+    p4_b <- tune:::check_parameters(w4, p4_a, data = mtcars)
   )
   expect_true(inherits(p4_b, "parameters"))
 
@@ -511,9 +504,8 @@ test_that("check parameter finalization", {
     add_recipe(rec_tune) %>%
     add_model(lm1)
 
-  expect_error(
-    p5 <- tune:::check_parameters(w5, data = mtcars),
-    regex = NA
+  expect_no_error(
+    p5 <- tune:::check_parameters(w5, data = mtcars)
   )
   expect_true(inherits(p5, "parameters"))
 })

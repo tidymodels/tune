@@ -57,7 +57,7 @@ test_that("tune recipe only", {
   expect_null(.get_tune_eval_time_target(res))
 
   set.seed(1)
-  expect_error(
+  expect_no_error(
     suppressMessages(
       tune_bayes(
         wflow,
@@ -67,8 +67,7 @@ test_that("tune recipe only", {
         iter = iter2,
         corr = list(type = "matern", nu = 3 / 2)
       )
-    ),
-    regexp = NA
+    )
   )
 
 
@@ -483,6 +482,10 @@ test_that("retain extra attributes and saved GP candidates", {
   files <- list.files(path = tempdir(), pattern = "^gp_candidates")
   expect_true(length(files) == iter2)
 
+  current_objs <- c(ls(), "current_objs")
+  load(file.path(tempdir(), "gp_candidates_1.RData"))
+  new_obj <- ls()
+  expect_snapshot(setdiff(new_obj, current_objs))
 
   expect_snapshot(
     res2 <- tune_bayes(

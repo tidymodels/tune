@@ -277,6 +277,7 @@ tune_bayes_workflow <- function(object,
                                 ...,
                                 call = caller_env()) {
 
+    clear_gp_results()
     start_time <- proc.time()[3]
 
     initialize_catalog(control = control)
@@ -403,8 +404,6 @@ tune_bayes_workflow <- function(object,
 
       gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
 
-      save_gp_results(gp_mod, param_info, control, i, iter)
-
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
@@ -432,6 +431,8 @@ tune_bayes_workflow <- function(object,
       check_time(start_time, control$time_limit)
 
       check_and_log_flow(control, candidates)
+
+      save_gp_results(gp_mod, param_info, control, i, iter, candidates, score_card)
 
       candidates <- pick_candidate(candidates, score_card, control)
       if (score_card$uncertainty >= control$uncertain) {
@@ -864,17 +865,26 @@ reup_rs <- function(resamples, res) {
 
 ## -----------------------------------------------------------------------------
 
-save_gp_results <- function(x, pset, ctrl, i, iter) {
+save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
   if (!ctrl$save_gp_scoring) {
     return(invisible(NULL))
   }
 
   nm <- recipes::names0(iter, "gp_candidates_")[i]
-  file_name <- paste0(nm, ".RData")
-  res <- try(save(x, pset, i, file = file.path(tempdir(), file_name)), silent = TRUE)
+  file_name <- glue::glue("{tempdir()}/{nm}.RData")
+  gp_fit <- x
+  res <- try(save(gp_fit, pset, i, candidates, score_card, file = file_name),
+             silent = TRUE)
   if (inherits(res, "try-error")) {
-    err <- cli::format_error(as.character(res))
-    cli::cli_warn("Could not save GP results: {err}")
+    cli::cli_warn("Could not save GP results at iteration {i}: {as.character(res))}")
   }
+  invisible(res)
+}
+
+
+clear_gp_results <- function() {
+  gp_files <-
+    list.files(tempdir(), pattern = "gp_candidates_", full.names = TRUE)
+  res <- try(unlink(gp_files), silent = TRUE)
   invisible(res)
 }
