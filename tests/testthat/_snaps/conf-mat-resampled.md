@@ -4,7 +4,7 @@
       conf_mat_resampled(svm_results)
     Condition
       Error in `conf_mat_resampled()`:
-      ! It looks like there are 5 tuning parameter combinations in the data. Please use the `parameters` argument to select one combination of parameters.
+      ! It looks like there are 5 tuning parameter combination in the data. Please use the `parameters` argument to select one combination of parameters.
 
 ---
 

@@ -4,7 +4,7 @@
       collect_predictions(lm_splines %>% dplyr::select(-.predictions))
     Condition
       Error in `collect_predictions()`:
-      ! The `.predictions` column does not exist. Please refit with the control argument `save_pred = TRUE` to save predictions.
+      ! The .predictions column does not exist. Please refit with the control argument `save_pred = TRUE` to save predictions.
 
 # `collect_predictions()` errors informatively applied to unsupported class
 
@@ -20,7 +20,7 @@
       collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
     Condition
       Error in `filter_predictions()`:
-      ! The `parameters` argument should only have columns: "cost value".
+      ! `parameters` should only have columns: "cost value".
 
 # collecting notes - fit_resamples
 

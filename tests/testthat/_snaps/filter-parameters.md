@@ -5,7 +5,7 @@
         `%^*#` = 1))
     Condition
       Error in `filter_parameters()`:
-      ! `x` should have class <tune_results>; a tibble was passed.
+      ! `collect_metrics(svm_reg_results)` should have class <tune_results>; a tibble was passed.
 
 ---
 
