@@ -8,12 +8,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `spline_msg()`:
-        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
+        Caused by error in `prep()`:
+        ! `deg_free` must be a whole number, not a numeric `NA`.
       x Fold2: preprocessor 1/1:
         Error in `step_spline_b()`:
-        Caused by error in `spline_msg()`:
-        ! Error in if (df < 0)  : missing value where TRUE/FALSE needed
+        Caused by error in `prep()`:
+        ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -28,10 +28,10 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `get_all_predictors()`:
-        ! The following predictors were not found in `data`: 'z'.
+        ! The following predictor was not found in `data`: "z".
       x Fold2: preprocessor 1/1:
         Error in `get_all_predictors()`:
-        ! The following predictors were not found in `data`: 'z'.
+        ! The following predictor was not found in `data`: "z".
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.

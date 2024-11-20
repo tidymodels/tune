@@ -5,12 +5,12 @@
     Message
       x Fold1: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `spline_msg()`:
-        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
+        Caused by error in `prep()`:
+        ! `deg_free` must be a whole number, not a numeric `NA`.
       x Fold2: preprocessor 1/1:
         Error in `step_spline_natural()`:
-        Caused by error in `spline_msg()`:
-        ! Error in if (df < 2)  : missing value where TRUE/FALSE needed
+        Caused by error in `prep()`:
+        ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -20,7 +20,7 @@
     Code
       note
     Output
-      [1] "Error in `step_spline_natural()`:\nCaused by error in `spline_msg()`:\n! Error in if (df < 2) { : missing value where TRUE/FALSE needed"
+      [1] "Error in `step_spline_natural()`:\nCaused by error in `prep()`:\n! `deg_free` must be a whole number, not a numeric `NA`."
 
 # failure in variables tidyselect specification is caught elegantly
 
