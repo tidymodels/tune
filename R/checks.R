@@ -165,10 +165,8 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
       )
     }
     unk_names <- pset$id[unk]
-    num_unk <- length(unk_names)
-    msg <- cli::format_inline(
-      "Creating pre-processing data to finalize {num_unk} unknown parameter{?s}: {.val {unk_names}}"
-    )
+    msg <- 
+      "Creating pre-processing data to finalize unknown parameter{?s} {.val {unk_names}}."
 
     tune_log(list(verbose = TRUE), split_labels = NULL, msg, type = "info")
 
