@@ -26,11 +26,12 @@
 #' @export
 .use_case_weights_with_yardstick.default <- function(x) {
   message <- c(
-    "Unknown case weights object contains {.obj_type_friendly {x}} instead 
-    of an object with a case weight class.",
+    "An object with {.cls hardhat_case_weights} was expected, not
+    {.obj_type_friendly {x}}.",
     i = paste0(
       "Define a {.fn .use_case_weights_with_yardstick} method for this type to ",
-      "declare whether or not these case weights should be passed on to yardstick."
+      "declare whether or not these case weights should be passed on to
+       {.pkg yardstick}."
     ),
     i = "See {.help .use_case_weights_with_yardstick} for more information."
   )

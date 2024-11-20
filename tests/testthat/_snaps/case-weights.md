@@ -4,7 +4,7 @@
       .use_case_weights_with_yardstick(1)
     Condition
       Error in `.use_case_weights_with_yardstick()`:
-      ! Unknown case weights object contains a number instead of an object with a case weight class.
+      ! An object with <hardhat_case_weights> was expected, not a number.
       i Define a `.use_case_weights_with_yardstick()` method for this type to declare whether or not these case weights should be passed on to yardstick.
       i See `?.use_case_weights_with_yardstick()` for more information.
 
