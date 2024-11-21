@@ -107,11 +107,10 @@ reduce_all_outcome_names <- function(resamples) {
   }
 
   if (n_unique > 1L) {
-    rlang::warn(paste0(
-      "More than one set of outcomes were used when tuning. ",
-      "This should never happen. ",
-      "Review how the outcome is specified in your model."
-    ))
+    cli::cli_warn(
+      "More than one set of outcomes were used when tuning. This should never
+       happen. Please review how the outcome is specified in your model."
+    )
   }
 
   outcome_names <- all_outcome_names[[1L]]

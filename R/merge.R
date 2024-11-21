@@ -79,8 +79,7 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset %>% dplyr::filter(id == i & source == "model_spec")
     if (nrow(param_info) > 1) {
-      # TODO figure this out and write a better message
-      rlang::abort("There are too many things.")
+      cli::cli_abort("Cannot update; there are too many parameters.")
     }
     if (nrow(param_info) == 1) {
       if (param_info$component_id == "main") {
@@ -111,7 +110,7 @@ update_recipe <- function(grid, object, pset, step_id, nms, ...) {
 
 merger <- function(x, y, ...) {
   if (!is.data.frame(y)) {
-    rlang::abort("The second argument should be a data frame.")
+    cli::cli_abort("The second argument should be a data frame.")
   }
   pset <- hardhat::extract_parameter_set_dials(x)
 

@@ -42,11 +42,11 @@
 
 ---
 
-    There is no `fit_best()` method for an object with class `integer`.
+    No `fit_best()` exists for an integer.
 
 ---
 
-    There is no `fit_best()` method for an object with classes `tbl_df`, `tbl`, and `data.frame`.
+    No `fit_best()` exists for a tibble.
 
 ---
 

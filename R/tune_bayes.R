@@ -182,11 +182,10 @@ tune_bayes <- function(object, ...) {
 
 #' @export
 tune_bayes.default <- function(object, ...) {
-  msg <- paste0(
-    "The first argument to [tune_bayes()] should be either ",
-    "a model or workflow."
+  cli::cli_abort(
+    "The first argument to {.fn tune_bayes} should be either a model or workflow,
+    not {.obj_type_friendly {object}}."
   )
-  rlang::abort(msg)
 }
 
 #' @export
@@ -203,10 +202,7 @@ tune_bayes.model_spec <- function(object,
                                   initial = 5,
                                   control = control_bayes()) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    rlang::abort(paste(
-      "To tune a model spec, you must preprocess",
-      "with a formula or recipe"
-    ))
+    cli::cli_abort(tune_pp_msg)
   }
 
   # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
@@ -840,7 +836,7 @@ check_time <- function(origin, limit) {
   }
   now_time <- proc.time()[3]
   if (now_time - origin >= limit * 60) {
-    rlang::abort(paste("The time limit of", limit, "minutes has been reached."))
+    cli::cli_abort("The time limit of {limit} minute{?s} has been reached.")
   }
   invisible(NULL)
 }

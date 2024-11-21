@@ -175,5 +175,5 @@ stop_incompatible_cast_iteration_results <- function(x, to, ..., x_arg = "", to_
 }
 
 stop_never_called <- function(fn) {
-  rlang::abort(paste0("Internal error: `", fn, "()` should never be called."))
+  cli::cli_abort("Internal error: {.fn {fn}} should never be called.")
 }

@@ -36,22 +36,21 @@
 conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   rlang::check_dots_empty()
   if (!inherits(x, "tune_results")) {
-    rlang::abort(
-      "The first argument needs to be an object with class 'tune_results'."
-    )
+    cli::cli_abort("The first argument needs to be {.cls tune_results} object,
+                   not {.obj_type_friendly {mtcars}}.")
   }
   if (!any(names(x) == ".predictions")) {
-    rlang::abort(
-      paste0(
-        "The function was not run with the `save_pred = TRUE` option. ",
-        "Please re-run with that option."
-      )
+    cli::cli_abort(
+      "The function was not run with the {.code save_pred = TRUE} option.
+       Please re-run with that option."
     )
   }
   preds <- collect_predictions(x, summarize = FALSE, parameters = parameters)
 
   if (!any(names(preds) == ".pred_class")) {
-    rlang::abort("Cannot find the predicted classes. Was this a classification model?")
+    cli::cli_abort(
+      "Cannot find the predicted classes. Was this a classification model?"
+    )
   }
   # check for multiple parameter combinations
   params <- .get_tune_parameter_names(x)
@@ -61,19 +60,17 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
       dplyr::select(!!!params) %>%
       distinct()
     if (nrow(param_combos) > 1) {
-      rlang::abort(
-        paste0(
-          "It looks like there are ", nrow(param_combos), " tuning parameter ",
-          "combination(s) in the data. Please use the `parameters` ",
-          "argument to select one combination of parameters."
-        )
+      cli::cli_abort(
+        "It looks like there are {nrow(param_combos)} tuning parameter
+        combination in the data. Please use the {.arg parameters}
+        argument to select one combination of parameters."
       )
     }
   }
 
   truth <- .get_tune_outcome_names(x)
   if (length(truth) != 1) {
-    rlang::abort("Cannot determine the proper outcome name")
+    cli::cli_abort("Cannot determine the proper outcome name")
   }
 
   id_cols <- grep("(^id$)|($id[1-9]$)", names(preds), value = TRUE)

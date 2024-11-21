@@ -57,7 +57,8 @@ filter_parameters <- function(x, ..., parameters = NULL) {
   check_filter_dots(rlang::enquos(...))
   # check for type
   if (!inherits(x, "tune_results")) {
-    rlang::abort(paste0(cl_x, " should have class 'tune_results'."))
+    cli::cli_abort("{.arg {caller_arg(x)}} should have class {.cls tune_results};
+                    {.obj_type_friendly {x}} was passed.")
   }
   x <- filter_by_join(x, parameters, nm = cl_x)
   x <- filter_by_filter(x, ...)
@@ -73,11 +74,9 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
   filter_names <- names(parameters)
   filter_names <- filter_names[filter_names != ".config"]
   if (length(intersect(filter_names, param_names)) == 0) {
-    msg <- paste0(
-      "There are no columns in 'parameters' that match with ",
-      as.character(nm)
+    cli::cli_abort(
+      "There are no columns in {.arg parameters} that match with {.val {nm}}."
     )
-    rlang::abort(msg)
   }
   extra_names <- setdiff(filter_names, param_names)
   if (length(extra_names) > 0) {
@@ -93,7 +92,7 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
   tst_orig <- bind_rows(x$.metrics)
   tst_filtered <- filter_join_iter(tst_orig, parameters)
   if (nrow(tst_filtered) == 0) {
-    rlang::abort("No parameter combinations were selected using your subset.")
+    cli::cli_abort("No parameter combinations were selected using your subset.")
   }
 
   x$.metrics <- purrr::map(x$.metrics, filter_join_iter, .subset = parameters)
@@ -133,9 +132,12 @@ check_filter_dots <- function(dots, call = rlang::caller_env()) {
   res <- purrr::map(dots, ~try(rlang::eval_tidy(.x), silent = TRUE))
 
   if (any(purrr::map_lgl(res, inherits, "data.frame"))) {
-    rlang::abort(
-      c("An element passed to `...` is a data frame rather than a filter expression.",
-        "i" = "Did you forget to name the `parameters` argument?"),
+    cli::cli_abort(
+      c(
+        "An element passed to {.arg ...} is a data frame rather than a filter
+         expression.",
+        "i" = "Did you forget to name the {.arg parameters} argument?"
+      ),
       call = call
     )
   }

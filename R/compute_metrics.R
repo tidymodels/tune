@@ -76,7 +76,8 @@ compute_metrics.default <- function(x,
                                     summarize = TRUE,
                                     event_level = "first",
                                     ...) {
-  rlang::abort("No `compute_metrics()` method exists for this type of object.")
+  cli::cli_abort("No {.fn compute_metrics} method exists for
+                 {.obj_type_friendly {x}}.")
 }
 
 #' @export
@@ -89,14 +90,14 @@ compute_metrics.tune_results <- function(x,
   rlang::check_dots_empty()
   check_bool(summarize)
   if (!".predictions" %in% names(x)) {
-    rlang::abort(paste0(
-      "`x` must have been generated with the ",
-      "control argument `save_pred = TRUE`."
-    ))
+    cli::cli_abort(
+      "{.arg x} must have been generated with the control argument
+      {.code save_pred = TRUE}."
+    )
   }
 
   if (!inherits(metrics, "metric_set")) {
-    rlang::abort("`metrics` must be a metric set.")
+    cli::cli_abort("{.arg metrics} must be a metric set.")
   }
 
   new_metrics_info <- metrics_info(metrics)

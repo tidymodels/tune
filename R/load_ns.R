@@ -53,8 +53,7 @@ full_load <- c("kknn", "earth")
     did_load <- purrr::map_lgl(x, requireNamespace, quietly = TRUE)
     if (any(!did_load)) {
       bad <- x[!did_load]
-      msg <- paste0("'", bad, "'", collapse = ", ")
-      rlang::abort(paste("These packages could not be loaded:", msg))
+      cli::cli_abort("The package{?s} {.pkg {bad}} could not be loaded.")
     }
   }
 

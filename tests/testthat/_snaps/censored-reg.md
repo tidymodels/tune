@@ -23,7 +23,8 @@
       Warning in `tune_grid()`:
       `eval_time` is only used for models with mode "censored regression".
       Warning:
-      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning. Did you want to [tune()] parameters?
+      No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
+      Did you want to assign any parameters with a value of `tune()`?
     Output
       # Tuning results
       # 10-fold cross-validation using stratification 

@@ -152,12 +152,10 @@ collect_predictions.tune_results <- function(x, ..., summarize = FALSE, paramete
   has_coll_col <- coll_col %in% names
 
   if (!has_coll_col) {
-    msg <- paste0(
-      "The `.predictions` column does not exist. ",
-      "Refit with the control argument `save_pred = TRUE` to save predictions."
+    cli::cli_abort(
+      "The {.field .predictions} column does not exist. Please refit with the
+      control argument {.code save_pred = TRUE} to save predictions."
     )
-
-    rlang::abort(msg)
   }
 
   x <- filter_predictions(x, parameters)
@@ -183,17 +181,9 @@ filter_predictions <- function(x, parameters) {
   }
   params <- attr(x, "parameters")
   if (is.null(params)) {
-    rlang::warn(
-      paste(
-        strwrap(
-          paste(
-            "The object is missing some attributes; it is probably from",
-            "an earlier version of `tune`. The predictions can't be filtered."
-          ),
-          prefix = ""
-        ),
-        collapse = "\n"
-      )
+    cli::cli_warn(
+      "The object is missing some attributes; it is probably from an earlier 
+       version of {.pkg tune}. The predictions can't be filtered."
     )
 
     return(x)
@@ -202,12 +192,8 @@ filter_predictions <- function(x, parameters) {
   param_names <- params$id
   parameters <- dplyr::select(parameters, dplyr::any_of(param_names))
   if (ncol(parameters) != length(param_names)) {
-    rlang::abort(
-      paste0(
-        "`parameters` should only have columns: ",
-        paste0("'", param_names, "'", collapse = ", ")
-      )
-    )
+    cli::cli_abort("{.arg parameters} should only have columns:
+                    {.val {param_names}}.")
   }
   x$.predictions <-
     purrr::map(x$.predictions, dplyr::inner_join, parameters, by = param_names)
@@ -400,12 +386,7 @@ average_predictions <- function(x, grid = NULL) {
   if (!is.null(grid)) {
     grid <- dplyr::select(grid, dplyr::all_of(param_names))
     if (ncol(grid) != length(param_names)) {
-      rlang::abort(
-        paste0(
-          "`grid` should only have columns: ",
-          paste0("'", param_names, "'", collapse = ", ")
-        )
-      )
+      cli::cli_abort("{.arg grid} should only have columns: {.val {param_names}}.")
     }
     x$.predictions <-
       purrr::map(x$.predictions, dplyr::inner_join, grid, by = param_names)
@@ -429,11 +410,9 @@ average_predictions <- function(x, grid = NULL) {
   } else if (any(metric_types %in% c("survival", "time"))) {
     x <- surv_summarize(x, param_names, y_nms)
   } else {
-    msg <- paste(
-      "We don't know about metrics of type:",
-      paste(unique(metric_types), collapse = ", ")
+    cli::cli_abort(
+      "We don't know about metrics of type: {.val {unique(metric_types)}}."
     )
-    rlang::abort(msg)
   }
 
   if (dplyr::is_grouped_df(x)) {
@@ -566,7 +545,10 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
 
   all_bad <- is_cataclysmic(x)
   if (all_bad) {
-    rlang::abort("All models failed. Run `show_notes(.Last.tune.result)` for more information.")
+    cli::cli_abort(
+      "All models failed. Run {.code show_notes(.Last.tune.result)} for more
+       information."
+    )
   }
 
   # The mapping of tuning parameters and .config.
