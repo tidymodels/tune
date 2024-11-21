@@ -167,8 +167,8 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
     unk_names <- pset$id[unk]
     num_unk <- length(unk_names)
     msg <-
-      cli::format_inline("Creating pre-processing data to finalize {num_unk}
-                          unknown parameter{?s}: {.val {unk_names}}")
+      cli::format_inline(
+        "Creating pre-processing data to finalize {num_unk} unknown parameter{?s}: {.val {unk_names}}")
 
     tune_log(list(verbose = TRUE), split_labels = NULL, msg, type = "info")
 
@@ -217,37 +217,35 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
       and {num_grid} grid point{?s} {?was/were} requested."
     )
 
+  msg_list <- c(
+    "{msg}",
+    "i" = "The GP model requires 2+ initial points. For best performance,
+               supply more initial points than there are tuning parameters."
+  )
+  bullet_msg <-
+    c(
+      `!` = "{msg}",
+      `*` = cli::pluralize(
+        "There are {cli::qty(diff)}{?as many/more} tuning parameters
+          {cli::qty(diff)}{?as/than} there are initial points.
+          This is likely to cause numerical issues in the first few
+          search iterations.")
+    )
+
 
   if (race) {
     race_msg <- "With racing, only completely resampled parameters are used."
-  } else {
-    race_msg <- NULL
+    msg_list <- c(msg_list, "i" = race_msg)
+    bullet_msg <- c(bullet_msg, `*` = race_msg)
   }
 
   if (num_grid == 1) {
-    cli::cli_abort(
-      c(
-        "{msg}",
-        "i" = "The GP model requires 2+ initial points. For best performance,
-               supply more initial points than there are tuning parameters.",
-        "i" = "{race_msg}"
-      )
-    )
+    cli::cli_abort(msg_list)
   }
 
   if (num_grid < num_param + 1) {
     diff <- num_param - num_grid + 1
-    cli::cli_bullets(
-      c(
-        `!` = msg,
-        `*` = cli::pluralize(
-          "There are {cli::qty(diff)}{?as many/more} tuning parameters
-          {cli::qty(diff)}{?as/than} there are initial points.
-          This is likely to cause numerical issues in the first few
-          search iterations."),
-        `*` = race_msg
-      )
-    )
+    cli::cli_bullets(bullet_msg)
   }
 
   invisible(NULL)
