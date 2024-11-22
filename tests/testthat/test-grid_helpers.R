@@ -367,16 +367,15 @@ test_that("compute_grid_info - model and postprocessor (no submodels)", {
   expect_equal(res$.msg_model, paste0("preprocessor 1/1, model ", 1:5, "/5"))
   expect_named(
     res,
-    c(".iter_config", ".iter_preprocessor", ".iter_model", ".iter_postprocessor",
-      ".iter_config_post", ".msg_preprocessor", ".msg_model", ".msg_postprocessor",
-      "tree_depth", "threshold", ".submodels"),
+    c(".iter_config", ".iter_preprocessor", ".iter_model",
+      ".msg_preprocessor", ".msg_model",
+      "tree_depth", "post", ".submodels"),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
 })
 
 test_that("compute_grid_info - model and postprocessor (with submodels)", {
-  skip("not quite ready yet")
   # when a workflow has a model with submodels and a postprocessor, we want
   # to hook into the submodel trick in the same way we would have before
   library(workflows)
@@ -394,22 +393,54 @@ test_that("compute_grid_info - model and postprocessor (with submodels)", {
   grid <- grid_regular(extract_parameter_set_dials(wflow), levels = 3)
   res <- compute_grid_info(wflow, grid)
 
-  expect_equal(res$.iter_preprocessor, rep(1, 3))
-  expect_equal(res$.msg_preprocessor, rep("preprocessor 1/1", 3))
-  expect_equal(res$trees, rep(max(grid$trees), 3))
-  expect_equal(res$.iter_model, rep(1, 3))
-  expect_equal(res$.iter_config, rep(list(paste0("Preprocessor1_Model", 1:3)), 3))
-  expect_equal(res$.msg_model, rep("preprocessor 1/1, model 1/1", 3))
-  # TODO: the second and third have the max trees in them...
-  # expect_equal(res$.submodels, list(list(trees = grid$trees[-which.max(grid$trees)])))
+  expect_equal(nrow(res), 1)
+  expect_equal(res$.iter_preprocessor, 1)
+  expect_equal(res$.msg_preprocessor, "preprocessor 1/1")
+  expect_equal(res$trees, max(grid$trees))
+  expect_equal(res$.iter_model, 1)
+  expect_equal(res$.iter_config, list(paste0("Preprocessor1_Model", 1:3)))
+  expect_equal(res$.msg_model, "preprocessor 1/1, model 1/1")
+
+  res_post <- res$post[[1]]
+  expect_equal(res_post$threshold, unique(grid$threshold))
+  expect_equal(res_post$.iter_postprocessor, 1:3)
+  expect_equal(
+    res_post$.msg_postprocessor,
+    paste0("preprocessor 1/1, model 1/1, postprocessor ", 1:3, "/3")
+  )
+  expect_equal(
+    res_post$.iter_config_post,
+    list(
+      paste0("Preprocessor1_Model", 1:3, "_Postprocessor1"),
+      paste0("Preprocessor1_Model", 1:3, "_Postprocessor2"),
+      paste0("Preprocessor1_Model", 1:3, "_Postprocessor3")
+    )
+  )
   expect_named(
     res,
-    c(".iter_config", ".iter_preprocessor", ".iter_model", ".iter_postprocessor",
-      ".iter_config_post", ".msg_preprocessor", ".msg_model", ".msg_postprocessor",
-      "trees", ".submodels", "threshold"),
+    c(".iter_config", ".iter_preprocessor", ".iter_model",
+      ".msg_preprocessor", ".msg_model", "trees", ".submodels", "post"),
     ignore.order = TRUE
   )
-  expect_equal(nrow(res), 3)
 })
 
-tune_grid(wflow, bootstraps(mtcars), grid = grid)
+test_that("compute_grid_info - model and postprocessor (with submodels but irregular)", {
+  library(workflows)
+  library(parsnip)
+  library(dials)
+
+  spec <- boost_tree(mode = "regression", trees = tune())
+  tlr <- tailor() %>% adjust_probability_threshold(threshold = tune())
+
+  wflow <- workflow()
+  wflow <- add_model(wflow, spec)
+  wflow <- add_formula(wflow, mpg ~ .)
+  wflow <- add_tailor(wflow, tlr)
+
+  grid <- grid_regular(extract_parameter_set_dials(wflow), levels = 3)
+  grid <- grid[c(1:2, 5:nrow(grid)), ]
+  res <- compute_grid_info(wflow, grid)
+
+  skip("does not work--removing some model fits shouldn't increase the number
+        of rows in the grid")
+})

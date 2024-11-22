@@ -339,6 +339,9 @@ compute_grid_info <- function(workflow, grid) {
   syms_post <- rlang::syms(parameters_postprocessor$id)
 
   res <- min_grid(extract_spec_parsnip(workflow), grid)
+  if (any_parameters_postprocessor) {
+    res <- nest_min_grid(res, parameters_postprocessor$id)
+  }
 
   # ----------------------------------------------------------------------------
   # Create an order of execution to train the preprocessor (if any). This will
@@ -370,18 +373,6 @@ compute_grid_info <- function(workflow, grid) {
   # Now make a similar iterator across models. Conditioning on each unique
   # preprocessing candidate set, make an iterator for the model candidate sets
   # (if any)
-  if (any_parameters_postprocessor) {
-    # Ensure that the submodel trick kicks in by temporarily nesting the
-    # postprocessor parameters while iterating in the model grid
-    # TODO: will this introduce issues when there are matching postprocessor
-    # values across models?
-    # ... i think we actually want to (temporarily?) situate these as submodels
-    res <- tidyr::nest(
-      res,
-      .data_post = all_of(parameters_postprocessor$id)
-    )
-  }
-
   res <-
     res %>%
     dplyr::group_nest(.iter_preprocessor, keep = TRUE) %>%
@@ -415,18 +406,20 @@ compute_grid_info <- function(workflow, grid) {
     res %>%
     dplyr::group_nest(.iter_config, keep = TRUE) %>%
     dplyr::mutate(
-      data = purrr::map(data, make_iter_postprocessor)
+      data = purrr::map(data, make_iter_postprocessor, parameters_postprocessor$id)
     ) %>%
     tidyr::unnest(cols = data) %>%
-    dplyr::relocate(dplyr::starts_with(".iter"), dplyr::starts_with(".msg")) %>%
-    tidyr::unnest(.data_post)
+    dplyr::relocate(dplyr::starts_with(".iter"), dplyr::starts_with(".msg"))
 
   res
 }
 
 make_iter_config <- function(dat) {
   # Compute labels for the models *within* each preprocessing loop.
-  num_submodels <- purrr::map_int(dat$.submodels, ~ length(unlist(.x)))
+  num_submodels <- purrr::map_int(
+    dat$.submodels,
+    function(.x) {if (length(.x) == 0) 0 else length(.x[[1]])}
+  )
   num_models <- sum(num_submodels + 1) # +1 for the model being trained
   .mod_label <- recipes::names0(num_models, "Model")
   .iter_config <- paste(dat$.lab_pre[1], .mod_label, sep = "_")
@@ -434,10 +427,15 @@ make_iter_config <- function(dat) {
   tibble::tibble(.iter_config  = .iter_config)
 }
 
-make_iter_postprocessor <- function(data) {
+make_iter_postprocessor <- function(data, post_params) {
+  nested_by_post <- "post" %in% names(data)
+  if (nested_by_post) {
+    data <- data %>% unnest(post)
+  }
+
   data %>%
     mutate(
-      .iter_postprocessor = seq_len(nrow(data)),
+      .iter_postprocessor = seq_len(nrow(.)),
       .msg_postprocessor = new_msgs_postprocessor(
         i = .iter_postprocessor,
         n = max(.iter_postprocessor),
@@ -449,7 +447,8 @@ make_iter_postprocessor <- function(data) {
         make_iter_config_post
       )
     ) %>%
-    select(-.iter_config)
+    select(-.iter_config) %>%
+    nest(post = c(any_of(post_params), ".iter_postprocessor", ".msg_postprocessor", ".iter_config_post"))
 }
 
 make_iter_config_post <- function(iter_config, iter_postprocessor) {

@@ -333,6 +333,41 @@ min_grid.poisson_reg <- fit_max_value
 # .submodels to effectively enable the submodel trick.
 # See: https://gist.github.com/simonpcouch/28d984cdcc3fc6d22ff776ed8740004e
 nest_min_grid <- function(min_grid, post_params) {
-  # TODO
-  min_grid
+  if (!has_submodels(min_grid)) {
+    return(min_grid)
+  }
+  non_post_param_cols <- names(min_grid)[
+    !names(min_grid) %in% c(post_params, ".submodels")
+  ]
+  submodel_param_name <- names(min_grid$.submodels[[1]])
+
+  res <-
+    min_grid %>%
+    # unnest from `list(list())` to `list()`
+    unnest(.submodels) %>%
+    # unnest from `list()` to vector
+    unnest(.submodels)
+
+  tibble(
+    vctrs::vec_unique(res[non_post_param_cols]),
+    post = list(vctrs::vec_unique(res[post_params])),
+    .submodels = list(
+      res[c(post_params, ".submodels")] %>%
+      rename(!!submodel_param_name := .submodels) %>%
+      group_by(across(all_of(submodel_param_name))) %>%
+      group_split()
+    )
+  )
+}
+
+has_submodels <- function(min_grid) {
+  if (!".submodels" %in% names(min_grid)) {
+    return(FALSE)
+  }
+
+  if (length(min_grid$.submodels[[1]]) == 0) {
+    return(FALSE)
+  }
+
+  TRUE
 }
