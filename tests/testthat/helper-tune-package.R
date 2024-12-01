@@ -69,3 +69,16 @@ redefer_initialize_catalog <- function(test_env) {
     }
   })
 }
+
+# ------------------------------------------------------------------------------
+# Objects to test grid processing
+
+rec <-
+  recipe(mpg ~ ., data = mtcars) %>%
+  step_corr(all_predictors(), threshold = tune()) %>%
+  step_spline_natural(disp, deg_free = tune("disp_df"))
+
+mod_bst <- boost_tree(trees = tune(), min_n = tune(), mode = "regression")
+mod_rf <- rand_forest(mtry = tune(), mode = "regression")
+
+
