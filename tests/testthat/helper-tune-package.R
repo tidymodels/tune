@@ -74,11 +74,14 @@ redefer_initialize_catalog <- function(test_env) {
 # Objects to test grid processing
 
 rec <-
-  recipe(mpg ~ ., data = mtcars) %>%
-  step_corr(all_predictors(), threshold = tune()) %>%
-  step_spline_natural(disp, deg_free = tune("disp_df"))
+  recipes::recipe(mpg ~ ., data = mtcars) %>%
+  recipes::step_corr(recipes::all_predictors(), threshold = tune()) %>%
+  recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
 
-mod_bst <- boost_tree(trees = tune(), min_n = tune(), mode = "regression")
-mod_rf <- rand_forest(mtry = tune(), mode = "regression")
+mod_bst <- parsnip::boost_tree(trees = tune(), min_n = tune(), mode = "regression")
+mod_rf <- parsnip::rand_forest(mtry = tune(), mode = "regression")
 
+adjust_min <-
+  tailor::tailor() %>%
+  tailor::adjust_numeric_range(lower_limit = tune())
 

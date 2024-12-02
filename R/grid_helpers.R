@@ -490,6 +490,8 @@ get_tune_schedule <- function(wflow, param, grid) {
     sched <-
       grid %>%
       dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
+    # Note: multi_predict() should only be triggered for a submodel parameter if
+    # there are multiple rows in the `predict_stage` list column.
     first_loop_info <- min_grid(model_spec, grid)
   } else {
     sched <-
