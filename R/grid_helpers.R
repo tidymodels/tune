@@ -21,10 +21,10 @@ predict_model <- function(new_data, orig_rows, workflow, grid, metrics,
       msg <-
         c(
           msg,
-          i = 
+          i =
             "Consider using {.code skip = TRUE} on any recipe steps that
              remove rows to avoid calling them on the assessment set."
-          
+
         )
     } else {
       msg <- c(msg, i = "Did your preprocessing steps filter or remove rows?")
@@ -462,5 +462,10 @@ set_workflow_spec <- function(workflow, spec) {
 
 set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
+  workflow
+}
+
+set_workflow_tailor <- function(workflow, tailor) {
+  workflow$post$actions$tailor$tailor <- tailor
   workflow
 }

@@ -4,6 +4,7 @@
 \alias{finalize_model}
 \alias{finalize_recipe}
 \alias{finalize_workflow}
+\alias{finalize_tailor}
 \title{Splice final parameters into objects}
 \usage{
 finalize_model(x, parameters)
@@ -11,6 +12,8 @@ finalize_model(x, parameters)
 finalize_recipe(x, parameters)
 
 finalize_workflow(x, parameters)
+
+finalize_tailor(x, parameters)
 }
 \arguments{
 \item{x}{A recipe, \code{parsnip} model specification, or workflow.}

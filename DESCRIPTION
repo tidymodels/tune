@@ -18,7 +18,7 @@ Depends:
     R (>= 4.0)
 Imports:
     cli (>= 3.3.0),
-    dials (>= 1.3.0),
+    dials (>= 1.3.0.9000),
     doFuture (>= 1.0.0),
     dplyr (>= 1.1.0),
     foreach,
@@ -50,6 +50,7 @@ Suggests:
     kknn,
     knitr,
     modeldata,
+    probably,
     scales,
     spelling,
     splines2,
@@ -62,7 +63,8 @@ Remotes:
     tidymodels/recipes,
     tidymodels/rsample,
     tidymodels/tailor,
-    tidymodels/workflows
+    tidymodels/workflows,
+    tidymodels/dials
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3

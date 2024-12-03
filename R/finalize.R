@@ -95,6 +95,43 @@ finalize_workflow <- function(x, parameters) {
     x <- set_workflow_recipe(x, rec)
   }
 
+  if (has_postprocessor(x)) {
+    tailor <- extract_postprocessor(x)
+    tailor <- finalize_tailor(tailor, parameters)
+    x <- set_workflow_tailor(x, tailor)
+  }
+
+  x
+}
+
+#' @export
+#' @rdname finalize_model
+finalize_tailor <- function(x, parameters) {
+  if (!inherits(x, "tailor")) {
+    cli::cli_abort("{.arg x} should be a tailor, not {.obj_type_friendly {x}}.")
+  }
+  check_final_param(parameters)
+  pset <-
+    hardhat::extract_parameter_set_dials(x) %>%
+    dplyr::filter(id %in% names(parameters) & source == "tailor")
+
+  if (tibble::is_tibble(parameters)) {
+    parameters <- as.list(parameters)
+  }
+
+  parameters <- parameters[names(parameters) %in% pset$id]
+  parameters <- parameters[pset$id]
+
+  for (i in seq_along(x$adjustments)) {
+    adj <- x$adjustments[[i]]
+    adj_comps <- purrr::map_lgl(pset$component, ~ inherits(adj, .x))
+    if (any(adj_comps)) {
+      adj_ids <- pset$id[adj_comps]
+      adj_prms <- parameters[names(parameters) %in% adj_ids]
+      adj$arguments <- purrr::list_modify(adj$arguments, !!!adj_prms)
+      x$adjustments[[i]] <- adj
+    }
+  }
   x
 }
 
