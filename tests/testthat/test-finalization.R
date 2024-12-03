@@ -73,3 +73,54 @@ test_that("finalize recipe step with multiple tune parameters", {
   expect_equal(finalize_recipe(rec, best)$steps[[1]]$degree, 1)
   expect_equal(finalize_recipe(rec, best)$steps[[1]]$deg_free, 2)
 })
+
+# ------------------------------------------------------------------------------
+# post-processing
+
+test_that("finalize tailors", {
+  library(tailor)
+
+  adjust_rng <-
+    tailor() %>%
+    adjust_numeric_range(lower_limit = tune(), upper_limit = tune())
+
+  adj_1 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2))
+  expect_snapshot(print(adj_1))
+
+  adj_2 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2, upper_limit = 3))
+  expect_snapshot(print(adj_2))
+
+  adj_3 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2, upper_limit = 3, a = 2))
+  expect_snapshot(print(adj_3))
+
+  adj_4 <- finalize_tailor(adjust_rng, tibble())
+  expect_snapshot(print(adj_4))
+
+  expect_snapshot(
+    finalize_tailor(linear_reg(), tibble()),
+    error = TRUE
+  )
+
+})
+
+test_that("finalize workflows with tailors", {
+  library(tailor)
+
+  adjust_rng <-
+    tailor() %>%
+    adjust_numeric_range(lower_limit = tune(), upper_limit = tune())
+  wflow <- workflow(y ~ ., linear_reg(), adjust_rng)
+
+  wflow_1 <- finalize_workflow(wflow, tibble(lower_limit = 2))
+  expect_snapshot(print(wflow_1))
+
+  wflow_2 <- finalize_workflow(wflow, tibble(lower_limit = 2, upper_limit = 3))
+  expect_snapshot(print(wflow_2))
+
+  wflow_3 <- finalize_workflow(wflow, tibble(lower_limit = 2, upper_limit = 3, a = 2))
+  expect_snapshot(print(wflow_3))
+
+  wflow_4 <- finalize_workflow(wflow, tibble())
+  expect_snapshot(print(wflow_4))
+
+})
