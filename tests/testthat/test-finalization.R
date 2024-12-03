@@ -87,16 +87,19 @@ test_that("finalize tailors", {
     adjust_numeric_range(lower_limit = tune(), upper_limit = tune())
 
   adj_1 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2))
-  expect_snapshot(print(adj_1))
+  expect_equal(adj_1$adjustments[[1]]$arguments$lower_limit, 2)
+  expect_equal(adj_1$adjustments[[1]]$arguments$upper_limit, tune())
 
   adj_2 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2, upper_limit = 3))
-  expect_snapshot(print(adj_2))
+  expect_equal(adj_2$adjustments[[1]]$arguments$lower_limit, 2)
+  expect_equal(adj_2$adjustments[[1]]$arguments$upper_limit, 3)
 
   adj_3 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2, upper_limit = 3, a = 2))
-  expect_snapshot(print(adj_3))
+  expect_equal(adj_3$adjustments[[1]]$arguments$lower_limit, 2)
+  expect_equal(adj_3$adjustments[[1]]$arguments$upper_limit, 3)
 
   adj_4 <- finalize_tailor(adjust_rng, tibble())
-  expect_snapshot(print(adj_4))
+  expect_equal(adj_4, adjust_rng)
 
   expect_snapshot(
     finalize_tailor(linear_reg(), tibble()),
@@ -109,6 +112,7 @@ test_that("finalize workflows with tailors", {
   skip_if_not_installed("probably")
   skip_if_not_installed("dials", "1.3.0.9000")
   library(tailor)
+  library(purrr)
 
   adjust_rng <-
     tailor() %>%
@@ -116,15 +120,66 @@ test_that("finalize workflows with tailors", {
   wflow <- workflow(y ~ ., linear_reg(), adjust_rng)
 
   wflow_1 <- finalize_workflow(wflow, tibble(lower_limit = 2))
-  expect_snapshot(print(wflow_1))
+  expect_equal(
+    wflow_1 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("lower_limit"),
+    2
+  )
+  expect_equal(
+    wflow_1 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("upper_limit"),
+    tune()
+  )
 
   wflow_2 <- finalize_workflow(wflow, tibble(lower_limit = 2, upper_limit = 3))
-  expect_snapshot(print(wflow_2))
+  expect_equal(
+    wflow_2 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("lower_limit"),
+    2
+  )
+  expect_equal(
+    wflow_2 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("upper_limit"),
+    3
+  )
 
   wflow_3 <- finalize_workflow(wflow, tibble(lower_limit = 2, upper_limit = 3, a = 2))
-  expect_snapshot(print(wflow_3))
+  expect_equal(
+    wflow_3 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("lower_limit"),
+    2
+  )
+  expect_equal(
+    wflow_3 %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("upper_limit"),
+    3
+  )
 
   wflow_4 <- finalize_workflow(wflow, tibble())
-  expect_snapshot(print(wflow_4))
+  expect_equal(wflow_4, wflow)
 
 })

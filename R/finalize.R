@@ -107,7 +107,6 @@ finalize_workflow <- function(x, parameters) {
 #' @export
 #' @rdname finalize_model
 finalize_tailor <- function(x, parameters) {
-
   if (!inherits(x, "tailor")) {
     cli::cli_abort("{.arg x} should be a tailor, not {.obj_type_friendly {x}}.")
   }
