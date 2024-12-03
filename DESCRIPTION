@@ -50,6 +50,7 @@ Suggests:
     kknn,
     knitr,
     modeldata,
+    probably,
     scales,
     spelling,
     splines2,

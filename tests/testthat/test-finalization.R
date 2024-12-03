@@ -78,6 +78,7 @@ test_that("finalize recipe step with multiple tune parameters", {
 # post-processing
 
 test_that("finalize tailors", {
+  skip_if_not_installed("probably")
   library(tailor)
 
   adjust_rng <-
@@ -104,6 +105,7 @@ test_that("finalize tailors", {
 })
 
 test_that("finalize workflows with tailors", {
+  skip_if_not_installed("probably")
   library(tailor)
 
   adjust_rng <-
