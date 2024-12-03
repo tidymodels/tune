@@ -175,15 +175,15 @@ more about submodels.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"example_ames_knn"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># The parameters for the model:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://hardhat.tidymodels.org/reference/hardhat-extract.html" class="external-link">extract_parameter_set_dials</a></span><span class="op">(</span><span class="va">ames_wflow</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Collection of 5 parameters for tuning</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   identifier        type    object</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            K   neighbors nparam[+]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  weight_func weight_func dparam[+]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   dist_power  dist_power nparam[+]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          lon    deg_free nparam[+]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          lat    deg_free nparam[+]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Collection of 5 parameters for tuning</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   identifier        type    object</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>            K   neighbors nparam[+]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>  weight_func weight_func dparam[+]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   dist_power  dist_power nparam[+]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          lon    deg_free nparam[+]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>          lat    deg_free nparam[+]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Summarized over resamples</span></span></span>
 <span class="r-in"><span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">ames_grid_search</span><span class="op">)</span></span></span>
