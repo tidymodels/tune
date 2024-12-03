@@ -105,7 +105,6 @@ test_that("finalize tailors", {
     finalize_tailor(linear_reg(), tibble()),
     error = TRUE
   )
-
 })
 
 test_that("finalize workflows with tailors", {
@@ -181,5 +180,4 @@ test_that("finalize workflows with tailors", {
 
   wflow_4 <- finalize_workflow(wflow, tibble())
   expect_equal(wflow_4, wflow)
-
 })
