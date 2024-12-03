@@ -572,3 +572,8 @@ set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }
+
+set_workflow_tailor <- function(workflow, tailor) {
+  workflow$post$actions$tailor$tailor <- tailor
+  workflow
+}
