@@ -128,7 +128,7 @@ finalize_tailor <- function(x, parameters) {
     adj_comps <- purrr::map_lgl(pset$component, ~ inherits(adj, .x))
     if (any(adj_comps)) {
       adj_ids <- pset$id[adj_comps]
-      adj_prms <- parameters[which(names(parameters) %in% adj_ids)]
+      adj_prms <- parameters[names(parameters) %in% adj_ids]
       adj$arguments <- purrr::list_modify(adj$arguments, !!!adj_prms)
       x$adjustments[[i]] <- adj
     }
