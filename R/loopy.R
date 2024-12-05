@@ -67,7 +67,7 @@ has_tailor_estimated <- function(x) {
 
 pred_post_strategy <- function(x) {
   if (has_tailor(x)) {
-    if (has_tailor_tuned(x) | has_tailor_estimated(x)) {
+    if (has_tailor_tuned(x) | has_tailor_estimated(x)) { # TODO do we need to check estimation?
       # There is no way to get around having to estimate/fit the tailor object
       # for each tuning combination
       res <- "loop over pred and post"
@@ -107,7 +107,6 @@ predict_only <- function(wflow, sched, data_pred, grid) {
       dplyr::arrange(.row) %>%
       dplyr::select(-.row)
 
-    # multi_predict
   } else {
     cli::cli_inform("predict only")
     pred <-
