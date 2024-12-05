@@ -170,31 +170,32 @@ predict_post_loop <- function(wflow, sched, data_pred, data_cal, grid) {
 
     num_post_iter <- nrow(current_pred$post_stage[[1]])
 
+    wflow_clone <- wflow
     for(post in seq_len(num_post_iter)) {
       current_post <- current_pred$post_stage[[1]][post,]
 
-      current_grid <- dplyr::bind_cols(current_grid, no_stage(current_post))
-      wflow <- post_update_fit(wflow, current_post, data_fit) # other data needed
+      current_grid <- dplyr::bind_cols(grid, no_stage(current_post))
+      wflow_clone <- post_update_fit(wflow, current_post, data_cal)
 
-      predicted <-
-        augment(wflow, data_pred) %>%
+      pred <-
+        augment(wflow_clone, data_pred) %>%
         dplyr::select(!!!unlist(outputs)) %>%
-        cbind(grid)
+        cbind(current_grid)
       # bind cols;
     }
   }
-  predicted
+  pred
 }
 
 
-predictions <- function(wflow, sched, data_fit, data_pred, grid) {
+predictions <- function(wflow, sched, data_fit, data_pred, data_cal, grid) {
   strategy <- pred_post_strategy(wflow)
   if (strategy == "just predict") {
     pred <- predict_only(wflow, sched, data_pred, grid)
   } else if (strategy == "predict and post at same time") {
     pred <- predict_post_one_shot(wflow, sched, data_fit, data_pred, grid)
   } else {
-    pred <- predict_post_loop(wflow, sched, data_pred, grid)
+    pred <- predict_post_loop(wflow, sched, data_pred, data_cal, grid)
   }
   pred
 }
@@ -236,20 +237,20 @@ model_update_fit <- function(wflow, grid) {
 
 
 post_update_fit <- function(wflow, grid, post_data) {
-  mod_spec <- extract_postprocessor(wflow)
+  post_spec <- extract_postprocessor(wflow)
 
   grid <- no_stage(grid)
-  post_proc_param <- extract_parameter_set_dials(mod_spec)
+  post_proc_param <- extract_parameter_set_dials(post_spec)
   post_proc_id <- post_proc_param$id
 
   if (length(post_proc_id) > 0) {
     grid <- grid[, post_proc_id]
-    mod_spec <- finalize_tailor(mod_spec, grid)
-    wflow <- set_workflow_spec(wflow, mod_spec)
+    post_spec <- finalize_tailor(post_spec, grid)
+    wflow <- set_workflow_tailor(wflow, post_spec)
   }
 
-  res <- .fit_post(wflow, post_data)
-  .fit_finalize(res)
+  wflow <- .fit_post(wflow, post_data)
+  .fit_finalize(wflow)
 }
 
 
@@ -266,7 +267,7 @@ get_output_columns <- function(x, syms = FALSE) {
 # ------------------------------------------------------------------------------
 
 #' @export
-loopy <- function(sched, wflow, data_fit, data_pred) {
+loopy <- function(sched, wflow, data_fit, data_pred, data_cal = NULL) {
   num_pre_iter <- nrow(sched)
 
 
@@ -288,7 +289,8 @@ loopy <- function(sched, wflow, data_fit, data_pred) {
       current_grid <- rebind_grid(current_pre, current_model)
 
       pred <- predictions(current_wflow, current_model,
-                          data_fit, data_pred, current_grid)
+                          data_fit, data_pred, data_cal,
+                          current_grid)
 
       # bind rows and/or pre-allocate
     } # model loop
