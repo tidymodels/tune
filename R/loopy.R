@@ -34,6 +34,12 @@ has_sub_param <- function(x) {
   two_plus_vals
 }
 
+get_sub_param <- function(x) {
+  not_post_list <- names(x) != "post_stage"
+  names(x)[not_post_list]
+}
+
+
 # from workflows
 has_tailor <- function(x) {
   "tailor" %in% names(x$post$actions)
@@ -82,6 +88,7 @@ predict_only <- function(wflow, sched, data_pred, grid) {
 
   if (has_sub_param(sched$predict_stage[[1]])) {
     cli::cli_inform("multipredict only")
+    sub_param <- get_sub_param(sched)
 
     # get submodel name and vector; remove col from grid
     # loop over types
@@ -94,8 +101,9 @@ predict_only <- function(wflow, sched, data_pred, grid) {
       parsnip::add_rowindex() %>%
       tidyr::unnest(.pred) %>%
       dplyr::full_join(data_pred %>% add_rowindex(), by = ".row") %>%
-      dplyr::select(!!!outputs$outcome, !!!outputs$estimate, .row, trees) %>%
-      cbind(grid %>% dplyr::select(-trees)) %>%
+      dplyr::select(!!!outputs$outcome, !!!outputs$estimate, .row,
+                    dplyr::all_of(sub_param)) %>%
+      cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
       dplyr::arrange(.row) %>%
       dplyr::select(-.row)
 
@@ -110,22 +118,49 @@ predict_only <- function(wflow, sched, data_pred, grid) {
   pred
 }
 
-predict_post_one_shot <- function(wflow, sched, data_pred, grid) {
+predict_post_one_shot <- function(wflow, sched, data_fit, data_pred, grid) {
+  cli::cli_inform("predict/post once")
+
   outputs <- get_output_columns(wflow, syms = TRUE)
-  cli::cli_inform("predict/post once (not working)")
-  # mimic what .fit_post does but directly use tailor
-  # fit just to update the columns names
-  #
-  # multi_predict?
-  #   add row numbers
-  #   group nest
-  #   apply tailor
-  #   unnest
-  # predict
-  #   apply tailor
+
+  if (has_sub_param(sched$predict_stage)) {
+    sub_param <- get_sub_param(sched)
+
+    dat_ex <-
+      augment(wflow, data_pred) %>%
+      dplyr::select(!!!unlist(unname(outputs)))
+    post_obj <-
+      wflow %>%
+      extract_postprocessor() %>%
+      fit(.data = dat_ex,
+          outcome = !!outputs$outcome[[1]],
+          estimate = !!outputs$estimate[[1]],
+          probabilities = c(!!!outputs$probabilities))
+    processed_data_pred <- forge_from_workflow(data_pred, wflow)
+    pred <-
+      wflow %>%
+      extract_fit_parsnip() %>%
+      # Do this will call2?
+      multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
+      parsnip::add_rowindex() %>%
+      dplyr::mutate(.pred = purrr::map(.pred, ~ predict(post_obj, .x))) %>%
+      tidyr::unnest(.pred) %>%
+      dplyr::full_join(processed_data_pred$outcomes %>% add_rowindex(), by = ".row") %>%
+      cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
+      dplyr::arrange(.row) %>%
+      dplyr::select(-.row)
+  } else {
+    pred <-
+      wflow %>%
+      .fit_post(data_fit) %>%
+      .fit_finalize() %>%
+      predict(data_pred) %>%
+      cbind(grid)
+  }
+  pred
 }
 
-predict_post_loop <- function(wflow, sched, data_pred, grid) {
+predict_post_loop <- function(wflow, sched, data_pred, data_cal, grid) {
   cli::cli_inform("predict/post looping")
   outputs <- get_output_columns(wflow, syms = TRUE)
   num_pred_iter <- nrow(sched$predict_stage[[1]])
@@ -152,13 +187,12 @@ predict_post_loop <- function(wflow, sched, data_pred, grid) {
 }
 
 
-predictions <- function(wflow, sched, data_pred, grid) {
+predictions <- function(wflow, sched, data_fit, data_pred, grid) {
   strategy <- pred_post_strategy(wflow)
   if (strategy == "just predict") {
     pred <- predict_only(wflow, sched, data_pred, grid)
   } else if (strategy == "predict and post at same time") {
-    # not yet implemented
-    pred <- predict_post_one_shot(wflow, sched, data_pred, grid)
+    pred <- predict_post_one_shot(wflow, sched, data_fit, data_pred, grid)
   } else {
     pred <- predict_post_loop(wflow, sched, data_pred, grid)
   }
@@ -225,7 +259,7 @@ rebind_grid <- function(...) {
 
 get_output_columns <- function(x, syms = FALSE) {
   pred_cols <- .get_prediction_column_names(x, syms = TRUE)
-  res <- c(list(outcome = rlang::syms(outcome_names(x))), res)
+  res <- c(list(outcome = rlang::syms(outcome_names(x))), pred_cols)
   res
 }
 
@@ -253,7 +287,8 @@ loopy <- function(sched, wflow, data_fit, data_pred) {
       num_pred_iter <- nrow(current_model$predict_stage[[1]])
       current_grid <- rebind_grid(current_pre, current_model)
 
-      pred <- predictions(current_wflow, current_model, data_pred, current_grid)
+      pred <- predictions(current_wflow, current_model,
+                          data_fit, data_pred, current_grid)
 
       # bind rows and/or pre-allocate
     } # model loop
