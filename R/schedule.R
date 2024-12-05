@@ -103,6 +103,14 @@ get_tune_schedule <- function(wflow, param, grid) {
 
   # ------------------------------------------------------------------------------
 
+  if (nrow(param) == 0) {
+    cls <- "resample_sched"
+  } else if (nrow(param) == 1) {
+    cls <- "single_sched"
+  } else {
+    cls <- "grid_sched"
+  }
+  class(sched) <- c(cls, "tune_sched")
   sched
 }
 
