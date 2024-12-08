@@ -91,33 +91,31 @@ predict_only <- function(wflow, sched, dat, grid) {
 	if (has_sub_param(sched$predict_stage[[1]])) {
 		cli::cli_inform("multipredict only")
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
+		sub_list <- sched$predict_stage[[1]] %>%
+			dplyr::select(dplyr::all_of(sub_param)) %>%
+			as.list()
 
-		# get submodel name and vector; remove col from grid
-		# loop over types
-		# move to predict_wrapper
 		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
-		pred <- wflow %>%
-			extract_fit_parsnip() %>%
-		  # TODO use predict wrapper
-			multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
+		pred <- predict_wrapper(
+			model = wflow %>% extract_fit_parsnip(),
+			new_data = forge_from_workflow(dat$pred, wflow)$predictors,
+			# TODO figure out types
+			type = "numeric",
+			eval_time = NULL,
+			subgrid = sub_list
+		) %>%
 			mutate(.row = dat$index) %>%
 			tidyr::unnest(.pred) %>%
-			dplyr::full_join(dat$pred %>% add_rowindex(), by = ".row") %>%
-			dplyr::select(
-				!!!outputs$outcome,
-				!!!outputs$estimate,
-				.row,
-				dplyr::all_of(sub_param)
-			) %>%
 			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
 			dplyr::arrange(.row)
 	} else {
 		cli::cli_inform("predict only")
+		# TODO use the same approach via predict_wrapper?
 		pred <- augment(wflow, dat$pred) %>%
 			dplyr::select(!!!unlist(outputs)) %>%
-		  dplyr::mutate(.row = dat$index) %>%
+			dplyr::mutate(.row = dat$index) %>%
 			cbind(grid) %>%
-		  dplyr::arrange(.row)
+			dplyr::arrange(.row)
 	}
 	pred
 }
@@ -127,10 +125,21 @@ predict_post_one_shot <- function(wflow, sched, dat, grid) {
 
 	outputs <- get_output_columns(wflow, syms = TRUE)
 
-	if (has_sub_param(sched$predict_stage)) {
-		sub_param <- get_sub_param(sched$predict_stage[[1]])
+	# TODO make predictions here and then process differently based on submodels
 
-		dat_ex <- augment(wflow, dat$pred) %>%
+	if (has_sub_param(sched$predict_stage[[1]])) {
+		sub_param <- get_sub_param(sched$predict_stage[[1]])
+		sub_list <- sched$predict_stage[[1]] %>%
+			dplyr::select(dplyr::all_of(sub_param)) %>%
+			as.list()
+
+		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
+		processed_data_pred$outcomes <- processed_data_pred$outcomes %>%
+			dplyr::mutate(.row = dat$index)
+
+		# We need to pass in the columns that tailor needs (already in outputs) but
+		# also some data to initialize the tailor
+		dat_ex <- augment(wflow, dat$pred %>% dplyr::slice(1)) %>%
 			dplyr::select(!!!unlist(unname(outputs)))
 		post_obj <- wflow %>%
 			extract_postprocessor() %>%
@@ -140,28 +149,30 @@ predict_post_one_shot <- function(wflow, sched, dat, grid) {
 				estimate = !!outputs$estimate[[1]],
 				probabilities = c(!!!outputs$probabilities)
 			)
-		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
-		pred <- wflow %>%
-			extract_fit_parsnip() %>%
-			# Do this will call2?
-			multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
-		  dplyr::mutate(.row = dat$index) %>%
+		##
+
+		pred <- predict_wrapper(
+			model = wflow %>% extract_fit_parsnip(),
+			new_data = processed_data_pred$predictors,
+			# TODO figure out types
+			type = "numeric",
+			eval_time = NULL,
+			subgrid = sub_list
+		) %>%
+			dplyr::mutate(.row = dat$index) %>%
 			dplyr::mutate(.pred = purrr::map(.pred, ~predict(post_obj, .x))) %>%
 			tidyr::unnest(.pred) %>%
-			dplyr::full_join(
-				processed_data_pred$outcomes %>% add_rowindex(),
-				by = ".row"
-			) %>%
+			dplyr::full_join(processed_data_pred$outcomes, by = ".row") %>%
 			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
 			dplyr::arrange(.row)
 	} else {
 		pred <- wflow %>%
 			.fit_post(dat$fit) %>%
 			.fit_finalize() %>%
-			predict(dat$pred) %>%
-		  dplyr::mutate(.row = dat$index) %>%
+			predict(dat$pred) %>% # TODO loop over types or use predict_wrapper
+			dplyr::mutate(.row = dat$index) %>%
 			cbind(grid) %>%
-		  dplyr::arrange(.row)
+			dplyr::arrange(.row)
 	}
 	pred
 }
@@ -171,10 +182,17 @@ predict_post_loop <- function(wflow, sched, dat, grid) {
 	outputs <- get_output_columns(wflow, syms = TRUE)
 	num_pred_iter <- nrow(sched$predict_stage[[1]])
 
-	## pre-allocate?
+	pred_reserve <- NULL
 
 	for (prd in seq_len(num_pred_iter)) {
 		current_pred <- sched$predict_stage[[1]][prd, ]
+
+		# TODO this is ignoring submodels.
+
+		if (has_sub_param(sched$predict_stage[[1]])) {
+			# make all predictions and then loop tho
+		} else {
+		}
 
 		num_post_iter <- nrow(current_pred$post_stage[[1]])
 
@@ -188,12 +206,13 @@ predict_post_loop <- function(wflow, sched, dat, grid) {
 			pred <- augment(wflow_clone, dat$pred) %>%
 				dplyr::select(!!!unlist(outputs)) %>%
 				cbind(current_grid) %>%
-			  dplyr::mutate(.row = dat$index) %>%
-			  dplyr::arrange(.row)
-			# bind cols;
+				dplyr::mutate(.row = dat$index) %>%
+				dplyr::arrange(.row)
+
+			pred_reserve <- update_reserve(pred_reserve, prd, pred, num_pred_iter)
 		}
 	}
-	pred
+	pred_reserve
 }
 
 predictions <- function(wflow, sched, dat, grid) {
@@ -206,7 +225,7 @@ predictions <- function(wflow, sched, dat, grid) {
 		pred <- predict_post_loop(wflow, sched, dat, grid)
 	}
 	if (tibble::is_tibble(pred)) {
-	  pred <- dplyr::as_tibble(pred)
+		pred <- dplyr::as_tibble(pred)
 	}
 	pred
 }
@@ -310,8 +329,13 @@ update_reserve <- function(reserve, iter, predictions, grid_size) {
 
 # ------------------------------------------------------------------------------
 
+# TODO have types (or metrics) as an argument
+
 #' @export
 loopy <- function(sched, wflow, grid_size, dat) {
+	# ------------------------------------------------------------------------------
+	# Initialize some objects
+
 	pred_reserve <- NULL
 	pred_iter <- 0
 
@@ -353,8 +377,14 @@ loopy <- function(sched, wflow, grid_size, dat) {
 				current_grid
 			)
 
+			# ------------------------------------------------------------------------
+			# Allocate predictions to an overall object
+
 			pred_iter <- pred_iter + 1
 			pred_reserve <- update_reserve(pred_reserve, pred_iter, pred, grid_size)
+
+			# ------------------------------------------------------------------------------
+			# TODO Compute metrics here?
 		} # model loop
 	} # pre loop
 	pred_reserve
