@@ -62,6 +62,8 @@ has_tailor_estimated <- function(x) {
 	res
 }
 
+# TODO add .row to data
+
 # ------------------------------------------------------------------------------
 
 pred_post_strategy <- function(x) {
@@ -88,7 +90,7 @@ predict_only <- function(wflow, sched, dat, grid) {
 
 	if (has_sub_param(sched$predict_stage[[1]])) {
 		cli::cli_inform("multipredict only")
-		sub_param <- get_sub_param(sched)
+		sub_param <- get_sub_param(sched$predict_stage[[1]])
 
 		# get submodel name and vector; remove col from grid
 		# loop over types
@@ -96,8 +98,9 @@ predict_only <- function(wflow, sched, dat, grid) {
 		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
 		pred <- wflow %>%
 			extract_fit_parsnip() %>%
+		  # TODO use predict wrapper
 			multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
-			parsnip::add_rowindex() %>%
+			mutate(.row = dat$index) %>%
 			tidyr::unnest(.pred) %>%
 			dplyr::full_join(dat$pred %>% add_rowindex(), by = ".row") %>%
 			dplyr::select(
@@ -107,13 +110,14 @@ predict_only <- function(wflow, sched, dat, grid) {
 				dplyr::all_of(sub_param)
 			) %>%
 			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
-			dplyr::arrange(.row) %>%
-			dplyr::select(-.row)
+			dplyr::arrange(.row)
 	} else {
 		cli::cli_inform("predict only")
 		pred <- augment(wflow, dat$pred) %>%
 			dplyr::select(!!!unlist(outputs)) %>%
-			cbind(grid)
+		  dplyr::mutate(.row = dat$index) %>%
+			cbind(grid) %>%
+		  dplyr::arrange(.row)
 	}
 	pred
 }
@@ -124,7 +128,7 @@ predict_post_one_shot <- function(wflow, sched, dat, grid) {
 	outputs <- get_output_columns(wflow, syms = TRUE)
 
 	if (has_sub_param(sched$predict_stage)) {
-		sub_param <- get_sub_param(sched)
+		sub_param <- get_sub_param(sched$predict_stage[[1]])
 
 		dat_ex <- augment(wflow, dat$pred) %>%
 			dplyr::select(!!!unlist(unname(outputs)))
@@ -141,7 +145,7 @@ predict_post_one_shot <- function(wflow, sched, dat, grid) {
 			extract_fit_parsnip() %>%
 			# Do this will call2?
 			multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
-			parsnip::add_rowindex() %>%
+		  dplyr::mutate(.row = dat$index) %>%
 			dplyr::mutate(.pred = purrr::map(.pred, ~predict(post_obj, .x))) %>%
 			tidyr::unnest(.pred) %>%
 			dplyr::full_join(
@@ -149,14 +153,15 @@ predict_post_one_shot <- function(wflow, sched, dat, grid) {
 				by = ".row"
 			) %>%
 			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
-			dplyr::arrange(.row) %>%
-			dplyr::select(-.row)
+			dplyr::arrange(.row)
 	} else {
 		pred <- wflow %>%
 			.fit_post(dat$fit) %>%
 			.fit_finalize() %>%
 			predict(dat$pred) %>%
-			cbind(grid)
+		  dplyr::mutate(.row = dat$index) %>%
+			cbind(grid) %>%
+		  dplyr::arrange(.row)
 	}
 	pred
 }
@@ -165,7 +170,9 @@ predict_post_loop <- function(wflow, sched, dat, grid) {
 	cli::cli_inform("predict/post looping")
 	outputs <- get_output_columns(wflow, syms = TRUE)
 	num_pred_iter <- nrow(sched$predict_stage[[1]])
-	# TODO pre-allocate space and fill in
+
+	## pre-allocate?
+
 	for (prd in seq_len(num_pred_iter)) {
 		current_pred <- sched$predict_stage[[1]][prd, ]
 
@@ -180,7 +187,9 @@ predict_post_loop <- function(wflow, sched, dat, grid) {
 
 			pred <- augment(wflow_clone, dat$pred) %>%
 				dplyr::select(!!!unlist(outputs)) %>%
-				cbind(current_grid)
+				cbind(current_grid) %>%
+			  dplyr::mutate(.row = dat$index) %>%
+			  dplyr::arrange(.row)
 			# bind cols;
 		}
 	}
@@ -195,6 +204,9 @@ predictions <- function(wflow, sched, dat, grid) {
 		pred <- predict_post_one_shot(wflow, sched, dat, grid)
 	} else {
 		pred <- predict_post_loop(wflow, sched, dat, grid)
+	}
+	if (tibble::is_tibble(pred)) {
+	  pred <- dplyr::as_tibble(pred)
 	}
 	pred
 }
@@ -332,7 +344,7 @@ loopy <- function(sched, wflow, grid_size, dat) {
 			current_grid <- rebind_grid(current_pre, current_model)
 
 			# ------------------------------------------------------------------------
-			# Iterate over predictions and post-processors
+			# Iterate over predictions and postprocessors
 
 			pred <- predictions(
 				current_wflow,
