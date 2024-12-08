@@ -83,7 +83,7 @@ pred_post_strategy <- function(x) {
 	res
 }
 
-predict_only <- function(wflow, sched, data_pred, grid) {
+predict_only <- function(wflow, sched, dat, grid) {
 	outputs <- get_output_columns(wflow, syms = TRUE)
 
 	if (has_sub_param(sched$predict_stage[[1]])) {
@@ -93,13 +93,13 @@ predict_only <- function(wflow, sched, data_pred, grid) {
 		# get submodel name and vector; remove col from grid
 		# loop over types
 		# move to predict_wrapper
-		processed_data_pred <- forge_from_workflow(data_pred, wflow)
+		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
 		pred <- wflow %>%
 			extract_fit_parsnip() %>%
 			multi_predict(processed_data_pred$predictors, trees = 1:10) %>%
 			parsnip::add_rowindex() %>%
 			tidyr::unnest(.pred) %>%
-			dplyr::full_join(data_pred %>% add_rowindex(), by = ".row") %>%
+			dplyr::full_join(dat$pred %>% add_rowindex(), by = ".row") %>%
 			dplyr::select(
 				!!!outputs$outcome,
 				!!!outputs$estimate,
@@ -111,14 +111,14 @@ predict_only <- function(wflow, sched, data_pred, grid) {
 			dplyr::select(-.row)
 	} else {
 		cli::cli_inform("predict only")
-		pred <- augment(wflow, data_pred) %>%
+		pred <- augment(wflow, dat$pred) %>%
 			dplyr::select(!!!unlist(outputs)) %>%
 			cbind(grid)
 	}
 	pred
 }
 
-predict_post_one_shot <- function(wflow, sched, data_fit, data_pred, grid) {
+predict_post_one_shot <- function(wflow, sched, dat, grid) {
 	cli::cli_inform("predict/post once")
 
 	outputs <- get_output_columns(wflow, syms = TRUE)
@@ -126,7 +126,7 @@ predict_post_one_shot <- function(wflow, sched, data_fit, data_pred, grid) {
 	if (has_sub_param(sched$predict_stage)) {
 		sub_param <- get_sub_param(sched)
 
-		dat_ex <- augment(wflow, data_pred) %>%
+		dat_ex <- augment(wflow, dat$pred) %>%
 			dplyr::select(!!!unlist(unname(outputs)))
 		post_obj <- wflow %>%
 			extract_postprocessor() %>%
@@ -136,7 +136,7 @@ predict_post_one_shot <- function(wflow, sched, data_fit, data_pred, grid) {
 				estimate = !!outputs$estimate[[1]],
 				probabilities = c(!!!outputs$probabilities)
 			)
-		processed_data_pred <- forge_from_workflow(data_pred, wflow)
+		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
 		pred <- wflow %>%
 			extract_fit_parsnip() %>%
 			# Do this will call2?
@@ -153,15 +153,15 @@ predict_post_one_shot <- function(wflow, sched, data_fit, data_pred, grid) {
 			dplyr::select(-.row)
 	} else {
 		pred <- wflow %>%
-			.fit_post(data_fit) %>%
+			.fit_post(dat$fit) %>%
 			.fit_finalize() %>%
-			predict(data_pred) %>%
+			predict(dat$pred) %>%
 			cbind(grid)
 	}
 	pred
 }
 
-predict_post_loop <- function(wflow, sched, data_pred, data_cal, grid) {
+predict_post_loop <- function(wflow, sched, dat, grid) {
 	cli::cli_inform("predict/post looping")
 	outputs <- get_output_columns(wflow, syms = TRUE)
 	num_pred_iter <- nrow(sched$predict_stage[[1]])
@@ -176,9 +176,9 @@ predict_post_loop <- function(wflow, sched, data_pred, data_cal, grid) {
 			current_post <- current_pred$post_stage[[1]][post, ]
 
 			current_grid <- dplyr::bind_cols(grid, no_stage(current_post))
-			wflow_clone <- post_update_fit(wflow, current_post, data_cal)
+			wflow_clone <- post_update_fit(wflow, current_post, dat$cal)
 
-			pred <- augment(wflow_clone, data_pred) %>%
+			pred <- augment(wflow_clone, dat$pred) %>%
 				dplyr::select(!!!unlist(outputs)) %>%
 				cbind(current_grid)
 			# bind cols;
@@ -187,14 +187,14 @@ predict_post_loop <- function(wflow, sched, data_pred, data_cal, grid) {
 	pred
 }
 
-predictions <- function(wflow, sched, data_fit, data_pred, data_cal, grid) {
+predictions <- function(wflow, sched, dat, grid) {
 	strategy <- pred_post_strategy(wflow)
 	if (strategy == "just predict") {
-		pred <- predict_only(wflow, sched, data_pred, grid)
+		pred <- predict_only(wflow, sched, dat, grid)
 	} else if (strategy == "predict and post at same time") {
-		pred <- predict_post_one_shot(wflow, sched, data_fit, data_pred, grid)
+		pred <- predict_post_one_shot(wflow, sched, dat, grid)
 	} else {
-		pred <- predict_post_loop(wflow, sched, data_pred, data_cal, grid)
+		pred <- predict_post_loop(wflow, sched, dat, grid)
 	}
 	pred
 }
@@ -299,9 +299,7 @@ update_reserve <- function(reserve, iter, predictions, grid_size) {
 # ------------------------------------------------------------------------------
 
 #' @export
-loopy <- function(sched, wflow, grid_size, data_fit, data_pred, data_cal = NULL) {
-  # TODO make data a list?
-
+loopy <- function(sched, wflow, grid_size, dat) {
   pred_reserve <- NULL
   pred_iter <- 0
 
@@ -315,7 +313,7 @@ loopy <- function(sched, wflow, grid_size, data_fit, data_pred, data_cal = NULL)
 			"{pre}/{num_pre_iter} preprocessing: {text_param(current_pre)}"
 		)
 
-		current_wflow <- pre_update_fit(wflow, current_pre, data_fit)
+		current_wflow <- pre_update_fit(wflow, current_pre, dat$fit)
 		num_mod_iter <- nrow(current_pre$model_stage[[1]])
 
 		# --------------------------------------------------------------------------
@@ -333,9 +331,7 @@ loopy <- function(sched, wflow, grid_size, data_fit, data_pred, data_cal = NULL)
 			pred <- predictions(
 				current_wflow,
 				current_model,
-				data_fit,
-				data_pred,
-				data_cal,
+				dat,
 				current_grid
 			)
 
