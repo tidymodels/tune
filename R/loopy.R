@@ -265,45 +265,46 @@ get_output_columns <- function(x, syms = FALSE) {
 # pre-allocating predictions
 
 initialize_pred_reserve <- function(predictions, grid_size) {
-  if (tibble::is_tibble(predictions)) {
-    predictions <- dplyr::as_tibble(predictions)
-  }
-  grid_size <- max(1, grid_size)
-  ptype <- predictions[0,]
-  size <- nrow(predictions) * grid_size
-  res <- ptype[1:size,]
-  dplyr::as_tibble(res)
+	if (tibble::is_tibble(predictions)) {
+		predictions <- dplyr::as_tibble(predictions)
+	}
+	grid_size <- max(1, grid_size)
+	ptype <- predictions[0, ]
+	size <- nrow(predictions) * grid_size
+	res <- ptype[1:size, ]
+	dplyr::as_tibble(res)
 }
 
 replace_reserve_rows <- function(iter, chunk) {
-  start_loc <- (iter - 1) * chunk + 1
-  end_loc <- iter * chunk
-  start_loc:end_loc
+	start_loc <- (iter - 1) * chunk + 1
+	end_loc <- iter * chunk
+	start_loc:end_loc
 }
 
 update_reserve <- function(reserve, iter, predictions, grid_size) {
-  grid_size <- min(1, grid_size)
-  pred_size <- nrow(predictions)
+	grid_size <- min(1, grid_size)
+	pred_size <- nrow(predictions)
 
-  if (is.null(reserve)) {
-    reserve <- initialize_pred_reserve(predictions, grid_size)
-  } else {
-    if (tibble::is_tibble(predictions)) {
-      predictions <- dplyr::as_tibble(predictions)
-    }
-  }
-  reserve[replace_reserve_rows(iter, pred_size), ] <- predictions
-  reserve
+	if (is.null(reserve)) {
+		reserve <- initialize_pred_reserve(predictions, grid_size)
+	} else {
+		if (tibble::is_tibble(predictions)) {
+			predictions <- dplyr::as_tibble(predictions)
+		}
+	}
+	reserve[replace_reserve_rows(iter, pred_size), ] <- predictions
+	reserve
 }
 
 # ------------------------------------------------------------------------------
 
 #' @export
 loopy <- function(sched, wflow, grid_size, dat) {
-  pred_reserve <- NULL
-  pred_iter <- 0
+	pred_reserve <- NULL
+	pred_iter <- 0
 
-  # ------------------------------------------------------------------------------
+	# ----------------------------------------------------------------------------
+	# Iterate over preprocessors
 
 	num_pre_iter <- nrow(sched)
 
@@ -317,6 +318,8 @@ loopy <- function(sched, wflow, grid_size, dat) {
 		num_mod_iter <- nrow(current_pre$model_stage[[1]])
 
 		# --------------------------------------------------------------------------
+		# Iterate over model parameters
+
 		for (mod in seq_len(num_mod_iter)) {
 			current_model <- current_pre$model_stage[[1]][mod, ]
 			cli::cli_inform(
@@ -328,6 +331,9 @@ loopy <- function(sched, wflow, grid_size, dat) {
 			num_pred_iter <- nrow(current_model$predict_stage[[1]])
 			current_grid <- rebind_grid(current_pre, current_model)
 
+			# ------------------------------------------------------------------------
+			# Iterate over predictions and post-processors
+
 			pred <- predictions(
 				current_wflow,
 				current_model,
@@ -337,8 +343,7 @@ loopy <- function(sched, wflow, grid_size, dat) {
 
 			pred_iter <- pred_iter + 1
 			pred_reserve <- update_reserve(pred_reserve, pred_iter, pred, grid_size)
-
 		} # model loop
 	} # pre loop
-  pred_reserve
+	pred_reserve
 }
