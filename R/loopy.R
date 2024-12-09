@@ -70,11 +70,11 @@ prediction_types <- function(x) {
 }
 
 sched_predict_wrapper <- function(sched, wflow, dat, types) {
-	outputs <- tune:::get_output_columns(wflow, syms = TRUE)
+	outputs <- get_output_columns(wflow, syms = TRUE)
 	y_name <- outcome_names(wflow)
 
-	if (tune:::has_sub_param(sched$predict_stage[[1]])) {
-		sub_param <- tune:::get_sub_param(sched$predict_stage[[1]])
+	if (has_sub_param(sched$predict_stage[[1]])) {
+		sub_param <- get_sub_param(sched$predict_stage[[1]])
 		sub_list <- sched$predict_stage[[1]] %>%
 			dplyr::select(dplyr::all_of(sub_param)) %>%
 			as.list()
@@ -82,11 +82,11 @@ sched_predict_wrapper <- function(sched, wflow, dat, types) {
 		sub_list <- NULL
 	}
 
-	processed_data_pred <- tune:::forge_from_workflow(dat$pred, wflow)
+	processed_data_pred <- forge_from_workflow(dat$pred, wflow)
 	processed_data_pred$outcomes <- processed_data_pred$outcomes %>%
 		dplyr::mutate(.row = dat$index)
 
-	pred <- tune:::predict_wrapper(
+	pred <- predict_wrapper(
 		model = wflow %>% extract_fit_parsnip(),
 		new_data = processed_data_pred$predictors,
 		type = types,
@@ -424,8 +424,6 @@ loopy <- function(sched, grid, wflow, tune_id, dat, mtr, eval_time = NULL) {
 			pred_iter <- pred_iter + 1
 			pred_reserve <- update_reserve(pred_reserve, pred_iter, pred, grid_size)
 
-			# ------------------------------------------------------------------------------
-			# TODO Compute metrics here?
 		} # model loop
 	} # pre loop
 
