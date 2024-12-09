@@ -64,6 +64,11 @@ has_tailor_estimated <- function(x) {
 
 # ------------------------------------------------------------------------------
 
+prediction_types <- function(x) {
+	x <- metrics_info(x)
+	unique(x$type)
+}
+
 sched_predict_wrapper <- function(sched, wflow, dat, types) {
 	outputs <- tune:::get_output_columns(wflow, syms = TRUE)
 	y_name <- outcome_names(wflow)
@@ -357,15 +362,22 @@ update_reserve <- function(reserve, iter, predictions, grid_size) {
 
 # ------------------------------------------------------------------------------
 
-# TODO have types (or metrics) as an argument
+opts <- list(event_level = "first", verbose = FALSE)
 
 #' @export
-loopy <- function(sched, wflow, grid_size, dat, types) {
+loopy <- function(sched, grid, wflow, tune_id, dat, mtr, eval_time = NULL) {
 	# ------------------------------------------------------------------------------
 	# Initialize some objects
 
-	pred_reserve <- NULL
+	pred_reserve <- metric_reserve <- NULL
 	pred_iter <- 0
+
+	pred_types <- prediction_types(mtr)
+
+	y_name <- outcome_names(wflow)
+
+	grid_size <- nrow(grid)
+	tune_id <- names(grid)
 
 	# ----------------------------------------------------------------------------
 	# Iterate over preprocessors
@@ -403,7 +415,7 @@ loopy <- function(sched, wflow, grid_size, dat, types) {
 				sched = current_model,
 				dat = dat,
 				grid = current_grid,
-				types = types
+				types = pred_types
 			)
 
 			# ------------------------------------------------------------------------
@@ -416,5 +428,16 @@ loopy <- function(sched, wflow, grid_size, dat, types) {
 			# TODO Compute metrics here?
 		} # model loop
 	} # pre loop
-	pred_reserve
+
+	all_metrics <- pred_reserve %>%
+		dplyr::group_by(!!!rlang::syms(tune_id)) %>%
+		.estimate_metrics(
+			mtr,
+			tune_id,
+			outcome_name = y_name,
+			event_level = "first",
+			metrics_info = metrics_info(mtr)
+		)
+
+	list(metrics = all_metrics, predictions = pred_reserve)
 }
