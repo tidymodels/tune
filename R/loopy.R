@@ -62,9 +62,46 @@ has_tailor_estimated <- function(x) {
 	res
 }
 
-# TODO add .row to data
-
 # ------------------------------------------------------------------------------
+
+sched_predict_wrapper <- function(sched, wflow, dat, types) {
+	outputs <- tune:::get_output_columns(wflow, syms = TRUE)
+	y_name <- outcome_names(wflow)
+
+	if (tune:::has_sub_param(sched$predict_stage[[1]])) {
+		sub_param <- tune:::get_sub_param(sched$predict_stage[[1]])
+		sub_list <- sched$predict_stage[[1]] %>%
+			dplyr::select(dplyr::all_of(sub_param)) %>%
+			as.list()
+	} else {
+		sub_list <- NULL
+	}
+
+	processed_data_pred <- tune:::forge_from_workflow(dat$pred, wflow)
+	processed_data_pred$outcomes <- processed_data_pred$outcomes %>%
+		dplyr::mutate(.row = dat$index)
+
+	pred <- tune:::predict_wrapper(
+		model = wflow %>% extract_fit_parsnip(),
+		new_data = processed_data_pred$predictors,
+		type = types,
+		eval_time = NULL,
+		subgrid = sub_list
+	) %>%
+		dplyr::mutate(.row = dat$index) %>%
+		dplyr::full_join(processed_data_pred$outcomes, by = ".row") %>%
+		dplyr::relocate(
+			c(
+				dplyr::all_of(y_name),
+				dplyr::starts_with(".pred"),
+				dplyr::any_of(".eval_time"),
+				.row
+			),
+			.before = dplyr::everything()
+		)
+
+	pred
+}
 
 pred_post_strategy <- function(x) {
 	if (has_tailor(x)) {
@@ -85,144 +122,135 @@ pred_post_strategy <- function(x) {
 	res
 }
 
-predict_only <- function(wflow, sched, dat, grid) {
-	outputs <- get_output_columns(wflow, syms = TRUE)
+predict_only <- function(wflow, sched, dat, grid, types) {
+	pred <- sched_predict_wrapper(sched, wflow, dat, types)
 
 	if (has_sub_param(sched$predict_stage[[1]])) {
 		cli::cli_inform("multipredict only")
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
-		sub_list <- sched$predict_stage[[1]] %>%
-			dplyr::select(dplyr::all_of(sub_param)) %>%
-			as.list()
-
-		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
-		pred <- predict_wrapper(
-			model = wflow %>% extract_fit_parsnip(),
-			new_data = forge_from_workflow(dat$pred, wflow)$predictors,
-			# TODO figure out types
-			type = "numeric",
-			eval_time = NULL,
-			subgrid = sub_list
-		) %>%
-			mutate(.row = dat$index) %>%
+		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
-			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
-			dplyr::arrange(.row)
+			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
 		cli::cli_inform("predict only")
-		# TODO use the same approach via predict_wrapper?
-		pred <- augment(wflow, dat$pred) %>%
-			dplyr::select(!!!unlist(outputs)) %>%
-			dplyr::mutate(.row = dat$index) %>%
-			cbind(grid) %>%
-			dplyr::arrange(.row)
+		pred <- pred %>% cbind(grid)
 	}
 	pred
 }
 
-predict_post_one_shot <- function(wflow, sched, dat, grid) {
+predict_post_one_shot <- function(wflow, sched, dat, grid, types) {
 	cli::cli_inform("predict/post once")
 
-	outputs <- get_output_columns(wflow, syms = TRUE)
+	# ----------------------------------------------------------------------------
+	# Get all predictions
 
-	# TODO make predictions here and then process differently based on submodels
+	pred <- sched_predict_wrapper(sched, wflow, dat, types)
 
 	if (has_sub_param(sched$predict_stage[[1]])) {
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
-		sub_list <- sched$predict_stage[[1]] %>%
-			dplyr::select(dplyr::all_of(sub_param)) %>%
-			as.list()
-
-		processed_data_pred <- forge_from_workflow(dat$pred, wflow)
-		processed_data_pred$outcomes <- processed_data_pred$outcomes %>%
-			dplyr::mutate(.row = dat$index)
-
-		# We need to pass in the columns that tailor needs (already in outputs) but
-		# also some data to initialize the tailor
-		dat_ex <- augment(wflow, dat$pred %>% dplyr::slice(1)) %>%
-			dplyr::select(!!!unlist(unname(outputs)))
-		post_obj <- wflow %>%
-			extract_postprocessor() %>%
-			fit(
-				.data = dat_ex,
-				outcome = !!outputs$outcome[[1]],
-				estimate = !!outputs$estimate[[1]],
-				probabilities = c(!!!outputs$probabilities)
-			)
-		##
-
-		pred <- predict_wrapper(
-			model = wflow %>% extract_fit_parsnip(),
-			new_data = processed_data_pred$predictors,
-			# TODO figure out types
-			type = "numeric",
-			eval_time = NULL,
-			subgrid = sub_list
-		) %>%
-			dplyr::mutate(.row = dat$index) %>%
-			dplyr::mutate(.pred = purrr::map(.pred, ~predict(post_obj, .x))) %>%
+		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
-			dplyr::full_join(processed_data_pred$outcomes, by = ".row") %>%
-			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param))) %>%
-			dplyr::arrange(.row)
+			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
-		pred <- wflow %>%
-			.fit_post(dat$fit) %>%
-			.fit_finalize() %>%
-			predict(dat$pred) %>% # TODO loop over types or use predict_wrapper
-			dplyr::mutate(.row = dat$index) %>%
-			cbind(grid) %>%
-			dplyr::arrange(.row)
+		cli::cli_inform("predict only")
+		pred <- pred %>% cbind(grid)
 	}
+
+	# ----------------------------------------------------------------------------
+	# 'fit' the tailor object to use to postprocess
+
+	outputs <- get_output_columns(wflow, syms = TRUE)
+
+	post_obj <- wflow %>%
+		extract_postprocessor() %>%
+		fit(
+			.data = pred[1, ],
+			outcome = !!outputs$outcome[[1]],
+			estimate = !!outputs$estimate[[1]],
+			probabilities = c(!!!outputs$probabilities)
+		)
+
+	pred <- predict(post_obj, pred)
+
 	pred
 }
 
-predict_post_loop <- function(wflow, sched, dat, grid) {
+predict_post_loop <- function(wflow, sched, dat, grid, types) {
 	cli::cli_inform("predict/post looping")
-	outputs <- get_output_columns(wflow, syms = TRUE)
-	num_pred_iter <- nrow(sched$predict_stage[[1]])
 
-	pred_reserve <- NULL
+	outputs <- get_output_columns(wflow, syms = TRUE)
+
+	# ----------------------------------------------------------------------------
+	# Generate all predictions then nest for each candidate
+
+	tune_id <- names(grid)
+	tune_id <- rlang::syms(tune_id)
+
+	pred <- sched_predict_wrapper(sched, wflow, dat, types)
+
+	if (has_sub_param(sched$predict_stage[[1]])) {
+		sub_param <- get_sub_param(sched$predict_stage[[1]])
+		pred <- pred %>%
+			tidyr::unnest(.pred) %>%
+			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
+	} else {
+		cli::cli_inform("predict only")
+		pred <- pred %>% cbind(grid)
+	}
+
+	pred <- pred %>% dplyr::group_nest(!!!tune_id, .key = "res")
+	# pred$res is class "vctrs_list_of" and that will prevent us from pushing
+	# updates values into the column, so we;ll convert it into a basic list
+	pred$res <- as.list(pred$res)
+
+	num_pred_iter <- nrow(pred)
+
+	# ----------------------------------------------------------------------------
+	# Now, for each set of predictions, postprocess for each post-candidate
+
+	post_obj <- extract_postprocessor(wflow)
 
 	for (prd in seq_len(num_pred_iter)) {
 		current_pred <- sched$predict_stage[[1]][prd, ]
-
-		# TODO this is ignoring submodels.
-
-		if (has_sub_param(sched$predict_stage[[1]])) {
-			# make all predictions and then loop tho
-		} else {
-		}
-
 		num_post_iter <- nrow(current_pred$post_stage[[1]])
+		current_predictions <- pred$res[[prd]]
 
-		wflow_clone <- wflow
+		new_pred <- NULL
 		for (post in seq_len(num_post_iter)) {
 			current_post <- current_pred$post_stage[[1]][post, ]
+			current_post_obj <- finalize_tailor(post_obj, as.list(current_post))
 
-			current_grid <- dplyr::bind_cols(grid, no_stage(current_post))
-			wflow_clone <- post_update_fit(wflow, current_post, dat$cal)
+			current_post_obj <- current_post_obj %>%
+				fit(
+					.data = pred$res[[prd]],
+					outcome = !!outputs$outcome[[1]],
+					estimate = !!outputs$estimate[[1]],
+					probabilities = c(!!!outputs$probabilities)
+				)
 
-			pred <- augment(wflow_clone, dat$pred) %>%
-				dplyr::select(!!!unlist(outputs)) %>%
-				cbind(current_grid) %>%
-				dplyr::mutate(.row = dat$index) %>%
-				dplyr::arrange(.row)
-
-			pred_reserve <- update_reserve(pred_reserve, prd, pred, num_pred_iter)
+			# Need another version of nesting to insert the sequence of post tuning
+			# parameters
+			new_pred <- dplyr::bind_rows(
+				new_pred,
+				predict(current_post_obj, current_predictions) %>%
+					cbind(current_post) %>%
+					dplyr::as_tibble()
+			)
 		}
+		pred$res[[prd]] <- new_pred
 	}
-	pred_reserve
+
+	pred %>% tidyr::unnest(res)
 }
 
-predictions <- function(wflow, sched, dat, grid) {
+predictions <- function(wflow, sched, dat, grid, types) {
 	strategy <- pred_post_strategy(wflow)
 	if (strategy == "just predict") {
-		pred <- predict_only(wflow, sched, dat, grid)
+		pred <- predict_only(wflow, sched, dat, grid, types)
 	} else if (strategy == "predict and post at same time") {
-		pred <- predict_post_one_shot(wflow, sched, dat, grid)
+		pred <- predict_post_one_shot(wflow, sched, dat, grid, types)
 	} else {
-		pred <- predict_post_loop(wflow, sched, dat, grid)
+		pred <- predict_post_loop(wflow, sched, dat, grid, types)
 	}
 	if (tibble::is_tibble(pred)) {
 		pred <- dplyr::as_tibble(pred)
@@ -332,7 +360,7 @@ update_reserve <- function(reserve, iter, predictions, grid_size) {
 # TODO have types (or metrics) as an argument
 
 #' @export
-loopy <- function(sched, wflow, grid_size, dat) {
+loopy <- function(sched, wflow, grid_size, dat, types) {
 	# ------------------------------------------------------------------------------
 	# Initialize some objects
 
@@ -371,10 +399,11 @@ loopy <- function(sched, wflow, grid_size, dat) {
 			# Iterate over predictions and postprocessors
 
 			pred <- predictions(
-				current_wflow,
-				current_model,
-				dat,
-				current_grid
+				wflow = current_wflow,
+				sched = current_model,
+				dat = dat,
+				grid = current_grid,
+				types = types
 			)
 
 			# ------------------------------------------------------------------------
