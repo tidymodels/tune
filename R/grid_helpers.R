@@ -151,6 +151,11 @@ get_metric_time <- function(metrics, eval_time) {
 }
 
 predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
+  if (length(type) > 1) {
+    cli::cli_abort("Argument {.arg type} in {.fn predict_wrapper} should be
+                   a single value, not {.obj_type_friendly {type}}.",
+                   call = NULL)
+  }
   if (is.null(subgrid)) {
     fn <- "predict.model_fit"
   } else {
