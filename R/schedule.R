@@ -57,8 +57,8 @@ get_tune_schedule <- function(wflow, param, grid) {
 	has_submodels <- length(ids$sub) > 0
 
 	# ------------------------------------------------------------------------------
-	# First collapse the submodel parameters (if any)
-
+	# First collapse the submodel parameters (if any) and postprocessors
+	# TODO update this will submodels and postproc
 	if (has_submodels) {
 		sched <- grid %>%
 			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
@@ -69,8 +69,8 @@ get_tune_schedule <- function(wflow, param, grid) {
 		first_loop_info <- min_grid(model_spec, grid)
 	} else {
 		sched <- grid %>%
-			dplyr::group_nest(!!!symbs$all, .key = "predict_stage")
-		first_loop_info <- grid
+			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
+		first_loop_info <- grid %>% dplyr::select(!!!symbs$fits)
 	}
 
 	first_loop_info <- first_loop_info %>%
