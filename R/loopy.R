@@ -89,19 +89,17 @@ sched_predict_wrapper <- function(sched, wflow, dat, types) {
 
 	pred <- NULL
 	for (type_iter in types) {
-		tmp_res <-
-			predict_wrapper(
-				model = wflow %>% extract_fit_parsnip(),
-				new_data = processed_data_pred$predictors,
-				type = type_iter,
-				eval_time = NULL,
-				subgrid = sub_list
-			)
+		tmp_res <- predict_wrapper(
+			model = wflow %>% extract_fit_parsnip(),
+			new_data = processed_data_pred$predictors,
+			type = type_iter,
+			eval_time = NULL,
+			subgrid = sub_list
+		)
 		pred <- vctrs::vec_cbind(pred, tmp_res)
 	}
 
-	pred <-
-		pred %>%
+	pred <- pred %>%
 		dplyr::mutate(.row = dat$index) %>%
 		dplyr::full_join(processed_data_pred$outcomes, by = ".row") %>%
 		dplyr::relocate(
@@ -140,20 +138,20 @@ predict_only <- function(wflow, sched, dat, grid, types) {
 	pred <- sched_predict_wrapper(sched, wflow, dat, types)
 
 	if (has_sub_param(sched$predict_stage[[1]])) {
-		cli::cli_inform("multipredict only")
+		cli::cli_inform("├──├── multipredict only")
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
 		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
 			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
-		cli::cli_inform("predict only")
+		cli::cli_inform("├──├── predict only")
 		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 	pred
 }
 
 predict_post_one_shot <- function(wflow, sched, dat, grid, types) {
-	cli::cli_inform("predict/post once")
+	cli::cli_inform("├──├──predict/post once")
 
 	# ----------------------------------------------------------------------------
 	# Get all predictions
@@ -166,7 +164,6 @@ predict_post_one_shot <- function(wflow, sched, dat, grid, types) {
 			tidyr::unnest(.pred) %>%
 			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
-		cli::cli_inform("predict only")
 		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 
@@ -190,7 +187,7 @@ predict_post_one_shot <- function(wflow, sched, dat, grid, types) {
 }
 
 predict_post_loop <- function(wflow, sched, dat, grid, types) {
-	cli::cli_inform("predict/post looping")
+	cli::cli_inform("├──├── predict/post looping")
 
 	outputs <- get_output_columns(wflow, syms = TRUE)
 
@@ -208,7 +205,6 @@ predict_post_loop <- function(wflow, sched, dat, grid, types) {
 			tidyr::unnest(.pred) %>%
 			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
-		cli::cli_inform("predict only")
 		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 
@@ -442,7 +438,6 @@ loopy <- function(sched, grid, wflow, tune_id, dat, mtr, eval_time = NULL) {
 
 			pred_iter <- pred_iter + 1
 			pred_reserve <- update_reserve(pred_reserve, pred_iter, pred, grid_size)
-
 		} # model loop
 	} # pre loop
 
