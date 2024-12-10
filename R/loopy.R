@@ -69,6 +69,7 @@ prediction_types <- function(x) {
 	unique(x$type)
 }
 
+# TODO add eval_time
 sched_predict_wrapper <- function(sched, wflow, dat, types) {
 	outputs <- get_output_columns(wflow, syms = TRUE)
 	y_name <- outcome_names(wflow)
@@ -86,13 +87,21 @@ sched_predict_wrapper <- function(sched, wflow, dat, types) {
 	processed_data_pred$outcomes <- processed_data_pred$outcomes %>%
 		dplyr::mutate(.row = dat$index)
 
-	pred <- predict_wrapper(
-		model = wflow %>% extract_fit_parsnip(),
-		new_data = processed_data_pred$predictors,
-		type = types,
-		eval_time = NULL,
-		subgrid = sub_list
-	) %>%
+	pred <- NULL
+	for (type_iter in types) {
+		tmp_res <-
+			predict_wrapper(
+				model = wflow %>% extract_fit_parsnip(),
+				new_data = processed_data_pred$predictors,
+				type = type_iter,
+				eval_time = NULL,
+				subgrid = sub_list
+			)
+		pred <- vctrs::vec_cbind(pred, tmp_res)
+	}
+
+	pred <-
+		pred %>%
 		dplyr::mutate(.row = dat$index) %>%
 		dplyr::full_join(processed_data_pred$outcomes, by = ".row") %>%
 		dplyr::relocate(
@@ -135,10 +144,10 @@ predict_only <- function(wflow, sched, dat, grid, types) {
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
 		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
-			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
+			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
 		cli::cli_inform("predict only")
-		pred <- pred %>% cbind(grid)
+		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 	pred
 }
@@ -155,10 +164,10 @@ predict_post_one_shot <- function(wflow, sched, dat, grid, types) {
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
 		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
-			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
+			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
 		cli::cli_inform("predict only")
-		pred <- pred %>% cbind(grid)
+		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 
 	# ----------------------------------------------------------------------------
@@ -197,10 +206,10 @@ predict_post_loop <- function(wflow, sched, dat, grid, types) {
 		sub_param <- get_sub_param(sched$predict_stage[[1]])
 		pred <- pred %>%
 			tidyr::unnest(.pred) %>%
-			cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
+			vctrs::vec_cbind(grid %>% dplyr::select(-dplyr::all_of(sub_param)))
 	} else {
 		cli::cli_inform("predict only")
-		pred <- pred %>% cbind(grid)
+		pred <- pred %>% vctrs::vec_cbind(grid)
 	}
 
 	pred <- pred %>% dplyr::group_nest(!!!tune_id, .key = "res")
@@ -238,8 +247,7 @@ predict_post_loop <- function(wflow, sched, dat, grid, types) {
 			new_pred <- dplyr::bind_rows(
 				new_pred,
 				predict(current_post_obj, current_predictions) %>%
-					cbind(current_post) %>%
-					dplyr::as_tibble()
+					vctrs::vec_cbind(current_post)
 			)
 		}
 		pred$res[[prd]] <- new_pred
@@ -250,6 +258,8 @@ predict_post_loop <- function(wflow, sched, dat, grid, types) {
 
 predictions <- function(wflow, sched, dat, grid, types) {
 	strategy <- pred_post_strategy(wflow)
+	y_name <- outcome_names(wflow)
+
 	if (strategy == "just predict") {
 		pred <- predict_only(wflow, sched, dat, grid, types)
 	} else if (strategy == "predict and post at same time") {
@@ -260,7 +270,16 @@ predictions <- function(wflow, sched, dat, grid, types) {
 	if (tibble::is_tibble(pred)) {
 		pred <- dplyr::as_tibble(pred)
 	}
-	pred
+	pred %>%
+		dplyr::relocate(
+			c(
+				dplyr::all_of(y_name),
+				dplyr::starts_with(".pred"),
+				dplyr::any_of(".eval_time"),
+				.row
+			),
+			.before = dplyr::everything()
+		)
 }
 
 # ------------------------------------------------------------------------------
