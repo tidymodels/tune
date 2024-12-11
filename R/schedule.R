@@ -1,6 +1,5 @@
 #' @export
 get_tune_schedule <- function(wflow, param, grid) {
-
 	if (!inherits(wflow, "workflow")) {
 		cli::cli_abort("Argument {.arg wflow} must be a workflow object.")
 	}

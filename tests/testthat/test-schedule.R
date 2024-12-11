@@ -1,211 +1,612 @@
+# ------------------------------------------------------------------------------
+# Grid schedules
 
-test_that("grid processing sschedule - recipe only", {
-  library(workflows)
-  library(parsnip)
-  library(recipes)
-  library(dials)
+# Objects in helper-tune-package.R
 
-  wflow_pre_only <- workflow(rec, logistic_reg())
-  prm_used_pre_only <- extract_parameter_set_dials(wflow_pre_only)
-  grid_pre_only <-
-    grid_regular(prm_used_pre_only, levels = 3) %>%
-    arrange(threshold, disp_df)
-  sched_pre_only <-
-    tune:::get_tune_schedule(wflow_pre_only, prm_used_pre_only, grid_pre_only)
+# ------------------------------------------------------------------------------
+# No tuning or postprocesing estimation
 
-  expect_named(sched_pre_only, c("threshold", "disp_df", "model_stage"))
-  expect_equal(nrow(sched_pre_only), nrow(grid_pre_only))
+test_that("grid processing schedule - no parameters", {
+	wflow_nada <- workflow(outcome ~ ., logistic_reg())
+	prm_used_nada <- extract_parameter_set_dials(wflow_nada)
+	grid_nada <- tibble()
 
-  # All of the other nested tibbles should be empty
-  expect_equal(
-    sched_pre_only %>%
-      tidyr::unnest(model_stage) %>%
-      tidyr::unnest(predict_stage) %>%
-      tidyr::unnest(post_stage),
-    grid_pre_only
-  )
+	sched_nada <- get_tune_schedule(wflow_nada, prm_used_nada, grid_nada)
 
-})
+	expect_named(sched_nada, "model_stage")
+	expect_equal(nrow(sched_nada), 1)
 
-test_that("grid processing sschedule - model only, no submodels", {
-  library(workflows)
-  library(parsnip)
-  library(recipes)
-  library(dials)
+	# All of the other nested tibbles should be empty
+	expect_equal(
+		sched_nada %>%
+			tidyr::unnest(model_stage) %>%
+			tidyr::unnest(predict_stage) %>%
+			tidyr::unnest(post_stage),
+		grid_nada
+	)
 
-  wflow_rf_only <- workflow(outcome ~ ., mod_rf)
-  prm_used_rf_only <-
-    extract_parameter_set_dials(wflow_rf_only) %>%
-    update(mtry = mtry(c(1, 10)))
-  grid_rf_only <- grid_regular(prm_used_rf_only, levels = 3)
-  sched_rf_only <-
-    tune:::get_tune_schedule(wflow_rf_only, prm_used_rf_only, grid_rf_only)
-
-
-  expect_named(sched_rf_only, c("model_stage"))
-  expect_equal(nrow(sched_rf_only), 1L)
-
-  rf_n <- length(sched_rf_only$model_stage)
-  for (i in 1:rf_n) {
-    expect_named(sched_rf_only$model_stage[[i]], c("mtry", "predict_stage"))
-    expect_equal(
-      sched_rf_only$model_stage[[i]] %>%
-        tidyr::unnest(predict_stage) %>%
-        tidyr::unnest(post_stage),
-      grid_rf_only
-    )
-  }
+	expect_s3_class(
+		sched_nada,
+		c("resample_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
 
 })
 
-test_that("grid processing sschedule - model only, submodels", {
-  library(workflows)
-  library(parsnip)
-  library(recipes)
-  library(dials)
+test_that("grid processing schedule - recipe and model", {
+	wflow_pre_only <- workflow(rec_df, logistic_reg())
+	prm_used_pre_only <- extract_parameter_set_dials(wflow_pre_only)
+	grid_pre_only <- tibble()
+	sched_pre_only <- get_tune_schedule(wflow_pre_only, prm_used_pre_only, grid_pre_only)
 
-  wflow_bst <- workflow(outcome ~ ., mod_bst)
-  prm_used_bst <- extract_parameter_set_dials(wflow_bst)
-  grid_bst <- grid_regular(prm_used_bst, levels = 3)
+	expect_named(sched_pre_only, c("model_stage"))
+	expect_equal(nrow(sched_pre_only), max(nrow(grid_pre_only), 1))
 
-  min_n_only <- grid_bst %>% dplyr::distinct(min_n) %>% dplyr::arrange(min_n)
-  trees_only <- grid_bst %>% dplyr::distinct(trees) %>% dplyr::arrange(trees)
+	# All of the other nested tibbles should be empty
+	expect_equal(
+		sched_pre_only %>%
+			tidyr::unnest(model_stage) %>%
+			tidyr::unnest(predict_stage) %>%
+			tidyr::unnest(post_stage),
+		grid_pre_only
+	)
 
-  # ------------------------------------------------------------------------------
-  # regular grid
-  sched_bst <- tune:::get_tune_schedule(wflow_bst, prm_used_bst, grid_bst)
+	expect_s3_class(
+		sched_pre_only,
+		c("resample_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
 
-  expect_named(sched_bst, c("model_stage"))
-  expect_equal(nrow(sched_bst), 1L)
-
-  reg_n <- length(sched_bst$model_stage)
-  for (i in 1:reg_n) {
-    expect_named(sched_bst$model_stage[[i]], c("min_n", "predict_stage", "trees"))
-
-    expect_equal(
-      sched_bst$model_stage[[i]] %>%
-        dplyr::select(-trees, -predict_stage),
-      min_n_only
-    )
-
-    for (j in seq_along(sched_bst$model_stage[[i]]$predict_stage)) {
-      expect_named(
-        sched_bst$model_stage[[i]]$predict_stage[[j]],
-        c("trees", "post_stage"))
-      expect_equal(
-        sched_bst$model_stage[[i]]$predict_stage[[j]] %>%
-          dplyr::select(trees),
-        trees_only
-      )
-    }
-
-    expect_equal(
-      sched_bst$model_stage[[i]] %>%
-        dplyr::select(-trees) %>%
-        tidyr::unnest(predict_stage) %>%
-        tidyr::unnest(post_stage) %>%
-        dplyr::select(trees, min_n),
-      grid_bst
-    )
-  }
-
-  # ------------------------------------------------------------------------------
-  # irregular design (no overlap)
-
-  grid_sfd_bst <- grid_space_filling(prm_used_bst, size = 5, type = "uniform")
-  sched_sfd_bst <- tune:::get_tune_schedule(wflow_bst, prm_used_bst, grid_sfd_bst)
-
-  expect_named(sched_sfd_bst, c("model_stage"))
-  expect_equal(nrow(sched_sfd_bst), 1L)
-
-  irreg_n <- length(sched_sfd_bst$model_stage)
-  expect_equal(irreg_n, 1L)
-
-  expect_named(sched_sfd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
-  expect_equal(
-    sched_sfd_bst$model_stage[[1]] %>%
-      dplyr::select(-predict_stage) %>%
-      dplyr::select(trees, min_n) %>%
-      dplyr::arrange(trees, min_n),
-    grid_sfd_bst %>%
-      dplyr::select(trees, min_n) %>%
-      dplyr::arrange(trees, min_n)
-  )
-
-  expect_equal(
-    sched_sfd_bst$model_stage[[1]] %>%
-      dplyr::select(-trees) %>%
-      tidyr::unnest(predict_stage) %>%
-      tidyr::unnest(post_stage) %>%
-      dplyr::select(trees, min_n) %>%
-      dplyr::arrange(trees, min_n),
-    grid_sfd_bst %>%
-      dplyr::select(trees, min_n) %>%
-      dplyr::arrange(trees, min_n)
-  )
-
-  # ------------------------------------------------------------------------------
-  # irregular design (1 overlap at min_n = 1)
-
-  grid_odd_bst <- tibble(min_n = c(1, 1, 2, 3, 4, 5), trees = rep(1:2, 3))
-  sched_odd_bst <- tune:::get_tune_schedule(wflow_bst, prm_used_bst, grid_odd_bst)
-
-  expect_named(sched_odd_bst, c("model_stage"))
-  expect_equal(nrow(sched_odd_bst), 1L)
-
-  odd_n <- length(sched_odd_bst$model_stage)
-  expect_equal(odd_n, 1L)
-
-  expect_named(sched_odd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
-  expect_equal(
-    sched_odd_bst$model_stage[[1]] %>%
-      dplyr::select(-predict_stage) %>%
-      dplyr::select(trees, min_n),
-    tibble(trees = c(2, 1, 2, 1, 2), min_n = c(1, 2, 3, 4, 5))
-  )
-
-  for (i in 1:nrow(sched_odd_bst$model_stage[[1]])) {
-    prd <- sched_odd_bst$model_stage[[1]]$predict_stage[[i]]
-    if (sched_odd_bst$model_stage[[1]]$min_n[i] == 1) {
-      expect_equal(nrow(prd), 2L)
-    } else {
-      expect_equal(nrow(prd), 1L)
-    }
-    expect_true(
-      all(purrr::map_int(prd$post_stage, nrow) == 1)
-    )
-  }
-
-  # ------------------------------------------------------------------------------
-  # 1-point design
-
-  set.seed(1)
-  grid_1_pt <- grid_random(prm_used_bst, size = 1)
-  sched_1_pt <- tune:::get_tune_schedule(wflow_bst, prm_used_bst, grid_1_pt)
-
-  expect_named(sched_1_pt, c("model_stage"))
-  expect_equal(nrow(sched_1_pt), 1L)
-  expect_equal(length(sched_1_pt$model_stage), 1L)
-  expect_named(
-    sched_1_pt$model_stage[[1]],
-    c("min_n", "predict_stage", "trees")
-  )
-
-  expect_equal(
-    length(sched_1_pt$model_stage[[1]]$predict_stage),
-    1L
-  )
-  expect_named(
-    sched_1_pt$model_stage[[1]]$predict_stage[[1]],
-    c("trees", "post_stage")
-  )
-
-  expect_equal(
-    length(sched_1_pt$model_stage[[1]]$predict_stage[[1]]$post_stage),
-    1L
-  )
-  expect_equal(
-    dim(sched_1_pt$model_stage[[1]]$predict_stage[[1]]$post_stage[[1]]),
-    1:0
-  )
 })
+
+test_that("grid processing schedule - recipe, model, and post", {
+	wflow_three <- workflow(rec_df, logistic_reg(), adjust_min)
+	prm_used_three <- extract_parameter_set_dials(wflow_three)
+	grid_three <- tibble()
+	sched_three <- get_tune_schedule(wflow_three, prm_used_three, grid_three)
+
+	expect_named(sched_three, c("model_stage"))
+	expect_equal(nrow(sched_three), max(nrow(grid_three), 1))
+
+	# All of the other nested tibbles should be empty
+	expect_equal(
+		sched_three %>%
+			tidyr::unnest(model_stage) %>%
+			tidyr::unnest(predict_stage) %>%
+			tidyr::unnest(post_stage),
+		grid_three
+	)
+
+	expect_s3_class(
+		sched_three,
+		c("resample_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+# ------------------------------------------------------------------------------
+# Tuning, no postprocesing estimation
+
+test_that("grid processing schedule - recipe only", {
+	wflow_pre_only <- workflow(rec_tune_thrsh_df, logistic_reg())
+	prm_used_pre_only <- extract_parameter_set_dials(wflow_pre_only)
+	grid_pre_only <-
+		grid_regular(prm_used_pre_only, levels = 3) %>%
+		arrange(threshold, disp_df)
+	sched_pre_only <-
+		get_tune_schedule(wflow_pre_only, prm_used_pre_only, grid_pre_only)
+
+	expect_named(sched_pre_only, c("threshold", "disp_df", "model_stage"))
+	expect_equal(nrow(sched_pre_only), nrow(grid_pre_only))
+
+	# All of the other nested tibbles should be empty
+	expect_equal(
+		sched_pre_only %>%
+			tidyr::unnest(model_stage) %>%
+			tidyr::unnest(predict_stage) %>%
+			tidyr::unnest(post_stage),
+		grid_pre_only
+	)
+
+	expect_s3_class(
+		sched_pre_only,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+test_that("grid processing schedule - model only, no submodels", {
+	wflow_rf_only <- workflow(outcome ~ ., mod_tune_rf)
+	prm_used_rf_only <-
+		extract_parameter_set_dials(wflow_rf_only)
+	grid_rf_only <- grid_regular(prm_used_rf_only, levels = 3)
+	sched_rf_only <-
+		get_tune_schedule(wflow_rf_only, prm_used_rf_only, grid_rf_only)
+
+	expect_named(sched_rf_only, c("model_stage"))
+	expect_equal(nrow(sched_rf_only), 1L)
+
+	rf_n <- length(sched_rf_only$model_stage)
+	for (i in 1:rf_n) {
+		expect_named(sched_rf_only$model_stage[[i]], c("min_n", "predict_stage"))
+		expect_equal(
+			sched_rf_only$model_stage[[i]] %>%
+				tidyr::unnest(predict_stage) %>%
+				tidyr::unnest(post_stage),
+			grid_rf_only
+		)
+	}
+
+	expect_s3_class(
+		sched_rf_only,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+test_that("grid processing schedule - model only, submodels, regular grid", {
+	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	prm_used_bst <- extract_parameter_set_dials(wflow_bst)
+	grid_bst <- grid_regular(prm_used_bst, levels = 3)
+
+	min_n_only <- grid_bst %>% dplyr::distinct(min_n) %>% dplyr::arrange(min_n)
+	trees_only <- grid_bst %>% dplyr::distinct(trees) %>% dplyr::arrange(trees)
+
+	# ------------------------------------------------------------------------------
+	# regular grid
+	sched_bst <- get_tune_schedule(wflow_bst, prm_used_bst, grid_bst)
+
+	expect_named(sched_bst, c("model_stage"))
+	expect_equal(nrow(sched_bst), 1L)
+
+	reg_n <- length(sched_bst$model_stage)
+	for (i in 1:reg_n) {
+		expect_named(sched_bst$model_stage[[i]], c("min_n", "predict_stage", "trees"))
+
+		expect_equal(
+			sched_bst$model_stage[[i]] %>%
+				dplyr::select(-trees, -predict_stage),
+			min_n_only
+		)
+
+		for (j in seq_along(sched_bst$model_stage[[i]]$predict_stage)) {
+			expect_named(
+				sched_bst$model_stage[[i]]$predict_stage[[j]],
+				c("trees", "post_stage"))
+			expect_equal(
+				sched_bst$model_stage[[i]]$predict_stage[[j]] %>%
+					dplyr::select(trees),
+				trees_only
+			)
+		}
+
+		expect_equal(
+			sched_bst$model_stage[[i]] %>%
+				dplyr::select(-trees) %>%
+				tidyr::unnest(predict_stage) %>%
+				tidyr::unnest(post_stage) %>%
+				dplyr::select(trees, min_n),
+			grid_bst
+		)
+	}
+
+	expect_s3_class(
+		sched_bst,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
+test_that("grid processing schedule - model only, submodels, SFD grid", {
+	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	prm_used_bst <- extract_parameter_set_dials(wflow_bst)
+
+	grid_sfd_bst <- grid_space_filling(prm_used_bst, size = 5, type = "uniform")
+	sched_sfd_bst <- get_tune_schedule(wflow_bst, prm_used_bst, grid_sfd_bst)
+
+	expect_named(sched_sfd_bst, c("model_stage"))
+	expect_equal(nrow(sched_sfd_bst), 1L)
+
+	irreg_n <- length(sched_sfd_bst$model_stage)
+	expect_equal(irreg_n, 1L)
+
+	expect_named(sched_sfd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_equal(
+		sched_sfd_bst$model_stage[[1]] %>%
+			dplyr::select(-predict_stage) %>%
+			dplyr::select(trees, min_n) %>%
+			dplyr::arrange(trees, min_n),
+		grid_sfd_bst %>%
+			dplyr::select(trees, min_n) %>%
+			dplyr::arrange(trees, min_n)
+	)
+
+	expect_equal(
+		sched_sfd_bst$model_stage[[1]] %>%
+			dplyr::select(-trees) %>%
+			tidyr::unnest(predict_stage) %>%
+			tidyr::unnest(post_stage) %>%
+			dplyr::select(trees, min_n) %>%
+			dplyr::arrange(trees, min_n),
+		grid_sfd_bst %>%
+			dplyr::select(trees, min_n) %>%
+			dplyr::arrange(trees, min_n)
+	)
+
+	expect_s3_class(
+		sched_sfd_bst,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+test_that("grid processing schedule - model only, submodels, irregular design", {
+	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	prm_used_bst <- extract_parameter_set_dials(wflow_bst)
+
+	grid_odd_bst <- tibble(min_n = c(1, 1, 2, 3, 4, 5), trees = rep(1:2, 3))
+	sched_odd_bst <- get_tune_schedule(wflow_bst, prm_used_bst, grid_odd_bst)
+
+	expect_named(sched_odd_bst, c("model_stage"))
+	expect_equal(nrow(sched_odd_bst), 1L)
+
+	odd_n <- length(sched_odd_bst$model_stage)
+	expect_equal(odd_n, 1L)
+
+	expect_named(sched_odd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_equal(
+		sched_odd_bst$model_stage[[1]] %>%
+			dplyr::select(-predict_stage) %>%
+			dplyr::select(trees, min_n),
+		tibble(trees = c(2, 1, 2, 1, 2), min_n = c(1, 2, 3, 4, 5))
+	)
+
+	for (i in 1:nrow(sched_odd_bst$model_stage[[1]])) {
+		prd <- sched_odd_bst$model_stage[[1]]$predict_stage[[i]]
+		if (sched_odd_bst$model_stage[[1]]$min_n[i] == 1) {
+			expect_equal(nrow(prd), 2L)
+		} else {
+			expect_equal(nrow(prd), 1L)
+		}
+		expect_true(
+			all(purrr::map_int(prd$post_stage, nrow) == 1)
+		)
+	}
+
+	expect_s3_class(
+		sched_odd_bst,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+
+test_that("grid processing schedule - model only, submodels, 1 point design", {
+	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	prm_used_bst <- extract_parameter_set_dials(wflow_bst)
+
+	set.seed(1)
+	grid_1_pt <- grid_random(prm_used_bst, size = 1)
+	sched_1_pt <- get_tune_schedule(wflow_bst, prm_used_bst, grid_1_pt)
+
+	expect_named(sched_1_pt, c("model_stage"))
+	expect_equal(nrow(sched_1_pt), 1L)
+	expect_equal(length(sched_1_pt$model_stage), 1L)
+	expect_named(
+		sched_1_pt$model_stage[[1]],
+		c("min_n", "predict_stage", "trees")
+	)
+
+	expect_equal(
+		length(sched_1_pt$model_stage[[1]]$predict_stage),
+		1L
+	)
+	expect_named(
+		sched_1_pt$model_stage[[1]]$predict_stage[[1]],
+		c("trees", "post_stage")
+	)
+
+	expect_equal(
+		length(sched_1_pt$model_stage[[1]]$predict_stage[[1]]$post_stage),
+		1L
+	)
+	expect_equal(
+		dim(sched_1_pt$model_stage[[1]]$predict_stage[[1]]$post_stage[[1]]),
+		1:0
+	)
+
+	expect_s3_class(
+		sched_1_pt,
+		c("single_schedule", "grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+
+test_that("grid processing schedule - postprocessing only", {
+
+	wflow_thrsh <- workflow(outcome ~ ., logistic_reg(), adjust_tune_min)
+	prm_used_thrsh <-
+		extract_parameter_set_dials(wflow_thrsh) %>%
+		update(lower_limit = lower_limit(c(0, 1)))
+	grid_thrsh <- grid_regular(prm_used_thrsh, levels = 3)
+
+	# ------------------------------------------------------------------------------
+
+	sched_thrsh <- get_tune_schedule(wflow_thrsh, prm_used_thrsh, grid_thrsh)
+
+	expect_named(sched_thrsh, c("model_stage"))
+	expect_equal(nrow(sched_thrsh), 1L)
+
+	expect_named(sched_thrsh$model_stage[[1]], c("predict_stage"))
+	expect_equal(nrow(sched_thrsh$model_stage[[1]]), 1L)
+
+	expect_named(
+		sched_thrsh$model_stage[[1]]$predict_stage[[1]],
+		c("post_stage")
+	)
+	expect_equal(nrow(sched_thrsh$model_stage[[1]]), 1L)
+
+	expect_equal(
+		sched_thrsh$model_stage[[1]]$predict_stage[[1]]$post_stage[[1]],
+		grid_thrsh
+	)
+
+	expect_s3_class(
+		sched_thrsh,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+
+})
+
+test_that("grid processing schedule - recipe + postprocessing, regular grid", {
+
+	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
+	prm_used_pre_post <-
+		extract_parameter_set_dials(wflow_pre_post) %>%
+		update(lower_limit = lower_limit(c(0, 1)))
+	grid_pre_post <- grid_regular(prm_used_pre_post, levels = 3)
+
+	grid_pre <-
+		grid_pre_post %>%
+		distinct(threshold, disp_df) %>%
+		arrange(threshold, disp_df)
+	grid_post <-
+		grid_pre_post %>%
+		distinct(lower_limit) %>%
+		arrange(lower_limit)
+
+	# ------------------------------------------------------------------------------
+
+	sched_pre_post <- get_tune_schedule(wflow_pre_post, prm_used_pre_post, grid_pre_post)
+
+	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
+	expect_equal(
+		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
+		grid_pre %>% arrange(threshold, disp_df)
+	)
+
+	for (i in seq_along(sched_pre_post$model_stage)) {
+		expect_named(sched_pre_post$model_stage[[i]], c("predict_stage"))
+		expect_equal(nrow(sched_pre_post$model_stage[[i]]), 1L)
+	}
+
+	for (i in seq_along(sched_pre_post$model_stage)) {
+		expect_named(
+			sched_pre_post$model_stage[[i]]$predict_stage[[1]],
+			c("post_stage")
+		)
+		expect_identical(
+			sched_pre_post$model_stage[[i]]$predict_stage[[1]]$post_stage[[1]] %>%
+				arrange(lower_limit),
+			grid_post
+		)
+	}
+
+	expect_s3_class(
+		sched_pre_post,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
+test_that("grid processing schedule - recipe + postprocessing, irregular grid", {
+
+	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
+	prm_used_pre_post <-
+		extract_parameter_set_dials(wflow_pre_post) %>%
+		update(lower_limit = lower_limit(c(0, 1)))
+	grid_pre_post <-
+		grid_regular(prm_used_pre_post) %>%
+		dplyr::slice(-c(1, 14))
+
+	grid_pre <-
+		grid_pre_post %>%
+		distinct(threshold, disp_df) %>%
+		arrange(threshold, disp_df)
+
+	grids_post <-
+		grid_pre_post %>%
+		group_nest(threshold, disp_df) %>%
+		mutate(data = purrr::map(data, ~ arrange(.x, lower_limit)))
+
+	# ------------------------------------------------------------------------------
+
+	sched_pre_post <- get_tune_schedule(wflow_pre_post, prm_used_pre_post, grid_pre_post)
+
+	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
+	expect_equal(
+		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
+		grid_pre %>% arrange(threshold, disp_df)
+	)
+
+	for (i in seq_along(sched_pre_post$model_stage)) {
+		expect_named(sched_pre_post$model_stage[[i]], c("predict_stage"))
+		expect_equal(nrow(sched_pre_post$model_stage[[i]]), 1L)
+	}
+
+	for (i in seq_along(sched_pre_post$model_stage)) {
+		expect_named(
+			sched_pre_post$model_stage[[i]]$predict_stage[[1]],
+			c("post_stage")
+		)
+
+		pre_grid_i <-
+			sched_pre_post %>%
+			slice(i) %>%
+			select(threshold, disp_df)
+
+		post_grid_i <-
+			pre_grid_i %>%
+			inner_join(grids_post, by = join_by(threshold, disp_df)) %>%
+			pluck("data") %>%
+			pluck(1) %>%
+			arrange(lower_limit)
+
+		expect_identical(
+			sched_pre_post$model_stage[[i]]$predict_stage[[1]]$post_stage[[1]] %>%
+				arrange(lower_limit),
+			post_grid_i
+		)
+	}
+
+	expect_s3_class(
+		sched_pre_post,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
+test_that("grid processing schedule - recipe + model, no submodels, regular grid", {
+
+	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_rf)
+	prm_used_pre_model <-
+		extract_parameter_set_dials(wflow_pre_model)
+	grid_pre_model <-
+		grid_regular(prm_used_pre_model)
+
+	grid_pre <-
+		grid_pre_model %>%
+		distinct(threshold, disp_df) %>%
+		arrange(threshold, disp_df)
+
+	grid_model <-
+		grid_pre_model %>%
+		distinct(min_n) %>%
+		arrange(min_n)
+
+	# ------------------------------------------------------------------------------
+
+	sched_pre_model <- get_tune_schedule(wflow_pre_model, prm_used_pre_model, grid_pre_model)
+
+	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
+	expect_equal(
+		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
+		grid_pre %>% arrange(threshold, disp_df)
+	)
+
+	for (i in seq_along(sched_pre_model$model_stage)) {
+		expect_named(sched_pre_model$model_stage[[i]], c("min_n", "predict_stage"))
+		expect_equal(
+			sched_pre_model$model_stage[[i]] %>% select(min_n) %>% arrange(min_n),
+			grid_model
+		)
+	}
+
+	for (i in seq_along(sched_pre_model$model_stage)) {
+		expect_named(
+			sched_pre_model$model_stage[[i]]$predict_stage[[1]],
+			c("post_stage")
+		)
+
+		expect_equal(
+			nrow(sched_pre_model$model_stage[[i]]$predict_stage[[1]]),
+			1L
+		)
+		expect_equal(
+			nrow(sched_pre_model$model_stage[[i]]$predict_stage[[1]]$post_stage[[1]]),
+			1L
+		)
+	}
+
+	expect_s3_class(
+		sched_pre_model,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
+
+test_that("grid processing schedule - recipe + model, submodels, irregular grid", {
+
+	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_bst)
+	prm_used_pre_model <-
+		extract_parameter_set_dials(wflow_pre_model)
+	grid_pre_model <-
+		grid_regular(prm_used_pre_model) %>%
+		# This will make the submodel parameter (trees) unbalanced for some
+		# combination of parameters of the other parameters.
+		slice(-c(1, 2, 11))
+
+	grid_pre <-
+		grid_pre_model %>%
+		distinct(threshold, disp_df) %>%
+		arrange(threshold, disp_df)
+
+	grid_model <-
+		grid_pre_model %>%
+		group_nest(threshold, disp_df) %>%
+		mutate(
+			data = map(data, ~ .x %>% summarize(trees = max(trees), .by = c(min_n))),
+			data = map(data, ~ .x %>% arrange(min_n))
+		)
+
+	# ------------------------------------------------------------------------------
+
+	sched_pre_model <- get_tune_schedule(wflow_pre_model, prm_used_pre_model, grid_pre_model)
+
+	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
+	expect_equal(
+		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
+		grid_pre %>% arrange(threshold, disp_df)
+	)
+
+	for (i in seq_along(sched_pre_model$model_stage)) {
+		model_i <- sched_pre_model$model_stage[[i]]
+		expect_named(model_i, c("min_n", "predict_stage", "trees"))
+		expect_equal(
+			model_i %>% select(min_n, trees) %>% arrange(min_n),
+			grid_model$data[[i]]
+		)
+
+		for (j in seq_along(sched_pre_model$model_stage[[i]]$predict_stage)) {
+			predict_j <- model_i$predict_stage[[j]]
+
+			# We need to figure out the trees that need predicting for the current
+			# set of other parameters.
+
+			# Get the settings that have already be resolved:
+			other_ij <-
+				model_i %>%
+				select(-predict_stage, -trees) %>%
+				slice(j) %>%
+				vctrs::vec_cbind(
+					sched_pre_model %>%
+						select(threshold, disp_df) %>%
+						slice(i)
+				)
+			# What are the matching values from the grid?
+			trees_ij <-
+				grid_pre_model %>%
+				inner_join(other_ij, by = c("min_n", "threshold", "disp_df")) %>%
+				select(trees)
+
+
+			expect_equal(
+				predict_j %>% select(trees) %>% arrange(trees),
+				trees_ij %>% arrange(trees)
+			)
+
+		}
+	}
+
+	expect_s3_class(
+		sched_pre_model,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
