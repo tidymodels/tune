@@ -1,5 +1,18 @@
 #' @export
 get_tune_schedule <- function(wflow, param, grid) {
+
+	if (!inherits(wflow, "workflow")) {
+		cli::cli_abort("Argument {.arg wflow} must be a workflow object.")
+	}
+
+	if (!inherits(param, "parameters")) {
+		cli::cli_abort("Argument {.arg param} must be a dials parameters set.")
+	}
+
+	if (!tibble::is_tibble(grid)) {
+		cli::cli_abort("Argument {.arg grid} must be a tibble.")
+	}
+
 	# ----------------------------------------------------------------------------
 	# Get information on the parameters associated with the supervised model
 
@@ -92,7 +105,10 @@ get_tune_schedule <- function(wflow, param, grid) {
 	# Merge in submodel fit value (if any)
 
 	loop_names <- names(sched)[names(sched) != "predict_stage"]
-	sched <- dplyr::full_join(sched, first_loop_info, by = loop_names)
+	if (length(loop_names) > 0) {
+		# Using `by = character()` to perform a cross join was deprecated
+		sched <- dplyr::full_join(sched, first_loop_info, by = loop_names)
+	}
 
 	# ------------------------------------------------------------------------------
 	# Now collapse over the preprocessor for conditional execution
@@ -104,11 +120,14 @@ get_tune_schedule <- function(wflow, param, grid) {
 	og_cls <- class(sched)
 	if (nrow(param) == 0) {
 		cls <- "resample_schedule"
-	} else if (nrow(param) == 1) {
-		cls <- "single_schedule"
 	} else {
 		cls <- "grid_schedule"
 	}
-	class(sched) <- c(cls, "tune_schedule", og_cls)
+
+	if (nrow(grid) == 1) {
+		cls <- c("single_schedule", cls)
+	}
+
+	class(sched) <- c(cls, "schedule", og_cls)
 	sched
 }
