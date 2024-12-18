@@ -335,7 +335,7 @@ rebind_grid <- function(...) {
 }
 
 get_output_columns <- function(x, syms = FALSE) {
-	pred_cols <- .get_prediction_column_names(x, syms = TRUE)
+	pred_cols <- parsnip::.get_prediction_column_names(x, syms = TRUE)
 	res <- c(list(outcome = rlang::syms(outcome_names(x))), pred_cols)
 	res
 }
@@ -379,6 +379,22 @@ update_reserve <- function(reserve, iter, predictions, grid_size) {
 
 opts <- list(event_level = "first", verbose = FALSE)
 
+#' Iterate over workflow settings
+#'
+#' @param sched A preprocessing schedule.
+#' @param grid A parameter grid.
+#' @param wflow A workflow object.
+#' @param tune_id A character vector of tuning parameter names.
+#' @param dat A list containing fit and prediction data.
+#' @param mtr A metric set.
+#' @param eval_time Optional. Evaluation time point(s).
+#'
+#' @returns
+#' A list containing two elements:
+#' * `metrics`: A tibble of computed metrics grouped by tuning parameters
+#' * `predictions`: A tibble of model predictions
+#'
+#' @export
 #' @export
 loopy <- function(sched, grid, wflow, tune_id, dat, mtr, eval_time = NULL) {
 	# ------------------------------------------------------------------------------

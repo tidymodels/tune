@@ -1,3 +1,12 @@
+#' Get tune schedule
+#'
+#' @param wflow A workflow object.
+#' @param param A dials parameters set.
+#' @param grid A tibble containing the parameter grid.
+#'
+#' @returns A schedule object, inheriting from either 'single_schedule',
+#' 'grid_schedule', or 'resample_schedule'.
+#'
 #' @export
 get_tune_schedule <- function(wflow, param, grid) {
 	if (!inherits(wflow, "workflow")) {
@@ -27,7 +36,7 @@ get_tune_schedule <- function(wflow, param, grid) {
 	# Merge the info in with the other parameters
 	param <- dplyr::left_join(param, model_param, by = "name") %>%
 		dplyr::mutate(
-			has_submodel = if_else(is.na(has_submodel), FALSE, has_submodel)
+			has_submodel = dplyr::if_else(is.na(has_submodel), FALSE, has_submodel)
 		)
 
 	# ------------------------------------------------------------------------------
