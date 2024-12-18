@@ -610,3 +610,114 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 	)
 })
 
+
+# ------------------------------------------------------------------------------
+
+test_that("grid processing schedule - recipe + model + tailor, submodels, irregular grid", {
+
+	wflow_pre_model_post <- workflow(rec_tune_thrsh_df, mod_tune_bst, adjust_tune_min)
+	prm_used_pre_model_post <-
+		extract_parameter_set_dials(wflow_pre_model_post) %>%
+		update(lower_limit = lower_limit(c(0, 1)))
+	grid_pre_model_post <-
+		grid_regular(prm_used_pre_model_post) %>%
+		# This will make the submodel parameter (trees) unbalanced for some
+		# combination of parameters of the other parameters.
+		slice(seq(1, 240, by = 7))
+
+	grid_pre <-
+		grid_pre_model_post %>%
+		distinct(threshold, disp_df) %>%
+		arrange(threshold, disp_df)
+
+	grid_model <-
+		grid_pre_model_post %>%
+		select(-lower_limit) %>%
+		group_nest(threshold, disp_df) %>%
+		mutate(
+			data = map(data, ~ .x %>% summarize(trees = max(trees), .by = c(min_n))),
+			data = map(data, ~ .x %>% arrange(min_n))
+		)
+
+	# ------------------------------------------------------------------------------
+
+	sched_pre_model_post <- get_tune_schedule(wflow_pre_model_post,
+																						prm_used_pre_model_post,
+																						grid_pre_model_post)
+
+	# TODO trees seems to have an extra row:
+
+	# # A tibble: 4 × 3
+	# 	min_n predict_stage    trees
+	# 	<int> <list>           <int>
+	# 1     2 <tibble [1 × 2]>     1
+	# 2    21 <tibble [1 × 2]>     1
+	# 3    40 <tibble [2 × 2]>  1000  #<- shouldn't this row and the one below be combined?
+	# 4    40 <tibble [2 × 2]>     1
+
+	# sched_pre_model_post$model_stage[[1]] %>%
+	# 	select(-trees) %>%
+	# 	unnest(predict_stage) %>%
+	# 	unnest(post_stage) %>%
+	# 	arrange(min_n, trees, lower_limit)
+
+	# tibble::tribble(
+	# 	~min_n, ~trees, ~lower_limit, ~trees0,
+	# 	    2L,     1L,            0,      1L,
+	#      21L,     1L,          0.5,      1L,
+	# 	   40L,     1L,            1,   1000L,
+	# 	   40L,     1L,            1,      1L,
+	# 	   40L,  1000L,            0,   1000L,
+	# 	   40L,  1000L,            0,      1L
+	# )
+
+	expect_named(sched_pre_model_post, c("threshold", "disp_df", "model_stage"))
+	expect_equal(
+		sched_pre_model_post %>% select(-model_stage) %>% as_tibble(),
+		grid_pre %>% arrange(threshold, disp_df)
+	)
+
+	# for (i in seq_along(sched_pre_model_post$model_stage)) {
+	# 	model_i <- sched_pre_model_post$model_stage[[i]]
+	# 	expect_named(model_i, c("min_n", "predict_stage", "trees"))
+	# 	expect_equal(
+	# 		model_i %>% select(min_n, trees) %>% arrange(min_n),
+	# 		grid_model$data[[i]]
+	# 	)
+	#
+	# for (j in seq_along(sched_pre_model_post$model_stage[[i]]$predict_stage)) {
+	# 	predict_j <- model_i$predict_stage[[j]]
+	#
+	# 	# We need to figure out the trees that need predicting for the current
+	# 	# set of other parameters.
+	#
+	# 	# Get the settings that have already be resolved:
+	# 	other_ij <-
+	# 		model_i %>%
+	# 		select(-predict_stage, -trees) %>%
+	# 		slice(j) %>%
+	# 		vctrs::vec_cbind(
+	# 			sched_pre_model_post %>%
+	# 				select(threshold, disp_df) %>%
+	# 				slice(i)
+	# 		)
+	# 	# What are the matching values from the grid?
+	# 	trees_ij <-
+	# 		grid_pre_model_post %>%
+	# 		inner_join(other_ij, by = c("min_n", "threshold", "disp_df")) %>%
+	# 		select(trees)
+	#
+	#
+	# 	expect_equal(
+	# 		predict_j %>% select(trees) %>% arrange(trees),
+	# 		trees_ij %>% arrange(trees)
+	# 	)
+	# }
+	# }
+
+	expect_s3_class(
+		sched_pre_model_post,
+		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+	)
+})
+
