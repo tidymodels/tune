@@ -13,7 +13,7 @@ library(tune)
 
 if (identical(Sys.getenv("NOT_CRAN"), "true")) {
 	# emulates `testthat:::on_cran()`
-	if (requireNamespace("xml2")) {
+	if (rlang::is_installed("xml2")) {
 		test_check(
 			"tune",
 			reporter = MultiReporter$new(
