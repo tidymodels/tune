@@ -33,6 +33,8 @@ test_that("grid processing schedule - no parameters", {
 })
 
 test_that("grid processing schedule - recipe and model", {
+	skip_if_not_installed("splines2")
+
 	wflow_pre_only <- workflow(rec_df, logistic_reg())
 	prm_used_pre_only <- extract_parameter_set_dials(wflow_pre_only)
 	grid_pre_only <- tibble()
@@ -58,6 +60,9 @@ test_that("grid processing schedule - recipe and model", {
 })
 
 test_that("grid processing schedule - recipe, model, and post", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
+
 	wflow_three <- workflow(rec_df, logistic_reg(), adjust_min)
 	prm_used_three <- extract_parameter_set_dials(wflow_three)
 	grid_three <- tibble()
@@ -86,6 +91,8 @@ test_that("grid processing schedule - recipe, model, and post", {
 # Tuning, no postprocesing estimation
 
 test_that("grid processing schedule - recipe only", {
+	skip_if_not_installed("splines2")
+
 	wflow_pre_only <- workflow(rec_tune_thrsh_df, logistic_reg())
 	prm_used_pre_only <- extract_parameter_set_dials(wflow_pre_only)
 	grid_pre_only <-
@@ -322,6 +329,7 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 
 
 test_that("grid processing schedule - postprocessing only", {
+	skip_if_not_installed("probably")
 
 	wflow_thrsh <- workflow(outcome ~ ., logistic_reg(), adjust_tune_min)
 	prm_used_thrsh <-
@@ -358,6 +366,8 @@ test_that("grid processing schedule - postprocessing only", {
 })
 
 test_that("grid processing schedule - recipe + postprocessing, regular grid", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
 
 	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
 	prm_used_pre_post <-
@@ -408,6 +418,8 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 })
 
 test_that("grid processing schedule - recipe + postprocessing, irregular grid", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
 
 	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
 	prm_used_pre_post <-
@@ -474,6 +486,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 })
 
 test_that("grid processing schedule - recipe + model, no submodels, regular grid", {
+	skip_if_not_installed("splines2")
 
 	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_rf)
 	prm_used_pre_model <-
@@ -533,6 +546,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 
 
 test_that("grid processing schedule - recipe + model, submodels, irregular grid", {
+	skip_if_not_installed("splines2")
 
 	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_bst)
 	prm_used_pre_model <-
@@ -615,6 +629,8 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 # ------------------------------------------------------------------------------
 
 test_that("grid processing schedule - recipe + model + tailor, submodels, irregular grid", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
 
 	wflow_pre_model_post <- workflow(rec_tune_thrsh_df, mod_tune_bst, adjust_tune_min)
 	prm_used_pre_model_post <-

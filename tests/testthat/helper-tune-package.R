@@ -80,29 +80,36 @@ redefer_initialize_catalog <- function(test_env) {
 # ------------------------------------------------------------------------------
 # Objects to test grid processing
 
-rec_df <-
-	recipe(mpg ~ ., data = mtcars) %>%
-	step_corr(all_predictors(), threshold = .1) %>%
-	step_spline_natural(disp, deg_free = 5)
 
-rec_tune_thrsh_df <-
-	recipe(mpg ~ ., data = mtcars) %>%
-	step_corr(all_predictors(), threshold = tune()) %>%
-	step_spline_natural(disp, deg_free = tune("disp_df"))
+if (rlang::is_installed("splines2")) {
+	rec_df <-
+		recipe(mpg ~ ., data = mtcars) %>%
+		step_corr(all_predictors(), threshold = .1) %>%
+		step_spline_natural(disp, deg_free = 5)
+
+	rec_tune_thrsh_df <-
+		recipe(mpg ~ ., data = mtcars) %>%
+		step_corr(all_predictors(), threshold = tune()) %>%
+		step_spline_natural(disp, deg_free = tune("disp_df"))
+}
+
+
 
 mod_tune_bst <- boost_tree(trees = tune(), min_n = tune(), mode = "regression")
 mod_tune_rf <- rand_forest(min_n = tune(), mode = "regression")
 
-adjust_tune_min <-
-	tailor() %>%
-	adjust_numeric_range(lower_limit = tune())
+if (rlang::is_installed("probably")) {
 
-adjust_cal_tune_min <-
-	tailor() %>%
-	adjust_numeric_calibration(method = "linear") %>%
-	adjust_numeric_range(lower_limit = tune())
+	adjust_tune_min <-
+		tailor() %>%
+		adjust_numeric_range(lower_limit = tune())
 
-adjust_min <-
-	tailor() %>%
-	adjust_numeric_range(lower_limit = 0)
+	adjust_cal_tune_min <-
+		tailor() %>%
+		adjust_numeric_calibration(method = "linear") %>%
+		adjust_numeric_range(lower_limit = tune())
 
+	adjust_min <-
+		tailor() %>%
+		adjust_numeric_range(lower_limit = 0)
+}
