@@ -83,11 +83,22 @@ get_tune_schedule <- function(wflow, param, grid) {
 	if (has_submodels) {
 		sched <- grid %>%
 			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
-		# Note: multi_predict() should only be triggered for a submodel parameter if
+		# Note 1: multi_predict() should only be triggered for a submodel parameter if
 		# there are multiple rows in the `predict_stage` list column. i.e. the submodel
 		# column will always be there but we only multipredict when there are 2+
 		# values to predict.
-		first_loop_info <- min_grid(model_spec, grid)
+
+		# Note 2: The purpose of min_grid() is to determine the minimum grid for
+		# preprocessing and model parameters to fit. We compute it here and ignore
+		# any postprocessing tuning parmeters (if any). The postprocessing parameters
+		# will still be in the schedule since we schedule those before the results
+		# that use min_grid() are merged in. See issue #975 for an example and
+		# discussion.
+		first_loop_info <-
+			min_grid(model_spec,
+							 grid %>%
+							 	dplyr::select(-dplyr::any_of(post_id)) %>%
+							 	dplyr::distinct())
 	} else {
 		sched <- grid %>%
 			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
