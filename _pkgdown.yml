@@ -65,3 +65,6 @@ reference:
     - .use_case_weights_with_yardstick
     - .stash_last_result
     - new_backend_options
+    - get_tune_schedule
+    - loopy
+
