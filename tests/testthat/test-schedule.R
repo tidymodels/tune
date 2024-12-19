@@ -126,6 +126,7 @@ test_that("grid processing schedule - model only, no submodels", {
 
 	rf_n <- length(sched_rf_only$model_stage)
 	for (i in 1:rf_n) {
+		# No real need for the loop here
 		expect_named(sched_rf_only$model_stage[[i]], c("min_n", "predict_stage"))
 		expect_equal(
 			sched_rf_only$model_stage[[i]] %>%
@@ -660,7 +661,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 			sched_pre_model_post[i,] %>%
 			dplyr::select(-model_stage)
 
-		# We expect to evaulate these specific models for this set of preprocessors
+		# We expect to evaluate these specific models for this set of preprocessors
 		exp_i <-
 			grid_pre_model_post %>%
 			inner_join(other_i, by = c("threshold", "disp_df")) %>%
@@ -678,34 +679,32 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 		expect_equal(subgrid_i, exp_i)
 
-		# for (j in seq_along(sched_pre_model_post$model_stage[[i]]$predict_stage)) {
-		# 	predict_j <- model_i$predict_stage[[j]]
-		#
-		# 	# We need to figure out the trees that need predicting for the current
-		# 	# set of other parameters.
-		#
-		# 	# Get the settings that have already be resolved:
-		# 	other_ij <-
-		# 		model_i %>%
-		# 		select(-predict_stage, -trees) %>%
-		# 		slice(j) %>%
-		# 		vctrs::vec_cbind(
-		# 			sched_pre_model_post %>%
-		# 				select(threshold, disp_df) %>%
-		# 				slice(i)
-		# 		)
-		# 	# What are the matching values from the grid?
-		# 	trees_ij <-
-		# 		grid_pre_model_post %>%
-		# 		inner_join(other_ij, by = c("min_n", "threshold", "disp_df")) %>%
-		# 		select(trees)
-		#
-		#
-		# 	expect_equal(
-		# 		predict_j %>% select(trees) %>% arrange(trees),
-		# 		trees_ij %>% arrange(trees)
-		# 	)
-		# }
+		for (j in seq_along(sched_pre_model_post$model_stage[[i]]$predict_stage)) {
+			model_ij <- model_i[j,]
+			expect_named(model_ij, c("min_n", "predict_stage", "trees"))
+
+			predict_j <- model_ij$predict_stage[[1]]
+			expect_named(predict_j, c("trees", "post_stage"))
+
+			exp_post_grid <-
+				# Condition on the current set of non-submodel or post param to see
+				# what we should be evaluating:
+				model_ij %>%
+				dplyr::select(-trees) %>%
+				vctrs::vec_cbind(other_i) %>%
+				dplyr::inner_join(grid_pre_model_post,
+													by = c("threshold", "disp_df", "min_n")) %>%
+				dplyr::select(trees, lower_limit) %>%
+				dplyr::arrange(trees, lower_limit)
+
+			# Which as scheduled to be evaluated:
+			subgrid_ij <-
+				predict_j %>%
+				unnest(post_stage) %>%
+				dplyr::arrange(trees, lower_limit)
+
+			expect_equal(subgrid_ij, exp_post_grid)
+		}
 	}
 
 	expect_s3_class(
