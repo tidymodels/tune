@@ -438,13 +438,19 @@ tune_grid_loop_iter <- function(split,
       grid_preprocessor = iter_grid_preprocessor
     )
 
-    workflow <- .catch_and_log(
-      .expr = .fit_pre(workflow, analysis),
-      control,
-      split_labels,
-      iter_msg_preprocessor,
-      notes = out_notes
-    )
+    if (!has_cached_result(split_labels$id, iter_msg_preprocessor)) {
+      workflow <- .catch_and_log(
+        .expr = .fit_pre(workflow, analysis),
+        control,
+        split_labels,
+        iter_msg_preprocessor,
+        notes = out_notes
+      )
+
+      set_cached_result(split_labels$id, iter_msg_preprocessor, workflow)
+    } else {
+      workflow <- get_cached_result(split_labels$id, iter_msg_preprocessor)
+    }
 
     if (is_failure(workflow)) {
       next

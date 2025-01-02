@@ -1,5 +1,10 @@
 # tune (development version)
 
+* Iterative searches now cache preprocessor fits that would be duplicated across
+  iterations, greatly reducing the time to tune computationally intensive
+  preprocessing steps in `tune_bayes()` (and `tune_sim_anneal()`) in 
+  finetune (#955).
+
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866).
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
