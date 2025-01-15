@@ -175,7 +175,7 @@ test_that("grid processing schedule - model only, submodels, regular grid", {
 
 	reg_n <- length(sched_bst$model_stage)
 	for (i in 1:reg_n) {
-		expect_named(sched_bst$model_stage[[i]], c("min_n", "predict_stage", "trees"))
+		expect_named(sched_bst$model_stage[[i]], c("trees", "min_n", "predict_stage"))
 
 		expect_equal(
 			sched_bst$model_stage[[i]] %>%
@@ -223,7 +223,7 @@ test_that("grid processing schedule - model only, submodels, SFD grid", {
 	irreg_n <- length(sched_sfd_bst$model_stage)
 	expect_equal(irreg_n, 1L)
 
-	expect_named(sched_sfd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_named(sched_sfd_bst$model_stage[[1]], c("trees", "min_n", "predict_stage"))
 	expect_equal(
 		sched_sfd_bst$model_stage[[1]] %>%
 			dplyr::select(-predict_stage) %>%
@@ -266,7 +266,7 @@ test_that("grid processing schedule - model only, submodels, irregular design", 
 	odd_n <- length(sched_odd_bst$model_stage)
 	expect_equal(odd_n, 1L)
 
-	expect_named(sched_odd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_named(sched_odd_bst$model_stage[[1]], c("trees", "min_n", "predict_stage"))
 	expect_equal(
 		sched_odd_bst$model_stage[[1]] %>%
 			dplyr::select(-predict_stage) %>%
@@ -307,7 +307,7 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 	expect_equal(length(sched_1_pt$model_stage), 1L)
 	expect_named(
 		sched_1_pt$model_stage[[1]],
-		c("min_n", "predict_stage", "trees")
+		c("trees", "min_n", "predict_stage")
 	)
 
 	expect_equal(
@@ -590,7 +590,7 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
 		model_i <- sched_pre_model$model_stage[[i]]
-		expect_named(model_i, c("min_n", "predict_stage", "trees"))
+		expect_named(model_i, c("trees", "min_n", "predict_stage"))
 		expect_equal(
 			model_i %>% select(min_n, trees) %>% arrange(min_n),
 			grid_model$data[[i]]
@@ -705,7 +705,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 		for (j in seq_along(sched_pre_model_post$model_stage[[i]]$predict_stage)) {
 			model_ij <- model_i[j,]
-			expect_named(model_ij, c("min_n", "predict_stage", "trees"))
+			expect_named(model_ij, c("trees", "min_n", "predict_stage"))
 
 			predict_j <- model_ij$predict_stage[[1]]
 			expect_named(predict_j, c("trees", "post_stage"))
