@@ -21,122 +21,13 @@ get_tune_schedule <- function(wflow, param, grid) {
 		cli::cli_abort("Argument {.arg grid} must be a tibble.")
 	}
 
-	# ----------------------------------------------------------------------------
-	# Get information on the parameters associated with the supervised model
+	# Which parameter belongs to which stage and which is a submodel parameter?
+	param_info <- get_param_info(wflow)
 
-	model_spec <- extract_spec_parsnip(wflow)
-	model_type <- class(model_spec)[1]
-	model_eng <- model_spec$engine
+	schedule <- schedule_stages(grid, param_info, wflow)
 
-	# Which, if any, is a submodel
-	model_param <- parsnip::get_from_env(paste0(model_type, "_args")) %>%
-		dplyr::filter(engine == model_spec$engine) %>%
-		dplyr::select(name = parsnip, has_submodel)
-
-	# Merge the info in with the other parameters
-	param <- dplyr::left_join(param, model_param, by = "name") %>%
-		dplyr::mutate(
-			has_submodel = dplyr::if_else(is.na(has_submodel), FALSE, has_submodel)
-		)
-
-	# ------------------------------------------------------------------------------
-	# Get tuning parameter IDs for each stage of the workflow
-
-	if (any(param$source == "recipe")) {
-		pre_id <- param$id[param$source == "recipe"]
-	} else {
-		pre_id <- character(0)
-	}
-
-	if (any(param$source == "model_spec")) {
-		model_id <- param$id[param$source == "model_spec"]
-		sub_id <- param$id[param$source == "model_spec" & param$has_submodel]
-		non_sub_id <- param$id[param$source == "model_spec" & !param$has_submodel]
-	} else {
-		model_id <- sub_id <- non_sub_id <- character(0)
-	}
-
-	if (any(param$source == "tailor")) {
-		post_id <- param$id[param$source == "tailor"]
-	} else {
-		post_id <- character(0)
-	}
-
-	ids <- list(
-		all = param$id,
-		pre = pre_id,
-		# All model param
-		model = model_id,
-		fits = c(pre_id, non_sub_id),
-		sub = sub_id,
-		non_sub = non_sub_id,
-		post = post_id
-	)
-	# convert to symbols
-	symbs <- purrr::map(ids, syms)
-
-	has_submodels <- length(ids$sub) > 0
-
-	# ------------------------------------------------------------------------------
-	# First collapse the submodel parameters (if any) and postprocessors
-	# TODO update this will submodels and postproc
-	if (has_submodels) {
-		sched <- grid %>%
-			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
-		# Note 1: multi_predict() should only be triggered for a submodel parameter if
-		# there are multiple rows in the `predict_stage` list column. i.e. the submodel
-		# column will always be there but we only multipredict when there are 2+
-		# values to predict.
-
-		# Note 2: The purpose of min_grid() is to determine the minimum grid for
-		# preprocessing and model parameters to fit. We compute it here and ignore
-		# any postprocessing tuning parmeters (if any). The postprocessing parameters
-		# will still be in the schedule since we schedule those before the results
-		# that use min_grid() are merged in. See issue #975 for an example and
-		# discussion.
-		first_loop_info <-
-			min_grid(model_spec,
-							 grid %>%
-							 	dplyr::select(-dplyr::any_of(post_id)) %>%
-							 	dplyr::distinct())
-	} else {
-		sched <- grid %>%
-			dplyr::group_nest(!!!symbs$fits, .key = "predict_stage")
-		first_loop_info <- grid %>% dplyr::select(!!!symbs$fits)
-	}
-
-	first_loop_info <- first_loop_info %>%
-		dplyr::select(!!!c(symbs$pre, symbs$model)) %>%
-		dplyr::distinct()
-
-	# ------------------------------------------------------------------------------
-	# Add info an any postprocessing parameters
-
-	sched <- sched %>%
-		dplyr::mutate(
-			predict_stage = purrr::map(
-				predict_stage,
-				~.x %>% dplyr::group_nest(!!!symbs$sub, .key = "post_stage")
-			)
-		)
-
-	# ------------------------------------------------------------------------------
-	# Merge in submodel fit value (if any)
-
-	loop_names <- names(sched)[names(sched) != "predict_stage"]
-	if (length(loop_names) > 0) {
-		# Using `by = character()` to perform a cross join was deprecated
-		sched <- dplyr::full_join(sched, first_loop_info, by = loop_names)
-	}
-
-	# ------------------------------------------------------------------------------
-	# Now collapse over the preprocessor for conditional execution
-
-	sched <- sched %>% dplyr::group_nest(!!!symbs$pre, .key = "model_stage")
-
-	# ------------------------------------------------------------------------------
-
-	og_cls <- class(sched)
+	# TODO rework class(es)?
+	og_cls <- class(schedule)
 	if (nrow(param) == 0) {
 		cls <- "resample_schedule"
 	} else {
@@ -147,6 +38,94 @@ get_tune_schedule <- function(wflow, param, grid) {
 		cls <- c("single_schedule", cls)
 	}
 
-	class(sched) <- c(cls, "schedule", og_cls)
-	sched
+	class(schedule) <- c(cls, "schedule", og_cls)
+
+	schedule
+}
+
+schedule_stages <- function(grid, param_info, wflow) {
+	# schedule preprocessing stage and push the rest into a nested tibble
+	param_pre_stage <- param_info %>% 
+    filter(source == "recipe") %>% 
+    pull(id)
+	schedule <- grid %>% 
+    tidyr::nest(.by = all_of(param_pre_stage), .key = "model_stage")
+
+	# schedule next stages recursively
+	schedule %>% 
+		mutate(
+      model_stage = 
+        purrr::map(
+					model_stage,
+					schedule_model_stage_i, 
+					param_info = param_info,
+					wflow = wflow
+				)
+    )
+}
+
+schedule_model_stage_i <- function(model_stage, param_info, wflow){
+  model_param <- param_info %>% 
+    filter(source == "model_spec") %>% 
+    pull(id)
+  non_submodel_param <- param_info %>% 
+    filter(source == "model_spec" & !has_submodel) %>% 
+    pull(id)
+  
+  # schedule model parameters
+  schedule <- min_model_grid(model_stage, model_param, wflow)
+
+  # push remaining paramters into the next stage
+  next_stage <- model_stage %>% 
+    tidyr::nest(.by = all_of(non_submodel_param), .key = "predict_stage")
+
+  schedule <- schedule %>% 
+    dplyr::left_join(next_stage, by = all_of(non_submodel_param))
+
+	# schedule next stages recursively
+	schedule %>% 
+		mutate(
+      predict_stage = 
+        purrr::map(predict_stage, schedule_predict_stage_i, param_info = param_info)
+    )
+}
+
+min_model_grid <- function(grid, model_param, wflow){
+  # work on only the model parameters
+  model_grid <- grid %>% 
+    select(all_of(model_param)) %>% 
+    dplyr::distinct()
+
+  min_grid(
+    extract_spec_parsnip(wflow),
+    model_grid
+  ) %>% 
+    select(all_of(model_param))
+}
+
+schedule_predict_stage_i <- function(predict_stage, param_info) {
+  submodel_param <- param_info %>% 
+    filter(source == "model_spec" & has_submodel) %>% 
+    pull(id)
+
+  predict_stage %>% 
+    tidyr::nest(.by = all_of(submodel_param), .key = "post_stage")
+}
+
+# TODO check if existing tune functionality already covers this
+get_param_info <- function(wflow) {
+  param_info <- tune_args(wflow) %>% 
+		select(name, id, source)
+
+  model_spec <- extract_spec_parsnip(wflow)
+	model_type <- class(model_spec)[1]
+	model_eng <- model_spec$engine
+
+	model_param <- parsnip::get_from_env(paste0(model_type, "_args")) %>%
+		dplyr::filter(engine == model_spec$engine) %>%
+		dplyr::select(name = parsnip, has_submodel)
+
+	param_info <- dplyr::left_join(param_info, model_param, by = "name")
+  
+  param_info
 }
