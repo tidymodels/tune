@@ -3,6 +3,14 @@
 
 # Objects in helper-tune-package.R
 
+suppressPackageStartupMessages(library(workflows))
+suppressPackageStartupMessages(library(parsnip))
+suppressPackageStartupMessages(library(recipes))
+suppressPackageStartupMessages(library(dials))
+suppressPackageStartupMessages(library(tailor))
+suppressPackageStartupMessages(library(purrr))
+suppressPackageStartupMessages(library(dplyr))
+
 # ------------------------------------------------------------------------------
 # No tuning or postprocesing estimation
 
@@ -564,10 +572,10 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	grid_model <-
 		grid_pre_model %>%
-		group_nest(threshold, disp_df) %>%
+		dplyr::group_nest(threshold, disp_df) %>%
 		mutate(
-			data = map(data, ~ .x %>% summarize(trees = max(trees), .by = c(min_n))),
-			data = map(data, ~ .x %>% arrange(min_n))
+			data = purrr::map(data, ~ .x %>% dplyr::summarize(trees = max(trees), .by = c(min_n))),
+			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
 	# ------------------------------------------------------------------------------
@@ -576,8 +584,8 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
 		grid_pre %>% arrange(threshold, disp_df)
+		sched_pre_model %>% select(-model_stage) %>% tibble::as_tibble(),
 	)
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
