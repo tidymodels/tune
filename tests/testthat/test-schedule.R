@@ -385,8 +385,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 	grid_post <-
 		grid_pre_post %>%
 		distinct(lower_limit) %>%
@@ -399,7 +398,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_post$model_stage)) {
@@ -439,8 +438,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df) 
 
 	grids_post <-
 		grid_pre_post %>%
@@ -454,7 +452,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_post$model_stage)) {
@@ -504,8 +502,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 
 	grid_pre <-
 		grid_pre_model %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model %>%
@@ -519,7 +516,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
@@ -567,8 +564,7 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	grid_pre <-
 		grid_pre_model %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model %>%
@@ -584,8 +580,8 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		grid_pre %>% arrange(threshold, disp_df)
 		sched_pre_model %>% select(-model_stage) %>% tibble::as_tibble(),
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
@@ -652,8 +648,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 	grid_pre <-
 		grid_pre_model_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model_post %>%
@@ -674,7 +669,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	expect_named(sched_pre_model_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_model_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre 
 	)
 
 	for (i in seq_along(sched_pre_model_post$model_stage)) {
