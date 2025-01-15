@@ -1,9 +1,13 @@
-suppressPackageStartupMessages(library(workflows))
-suppressPackageStartupMessages(library(parsnip))
-suppressPackageStartupMessages(library(recipes))
-suppressPackageStartupMessages(library(dials))
-suppressPackageStartupMessages(library(tailor))
-suppressPackageStartupMessages(library(purrr))
+# suppressPackageStartupMessages(library(workflows))
+# suppressPackageStartupMessages(library(parsnip))
+# suppressPackageStartupMessages(library(recipes))
+# suppressPackageStartupMessages(library(dials))
+# suppressPackageStartupMessages(library(tailor))
+# suppressPackageStartupMessages(library(purrr))
+
+
+# NOTE namsespacing is required to make this file load properly in the testthat machinery
+
 
 new_rng_snapshots <- utils::compareVersion("3.6.0", as.character(getRversion())) > 0
 
@@ -13,18 +17,18 @@ rankdeficient_version <- any(names(formals("predict.lm")) == "rankdeficient")
 
 helper_objects_tune <- function() {
 	rec_tune_1 <-
-		recipe(mpg ~ ., data = mtcars) %>%
-		step_normalize(all_predictors()) %>%
-		step_pca(all_predictors(), num_comp = tune())
+		recipes::recipe(mpg ~ ., data = mtcars) %>%
+		recipes::step_normalize(all_predictors()) %>%
+		recipes::step_pca(all_predictors(), num_comp = tune())
 
 	rec_no_tune_1 <-
-		recipe(mpg ~ ., data = mtcars) %>%
-		step_normalize(all_predictors())
+		recipes::recipe(mpg ~ ., data = mtcars) %>%
+		recipes::step_normalize(all_predictors())
 
-	lm_mod <- linear_reg() %>% set_engine("lm")
+	lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
 
-	svm_mod <- svm_rbf(mode = "regression", cost = tune()) %>%
-		set_engine("kernlab")
+	svm_mod <- parsnip::svm_rbf(mode = "regression", cost = tune()) %>%
+		parsnip::set_engine("kernlab")
 
 	list(
 		rec_tune_1 = rec_tune_1,
@@ -83,33 +87,33 @@ redefer_initialize_catalog <- function(test_env) {
 
 if (rlang::is_installed("splines2")) {
 	rec_df <-
-		recipe(mpg ~ ., data = mtcars) %>%
-		step_corr(all_predictors(), threshold = .1) %>%
-		step_spline_natural(disp, deg_free = 5)
+		recipes::recipe(mpg ~ ., data = mtcars) %>%
+		recipes::step_corr(all_predictors(), threshold = .1) %>%
+		recipes::step_spline_natural(disp, deg_free = 5)
 
 	rec_tune_thrsh_df <-
-		recipe(mpg ~ ., data = mtcars) %>%
-		step_corr(all_predictors(), threshold = tune()) %>%
-		step_spline_natural(disp, deg_free = tune("disp_df"))
+		recipes::recipe(mpg ~ ., data = mtcars) %>%
+		recipes::step_corr(all_predictors(), threshold = tune()) %>%
+		recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
 }
 
 
 
-mod_tune_bst <- boost_tree(trees = tune(), min_n = tune(), mode = "regression")
-mod_tune_rf <- rand_forest(min_n = tune(), mode = "regression")
+mod_tune_bst <- parsnip::boost_tree(trees = tune(), min_n = tune(), mode = "regression")
+mod_tune_rf <- parsnip::rand_forest(min_n = tune(), mode = "regression")
 
 if (rlang::is_installed("probably")) {
 
 	adjust_tune_min <-
-		tailor() %>%
-		adjust_numeric_range(lower_limit = tune())
+		tailor::tailor() %>%
+		tailor::adjust_numeric_range(lower_limit = tune())
 
 	adjust_cal_tune_min <-
-		tailor() %>%
-		adjust_numeric_calibration(method = "linear") %>%
-		adjust_numeric_range(lower_limit = tune())
+		tailor::tailor() %>%
+		tailor::adjust_numeric_calibration(method = "linear") %>%
+		tailor::adjust_numeric_range(lower_limit = tune())
 
 	adjust_min <-
-		tailor() %>%
-		adjust_numeric_range(lower_limit = 0)
+		tailor::tailor() %>%
+		tailor::adjust_numeric_range(lower_limit = 0)
 }
