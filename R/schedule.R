@@ -111,7 +111,6 @@ schedule_predict_stage_i <- function(predict_stage, param_info) {
     tidyr::nest(.by = all_of(submodel_param), .key = "post_stage")
 }
 
-# TODO check if existing tune functionality already covers this
 get_param_info <- function(wflow) {
   param_info <- tune_args(wflow) %>% 
 		select(name, id, source)
