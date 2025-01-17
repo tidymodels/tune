@@ -22,16 +22,7 @@ test_that("grid processing schedule - no parameters", {
 	sched_nada <- get_tune_schedule(wflow_nada, prm_used_nada, grid_nada)
 
 	expect_named(sched_nada, "model_stage")
-	expect_equal(nrow(sched_nada), 1)
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_nada %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_nada
-	)
+	expect_equal(nrow(sched_nada), 0)
 
 	expect_s3_class(
 		sched_nada,
@@ -49,16 +40,7 @@ test_that("grid processing schedule - recipe and model", {
 	sched_pre_only <- get_tune_schedule(wflow_pre_only, prm_used_pre_only, grid_pre_only)
 
 	expect_named(sched_pre_only, c("model_stage"))
-	expect_equal(nrow(sched_pre_only), max(nrow(grid_pre_only), 1))
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_pre_only %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_pre_only
-	)
+	expect_equal(nrow(sched_pre_only), 0)
 
 	expect_s3_class(
 		sched_pre_only,
@@ -77,16 +59,7 @@ test_that("grid processing schedule - recipe, model, and post", {
 	sched_three <- get_tune_schedule(wflow_three, prm_used_three, grid_three)
 
 	expect_named(sched_three, c("model_stage"))
-	expect_equal(nrow(sched_three), max(nrow(grid_three), 1))
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_three %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_three
-	)
+	expect_equal(nrow(sched_three), 0)
 
 	expect_s3_class(
 		sched_three,
