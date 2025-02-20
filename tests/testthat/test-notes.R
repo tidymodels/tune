@@ -29,6 +29,7 @@ test_that("showing notes", {
   rs <- vfold_cv(Chicago)
 
   skip_if(packageVersion("dplyr") < "1.1.1")
+  skip_if(R.Version() <= "4.2.3")
   expect_snapshot(res_roles <- role_bp_wflow %>% fit_resamples(rs))
   expect_snapshot(show_notes(res_roles))
 
