@@ -3,6 +3,14 @@
 
 # Objects in helper-tune-package.R
 
+suppressPackageStartupMessages(library(workflows))
+suppressPackageStartupMessages(library(parsnip))
+suppressPackageStartupMessages(library(recipes))
+suppressPackageStartupMessages(library(dials))
+suppressPackageStartupMessages(library(tailor))
+suppressPackageStartupMessages(library(purrr))
+suppressPackageStartupMessages(library(dplyr))
+
 # ------------------------------------------------------------------------------
 # No tuning or postprocesing estimation
 
@@ -14,16 +22,7 @@ test_that("grid processing schedule - no parameters", {
 	sched_nada <- get_tune_schedule(wflow_nada, prm_used_nada, grid_nada)
 
 	expect_named(sched_nada, "model_stage")
-	expect_equal(nrow(sched_nada), 1)
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_nada %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_nada
-	)
+	expect_equal(nrow(sched_nada), 0)
 
 	expect_s3_class(
 		sched_nada,
@@ -41,16 +40,7 @@ test_that("grid processing schedule - recipe and model", {
 	sched_pre_only <- get_tune_schedule(wflow_pre_only, prm_used_pre_only, grid_pre_only)
 
 	expect_named(sched_pre_only, c("model_stage"))
-	expect_equal(nrow(sched_pre_only), max(nrow(grid_pre_only), 1))
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_pre_only %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_pre_only
-	)
+	expect_equal(nrow(sched_pre_only), 0)
 
 	expect_s3_class(
 		sched_pre_only,
@@ -69,16 +59,7 @@ test_that("grid processing schedule - recipe, model, and post", {
 	sched_three <- get_tune_schedule(wflow_three, prm_used_three, grid_three)
 
 	expect_named(sched_three, c("model_stage"))
-	expect_equal(nrow(sched_three), max(nrow(grid_three), 1))
-
-	# All of the other nested tibbles should be empty
-	expect_equal(
-		sched_three %>%
-			tidyr::unnest(model_stage) %>%
-			tidyr::unnest(predict_stage) %>%
-			tidyr::unnest(post_stage),
-		grid_three
-	)
+	expect_equal(nrow(sched_three), 0)
 
 	expect_s3_class(
 		sched_three,
@@ -167,7 +148,7 @@ test_that("grid processing schedule - model only, submodels, regular grid", {
 
 	reg_n <- length(sched_bst$model_stage)
 	for (i in 1:reg_n) {
-		expect_named(sched_bst$model_stage[[i]], c("min_n", "predict_stage", "trees"))
+		expect_named(sched_bst$model_stage[[i]], c("trees", "min_n", "predict_stage"))
 
 		expect_equal(
 			sched_bst$model_stage[[i]] %>%
@@ -215,7 +196,7 @@ test_that("grid processing schedule - model only, submodels, SFD grid", {
 	irreg_n <- length(sched_sfd_bst$model_stage)
 	expect_equal(irreg_n, 1L)
 
-	expect_named(sched_sfd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_named(sched_sfd_bst$model_stage[[1]], c("trees", "min_n", "predict_stage"))
 	expect_equal(
 		sched_sfd_bst$model_stage[[1]] %>%
 			dplyr::select(-predict_stage) %>%
@@ -258,7 +239,7 @@ test_that("grid processing schedule - model only, submodels, irregular design", 
 	odd_n <- length(sched_odd_bst$model_stage)
 	expect_equal(odd_n, 1L)
 
-	expect_named(sched_odd_bst$model_stage[[1]], c("min_n", "predict_stage", "trees"))
+	expect_named(sched_odd_bst$model_stage[[1]], c("trees", "min_n", "predict_stage"))
 	expect_equal(
 		sched_odd_bst$model_stage[[1]] %>%
 			dplyr::select(-predict_stage) %>%
@@ -299,7 +280,7 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 	expect_equal(length(sched_1_pt$model_stage), 1L)
 	expect_named(
 		sched_1_pt$model_stage[[1]],
-		c("min_n", "predict_stage", "trees")
+		c("trees", "min_n", "predict_stage")
 	)
 
 	expect_equal(
@@ -377,8 +358,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 	grid_post <-
 		grid_pre_post %>%
 		distinct(lower_limit) %>%
@@ -391,7 +371,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_post$model_stage)) {
@@ -431,8 +411,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df) 
 
 	grids_post <-
 		grid_pre_post %>%
@@ -446,7 +425,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_post$model_stage)) {
@@ -496,8 +475,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 
 	grid_pre <-
 		grid_pre_model %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model %>%
@@ -511,7 +489,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
@@ -559,15 +537,14 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	grid_pre <-
 		grid_pre_model %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model %>%
-		group_nest(threshold, disp_df) %>%
+		dplyr::group_nest(threshold, disp_df) %>%
 		mutate(
-			data = map(data, ~ .x %>% summarize(trees = max(trees), .by = c(min_n))),
-			data = map(data, ~ .x %>% arrange(min_n))
+			data = purrr::map(data, ~ .x %>% dplyr::summarize(trees = max(trees), .by = c(min_n))),
+			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
 	# ------------------------------------------------------------------------------
@@ -576,13 +553,13 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		sched_pre_model %>% select(-model_stage) %>% tibble::as_tibble(),
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_model$model_stage)) {
 		model_i <- sched_pre_model$model_stage[[i]]
-		expect_named(model_i, c("min_n", "predict_stage", "trees"))
+		expect_named(model_i, c("trees", "min_n", "predict_stage"))
 		expect_equal(
 			model_i %>% select(min_n, trees) %>% arrange(min_n),
 			grid_model$data[[i]]
@@ -644,8 +621,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 	grid_pre <-
 		grid_pre_model_post %>%
-		distinct(threshold, disp_df) %>%
-		arrange(threshold, disp_df)
+		distinct(threshold, disp_df)
 
 	grid_model <-
 		grid_pre_model_post %>%
@@ -666,7 +642,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	expect_named(sched_pre_model_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
 		sched_pre_model_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre %>% arrange(threshold, disp_df)
+		grid_pre 
 	)
 
 	for (i in seq_along(sched_pre_model_post$model_stage)) {
@@ -697,7 +673,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 		for (j in seq_along(sched_pre_model_post$model_stage[[i]]$predict_stage)) {
 			model_ij <- model_i[j,]
-			expect_named(model_ij, c("min_n", "predict_stage", "trees"))
+			expect_named(model_ij, c("trees", "min_n", "predict_stage"))
 
 			predict_j <- model_ij$predict_stage[[1]]
 			expect_named(predict_j, c("trees", "post_stage"))
