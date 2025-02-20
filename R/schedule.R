@@ -45,14 +45,14 @@ get_tune_schedule <- function(wflow, param, grid) {
 schedule_stages <- function(grid, param_info, wflow) {
 	# schedule preprocessing stage and push the rest into a nested tibble
 	param_pre_stage <- param_info %>% 
-    filter(source == "recipe") %>% 
-    pull(id)
+    dplyr::filter(source == "recipe") %>% 
+    dplyr::pull(id)
 	schedule <- grid %>% 
     tidyr::nest(.by = all_of(param_pre_stage), .key = "model_stage")
 
 	# schedule next stages recursively
 	schedule %>% 
-		mutate(
+		dplyr::mutate(
       model_stage = 
         purrr::map(
 					model_stage,
@@ -65,18 +65,18 @@ schedule_stages <- function(grid, param_info, wflow) {
 
 schedule_model_stage_i <- function(model_stage, param_info, wflow){
   model_param <- param_info %>% 
-    filter(source == "model_spec") %>% 
-    pull(id)
+    dplyr::filter(source == "model_spec") %>% 
+    dplyr::pull(id)
   non_submodel_param <- param_info %>% 
-    filter(source == "model_spec" & !has_submodel) %>% 
-    pull(id)
+    dplyr::filter(source == "model_spec" & !has_submodel) %>% 
+    dplyr::pull(id)
   
   # schedule model parameters
   schedule <- min_model_grid(model_stage, model_param, wflow)
 
   # push remaining parameters into the next stage
   next_stage <- model_stage %>% 
-    tidyr::nest(.by = all_of(non_submodel_param), .key = "predict_stage")
+    tidyr::nest(.by = dplyr::all_of(non_submodel_param), .key = "predict_stage")
 
   schedule <- schedule %>% 
     dplyr::left_join(next_stage, by = all_of(non_submodel_param))
