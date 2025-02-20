@@ -74,7 +74,7 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow){
   # schedule model parameters
   schedule <- min_model_grid(model_stage, model_param, wflow)
 
-  # push remaining paramters into the next stage
+  # push remaining parameters into the next stage
   next_stage <- model_stage %>% 
     tidyr::nest(.by = all_of(non_submodel_param), .key = "predict_stage")
 
