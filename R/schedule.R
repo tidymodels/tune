@@ -50,8 +50,8 @@ schedule_stages <- function(grid, param_info, wflow) {
 	schedule <- grid %>% 
     tidyr::nest(.by = all_of(param_pre_stage), .key = "model_stage")
 
-	# schedule next stages recursively
-	schedule %>% 
+	# schedule next stages nested within `schedule_model_stage_i()`
+	schedule %>%
 		dplyr::mutate(
       model_stage = 
         purrr::map(
@@ -81,8 +81,8 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow){
   schedule <- schedule %>% 
     dplyr::left_join(next_stage, by = all_of(non_submodel_param))
 
-	# schedule next stages recursively
-	schedule %>% 
+	# schedule next stages nested within `schedule_predict_stage_i()`
+	schedule %>%
 		mutate(
       predict_stage = 
         purrr::map(predict_stage, schedule_predict_stage_i, param_info = param_info)
