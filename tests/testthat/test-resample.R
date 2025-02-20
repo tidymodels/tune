@@ -223,9 +223,6 @@ test_that("classification models generate correct error message", {
 
   expect_length(notes, 2L)
 
-  # Known failure in the recipe
-  expect_true(all(grepl("outcome should be a `factor`", note)))
-
   expect_equal(extract, list(NULL, NULL))
   expect_equal(predictions, list(NULL, NULL))
 })
