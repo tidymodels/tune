@@ -39,8 +39,7 @@ test_that("GP fit - knn", {
     "K", "weight_funcrectangular", "weight_functriangular",
     "weight_funcepanechnikov", "weight_funcbiweight",
     "weight_functriweight", "weight_funccos", "weight_funcinv",
-    "weight_funcgaussian", "weight_funcrank", "weight_funcoptimal",
-    "exponent"
+    "weight_funcgaussian", "weight_funcrank", "exponent"
   )
   expect_equal(class(knn_gp), "GP")
   expect_equal(colnames(knn_gp$X), knn_cols)
