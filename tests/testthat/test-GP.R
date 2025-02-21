@@ -1,4 +1,5 @@
 test_that("encoding before model", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
   knn_set <- readRDS(test_path("data", "knn_set.rds"))
   knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
 
@@ -39,8 +40,7 @@ test_that("GP fit - knn", {
     "K", "weight_funcrectangular", "weight_functriangular",
     "weight_funcepanechnikov", "weight_funcbiweight",
     "weight_functriweight", "weight_funccos", "weight_funcinv",
-    "weight_funcgaussian", "weight_funcrank", "weight_funcoptimal",
-    "exponent"
+    "weight_funcgaussian", "weight_funcrank", "exponent"
   )
   expect_equal(class(knn_gp), "GP")
   expect_equal(colnames(knn_gp$X), knn_cols)

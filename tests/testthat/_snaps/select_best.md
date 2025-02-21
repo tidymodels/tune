@@ -17,7 +17,7 @@
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
            <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor05_Model1
+      1        6      2       2           1 Preprocessor19_Model1
 
 ---
 
@@ -74,7 +74,7 @@
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
            <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor05_Model1
+      1        6      2       2           1 Preprocessor19_Model1
 
 ---
 
@@ -153,7 +153,7 @@
       # A tibble: 1 x 5
         deg_free degree `wt df` `wt degree` .config              
            <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor05_Model1
+      1        6      2       2           1 Preprocessor19_Model1
 
 ---
 
