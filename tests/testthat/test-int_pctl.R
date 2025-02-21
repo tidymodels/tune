@@ -1,7 +1,7 @@
 
 test_that("percentile intervals - resamples only", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("rsample", minimum_version = "1.1.1.9000")
+  skip_if_not_installed("rsample", minimum_version = "1.3.0")
   library(rsample)
   library(parsnip)
 
@@ -40,7 +40,7 @@ test_that("percentile intervals - resamples only", {
 
 test_that("percentile intervals - last fit", {
   skip_if_not_installed("modeldata")
-  skip_if_not_installed("rsample", minimum_version = "1.1.1.9000")
+  skip_if_not_installed("rsample", minimum_version = "1.3.0")
   library(rsample)
   library(parsnip)
   library(yardstick)
@@ -78,7 +78,7 @@ test_that("percentile intervals - last fit", {
 test_that("percentile intervals - grid + bayes tuning", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("C50")
-  skip_if_not_installed("rsample", minimum_version = "1.1.1.9000")
+  skip_if_not_installed("rsample", minimum_version = "1.3.0")
   library(rsample)
   library(parsnip)
   library(yardstick)
@@ -179,7 +179,7 @@ test_that("percentile intervals - grid + bayes tuning", {
 test_that("percentile intervals - grid tuning with validation set", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("C50")
-  skip_if_not_installed("rsample", minimum_version = "1.1.1.9000")
+  skip_if_not_installed("rsample", minimum_version = "1.3.0")
   library(rsample)
   library(parsnip)
   library(yardstick)
