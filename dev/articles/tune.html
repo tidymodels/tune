@@ -214,8 +214,8 @@ space-filling design can be created by:</p>
 <span><span class="co">#&gt; Warning: `grid_max_entropy()` was deprecated in dials 1.3.0.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use `grid_space_filling()` instead.</span></span>
 <span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning was</span></span></span>
-<span><span class="co">#&gt; <span style="color: #555555;">generated.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">was generated.</span></span></span>
 <span><span class="va">spline_grid</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 10 × 2</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df`</span></span>
@@ -256,8 +256,8 @@ as &lt;code&gt;Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude&lt;/code&g
 A recipe is not required.&lt;/p&gt;"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span></code></pre></div>
@@ -287,18 +287,18 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 6</span></span></span>
-<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config              </span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">0</span> Preprocessor01_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.686  Preprocessor01_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard      0.097<span style="text-decoration: underline;">3</span> Preprocessor02_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard      0.691  Preprocessor02_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard      0.096<span style="text-decoration: underline;">1</span> Preprocessor03_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard      0.701  Preprocessor03_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard      0.092<span style="text-decoration: underline;">9</span> Preprocessor04_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard      0.722  Preprocessor04_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard      0.092<span style="text-decoration: underline;">1</span> Preprocessor05_Model1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard      0.727  Preprocessor05_Model1</span></span>
+<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config             </span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">0</span> Preprocessor01_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.686  Preprocessor01_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard      0.097<span style="text-decoration: underline;">3</span> Preprocessor02_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard      0.691  Preprocessor02_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard      0.096<span style="text-decoration: underline;">1</span> Preprocessor03_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard      0.701  Preprocessor03_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard      0.092<span style="text-decoration: underline;">9</span> Preprocessor04_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard      0.722  Preprocessor04_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard      0.092<span style="text-decoration: underline;">1</span> Preprocessor05_Mode…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard      0.727  Preprocessor05_Mode…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>To get the average metric value for each parameter combination,
 <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
@@ -306,18 +306,18 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <code class="sourceCode R"><span><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">ames_res</span><span class="op">)</span></span>
 <span><span class="va">estimates</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 8</span></span></span>
-<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config     </span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">40</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.678     10 0.007<span style="text-decoration: underline;">37</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">33</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard   0.678     10 0.006<span style="text-decoration: underline;">65</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard   0.098<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">24</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard   0.685     10 0.007<span style="text-decoration: underline;">33</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard   0.096<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard   0.698     10 0.006<span style="text-decoration: underline;">66</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard   0.096<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">14</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard   0.699     10 0.006<span style="text-decoration: underline;">59</span> Preprocesso…</span></span>
+<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config  </span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">40</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.678     10 0.007<span style="text-decoration: underline;">37</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">33</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard   0.678     10 0.006<span style="text-decoration: underline;">65</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard   0.098<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">24</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard   0.685     10 0.007<span style="text-decoration: underline;">33</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard   0.096<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard   0.698     10 0.006<span style="text-decoration: underline;">66</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard   0.096<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">14</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard   0.699     10 0.006<span style="text-decoration: underline;">59</span> Preproce…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10
 resamples. The best RMSE values corresponded to:</p>
@@ -328,18 +328,18 @@ resamples. The best RMSE values corresponded to:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">mean</span><span class="op">)</span></span>
 <span><span class="va">rmse_vals</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 81 × 8</span></span></span>
-<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config     </span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        16       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">20</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        18       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">21</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        16        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        16       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        16       18 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        16       16 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">22</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        18       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        18        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        18       18 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">20</span> Preprocesso…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16       14 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">17</span> Preprocesso…</span></span>
+<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config  </span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        16       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">20</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        18       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">21</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        16        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        16       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        16       18 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        16       16 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">22</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        18       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        18        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        18       18 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">20</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16       14 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">17</span> Preproce…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 71 more rows</span></span></span></code></pre></div>
 <p>Smaller degrees of freedom values correspond to more linear
 functions, but the grid search indicates that more nonlinearity is
@@ -396,7 +396,7 @@ parameters is to bundle these objects into a <em>workflow</em>:</p>
 <span>  <span class="fu"><a href="https://workflows.tidymodels.org/reference/add_recipe.html" class="external-link">add_recipe</a></span><span class="op">(</span><span class="va">ames_rec</span><span class="op">)</span></span></code></pre></div>
 <p>From this, the parameter set can be used to modify the range and
 values of parameters being optimized<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;One of the tuning parameters (&lt;code&gt;weight_func&lt;/code&gt;)
-is categorical and, by default, has 10 unique values. The model used to
+is categorical and, by default, has 9 unique values. The model used to
 predict new test parameters is a Gaussian process model, and this can
 become slow to fit when the number of tuning parameters is large or when
 a categorical parameter generates many dummy variables. We’ve reduced
@@ -437,61 +437,65 @@ here.</p></li>
 <span>                         param_info <span class="op">=</span> <span class="va">knn_param</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">❯</span> <span style="color: #000000;"> Generating a set of 5 initial parameter results</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Initialization complete</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
-<span><span class="co">#&gt;   <span style="color: #BBBB00;">5 data points to do so. This may cause errors or a poor model fit.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">has 5 data points to do so. This may cause errors or a poor model</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4774 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
-<span><span class="co">#&gt;   <span style="color: #BBBB00;">6 data points to do so. This may cause errors or a poor model fit.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">has 6 data points to do so. This may cause errors or a poor model</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4770 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
-<span><span class="co">#&gt;   <span style="color: #BBBB00;">7 data points to do so. This may cause errors or a poor model fit.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">has 7 data points to do so. This may cause errors or a poor model</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4777 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only has</span></span></span>
-<span><span class="co">#&gt;   <span style="color: #BBBB00;">8 data points to do so. This may cause errors or a poor model fit.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">has 8 data points to do so. This may cause errors or a poor model</span></span></span>
+<span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4766 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -501,8 +505,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4786 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -512,8 +516,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4792 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -523,8 +527,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4776 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -534,8 +538,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4771 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -545,8 +549,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4773 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -556,8 +560,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4744 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -567,8 +571,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4753 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -578,8 +582,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4782 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -589,8 +593,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4789 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -600,8 +604,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4789 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -611,8 +615,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4775 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -622,8 +626,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4763 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -633,8 +637,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4784 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -644,8 +648,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4758 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no backend</span></span>
-<span><span class="co">#&gt;   registered with future.</span></span>
+<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
+<span><span class="co">#&gt;   backend registered with future.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
 <span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
@@ -674,7 +678,8 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         3 rectangular         6        6 rmse    standard   0.084<span style="text-decoration: underline;">3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        29 inv                 7        6 rmse    standard   0.085<span style="text-decoration: underline;">8</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;, .iter &lt;int&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   .iter &lt;int&gt;</span></span></span></code></pre></div>
 <p>With this intrinsically nonlinear model there is less reliance on the
 nonlinear terms created by the recipe.</p>
 </div>
