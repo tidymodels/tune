@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,8 +45,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li><p>The package will now warn when parallel processing has been enabled with foreach but not with future. See <a href="https://tune.tidymodels.org/dev/reference/parallelism.html"><code>?parallelism</code></a> to learn more about transitioning your code to future (<a href="https://github.com/tidymodels/tune/issues/878" class="external-link">#878</a>, <a href="https://github.com/tidymodels/tune/issues/866" class="external-link">#866</a>).</p></li>
-<li><p>The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new <code>trace</code> column in the <code>collect_notes(.Last.tune.result)</code> output to find precisely where the error occurred (<a href="https://github.com/tidymodels/tune/issues/873" class="external-link">#873</a>).</p></li>
+<ul><li>The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new <code>trace</code> column in the <code>collect_notes(.Last.tune.result)</code> output to find precisely where the error occurred (<a href="https://github.com/tidymodels/tune/issues/873" class="external-link">#873</a>).</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.3.0" id="tune-130">tune 1.3.0<a class="anchor" aria-label="anchor" href="#tune-130"></a></h2><p class="text-muted">CRAN release: 2025-02-21</p>
+<ul><li><p>The package will now warn when parallel processing has been enabled with foreach but not with future. See <a href="https://tune.tidymodels.org/dev/reference/parallelism.html"><code>?parallelism</code></a> to learn more about transitioning your code to future (<a href="https://github.com/tidymodels/tune/issues/878" class="external-link">#878</a>, <a href="https://github.com/tidymodels/tune/issues/866" class="external-link">#866</a>). The next version of tune will move to a pure future implementation.</p></li>
 <li><p>When automatic grids are used, <code><a href="https://dials.tidymodels.org/reference/grid_space_filling.html" class="external-link">dials::grid_space_filling()</a></code> is now used (instead of <code><a href="https://dials.tidymodels.org/reference/grid_max_entropy.html" class="external-link">dials::grid_latin_hypercube()</a></code>). Overall, the new function produces optimized designs (not depending on random numbers). When using Bayesian models, we will use a Latin Hypercube since we produce 5,000 candidates, which is too slow to do with pre-optimized designs.</p></li>
 </ul></div>
     <div class="section level2">
