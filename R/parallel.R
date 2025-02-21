@@ -89,7 +89,8 @@ manange_global_limit <- function(min = 1e9) {
 #' See [future::plan()] for possible options other than `multisession`.
 #'
 #' Note that \pkg{tune} resets the _maximum_ limit of memory of global variables
-#' (e.g., attached packages) to be greater than the default.
+#' (e.g., attached packages) to be greater than the default when the package is
+#' loaded. This value can be altered using `options(future.globals.maxSize)`.
 #'
 #' @name parallelism
 NULL

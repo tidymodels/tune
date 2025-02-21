@@ -29,5 +29,6 @@ plan(multisession, workers = 4)
 See \code{\link[future:plan]{future::plan()}} for possible options other than \code{multisession}.
 
 Note that \pkg{tune} resets the \emph{maximum} limit of memory of global variables
-(e.g., attached packages) to be greater than the default.
+(e.g., attached packages) to be greater than the default when the package is
+loaded. This value can be altered using \code{options(future.globals.maxSize)}.
 }
