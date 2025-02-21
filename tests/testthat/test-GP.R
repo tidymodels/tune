@@ -1,4 +1,5 @@
 test_that("encoding before model", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
   knn_set <- readRDS(test_path("data", "knn_set.rds"))
   knn_grid <- readRDS(test_path("data", "knn_grid.rds"))
 
