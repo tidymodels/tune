@@ -1,156 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tune.tidymodels.org/404.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/acquisition_functions.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/extras/optimizations.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/articles/tune.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/augment.tune_results.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/autoplot.tune_results.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/choose_metric.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/collect_predictions.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/compute_metrics.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/conf_mat_resampled.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/control_bayes.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/control_grid.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/control_last_fit.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/coord_obs_pred.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/dot-stash_last_result.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/dot-use_case_weights_with_yardstick.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/empty_ellipses.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/example_ames_knn.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/expo_decay.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/extract-tune.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/extract_model.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/filter_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/finalize_model.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/fit_best.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/fit_resamples.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/get_metric_time.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/int_pctl.tune_results.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/last_fit.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/load_pkgs.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/merge.recipe.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/message_wrap.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/min_grid.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/outcome_names.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/parameters.workflow.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/prob_improve.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/show_best.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/show_notes.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/tune-internal-functions.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/tune_accessor.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/tune_bayes.html</loc>
-  </url>
-  <url>
-    <loc>https://tune.tidymodels.org/reference/tune_grid.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://tune.tidymodels.org/404.html</loc></url>
+<url><loc>https://tune.tidymodels.org/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://tune.tidymodels.org/CONTRIBUTING.html</loc></url>
+<url><loc>https://tune.tidymodels.org/LICENSE-text.html</loc></url>
+<url><loc>https://tune.tidymodels.org/LICENSE.html</loc></url>
+<url><loc>https://tune.tidymodels.org/articles/acquisition_functions.html</loc></url>
+<url><loc>https://tune.tidymodels.org/articles/extras/optimizations.html</loc></url>
+<url><loc>https://tune.tidymodels.org/articles/index.html</loc></url>
+<url><loc>https://tune.tidymodels.org/articles/tune.html</loc></url>
+<url><loc>https://tune.tidymodels.org/authors.html</loc></url>
+<url><loc>https://tune.tidymodels.org/index.html</loc></url>
+<url><loc>https://tune.tidymodels.org/news/index.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/augment.tune_results.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/autoplot.tune_results.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/choose_metric.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/collect_predictions.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/compute_metrics.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/conf_mat_resampled.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/control_bayes.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/control_grid.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/control_last_fit.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/coord_obs_pred.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/dot-stash_last_result.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/dot-use_case_weights_with_yardstick.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/empty_ellipses.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/example_ames_knn.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/expo_decay.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/extract-tune.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/extract_model.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/filter_parameters.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/finalize_model.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/fit_best.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/fit_resamples.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/get_metric_time.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/index.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/int_pctl.tune_results.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/last_fit.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/load_pkgs.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/merge.recipe.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/message_wrap.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/min_grid.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/outcome_names.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/parallelism.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/parameters.workflow.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/prob_improve.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/reexports.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/show_best.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/show_notes.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/tune-internal-functions.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/tune_accessor.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/tune_bayes.html</loc></url>
+<url><loc>https://tune.tidymodels.org/reference/tune_grid.html</loc></url>
 </urlset>
+
