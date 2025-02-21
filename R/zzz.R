@@ -3,6 +3,7 @@
 .onLoad <- function(libname, pkgname) {
   ns <- rlang::ns_env("tune")
 
+  ns$manange_global_limit()
 
   # Modified version of the cli .onLoad()
   # We can't use cli::symbol$tick because the width of the character
