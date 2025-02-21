@@ -4,6 +4,7 @@
 # ------------------------------------------------------------------------------
 
 test_that("select_best()", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
@@ -82,6 +83,7 @@ test_that("show_best()", {
 })
 
 test_that("one-std error rule", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
@@ -93,7 +95,7 @@ test_that("one-std error rule", {
 
   expect_equal(
     select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
-    "Preprocessor05_Model1"
+    "Preprocessor19_Model1"
   )
   expect_equal(
     select_by_one_std_err(knn_results, metric = "accuracy", K)$K,
@@ -135,6 +137,7 @@ test_that("one-std error rule", {
 
 
 test_that("percent loss", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
@@ -145,7 +148,7 @@ test_that("percent loss", {
   )
   expect_equal(
     select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
-    "Preprocessor05_Model1"
+    "Preprocessor19_Model1"
   )
   expect_equal(
     select_by_pct_loss(knn_results, metric = "accuracy", K)$K,

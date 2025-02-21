@@ -27,10 +27,10 @@
       }, save_pred = TRUE))
     Message
       x Fold1: preprocessor 1/1:
-        Error in `get_all_predictors()`:
+        Error in `hardhat::mold()`:
         ! The following predictor was not found in `data`: "z".
       x Fold2: preprocessor 1/1:
-        Error in `get_all_predictors()`:
+        Error in `hardhat::mold()`:
         ! The following predictor was not found in `data`: "z".
     Condition
       Warning:
