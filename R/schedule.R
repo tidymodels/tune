@@ -1,24 +1,18 @@
 #' Get tune schedule
 #'
-#' @param wflow A workflow object.
-#' @param param A dials parameters set.
 #' @param grid A tibble containing the parameter grid.
+#' @param wflow A workflow object.
 #'
 #' @returns A schedule object, inheriting from either 'single_schedule',
 #' 'grid_schedule', or 'resample_schedule'.
 #'
 #' @export
-get_tune_schedule <- function(wflow, param, grid) {
-	if (!inherits(wflow, "workflow")) {
-		cli::cli_abort("Argument {.arg wflow} must be a workflow object.")
-	}
-
-	if (!inherits(param, "parameters")) {
-		cli::cli_abort("Argument {.arg param} must be a dials parameters set.")
-	}
-
+get_tune_schedule <- function(grid, wflow) {
 	if (!tibble::is_tibble(grid)) {
 		cli::cli_abort("Argument {.arg grid} must be a tibble.")
+	}
+	if (!inherits(wflow, "workflow")) {
+		cli::cli_abort("Argument {.arg wflow} must be a workflow object.")
 	}
 
 	schedule <- schedule_stages(grid, wflow)
