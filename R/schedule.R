@@ -21,10 +21,9 @@ get_tune_schedule <- function(wflow, param, grid) {
 		cli::cli_abort("Argument {.arg grid} must be a tibble.")
 	}
 
-	# Which parameter belongs to which stage and which is a submodel parameter?
-	param_info <- get_param_info(wflow)
+	schedule <- schedule_stages(grid, wflow)
 
-	schedule <- schedule_stages(grid, param_info, wflow)
+	param_info <- tune_args(wflow)
 
 	og_cls <- class(schedule)
 	if (nrow(param_info) == 0) {
@@ -42,7 +41,10 @@ get_tune_schedule <- function(wflow, param, grid) {
 	schedule
 }
 
-schedule_stages <- function(grid, param_info, wflow) {
+schedule_stages <- function(grid, wflow) {
+	# Which parameter belongs to which stage and which is a submodel parameter?
+	param_info <- get_param_info(wflow)
+
 	# schedule preprocessing stage and push the rest into a nested tibble
 	param_pre_stage <- param_info %>%
 		dplyr::filter(source == "recipe") %>%
