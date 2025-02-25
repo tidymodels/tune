@@ -18,7 +18,7 @@ test_that("grid processing schedule - no parameters", {
 	wflow_nada <- workflow(outcome ~ ., logistic_reg())
 	grid_nada <- tibble()
 
-	sched_nada <- get_tune_schedule(grid_nada, wflow_nada)
+	sched_nada <- schedule_grid(grid_nada, wflow_nada)
 
 	expect_named(sched_nada, "model_stage")
 	expect_equal(nrow(sched_nada), 0)
@@ -34,7 +34,7 @@ test_that("grid processing schedule - recipe and model", {
 
 	wflow_pre_only <- workflow(rec_df, logistic_reg())
 	grid_pre_only <- tibble()
-	sched_pre_only <- get_tune_schedule(grid_pre_only, wflow_pre_only)
+	sched_pre_only <- schedule_grid(grid_pre_only, wflow_pre_only)
 
 	expect_named(sched_pre_only, c("model_stage"))
 	expect_equal(nrow(sched_pre_only), 0)
@@ -52,7 +52,7 @@ test_that("grid processing schedule - recipe, model, and post", {
 
 	wflow_three <- workflow(rec_df, logistic_reg(), adjust_min)
 	grid_three <- tibble()
-	sched_three <- get_tune_schedule(grid_three, wflow_three)
+	sched_three <- schedule_grid(grid_three, wflow_three)
 
 	expect_named(sched_three, c("model_stage"))
 	expect_equal(nrow(sched_three), 0)
@@ -76,7 +76,7 @@ test_that("grid processing schedule - recipe only", {
 		grid_regular(levels = 3) %>%
 		arrange(threshold, disp_df)
 	sched_pre_only <-
-		get_tune_schedule(grid_pre_only, wflow_pre_only)
+		schedule_grid(grid_pre_only, wflow_pre_only)
 
 	expect_named(sched_pre_only, c("threshold", "disp_df", "model_stage"))
 	expect_equal(nrow(sched_pre_only), nrow(grid_pre_only))
@@ -103,7 +103,7 @@ test_that("grid processing schedule - model only, no submodels", {
 		extract_parameter_set_dials(wflow_rf_only) %>%
 		grid_regular(levels = 3)
 	sched_rf_only <-
-		get_tune_schedule(grid_rf_only, wflow_rf_only)
+		schedule_grid(grid_rf_only, wflow_rf_only)
 
 	expect_named(sched_rf_only, c("model_stage"))
 	expect_equal(nrow(sched_rf_only), 1L)
@@ -137,7 +137,7 @@ test_that("grid processing schedule - model only, submodels, regular grid", {
 
 	# ------------------------------------------------------------------------------
 	# regular grid
-	sched_bst <- get_tune_schedule(grid_bst, wflow_bst)
+	sched_bst <- schedule_grid(grid_bst, wflow_bst)
 
 	expect_named(sched_bst, c("model_stage"))
 	expect_equal(nrow(sched_bst), 1L)
@@ -183,7 +183,7 @@ test_that("grid processing schedule - model only, submodels, SFD grid", {
 	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
 	grid_sfd_bst <- extract_parameter_set_dials(wflow_bst) %>%
 		grid_space_filling(size = 5, type = "uniform")
-	sched_sfd_bst <- get_tune_schedule(grid_sfd_bst, wflow_bst)
+	sched_sfd_bst <- schedule_grid(grid_sfd_bst, wflow_bst)
 
 	expect_named(sched_sfd_bst, c("model_stage"))
 	expect_equal(nrow(sched_sfd_bst), 1L)
@@ -224,7 +224,7 @@ test_that("grid processing schedule - model only, submodels, SFD grid", {
 test_that("grid processing schedule - model only, submodels, irregular design", {
 	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
 	grid_odd_bst <- tibble(min_n = c(1, 1, 2, 3, 4, 5), trees = rep(1:2, 3))
-	sched_odd_bst <- get_tune_schedule(grid_odd_bst, wflow_bst)
+	sched_odd_bst <- schedule_grid(grid_odd_bst, wflow_bst)
 
 	expect_named(sched_odd_bst, c("model_stage"))
 	expect_equal(nrow(sched_odd_bst), 1L)
@@ -266,7 +266,7 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 	set.seed(1)
 	grid_1_pt <- extract_parameter_set_dials(wflow_bst) %>%
 		grid_random(size = 1)
-	sched_1_pt <- get_tune_schedule(grid_1_pt, wflow_bst)
+	sched_1_pt <- schedule_grid(grid_1_pt, wflow_bst)
 
 	expect_named(sched_1_pt, c("model_stage"))
 	expect_equal(nrow(sched_1_pt), 1L)
@@ -312,7 +312,7 @@ test_that("grid processing schedule - postprocessing only", {
 
 	# ------------------------------------------------------------------------------
 
-	sched_thrsh <- get_tune_schedule(grid_thrsh, wflow_thrsh)
+	sched_thrsh <- schedule_grid(grid_thrsh, wflow_thrsh)
 
 	expect_named(sched_thrsh, c("model_stage"))
 	expect_equal(nrow(sched_thrsh), 1L)
@@ -358,7 +358,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 
 	# ------------------------------------------------------------------------------
 
-	sched_pre_post <- get_tune_schedule(grid_pre_post, wflow_pre_post)
+	sched_pre_post <- schedule_grid(grid_pre_post, wflow_pre_post)
 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
@@ -411,7 +411,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	# ------------------------------------------------------------------------------
 
-	sched_pre_post <- get_tune_schedule(grid_pre_post, wflow_pre_post)
+	sched_pre_post <- schedule_grid(grid_pre_post, wflow_pre_post)
 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
@@ -474,7 +474,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 
 	# ------------------------------------------------------------------------------
 
-	sched_pre_model <- get_tune_schedule(grid_pre_model, wflow_pre_model)
+	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
@@ -538,7 +538,7 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 
 	# ------------------------------------------------------------------------------
 
-	sched_pre_model <- get_tune_schedule(grid_pre_model, wflow_pre_model)
+	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
@@ -622,7 +622,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 	# ------------------------------------------------------------------------------
 
-	sched_pre_model_post <- get_tune_schedule(
+	sched_pre_model_post <- schedule_grid(
 		grid_pre_model_post,
 		wflow_pre_model_post
 	)

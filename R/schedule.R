@@ -1,13 +1,13 @@
-#' Get tune schedule
+#' Schedule a grid
 #'
 #' @param grid A tibble containing the parameter grid.
-#' @param wflow A workflow object.
+#' @param wflow The workflow object for which we schedule the grid.
 #'
 #' @returns A schedule object, inheriting from either 'single_schedule',
 #' 'grid_schedule', or 'resample_schedule'.
 #'
 #' @export
-get_tune_schedule <- function(grid, wflow) {
+schedule_grid <- function(grid, wflow) {
 	if (!tibble::is_tibble(grid)) {
 		cli::cli_abort("Argument {.arg grid} must be a tibble.")
 	}
