@@ -27,7 +27,7 @@ get_tune_schedule <- function(wflow, param, grid) {
 	schedule <- schedule_stages(grid, param_info, wflow)
 
 	og_cls <- class(schedule)
-	if (nrow(param) == 0) {
+	if (nrow(param_info) == 0) {
 		cls <- "resample_schedule"
 	} else {
 		cls <- "grid_schedule"
