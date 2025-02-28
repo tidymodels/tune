@@ -165,3 +165,272 @@ test_that("`schedule_predict_stage_i()` works with: with submodel, with post-pro
 		tibble::tibble(lower_limit = 1:2)
 	)
 })
+
+
+# `schedule_model_stage_i()` ---------------------------------------------
+
+test_that("`schedule_model_stage_i()` works with: no tuning at all", {
+	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_no_tune)
+	param_info <- get_param_info(wflow)
+	grid_model_stage <- tibble::tibble()
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("predict_stage"))
+	expect_identical(nrow(schedule), 0L)
+})
+
+test_that("`schedule_model_stage_i()` works with only non-submodel: with non-submodel, no submodel, no post", {
+	wflow <- workflow(mpg ~ ., mod_tune_no_submodel, tlr_no_tune)
+	param_info <- get_param_info(wflow)
+	grid_model_stage <- tibble::tibble(min_n = 1:2)
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("min_n", "predict_stage"))
+	expect_identical(nrow(schedule), 2L)
+	expect_identical(schedule$min_n, 1:2)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+		c("tbl_df", "tbl_df")
+	)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, names),
+		c("post_stage", "post_stage")
+	)
+})
+
+test_that("`schedule_model_stage_i()` works with only submodel: no non-submodel, with submodel, no post", {
+	wflow <- workflow(mpg ~ ., mod_tune_submodel, tlr_no_tune)
+	param_info <- get_param_info(wflow)
+	grid_model_stage <- tibble::tibble(trees = 1:2)
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("trees", "predict_stage"))
+	expect_identical(nrow(schedule), 1L)
+	expect_identical(schedule$trees, 2L)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+		c("tbl_df")
+	)
+	expect_identical(
+		purrr::map(schedule$predict_stage, names),
+		list(c("trees", "post_stage"))
+	)
+	expect_identical(
+		schedule$predict_stage[[1]] %>% pull("trees"),
+		1:2
+	)
+})
+
+test_that("`schedule_model_stage_i()` works with only post: no non-submodel, no submodel, with post", {
+	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_tune)
+	param_info <- get_param_info(wflow)
+	grid_model_stage <- tibble::tibble(lower_limit = 1:2)
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("predict_stage"))
+	expect_identical(nrow(schedule), 1L)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+		c("tbl_df")
+	)
+	expect_identical(
+		purrr::map(schedule$predict_stage, names),
+		list(c("post_stage"))
+	)
+	expect_identical(
+		schedule$predict_stage[[1]] %>% pull("post_stage"),
+		list(tibble::tibble(lower_limit = 1:2))
+	)
+})
+
+test_that("`schedule_model_stage_i()` works with both model types only: with non-submodel, with submodel, no post", {
+	wflow <- workflow(mpg ~ ., mod_tune, tlr_no_tune)
+	param_info <- get_param_info(wflow)
+	# irregular grid
+	grid_model_stage <- list(
+		tibble::tibble(trees = 1:2, min_n = 1L),
+		tibble::tibble(trees = 2L, min_n = 2L),
+		tibble::tibble(trees = 2:3, min_n = 3L)
+	) %>%
+		purrr::list_rbind()
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+
+	expect_named(schedule, c("trees", "min_n", "predict_stage"))
+	expect_identical(nrow(schedule), 3L)
+	expect_identical(schedule$trees, c(2L, 2L, 3L))
+	expect_identical(schedule$min_n, 1:3)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) %>% unique(),
+		"tbl_df"
+	)
+	expect_identical(
+		purrr::map(schedule$predict_stage, names),
+		list(
+			c("trees", "post_stage"),
+			c("trees", "post_stage"),
+			c("trees", "post_stage")
+		)
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 1) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("trees"),
+		1:2
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 2) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("trees"),
+		2L
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 3) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("trees"),
+		2:3
+	)
+})
+
+test_that("`schedule_model_stage_i()` works without submodel: with non-submodel, no submodel, with post", {
+	wflow <- workflow(mpg ~ ., mod_tune_no_submodel, tlr_tune)
+	param_info <- get_param_info(wflow)
+	# semi-regular grid
+	grid_model_stage <- list(
+		tibble::tibble(min_n = 1L, lower_limit = 1:2),
+		tibble::tibble(min_n = 2L, lower_limit = 1:3),
+		tibble::tibble(min_n = 3L, lower_limit = 3L)
+	) %>%
+		purrr::list_rbind()
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("min_n", "predict_stage"))
+	expect_identical(nrow(schedule), 3L)
+	expect_identical(schedule$min_n, 1:3)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) %>% unique(),
+		"tbl_df"
+	)
+	expect_identical(
+		purrr::map(schedule$predict_stage, names) %>% purrr::list_c() %>% unique(),
+		"post_stage"
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 1) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("post_stage") %>%
+			purrr::pluck(1) %>%
+			pull("lower_limit"),
+		1:2
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 2) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("post_stage") %>%
+			purrr::pluck(1) %>%
+			pull("lower_limit"),
+		1:3
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 3) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("post_stage") %>%
+			purrr::pluck(1) %>%
+			pull("lower_limit"),
+		3L
+	)
+})
+
+test_that("`schedule_model_stage_i()` works everything: with non-submodel, with submodel, with post", {
+	wflow <- workflow(mpg ~ ., mod_tune, tlr_tune)
+	param_info <- get_param_info(wflow)
+	# semi-regular grid
+	grid_model_stage <- list(
+		tibble::tibble(
+			min_n = 1L,
+			trees = c(1L, 1L, 2L, 2L),
+			lower_limit = c(1:2, 1:2)
+		),
+		tibble::tibble(
+			min_n = 2L,
+			trees = c(1L, rep(2L, 3)),
+			lower_limit = c(1L, 1:3)
+		),
+		# another row to be combined under min_n = 1
+		tibble::tibble(min_n = 1L, trees = 3L, lower_limit = 4L)
+	) %>%
+		purrr::list_rbind()
+
+	schedule <- schedule_model_stage_i(grid_model_stage, param_info, wflow)
+	expect_named(schedule, c("trees", "min_n", "predict_stage"))
+	expect_identical(nrow(schedule), 2L)
+	expect_identical(schedule$min_n, 1:2)
+	expect_identical(
+		purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) %>% unique(),
+		"tbl_df"
+	)
+	expect_identical(
+		purrr::map(schedule$predict_stage, names) %>% purrr::list_c() %>% unique(),
+		c("trees", "post_stage")
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 1) %>%
+			select(-predict_stage),
+		tibble::tibble(trees = 3L, min_n = 1L)
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 1) %>%
+			pull(predict_stage) %>%
+			purrr::pluck(1) %>%
+			pull(trees),
+		1:3
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 1) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("post_stage") %>%
+			purrr::list_rbind() %>%
+			pull("lower_limit"),
+		c(1:2, 1:2, 4L)
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 2) %>%
+			select(-predict_stage),
+		tibble::tibble(trees = 2L, min_n = 2L)
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 2) %>%
+			pull(predict_stage) %>%
+			purrr::pluck(1) %>%
+			pull(trees),
+		1:2
+	)
+	expect_identical(
+		schedule %>%
+			filter(min_n == 2) %>%
+			pull("predict_stage") %>%
+			purrr::pluck(1) %>%
+			pull("post_stage") %>%
+			purrr::list_rbind() %>%
+			pull("lower_limit"),
+		c(1L, 1:3)
+	)
+})
