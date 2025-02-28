@@ -76,8 +76,11 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
 			.key = "predict_stage"
 		)
 
-	schedule <- schedule %>%
-		dplyr::left_join(next_stage, by = dplyr::all_of(non_submodel_param))
+		# min_model_grid() may change the row order, thus use next_stage as the
+		# "left" data frame here to preserve the original row order
+		schedule <- next_stage %>%
+			dplyr::left_join(schedule, by = non_submodel_param) %>%
+			dplyr::relocate(dplyr::all_of(model_param))
 
 	# schedule next stages nested within `schedule_predict_stage_i()`
 	schedule %>%
