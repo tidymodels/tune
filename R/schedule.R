@@ -66,6 +66,8 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
 		dplyr::filter(source == "model_spec" & !has_submodel) %>%
 		dplyr::pull(id)
 
+	any_non_submodel_param <- length(non_submodel_param) > 0
+
 	# schedule model parameters
 	schedule <- min_model_grid(model_stage, model_param, wflow)
 
@@ -76,11 +78,15 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
 			.key = "predict_stage"
 		)
 
+	if (any_non_submodel_param) {
 		# min_model_grid() may change the row order, thus use next_stage as the
 		# "left" data frame here to preserve the original row order
 		schedule <- next_stage %>%
 			dplyr::left_join(schedule, by = non_submodel_param) %>%
 			dplyr::relocate(dplyr::all_of(model_param))
+	} else {
+		schedule <- dplyr::bind_cols(schedule, next_stage)
+	}
 
 	# schedule next stages nested within `schedule_predict_stage_i()`
 	schedule %>%
