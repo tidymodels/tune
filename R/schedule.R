@@ -90,17 +90,18 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
 		)
 }
 
-min_model_grid <- function(grid, model_param, wflow){
-  # work on only the model parameters
-		model_grid <- grid %>%
-			dplyr::select(dplyr::all_of(model_param)) %>%
-			dplyr::distinct()
+min_model_grid <- function(grid, model_param, wflow) {
+	# work on only the model parameters
+	model_grid <- grid %>%
+		dplyr::select(dplyr::all_of(model_param)) %>%
+		dplyr::distinct()
 
-  min_grid(
-			extract_spec_parsnip(wflow),
-			model_grid
-		) %>%
-			dplyr::select(dplyr::all_of(model_param))
+	if (nrow(model_grid) < 1) {
+		return(model_grid)
+	}
+
+	min_grid(extract_spec_parsnip(wflow), model_grid) %>%
+		dplyr::select(dplyr::all_of(model_param))
 }
 
 schedule_predict_stage_i <- function(predict_stage, param_info) {
