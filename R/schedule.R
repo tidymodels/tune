@@ -9,10 +9,14 @@
 #' @export
 schedule_grid <- function(grid, wflow) {
 	if (!tibble::is_tibble(grid)) {
-		cli::cli_abort("Argument {.arg grid} must be a tibble.")
+		cli::cli_abort(
+			"Argument {.arg grid} must be a tibble, not {.obj_type_friendly {grid}}."
+		)
 	}
 	if (!inherits(wflow, "workflow")) {
-		cli::cli_abort("Argument {.arg wflow} must be a workflow object.")
+		cli::cli_abort(
+			"Argument {.arg wflow} must be a workflow object, not {.obj_type_friendly {wflow}}."
+		)
 	}
 
 	schedule <- schedule_stages(grid, wflow)
