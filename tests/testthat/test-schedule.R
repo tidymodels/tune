@@ -10,6 +10,8 @@ test_that("`get_param_info()` works for a workflow without tags for tuning", {
 })
 
 test_that("`get_param_info()` works for a workflow with tags for tuning", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
 
 	# tuning tags in all components
 	wflow <- workflow(rec_tune, mod_tune_no_submodel, tlr_tune)
@@ -25,6 +27,7 @@ test_that("`get_param_info()` works for a workflow with tags for tuning", {
 })
 
 test_that("`get_param_info()` works when there are submodel parameters", {
+	skip_if_not_installed("probably")
 
 	# tuning tags only in model spec
 	rec_no_steps <- recipes::recipe(mpg ~ ., data = mtcars)
@@ -42,6 +45,8 @@ test_that("`get_param_info()` works when there are submodel parameters", {
 # `schedule_predict_stage_i()` -------------------------------------------
 
 test_that("`schedule_predict_stage_i()` works with: no submodel, no post-processing", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	grid_predict_stage <- tibble::tibble()
@@ -52,6 +57,8 @@ test_that("`schedule_predict_stage_i()` works with: no submodel, no post-process
 })
 
 test_that("`schedule_predict_stage_i()` works with: no submodel, with post-processing", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_tune)
 	param_info <- get_param_info(wflow)
 	grid_predict_stage <- tibble::tibble(lower_limit = 1:2)
@@ -63,6 +70,8 @@ test_that("`schedule_predict_stage_i()` works with: no submodel, with post-proce
 })
 
 test_that("`schedule_predict_stage_i()` works with: with submodel, no post-processing", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune_submodel, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	grid_predict_stage <- tibble::tibble(trees = 1:2)
@@ -77,6 +86,8 @@ test_that("`schedule_predict_stage_i()` works with: with submodel, no post-proce
 })
 
 test_that("`schedule_predict_stage_i()` works with: with submodel, with post-processing", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune_submodel, tlr_tune)
 	param_info <- get_param_info(wflow)
 	# semi-regular grid
@@ -103,6 +114,8 @@ test_that("`schedule_predict_stage_i()` works with: with submodel, with post-pro
 # `schedule_model_stage_i()` ---------------------------------------------
 
 test_that("`schedule_model_stage_i()` works with: no tuning at all", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	grid_model_stage <- tibble::tibble()
@@ -113,6 +126,8 @@ test_that("`schedule_model_stage_i()` works with: no tuning at all", {
 })
 
 test_that("`schedule_model_stage_i()` works with only non-submodel: with non-submodel, no submodel, no post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune_no_submodel, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	grid_model_stage <- tibble::tibble(min_n = 1:2)
@@ -132,6 +147,8 @@ test_that("`schedule_model_stage_i()` works with only non-submodel: with non-sub
 })
 
 test_that("`schedule_model_stage_i()` works with only submodel: no non-submodel, with submodel, no post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune_submodel, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	grid_model_stage <- tibble::tibble(trees = 1:2)
@@ -155,6 +172,8 @@ test_that("`schedule_model_stage_i()` works with only submodel: no non-submodel,
 })
 
 test_that("`schedule_model_stage_i()` works with only post: no non-submodel, no submodel, with post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_tune)
 	param_info <- get_param_info(wflow)
 	grid_model_stage <- tibble::tibble(lower_limit = 1:2)
@@ -177,6 +196,8 @@ test_that("`schedule_model_stage_i()` works with only post: no non-submodel, no 
 })
 
 test_that("`schedule_model_stage_i()` works with both model types only: with non-submodel, with submodel, no post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune, tlr_no_tune)
 	param_info <- get_param_info(wflow)
 	# irregular grid
@@ -232,6 +253,8 @@ test_that("`schedule_model_stage_i()` works with both model types only: with non
 })
 
 test_that("`schedule_model_stage_i()` works without submodel: with non-submodel, no submodel, with post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune_no_submodel, tlr_tune)
 	param_info <- get_param_info(wflow)
 	# semi-regular grid
@@ -251,7 +274,9 @@ test_that("`schedule_model_stage_i()` works without submodel: with non-submodel,
 		"tbl_df"
 	)
 	expect_identical(
-		purrr::map(schedule$predict_stage, names) %>% purrr::list_c() %>% unique(),
+		purrr::map(schedule$predict_stage, names) %>%
+			purrr::list_c() %>%
+			unique(),
 		"post_stage"
 	)
 	expect_identical(
@@ -287,6 +312,8 @@ test_that("`schedule_model_stage_i()` works without submodel: with non-submodel,
 })
 
 test_that("`schedule_model_stage_i()` works everything: with non-submodel, with submodel, with post", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_tune, tlr_tune)
 	param_info <- get_param_info(wflow)
 	# semi-regular grid
@@ -315,7 +342,9 @@ test_that("`schedule_model_stage_i()` works everything: with non-submodel, with 
 		"tbl_df"
 	)
 	expect_identical(
-		purrr::map(schedule$predict_stage, names) %>% purrr::list_c() %>% unique(),
+		purrr::map(schedule$predict_stage, names) %>%
+			purrr::list_c() %>%
+			unique(),
 		c("trees", "post_stage")
 	)
 	expect_identical(
@@ -372,6 +401,8 @@ test_that("`schedule_model_stage_i()` works everything: with non-submodel, with 
 # `schedule_stages()` ----------------------------------------------------
 
 test_that("`schedule_stages()` works without preprocessing", {
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_no_tune)
 	grid <- tibble::tibble()
 
@@ -381,8 +412,14 @@ test_that("`schedule_stages()` works without preprocessing", {
 })
 
 test_that("`schedule_stages()` works with preprocessing", {
+	skip_if_not_installed("splines2")
+	skip_if_not_installed("probably")
+
 	wflow <- workflow(rec_tune, mod_no_tune, tlr_no_tune)
-	grid <- tibble::tibble(threshold = rep(1:2, each = 2), disp_df = c(1:2, 1:2))
+	grid <- tibble::tibble(
+		threshold = rep(1:2, each = 2),
+		disp_df = c(1:2, 1:2)
+	)
 
 	schedule <- schedule_stages(grid, wflow)
 	expect_named(schedule, c("threshold", "disp_df", "model_stage"))
