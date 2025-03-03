@@ -465,8 +465,8 @@ test_that("`schedule_stages()` works with preprocessing", {
 # No tuning or postprocesing estimation
 
 test_that("grid processing schedule - no parameters", {
-	wflow_nada <- workflow(outcome ~ ., logistic_reg())
-	grid_nada <- tibble()
+	wflow_nada <- workflow(outcome ~ ., parsnip::logistic_reg())
+	grid_nada <- tibble::tibble()
 
 	sched_nada <- schedule_grid(grid_nada, wflow_nada)
 
@@ -482,8 +482,8 @@ test_that("grid processing schedule - no parameters", {
 test_that("grid processing schedule - recipe and model", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_only <- workflow(rec_df, logistic_reg())
-	grid_pre_only <- tibble()
+	wflow_pre_only <- workflow(rec_no_tune, parsnip::logistic_reg())
+	grid_pre_only <- tibble::tibble()
 	sched_pre_only <- schedule_grid(grid_pre_only, wflow_pre_only)
 
 	expect_named(sched_pre_only, c("model_stage"))
@@ -500,8 +500,8 @@ test_that("grid processing schedule - recipe, model, and post", {
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_three <- workflow(rec_df, logistic_reg(), adjust_min)
-	grid_three <- tibble()
+	wflow_three <- workflow(rec_no_tune, parsnip::logistic_reg(), tlr_no_tune)
+	grid_three <- tibble::tibble()
 	sched_three <- schedule_grid(grid_three, wflow_three)
 
 	expect_named(sched_three, c("model_stage"))
@@ -519,10 +519,10 @@ test_that("grid processing schedule - recipe, model, and post", {
 test_that("grid processing schedule - recipe only", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_only <- workflow(rec_tune_thrsh_df, logistic_reg())
+	wflow_pre_only <- workflow(rec_tune_2, parsnip::logistic_reg())
 	grid_pre_only <-
 		extract_parameter_set_dials(wflow_pre_only) %>%
-		grid_regular(levels = 3) %>%
+		dials::grid_regular(levels = 3) %>%
 		arrange(threshold, disp_df)
 	sched_pre_only <-
 		schedule_grid(grid_pre_only, wflow_pre_only)
@@ -547,10 +547,10 @@ test_that("grid processing schedule - recipe only", {
 })
 
 test_that("grid processing schedule - model only, no submodels", {
-	wflow_rf_only <- workflow(outcome ~ ., mod_tune_rf)
+	wflow_rf_only <- workflow(outcome ~ ., mod_tune_no_submodel)
 	grid_rf_only <-
 		extract_parameter_set_dials(wflow_rf_only) %>%
-		grid_regular(levels = 3)
+		dials::grid_regular(levels = 3)
 	sched_rf_only <-
 		schedule_grid(grid_rf_only, wflow_rf_only)
 
@@ -577,9 +577,9 @@ test_that("grid processing schedule - model only, no submodels", {
 })
 
 test_that("grid processing schedule - model only, submodels, regular grid", {
-	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	wflow_bst <- workflow(outcome ~ ., mod_tune)
 	grid_bst <- extract_parameter_set_dials(wflow_bst) %>%
-		grid_regular(levels = 3)
+		dials::grid_regular(levels = 3)
 
 	min_n_only <- grid_bst %>% dplyr::distinct(min_n) %>% dplyr::arrange(min_n)
 	trees_only <- grid_bst %>% dplyr::distinct(trees) %>% dplyr::arrange(trees)
@@ -628,9 +628,9 @@ test_that("grid processing schedule - model only, submodels, regular grid", {
 })
 
 test_that("grid processing schedule - model only, submodels, SFD grid", {
-	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	wflow_bst <- workflow(outcome ~ ., mod_tune)
 	grid_sfd_bst <- extract_parameter_set_dials(wflow_bst) %>%
-		grid_space_filling(size = 5, type = "uniform")
+		dials::grid_space_filling(size = 5, type = "uniform")
 	sched_sfd_bst <- schedule_grid(grid_sfd_bst, wflow_bst)
 
 	expect_named(sched_sfd_bst, c("model_stage"))
@@ -670,8 +670,11 @@ test_that("grid processing schedule - model only, submodels, SFD grid", {
 })
 
 test_that("grid processing schedule - model only, submodels, irregular design", {
-	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
-	grid_odd_bst <- tibble(min_n = c(1, 1, 2, 3, 4, 5), trees = rep(1:2, 3))
+	wflow_bst <- workflow(outcome ~ ., mod_tune)
+	grid_odd_bst <- tibble::tibble(
+		min_n = c(1, 1, 2, 3, 4, 5),
+		trees = rep(1:2, 3)
+	)
 	sched_odd_bst <- schedule_grid(grid_odd_bst, wflow_bst)
 
 	expect_named(sched_odd_bst, c("model_stage"))
@@ -685,7 +688,7 @@ test_that("grid processing schedule - model only, submodels, irregular design", 
 		sched_odd_bst$model_stage[[1]] %>%
 			dplyr::select(-predict_stage) %>%
 			dplyr::select(trees, min_n),
-		tibble(trees = c(2, 1, 2, 1, 2), min_n = c(1, 2, 3, 4, 5))
+		tibble::tibble(trees = c(2, 1, 2, 1, 2), min_n = c(1, 2, 3, 4, 5))
 	)
 
 	for (i in 1:nrow(sched_odd_bst$model_stage[[1]])) {
@@ -704,15 +707,14 @@ test_that("grid processing schedule - model only, submodels, irregular design", 
 		sched_odd_bst,
 		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
 	)
-
 })
 
 test_that("grid processing schedule - model only, submodels, 1 point design", {
-	wflow_bst <- workflow(outcome ~ ., mod_tune_bst)
+	wflow_bst <- workflow(outcome ~ ., mod_tune)
 
 	set.seed(1)
 	grid_1_pt <- extract_parameter_set_dials(wflow_bst) %>%
-		grid_random(size = 1)
+		dials::grid_random(size = 1)
 	sched_1_pt <- schedule_grid(grid_1_pt, wflow_bst)
 
 	expect_named(sched_1_pt, c("model_stage"))
@@ -743,20 +745,25 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 
 	expect_s3_class(
 		sched_1_pt,
-		c("single_schedule", "grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
+		c(
+			"single_schedule",
+			"grid_schedule",
+			"schedule",
+			"tbl_df",
+			"tbl",
+			"data.frame"
+		)
 	)
-
 })
 
 test_that("grid processing schedule - postprocessing only", {
 	skip_if_not_installed("probably")
 
-	wflow_thrsh <- workflow(outcome ~ ., logistic_reg(), adjust_tune_min)
+	wflow_thrsh <- workflow(outcome ~ ., parsnip::logistic_reg(), tlr_tune)
 	grid_thrsh <- extract_parameter_set_dials(wflow_thrsh) %>%
-		update(lower_limit = lower_limit(c(0, 1))) %>%
-		grid_regular(levels = 3)
+		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
+		dials::grid_regular(levels = 3)
 
-	
 	sched_thrsh <- schedule_grid(grid_thrsh, wflow_thrsh)
 
 	expect_named(sched_thrsh, c("model_stage"))
@@ -780,18 +787,17 @@ test_that("grid processing schedule - postprocessing only", {
 		sched_thrsh,
 		c("grid_schedule", "schedule", "tbl_df", "tbl", "data.frame")
 	)
-
 })
 
 test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
+	wflow_pre_post <- workflow(rec_tune_2, parsnip::logistic_reg(), tlr_tune)
 	grid_pre_post <-
 		extract_parameter_set_dials(wflow_pre_post) %>%
-		update(lower_limit = lower_limit(c(0, 1))) %>%
-		grid_regular(levels = 3)
+		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
+		dials::grid_regular(levels = 3)
 
 	grid_pre <-
 		grid_pre_post %>%
@@ -805,7 +811,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
+		sched_pre_post %>% select(-model_stage) %>% tibble::as_tibble(),
 		grid_pre
 	)
 
@@ -836,11 +842,11 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_post <- workflow(rec_tune_thrsh_df, logistic_reg(), adjust_tune_min)
+	wflow_pre_post <- workflow(rec_tune_2, parsnip::logistic_reg(), tlr_tune)
 	grid_pre_post <-
 		extract_parameter_set_dials(wflow_pre_post) %>%
-		update(lower_limit = lower_limit(c(0, 1))) %>%
-		grid_regular() %>%
+		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
+		dials::grid_regular() %>%
 		dplyr::slice(-c(1, 14))
 
 	grid_pre <-
@@ -849,7 +855,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	grids_post <-
 		grid_pre_post %>%
-		group_nest(threshold, disp_df) %>%
+		dplyr::group_nest(threshold, disp_df) %>%
 		mutate(data = purrr::map(data, ~ arrange(.x, lower_limit)))
 
 
@@ -857,7 +863,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	expect_named(sched_pre_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_post %>% select(-model_stage) %>% as_tibble(),
+		sched_pre_post %>% select(-model_stage) %>% tibble::as_tibble(),
 		grid_pre
 	)
 
@@ -879,9 +885,9 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 		post_grid_i <-
 			pre_grid_i %>%
-			inner_join(grids_post, by = join_by(threshold, disp_df)) %>%
-			pluck("data") %>%
-			pluck(1) %>%
+			inner_join(grids_post, by = dplyr::join_by(threshold, disp_df)) %>%
+			purrr::pluck("data") %>%
+			purrr::pluck(1) %>%
 			arrange(lower_limit)
 
 		expect_identical(
@@ -900,10 +906,10 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 test_that("grid processing schedule - recipe + model, no submodels, regular grid", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_rf)
+	wflow_pre_model <- workflow(rec_tune_2, mod_tune_no_submodel)
 	grid_pre_model <-
 		extract_parameter_set_dials(wflow_pre_model) %>%
-		grid_regular()
+		dials::grid_regular()
 
 	grid_pre <-
 		grid_pre_model %>%
@@ -919,7 +925,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_model %>% select(-model_stage) %>% as_tibble(),
+		sched_pre_model %>% select(-model_stage) %>% tibble::as_tibble(),
 		grid_pre
 	)
 
@@ -956,10 +962,10 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 test_that("grid processing schedule - recipe + model, submodels, irregular grid", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_model <- workflow(rec_tune_thrsh_df, mod_tune_bst)
+	wflow_pre_model <- workflow(rec_tune_2, mod_tune)
 	grid_pre_model <-
 		extract_parameter_set_dials(wflow_pre_model) %>%
-		grid_regular() %>%
+		dials::grid_regular() %>%
 		# This will make the submodel parameter (trees) unbalanced for some
 		# combination of parameters of the other parameters.
 		slice(-c(1, 2, 11))
@@ -1034,11 +1040,11 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_model_post <- workflow(rec_tune_thrsh_df, mod_tune_bst, adjust_tune_min)
+	wflow_pre_model_post <- workflow(rec_tune_2, mod_tune, tlr_tune)
 	grid_pre_model_post <-
 		extract_parameter_set_dials(wflow_pre_model_post) %>%
-		update(lower_limit = lower_limit(c(0, 1))) %>%
-		grid_regular() %>%
+		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
+		dials::grid_regular() %>%
 		# This will make the submodel parameter (trees) unbalanced for some
 		# combination of parameters of the other parameters.
 		slice(seq(1, 240, by = 7))
@@ -1050,10 +1056,13 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	grid_model <-
 		grid_pre_model_post %>%
 		select(-lower_limit) %>%
-		group_nest(threshold, disp_df) %>%
+		dplyr::group_nest(threshold, disp_df) %>%
 		mutate(
-			data = map(data, ~ .x %>% summarize(trees = max(trees), .by = c(min_n))),
-			data = map(data, ~ .x %>% arrange(min_n))
+			data = purrr::map(
+				data,
+				~ .x %>% dplyr::summarize(trees = max(trees), .by = c(min_n))
+			),
+			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
 	
@@ -1065,8 +1074,8 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 
 	expect_named(sched_pre_model_post, c("threshold", "disp_df", "model_stage"))
 	expect_equal(
-		sched_pre_model_post %>% select(-model_stage) %>% as_tibble(),
-		grid_pre 
+		sched_pre_model_post %>% select(-model_stage) %>% tibble::as_tibble(),
+		grid_pre
 	)
 
 	for (i in seq_along(sched_pre_model_post$model_stage)) {
@@ -1108,8 +1117,10 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 				model_ij %>%
 				dplyr::select(-trees) %>%
 				vctrs::vec_cbind(other_i) %>%
-				dplyr::inner_join(grid_pre_model_post,
-													by = c("threshold", "disp_df", "min_n")) %>%
+				dplyr::inner_join(
+					grid_pre_model_post,
+					by = c("threshold", "disp_df", "min_n")
+				) %>%
 				dplyr::select(trees, lower_limit) %>%
 				dplyr::arrange(trees, lower_limit)
 
