@@ -434,3 +434,29 @@ test_that("`schedule_model_stage_i()` works everything: with non-submodel, with 
 		c(1L, 1:3)
 	)
 })
+
+
+# `schedule_stages()` ----------------------------------------------------
+
+test_that("`schedule_stages()` works without preprocessing", {
+	wflow <- workflow(mpg ~ ., mod_no_tune, tlr_no_tune)
+	grid <- tibble::tibble()
+
+	schedule <- schedule_stages(grid, wflow)
+	expect_named(schedule, c("model_stage"))
+	expect_identical(nrow(schedule), 0L)
+})
+
+test_that("`schedule_stages()` works with preprocessing", {
+	wflow <- workflow(rec_tune_2, mod_no_tune, tlr_no_tune)
+	grid <- tibble::tibble(threshold = rep(1:2, each = 2), disp_df = c(1:2, 1:2))
+
+	schedule <- schedule_stages(grid, wflow)
+	expect_named(schedule, c("threshold", "disp_df", "model_stage"))
+	expect_identical(nrow(schedule), 4L)
+	expect_identical(
+		schedule %>% dplyr::select(-model_stage),
+		grid
+	)
+})
+
