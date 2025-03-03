@@ -10,19 +10,8 @@ test_that("`get_param_info()` works for a workflow without tags for tuning", {
 })
 
 test_that("`get_param_info()` works for a workflow with tags for tuning", {
+
 	# tuning tags in all components
-	rec_tune <- recipes::recipe(mpg ~ ., data = mtcars) %>%
-		recipes::step_corr(recipes::all_predictors(), threshold = tune()) %>%
-		recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
-
-	mod_tune_no_submodel <- parsnip::rand_forest(
-		min_n = tune(),
-		mode = "regression"
-	)
-
-	tlr_tune <- tailor::tailor() %>%
-		tailor::adjust_numeric_range(lower_limit = tune())
-
 	wflow <- workflow(rec_tune, mod_tune_no_submodel, tlr_tune)
 
 	param_info <- get_param_info(wflow)
@@ -36,19 +25,11 @@ test_that("`get_param_info()` works for a workflow with tags for tuning", {
 })
 
 test_that("`get_param_info()` works when there are submodel parameters", {
+
 	# tuning tags only in model spec
-	rec_no_tuning <- recipes::recipe(mpg ~ ., data = mtcars)
+	rec_no_steps <- recipes::recipe(mpg ~ ., data = mtcars)
 
-	mod_tune_submodel <- parsnip::boost_tree(
-		trees = tune(),
-		min_n = tune(),
-		mode = "regression"
-	)
-
-	tlr_no_tune <- tailor::tailor() %>%
-		tailor::adjust_numeric_range(lower_limit = 0)
-
-	wflow <- workflow(rec_no_tuning, mod_tune_submodel, tlr_no_tune)
+	wflow <- workflow(rec_no_steps, mod_tune, tlr_no_tune)
 
 	param_info <- get_param_info(wflow)
 
