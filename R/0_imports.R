@@ -47,7 +47,8 @@ utils::globalVariables(
     "rowwise", ".best", "location", "msg", "..object", ".eval_time",
     ".pred_survival", ".pred_time", ".weight_censored", "nice_time",
     "time_metric", ".lower", ".upper", "i", "results", "term", ".alpha",
-    ".method", "old_term", ".lab_pre", ".model", ".num_models"
+    ".method", "old_term", ".lab_pre", ".model", ".num_models", "model_stage",
+    "predict_stage"
   )
 )
 
