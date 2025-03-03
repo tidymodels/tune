@@ -6,6 +6,7 @@
 #' @returns A schedule object, inheriting from either 'single_schedule',
 #' 'grid_schedule', or 'resample_schedule'.
 #'
+#' @keywords internal
 #' @export
 schedule_grid <- function(grid, wflow) {
 	if (!tibble::is_tibble(grid)) {

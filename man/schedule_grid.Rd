@@ -18,3 +18,4 @@ A schedule object, inheriting from either 'single_schedule',
 \description{
 Schedule a grid
 }
+\keyword{internal}
