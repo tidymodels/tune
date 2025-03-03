@@ -4,7 +4,7 @@ if (rlang::is_installed("splines2")) {
 		recipes::step_corr(all_predictors(), threshold = .1) %>%
 		recipes::step_spline_natural(disp, deg_free = 5)
 
-	rec_tune_2 <-
+	rec_tune <-
 		recipes::recipe(mpg ~ ., data = mtcars) %>%
 		recipes::step_corr(all_predictors(), threshold = tune()) %>%
 		recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
@@ -59,7 +59,7 @@ test_that("`get_param_info()` works for a workflow without tags for tuning", {
 
 test_that("`get_param_info()` works for a workflow with tags for tuning", {
 	# tuning tags in all components
-	rec_tune_2 <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+	rec_tune <- recipes::recipe(mpg ~ ., data = mtcars) %>%
 		recipes::step_corr(recipes::all_predictors(), threshold = tune()) %>%
 		recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
 
@@ -71,7 +71,7 @@ test_that("`get_param_info()` works for a workflow with tags for tuning", {
 	tlr_tune <- tailor::tailor() %>%
 		tailor::adjust_numeric_range(lower_limit = tune())
 
-	wflow <- workflow(rec_tune_2, mod_tune_no_submodel, tlr_tune)
+	wflow <- workflow(rec_tune, mod_tune_no_submodel, tlr_tune)
 
 	param_info <- get_param_info(wflow)
 
@@ -448,7 +448,7 @@ test_that("`schedule_stages()` works without preprocessing", {
 })
 
 test_that("`schedule_stages()` works with preprocessing", {
-	wflow <- workflow(rec_tune_2, mod_no_tune, tlr_no_tune)
+	wflow <- workflow(rec_tune, mod_no_tune, tlr_no_tune)
 	grid <- tibble::tibble(threshold = rep(1:2, each = 2), disp_df = c(1:2, 1:2))
 
 	schedule <- schedule_stages(grid, wflow)
@@ -519,7 +519,7 @@ test_that("grid processing schedule - recipe, model, and post", {
 test_that("grid processing schedule - recipe only", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_only <- workflow(rec_tune_2, parsnip::logistic_reg())
+	wflow_pre_only <- workflow(rec_tune, parsnip::logistic_reg())
 	grid_pre_only <-
 		extract_parameter_set_dials(wflow_pre_only) %>%
 		dials::grid_regular(levels = 3) %>%
@@ -793,7 +793,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_post <- workflow(rec_tune_2, parsnip::logistic_reg(), tlr_tune)
+	wflow_pre_post <- workflow(rec_tune, parsnip::logistic_reg(), tlr_tune)
 	grid_pre_post <-
 		extract_parameter_set_dials(wflow_pre_post) %>%
 		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
@@ -842,7 +842,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_post <- workflow(rec_tune_2, parsnip::logistic_reg(), tlr_tune)
+	wflow_pre_post <- workflow(rec_tune, parsnip::logistic_reg(), tlr_tune)
 	grid_pre_post <-
 		extract_parameter_set_dials(wflow_pre_post) %>%
 		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
@@ -906,7 +906,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 test_that("grid processing schedule - recipe + model, no submodels, regular grid", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_model <- workflow(rec_tune_2, mod_tune_no_submodel)
+	wflow_pre_model <- workflow(rec_tune, mod_tune_no_submodel)
 	grid_pre_model <-
 		extract_parameter_set_dials(wflow_pre_model) %>%
 		dials::grid_regular()
@@ -962,7 +962,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 test_that("grid processing schedule - recipe + model, submodels, irregular grid", {
 	skip_if_not_installed("splines2")
 
-	wflow_pre_model <- workflow(rec_tune_2, mod_tune)
+	wflow_pre_model <- workflow(rec_tune, mod_tune)
 	grid_pre_model <-
 		extract_parameter_set_dials(wflow_pre_model) %>%
 		dials::grid_regular() %>%
@@ -1040,7 +1040,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	skip_if_not_installed("splines2")
 	skip_if_not_installed("probably")
 
-	wflow_pre_model_post <- workflow(rec_tune_2, mod_tune, tlr_tune)
+	wflow_pre_model_post <- workflow(rec_tune, mod_tune, tlr_tune)
 	grid_pre_model_post <-
 		extract_parameter_set_dials(wflow_pre_model_post) %>%
 		update(lower_limit = dials::lower_limit(c(0, 1))) %>%
