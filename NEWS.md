@@ -2,6 +2,8 @@
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
+* Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
+
 # tune 1.3.0
 
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866). The next version of tune will move to a pure future implementation. 
