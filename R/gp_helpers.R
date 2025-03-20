@@ -72,7 +72,7 @@ check_gp <- function(x) {
 	  loo_rsq <- 0.0
 	}
 	# convergence?
-	list(use = !loo_bad | model_fail | loo_rsq > 0.1, rsq = loo_rsq)
+	list(use = !loo_bad & model_fail & loo_rsq > 0.1, rsq = loo_rsq)
 }
 
 # encode_set() was created to work on all types of tuning parameters; usage of
