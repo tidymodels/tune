@@ -4,7 +4,7 @@
 
 * Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
 
-* Added a new method for `outcome_names()` for workflows that use `add_variables()`. 
+* Added a new method for `outcome_names()` for workflows that use `add_variables()` (#993). 
 
 # tune 1.3.0
 
