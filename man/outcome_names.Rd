@@ -6,6 +6,7 @@
 \alias{outcome_names.formula}
 \alias{outcome_names.recipe}
 \alias{outcome_names.workflow}
+\alias{outcome_names.workflow_variables}
 \alias{outcome_names.tune_results}
 \title{Determine names of the outcome data in a workflow}
 \usage{
@@ -17,14 +18,18 @@ outcome_names(x, ...)
 
 \method{outcome_names}{recipe}(x, ...)
 
-\method{outcome_names}{workflow}(x, ...)
+\method{outcome_names}{workflow}(x, ..., call = caller_env())
 
-\method{outcome_names}{tune_results}(x, ...)
+\method{outcome_names}{workflow_variables}(x, data = NULL, ..., call = caller_env())
+
+\method{outcome_names}{tune_results}(x, ..., call = caller_env())
 }
 \arguments{
 \item{x}{An object.}
 
-\item{...}{Not used.}
+\item{...}{Further arguments passed to or from other methods (such as \code{data}).}
+
+\item{data}{The training set data (if needed).}
 }
 \value{
 A character string of variable names
