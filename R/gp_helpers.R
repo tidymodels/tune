@@ -1,14 +1,14 @@
 # Determine any qualitative parameters and their ranges
 
 find_qual_param <- function(pset) {
-	is_qual <- map_lgl(pset$object, ~ inherits(.x, "qual_param"))
+	is_qual <- map_lgl(pset$object, ~inherits(.x, "qual_param"))
 	if (!any(is_qual)) {
 		return(list())
 	}
 
 	pset <- pset[is_qual, ]
 
-	possible_lvl <- purrr::map(pset$object, ~ .x$values)
+	possible_lvl <- purrr::map(pset$object, ~.x$values)
 	names(possible_lvl) <- pset$id
 	possible_lvl
 }
@@ -130,7 +130,7 @@ fit_gp_new <- function(
 
 	gp_kernel <- make_kernel(pset, qual_info)
 
-	if (nrow(dat) <= ncol(dat) && nrow(dat) > 0) {
+	if (nrow(dat) <= ncol(dat) && nrow(dat) > 0 & control$verbose_iter) {
 		msg <- cli::format_inline(
 			"The Gaussian process model is being fit using {ncol(dat)} features but
 			only has {nrow(dat)} data point{?s} to do so. This may cause errors or a
@@ -150,121 +150,166 @@ fit_gp_new <- function(
 	}
 
 	if (is.null(previous)) {
-		# TODO withr::with_seed
-		set.seed(114)
-		gp_fit <- try(
-			GauPro::gpkm(
-				.outcome ~ .,
-				data = normalized,
-				kernel = gp_kernel,
-				verbose = 0,
-				restarts = 5,
-				nug.est = FALSE,
-				parallel = FALSE
-			),
-			silent = TRUE
+		withr::with_seed(
+			114,
+			gp_fit <- try(
+				GauPro::gpkm(
+					.outcome ~ .,
+					data = normalized,
+					kernel = gp_kernel,
+					verbose = 0,
+					restarts = 5,
+					nug.est = FALSE,
+					parallel = FALSE
+				),
+				silent = TRUE
+			)
 		)
 	} else {
 		new_val <- normalized %>% dplyr::slice_tail(n = 1)
 		new_x <- as.matrix(new_val[, pset$id])
 		new_y <- new_val$.outcome
 
-		gp_fit <- try(previous$fit$update(new_x, new_y), silent = TRUE)
+		withr::with_seed(
+			114,
+			gp_fit <- try(previous$fit$update(new_x, new_y), silent = TRUE)
+		)
 	}
 
 	new_check <- check_gp(gp_fit)
 
-	list(fit = gp_fit, use = new_check$use, rsq = new_check$rsq)
+	if (control$verbose_iter) {
+		if (new_check$use) {
+			msg <- cli::format_inline(
+				"Gaussian process model (R^2: {round(new_check$rsq * 100)}%)"
+			)
+			message_wrap(
+				msg,
+				prefix = cli::symbol$tick,
+				color_text = get_tune_colors()$message$success
+			)
+		} else {
+			message_wrap(
+				"Gaussian process model failed",
+				prefix = cli::symbol$tick,
+				color_text = get_tune_colors()$message$danger
+			)
+		}
+	}
+
+	list(
+		fit = gp_fit,
+		use = new_check$use,
+		rsq = new_check$rsq,
+		tr = as.matrix(normalized)
+	)
 }
 
 # ------------------------------------------------------------------------------
 
-# pred_gp(
-# 	gp_mod,
-# 	param_info,
-# 	control = control,
-# 	current = mean_stats %>%
-# 		dplyr::select(dplyr::all_of(param_info$id))
-# )
-
 pred_gp_new <- function(object, pset, size = 5000, current = NULL, control) {
-
-	candidates <-
-		dials::grid_space_filling(pset, size = size, type = "latin_hypercube") %>%
+	candidates <- dials::grid_space_filling(
+		pset,
+		size = size,
+		type = "latin_hypercube"
+	) %>%
 		dplyr::distinct()
 
-
 	if (!object$use) {
-	  n_pred <- nrow(candidates)
-	  msg <-
-	    cli::format_inline(
-	      "Diagnostics indicate that the GP model should not be used. Generating an
-      uncertainty sample instead.")
-	  tune_log(control, split_labels = NULL, task = msg, type = "warning")
-	  res <- tibble::tibble(.mean = rep(NA_real_, n_pred), .sd = rep(NA_real_, n_pred))
-	  return(dplyr::bind_cols(candidates, res))
+		x <- partial_encode(candidates, pset)
+		x_old <- object$tr
+		x_old <- x_old[, names(x)]
+
+		keep_ind <- dissim_sample(x_old, x, max_n = Inf)
+		candidates <- candidates[keep_ind, ] %>%
+			dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
+
+		msg <- cli::format_inline(
+			"Diagnostics indicate that the GP model should not be used. Generating an uncertainty sample instead."
+		)
+		tune_log(control, split_labels = NULL, task = msg, type = "warning")
+
+		return(candidates)
+	} else {
+		tune_log(
+			control,
+			split_labels = NULL,
+			task = paste("Generating", nrow(candidates), "candidates"),
+			type = "info",
+			catalog = FALSE
+		)
 	}
 
 	if (!is.null(current)) {
-		candidates <-
-			candidates %>%
+		candidates <- candidates %>%
 			dplyr::anti_join(current, by = pset$id)
 	}
 
-	# if (inherits(object, "try-error") | nrow(candidates) == 0) {
-	# 	if (nrow(candidates) == 0) {
-	# 		msg <- "No remaining candidate models"
-	# 	} else {
-	# 		msg <- "An error occurred when creating candidates parameters: "
-	# 		msg <- paste(msg, as.character(object))
-	# 	}
-	# 	tune_log(control, split_labels = NULL, task = msg, type = "warning")
-	# 	return(candidates %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
-	# }
-
-	# tune_log(
-	# 	control,
-	# 	split_labels = NULL,
-	# 	task = paste("Generating", nrow(candidates), "candidates"),
-	# 	type = "info",
-	# 	catalog = FALSE
-	# )
+	if (nrow(candidates) == 0) {
+		tune_log(
+			control,
+			split_labels = NULL,
+			task = "No remaining candidate models",
+			type = "warning"
+		)
+		return(candidates %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
+	}
 
 	x <- partial_encode(candidates, pset)
 
-	# tune_log(
-	# 	control,
-	# 	split_labels = NULL,
-	# 	task = "Predicted candidates",
-	# 	type = "info",
-	# 	catalog = FALSE
-	# )
+	tune_log(
+		control,
+		split_labels = NULL,
+		task = "Predicted candidates",
+		type = "info",
+		catalog = FALSE
+	)
 
 	gp_pred <- object$fit$pred(x, se.fit = TRUE)
-	gp_pred <-
-	  tibble::as_tibble(gp_pred) %>%
-	  dplyr::select(.mean = mean, .sd = se)
+	gp_pred <- tibble::as_tibble(gp_pred) %>%
+		dplyr::select(.mean = mean, .sd = se)
 	dplyr::bind_cols(candidates, gp_pred)
 }
 
-# TODO include existing res and write function for a true uncertainty sample
+# TODO add pg obj here
 pick_candidate_new <- function(results, info, control) {
-  bad_gp <- all(is.na(results$.mean))
-  if (!bad_gp & info$uncertainty < control$uncertain) {
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(objective)) %>%
-      dplyr::slice(1)
-  } else {
-    if (control$verbose_iter) {
-      msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
-      message(msg)
-    }
-    results <-
-      results %>%
-      dplyr::arrange(dplyr::desc(.sd)) %>%
-      dplyr::slice(1:floor(.1 * nrow(results))) %>%
-      dplyr::sample_n(1)
-  }
-  results
+	bad_gp <- all(is.na(results$.mean))
+	if (!bad_gp & info$uncertainty < control$uncertain) {
+		results <- results %>%
+			dplyr::arrange(dplyr::desc(objective)) %>%
+			dplyr::slice(1)
+	} else {
+		if (control$verbose_iter) {
+			msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
+			message(msg)
+		}
+		results <- results %>%
+			dplyr::arrange(dplyr::desc(.sd)) %>%
+			dplyr::slice(1:floor(.1 * nrow(results))) %>%
+			dplyr::sample_n(1)
+	}
+	results
 }
 
+dissim_sample <- function(ref_data, candidates, max_n = Inf) {
+	# assumes both sets are normalized in the same way
+	if (!is.matrix(ref_data)) {
+		ref_data <- as.matrix(ref_data)
+	}
+
+	if (!is.matrix(candidates)) {
+		candidates <- as.matrix(candidates)
+	}
+
+	max_n <- min(max_n, nrow(candidates))
+	candidates <- candidates[1:max_n, , drop = FALSE]
+	all_data <- rbind(ref_data, candidates)
+	n_ref <- nrow(ref_data)
+	n_all <- nrow(all_data)
+	distances <- stats::dist(all_data)
+	distances <- as.matrix(distances)
+	distances <- distances[1:n_ref, (n_ref + 1):n_all]
+	min_distances <- apply(distances, 2, function(x) min(x[x > 0]))
+	max_ind <- which.max(min_distances)[1]
+	max_ind
+}

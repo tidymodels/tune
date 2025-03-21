@@ -277,50 +277,50 @@ tune_bayes_workflow <- function(object,
                                 ...,
                                 call = caller_env()) {
 
-    clear_gp_results()
-    start_time <- proc.time()[3]
+  clear_gp_results()
+  start_time <- proc.time()[3]
 
-    initialize_catalog(control = control)
+  initialize_catalog(control = control)
 
-    check_rset(resamples)
-    rset_info <- pull_rset_attributes(resamples)
+  check_rset(resamples)
+  rset_info <- pull_rset_attributes(resamples)
 
-    check_iter(iter, call = call)
+  check_iter(iter, call = call)
 
-    metrics <- check_metrics_arg(metrics, object, call = call)
-    opt_metric <- first_metric(metrics)
-    opt_metric_name <- opt_metric$metric
-    maximize <- opt_metric$direction == "maximize"
+  metrics <- check_metrics_arg(metrics, object, call = call)
+  opt_metric <- first_metric(metrics)
+  opt_metric_name <- opt_metric$metric
+  maximize <- opt_metric$direction == "maximize"
 
-    eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
-    opt_metric_time <- first_eval_time(metrics, metric = opt_metric_name, eval_time = eval_time, call = call)
+  eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
+  opt_metric_time <- first_eval_time(metrics, metric = opt_metric_name, eval_time = eval_time, call = call)
 
-    if (is.null(param_info)) {
-      param_info <- hardhat::extract_parameter_set_dials(object)
-    }
-    check_workflow(object, check_dials = is.null(param_info), pset = param_info,
-                   call = call)
-    check_backend_options(control$backend_options)
+  if (is.null(param_info)) {
+    param_info <- hardhat::extract_parameter_set_dials(object)
+  }
+  check_workflow(object, check_dials = is.null(param_info), pset = param_info,
+                 call = call)
+  check_backend_options(control$backend_options)
 
-    unsummarized <- check_initial(
-      initial,
-      pset = param_info,
-      wflow = object,
-      resamples = resamples,
-      metrics = metrics,
-      eval_time = eval_time,
-      ctrl = control,
-      checks = "bayes"
-    )
+  unsummarized <- check_initial(
+    initial,
+    pset = param_info,
+    wflow = object,
+    resamples = resamples,
+    metrics = metrics,
+    eval_time = eval_time,
+    ctrl = control,
+    checks = "bayes"
+  )
 
-    # Pull outcome names from initialization run
-    outcomes <- peek_tune_results_outcomes(unsummarized)
+  # Pull outcome names from initialization run
+  outcomes <- peek_tune_results_outcomes(unsummarized)
 
-    # Evaluate this portion of the function in a local environment using
-    # `(function() expr)()` so that `on.exit()` doesn't touch the exit
-    # handlers attached to the execution environment of this function
-    # by `initialize_catalog()` (#828, #845).
-    (function() {
+  # Evaluate this portion of the function in a local environment using
+  # `(function() expr)()` so that `on.exit()` doesn't touch the exit
+  # handlers attached to the execution environment of this function
+  # by `initialize_catalog()` (#828, #845).
+  (function() {
     # Return whatever we have if there is a error (or execution is stopped)
     on.exit({
       cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
@@ -384,31 +384,24 @@ tune_bayes_workflow <- function(object,
 
       check_time(start_time, control$time_limit)
 
+      # Maybe remove .catch_and_log() here and do catching inside fintion
       set.seed(control$seed[1] + i)
-      gp_mod <-
-        .catch_and_log(
-          fit_gp(
-            mean_stats %>% dplyr::select(-.iter),
-            pset = param_info,
-            metric = opt_metric_name,
-            eval_time = opt_metric_time,
-            control = control,
-            ...
-          ),
-          control,
-          NULL,
-          "Gaussian process model",
-          notes = .notes,
-          catalog = FALSE
-        )
+      gp_mod <- fit_gp_new(
+        mean_stats %>% dplyr::select(-.iter),
+        pset = param_info,
+        metric = opt_metric_name,
+        eval_time = opt_metric_time,
+        control = control,
+        ...
+      )
 
-      gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
+      # gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
 
       check_time(start_time, control$time_limit)
 
       set.seed(control$seed[1] + i + 1)
       candidates <-
-        pred_gp(
+        pred_gp_new(
           gp_mod, param_info,
           control = control,
           current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
@@ -430,11 +423,17 @@ tune_bayes_workflow <- function(object,
 
       check_time(start_time, control$time_limit)
 
-      check_and_log_flow(control, candidates)
+      # TODO move some messages here
+      # check_and_log_flow(control, candidates)
 
       save_gp_results(gp_mod, param_info, control, i, iter, candidates, score_card)
 
-      candidates <- pick_candidate(candidates, score_card, control)
+      # candidates <- pick_candidate_new(candidates, score_card, control)
+
+      candidates <- candidates %>%
+        dplyr::arrange(dplyr::desc(objective)) %>%
+        dplyr::slice(1)
+
       if (score_card$uncertainty >= control$uncertain) {
         score_card$uncertainty <- -1 # is updated in update_score_card() below
       }
@@ -517,8 +516,8 @@ tune_bayes_workflow <- function(object,
 
     .stash_last_result(res)
     res
-    })() # end of self calling lambda
-  }
+  })() # end of self calling lambda
+}
 
 create_initial_set <- function(param, n = NULL, checks) {
   check_param_objects(param)
@@ -610,13 +609,13 @@ fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
   opts <- list(...)
 
   withCallingHandlers({
-  if (any(names(opts) == "trace") && opts$trace) {
-    gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-  } else {
-    tmp_output <- utils::capture.output(
+    if (any(names(opts) == "trace") && opts$trace) {
       gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-    )
-  }},
+    } else {
+      tmp_output <- utils::capture.output(
+        gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
+      )
+    }},
     warning = function(w) {
       if (w$message == "X should be in range (0, 1)") {
         rlang::cnd_muffle(w)
