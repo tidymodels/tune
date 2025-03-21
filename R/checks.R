@@ -222,15 +222,7 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
     "i" = "The GP model requires 2+ initial points. For best performance,
                supply more initial points than there are tuning parameters."
   )
-  bullet_msg <-
-    c(
-      `!` = "{msg}",
-      `*` = cli::pluralize(
-        "There are {cli::qty(diff)}{?as many/more} tuning parameters
-          {cli::qty(diff)}{?as/than} there are initial points.
-          This is likely to cause numerical issues in the first few
-          search iterations.")
-    )
+  bullet_msg <- c(`!` = "{msg}")
 
 
   if (race) {

@@ -125,15 +125,18 @@ fit_gp_new <- function(
 		dplyr::select(dplyr::all_of(pset$id), mean)
 
 	qual_info <- find_qual_param(pset)
+	num_pred <- nrow(pset)
+	num_cand <- nrow(dat)
+
 
 	normalized <- partial_encode(dat, pset)
 
 	gp_kernel <- make_kernel(pset, qual_info)
 
-	if (nrow(dat) <= ncol(dat) && nrow(dat) > 0 & control$verbose_iter) {
+	if (num_cand <= num_pred && num_cand > 0 & control$verbose_iter) {
 		msg <- cli::format_inline(
-			"The Gaussian process model is being fit using {ncol(dat)} features but
-			only has {nrow(dat)} data point{?s} to do so. This may cause errors or a
+			"The Gaussian process model is being fit using {num_pred} feature{?s} but
+			only has {num_cand} data point{?s} to do so. This may cause errors or a
 			poor model fit."
 		)
 		message_wrap(
@@ -181,7 +184,7 @@ fit_gp_new <- function(
 	if (control$verbose_iter) {
 		if (new_check$use) {
 			msg <- cli::format_inline(
-				"Gaussian process model (R^2: {round(new_check$rsq * 100)}%)"
+				"Gaussian process model (LOO R^2: {round(new_check$rsq * 100)}%)"
 			)
 			message_wrap(
 				msg,
@@ -225,7 +228,7 @@ pred_gp_new <- function(object, pset, size = 5000, current = NULL, control) {
 			dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
 		msg <- cli::format_inline(
-			"Diagnostics indicate that the GP model should not be used. Generating an uncertainty sample instead."
+			"Generating a candidate as far away from existing points as possible."
 		)
 		tune_log(control, split_labels = NULL, task = msg, type = "warning")
 
