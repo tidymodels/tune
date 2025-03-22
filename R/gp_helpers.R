@@ -42,7 +42,7 @@ make_kernel <- function(pset, lvls) {
 
 	for (i in seq_along(qual_ind)) {
 		kern_count <- kern_count + 1
-		kernels[[kern_count]] <- k_FactorKernel(
+		kernels[[kern_count]] <- GauPro::k_FactorKernel(
 			D = 1,
 			xindex = qual_ind[i],
 			nlevels = length(lvls[[1]])
@@ -92,10 +92,10 @@ partial_encode <- function(dat, pset) {
 	)
 
 	# Replace with the original data when qualitative parameters
-	# TODO make these scaled
+	# GauPro::gpkm can take factor encodings to work
 	for (i in seq_along(qual_info)) {
 		nm <- names(qual_info)[i]
-		normalized[[nm]] <- dat[[nm]]
+		normalized[[nm]] <- factor(dat[[nm]], levels = qual_info[[i]])
 	}
 	if (any(names(dat) == "mean")) {
 		normalized$.outcome <- dat$mean
@@ -204,7 +204,7 @@ fit_gp_new <- function(
 		fit = gp_fit,
 		use = new_check$use,
 		rsq = new_check$rsq,
-		tr = as.matrix(normalized)
+		tr = normalized
 	)
 }
 
@@ -223,7 +223,7 @@ pred_gp_new <- function(object, pset, size = 5000, current = NULL, control) {
 		x_old <- object$tr
 		x_old <- x_old[, names(x)]
 
-		keep_ind <- dissim_sample(x_old, x, max_n = Inf)
+		keep_ind <- dissim_sample(x_old, x, pset, max_n = Inf)
 		candidates <- candidates[keep_ind, ] %>%
 			dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
@@ -294,19 +294,23 @@ pick_candidate_new <- function(results, info, control) {
 	results
 }
 
-dissim_sample <- function(ref_data, candidates, max_n = Inf) {
-	# assumes both sets are normalized in the same way
-	if (!is.matrix(ref_data)) {
-		ref_data <- as.matrix(ref_data)
-	}
+dissim_sample <- function(ref_data, candidates, pset, max_n = Inf) {
+  max_n <- min(max_n, nrow(candidates))
+  candidates <- candidates[1:max_n, , drop = FALSE]
+  all_data <- dplyr::bind_rows(ref_data, candidates)
 
-	if (!is.matrix(candidates)) {
-		candidates <- as.matrix(candidates)
-	}
+  # Deal with any qualitative predictors by casting them to c(0,1)
+  qual_info <- find_qual_param(pset)
+  if (length(qual_info) > 0) {
+    for (i in seq_along(qual_info)) {
+      nm <- names(qual_info)[i]
+      uniq <- sort(unique(all_data[[nm]]))
+      all_data[[nm]] <- as.character(all_data[[nm]])
+      all_data[[nm]] <- factor(all_data[[nm]], levels = uniq)
+    }
+  }
+  all_data <- stats::model.matrix(~ . + 0, data = all_data)
 
-	max_n <- min(max_n, nrow(candidates))
-	candidates <- candidates[1:max_n, , drop = FALSE]
-	all_data <- rbind(ref_data, candidates)
 	n_ref <- nrow(ref_data)
 	n_all <- nrow(all_data)
 	distances <- stats::dist(all_data)
