@@ -105,6 +105,12 @@ partial_encode <- function(dat, pset) {
 
 # ------------------------------------------------------------------------------
 
+# TODO not catching warnings such as
+# Warning messages:
+#   1: In self$pred_one_matrix(XX = XX, se.fit = se.fit, covmat = covmat,  :
+#     Too small s2 predictions are being set to 4.2948089596254e-08 (2908 values, min=-30.8111711641092).
+#   2: covmat is not being altered.
+
 fit_gp_new <- function(
 	dat,
 	pset,
