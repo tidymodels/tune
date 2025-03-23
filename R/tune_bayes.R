@@ -730,6 +730,7 @@ initial_info <- function(stats, metrics, maximize, eval_time) {
     dplyr::filter(.metric == metrics) %>%
     dplyr::filter(!is.na(mean))
 
+  # TODO a lot of slice_min/slice_max can be used now
   if (maximize) {
     best_res <-
       best_res %>%

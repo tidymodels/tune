@@ -158,6 +158,7 @@ fit_gp_new <- function(
 		}
 	}
 
+	# TODO use better handler to avoid warnings
 	if (is.null(previous)) {
 		withr::with_seed(
 			114,
