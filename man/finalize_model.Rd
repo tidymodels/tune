@@ -16,7 +16,8 @@ finalize_workflow(x, parameters)
 finalize_tailor(x, parameters)
 }
 \arguments{
-\item{x}{A recipe, \code{parsnip} model specification, or workflow.}
+\item{x}{A recipe, \pkg{parsnip} model specification, \pkg{tailor}
+postprocessor, or workflow.}
 
 \item{parameters}{A list or 1-row tibble of parameter values. Note that the
 column names of the tibble should be the \code{id} fields attached to \code{tune()}.
