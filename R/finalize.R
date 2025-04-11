@@ -113,7 +113,8 @@ finalize_tailor <- function(x, parameters) {
   check_final_param(parameters)
   pset <-
     hardhat::extract_parameter_set_dials(x) %>%
-    dplyr::filter(id %in% names(parameters) & source == "tailor")
+    dplyr::filter(id %in% names(parameters) & source == "tailor") %>%
+    dplyr::as_tibble()
 
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)
@@ -127,7 +128,9 @@ finalize_tailor <- function(x, parameters) {
     adj_comps <- purrr::map_lgl(pset$component, ~ inherits(adj, .x))
     if (any(adj_comps)) {
       adj_ids <- pset$id[adj_comps]
+      prm_nm <- pset$name[adj_comps]
       adj_prms <- parameters[names(parameters) %in% adj_ids]
+      names(adj_prms) <- prm_nm
       adj$arguments <- purrr::list_modify(adj$arguments, !!!adj_prms)
       x$adjustments[[i]] <- adj
     }
