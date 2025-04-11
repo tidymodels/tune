@@ -180,4 +180,22 @@ test_that("finalize workflows with tailors", {
 
   wflow_4 <- finalize_workflow(wflow, tibble())
   expect_equal(wflow_4, wflow)
+
+  # https://github.com/tidymodels/tune/issues/998
+  cls_post <- tailor() %>%
+    adjust_probability_threshold(threshold = tune("cut"))
+  wflow_thrsh <- workflow(y ~ ., logistic_reg(), cls_post)
+  thrsh_param <- tibble(min_n = 2, cut = 1/3)
+  wflow_thrsh <- wflow_thrsh %>% finalize_workflow(thrsh_param)
+
+  expect_equal(
+    wflow_thrsh %>%
+      extract_postprocessor() %>%
+      pluck("adjustments") %>%
+      pluck(1) %>%
+      pluck("arguments") %>%
+      pluck("threshold"),
+    1 / 3
+  )
+
 })
