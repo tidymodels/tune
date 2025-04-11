@@ -279,6 +279,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
 
 test_that("can use `last_fit()` with a workflow - postprocessor (does not require training)", {
   skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
+  skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y-3)^2)
