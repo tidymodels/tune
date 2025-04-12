@@ -3,7 +3,8 @@
 #' The `finalize_*` functions take a list or tibble of tuning parameter values and
 #' update objects with those values.
 #'
-#' @param x A recipe, `parsnip` model specification, or workflow.
+#' @param x A recipe, \pkg{parsnip} model specification, \pkg{tailor}
+#'  postprocessor, or workflow.
 #' @param parameters A list or 1-row tibble of parameter values. Note that the
 #'  column names of the tibble should be the `id` fields attached to `tune()`.
 #'  For example, in the `Examples` section below, the model has `tune("K")`. In
