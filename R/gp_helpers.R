@@ -1,7 +1,7 @@
 # Determine any qualitative parameters and their ranges
 
 find_qual_param <- function(pset) {
-	is_qual <- map_lgl(pset$object, ~inherits(.x, "qual_param"))
+	is_qual <- purrr::map_lgl(pset$object, ~inherits(.x, "qual_param"))
 	if (!any(is_qual)) {
 		return(list())
 	}
@@ -158,7 +158,8 @@ fit_gp_new <- function(
 		}
 	}
 
-	# TODO use better handler to avoid warnings
+	# TODO use better handler to avoid warnings, use log_catalog to send to notes
+	# TODO pass `...` here?
 	if (is.null(previous)) {
 		withr::with_seed(
 			114,
