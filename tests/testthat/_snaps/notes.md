@@ -1,7 +1,7 @@
 # showing notes
 
     Code
-      res_roles <- role_bp_wflow |> fit_resamples(rs)
+      res_roles <- fit_resamples(role_bp_wflow, rs)
     Message
       x Fold01: preprocessor 1/1, model 1/1 (predictions):
         Error in `step_date()`:
@@ -50,7 +50,7 @@
 ---
 
     Code
-      res_simple <- simple_wflow |> fit_resamples(rs)
+      res_simple <- fit_resamples(simple_wflow, rs)
     Message
       ! Fold01: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
       ! Fold02: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
@@ -82,7 +82,7 @@
 ---
 
     Code
-      fit_lr <- parsnip::logistic_reg() |> fit_resamples(class ~ ., rs)
+      fit_lr <- fit_resamples(parsnip::logistic_reg(), class ~ ., rs)
     Message
       ! Fold01: preprocessor 1/1, model 1/1: glm.fit: algorithm did not converge, glm.fit: fitted probabilities numer...
       ! Fold01: internal: No control observations were detected in `truth` with control level 'cla...

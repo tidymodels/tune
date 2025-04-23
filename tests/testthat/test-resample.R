@@ -174,7 +174,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
   tune_wflow <-
     collect_extracts(tune_res) |>
     pull(.extracts) |>
-    pluck(1)
+    purrr::pluck(1)
 
   # mock `tune::tune_grid_loop_iter`'s RNG scheme
   set.seed(1)
