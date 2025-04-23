@@ -18,13 +18,13 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 lm_mod <-
-  linear_reg(penalty = tune(), mixture = tune()) %>%
+  linear_reg(penalty = tune(), mixture = tune()) |>
   set_engine("glmnet")
 
 
 ames_wflow <-
-  workflow() %>%
-  add_formula(log(Sale_Price) ~ .) %>%
+  workflow() |>
+  add_formula(log(Sale_Price) ~ .) |>
   add_model(lm_mod)
 
 grid_df <- grid_regular(ames_wflow, levels = c(10, 3))
@@ -32,18 +32,18 @@ grid_df <- grid_regular(ames_wflow, levels = c(10, 3))
 ames_glmnet <- tune_grid(ames_wflow, resamples = cv_splits, grid = grid_df, control = control_grid(verbose = TRUE))
 
 
-# summarize(ames_glmnet) %>%
-#   dplyr::filter(.metric == "rmse") %>%
-#   select(-n, -std_err, -.estimator, -.metric) %>%
-#   mutate(penalty = log10(penalty)) %>%
-#   gather(parameter, value, -mean) %>%
+# summarize(ames_glmnet) |>
+#   dplyr::filter(.metric == "rmse") |>
+#   select(-n, -std_err, -.estimator, -.metric) |>
+#   mutate(penalty = log10(penalty)) |>
+#   gather(parameter, value, -mean) |>
 #   ggplot(aes(x = value, y = mean)) +
 #   geom_point() +
 #   facet_wrap(~parameter, scales = "free_x")
 #
-# summarize(ames_glmnet) %>%
-#   dplyr::filter(.metric == "rmse") %>%
-#   arrange(mean) %>%
+# summarize(ames_glmnet) |>
+#   dplyr::filter(.metric == "rmse") |>
+#   arrange(mean) |>
 #   slice(1)
 
 set.seed(9890)

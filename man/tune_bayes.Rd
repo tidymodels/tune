@@ -303,13 +303,13 @@ set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
 
 car_rec <-
-  recipe(mpg ~ ., data = mtcars) \%>\%
+  recipe(mpg ~ ., data = mtcars) |>
   step_normalize(all_predictors())
 
 # define an svm with parameters to tune
 svm_mod <-
-  svm_rbf(cost = tune(), rbf_sigma = tune()) \%>\%
-  set_engine("kernlab") \%>\%
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_engine("kernlab") |>
   set_mode("regression")
 
 # use a space-filling design with 6 points

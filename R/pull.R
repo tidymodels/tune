@@ -13,8 +13,8 @@ extract_details <- function(object, extractor) {
 pulley <- function(resamples, res, col, order) {
   if (all(purrr::map_lgl(res, inherits, "simpleError"))) {
     res <-
-      resamples %>%
-      mutate(col = purrr::map(splits, ~NULL)) %>%
+      resamples |>
+      mutate(col = purrr::map(splits, ~NULL)) |>
       setNames(c(names(resamples), col))
     return(res)
   }
@@ -25,12 +25,12 @@ pulley <- function(resamples, res, col, order) {
 
   resamples <- vctrs::vec_slice(resamples, order)
 
-  pulled_vals <- purrr::map(res, ~ .x[[col]]) %>% purrr::list_rbind()
+  pulled_vals <- purrr::map(res, ~ .x[[col]]) |> purrr::list_rbind()
 
   if (nrow(pulled_vals) == 0) {
     res <-
-      resamples %>%
-      mutate(col = purrr::map(splits, ~NULL)) %>%
+      resamples |>
+      mutate(col = purrr::map(splits, ~NULL)) |>
       setNames(c(names(resamples), col))
     return(res)
   }

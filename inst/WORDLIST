@@ -16,6 +16,12 @@ RNGkind
 Wadsworth
 backtrace
 cdot
+doAzureParallel
+doMC
+doMPI
+doParallel
+doRedis
+doSNOW
 doi
 el
 finetune
@@ -27,6 +33,7 @@ iteratively
 misspecified
 notag
 parallelize
+postprocessor
 pre
 preprocessed
 preprocessor

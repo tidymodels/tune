@@ -8,7 +8,7 @@ test_that("metric inputs are checked for regression models", {
   library(rsample)
 
   wflow <- workflow(y ~ X1 + X2, linear_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_spec <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   wflow_tune <- workflow(y ~ X1 + X2, knn_spec)
 
   set.seed(1)
@@ -68,7 +68,7 @@ test_that("metric inputs are checked for classification models", {
 
   data(two_class_dat, package = "modeldata")
   wflow <- workflow(Class ~ A + B, logistic_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>% set_mode("classification")
+  knn_spec <- nearest_neighbor(neighbors = tune()) |> set_mode("classification")
   wflow_tune <- workflow(Class ~ A + B, knn_spec)
 
   set.seed(1)

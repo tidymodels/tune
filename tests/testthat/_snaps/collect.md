@@ -1,7 +1,7 @@
 # `collect_predictions()` errors informatively if there is no `.predictions` column
 
     Code
-      collect_predictions(lm_splines %>% dplyr::select(-.predictions))
+      collect_predictions(dplyr::select(lm_splines, -.predictions))
     Condition
       Error in `collect_predictions()`:
       ! The .predictions column does not exist. Please refit with the control argument `save_pred = TRUE` to save predictions.

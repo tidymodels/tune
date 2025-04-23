@@ -8,7 +8,7 @@ theme_set(theme_bw())
 # ------------------------------------------------------------------------------
 
 segmentationData <-
-  segmentationData %>%
+  segmentationData |>
   dplyr::select(-Case, -Cell, -contains("Centroid"))
 
 set.seed(8567)
@@ -23,28 +23,28 @@ val_split <- mc_cv(seg_train, times = 1)
 # ------------------------------------------------------------------------------
 
 seg_pre_proc <-
-  recipe(Class ~ ., data = seg_train) %>%
-  step_YeoJohnson(all_predictors()) %>%
-  step_normalize(all_predictors()) %>%
-  step_pca(all_predictors(), num_comp = tune()) %>%
+  recipe(Class ~ ., data = seg_train) |>
+  step_YeoJohnson(all_predictors()) |>
+  step_normalize(all_predictors()) |>
+  step_pca(all_predictors(), num_comp = tune()) |>
   step_downsample(Class)
 
 nn_mod <-
   mlp(mode = "classification", hidden_units = tune(), dropout = tune(),
-      epochs = tune(), activation = tune()) %>%
+      epochs = tune(), activation = tune()) |>
   set_engine("keras", verbose = 0, validation = .1)
 
 
 nn_wflow <-
-  workflow() %>%
-  add_model(nn_mod) %>%
+  workflow() |>
+  add_model(nn_mod) |>
   add_recipe(seg_pre_proc)
 
 # ------------------------------------------------------------------------------
 
 nn_set <-
-  nn_wflow %>%
-  parameters() %>%
+  nn_wflow |>
+  parameters() |>
   # In case you want to manually adjust the parameter specification
   update(num_comp = num_comp(c(1, 20)))
 
@@ -96,20 +96,20 @@ autoplot(nn_search_2, type = "performance", metric = "roc_auc")
 
 # ------------------------------------------------------------------------------
 
-nn_search_2 %>%
-  summarize() %>%
-  dplyr::filter(.iter > 0 & .metric == "roc_auc") %>%
-  select(-.iter, -.metric, -.estimator, -n, -std_err) %>%
-  gather(parameter, value, -activation, -mean) %>%
+nn_search_2 |>
+  summarize() |>
+  dplyr::filter(.iter > 0 & .metric == "roc_auc") |>
+  select(-.iter, -.metric, -.estimator, -n, -std_err) |>
+  gather(parameter, value, -activation, -mean) |>
   ggplot(aes(x = value, y = mean, col = activation)) +
   geom_point(alpha = .3) +
   facet_wrap(~ parameter, scales = "free_x")
 
-nn_search_2 %>%
-  summarize() %>%
-  dplyr::filter(.iter > 0 & .metric == "roc_auc") %>%
-  select(-.metric, -.estimator, -n, -std_err) %>%
-  gather(parameter, value, -activation, -mean, -.iter) %>%
+nn_search_2 |>
+  summarize() |>
+  dplyr::filter(.iter > 0 & .metric == "roc_auc") |>
+  select(-.metric, -.estimator, -n, -std_err) |>
+  gather(parameter, value, -activation, -mean, -.iter) |>
   ggplot(aes(x = .iter, y = value, col = activation, size = mean)) +
   geom_point(alpha = .3) +
   facet_wrap(~ parameter, scales = "free_y")

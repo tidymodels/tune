@@ -53,7 +53,7 @@ test_that("bad argss", {
   broke_results$.predictions <-
     purrr::map(
       broke_results$.predictions,
-      ~ .x %>% dplyr::select(-.pred_class)
+      ~ .x |> dplyr::select(-.pred_class)
     )
 
   expect_snapshot(error = TRUE, {

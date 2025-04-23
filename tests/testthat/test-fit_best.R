@@ -8,7 +8,7 @@ test_that("fit_best", {
   library(parsnip)
 
   data(meats, package = "modeldata")
-  meats <- meats %>% select(-water, -fat)
+  meats <- meats |> select(-water, -fat)
 
   set.seed(1)
   meat_split <- initial_split(meats)
@@ -19,10 +19,10 @@ test_that("fit_best", {
   meat_rs <- vfold_cv(meat_train, v = 3)
 
   pca_rec <-
-    recipe(protein ~ ., data = meat_train) %>%
+    recipe(protein ~ ., data = meat_train) |>
     step_pca(all_predictors(), num_comp = tune())
 
-  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
 
   ctrl <- control_grid(save_workflow = TRUE)
 
@@ -75,7 +75,7 @@ test_that("fit_best() works with validation split: 3-way split", {
   val_set <- validation_set(initial_val_split)
 
   f <- Sale_Price ~ Gr_Liv_Area + Year_Built
-  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   wflow <- workflow(f, knn_mod)
 
   tune_res <- tune_grid(
@@ -83,14 +83,14 @@ test_that("fit_best() works with validation split: 3-way split", {
     grid = tibble(neighbors = c(1, 5)),
     resamples = val_set,
     control = control_grid(save_workflow = TRUE)
-  ) %>% suppressWarnings()
+  ) |> suppressWarnings()
   set.seed(3)
   fit_on_train <- fit_best(tune_res)
   pred <- predict(fit_on_train, testing(initial_val_split))
 
   set.seed(3)
-  exp_fit_on_train <- nearest_neighbor(neighbors = 5) %>%
-    set_mode("regression") %>%
+  exp_fit_on_train <- nearest_neighbor(neighbors = 5) |>
+    set_mode("regression") |>
     fit(f, training(initial_val_split))
   exp_pred <- predict(exp_fit_on_train, testing(initial_val_split))
 
@@ -108,7 +108,7 @@ test_that("fit_best() works with validation split: 2x 2-way splits", {
   val_set <- validation_set(split)
 
   f <- Sale_Price ~ Gr_Liv_Area + Year_Built
-  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   wflow <- workflow(f, knn_mod)
 
   tune_res <- tune_grid(
@@ -122,8 +122,8 @@ test_that("fit_best() works with validation split: 2x 2-way splits", {
   pred <- predict(fit_on_train_and_val, testing(split))
 
   set.seed(3)
-  exp_fit_on_train_and_val <- nearest_neighbor(neighbors = 5) %>%
-    set_mode("regression") %>%
+  exp_fit_on_train_and_val <- nearest_neighbor(neighbors = 5) |>
+    set_mode("regression") |>
     fit(f, train)
   exp_pred <- predict(exp_fit_on_train_and_val, testing(split))
 
@@ -134,7 +134,7 @@ test_that(
   "fit_best() warns when metric or eval_time are specified in addition to parameters", {
   skip_if_not_installed("kknn")
 
-  knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   res <-
       tune_grid(
       workflow(mpg ~ ., knn_mod),

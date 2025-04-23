@@ -5,7 +5,7 @@ test_that("augment fit_resamples", {
 
   # ------------------------------------------------------------------------------
 
-  lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
+  lr_spec <- parsnip::logistic_reg() |> parsnip::set_engine("glm")
 
   set.seed(1)
   two_class_dat <- as.data.frame(two_class_dat)
@@ -48,7 +48,7 @@ test_that("augment fit_resamples", {
   # ------------------------------------------------------------------------------
 
   skip_if(new_rng_snapshots)
-  lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
+  lr_spec <- parsnip::logistic_reg() |> parsnip::set_engine("glm")
 
   set.seed(1)
   two_class_dat <- as.data.frame(two_class_dat)
@@ -86,8 +86,8 @@ test_that("augment fit_resamples", {
 test_that("augment tune_grid", {
   skip_if_not_installed("kernlab")
 
-  svm_spec <- parsnip::svm_linear(cost = tune(), margin = 0.1) %>%
-    parsnip::set_engine("kernlab") %>%
+  svm_spec <- parsnip::svm_linear(cost = tune(), margin = 0.1) |>
+    parsnip::set_engine("kernlab") |>
     parsnip::set_mode("regression")
   set.seed(1)
   cv1 <- rsample::vfold_cv(mtcars)
@@ -164,7 +164,7 @@ test_that("augment last_fit", {
 
   # ------------------------------------------------------------------------------
 
-  lr_spec <- parsnip::logistic_reg() %>% parsnip::set_engine("glm")
+  lr_spec <- parsnip::logistic_reg() |> parsnip::set_engine("glm")
   set.seed(1)
   split <- rsample::initial_split(two_class_dat)
   fit_1 <- last_fit(lr_spec, Class ~ ., split = split)

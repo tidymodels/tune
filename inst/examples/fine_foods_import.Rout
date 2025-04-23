@@ -46,16 +46,16 @@ Registered S3 method overwritten by 'rvest':
 +     delim = "\n",
 +     col_names = "text",
 +     col_types = cols(text = col_character())
-+   ) %>%
++   ) |>
 +   mutate(
 +     text = str_remove(text, "product/"),
 +     text = str_remove(text, "review/"),
 +     prod_num  = ifelse(str_detect(text, "productId"), 1, 0),
 +     prod_num = cumsum(prod_num)
-+   ) %>%
++   ) |>
 +   dplyr::filter(
 +     str_detect(text, "(productId:)|(text:)|(score:)")
-+   ) %>%
++   ) |>
 +   mutate(
 +     field = case_when(
 +       str_detect(text, "productId:") ~ "product",
@@ -64,9 +64,9 @@ Registered S3 method overwritten by 'rvest':
 +       TRUE ~ "unknown"
 +     ),
 +     text = str_replace(text, "(productId: )|(text: )|(score: )", "")
-+   ) %>%
-+   spread(field, text) %>%
-+   dplyr::select(-prod_num) %>%
++   ) |>
++   spread(field, text) |>
++   dplyr::select(-prod_num) |>
 +   mutate(
 +     score = factor(ifelse(score == "5.0", "great", "other"))
 +   )
@@ -76,31 +76,31 @@ Registered S3 method overwritten by 'rvest':
 > # rows per product.
 > 
 > prod_dist <-
-+   raw %>%
-+   group_by(product) %>%
-+   count() %>%
-+   ungroup() %>%
++   raw |>
++   group_by(product) |>
++   count() |>
++   ungroup() |>
 +   arrange(desc(n))
 > 
 > # Take the 25 well characterized products for the training set (or more for larger
 > # training set)
 > set.seed(9565)
 > train_prods <-
-+   prod_dist %>%
-+   dplyr::filter(n > 100) %>%
-+   sample_n(25) %>%
++   prod_dist |>
++   dplyr::filter(n > 100) |>
++   sample_n(25) |>
 +   dplyr::select(product)
 > 
 > training_data <-
-+   train_prods %>%
++   train_prods |>
 +   inner_join(raw, by = "product")
 > 
 > testing_data <-
-+   raw %>%
-+   anti_join(train_prods %>% dplyr::select(product), by = "product") %>%
-+   group_by(product) %>%
-+   sample_n(1) %>%
-+   ungroup() %>%
++   raw |>
++   anti_join(train_prods |> dplyr::select(product), by = "product") |>
++   group_by(product) |>
++   sample_n(1) |>
++   ungroup() |>
 +   sample_n(1000)
 > 
 > save(training_data, testing_data, file = "data/small_fine_foods.RData", version = 2, compress = "xz")

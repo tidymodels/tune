@@ -25,12 +25,12 @@ registerDoMC(cores = 10)
 # ------------------------------------------------------------------------------
 
 engines <- 
-  get_from_env("models") %>% 
-  map(~ get_from_env(.x) %>% mutate(model = .x)) %>% 
-  list_rbind() %>% 
+  get_from_env("models") |> 
+  map(~ get_from_env(.x) |> mutate(model = .x)) |> 
+  list_rbind() |> 
   filter(mode == "censored regression")
 
-num_models <- engines %>% distinct(model) %>% nrow()
+num_models <- engines |> distinct(model) |> nrow()
 ```
 
 The censored package was released in June 2022, enabling users to fit event time/survival time models using the tidymodels framework. As of this writing, there are now a total of `r nrow(engines)` different engines that can be used with `r num_models` different models. 
@@ -90,8 +90,8 @@ covar_data <-
                   id.col = "num")
 
 heart_data <- 
-  full_join(outcome_data, covar_data, by = "num") %>% 
-  select(-num) %>%
+  full_join(outcome_data, covar_data, by = "num") |> 
+  select(-num) |>
   as_tibble()
 
 heart_data
@@ -104,7 +104,7 @@ Also, tidymodels expects that the event times and corresponding status data are 
 ```{r}
 #| label: reformat-data
 heart_data <- 
-  heart_data %>% 
+  heart_data |> 
   mutate(
     event_time = Surv(fuyrs, status),
     lv =
@@ -137,7 +137,7 @@ heart_data <-
         TRUE ~ "stentless_porcine_tissue"
       ),
     across(where(is.character), factor)
-  ) %>% 
+  ) |> 
   select(-fuyrs, -status)
 ```
 
@@ -163,13 +163,13 @@ To demonstrate, let's fit a bagged tree to the training data:
 #| label: initial-example
 
 bag_spec <- 
-  bag_tree() %>%
-  set_mode("censored regression") %>% 
+  bag_tree() |>
+  set_mode("censored regression") |> 
   set_engine("rpart", nbagg = 50)
 
 set.seed(29872)
 bag_fit <- 
-  bag_spec %>% 
+  bag_spec |> 
   fit(event_time ~ ., data = valve_tr)
 ```
 
@@ -191,11 +191,11 @@ The standard `predict()` machinery can be used to get static (e.g., `type = "tim
 #| fake-predictions
 time_points <- seq(0, 10, by = .1)
 bag_pred <- 
-  predict(bag_fit, fake_examples, type = "survival", eval_time = time_points) %>% 
+  predict(bag_fit, fake_examples, type = "survival", eval_time = time_points) |> 
   bind_cols(
     predict(bag_fit, fake_examples),
-    fake_examples %>% select(event_time)
-  ) %>% 
+    fake_examples |> select(event_time)
+  ) |> 
   add_rowindex()
 bag_pred
 ```
@@ -204,7 +204,7 @@ As usual, the prediction columns are prefixed with `.pred_`. What is unusual is 
 
 ```{r}
 #| dot-pred
-bag_pred$.pred[[1]] %>% slice(1:5)
+bag_pred$.pred[[1]] |> slice(1:5)
 ```
 
 We can unnest these and plot the per-patient survival curves: 
@@ -214,9 +214,9 @@ We can unnest these and plot the per-patient survival curves:
 #| out-width: "60%"
 #| fig-align: center
 
-bag_pred %>% 
-  unnest(.pred) %>% 
-  mutate(sample = format(.row)) %>% 
+bag_pred |> 
+  unnest(.pred) |> 
+  mutate(sample = format(.row)) |> 
   ggplot(aes(.eval_time, .pred_survival, group = sample, col = sample)) + 
   geom_step() + 
   lims(y = 0:1) +
@@ -236,13 +236,13 @@ For static, a common choice is the [concordance statistic](https://www.ncbi.nlm.
 #| label: test-concordance
 
 test_pred <- 
-  predict(bag_fit, valve_te, type = "survival", eval_time = time_points) %>% 
+  predict(bag_fit, valve_te, type = "survival", eval_time = time_points) |> 
   bind_cols(
     predict(bag_fit, valve_te),
-    valve_te %>% select(event_time)
+    valve_te |> select(event_time)
   )
 
-test_pred %>% 
+test_pred |> 
   concordance_survival(truth = event_time, estimate = .pred_time)
 ```
 
@@ -259,8 +259,8 @@ If you were to compute model performance manually (as above), these weights are 
 ```{r}
 #| ipcw-comp
 ipcw_data <- 
-  test_pred %>% 
-  .censoring_weights_graf(bag_fit, .) %>% 
+  test_pred |> 
+  .censoring_weights_graf(bag_fit, .) |> 
   select(-.pred_time)
 ```
 
@@ -270,7 +270,7 @@ This adds a column called `.weight_censored` to the tibble of predicted survival
 ipcw_data
 
 # The adjusted data:
-ipcw_data$.pred[[1]] %>% slice(1:5)
+ipcw_data$.pred[[1]] |> slice(1:5)
 ```
 
 With the data in this format, we can use a yardstick function for dynamic metrics like `brier_survival()`: 
@@ -279,10 +279,10 @@ With the data in this format, we can use a yardstick function for dynamic metric
 #| label: brier-surv
 
 brier_scores <-
-  ipcw_data %>% 
+  ipcw_data |> 
   # No argument name is used for .pred
   brier_survival(truth = event_time, .pred)
-brier_scores %>% slice(1:5)
+brier_scores |> slice(1:5)
 ```
 
 We compute a score for each evaluation time:
@@ -292,7 +292,7 @@ We compute a score for each evaluation time:
 #| out-width: "60%"
 #| fig-align: center
 
-brier_scores %>% 
+brier_scores |> 
   ggplot(aes(.eval_time, .estimate)) +
   geom_hline(yintercept = 0.25, col = "red", alpha = 1 / 2, lty = 2) +
   geom_line() +
@@ -319,7 +319,7 @@ set.seed(12)
 valve_rs <- vfold_cv(valve_tr, repeats = 5)
 
 bag_tree_res <- 
-  bag_spec %>% 
+  bag_spec |> 
   fit_resamples(event_time ~ ., resamples = valve_rs, eval_time = time_points)
 ```
 
@@ -330,14 +330,14 @@ By default, the Brier score is used:
 #| out-width: "60%"
 #| fig-align: center
 
-collect_metrics(bag_tree_res) %>% slice(1:5)
+collect_metrics(bag_tree_res) |> slice(1:5)
 
-bag_tree_res  %>%
-  collect_metrics() %>%
+bag_tree_res  |>
+  collect_metrics() |>
   mutate(
     lower = mean - 1.96 * std_err,
     upper = mean + 1.96 * std_err
-  ) %>%
+  ) |>
   ggplot(aes(.eval_time)) +
   geom_hline(yintercept = 0.25, col = "red", alpha = 1 / 2, lty = 2) +
   geom_line(aes(y = mean)) +
@@ -357,14 +357,14 @@ Suppose we try a regularized Cox model for these data. We'll add a recipe to the
 #| fig-align: center
 
 lasso_spec <- 
-  proportional_hazards(penalty = tune(), mixture = 0) %>%
-  set_engine("glmnet") %>%
+  proportional_hazards(penalty = tune(), mixture = 0) |>
+  set_engine("glmnet") |>
   set_mode("censored regression")
 
 lasso_rec <- 
-  recipe(event_time ~ ., data = valve_tr) %>%
-  step_dummy(all_nominal_predictors()) %>%
-  step_zv(all_predictors()) %>%
+  recipe(event_time ~ ., data = valve_tr) |>
+  step_dummy(all_nominal_predictors()) |>
+  step_zv(all_predictors()) |>
   step_normalize(all_numeric_predictors())
 
 lasso_wflow <- workflow(lasso_rec, lasso_spec)
@@ -372,7 +372,7 @@ lasso_wflow <- workflow(lasso_rec, lasso_spec)
 surv_metrics <- metric_set(brier_survival_integrated, brier_survival)
 
 lasso_tune_res <-
-  lasso_wflow %>%
+  lasso_wflow |>
   tune_grid(
     resamples = valve_rs,
     eval_time = time_points,
@@ -403,7 +403,7 @@ Now we can update the workflow and, assuming that this is the model that we want
 ```{r}
 #| label: finalize
 lasso_final_wflow <- 
-  lasso_wflow %>% 
+  lasso_wflow |> 
   finalize_workflow(best_penalty)
 
 lasso_final_wflow
@@ -432,16 +432,16 @@ How do the Brier Score estimates compare between the test set and resampling?
 #| fig-align: center
 #| warning: false
 
-collect_metrics(test_res) %>% 
-  mutate(estimator = "testing") %>% 
-  select(.eval_time, estimator, Brier = .estimate) %>% 
+collect_metrics(test_res) |> 
+  mutate(estimator = "testing") |> 
+  select(.eval_time, estimator, Brier = .estimate) |> 
   bind_rows(
-    lasso_tune_res %>% 
-    collect_metrics() %>% 
-      mutate(estimator = "resampling") %>% 
-      select(.eval_time, estimator, Brier = mean, penalty) %>% 
+    lasso_tune_res |> 
+    collect_metrics() |> 
+      mutate(estimator = "resampling") |> 
+      select(.eval_time, estimator, Brier = mean, penalty) |> 
       inner_join(best_penalty, by = "penalty")
-  ) %>% 
+  ) |> 
   ggplot(aes(.eval_time)) +
   geom_hline(yintercept = 0.25, col = "red", alpha = 1 / 2, lty = 2) +
   geom_line(aes(y = Brier, col = estimator)) +

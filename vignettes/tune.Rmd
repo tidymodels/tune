@@ -43,8 +43,8 @@ library(tidymodels)
 data(ames)
 
 set.seed(4595)
-data_split <- ames %>%
-  mutate(Sale_Price = log10(Sale_Price)) %>%
+data_split <- ames |>
+  mutate(Sale_Price = log10(Sale_Price)) |>
   initial_split(strata = Sale_Price)
 ames_train <- training(data_split)
 ames_test  <- testing(data_split)
@@ -53,10 +53,10 @@ ames_test  <- testing(data_split)
 For simplicity, the sale price of a house will be modeled as a function of its geo-location. These predictors appear to have nonlinear relationships with the outcome:
 
 ```{r geo-plots, fig.alt = "A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side facets, and the log sale price is on the y axis. The clouds of points follow highly non-linear trends, traced by a blue trend line."}
-ames_train %>% 
-  dplyr::select(Sale_Price, Longitude, Latitude) %>% 
+ames_train |> 
+  dplyr::select(Sale_Price, Longitude, Latitude) |> 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
-                      names_to = "predictor", values_to = "value") %>% 
+                      names_to = "predictor", values_to = "value") |> 
   ggplot(aes(x = value, Sale_Price)) + 
   geom_point(alpha = .2) + 
   geom_smooth(se = FALSE) + 
@@ -69,8 +69,8 @@ We can tag these parameters for optimization using the `tune()` function:
 
 ```{r tag-rec}
 ames_rec <- 
-  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
-  step_log(Gr_Liv_Area, base = 10) %>% 
+  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) |> 
+  step_log(Gr_Liv_Area, base = 10) |> 
   step_spline_natural(Longitude, Latitude, deg_free = tune())
 ```
 
@@ -84,9 +84,9 @@ To accomplish this, individual `step_spline_natural()` terms can be added to the
 
 ```{r tag-rec-d}
 ames_rec <- 
-  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
-  step_log(Gr_Liv_Area, base = 10) %>% 
-  step_spline_natural(Longitude, deg_free = tune("long df")) %>% 
+  recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) |> 
+  step_log(Gr_Liv_Area, base = 10) |> 
+  step_spline_natural(Longitude, deg_free = tune("long df")) |> 
   step_spline_natural(Latitude,  deg_free = tune("lat df"))
 ```
 
@@ -112,8 +112,8 @@ The parameter objects can be easily changed using the `update()` function:
 
 ```{r updated}
 ames_param <- 
-  ames_rec %>% 
-  extract_parameter_set_dials() %>% 
+  ames_rec |> 
+  extract_parameter_set_dials() |> 
   update(
     `long df` = spline_degree(), 
     `lat df` = spline_degree()
@@ -153,7 +153,7 @@ There are two other ingredients that are required before tuning.
 First is a model specification. Using functions in parsnip, a basic linear model can be used:
 
 ```{r mod}
-lm_mod <- linear_reg() %>% set_engine("lm")
+lm_mod <- linear_reg() |> set_engine("lm")
 ```
 
 No tuning parameters here. 
@@ -196,8 +196,8 @@ The values in the `mean` column are the averages of the `r nrow(cv_splits)` resa
 
 ```{r best-rmse}
 rmse_vals <- 
-  estimates %>% 
-  dplyr::filter(.metric == "rmse") %>% 
+  estimates |> 
+  dplyr::filter(.metric == "rmse") |> 
   arrange(mean)
 rmse_vals
 ```
@@ -213,10 +213,10 @@ Interestingly, latitude does _not_ do well with degrees of freedom less than 8. 
 Let's plot these spline functions over the data for both good and bad values of `deg_free`:  
 
 ```{r final-vals, fig.alt = "A scatterplot much like the first one, except that a smoother, red line, representing a spline term with fewer degrees of freedom, is also plotted. The red line is much smoother but accounts for the less of the variation shown."}
-ames_train %>% 
-  dplyr::select(Sale_Price, Longitude, Latitude) %>% 
+ames_train |> 
+  dplyr::select(Sale_Price, Longitude, Latitude) |> 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
-                      names_to = "predictor", values_to = "value") %>% 
+                      names_to = "predictor", values_to = "value") |> 
   ggplot(aes(x = value, Sale_Price)) + 
   geom_point(alpha = .2) + 
   geom_smooth(se = FALSE, method = lm, formula = y ~ splines::ns(x, df = 3),  col = "red")  + 
@@ -236,8 +236,8 @@ Instead of a linear regression, a nonlinear model might provide good performance
 ```{r knn}
 # requires the kknn package
 knn_mod <- 
-  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
-  set_engine("kknn") %>% 
+  nearest_neighbor(neighbors = tune(), weight_func = tune()) |> 
+  set_engine("kknn") |> 
   set_mode("regression")
 ```
 
@@ -246,8 +246,8 @@ The easiest approach to optimize the pre-processing and model parameters is to b
 ```{r knn-wflow}
 library(workflows)
 knn_wflow <- 
-  workflow() %>% 
-  add_model(knn_mod) %>% 
+  workflow() |> 
+  add_model(knn_mod) |> 
   add_recipe(ames_rec)
 ```
 
@@ -255,8 +255,8 @@ From this, the parameter set can be used to modify the range and values of param
 
 ```{r knn-set}
 knn_param <- 
-  knn_wflow %>% 
-  extract_parameter_set_dials() %>% 
+  knn_wflow |> 
+  extract_parameter_set_dials() |> 
     update(
     `long df` = spline_degree(c(2, 18)), 
     `lat df` = spline_degree(c(2, 18)),
@@ -295,8 +295,8 @@ autoplot(knn_search, type = "performance", metric = "rmse")
 The best results here were:
 
 ```{r bo-best}
-collect_metrics(knn_search) %>% 
-  dplyr::filter(.metric == "rmse") %>% 
+collect_metrics(knn_search) |> 
+  dplyr::filter(.metric == "rmse") |> 
   arrange(mean)
 ```
 

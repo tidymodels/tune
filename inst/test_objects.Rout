@@ -70,23 +70,23 @@ The following object is masked from ‘package:dplyr’:
 > form <- mpg ~ .
 > 
 > spline_rec <-
-+   recipe(mpg ~ ., data = mtcars) %>%
-+   step_normalize(all_predictors()) %>%
++   recipe(mpg ~ ., data = mtcars) |>
++   step_normalize(all_predictors()) |>
 +   step_bs(disp, deg_free = tune())
 > 
-> lm_mod <- linear_reg() %>% set_engine("lm")
+> lm_mod <- linear_reg() |> set_engine("lm")
 > 
 > knn_mod <-
-+   nearest_neighbor(mode = "regression", neighbors = tune()) %>%
++   nearest_neighbor(mode = "regression", neighbors = tune()) |>
 +   set_engine("kknn")
 > 
 > knn_mod_two <-
-+   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
++   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) |>
 +   set_engine("kknn")
 > 
 > get_coefs  <- function(x) {
-+   x %>%
-+     extract_fit_parsnip() %>%
++   x |>
++     extract_fit_parsnip() |>
 +     tidy()
 + }
 > 
@@ -97,18 +97,18 @@ The following object is masked from ‘package:dplyr’:
 > # ------------------------------------------------------------------------------
 > 
 > mt_spln_lm <-
-+   workflow() %>%
-+   add_recipe(spline_rec) %>%
++   workflow() |>
++   add_recipe(spline_rec) |>
 +   add_model(lm_mod)
 > 
 > mt_spln_knn <-
-+   workflow() %>%
-+   add_recipe(spline_rec) %>%
++   workflow() |>
++   add_recipe(spline_rec) |>
 +   add_model(knn_mod)
 > 
 > mt_knn <-
-+   workflow() %>%
-+   add_recipe(simple_rec) %>%
++   workflow() |>
++   add_recipe(simple_rec) |>
 +   add_model(knn_mod)
 > 
 > # ------------------------------------------------------------------------------
@@ -119,8 +119,21 @@ The following object is masked from ‘package:dplyr’:
 +             resamples = folds,
 +             control = g_ctrl)
 → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x1   B: x4There were issues with some computations   A: x2   B: x10There were issues with some computations   A: x2   B: x11There were issues with some computations   A: x2   B: x16There were issues with some computations   A: x2   B: x20
+There were issues with some computations   A: x1
+
+                                                 
+→ B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x1   B: x4
+
+There were issues with some computations   A: x2   B: x10
+
+There were issues with some computations   A: x2   B: x11
+
+There were issues with some computations   A: x2   B: x16
+
+There were issues with some computations   A: x2   B: x20
 > 
 > set.seed(8825)
 > mt_spln_lm_bo <-
@@ -131,7 +144,21 @@ There were issues with some computations   A: x1There were issues with some co
 +     control = b_ctrl
 +   )
 → A | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x5There were issues with some computations   A: x6There were issues with some computations   A: x11There were issues with some computations   A: x13There were issues with some computations   A: x14There were issues with some computations   A: x16There were issues with some computations   A: x16
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x5
+
+There were issues with some computations   A: x6
+
+There were issues with some computations   A: x11
+
+There were issues with some computations   A: x13
+
+There were issues with some computations   A: x14
+
+There were issues with some computations   A: x16
+
+There were issues with some computations   A: x16
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -144,8 +171,17 @@ There were issues with some computations   A: x1There were issues with some co
 +     control = g_ctrl
 +   )
 → A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x2                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x2There were issues with some computations   A: x6   B: x3There were issues with some computations   A: x12   B: x3There were issues with some computations   A: x15   B: x6
+There were issues with some computations   A: x2
+
+                                                 
+→ B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x2
+
+There were issues with some computations   A: x6   B: x3
+
+There were issues with some computations   A: x12   B: x3
+
+There were issues with some computations   A: x15   B: x6
 > 
 > set.seed(8825)
 > mt_spln_knn_bo <-
@@ -154,8 +190,31 @@ There were issues with some computations   A: x2There were issues with some co
 +              iter = 3,
 +              control = b_ctrl)
 → A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x4There were issues with some computations   A: x8   B: x2There were issues with some computations   A: x14   B: x5There were issues with some computations   A: x20   B: x5There were issues with some computations   A: x25   B: x10There were issues with some computations   A: x26   B: x10There were issues with some computations   A: x31   B: x12There were issues with some computations   A: x36   B: x14There were issues with some computations   A: x37   B: x14There were issues with some computations   A: x40   B: x16
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x4
+
+                                                 
+→ B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x4
+
+There were issues with some computations   A: x8   B: x2
+
+There were issues with some computations   A: x14   B: x5
+
+There were issues with some computations   A: x20   B: x5
+
+There were issues with some computations   A: x25   B: x10
+
+There were issues with some computations   A: x26   B: x10
+
+There were issues with some computations   A: x31   B: x12
+
+There were issues with some computations   A: x36   B: x14
+
+There were issues with some computations   A: x37   B: x14
+
+There were issues with some computations   A: x40   B: x16
 > 
 > set.seed(8825)
 > mt_spln_knn_bo_sep <-
@@ -165,22 +224,49 @@ There were issues with some computations   A: x4There were issues with some co
 +              iter = 3,
 +              control = b_ctrl)
 → A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x6                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x6There were issues with some computations   A: x12   B: x5There were issues with some computations   A: x18   B: x5There were issues with some computations   A: x24   B: x8! The Gaussian process model is being fit using 12 features but only has 5
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x6
+
+                                                 
+→ B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x6
+
+There were issues with some computations   A: x12   B: x5
+
+There were issues with some computations   A: x18   B: x5
+
+There were issues with some computations   A: x24   B: x8
+! The Gaussian process model is being fit using 12 features but only has 5
   data points to do so. This may cause errors or a poor model fit.
-                                                          → C | warning: did not converge in 10 iterations
-There were issues with some computations   A: x24   B: x8There were issues with some computations   A: x25   B: x10   C: x1There were issues with some computations   A: x26   B: x10   C: x1There were issues with some computations   A: x29   B: x11   C: x1! The Gaussian process model is being fit using 12 features but only has 6
+                                                          
+→ C | warning: did not converge in 10 iterations
+There were issues with some computations   A: x24   B: x8
+
+There were issues with some computations   A: x25   B: x10   C: x1
+
+There were issues with some computations   A: x26   B: x10   C: x1
+
+There were issues with some computations   A: x29   B: x11   C: x1
+! The Gaussian process model is being fit using 12 features but only has 6
   data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x31   B: x12   C: x1! The Gaussian process model is being fit using 12 features but only has 7
+There were issues with some computations   A: x31   B: x12   C: x1
+! The Gaussian process model is being fit using 12 features but only has 7
   data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x36   B: x14   C: x1There were issues with some computations   A: x37   B: x14   C: x1There were issues with some computations   A: x40   B: x16   C: x1
+There were issues with some computations   A: x36   B: x14   C: x1
+
+There were issues with some computations   A: x37   B: x14   C: x1
+
+There were issues with some computations   A: x40   B: x16   C: x1
 > 
 > # ------------------------------------------------------------------------------
 > 
 > set.seed(8825)
 > mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
 → A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x2There were issues with some computations   A: x5
+There were issues with some computations   A: x2
+
+There were issues with some computations   A: x5
 > 
 > set.seed(8825)
 > mt_knn_bo <-
@@ -189,7 +275,15 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 +              iter = 3,
 +              control = b_ctrl)
 → A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x6There were issues with some computations   A: x11There were issues with some computations   A: x17There were issues with some computations   A: x20
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x6
+
+There were issues with some computations   A: x11
+
+There were issues with some computations   A: x17
+
+There were issues with some computations   A: x20
 > 
 > # ------------------------------------------------------------------------------
 > 
@@ -209,7 +303,7 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 > data_folds <- vfold_cv(two_class_dat, repeats = 5)
 > 
 > two_class_rec <-
-+   recipe(Class ~ ., data = two_class_dat) %>%
++   recipe(Class ~ ., data = two_class_dat) |>
 +   step_normalize(A, B)
 > 
 > knn_model <-
@@ -218,22 +312,22 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 +     neighbors = tune("K"),
 +     weight_func = tune(),
 +     dist_power = tune("exponent")
-+   ) %>%
++   ) |>
 +   set_engine("kknn")
 > 
 > two_class_wflow <-
-+   workflow() %>%
-+   add_recipe(two_class_rec) %>%
++   workflow() |>
++   add_recipe(two_class_rec) |>
 +   add_model(knn_model)
 > 
 > two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) %>%
-+   update(K = neighbors(c(1, 50))) %>%
++   extract_parameter_set_dials(two_class_wflow) |>
++   update(K = neighbors(c(1, 50))) |>
 +   update(exponent = dist_power(c(1 / 10, 2)))
 > 
 > set.seed(2494)
 > two_class_grid <-
-+   two_class_set %>%
++   two_class_set |>
 +   grid_max_entropy(size = 10)
 > 
 > class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
@@ -302,21 +396,21 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 +     cost = tune(),
 +     degree = tune("%^*#"),
 +     scale_factor = tune()
-+   ) %>%
++   ) |>
 +   set_engine("kernlab")
 > 
 > two_class_wflow <-
-+   workflow() %>%
-+   add_recipe(two_class_rec) %>%
++   workflow() |>
++   add_recipe(two_class_rec) |>
 +   add_model(svm_model)
 > 
 > two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) %>%
++   extract_parameter_set_dials(two_class_wflow) |>
 +   update(cost = cost(c(-10, 4)))
 > 
 > set.seed(2494)
 > two_class_grid <-
-+   two_class_set %>%
++   two_class_set |>
 +   grid_max_entropy(size = 5)
 > 
 > class_only <- metric_set(accuracy, kap, mcc)
@@ -338,7 +432,7 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 + )
 > 
 > two_class_reg_grid <-
-+   two_class_set %>%
++   two_class_set |>
 +   grid_regular(levels = c(5, 4, 2))
 > 
 > svm_reg_results <-
@@ -366,29 +460,29 @@ There were issues with some computations   A: x24   B: x8There were issues wit
 > # "rcv_results" used in test-autoplot.R, test-select_best.R, and test-estimate.R
 > 
 > base_rec <-
-+   recipe(mpg ~ ., data = mtcars) %>%
++   recipe(mpg ~ ., data = mtcars) |>
 +   step_normalize(all_predictors())
 > 
 > disp_rec <-
-+   base_rec %>%
-+   step_bs(disp, degree = tune(), deg_free = tune()) %>%
++   base_rec |>
++   step_bs(disp, degree = tune(), deg_free = tune()) |>
 +   step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
 > 
 > lm_model <-
-+   linear_reg(mode = "regression") %>%
++   linear_reg(mode = "regression") |>
 +   set_engine("lm")
 > 
 > cars_wflow <-
-+   workflow() %>%
-+   add_recipe(disp_rec) %>%
++   workflow() |>
++   add_recipe(disp_rec) |>
 +   add_model(lm_model)
 > 
 > cars_set <-
-+   cars_wflow %>%
-+   parameters %>%
-+   update(degree = degree_int(1:2)) %>%
-+   update(deg_free = deg_free(c(2, 10))) %>%
-+   update(`wt degree` = degree_int(1:2)) %>%
++   cars_wflow |>
++   parameters |>
++   update(degree = degree_int(1:2)) |>
++   update(deg_free = deg_free(c(2, 10))) |>
++   update(`wt degree` = degree_int(1:2)) |>
 +   update(`wt df` = deg_free(c(2, 10)))
 Warning message:
 `parameters.workflow()` was deprecated in tune 0.1.6.9003.
@@ -396,7 +490,7 @@ Warning message:
 > 
 > set.seed(255)
 > cars_grid <-
-+   cars_set %>%
++   cars_set |>
 +   grid_regular(levels = c(3, 2, 3, 2))
 > 
 > 
@@ -408,9 +502,139 @@ Warning message:
 +     control = control_grid(verbose = FALSE, save_pred = TRUE)
 +   )
 → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1There were issues with some computations   A: x3There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x4There were issues with some computations   A: x4   B: x3There were issues with some computations   A: x4   B: x9There were issues with some computations   A: x4   B: x14                                                          → C | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases, prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x4   B: x14There were issues with some computations   A: x4   B: x18   C: x2There were issues with some computations   A: x4   B: x23   C: x2There were issues with some computations   A: x4   B: x29   C: x2There were issues with some computations   A: x4   B: x32   C: x4There were issues with some computations   A: x4   B: x33   C: x4There were issues with some computations   A: x4   B: x39   C: x4There were issues with some computations   A: x4   B: x44   C: x4There were issues with some computations   A: x4   B: x49   C: x4There were issues with some computations   A: x4   B: x54   C: x4There were issues with some computations   A: x4   B: x60   C: x4There were issues with some computations   A: x4   B: x65   C: x4There were issues with some computations   A: x4   B: x71   C: x4There were issues with some computations   A: x4   B: x76   C: x4There were issues with some computations   A: x4   B: x82   C: x4There were issues with some computations   A: x4   B: x88   C: x4There were issues with some computations   A: x4   B: x93   C: x4There were issues with some computations   A: x4   B: x99   C: x4There were issues with some computations   A: x4   B: x104   C: x4There were issues with some computations   A: x4   B: x105   C: x4There were issues with some computations   A: x4   B: x111   C: x4There were issues with some computations   A: x4   B: x117   C: x4There were issues with some computations   A: x4   B: x122   C: x4There were issues with some computations   A: x4   B: x128   C: x4There were issues with some computations   A: x4   B: x133   C: x4There were issues with some computations   A: x4   B: x139   C: x4There were issues with some computations   A: x4   B: x144   C: x4There were issues with some computations   A: x4   B: x150   C: x4There were issues with some computations   A: x4   B: x154   C: x5There were issues with some computations   A: x4   B: x159   C: x6There were issues with some computations   A: x4   B: x164   C: x6There were issues with some computations   A: x4   B: x170   C: x6There were issues with some computations   A: x5   B: x172   C: x8There were issues with some computations   A: x7   B: x172   C: x8There were issues with some computations   A: x8   B: x172   C: x8There were issues with some computations   A: x8   B: x173   C: x8There were issues with some computations   A: x8   B: x178   C: x8There were issues with some computations   A: x8   B: x184   C: x8There were issues with some computations   A: x8   B: x189   C: x8There were issues with some computations   A: x8   B: x195   C: x8There were issues with some computations   A: x8   B: x200   C: x8There were issues with some computations   A: x8   B: x206   C: x8There were issues with some computations   A: x8   B: x209   C: x8There were issues with some computations   A: x8   B: x215   C: x8There were issues with some computations   A: x8   B: x220   C: x8There were issues with some computations   A: x8   B: x226   C: x8There were issues with some computations   A: x8   B: x229   C: x8There were issues with some computations   A: x8   B: x235   C: x8There were issues with some computations   A: x8   B: x241   C: x8There were issues with some computations   A: x8   B: x245   C: x8There were issues with some computations   A: x8   B: x246   C: x8There were issues with some computations   A: x8   B: x251   C: x8There were issues with some computations   A: x8   B: x257   C: x8There were issues with some computations   A: x8   B: x263   C: x8There were issues with some computations   A: x8   B: x269   C: x8There were issues with some computations   A: x8   B: x274   C: x8There were issues with some computations   A: x8   B: x280   C: x8There were issues with some computations   A: x8   B: x280   C: x8
+There were issues with some computations   A: x1
+
+There were issues with some computations   A: x3
+
+There were issues with some computations   A: x4
+
+                                                 
+→ B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
+There were issues with some computations   A: x4
+
+There were issues with some computations   A: x4   B: x3
+
+There were issues with some computations   A: x4   B: x9
+
+There were issues with some computations   A: x4   B: x14
+
+                                                          
+→ C | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases, prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+There were issues with some computations   A: x4   B: x14
+
+There were issues with some computations   A: x4   B: x18   C: x2
+
+There were issues with some computations   A: x4   B: x23   C: x2
+
+There were issues with some computations   A: x4   B: x29   C: x2
+
+There were issues with some computations   A: x4   B: x32   C: x4
+
+There were issues with some computations   A: x4   B: x33   C: x4
+
+There were issues with some computations   A: x4   B: x39   C: x4
+
+There were issues with some computations   A: x4   B: x44   C: x4
+
+There were issues with some computations   A: x4   B: x49   C: x4
+
+There were issues with some computations   A: x4   B: x54   C: x4
+
+There were issues with some computations   A: x4   B: x60   C: x4
+
+There were issues with some computations   A: x4   B: x65   C: x4
+
+There were issues with some computations   A: x4   B: x71   C: x4
+
+There were issues with some computations   A: x4   B: x76   C: x4
+
+There were issues with some computations   A: x4   B: x82   C: x4
+
+There were issues with some computations   A: x4   B: x88   C: x4
+
+There were issues with some computations   A: x4   B: x93   C: x4
+
+There were issues with some computations   A: x4   B: x99   C: x4
+
+There were issues with some computations   A: x4   B: x104   C: x4
+
+There were issues with some computations   A: x4   B: x105   C: x4
+
+There were issues with some computations   A: x4   B: x111   C: x4
+
+There were issues with some computations   A: x4   B: x117   C: x4
+
+There were issues with some computations   A: x4   B: x122   C: x4
+
+There were issues with some computations   A: x4   B: x128   C: x4
+
+There were issues with some computations   A: x4   B: x133   C: x4
+
+There were issues with some computations   A: x4   B: x139   C: x4
+
+There were issues with some computations   A: x4   B: x144   C: x4
+
+There were issues with some computations   A: x4   B: x150   C: x4
+
+There were issues with some computations   A: x4   B: x154   C: x5
+
+There were issues with some computations   A: x4   B: x159   C: x6
+
+There were issues with some computations   A: x4   B: x164   C: x6
+
+There were issues with some computations   A: x4   B: x170   C: x6
+
+There were issues with some computations   A: x5   B: x172   C: x8
+
+There were issues with some computations   A: x7   B: x172   C: x8
+
+There were issues with some computations   A: x8   B: x172   C: x8
+
+There were issues with some computations   A: x8   B: x173   C: x8
+
+There were issues with some computations   A: x8   B: x178   C: x8
+
+There were issues with some computations   A: x8   B: x184   C: x8
+
+There were issues with some computations   A: x8   B: x189   C: x8
+
+There were issues with some computations   A: x8   B: x195   C: x8
+
+There were issues with some computations   A: x8   B: x200   C: x8
+
+There were issues with some computations   A: x8   B: x206   C: x8
+
+There were issues with some computations   A: x8   B: x209   C: x8
+
+There were issues with some computations   A: x8   B: x215   C: x8
+
+There were issues with some computations   A: x8   B: x220   C: x8
+
+There were issues with some computations   A: x8   B: x226   C: x8
+
+There were issues with some computations   A: x8   B: x229   C: x8
+
+There were issues with some computations   A: x8   B: x235   C: x8
+
+There were issues with some computations   A: x8   B: x241   C: x8
+
+There were issues with some computations   A: x8   B: x245   C: x8
+
+There were issues with some computations   A: x8   B: x246   C: x8
+
+There were issues with some computations   A: x8   B: x251   C: x8
+
+There were issues with some computations   A: x8   B: x257   C: x8
+
+There were issues with some computations   A: x8   B: x263   C: x8
+
+There were issues with some computations   A: x8   B: x269   C: x8
+
+There were issues with some computations   A: x8   B: x274   C: x8
+
+There were issues with some computations   A: x8   B: x280   C: x8
+
+There were issues with some computations   A: x8   B: x280   C: x8
 > 
 > saveRDS(
 +   rcv_results,
@@ -429,7 +653,7 @@ There were issues with some computations   A: x4   B: x14There were issues wit
 > 
 > rec <- recipe(mpg ~ ., data = mtcars)
 > 
-> mod <- linear_reg() %>%
+> mod <- linear_reg() |>
 +   set_engine("lm")
 > 
 > lm_resamples <- fit_resamples(mod, rec, folds)
@@ -457,21 +681,25 @@ There were issues with some computations   A: x4   B: x14There were issues wit
 > set.seed(7898)
 > folds <- vfold_cv(mtcars, v = 2)
 > 
-> rec <- recipe(mpg ~ ., data = mtcars) %>%
-+   step_normalize(all_predictors()) %>%
+> rec <- recipe(mpg ~ ., data = mtcars) |>
++   step_normalize(all_predictors()) |>
 +   step_ns(disp, deg_free = tune())
 > 
-> mod <- linear_reg(mode = "regression") %>%
+> mod <- linear_reg(mode = "regression") |>
 +   set_engine("lm")
 > 
-> wflow <- workflow() %>%
-+   add_recipe(rec) %>%
+> wflow <- workflow() |>
++   add_recipe(rec) |>
 +   add_model(mod)
 > 
 > set.seed(2934)
 > lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
 → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x2There were issues with some computations   A: x5There were issues with some computations   A: x6
+There were issues with some computations   A: x2
+
+There were issues with some computations   A: x5
+
+There were issues with some computations   A: x6
 > 
 > saveRDS(
 +   lm_bayes,
@@ -484,8 +712,8 @@ There were issues with some computations   A: x4   B: x14There were issues wit
 > # A single survival model
 > 
 > set.seed(1)
-> sim_dat <- prodlim::SimSurv(200) %>%
-+   mutate(event_time = Surv(time, event)) %>%
+> sim_dat <- prodlim::SimSurv(200) |>
++   mutate(event_time = Surv(time, event)) |>
 +   select(event_time, X1, X2)
 > 
 > set.seed(2)
@@ -494,8 +722,8 @@ There were issues with some computations   A: x4   B: x14There were issues wit
 > time_points <- c(10, 1, 5, 15)
 > 
 > boost_spec <-
-+   boost_tree(trees = tune()) %>%
-+   set_mode("censored regression") %>%
++   boost_tree(trees = tune()) |>
++   set_mode("censored regression") |>
 +   set_engine("mboost")
 > 
 > srv_mtr <-
@@ -508,7 +736,7 @@ There were issues with some computations   A: x4   B: x14There were issues wit
 > 
 > set.seed(2193)
 > surv_boost_tree_res <-
-+   boost_spec %>%
++   boost_spec |>
 +   tune_grid(
 +     event_time ~ X1 + X2,
 +     resamples = sim_rs,

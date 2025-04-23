@@ -28,7 +28,7 @@
 #'     limit_val = 0,
 #'     slope = 1 / 5
 #'   )
-#' ) %>%
+#' ) |>
 #'   ggplot(aes(x = iter, y = value)) +
 #'   geom_path()
 #' @export

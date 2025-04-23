@@ -7,14 +7,14 @@ test_that("tune recipe only", {
   mt_folds <- rsample::vfold_cv(mtcars, v = 5)
 
   extr_1_1 <- function(x) {
-    extract_recipe(x) %>% tidy(number = 2)
+    extract_recipe(x) |> tidy(number = 2)
   }
   before_kind <- RNGkind()[[1]]
   expect_no_error(
     res_1_1 <-
-      workflow() %>%
-      add_recipe(helper_objects$rec_tune_1) %>%
-      add_model(helper_objects$lm_mod) %>%
+      workflow() |>
+      add_recipe(helper_objects$rec_tune_1) |>
+      add_model(helper_objects$lm_mod) |>
       tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1))
   )
   after_kind <- RNGkind()[[1]]
@@ -43,9 +43,9 @@ test_that("tune model only", {
 
   expect_no_error(
     res_2_1 <-
-      workflow() %>%
-      add_recipe(helper_objects$rec_no_tune_1) %>%
-      add_model(helper_objects$svm_mod) %>%
+      workflow() |>
+      add_recipe(helper_objects$rec_no_tune_1) |>
+      add_model(helper_objects$svm_mod) |>
       tune_grid(
         resamples = mt_folds,
         grid = 2,
@@ -69,9 +69,9 @@ test_that("tune model only", {
   # should not fail:
   expect_no_error(
     res_2_2 <-
-      workflow() %>%
-      add_recipe(helper_objects$rec_tune_1) %>%
-      add_model(helper_objects$lm_mod) %>%
+      workflow() |>
+      add_recipe(helper_objects$rec_tune_1) |>
+      add_model(helper_objects$lm_mod) |>
       tune_grid(
         resamples = mt_folds,
         grid = 2,
@@ -81,7 +81,7 @@ test_that("tune model only", {
 
   expect_no_error(
     extract_2_2 <-
-      dplyr::bind_rows(res_2_2$.extracts) %>%
+      dplyr::bind_rows(res_2_2$.extracts) |>
       tidyr::unnest(cols = c(.extracts))
   )
   expect_true(all(!extract_2_2$is_null_rec))
@@ -165,13 +165,13 @@ test_that("tune model and recipe", {
   }
 
   wflow_3 <-
-    workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+    workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
   set.seed(35)
   grid_3 <-
-    extract_parameter_set_dials(wflow_3) %>%
-    update(num_comp = dials::num_comp(c(2, 5))) %>%
+    extract_parameter_set_dials(wflow_3) |>
+    update(num_comp = dials::num_comp(c(2, 5))) |>
     dials::grid_space_filling(size = 4)
 
   expect_no_error(
@@ -207,14 +207,14 @@ test_that("check .config in extracts", {
 
   recipe_only_configs <-
     full_join(
-      mt_spln_lm_bo %>%
-        filter(id == first(id)) %>%
-        select(.iter, .metrics) %>%
-        unnest(cols = .metrics) %>%
+      mt_spln_lm_bo |>
+        filter(id == first(id)) |>
+        select(.iter, .metrics) |>
+        unnest(cols = .metrics) |>
         filter(.metric == first(.metric)),
-      mt_spln_lm_bo %>%
-        filter(id == first(id)) %>%
-        select(.iter, .extracts) %>%
+      mt_spln_lm_bo |>
+        filter(id == first(id)) |>
+        select(.iter, .extracts) |>
         unnest(cols = .extracts),
       by = c(".iter", "deg_free")
     )

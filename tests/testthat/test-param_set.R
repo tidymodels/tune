@@ -24,9 +24,9 @@ test_that("parameters.recipe() still works after deprecation", {
 
   data("Chicago", package = "modeldata")
   spline_rec <-
-    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
-    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
-    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
+    recipes::recipe(ridership ~ ., data = head(Chicago)) |>
+    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) |>
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) |>
     recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
 
   spline_info <- dials::parameters(spline_rec)
@@ -41,7 +41,7 @@ test_that("parameters.model_spec() still works after deprecation", {
   skip_if_not_installed("parsnip")
 
   bst_model <-
-    parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) %>%
+    parsnip::boost_tree(mode = "classification", trees = tune("funky name \n")) |>
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
 
   c5_info <- dials::parameters(bst_model)

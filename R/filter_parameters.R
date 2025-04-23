@@ -28,25 +28,25 @@
 #' ## -----------------------------------------------------------------------------
 #' # select all combinations using the 'rank' weighting scheme
 #'
-#' ames_grid_search %>%
+#' ames_grid_search |>
 #'   collect_metrics()
 #'
-#' filter_parameters(ames_grid_search, weight_func == "rank") %>%
+#' filter_parameters(ames_grid_search, weight_func == "rank") |>
 #'   collect_metrics()
 #'
 #' rank_only <- tibble::tibble(weight_func = "rank")
-#' filter_parameters(ames_grid_search, parameters = rank_only) %>%
+#' filter_parameters(ames_grid_search, parameters = rank_only) |>
 #'   collect_metrics()
 #'
 #' ## -----------------------------------------------------------------------------
 #' # Keep only the results from the numerically best combination
 #'
-#' ames_iter_search %>%
+#' ames_iter_search |>
 #'   collect_metrics()
 #'
 #' best_param <- select_best(ames_iter_search, metric = "rmse")
-#' ames_iter_search %>%
-#'   filter_parameters(parameters = best_param) %>%
+#' ames_iter_search |>
+#'   filter_parameters(parameters = best_param) |>
 #'   collect_metrics()
 #' @details
 #' Removing some parameter combinations might affect the results of `autoplot()`

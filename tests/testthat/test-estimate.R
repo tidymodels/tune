@@ -4,21 +4,21 @@ opt <- getOption("dplyr.summarise.inform", default = "FALSE")
 options(dplyr.summarise.inform = FALSE)
 
 compl <-
-  unnest(rcv_results, .metrics) %>%
-  group_by(deg_free, degree, `wt df`, `wt degree`, .config, .metric, .estimator) %>%
+  unnest(rcv_results, .metrics) |>
+  group_by(deg_free, degree, `wt df`, `wt degree`, .config, .metric, .estimator) |>
   summarize(
     mean = mean(.estimate, na.rm = TRUE),
     n = sum(!is.na(.estimator)),
     std_err = sd(.estimate, na.rm = TRUE) / sqrt(n)
-  ) %>%
-  ungroup() %>%
+  ) |>
+  ungroup() |>
   arrange(.config)
 
 options(dplyr.summarise.inform = opt)
 
 test_that("estimate method", {
   expect_equal(
-    collect_metrics(rcv_results)[, names(compl)] %>% arrange(.config),
+    collect_metrics(rcv_results)[, names(compl)] |> arrange(.config),
     compl
   )
 })
@@ -43,13 +43,13 @@ test_that("estimate method (with apparent resample)", {
     )
 
   collected_sum <-
-    collect_metrics(res) %>%
+    collect_metrics(res) |>
     select(mean, n, std_err)
 
   collected_manual <-
-    res %>%
-    dplyr::filter(id != "Apparent") %>%
-    tidyr::unnest(.metrics) %>%
+    res |>
+    dplyr::filter(id != "Apparent") |>
+    tidyr::unnest(.metrics) |>
     summarize(
       mean = mean(.estimate),
       n = sum(!is.na(.estimator)),

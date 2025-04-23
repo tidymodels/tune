@@ -215,11 +215,11 @@ library(workflows)
 set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
 
-spline_rec <- recipe(mpg ~ ., data = mtcars) \%>\%
-  step_spline_natural(disp) \%>\%
+spline_rec <- recipe(mpg ~ ., data = mtcars) |>
+  step_spline_natural(disp) |>
   step_spline_natural(wt)
 
-lin_mod <- linear_reg() \%>\%
+lin_mod <- linear_reg() |>
   set_engine("lm")
 
 control <- control_resamples(save_pred = TRUE)
@@ -234,8 +234,8 @@ show_best(spline_res, metric = "rmse")
 # supply that to `fit_resamples()` instead. Here, a workflows "variables"
 # preprocessor is used, which lets you supply terms using dplyr selectors.
 # The variables are used as-is, no preprocessing is done to them.
-wf <- workflow() \%>\%
-  add_variables(outcomes = mpg, predictors = everything()) \%>\%
+wf <- workflow() |>
+  add_variables(outcomes = mpg, predictors = everything()) |>
   add_model(lin_mod)
 
 wf_res <- fit_resamples(wf, folds)

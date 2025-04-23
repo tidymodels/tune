@@ -56,7 +56,7 @@
 #'   sac_rs <- vfold_cv(Sacramento)
 #'
 #'   lm_res <-
-#'     linear_reg() %>%
+#'     linear_reg() |>
 #'     fit_resamples(
 #'       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
 #'       resamples = sac_rs,
@@ -116,8 +116,8 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
       config_keys, sample.int(10000, p),
       ~ boostrap_metrics_by_config(.x, .y, .data, metrics, times, allow_par,
                                    event_level, alpha, metrics_info)
-    ) %>%
-    purrr::list_rbind() %>%
+    ) |>
+    purrr::list_rbind() |>
     dplyr::arrange(.config, .metric)
   dplyr::as_tibble(res)
 }
@@ -223,11 +223,11 @@ int_pctl_surv <- function(x, allow_par, alpha) {
   merge_keys <- c("term", grep("^\\.", names(res), value = TRUE))
   merge_keys <- intersect(merge_keys, names(met_key))
 
-  res <- res %>%
-    dplyr::full_join(met_key, by = merge_keys) %>%
-    dplyr::arrange(order) %>%
-    dplyr::select(-term, -order) %>%
-    dplyr::rename(term = old_term) %>%
+  res <- res |>
+    dplyr::full_join(met_key, by = merge_keys) |>
+    dplyr::arrange(order) |>
+    dplyr::select(-term, -order) |>
+    dplyr::rename(term = old_term) |>
     dplyr::relocate(term, dplyr::any_of(".eval_time"))
 }
 # nocov end
@@ -238,7 +238,7 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
   param <- .get_tune_parameter_names(x)
   config_cols <- c(".config", ".iter", param)
   config_keys <-
-    collect_metrics(x, summarize = FALSE) %>%
+    collect_metrics(x, summarize = FALSE) |>
     dplyr::distinct(dplyr::pick(dplyr::any_of(config_cols)))
   if (!is.null(parameters)) {
     merge_cols <- intersect(names(config_keys), names(parameters))

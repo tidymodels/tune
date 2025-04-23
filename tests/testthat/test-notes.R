@@ -12,39 +12,39 @@ test_that("showing notes", {
   data(Chicago, package = "modeldata")
 
   base_wflow <-
-    workflow() %>%
+    workflow() |>
     add_model(linear_reg())
 
   role_rec <-
-    recipe(ridership ~ ., data = Chicago) %>%
-    step_date(date, id = "step_date") %>%
-    update_role(date, new_role = "date") %>%
+    recipe(ridership ~ ., data = Chicago) |>
+    step_date(date, id = "step_date") |>
+    update_role(date, new_role = "date") |>
     update_role_requirements("date", bake = FALSE)
 
   role_bp_wflow <-
-    base_wflow %>%
+    base_wflow |>
     add_recipe(role_rec)
 
   set.seed(1)
   rs <- vfold_cv(Chicago)
 
   skip_if(packageVersion("dplyr") < "1.1.1")
-  expect_snapshot(res_roles <- role_bp_wflow %>% fit_resamples(rs))
+  expect_snapshot(res_roles <- role_bp_wflow |> fit_resamples(rs))
   expect_snapshot(show_notes(res_roles))
 
   # example with warnings
 
   simple_rec <-
-    recipe(ridership ~ ., data = Chicago) %>%
-    step_holiday(date) %>%
-    step_date(date, keep_original_cols = FALSE) %>%
+    recipe(ridership ~ ., data = Chicago) |>
+    step_holiday(date) |>
+    step_date(date, keep_original_cols = FALSE) |>
     step_dummy(all_nominal_predictors(), one_hot = TRUE)
 
   simple_wflow <-
-    base_wflow %>%
+    base_wflow |>
     add_recipe(simple_rec)
 
-  expect_snapshot(res_simple <- simple_wflow %>% fit_resamples(rs))
+  expect_snapshot(res_simple <- simple_wflow |> fit_resamples(rs))
   expect_snapshot(show_notes(res_simple))
 
   # nothing to show
@@ -53,10 +53,10 @@ test_that("showing notes", {
     recipe(ridership ~ Austin + Belmont, data = Chicago)
 
   clean_wflow <-
-    base_wflow %>%
+    base_wflow |>
     add_recipe(clean_rec)
 
-  res_clean <- clean_wflow %>% fit_resamples(rs)
+  res_clean <- clean_wflow |> fit_resamples(rs)
   expect_snapshot(show_notes(.Last.tune.result))
 
   # Get cli lines right
@@ -65,7 +65,7 @@ test_that("showing notes", {
   rs <- rsample::vfold_cv(dat)
   expect_snapshot(
     fit_lr <-
-      parsnip::logistic_reg() %>%
+      parsnip::logistic_reg() |>
       fit_resamples(class ~ ., rs)
   )
   expect_snapshot(show_notes(fit_lr))

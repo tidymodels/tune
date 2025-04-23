@@ -22,8 +22,8 @@
 #'
 #' set.seed(2393)
 #' res <-
-#'   logistic_reg() %>%
-#'   set_engine("glm") %>%
+#'   logistic_reg() |>
+#'   set_engine("glm") |>
 #'   fit_resamples(
 #'     Class ~ .,
 #'     resamples = vfold_cv(two_class_dat, v = 3),
@@ -56,8 +56,8 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   params <- .get_tune_parameter_names(x)
   if (length(params) > 0) {
     param_combos <-
-      preds %>%
-      dplyr::select(!!!params) %>%
+      preds |>
+      dplyr::select(!!!params) |>
       distinct()
     if (nrow(param_combos) > 1) {
       cli::cli_abort(
@@ -75,8 +75,8 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
 
   id_cols <- grep("(^id$)|($id[1-9]$)", names(preds), value = TRUE)
   preds <-
-    preds %>%
-    dplyr::group_nest(!!!syms(id_cols)) %>%
+    preds |>
+    dplyr::group_nest(!!!syms(id_cols)) |>
     dplyr::mutate(
       conf_mats =
         purrr::map(data, ~ yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class))
@@ -86,10 +86,10 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   options(dplyr.summarise.inform = FALSE)
 
   res <-
-    purrr::map(preds$conf_mats, ~ as.data.frame(.x$table)) %>%
-    purrr::list_rbind() %>%
-    dplyr::group_by(Prediction, Truth) %>%
-    dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) %>%
+    purrr::map(preds$conf_mats, ~ as.data.frame(.x$table)) |>
+    purrr::list_rbind() |>
+    dplyr::group_by(Prediction, Truth) |>
+    dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) |>
     dplyr::ungroup()
 
   options(dplyr.summarise.inform = opt)
@@ -99,7 +99,7 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
     res <- matrix(res$Freq, ncol = length(lvls), byrow = TRUE)
     colnames(res) <- lvls
     rownames(res) <- lvls
-    res <- as.table(res) %>% yardstick::conf_mat()
+    res <- as.table(res) |> yardstick::conf_mat()
   }
   res
 }

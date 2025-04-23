@@ -11,34 +11,34 @@ data_folds <- rolling_origin(Chicago, initial = 364 * 15, assess = 7 * 4, skip =
 stations <- names(Chicago)[2:21]
 
 chi_rec <-
-  recipe(ridership ~ ., data = Chicago) %>%
-  step_holiday(date) %>%
-  step_date(date) %>%
-  step_rm(date) %>%
-  step_dummy(all_nominal()) %>%
-  step_zv(all_predictors()) %>%
+  recipe(ridership ~ ., data = Chicago) |>
+  step_holiday(date) |>
+  step_date(date) |>
+  step_rm(date) |>
+  step_dummy(all_nominal()) |>
+  step_zv(all_predictors()) |>
   step_corr(all_of(!!stations), threshold = tune())
 
 
 svm_mod <-
-  svm_rbf(mode = "regression", cost = tune(), rbf_sigma = tune(), margin = tune()) %>%
+  svm_rbf(mode = "regression", cost = tune(), rbf_sigma = tune(), margin = tune()) |>
   set_engine("kernlab")
 
 chi_wflow <-
-  workflow() %>%
-  add_recipe(chi_rec) %>%
+  workflow() |>
+  add_recipe(chi_rec) |>
   add_model(svm_mod)
 
-cor_mat <- Chicago %>% dplyr::select(all_of(stations)) %>% cor()
+cor_mat <- Chicago |> dplyr::select(all_of(stations)) |> cor()
 cor_mat <- tibble(cor = cor_mat[upper.tri(cor_mat)])
 ggplot(cor_mat, aes(x = cor)) + geom_histogram(binwidth = .01, col = "white")
 
 chi_set <-
-  parameters(chi_wflow) %>%
+  parameters(chi_wflow) |>
   update(threshold = threshold(c(.8, .99)))
 
 chi_grid <-
-  chi_set %>%
+  chi_set |>
   grid_max_entropy(size = 5)
 
 
@@ -49,16 +49,16 @@ ext <- function(x) {
 res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE, save_pred = TRUE, extract = ext))
 
 
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  select(-n, -std_err, -.estimator, -.metric) %>%
+summarize(res) |>
+  dplyr::filter(.metric == "rmse") |>
+  select(-n, -std_err, -.estimator, -.metric) |>
   ggplot(aes(x = threshold, y = mean)) +
   geom_point() +
   geom_line()
 
-summarize(res) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
+summarize(res) |>
+  dplyr::filter(.metric == "rmse") |>
+  arrange(mean) |>
   slice(1)
 
 foo <- function(i) {

@@ -144,28 +144,28 @@ library(dplyr)
 library(recipes)
 library(tibble)
 
-lm_mod <- linear_reg() \%>\% set_engine("lm")
+lm_mod <- linear_reg() |> set_engine("lm")
 set.seed(93599150)
 car_folds <- vfold_cv(mtcars, v = 2, repeats = 3)
 ctrl <- control_resamples(save_pred = TRUE, extract = extract_fit_engine)
 
 spline_rec <-
-  recipe(mpg ~ ., data = mtcars) \%>\%
+  recipe(mpg ~ ., data = mtcars) |>
   step_spline_natural(disp, deg_free = tune("df"))
 
 grid <- tibble(df = 3:6)
 
 resampled <-
-  lm_mod \%>\%
+  lm_mod |>
   tune_grid(spline_rec, resamples = car_folds, control = ctrl, grid = grid)
 
-collect_predictions(resampled) \%>\% arrange(.row)
-collect_predictions(resampled, summarize = TRUE) \%>\% arrange(.row)
+collect_predictions(resampled) |> arrange(.row)
+collect_predictions(resampled, summarize = TRUE) |> arrange(.row)
 collect_predictions(
   resampled,
   summarize = TRUE,
   parameters = grid[1, ]
-) \%>\% arrange(.row)
+) |> arrange(.row)
 
 collect_extracts(resampled)
 \dontshow{\}) # examplesIf}

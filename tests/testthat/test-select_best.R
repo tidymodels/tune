@@ -24,11 +24,11 @@ test_that("select_best()", {
     )
 
   expect_equal(
-    select_best(rcv_results, metric = "rmse") %>% select(-.config),
+    select_best(rcv_results, metric = "rmse") |> select(-.config),
     best_rmse
   )
   expect_equal(
-    select_best(rcv_results, metric = "rsq") %>% select(-.config),
+    select_best(rcv_results, metric = "rsq") |> select(-.config),
     best_rsq
   )
 
@@ -54,22 +54,22 @@ test_that("show_best()", {
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   rcv_rmse <-
-    rcv_results %>%
-    collect_metrics() %>%
-    dplyr::filter(.metric == "rmse") %>%
+    rcv_results |>
+    collect_metrics() |>
+    dplyr::filter(.metric == "rmse") |>
     dplyr::arrange(mean)
 
   expect_equal(
     show_best(rcv_results, metric = "rmse", n = 1),
-    rcv_rmse %>% slice(1)
+    rcv_rmse |> slice(1)
   )
   expect_equal(
     show_best(rcv_results, metric = "rmse", n = nrow(rcv_rmse) + 1),
     rcv_rmse
   )
   expect_equal(
-    show_best(rcv_results, metric = "rmse", n = 1) %>% names(),
-    rcv_rmse %>% names()
+    show_best(rcv_results, metric = "rmse", n = 1) |> names(),
+    rcv_rmse |> names()
   )
   expect_snapshot({
     best_default_metric <- show_best(rcv_results)
@@ -210,53 +210,53 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
       metrics = yardstick::metric_set(yardstick::mpe, yardstick::msd)
     )
 
-  tune_res_metrics <- tune_res %>% collect_metrics()
+  tune_res_metrics <- tune_res |> collect_metrics()
 
   expect_equal(
     select_best(tune_res, metric = "msd")$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      arrange(abs(mean)) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      arrange(abs(mean)) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     select_best(tune_res, metric = "mpe")$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      arrange(abs(mean)) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      arrange(abs(mean)) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     show_best(tune_res, metric = "msd", n = 5)$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      arrange(abs(mean)) %>%
-      slice(1:5) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      arrange(abs(mean)) |>
+      slice(1:5) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     show_best(tune_res, metric = "mpe", n = 5)$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      arrange(abs(mean)) %>%
-      slice(1:5) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      arrange(abs(mean)) |>
+      slice(1:5) |>
+      select(.config) |>
       pull()
   )
 
   # one std error, msd ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    arrange(min(abs(mean))) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    arrange(min(abs(mean))) |>
     slice(1)
 
   bound_lower <- -abs(best$mean) - abs(best$std_err)
@@ -264,10 +264,10 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
   expect_equal(bound_lower, -bound_upper)
 
   simplest_within_bound <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    filter(abs(mean) < bound_upper) %>%
-    arrange(desc(neighbors)) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    filter(abs(mean) < bound_upper) |>
+    arrange(desc(neighbors)) |>
     slice(1)
 
   expect_equal(
@@ -277,9 +277,9 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
 
   # one std error, mpe ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    arrange(min(abs(mean))) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    arrange(min(abs(mean))) |>
     slice(1)
 
   bound_lower <- -abs(best$mean) - abs(best$std_err)
@@ -287,10 +287,10 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
   expect_equal(bound_lower, -bound_upper)
 
   simplest_within_bound <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    filter(abs(mean) < bound_upper) %>%
-    arrange(desc(neighbors)) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    filter(abs(mean) < bound_upper) |>
+    arrange(desc(neighbors)) |>
     slice(1)
 
   expect_equal(
@@ -300,45 +300,45 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
 
   # pct loss, msd ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    arrange(abs(mean)) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    arrange(abs(mean)) |>
     slice(1)
 
   expect_equal(
     select_by_pct_loss(tune_res, metric = "msd", limit = 10, desc(neighbors))$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      dplyr::rowwise() %>%
-      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
-      ungroup() %>%
-      arrange(desc(neighbors)) %>%
-      slice(1:which(.config == best$.config)) %>%
-      filter(loss < 10) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      dplyr::rowwise() |>
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) |>
+      ungroup() |>
+      arrange(desc(neighbors)) |>
+      slice(1:which(.config == best$.config)) |>
+      filter(loss < 10) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   # pct loss, mpe ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    arrange(abs(mean)) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    arrange(abs(mean)) |>
     slice(1)
 
   expect_equal(
     select_by_pct_loss(tune_res, metric = "mpe", limit = 10, desc(neighbors))$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      dplyr::rowwise() %>%
-      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
-      ungroup() %>%
-      arrange(desc(neighbors)) %>%
-      slice(1:which(.config == best$.config)) %>%
-      filter(loss < 10) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      dplyr::rowwise() |>
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) |>
+      ungroup() |>
+      arrange(desc(neighbors)) |>
+      slice(1:which(.config == best$.config)) |>
+      filter(loss < 10) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 })

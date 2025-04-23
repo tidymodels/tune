@@ -4,7 +4,7 @@ test_that("compute_grid_info - recipe only", {
   library(parsnip)
   library(dials)
 
-  rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
+  rec <- recipe(mpg ~ ., mtcars) |> step_spline_natural(deg_free = tune())
 
   wflow <- workflow()
   wflow <- add_model(wflow, boost_tree(mode = "regression"))
@@ -97,7 +97,7 @@ test_that("compute_grid_info - recipe and model (no submodels)", {
   library(recipes)
   library(dials)
 
-  rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
+  rec <- recipe(mpg ~ ., mtcars) |> step_spline_natural(deg_free = tune())
   spec <- boost_tree(mode = "regression", learn_rate = tune())
 
   wflow <- workflow()
@@ -131,7 +131,7 @@ test_that("compute_grid_info - recipe and model (with submodels)", {
   library(recipes)
   library(dials)
 
-  rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
+  rec <- recipe(mpg ~ ., mtcars) |> step_spline_natural(deg_free = tune())
   spec <- boost_tree(mode = "regression", trees = tune())
 
   wflow <- workflow()
@@ -179,7 +179,7 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   library(recipes)
   library(dials)
 
-  rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
+  rec <- recipe(mpg ~ ., mtcars) |> step_spline_natural(deg_free = tune())
   spec <- boost_tree(mode = "regression", trees = tune(), loss_reduction = tune())
 
   wflow <- workflow()
@@ -190,7 +190,7 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   set.seed(1)
   param_set <- extract_parameter_set_dials(wflow)
   grid <-
-    bind_rows(grid_regular(param_set), grid_space_filling(param_set)) %>%
+    bind_rows(grid_regular(param_set), grid_space_filling(param_set)) |>
     arrange(deg_free, loss_reduction, trees)
   res <- compute_grid_info(wflow, grid)
 
@@ -222,10 +222,10 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
     )
   )
   expect_equal(
-    res %>%
-      mutate(num_models = purrr::map_int(.iter_config, length)) %>%
+    res |>
+      mutate(num_models = purrr::map_int(.iter_config, length)) |>
       summarize(n = sum(num_models), .by = c(deg_free)),
-    grid %>% count(deg_free)
+    grid |> count(deg_free)
   )
   expect_named(
     res,
@@ -243,8 +243,8 @@ test_that("compute_grid_info - model (with and without submodels)", {
   library(dials)
 
   rec <- recipe(mpg ~ ., mtcars)
-  spec <- mars(num_terms = tune(), prod_degree = tune(), prune_method = tune()) %>%
-    set_mode("classification") %>%
+  spec <- mars(num_terms = tune(), prod_degree = tune(), prune_method = tune()) |>
+    set_mode("classification") |>
     set_engine("earth")
 
   wflow <- workflow()
@@ -253,7 +253,7 @@ test_that("compute_grid_info - model (with and without submodels)", {
 
   set.seed(123)
   params_grid <- grid_space_filling(
-    num_terms() %>% range_set(c(1L, 12L)),
+    num_terms() |> range_set(c(1L, 12L)),
     prod_degree(),
     prune_method(values = c("backward", "none", "forward")),
     size = 7,
@@ -305,11 +305,11 @@ test_that("compute_grid_info - recipe and model (no submodels but has inner grid
 
   helper_objects <- helper_objects_tune()
 
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
 
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
 
   grid <- dials::grid_regular(pset, levels = 3)

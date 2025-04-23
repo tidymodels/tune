@@ -7,7 +7,7 @@ test_that("`event_level` is passed through in tune_grid()", {
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50, ]
 
-  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
+  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) |>
     parsnip::set_engine("kernlab")
 
   control <- control_grid(event_level = "second", save_pred = TRUE)
@@ -53,7 +53,7 @@ test_that("`event_level` is passed through in fit_resamples()", {
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50, ]
 
-  spec <- parsnip::svm_linear(mode = "classification", cost = 2) %>%
+  spec <- parsnip::svm_linear(mode = "classification", cost = 2) |>
     parsnip::set_engine("kernlab")
 
   control <- control_resamples(event_level = "second", save_pred = TRUE)
@@ -97,7 +97,7 @@ test_that("`event_level` is passed through in tune_bayes()", {
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:50, ]
 
-  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) %>%
+  spec <- parsnip::svm_linear(mode = "classification", cost = tune()) |>
     parsnip::set_engine("kernlab")
 
   control_grid <- control_grid(save_pred = TRUE)
@@ -145,7 +145,7 @@ test_that("`event_level` is passed through in last_fit()", {
   data("two_class_dat", package = "modeldata")
   dat <- two_class_dat[1:10, ]
 
-  spec <- parsnip::svm_linear(mode = "classification", cost = 0.5) %>%
+  spec <- parsnip::svm_linear(mode = "classification", cost = 0.5) |>
     parsnip::set_engine("kernlab")
 
   control <- control_last_fit(event_level = "second")

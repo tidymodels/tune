@@ -42,7 +42,7 @@ knn_model <-
     neighbors = tune("K"),
     weight_func = tune(),
     dist_power = tune()
-  ) \%>\%
+  ) |>
   set_engine("kknn")
 
 lowest_rmse <- select_best(ames_grid_search, metric = "rmse")

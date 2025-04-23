@@ -37,8 +37,8 @@ data(two_class_dat, package = "modeldata")
 
 set.seed(2393)
 res <-
-  logistic_reg() \%>\%
-  set_engine("glm") \%>\%
+  logistic_reg() |>
+  set_engine("glm") |>
   fit_resamples(
     Class ~ .,
     resamples = vfold_cv(two_class_dat, v = 3),
