@@ -153,7 +153,7 @@ get_param_columns <- function(x) {
 # Use the user-given id for the parameter or the parameter label?
 get_param_label <- function(x, id_val) {
   x <- tibble::as_tibble(x)
-  y <- dplyr::filter(x, id == id_val) %>% dplyr::slice(1)
+  y <- dplyr::filter(x, id == id_val) |> dplyr::slice(1)
   num_param <- sum(x$name == y$name)
   no_special_id <- y$name == y$id
   if (no_special_id && num_param == 1) {
@@ -176,7 +176,7 @@ get_param_label <- function(x, id_val) {
 paste_param_by <- function(x) {
   if (".by" %in% colnames(x)) {
     x <-
-      x %>%
+      x |>
       dplyr::mutate(
         .metric = case_when(
           !is.na(.by) ~ paste0(.metric, "(", .by, ")"),
@@ -195,8 +195,8 @@ is_factorial <- function(x, cutoff = 0.95) {
   p <- ncol(x)
   vals <- purrr::map(x, unique)
   full_fact <-
-    tidyr::crossing(!!!vals) %>%
-    dplyr::full_join(x %>% dplyr::mutate(..obs = 1), by = names(x))
+    tidyr::crossing(!!!vals) |>
+    dplyr::full_join(x |> dplyr::mutate(..obs = 1), by = names(x))
   mean(!is.na(full_fact$..obs)) >= cutoff
 }
 
@@ -232,8 +232,8 @@ is_regular_grid <- function(grid) {
 use_regular_grid_plot <- function(x) {
   dat <- collect_metrics(x)
   param_cols <- get_param_columns(x)
-  grd <- dat %>%
-    dplyr::select(all_of(param_cols)) %>%
+  grd <- dat |>
+    dplyr::select(all_of(param_cols)) |>
     distinct()
   is_regular_grid(grd)
 }
@@ -253,15 +253,15 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
   # have the same value (if any).
   x <- paste_param_by(x)
 
-  x <- x %>%
-    dplyr::filter(.metric %in% metric) %>%
+  x <- x |>
+    dplyr::filter(.metric %in% metric) |>
     dplyr::filter(!is.na(mean))
 
   num_eval_times <- length(eval_time[!is.na(eval_time)])
 
   if(any_dyn & num_eval_times > 0) {
-    x <- x %>%
-      dplyr::filter(.eval_time %in% eval_time) %>%
+    x <- x |>
+      dplyr::filter(.eval_time %in% eval_time) |>
       dplyr::mutate(
         .metric =
           dplyr::if_else(
@@ -288,8 +288,8 @@ plot_perf_vs_iter <- function(x, metric = NULL, eval_time = NULL, width = NULL,
   x <- process_autoplot_metrics(x, metric, eval_time)
 
   search_iter <-
-    x %>%
-    dplyr::filter(.iter > 0 & std_err > 0) %>%
+    x |>
+    dplyr::filter(.iter > 0 & std_err > 0) |>
     dplyr::mutate(const = ifelse(n > 0, qt(0.975, n), 0))
 
   p <-
@@ -328,7 +328,7 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   # Collect and filter resampling results
 
   x <- estimate_tune_results(x)
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(x |> dplyr::select(dplyr::all_of(param_cols)), is.numeric)
   num_param_cols <- param_cols[is_num]
 
   # ----------------------------------------------------------------------------
@@ -352,8 +352,8 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   # Stack numeric columns for filtering
 
   x <-
-    x %>%
-    dplyr::select(.iter, dplyr::all_of(num_param_cols)) %>%
+    x |>
+    dplyr::select(.iter, dplyr::all_of(num_param_cols)) |>
     tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ------------------------------------------------------------------------------
@@ -394,14 +394,14 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
 
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
-  num_val <- purrr::map_int(x %>% dplyr::select(dplyr::all_of(param_cols)), ~ length(unique(.x)))
+  is_num <- purrr::map_lgl(x |> dplyr::select(dplyr::all_of(param_cols)), is.numeric)
+  num_val <- purrr::map_int(x |> dplyr::select(dplyr::all_of(param_cols)), ~ length(unique(.x)))
 
   if (any(num_val < 2)) {
     rm_param <- param_cols[num_val < 2]
     param_cols <- param_cols[num_val >= 2]
     is_num <- is_num[num_val >= 2]
-    x <- x %>% dplyr::select(-dplyr::all_of(rm_param))
+    x <- x |> dplyr::select(-dplyr::all_of(rm_param))
   }
 
   if (any(!is_num)) {
@@ -443,9 +443,9 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
   # Stack numeric parameters for faceting.
 
   x <-
-    x %>%
-    dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>%
+    x |>
+    dplyr::rename(`# resamples` = n) |>
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) |>
     tidyr::pivot_longer(cols = dplyr::all_of(num_param_cols))
 
   # ----------------------------------------------------------------------------
@@ -525,7 +525,7 @@ plot_regular_grid <- function(x,
                     {.pkg tune} version 0.1.0 or later.")
   }
 
-  grd <- dat %>% dplyr::select(all_of(param_cols))
+  grd <- dat |> dplyr::select(all_of(param_cols))
 
   # ----------------------------------------------------------------------------
   # Determine which parameter goes on the x-axis and their types
@@ -575,9 +575,9 @@ plot_regular_grid <- function(x,
   # ----------------------------------------------------------------------------
 
   dat <-
-    dat %>%
-    dplyr::rename(`# resamples` = n) %>%
-    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) %>%
+    dat |>
+    dplyr::rename(`# resamples` = n) |>
+    dplyr::select(dplyr::all_of(param_cols), mean, `# resamples`, .metric) |>
     tidyr::pivot_longer(cols = dplyr::all_of(x_col))
 
   # ------------------------------------------------------------------------------

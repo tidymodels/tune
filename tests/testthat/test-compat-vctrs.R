@@ -112,7 +112,7 @@ test_that("vec_rbind() returns a bare tibble", {
     expect_identical(vec_rbind(x, tbl), vec_rbind(tbl, tbl))
 
     expect_s3_class_bare_tibble(vec_rbind(x))
-    expect_s3_class_bare_tibble(vec_cbind(x, x)) %>% suppressMessages()
+    expect_s3_class_bare_tibble(vec_cbind(x, x)) |> suppressMessages()
   }
 })
 
@@ -121,10 +121,10 @@ test_that("vec_cbind() returns a bare tibble", {
     tbl <- new_bare_tibble(x)
 
     expect_identical(vec_cbind(x), vec_cbind(tbl))
-    expect_identical(vec_cbind(x, x), vec_cbind(tbl, tbl)) %>% suppressMessages()
-    expect_identical(vec_cbind(x, tbl), vec_cbind(tbl, tbl)) %>% suppressMessages()
+    expect_identical(vec_cbind(x, x), vec_cbind(tbl, tbl)) |> suppressMessages()
+    expect_identical(vec_cbind(x, tbl), vec_cbind(tbl, tbl)) |> suppressMessages()
 
     expect_s3_class_bare_tibble(vec_cbind(x))
-    expect_s3_class_bare_tibble(vec_cbind(x, x)) %>% suppressMessages()
+    expect_s3_class_bare_tibble(vec_cbind(x, x)) |> suppressMessages()
   }
 })

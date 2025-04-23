@@ -171,7 +171,7 @@ log_catalog <- function(msg, type) {
 tune_catalog <- function(issues) {
   catalog <- rlang::env_get(env = tune_env, nm = "progress_catalog")
 
-  res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
+  res <- dplyr::count(issues, type, note) |> mutate(id = NA_integer_)
   res <- dplyr::bind_rows(res, catalog)
   res <- dplyr::group_by(res, type, note)
   # dplyr::first will gain an `na_rm` argument in 1.1.0

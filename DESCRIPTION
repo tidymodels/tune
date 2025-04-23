@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
 BugReports: https://github.com/tidymodels/tune/issues
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.3.0.9000),
@@ -58,14 +58,14 @@ Suggests:
     xgboost,
     xml2
 Remotes:
+    tidymodels/dials,
     tidymodels/hardhat,
     tidymodels/parsnip,
+    tidymodels/probably,
     tidymodels/recipes,
     tidymodels/rsample,
     tidymodels/tailor,
-    tidymodels/workflows,
-    tidymodels/dials,
-    tidymodels/probably
+    tidymodels/workflows
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3

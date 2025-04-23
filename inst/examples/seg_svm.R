@@ -8,7 +8,7 @@ theme_set(theme_bw())
 # ------------------------------------------------------------------------------
 
 segmentationData <-
-  segmentationData %>%
+  segmentationData |>
   dplyr::select(-Case, -Cell, -contains("Centroid"))
 
 set.seed(8567)
@@ -23,26 +23,26 @@ folds <- vfold_cv(seg_train)
 # ------------------------------------------------------------------------------
 
 seg_pre_proc <-
-  recipe(Class ~ ., data = seg_train) %>%
-  step_YeoJohnson(all_predictors()) %>%
-  step_normalize(all_predictors()) %>%
-  step_pca(all_predictors(), num_comp = tune()) %>%
+  recipe(Class ~ ., data = seg_train) |>
+  step_YeoJohnson(all_predictors()) |>
+  step_normalize(all_predictors()) |>
+  step_pca(all_predictors(), num_comp = tune()) |>
   step_downsample(Class)
 
 svm_mod <-
-  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) %>%
+  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) |>
   set_engine("kernlab")
 
 svm_wflow <-
-  workflow() %>%
-  add_model(svm_mod) %>%
+  workflow() |>
+  add_model(svm_mod) |>
   add_recipe(seg_pre_proc)
 
 # ------------------------------------------------------------------------------
 
 svm_set <-
-  svm_wflow %>%
-  parameters() %>%
+  svm_wflow |>
+  parameters() |>
   # In case you want to manually adjust the parameter specification
   update(num_comp = num_comp(c(1, 20)))
 
@@ -89,7 +89,7 @@ autoplot(svm_search_2, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
-svm_search_2 %>% dplyr::filter(.iter > 0) %>%
+svm_search_2 |> dplyr::filter(.iter > 0) |>
   ggplot(aes(x = cost, y = rbf_sigma)) +
   geom_path(aes(x = cost, y = rbf_sigma), col = "black") +
   geom_point(aes(col = num_comp, size = mean))  +
@@ -97,21 +97,21 @@ svm_search_2 %>% dplyr::filter(.iter > 0) %>%
   scale_x_log10() +
   scale_y_log10()
 
-svm_search_2 %>%
-  dplyr::filter(.metric == "kap") %>%
-  dplyr::select(-.estimator, -.metric, -n, -std_err) %>%
-  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) %>%
-  gather(variable, value, -mean, -.iter) %>%
+svm_search_2 |>
+  dplyr::filter(.metric == "kap") |>
+  dplyr::select(-.estimator, -.metric, -n, -std_err) |>
+  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) |>
+  gather(variable, value, -mean, -.iter) |>
   ggplot(aes(x = .iter, y = value)) +
   geom_point() +
   facet_wrap(~ variable, scales = "free_y")
 
 
-svm_search_2 %>%
-  dplyr::filter(.metric == "kap") %>%
-  dplyr::select(-.estimator, -.metric, -n, -std_err) %>%
-  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) %>%
-  gather(variable, value, -mean, -.iter) %>%
+svm_search_2 |>
+  dplyr::filter(.metric == "kap") |>
+  dplyr::select(-.estimator, -.metric, -n, -std_err) |>
+  mutate(cost = log10(cost), rbf_sigma = log10(rbf_sigma)) |>
+  gather(variable, value, -mean, -.iter) |>
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
   facet_wrap(~ variable, scales = "free_x")

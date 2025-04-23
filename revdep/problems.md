@@ -28,7 +28,7 @@ Run `revdepcheck::revdep_details(, "finetune")` for more info
       Backtrace:
     ...
           ▆
-       1. ├─cart_search %>% filter(.iter == iter_val) %>% ... at test-sa-decision.R:16:5
+       1. ├─cart_search |> filter(.iter == iter_val) |> ... at test-sa-decision.R:16:5
        2. └─tune:::new_tune_results(...)
        3.   └─tune:::new_bare_tibble(...)
        4.     └─tibble::new_tibble(x, nrow = nrow(x), ..., class = class)
@@ -62,11 +62,11 @@ Run `revdepcheck::revdep_details(, "tidyclust")` for more info
     Running the tests in ‘tests/testthat.R’ failed.
     Last 13 lines of output:
       Error in `if (metric_info$direction == "maximize") {
-          summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
+          summary_res <- summary_res |> dplyr::arrange(dplyr::desc(mean))
       } else if (metric_info$direction == "minimize") {
-          summary_res <- summary_res %>% dplyr::arrange(mean)
+          summary_res <- summary_res |> dplyr::arrange(mean)
       } else if (metric_info$direction == "zero") {
-          summary_res <- summary_res %>% dplyr::arrange(abs(mean))
+          summary_res <- summary_res |> dplyr::arrange(abs(mean))
       }`: argument is of length zero
       Backtrace:
           ▆
@@ -115,7 +115,7 @@ Run `revdepcheck::revdep_details(, "tidysdm")` for more info
     Warning: Unknown or uninitialised column: `metric`.
     Error in if (!any(mtr_info$metric == metric)) { : 
       missing value where TRUE/FALSE needed
-    Calls: %>% ... add_member.tune_results -> <Anonymous> -> check_metric_in_tune_results
+    Calls: |> ... add_member.tune_results -> <Anonymous> -> check_metric_in_tune_results
     Execution halted
     ```
 
@@ -126,14 +126,14 @@ Run `revdepcheck::revdep_details(, "tidysdm")` for more info
      ERROR
     Running the tests in ‘tests/testthat.R’ failed.
     Last 13 lines of output:
-        1. ├─testthat::expect_warning(test_ens <- simple_ensemble() %>% add_member(none_mars)) at test_simple_ensemble.R:14:3
+        1. ├─testthat::expect_warning(test_ens <- simple_ensemble() |> add_member(none_mars)) at test_simple_ensemble.R:14:3
         2. │ └─testthat:::expect_condition_matching(...)
         3. │   └─testthat:::quasi_capture(...)
         4. │     ├─testthat (local) .capture(...)
         5. │     │ └─base::withCallingHandlers(...)
     ...
         6. │     └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
-        7. ├─simple_ensemble() %>% add_member(none_mars)
+        7. ├─simple_ensemble() |> add_member(none_mars)
         8. ├─tidysdm::add_member(., none_mars)
         9. └─tidysdm:::add_member.tune_results(., none_mars)
        10.   └─(utils::getFromNamespace("choose_metric", "tune"))(metric, member)

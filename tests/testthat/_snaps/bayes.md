@@ -519,7 +519,7 @@
 
     Code
       set.seed(1)
-      res <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
+      res <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
         Bldg_Type + Latitude + Longitude, resamples = folds, initial = 3, metrics = yardstick::metric_set(
         rsq), param_info = parameters(dials::cost_complexity(c(-2, 0))))
     Message
@@ -561,8 +561,8 @@
 
     Code
       set.seed(2)
-      res_fail <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area +
-        Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
+      res_fail <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area +
+      Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
       metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
         c(0.5, 0))))
     Message

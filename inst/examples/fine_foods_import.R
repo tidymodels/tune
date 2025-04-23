@@ -16,16 +16,16 @@ raw <-
     delim = "\n",
     col_names = "text",
     col_types = cols(text = col_character())
-  ) %>%
+  ) |>
   mutate(
     text = str_remove(text, "product/"),
     text = str_remove(text, "review/"),
     prod_num  = ifelse(str_detect(text, "productId"), 1, 0),
     prod_num = cumsum(prod_num)
-  ) %>%
+  ) |>
   dplyr::filter(
     str_detect(text, "(productId:)|(text:)|(score:)")
-  ) %>%
+  ) |>
   mutate(
     field = case_when(
       str_detect(text, "productId:") ~ "product",
@@ -34,9 +34,9 @@ raw <-
       TRUE ~ "unknown"
     ),
     text = str_replace(text, "(productId: )|(text: )|(score: )", "")
-  ) %>%
-  spread(field, text) %>%
-  dplyr::select(-prod_num) %>%
+  ) |>
+  spread(field, text) |>
+  dplyr::select(-prod_num) |>
   mutate(
     score = factor(ifelse(score == "5.0", "great", "other"))
   )
@@ -46,26 +46,26 @@ raw <-
 # rows per product.
 
 prod_dist <-
-  raw %>%
-  group_by(product) %>%
-  count() %>%
-  ungroup() %>%
+  raw |>
+  group_by(product) |>
+  count() |>
+  ungroup() |>
   arrange(desc(n))
 
 sampled <-
-  raw %>%
-  group_by(product) %>%
-  sample_n(1) %>%
-  ungroup() %>%
+  raw |>
+  group_by(product) |>
+  sample_n(1) |>
+  ungroup() |>
   sample_n(5000)
 
 
 training_data <-
-  sampled %>%
+  sampled |>
   sample_n(4000)
 
 testing_data <-
-  sampled %>%
+  sampled |>
   anti_join(training_data, by = c("product", "review", "score"))
 
 save(training_data, testing_data, file = "data/small_fine_foods.RData", version = 2, compress = "xz")

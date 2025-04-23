@@ -14,10 +14,10 @@
 #' library(parsnip)
 #' library(dplyr)
 #'
-#' frequency_weights(1:10) %>%
+#' frequency_weights(1:10) |>
 #'   .use_case_weights_with_yardstick()
 #'
-#' importance_weights(seq(1, 10, by = .1))%>%
+#' importance_weights(seq(1, 10, by = .1))|>
 #'   .use_case_weights_with_yardstick()
 .use_case_weights_with_yardstick <- function(x) {
   UseMethod(".use_case_weights_with_yardstick")
