@@ -23,6 +23,7 @@ Imports:
     dplyr (>= 1.1.0),
     foreach,
     future (>= 1.33.0),
+    future.apply,
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
@@ -74,3 +75,4 @@ Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Config/usethis/last-upkeep: 2025-04-23

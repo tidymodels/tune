@@ -122,65 +122,51 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
   dplyr::as_tibble(res)
 }
 
-get_int_p_operator <- function(allow = TRUE) {
-  is_par <- foreach::getDoParWorkers() > 1 || future::nbrOfWorkers() > 1
-  if (allow && is_par) {
-    res <- switch(
-      # note some backends can return +Inf
-      min(future::nbrOfWorkers(), 2),
-      list(op = foreach::`%dopar%`, is_future = FALSE),
-      list(op = doFuture::`%dofuture%`, is_future = TRUE)
-    )
-
-    if (!res[["is_future"]]) {
-      warn_foreach_deprecation()
-    }
-  } else {
-    res <- list(foreach::`%do%`, is_future = FALSE)
-  }
-  res
-}
-
 boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_par,
                                        event_level, alpha, metrics_info) {
   y_nm <- outcome_names(x)
   preds <- collect_predictions(x, summarize = TRUE, parameters = config)
+  info <- metrics_info(metrics)
 
   set.seed(seed)
   rs <- rsample::bootstraps(preds, times = times)
 
-  do_op <- get_int_p_operator(allow_par)
-  `%op%` <- do_op[[1]]
-  is_future <- do_op[[2]]
-
-  # Rather than generating them programmatically, write each `foreach()`
-  # call out since `foreach()` `substitute()`s its dots. Note that
-  # doFuture will error when passed `.packages`.
-  if (is_future) {
-    for_each <-
-      foreach::foreach(
-        i = seq_len(nrow(rs)),
-        .options.future = list(seed = NULL, packages = c("tune", "rsample"))
+  if (allow_par & future::nbrOfWorkers() > 1) {
+    rs$.metrics <-
+      future.apply::future_lapply(
+        rs$splits,
+        comp_metrics,
+        future.packages = c("tune", "rsample"),
+        future.globals = c("y_nm", "metrics", "event_level", "info"),
+        y = y_nm,
+        metrics = metrics,
+        event_level = event_level,
+        metrics_info = info
       )
   } else {
-    for_each <-
-      foreach::foreach(
-        i = seq_len(nrow(rs)),
-        .packages = c("tune", "rsample"),
-        .errorhandling = "pass"
+    rs$.metrics <-
+      lapply(
+        rs$splits,
+        comp_metrics,
+        y = y_nm,
+        metrics = metrics,
+        event_level = event_level,
+        metrics_info = info
       )
   }
 
   rs$.metrics <-
-    for_each %op% {
-      asNamespace("tune")$comp_metrics(
-        rs$splits[[i]],
-        y_nm,
-        metrics,
-        event_level,
-        metrics_info
-      )
-    }
+    future.apply::future_lapply(
+      rs$splits,
+      comp_metrics,
+      future.packages = c("tune", "rsample"),
+      future.globals = c("y_nm", "metrics", "event_level", "info"),
+      y = y_nm,
+      metrics = metrics,
+      event_level = event_level,
+      metrics_info = info
+    )
+
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
     res <- int_pctl_surv(rs, allow_par, alpha)
@@ -257,7 +243,6 @@ comp_metrics <- function(split,
                          event_level,
                          metrics_info) {
   dat <- rsample::analysis(split)
-
   res <-
     .estimate_metrics(
       dat,
