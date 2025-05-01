@@ -155,18 +155,6 @@ boostrap_metrics_by_config <- function(config, seed, x, metrics, times, allow_pa
       )
   }
 
-  rs$.metrics <-
-    future.apply::future_lapply(
-      rs$splits,
-      comp_metrics,
-      future.packages = c("tune", "rsample"),
-      future.globals = c("y_nm", "metrics", "event_level", "info"),
-      y = y_nm,
-      metrics = metrics,
-      event_level = event_level,
-      metrics_info = info
-    )
-
   if (any(grepl("survival", .get_tune_metric_names(x)))) {
     # compute by evaluation time
     res <- int_pctl_surv(rs, allow_par, alpha)
