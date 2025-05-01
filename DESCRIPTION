@@ -26,7 +26,7 @@ Imports:
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
-    GPfit,
+    GauPro (>= 0.2.15),
     hardhat (>= 1.4.0.9002),
     lifecycle (>= 1.0.0),
     parsnip (>= 1.2.1.9003),
