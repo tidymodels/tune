@@ -265,6 +265,28 @@ tune_bayes.workflow <-
     res
   }
 
+## TODOs from testing
+
+# These lines are missing:
+# -   i Gaussian process model
+# -   ! The Gaussian process model is being fit using 1 features but only has 2
+# -     data points to do so. This may cause errors or a poor model fit.
+# -   v Gaussian process model
+# -   i Generating 3 candidates
+# -   i Predicted candidates
+
+# Some failures are not being caught (or ignored); see "missing performance
+# values" test
+# -   ! Gaussian process model: no non-missing arguments to min; returning Inf, no non-missing arguments...
+# -   x Gaussian process model: Error in seq_len(n - 1L): argument must be coercible to non-negative int...
+
+# -   Error in `check_gp_failure()`:
+# +   Error in `apply()`:
+# -   ! Gaussian process model was not fit.
+# +   ! dim(X) must have a positive length
+
+
+
 tune_bayes_workflow <- function(object,
                                 resamples,
                                 iter = 10,
@@ -386,7 +408,7 @@ tune_bayes_workflow <- function(object,
 
       # Maybe remove .catch_and_log() here and do catching inside fintion
       set.seed(control$seed[1] + i)
-      gp_mod <- fit_gp_new(
+      gp_mod <- fit_gp(
         mean_stats %>% dplyr::select(-.iter),
         pset = param_info,
         metric = opt_metric_name,
@@ -401,7 +423,7 @@ tune_bayes_workflow <- function(object,
 
       set.seed(control$seed[1] + i + 1)
       candidates <-
-        pred_gp_new(
+        pred_gp(
           gp_mod, param_info,
           control = control,
           current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
@@ -428,11 +450,12 @@ tune_bayes_workflow <- function(object,
 
       save_gp_results(gp_mod, param_info, control, i, iter, candidates, score_card)
 
-      # candidates <- pick_candidate_new(candidates, score_card, control)
+      candidates <- pick_candidate(candidates, score_card, control)
 
-      candidates <- candidates %>%
-        dplyr::arrange(dplyr::desc(objective)) %>%
-        dplyr::slice(1)
+      # These were temp used to replace pick_candidate()
+      # candidates <- candidates %>%
+      #   dplyr::arrange(dplyr::desc(objective)) %>%
+      #   dplyr::slice(1)
 
       if (score_card$uncertainty >= control$uncertain) {
         score_card$uncertainty <- -1 # is updated in update_score_card() below
@@ -581,108 +604,6 @@ encode_set <- function(x, pset, ..., as_matrix = FALSE) {
     x <- stats::model.matrix(~ . + 0, data = x)
   }
   x
-}
-
-fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
-  dat <- dat %>% dplyr::filter(.metric == metric)
-
-  if (!is.null(eval_time)) {
-    dat <- dat %>% dplyr::filter(.eval_time == eval_time)
-  }
-
-  dat <- dat %>%
-    check_gp_data() %>%
-    dplyr::select(dplyr::all_of(pset$id), mean)
-
-  x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
-
-  if (nrow(x) <= ncol(x) + 1 && nrow(x) > 0) {
-    msg <-
-      paste(
-        "The Gaussian process model is being fit using ", ncol(x),
-        "features but only has", nrow(x), "data points to do so. This may cause",
-        "errors or a poor model fit."
-      )
-    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
-  }
-
-  opts <- list(...)
-
-  withCallingHandlers({
-    if (any(names(opts) == "trace") && opts$trace) {
-      gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-    } else {
-      tmp_output <- utils::capture.output(
-        gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-      )
-    }},
-    warning = function(w) {
-      if (w$message == "X should be in range (0, 1)") {
-        rlang::cnd_muffle(w)
-      }
-    }
-  )
-
-  gp_fit
-}
-
-pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
-  pred_grid <-
-    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") %>%
-    dplyr::distinct()
-
-  if (!is.null(current)) {
-    pred_grid <-
-      pred_grid %>%
-      dplyr::anti_join(current, by = pset$id)
-  }
-
-  if (inherits(object, "try-error") | nrow(pred_grid) == 0) {
-    if (nrow(pred_grid) == 0) {
-      msg <- "No remaining candidate models"
-    } else {
-      msg <- "An error occurred when creating candidates parameters: "
-      msg <- paste(msg, as.character(object))
-    }
-    tune_log(control, split_labels = NULL, task = msg, type = "warning")
-    return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
-  }
-
-  tune_log(
-    control,
-    split_labels = NULL,
-    task = paste("Generating", nrow(pred_grid), "candidates"),
-    type = "info",
-    catalog = FALSE
-  )
-
-  x <- encode_set(pred_grid, pset, as_matrix = TRUE)
-  gp_pred <- predict(object, x)
-
-  tune_log(control, split_labels = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
-
-  pred_grid %>%
-    dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
-}
-
-
-pick_candidate <- function(results, info, control) {
-  if (info$uncertainty < control$uncertain) {
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(objective)) %>%
-      dplyr::slice(1)
-  } else {
-    if (control$verbose_iter) {
-      msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
-      message(msg)
-    }
-    results <-
-      results %>%
-      dplyr::arrange(dplyr::desc(.sd)) %>%
-      dplyr::slice(1:floor(.1 * nrow(results))) %>%
-      dplyr::sample_n(1)
-  }
-  results
 }
 
 update_score_card <- function(info, iter, results, control) {

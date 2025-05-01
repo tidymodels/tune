@@ -62,9 +62,7 @@ make_kernel <- function(pset, lvls) {
 check_gp <- function(x) {
 	model_fail <- inherits(x, "try-error")
 	if (!model_fail) {
-		# withr::set seed
 		loo_res <- summary(x)
-		# TODO maybe capture these?
 		loo_bad <- loo_res$coverage95LOO < 0.1
 		loo_rsq <- loo_res$r.squaredLOO
 	} else {
@@ -111,7 +109,7 @@ partial_encode <- function(dat, pset) {
 #     Too small s2 predictions are being set to 4.2948089596254e-08 (2908 values, min=-30.8111711641092).
 #   2: covmat is not being altered.
 
-fit_gp_new <- function(
+fit_gp <- function(
 	dat,
 	pset,
 	metric,
@@ -127,7 +125,7 @@ fit_gp_new <- function(
 	}
 
 	dat <- dat %>%
-		# check_gp_data() %>%
+		check_gp_data() %>%
 		dplyr::select(dplyr::all_of(pset$id), mean)
 
 	qual_info <- find_qual_param(pset)
@@ -218,7 +216,7 @@ fit_gp_new <- function(
 
 # ------------------------------------------------------------------------------
 
-pred_gp_new <- function(object, pset, size = 5000, current = NULL, control) {
+pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 	candidates <- dials::grid_space_filling(
 		pset,
 		size = size,
@@ -282,8 +280,8 @@ pred_gp_new <- function(object, pset, size = 5000, current = NULL, control) {
 	dplyr::bind_cols(candidates, gp_pred)
 }
 
-# TODO add pg obj here
-pick_candidate_new <- function(results, info, control) {
+# TODO add gp obj here
+pick_candidate <- function(results, info, control) {
 	bad_gp <- all(is.na(results$.mean))
 	if (!bad_gp & info$uncertainty < control$uncertain) {
 		results <- results %>%
