@@ -1,7 +1,9 @@
 #' Determine names of the outcome data in a workflow
 #'
 #' @param x An object.
-#' @param ... Not used.
+#' @param ... Further arguments passed to or from other methods (such as `data`).
+#' @param data The training set data (if needed).
+#' @param call The call to be displayed in warnings or errors.
 #' @return A character string of variable names
 #' @keywords internal
 #' @examples
@@ -39,20 +41,39 @@ outcome_names.recipe <- function(x, ...) {
 
 #' @export
 #' @rdname outcome_names
-outcome_names.workflow <- function(x, ...) {
-  if (!is.null(x$fit$fit)) {
+outcome_names.workflow <- function(x, ..., call = caller_env()) {
+  if (!is.null(x$pre$mold)) {
     y_vals <- extract_mold(x)$outcomes
     res <- colnames(y_vals)
   } else {
     preprocessor <- extract_preprocessor(x)
-    res <- outcome_names(preprocessor)
+    res <- outcome_names(preprocessor, ..., call = call)
   }
   res
 }
 
 #' @export
 #' @rdname outcome_names
-outcome_names.tune_results <- function(x, ...) {
+outcome_names.workflow_variables <- function(
+	x,
+	data = NULL,
+	...,
+	call = caller_env()
+) {
+	if (is.null(data)) {
+		cli::cli_abort(
+			"To determine the outcome names when {.fn add_variables} is used, please
+       pass the training set data to the {.arg data} argument.",
+			call = call
+		)
+	}
+	res <- rlang::eval_tidy(x$outcomes, data, env = call)
+	res
+}
+
+#' @export
+#' @rdname outcome_names
+outcome_names.tune_results <- function(x, ..., call = caller_env()) {
   att <- attributes(x)
   if (any(names(att) == "outcomes")) {
     res <- att$outcomes
