@@ -1,6 +1,6 @@
 #' Model tuning via grid search
 #'
-#'
+#' @inheritParams tune_grid
 #' @examplesIf tune:::should_run_examples(suggests = "kernlab") & rlang::is_installed("splines2")
 #' library(recipes)
 #' library(rsample)
@@ -82,7 +82,7 @@ melodie_grid.model_spec <- function(
   control = control_grid()
 ) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
-    cli::cli_abort(melodie_pp_msg)
+    cli::cli_abort(tune_pp_msg)
   }
 
   control <- parsnip::condense_control(control, control_grid())

@@ -182,11 +182,11 @@ has_tailor_estimated <- function(x) {
 
 finalize_fit_post <- function(wflow_current, predictions, grid = NULL) {
   if (is.null(grid)) {
-    grid <- tibble()
+    grid <- dplyr::tibble()
   }
 
   post_obj <- hardhat::extract_postprocessor(wflow_current) |>
-    tune::finalize_tailor(grid)
+    finalize_tailor(grid)
 
   outputs <- get_output_columns(wflow_current)
 
@@ -434,7 +434,7 @@ determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
 
   pred_types <- unique(metrics_info(metrics)$type)
-  if (melodie:::has_tailor(wflow)) {
+  if (has_tailor(wflow)) {
     post <- extract_postprocessor(wflow)
     post_out <- purrr::map(post$adjustments, ~ .x$outputs)
     post_in <- purrr::map(post$adjustments, ~ .x$inputs)
@@ -497,7 +497,7 @@ reorder_pred_cols <- function(x, y_name) {
 
 engine_to_parsnip <- function(wflow, grid) {
   grid_nm <- names(grid)
-  key <- parsnip:::.model_param_name_key(wflow) |>
+  key <- parsnip::.model_param_name_key(wflow) |>
     dplyr::filter(user != parsnip & user %in% grid_nm) |>
     dplyr::select(-engine)
 
@@ -511,7 +511,7 @@ engine_to_parsnip <- function(wflow, grid) {
 
 parsnip_to_engine <- function(wflow, grid) {
   grid_nm <- names(grid)
-  key <- parsnip:::.model_param_name_key(wflow) |>
+  key <- parsnip::.model_param_name_key(wflow) |>
     dplyr::filter(user != parsnip & parsnip %in% grid_nm) |>
     dplyr::select(-engine)
 
