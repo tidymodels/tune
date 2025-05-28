@@ -1,4 +1,6 @@
 test_that("set configurations - single element", {
+  skip_if_not_installed("probably")
+
   wflow_pre <- workflow(puromycin_tune_rec, linear_reg())
   wflow_mod <- workflow(Class ~ ., dt_spec)
   wflow_post <- workflow(Class ~ ., logistic_reg(), cls_post)
@@ -43,6 +45,8 @@ test_that("set configurations - single element", {
 })
 
 test_that("set configurations - two elements", {
+  skip_if_not_installed("probably")
+
   wflow_1 <- workflow(puromycin_tune_rec, knn_reg_spec)
   wflow_2 <- workflow(Class ~ ., dt_spec, cls_post)
   wflow_3 <- workflow(puromycin_tune_rec, logistic_reg(), cls_post)
@@ -77,6 +81,8 @@ test_that("set configurations - two elements", {
 })
 
 test_that("set configurations - all or none", {
+  skip_if_not_installed("probably")
+
   wflow_none <- workflow(Class ~ ., logistic_reg())
   wflow_all <- workflow(puromycin_tune_rec, dt_spec, cls_post)
 

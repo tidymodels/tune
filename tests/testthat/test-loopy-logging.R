@@ -1,4 +1,6 @@
 test_that("preprocessor error doesn't stop grid", {
+  skip_if_not_installed("modeldata")
+
   # Errors in preprocessing since the formula method will cry about list columns
   ames <- modeldata::ames[, c(72, 40:45)]
   ames$First_Flr_SF <- as.list(ames$First_Flr_SF)
@@ -36,6 +38,8 @@ test_that("preprocessor error doesn't stop grid", {
 })
 
 test_that("model error doesn't stop grid", {
+  skip_if_not_installed("modeldata")
+
   # Errors in modeling since the recipe passes the list columns through
   ames <- modeldata::ames[, c(72, 40:45)]
   ames$First_Flr_SF <- as.list(ames$First_Flr_SF)
@@ -81,6 +85,8 @@ test_that("model error doesn't stop grid", {
 })
 
 test_that("prediction error doesn't stop grid", {
+  skip_if_not_installed("modeldata")
+
   # Errors in predictions as we have injected NA values into the testing splits
   ames <- modeldata::ames[, c(72, 40:45)]
 
@@ -129,6 +135,8 @@ test_that("prediction error doesn't stop grid", {
 })
 
 test_that("capturing error correctly in notes", {
+  skip_if_not_installed("modeldata")
+
   assign(
     "prep.step_logging_helper",
     prep.step_logging_helper,
@@ -178,6 +186,8 @@ test_that("capturing error correctly in notes", {
 })
 
 test_that("capturing warning correctly in notes", {
+  skip_if_not_installed("modeldata")
+
   assign(
     "prep.step_logging_helper",
     prep.step_logging_helper,
@@ -228,6 +238,8 @@ test_that("capturing warning correctly in notes", {
 })
 
 test_that("doesn't capturing message in notes", {
+  skip_if_not_installed("modeldata")
+
   assign(
     "prep.step_logging_helper",
     prep.step_logging_helper,
@@ -281,6 +293,8 @@ test_that("doesn't capturing message in notes", {
 })
 
 test_that("captures kknn R errors", {
+  skip_if_not_installed("modeldata")
+
   # kknn is gonna complain because one of the predictors is Inf
   ames <- modeldata::ames[, c(72, 40:45)]
   ames$Second_Flr_SF <- Inf
@@ -326,6 +340,8 @@ test_that("captures kknn R errors", {
 })
 
 test_that("captures xgboost C errors", {
+  skip_if_not_installed("modeldata")
+
   # xgboost is gonna complain because one of the predictors is Inf
   ames <- modeldata::ames[, c(72, 40:45)]
   ames$Second_Flr_SF <- Inf
@@ -379,6 +395,8 @@ test_that("captures xgboost C errors", {
 })
 
 test_that("captures cli styled errors", {
+  skip_if_not_installed("modeldata")
+
   assign(
     "prep.step_logging_helper",
     prep.step_logging_helper,
@@ -434,6 +452,8 @@ test_that("captures cli styled errors", {
 
 
 test_that("emitter works with errors", {
+  skip_if_not_installed("modeldata")
+
   assign(
     "prep.step_logging_helper",
     prep.step_logging_helper,
