@@ -50,6 +50,7 @@ Suggests:
     kernlab,
     kknn,
     knitr,
+    mgcv,
     modeldata,
     probably,
     scales,
