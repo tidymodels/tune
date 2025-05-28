@@ -29,15 +29,19 @@ cls_tenth <- tailor::tailor() |>
 cls_post <- tailor::tailor() |>
   tailor::adjust_probability_threshold(threshold = tune("cut"))
 
-cls_est_post <- tailor::tailor() |>
-  tailor::adjust_probability_calibration(method = "logistic")
+if (rlang::is_installed("probably")) {
 
-cls_cal_tune_post <- tailor::tailor() |>
-  tailor::adjust_probability_calibration(method = "logistic") |>
-  tailor::adjust_probability_threshold(threshold = tune("cut"))
+  cls_est_post <- tailor::tailor() |>
+    tailor::adjust_probability_calibration(method = "logistic")
 
-cls_cal <- tailor::tailor() |>
-  tailor::adjust_probability_calibration()
+  cls_cal_tune_post <- tailor::tailor() |>
+    tailor::adjust_probability_calibration(method = "logistic") |>
+    tailor::adjust_probability_threshold(threshold = tune("cut"))
+
+  cls_cal <- tailor::tailor() |>
+    tailor::adjust_probability_calibration()
+
+}
 
 fac_2c <- structure(
   integer(0),
@@ -118,15 +122,17 @@ svm_spec <- parsnip::svm_poly(mode = "regression", cost = 1, degree = tune())
 reg_post <- tailor::tailor() |>
   tailor::adjust_predictions_custom(.pred = .pred + 10000)
 
-reg_cal <- tailor::tailor() |>
-  tailor::adjust_numeric_calibration()
-
 reg_max <- tailor::tailor() |>
   tailor::adjust_numeric_range(upper_limit = tune())
 
-reg_cal_max <- tailor::tailor() |>
-  tailor::adjust_numeric_calibration() |>
-  tailor::adjust_numeric_range(upper_limit = tune())
+if (rlang::is_installed("probably")) {
+  reg_cal_max <- tailor::tailor() |>
+    tailor::adjust_numeric_calibration() |>
+    tailor::adjust_numeric_range(upper_limit = tune())
+
+  reg_cal <- tailor::tailor() |>
+    tailor::adjust_numeric_calibration()
+}
 
 glmn_spec <- parsnip::linear_reg(penalty = tune(), mixture = tune()) |>
   parsnip::set_engine("glmnet")
