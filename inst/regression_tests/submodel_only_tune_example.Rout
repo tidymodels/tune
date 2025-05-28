@@ -1,0 +1,182 @@
+
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # ------------------------------------------------------------------------------
+> # Expected results produced by tune 1.3.0 to compare to later implementations
+> # This example tunes a model over a single submodel parameter.
+> 
+> library(tidymodels)
+── Attaching packages ────────────────────────────────────── tidymodels 1.3.0 ──
+✔ broom        1.0.8.9000     ✔ recipes      1.3.0.9000
+✔ dials        1.4.0.9000     ✔ rsample      1.3.0.9000
+✔ dplyr        1.1.4.9000     ✔ tibble       3.2.1.9051
+✔ ggplot2      3.5.2.9000     ✔ tidyr        1.3.1.9000
+✔ infer        1.0.8.9000     ✔ tune         1.3.0.9000
+✔ modeldata    1.4.0.9000     ✔ workflows    1.2.0.9000
+✔ parsnip      1.3.1.9000     ✔ workflowsets 1.1.0.9000
+✔ purrr        1.0.4.9000     ✔ yardstick    1.3.2.9000
+── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
+✖ purrr::discard() masks scales::discard()
+✖ dplyr::filter()  masks stats::filter()
+✖ dplyr::lag()     masks stats::lag()
+✖ recipes::step()  masks stats::step()
+> library(sessioninfo)
+> 
+> # ------------------------------------------------------------------------------
+> 
+> tidymodels_prefer()
+> theme_set(theme_bw())
+> options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
+> 
+> # ------------------------------------------------------------------------------
+> 
+> set.seed(1)
+> dat <- sim_classification(1000)
+> rs <- vfold_cv(dat)
+> 
+> # ------------------------------------------------------------------------------
+> 
+> mod <- nearest_neighbor(neighbors = tune(), weight_func = "triangular") |>
++   set_mode("classification")
+> 
+> submodel_only_wflow <- workflow(class ~ ., mod)
+> 
+> submodel_only_grid <- tibble(neighbors = 3:10)
+> 
+> submodel_only_res <-
++   submodel_only_wflow |>
++   tune_grid(
++     resamples = rs,
++     grid = submodel_only_grid,
++     control = control_grid(save_pred = TRUE)
++   )
+> 
+> submodel_only_metrics <- collect_metrics(submodel_only_res, summarize = FALSE)
+> submodel_only_pred <- collect_predictions(submodel_only_res, summarize = FALSE)
+> 
+> # ------------------------------------------------------------------------------
+> 
+> save(submodel_only_metrics, submodel_only_pred, file = "submodel_only_example.RData")
+> 
+> # ------------------------------------------------------------------------------
+> 
+> sessioninfo::session_info()
+─ Session info ───────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.2 (2024-10-31)
+ os       macOS Sequoia 15.4.1
+ system   aarch64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       America/New_York
+ date     2025-04-30
+ pandoc   2.17.1.1 @ /opt/homebrew/bin/pandoc
+ quarto   1.7.26 @ /usr/local/bin/quarto
+
+─ Packages ───────────────────────────────────────────────────────────────────
+ package      * version    date (UTC) lib source
+ backports      1.5.0      2024-05-23 [1] RSPM
+ broom        * 1.0.8.9000 2025-04-28 [1] Github (tidymodels/broom@d7ad270)
+ cachem         1.1.0      2024-05-16 [1] CRAN (R 4.4.0)
+ class          7.3-23     2025-01-01 [1] CRAN (R 4.4.1)
+ cli            3.6.4      2025-02-13 [1] RSPM (R 4.4.0)
+ codetools      0.2-20     2024-03-31 [2] CRAN (R 4.4.2)
+ conflicted     1.2.0      2023-02-01 [1] CRAN (R 4.4.0)
+ data.table     1.17.0     2025-02-22 [1] RSPM
+ dials        * 1.4.0.9000 2025-04-28 [1] Github (tidymodels/dials@889d214)
+ DiceDesign     1.10       2023-12-07 [1] RSPM
+ digest         0.6.37     2024-08-19 [1] RSPM
+ dplyr        * 1.1.4.9000 2025-03-20 [1] Github (tidyverse/dplyr@2d87e4f)
+ farver         2.1.2      2024-05-13 [1] RSPM
+ fastmap        1.2.0      2024-05-15 [1] RSPM
+ foreach        1.5.2      2022-02-02 [1] CRAN (R 4.4.0)
+ furrr          0.3.1      2022-08-15 [1] CRAN (R 4.4.0)
+ future         1.40.0     2025-04-10 [1] CRAN (R 4.4.1)
+ future.apply   1.11.3     2024-10-27 [1] RSPM
+ generics       0.1.3      2022-07-05 [1] RSPM
+ ggplot2      * 3.5.2.9000 2025-04-29 [1] Github (tidyverse/ggplot2@3aec34a)
+ globals        0.17.0     2025-04-16 [1] RSPM
+ glue           1.8.0      2024-09-30 [1] RSPM (R 4.4.0)
+ gower          1.0.2      2024-12-17 [1] RSPM
+ GPfit          1.0-9      2019-02-08 [1] CRAN (R 4.4.2)
+ gtable         0.3.6      2024-10-25 [1] CRAN (R 4.4.1)
+ hardhat        1.4.1.9000 2025-04-28 [1] Github (tidymodels/hardhat@61c54fc)
+ igraph         2.1.4      2025-01-23 [1] CRAN (R 4.4.1)
+ infer        * 1.0.8.9000 2025-04-15 [1] Github (tidymodels/infer@1a3337e)
+ ipred          0.9-15     2024-07-18 [1] CRAN (R 4.4.0)
+ iterators      1.0.14     2022-02-05 [1] CRAN (R 4.4.0)
+ kknn         * 1.4.0.1    2025-04-29 [1] Github (KlausVigo/kknn@c930c1b)
+ lattice        0.22-7     2025-04-02 [1] RSPM
+ lava           1.8.1      2025-01-12 [1] CRAN (R 4.4.1)
+ lhs            1.2.0      2024-06-30 [1] CRAN (R 4.4.0)
+ lifecycle      1.0.4      2023-11-07 [1] RSPM (R 4.4.0)
+ listenv        0.9.1      2024-01-29 [1] RSPM
+ lubridate      1.9.4      2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr       2.0.3      2022-03-30 [1] RSPM (R 4.4.0)
+ MASS           7.3-65     2025-02-28 [1] RSPM
+ Matrix         1.7-3      2025-03-11 [1] RSPM
+ memoise        2.0.1      2021-11-26 [1] RSPM
+ modeldata    * 1.4.0.9000 2025-04-29 [1] Github (tidymodels/modeldata@5c22676)
+ modelenv       0.2.0      2024-10-14 [1] RSPM
+ nnet           7.3-20     2025-01-01 [1] CRAN (R 4.4.1)
+ parallelly     1.43.0     2025-03-24 [1] CRAN (R 4.4.1)
+ parsnip      * 1.3.1.9000 2025-03-20 [1] Github (tidymodels/parsnip@04d1bc9)
+ pillar         1.10.2     2025-04-05 [1] RSPM
+ pkgconfig      2.0.3      2019-09-22 [1] RSPM
+ prodlim        2024.06.25 2024-06-24 [1] RSPM
+ purrr        * 1.0.4.9000 2025-02-18 [1] Github (tidyverse/purrr@9c8beb4)
+ R6             2.6.1      2025-02-15 [1] CRAN (R 4.4.1)
+ RColorBrewer   1.1-3      2022-04-03 [1] CRAN (R 4.4.0)
+ Rcpp           1.0.14     2025-01-12 [1] CRAN (R 4.4.1)
+ recipes      * 1.3.0.9000 2025-04-28 [1] Github (tidymodels/recipes@90cc792)
+ rlang          1.1.6      2025-04-11 [1] RSPM (R 4.4.0)
+ rpart          4.1.24     2025-01-07 [1] CRAN (R 4.4.1)
+ rsample      * 1.3.0.9000 2025-04-28 [1] Github (tidymodels/rsample@14bb65d)
+ rstudioapi     0.17.1     2024-10-22 [1] RSPM
+ scales       * 1.4.0      2025-04-24 [1] CRAN (R 4.4.1)
+ sessioninfo  * 1.2.3      2025-02-05 [1] CRAN (R 4.4.1)
+ sparsevctrs    0.3.3.9000 2025-04-15 [1] Github (r-lib/sparsevctrs@36e7987)
+ survival       3.8-3      2024-12-17 [1] CRAN (R 4.4.1)
+ tibble       * 3.2.1.9051 2025-04-29 [1] Github (tidyverse/tibble@a1bd76d)
+ tidymodels   * 1.3.0      2025-02-21 [1] CRAN (R 4.4.1)
+ tidyr        * 1.3.1.9000 2025-03-20 [1] Github (tidyverse/tidyr@1c97084)
+ tidyselect     1.2.1      2024-03-11 [1] RSPM
+ timechange     0.3.0      2024-01-18 [1] CRAN (R 4.4.0)
+ timeDate       4041.110   2024-09-22 [1] CRAN (R 4.4.1)
+ tune         * 1.3.0.9000 2025-04-30 [1] Github (tidymodels/tune@2aca603)
+ vctrs          0.6.5      2023-12-01 [1] RSPM (R 4.4.0)
+ withr          3.0.2      2024-10-28 [1] RSPM
+ workflows    * 1.2.0.9000 2025-04-28 [1] Github (tidymodels/workflows@835ee35)
+ workflowsets * 1.1.0.9000 2025-04-28 [1] Github (tidymodels/workflowsets@85079a2)
+ yardstick    * 1.3.2.9000 2025-04-28 [1] Github (tidymodels/yardstick@444401a)
+
+ [1] /Users/max/Library/R/arm64/4.4/library
+ [2] /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/library
+ * ── Packages attached to the search path.
+
+──────────────────────────────────────────────────────────────────────────────
+> 
+> if (!interactive()) {
++   q("no")
++ }
+> proc.time()
+   user  system elapsed 
+  3.653   0.145   3.805 
