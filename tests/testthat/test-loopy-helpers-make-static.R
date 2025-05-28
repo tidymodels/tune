@@ -1,5 +1,6 @@
 test_that("maker static object", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   data("two_class_dat", package = "modeldata")
   two_class_rs <- mc_cv(two_class_dat, times = 2)

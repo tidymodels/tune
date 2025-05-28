@@ -1,5 +1,6 @@
 test_that("tailor trains calibrator", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   cls <- make_post_data()
 

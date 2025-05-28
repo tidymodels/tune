@@ -84,6 +84,8 @@ test_that("stage helpers - model only", {
 })
 
 test_that("stage helpers - post only", {
+  skip_if_not_installed("probably")
+
   wflow_1 <- workflows::workflow(class ~ ., logistic_reg(), cls_post)
   grid_1 <- wflow_1 |>
     extract_parameter_set_dials() |>
@@ -163,6 +165,8 @@ test_that("stage helpers - recipe and model", {
 })
 
 test_that("stage helpers - recipe and post", {
+  skip_if_not_installed("probably")
+
   wflow_1 <- workflows::workflow(puromycin_tune_rec, logistic_reg(), cls_post)
   grid_1 <- wflow_1 |>
     extract_parameter_set_dials() |>

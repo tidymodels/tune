@@ -210,6 +210,7 @@ test_that("verifying loopy, submodels, no post estimation or tuning", {
 test_that("verifying loopy, submodels only, no post estimation or tuning", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
+  skip_if_not_installed("probably")
 
   load(system.file(
     "regression_tests",

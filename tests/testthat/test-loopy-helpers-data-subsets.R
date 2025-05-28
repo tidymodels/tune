@@ -16,6 +16,7 @@ test_that("extract data subsets - no postprocessing", {
 
 test_that("extract data subsets - no estimated postprocessing", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   data("two_class_dat", package = "modeldata")
   two_class_rs <- mc_cv(two_class_dat, times = 2)
@@ -32,6 +33,7 @@ test_that("extract data subsets - no estimated postprocessing", {
 
 test_that("extract data subsets - estimated postprocessing", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   data("two_class_dat", package = "modeldata")
   two_class_rs <- mc_cv(two_class_dat, times = 2)

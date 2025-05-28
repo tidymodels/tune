@@ -1,5 +1,6 @@
 test_that("convert grid to rowwise - no submodels", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   # Model only
   wflow_1 <- workflow(Class ~ ., dt_spec, cls_est_post)
@@ -81,6 +82,7 @@ test_that("convert grid to rowwise - no submodels", {
 
 test_that("convert grid to rowwise - submodels", {
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
 
   # Model only
   wflow_1 <- workflow(Class ~ ., glmn_spec, cls_est_post)

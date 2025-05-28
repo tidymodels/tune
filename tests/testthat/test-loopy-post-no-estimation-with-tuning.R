@@ -4,6 +4,7 @@
 test_that("verifying loopy, no submodels, tuning, no estimation", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
+  skip_if_not_installed("probably")
 
   load(system.file(
     "regression_tests",
@@ -77,6 +78,7 @@ test_that("verifying loopy, no submodels, tuning, no estimation", {
 test_that("verifying loopy, submodels, tuning, no estimation", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
+  skip_if_not_installed("probably")
 
   load(system.file(
     "regression_tests",
@@ -188,6 +190,7 @@ test_that("verifying loopy, submodels, tuning, no estimation", {
 test_that("verifying loopy, submodels only, tuning, no estimation", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
+  skip_if_not_installed("probably")
 
   load(system.file(
     "regression_tests",
