@@ -23,11 +23,6 @@ knn_cls_spec <- parsnip::nearest_neighbor(
   neighbors = tune()
 )
 
-cls_tenth <- tailor::tailor() |>
-  tailor::adjust_probability_threshold(threshold = 1 / 10)
-
-cls_post <- tailor::tailor() |>
-  tailor::adjust_probability_threshold(threshold = tune("cut"))
 
 if (rlang::is_installed("probably")) {
 
@@ -40,6 +35,12 @@ if (rlang::is_installed("probably")) {
 
   cls_cal <- tailor::tailor() |>
     tailor::adjust_probability_calibration()
+
+  cls_tenth <- tailor::tailor() |>
+    tailor::adjust_probability_threshold(threshold = 1 / 10)
+
+  cls_post <- tailor::tailor() |>
+    tailor::adjust_probability_threshold(threshold = tune("cut"))
 
 }
 
@@ -122,8 +123,6 @@ svm_spec <- parsnip::svm_poly(mode = "regression", cost = 1, degree = tune())
 reg_post <- tailor::tailor() |>
   tailor::adjust_predictions_custom(.pred = .pred + 10000)
 
-reg_max <- tailor::tailor() |>
-  tailor::adjust_numeric_range(upper_limit = tune())
 
 if (rlang::is_installed("probably")) {
   reg_cal_max <- tailor::tailor() |>
@@ -132,6 +131,9 @@ if (rlang::is_installed("probably")) {
 
   reg_cal <- tailor::tailor() |>
     tailor::adjust_numeric_calibration()
+
+  reg_max <- tailor::tailor() |>
+    tailor::adjust_numeric_range(upper_limit = tune())
 }
 
 glmn_spec <- parsnip::linear_reg(penalty = tune(), mixture = tune()) |>
