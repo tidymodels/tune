@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
 BugReports: https://github.com/tidymodels/tune/issues
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.3.0.9000),
@@ -23,6 +23,7 @@ Imports:
     dplyr (>= 1.1.0),
     foreach,
     future (>= 1.33.0),
+    future.apply,
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
@@ -60,12 +61,9 @@ Suggests:
 Remotes:
     tidymodels/hardhat,
     tidymodels/parsnip,
-    tidymodels/recipes,
     tidymodels/rsample,
     tidymodels/tailor,
-    tidymodels/workflows,
-    tidymodels/dials,
-    tidymodels/probably
+    tidymodels/workflows
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3
