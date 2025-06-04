@@ -12,7 +12,6 @@ loopy <- function(resamples, grid, static) {
     type = character(),
     note = character()
   )
-  # TODO add extras and notes
 
   sched <- schedule_grid(grid, static$wflow)
 
