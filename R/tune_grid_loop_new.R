@@ -9,7 +9,7 @@ tune_grid_loop_new <- function(
 ) {
   mtr_info <- tibble::as_tibble(metrics)
 
-  control <- check_parallel_over(control, resamples)
+  control <- update_parallel_over(control, resamples)
 
   # We'll significantly alter the rsample object but will need it intact later;
   # Make a copy and save some information before proceeding
@@ -115,8 +115,8 @@ tune_grid_loop_new <- function(
       dplyr::any_of(".extracts")
     )
 
-  tune_contructor(
-    resamples = res,
+  new_tune_results(
+    x = res,
     parameters = param_info,
     metrics = metrics,
     eval_time = eval_time,
@@ -131,7 +131,7 @@ vec_list_rowwise <- function(x) {
   vctrs::vec_split(x, by = 1:nrow(x))$val
 }
 
-check_parallel_over <- function(control, resamples) {
+update_parallel_over <- function(control, resamples) {
   if (is.null(control$parallel_over)) {
     control$parallel_over <- "resamples"
   }
@@ -189,30 +189,3 @@ loop_call <- function(ctrl, opts) {
   }
   cl
 }
-
-# `new_tune_results()` is exported so let's make a different one
-
-tune_contructor <- function(
-  resamples,
-  parameters,
-  metrics,
-  eval_time,
-  eval_time_target,
-  outcomes = character(0),
-  rset_info,
-  ...,
-  cls = character(0)
-) {
-  new_bare_tibble(
-    x = resamples,
-    parameters = parameters,
-    metrics = metrics,
-    eval_time = eval_time,
-    eval_time_target = eval_time_target,
-    outcomes = outcomes,
-    rset_info = rset_info,
-    ...,
-    class = c(cls, "tune_results")
-  )
-}
-
