@@ -1,8 +1,5 @@
-# Helpers for loopy()
-
-# TODO remove this when merged in to tune
-
 # ------------------------------------------------------------------------------
+# Helpers for loopy()
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
@@ -231,8 +228,7 @@ predict_all_types <- function(
 
   sub_param <- names(submodel_grid)
 
-  # Convert argument names to parsnip format
-  # TODO look at this again to see if we really need these new functions
+  # Convert argument names to parsnip format see #1011
   submodel_grid <- engine_to_parsnip(static$wflow, submodel_grid)
 
   pred <- NULL

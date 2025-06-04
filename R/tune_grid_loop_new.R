@@ -72,9 +72,6 @@ tune_grid_loop_new <- function(
     # If multiple resamples but preprocessing is cheap (or just a validation set).
     # Loop over grid rows and splits
     candidates <- get_row_wise_grid(workflow, grid)
-    # TODO for preceding line: go back and revaluate if the helper functions
-    # to schedule certain stages can be used at this level of the computations
-    # (see: Frick(2025))
 
     # Break all combinations of resamples and candidates into a list of integers
     # for each combination.
@@ -141,8 +138,6 @@ update_parallel_over <- function(control, resamples) {
   control
 }
 
-# TODO for futures to do code inspection to figure out globals, we might need
-# to explicitly have the code written out.
 loop_call <- function(ctrl, opts) {
   if (ctrl$allow_par) {
     if (ctrl$parallel_over == "resamples") {

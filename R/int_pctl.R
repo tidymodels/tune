@@ -101,14 +101,6 @@ int_pctl.tune_results <- function(.data, metrics = NULL, eval_time = NULL,
 
   config_keys <- get_configs(.data, parameters = parameters)
   p <- length(config_keys)
-
-  #  TODO Changes in https://github.com/tidymodels/rsample/pull/465
-  #  will effect how these computations are done since they will
-  #  compute intervals for `terms` as well as any columns that begin
-  #  with a period. This will simply the code considerably for
-  #  survival and non-survival models. We will make this version
-  #  compatible with the future rsample version (but will factor
-  #  this code later).
   metrics_info <- metrics_info(metrics)
 
   res <-

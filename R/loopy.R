@@ -138,7 +138,7 @@ loopy <- function(resamples, grid, static) {
               current_sched_post
             )
 
-            # make data for prediction (TODO maybe make a function)
+            # make data for prediction
             if (has_tailor_estimated(current_wflow)) {
               tailor_train_data <- predict_all_types(
                 current_wflow,
@@ -194,11 +194,6 @@ loopy <- function(resamples, grid, static) {
           # Allocate predictions to an overall object
 
           pred_iter <- pred_iter + 1
-          # cli::cli_inform("-- -- Allocation {pred_iter} of {nrow(grid)}")
-          # TODO We might not be able to predict ahead of time how many rows should
-          # be in the reserve
-          # pred_reserve <- update_reserve(pred_reserve, pred_iter, final_pred, nrow(grid))
-
           pred_reserve <- dplyr::bind_rows(pred_reserve, final_pred)
 
           # --------------------------------------------------------------------
@@ -221,7 +216,7 @@ loopy <- function(resamples, grid, static) {
         param_names = static$param_info$id,
         outcome_name = static$y_name,
         event_level = static$control$event_level,
-        metrics_info = metrics_info(static$metrics) # static$metric_info TODO fix
+        metrics_info = metrics_info(static$metrics)
       ) |>
       dplyr::full_join(config_tbl, by = static$param_info$id) |>
       dplyr::arrange(.config)
