@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Helpers for loopy()
+# Helpers for loop_over_all_stages()
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions

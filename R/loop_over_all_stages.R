@@ -1,4 +1,4 @@
-loopy <- function(resamples, grid, static) {
+loop_over_all_stages <- function(resamples, grid, static) {
   # Initialize some objects
 
   split <- resamples$splits[[1]]
@@ -242,8 +242,8 @@ loopy <- function(resamples, grid, static) {
   return_list
 }
 
-loopy2 <- function(index, resamples, grid, static) {
-  loopy(resamples[[index$b]], grid[[index$s]], static)
+loop_over_all_stages2 <- function(index, resamples, grid, static) {
+  loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
 }
 
 # ------------------------------------------------------------------------------
