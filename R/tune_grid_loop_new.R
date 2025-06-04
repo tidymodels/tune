@@ -54,26 +54,36 @@ tune_grid_loop_new <- function(
   # ------------------------------------------------------------------------------
   # Control execution
 
-  if (control$parallel_over == "resamples") {
-    # The default: Loop over splits, process whole grid
+  # We'll make a call that defines how we iterate over resamples and grid points.
+  # That call changes depending on the value of `control$parallel_over`. There
+  # are two possible options:
+  # - parallel_over == "resamples" means that we lapply() over the existing
+  #   `resamples` object.
+  # - parallel_over == "everything" means that we lapply() over the every
+  #   combination of resamples x grid candidates. That index (called `inds`) has
+  #   not been created at this point.
+  #
+  # We'll create `inds` only if needed and then use the same code to make the
+  # call objects (`cl`) that will be executed in the current environment. `cl`
+  # will contain a reference to either `resamples` or `inds` depending on the
+  # `parallel_over` value in `control`.
 
-    cl <- loop_call(control, par_opt)
-    res <- rlang::eval_bare(cl)
-  } else {
-    # TODO go back and revaluate if the helper functions to schedule certain
-    # stages can be used at this level of the computations (see: Frick(2025))
-
+  if (control$parallel_over == "everything") {
     # If multiple resamples but preprocessing is cheap (or just a validation set).
     # Loop over grid rows and splits
     candidates <- get_row_wise_grid(workflow, grid)
+    # TODO for preceding line: go back and revaluate if the helper functions
+    # to schedule certain stages can be used at this level of the computations
+    # (see: Frick(2025))
+
     # Break all combinations of resamples and candidates into a list of integers
     # for each combination.
     inds <- tidyr::crossing(s = seq_along(candidates), b = seq_along(resamples))
     inds <- vec_list_rowwise(inds)
-
-    cl <- loop_call(control, par_opt)
-    res <- rlang::eval_bare(cl)
   }
+
+  cl <- loop_call(control, par_opt)
+  res <- rlang::eval_bare(cl)
 
   # ------------------------------------------------------------------------------
   # Separate results into different components
