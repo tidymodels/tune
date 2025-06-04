@@ -35,6 +35,7 @@ reference:
   - title: Functions for tuning
     contents:
     - starts_with("tune")
+    - starts_with("melodie")
     - fit_resamples
     - fit_best
     - last_fit
