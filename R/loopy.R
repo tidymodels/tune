@@ -271,7 +271,7 @@ get_row_wise_grid <- function(wflow, grid) {
   const_param <- rlang::syms(const_param)
 
   if (length(submodel) == 0) {
-    inds <- 1:nrow(grid)
+    inds <- seq_len(nrow(grid))
   } else {
     grid_inds <- grid |>
       parsnip::add_rowindex() |>

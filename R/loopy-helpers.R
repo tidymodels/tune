@@ -1,11 +1,10 @@
 # Helpers for loopy()
-#' @import rlang
 
 # TODO remove this when merged in to tune
 
 # ------------------------------------------------------------------------------
 
-# Note: in loop(), we add more elements for the outcome name(s(), and the
+# Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
 make_static <- function(
   workflow,
