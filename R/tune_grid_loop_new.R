@@ -22,7 +22,7 @@ tune_grid_loop_new <- function(
 
   # Notes on debugging:
   # 1. You can set `options(future.debug = TRUE)` to help
-  # 2. If you are debugging loopy, use the control option `allow_par = FALSE`;
+  # 2. If you are debugging loop_over_all_stages, use the control option `allow_par = FALSE`;
   #    that will use `lapply()` so that you can see output.
 
   # ------------------------------------------------------------------------------
@@ -145,7 +145,7 @@ loop_call <- function(ctrl, opts) {
         "future_lapply",
         .ns = "future.apply",
         X = quote(resamples),
-        FUN = "loopy",
+        FUN = "loop_over_all_stages",
         quote(grid),
         quote(static),
         !!!opts
@@ -155,7 +155,7 @@ loop_call <- function(ctrl, opts) {
         "future_lapply",
         .ns = "future.apply",
         X = quote(inds),
-        FUN = "loopy2",
+        FUN = "loop_over_all_stages2",
         quote(resamples),
         quote(candidates),
         quote(static),
@@ -167,7 +167,7 @@ loop_call <- function(ctrl, opts) {
       cl <- rlang::call2(
         "lapply",
         X = quote(resamples),
-        FUN = "loopy",
+        FUN = "loop_over_all_stages",
         quote(grid),
         quote(static)
       )
@@ -175,7 +175,7 @@ loop_call <- function(ctrl, opts) {
       cl <- rlang::call2(
         "lapply",
         X = quote(inds),
-        FUN = "loopy2",
+        FUN = "loop_over_all_stages2",
         quote(resamples),
         quote(candidates),
         quote(static)
