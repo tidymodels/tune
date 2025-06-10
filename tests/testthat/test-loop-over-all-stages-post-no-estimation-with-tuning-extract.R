@@ -161,12 +161,12 @@ test_that("verifying loop_over_all_stages, submodels, tuning, no estimation, ext
   expect_named(submodel_res, c(".metrics", ".notes", ".extracts", "id"))
   expect_true(nrow(submodel_res) == 1)
 
-  extracted <- simple_res$.extracts[[1]]
+  extracted <- submodel_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(submodel_grid)  
   )
-  expect_named(extracted, c(names(grd), ".extracts", ".config"))
+  expect_named(extracted, c(names(submodel_grid), ".extracts", ".config"))
   expect_true(
     all(vapply(extracted$.extracts, is_workflow, logical(1)))
   )
@@ -228,12 +228,12 @@ test_that("verifying loop_over_all_stages, submodels only, tuning, no estimation
   expect_named(submodel_only_res, c(".metrics", ".notes", ".extracts", "id"))
   expect_true(nrow(submodel_only_res) == 1)
 
-  extracted <- simple_res$.extracts[[1]]
+  extracted <- submodel_only_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(submodel_only_grid)  
   )
-  expect_named(extracted, c(names(grd), ".extracts", ".config"))
+  expect_named(extracted, c(names(submodel_only_grid), ".extracts", ".config"))
   expect_true(
     all(vapply(extracted$.extracts, is_workflow, logical(1)))
   )
