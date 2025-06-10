@@ -172,12 +172,12 @@ test_that("verifying loop_over_all_stages, submodels, post estimation with tunin
     nrow(data_1$pred$data) * nrow(submodel_grid)
   )
 
-  extracted <- simple_res$.extracts[[1]]
+  extracted <- submodel_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(submodel_grid)  
   )
-  expect_named(extracted, c(names(grd), ".extracts", ".config"))
+  expect_named(extracted, c(names(submodel_grid), ".extracts", ".config"))
   expect_true(
     all(vapply(extracted$.extracts, is_workflow, logical(1)))
   )
@@ -242,12 +242,12 @@ test_that("verifying loop_over_all_stages, submodels only, post estimation with 
     nrow(data_1$pred$data) * nrow(submodel_only_grid)
   )
 
-  extracted <- simple_res$.extracts[[1]]
+  extracted <- submodel_only_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(submodel_only_grid)  
   )
-  expect_named(extracted, c(names(grd), ".extracts", ".config"))
+  expect_named(extracted, c(names(submodel_only_grid), ".extracts", ".config"))
   expect_true(
     all(vapply(extracted$.extracts, is_workflow, logical(1)))
   )
