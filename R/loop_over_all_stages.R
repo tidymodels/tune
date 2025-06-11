@@ -203,7 +203,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             elt_extract <- .catch_and_log_melodie(
               extract_details(current_wflow, static$control$extract)
             )
-  
+
             if (has_log_notes(elt_extract)) {
               location <- glue::glue(
                 "extraction"
@@ -251,9 +251,10 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   return_list <- tibble::tibble(
     .metrics = list(all_metrics),
-    .notes = list(notes)
+    .notes = list(notes),
+    y_name = static$y_name
   )
-  
+
   if (!is.null(extracts)) {
     return_list <- dplyr::mutate(return_list, .extracts = list(extracts))
   }

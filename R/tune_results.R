@@ -107,7 +107,8 @@ new_tune_results <-
            rset_info,
            ...,
            class = character()) {
-    new_bare_tibble(
+    res <-
+      new_bare_tibble(
       x = x,
       parameters = parameters,
       metrics = metrics,
@@ -118,6 +119,8 @@ new_tune_results <-
       ...,
       class = c(class, "tune_results")
     )
+    attr(res, "outcomes") <- outcomes
+    res
   }
 
 is_tune_results <- function(x) {
