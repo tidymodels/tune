@@ -46,6 +46,12 @@
         allow_par = FALSE))
     Message
 
+# captures extract errors
+
+    Code
+      res_fit <- melodie_grid(wf_spec, folds, grid = 2, control = control_grid(
+        allow_par = FALSE, extract = extract_error))
+
 # captures kknn R errors
 
     Code

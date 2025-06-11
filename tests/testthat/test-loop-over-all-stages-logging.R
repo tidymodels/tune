@@ -292,6 +292,42 @@ test_that("doesn't capturing message in notes", {
   rm(list = "bake.step_logging_helper", envir = .GlobalEnv)
 })
 
+test_that("captures extract errors", {
+  skip_if_not_installed("modeldata")
+
+  set.seed(1234)
+  ames <- modeldata::ames[, c(72, 40:45)]
+  folds <- rsample::vfold_cv(ames, 2)
+
+  rec_spec <- recipe(Sale_Price ~ ., ames)
+  mod_spec <- parsnip::nearest_neighbor(
+    "regression",
+    "kknn",
+    neighbors = tune()
+  )
+
+  wf_spec <- workflow(rec_spec, mod_spec)
+
+  extract_error <- function(x) {
+    stop("extract error")
+  }
+
+  expect_snapshot(
+    res_fit <- melodie_grid(
+      wf_spec,
+      folds,
+      grid = 2,
+      control = control_grid(allow_par = FALSE, extract = extract_error)
+    ),
+    transform = catalog_lines
+  )
+
+  expect_identical(
+    nrow(collect_notes(res_fit)),
+    4L
+  )
+})
+
 test_that("captures kknn R errors", {
   skip_if_not_installed("modeldata")
 

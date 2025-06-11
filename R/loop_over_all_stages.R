@@ -12,6 +12,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
     type = character(),
     note = character()
   )
+  extracts <- NULL
 
   sched <- schedule_grid(grid, static$wflow)
 
@@ -197,7 +198,24 @@ loop_over_all_stages <- function(resamples, grid, static) {
           pred_reserve <- dplyr::bind_rows(pred_reserve, final_pred)
 
           # --------------------------------------------------------------------
-          # Placeholder for extraction
+          # Extractions
+          if (!is.null(static$control$extract)) {
+            elt_extract <- .catch_and_log_melodie(
+              extract_details(current_wflow, static$control$extract)
+            )
+  
+            if (has_log_notes(elt_extract)) {
+              location <- glue::glue(
+                "extraction"
+              )
+              notes <- append_log_notes(notes, elt_extract, location)
+              if (is_failure_melodie(elt_extract)) {
+                next
+              }
+            }
+            elt_extract <- remove_log_notes(elt_extract)
+            extracts <- c(extracts, list(elt_extract))
+          }
         } # post loop
       } # predict loop
     } # model loop
@@ -222,14 +240,25 @@ loop_over_all_stages <- function(resamples, grid, static) {
       dplyr::arrange(.config)
   }
 
+  if (!is.null(extracts)) {
+    extracts <- config_tbl |>
+      dplyr::mutate(.extracts = extracts) |>
+      dplyr::relocate(.config, .after = .extracts)
+  }
+
   # ----------------------------------------------------------------------------
   # Return the results
 
   return_list <- tibble::tibble(
     .metrics = list(all_metrics),
     .notes = list(notes)
-  ) |>
-    vctrs::vec_cbind(split_labs)
+  )
+  
+  if (!is.null(extracts)) {
+    return_list <- dplyr::mutate(return_list, .extracts = list(extracts))
+  }
+
+  return_list <- vctrs::vec_cbind(return_list, split_labs)
 
   if (static$control$save_pred) {
     return_list$.predictions <- list(
