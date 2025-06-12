@@ -235,6 +235,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
     extracts <- res$extracts
     notes <- res$notes
     pred_reserve <- res$predictions
+    config_tbl <- tibble::tibble(.config = "pre0_mod0_post0")
   }
 
   # ----------------------------------------------------------------------------
@@ -329,6 +330,8 @@ get_row_wise_grid <- function(wflow, grid) {
 # In the case of just resamples, fit, predict and move on
 
 resample_shortcut <- function(static, notes) {
+  res <- list(predictions = NULL, notes = NULL, extracts = NULL)
+
   current_wflow <- tune:::.catch_and_log_melodie(
     fit(
       static$wflow,
@@ -340,8 +343,10 @@ resample_shortcut <- function(static, notes) {
   # copied
   if (has_log_notes(current_wflow)) {
     notes <- append_log_notes(notes, current_wflow, "model 1/1")
+    res$notes <- notes
     if (is_failure_melodie(current_wflow)) {
-      next
+      # Can't predict or extract
+      return(res)
     }
     current_wflow <- remove_log_notes(current_wflow)
   }
@@ -354,11 +359,14 @@ resample_shortcut <- function(static, notes) {
 
   if (has_log_notes(current_pred)) {
     notes <- append_log_notes(notes, current_pred, "prediction 1/1")
+    res$notes <- notes
     if (is_failure_melodie(current_pred)) {
-      predictions <- NULL
+      # Might be able to extract so move on
     } else {
-      predictions <- remove_log_notes(current_pred)
+      res$predictions <- remove_log_notes(current_pred)
     }
+  } else {
+    res$predictions <- current_pred
   }
 
   # ----------------------------------------------------------------------------
@@ -369,20 +377,15 @@ resample_shortcut <- function(static, notes) {
     )
 
     if (has_log_notes(elt_extract)) {
-      location <- glue::glue(
-        "extraction"
-      )
-      notes <- append_log_notes(notes, elt_extract, location)
-      if (is_failure_melodie(elt_extract)) {
-        next
-      }
+      notes <- append_log_notes(notes, elt_extract, "extraction")
+      res$notes <- notes
+      res$extracts <- c(list(remove_log_notes(elt_extract)))
+    }  else {
+      res$extracts <- c(list(elt_extract))
     }
-    extracts <- remove_log_notes(elt_extract)
-  } else {
-    extracts <- NULL
   }
 
-  list(predictions = current_pred, notes = notes, extracts = extracts)
+res
 }
 
 
