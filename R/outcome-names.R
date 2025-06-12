@@ -45,7 +45,7 @@ outcome_names.workflow <- function(x, ...) {
     res <- colnames(y_vals)
   } else {
     preprocessor <- extract_preprocessor(x)
-    res <- outcome_names(preprocessor)
+    res <- outcome_names(preprocessor, ...)
   }
   res
 }
@@ -60,4 +60,16 @@ outcome_names.tune_results <- function(x, ...) {
     res <- NA_character_
   }
   res
+}
+
+#' @export
+#' @rdname outcome_names
+outcome_names.workflow_variables <- function(x, data = NULL, ...) {
+  if (!inherits(data, "data.frame")) {
+    cli::cli_abort(
+      "When using {.fn outcome_names} on an object for class {.cls {class(x)}}, the
+      argument {.arg data} should be a data frame, not {.obj_type_friendly {data}}."
+    )
+  }
+  names(dplyr::select(data, !!x$outcomes))
 }
