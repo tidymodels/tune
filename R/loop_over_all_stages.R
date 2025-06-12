@@ -216,10 +216,26 @@ loop_over_all_stages <- function(resamples, grid, static) {
             elt_extract <- remove_log_notes(elt_extract)
             extracts <- c(extracts, list(elt_extract))
           }
+
+          # Output for these loops:
+          # - pred_reserve (probably not null)
+          # - extracts (may be null)
+          # - notes
+
         } # post loop
       } # predict loop
     } # model loop
   } # pre loop
+
+  # ----------------------------------------------------------------------------
+  # Simple resample; no iteration
+
+  if (num_iterations_pre == 0) {
+    res <- resample_shortcut(static, notes)
+    extracts <- res$extracts
+    notes <- res$notes
+    pred_reserve <- res$predictions
+  }
 
   # ----------------------------------------------------------------------------
   # Compute metrics on each config and eval_time
@@ -308,3 +324,65 @@ get_row_wise_grid <- function(wflow, grid) {
   }
   vctrs::vec_split(grid, inds)$val
 }
+
+# ------------------------------------------------------------------------------
+# In the case of just resamples, fit, predict and move on
+
+resample_shortcut <- function(static, notes) {
+  current_wflow <- tune:::.catch_and_log_melodie(
+    fit(
+      static$wflow,
+      data = static$data$fit$data,
+      calibration = static$data$cal$data
+    )
+  )
+
+  # copied
+  if (has_log_notes(current_wflow)) {
+    notes <- append_log_notes(notes, current_wflow, "model 1/1")
+    if (is_failure_melodie(current_wflow)) {
+      next
+    }
+    current_wflow <- remove_log_notes(current_wflow)
+  }
+
+  # ----------------------------------------------------------------------------
+
+  current_pred <- tune:::.catch_and_log_melodie(
+    predict_all_types(current_wflow, static)
+  )
+
+  if (has_log_notes(current_pred)) {
+    notes <- append_log_notes(notes, current_pred, "prediction 1/1")
+    if (is_failure_melodie(current_pred)) {
+      predictions <- NULL
+    } else {
+      predictions <- remove_log_notes(current_pred)
+    }
+  }
+
+  # ----------------------------------------------------------------------------
+
+  if (!is.null(static$control$extract)) {
+    elt_extract <- .catch_and_log_melodie(
+      extract_details(current_wflow, static$control$extract)
+    )
+
+    if (has_log_notes(elt_extract)) {
+      location <- glue::glue(
+        "extraction"
+      )
+      notes <- append_log_notes(notes, elt_extract, location)
+      if (is_failure_melodie(elt_extract)) {
+        next
+      }
+    }
+    extracts <- remove_log_notes(elt_extract)
+  } else {
+    extracts <- NULL
+  }
+
+  list(predictions = current_pred, notes = notes, extracts = extracts)
+}
+
+
