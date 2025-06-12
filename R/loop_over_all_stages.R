@@ -332,7 +332,7 @@ get_row_wise_grid <- function(wflow, grid) {
 resample_shortcut <- function(static, notes) {
   res <- list(predictions = NULL, notes = NULL, extracts = NULL)
 
-  current_wflow <- tune:::.catch_and_log_melodie(
+  current_wflow <- .catch_and_log_melodie(
     fit(
       static$wflow,
       data = static$data$fit$data,
@@ -353,7 +353,7 @@ resample_shortcut <- function(static, notes) {
 
   # ----------------------------------------------------------------------------
 
-  current_pred <- tune:::.catch_and_log_melodie(
+  current_pred <- .catch_and_log_melodie(
     predict_all_types(current_wflow, static)
   )
 
