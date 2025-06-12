@@ -7,6 +7,10 @@ tune_grid_loop_new <- function(
   eval_time,
   control
 ) {
+  if (is.null(grid)) {
+    grid <- tibble::tibble()
+  }
+
   mtr_info <- tibble::as_tibble(metrics)
 
   control <- update_parallel_over(control, resamples)
@@ -15,6 +19,8 @@ tune_grid_loop_new <- function(
   # Make a copy and save some information before proceeding
   rset_info <- pull_rset_attributes(resamples)
   split_args <- rsample::.get_split_args(resamples)
+
+  resamples <- new_bare_tibble(resamples)
   # Break it up row-wise to facilitate mapping/parallelism
   resamples <- vec_list_rowwise(resamples)
 
