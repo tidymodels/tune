@@ -45,7 +45,7 @@ test_that("gives same output as collect_metrics() when metrics match (apparent)"
       mpg ~ cyl + hp,
       bootstraps(mtcars, 5, apparent = TRUE),
       metrics = m_set,
-      control = control_grid(save_pred = TRUE)
+      control = control_grid(save_pred = TRUE, allow_par = FALSE)
     )
 
   collected_sum <- collect_metrics(res)

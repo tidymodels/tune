@@ -253,8 +253,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         event_level = static$control$event_level,
         metrics_info = metrics_info(static$metrics)
       ) |>
-      dplyr::full_join(config_tbl, by = static$param_info$id) |>
-      dplyr::arrange(.config)
+      add_configs(static, config_tbl)
   }
 
   if (!is.null(extracts)) {
@@ -279,11 +278,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   return_list <- vctrs::vec_cbind(return_list, split_labs)
 
   if (static$control$save_pred) {
-    return_list$.predictions <- list(
-      pred_reserve |>
-        dplyr::full_join(config_tbl, by = static$param_info$id) |>
-        dplyr::arrange(.config)
-    )
+    return_list$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
   }
 
   return_list
@@ -388,4 +383,13 @@ resample_shortcut <- function(static, notes) {
 res
 }
 
+add_configs <- function(x, static, config_tbl) {
+  if (length(static$param_info$id) > 0) {
+    x <- dplyr::full_join(x, config_tbl, by = static$param_info$id)
+  } else {
+    x <- dplyr::bind_cols(x, config_tbl)
+  }
+
+  dplyr::arrange(x, .config)
+}
 
