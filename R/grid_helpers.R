@@ -192,6 +192,15 @@ forge_from_workflow <- function(new_data, workflow) {
   forged
 }
 
+mold_has_case_weights <- function(mold) {
+  roles <- mold$extras$roles
+  no_extras <- is.null(roles)
+  if (no_extras) {
+    return(FALSE)
+  }
+  any(names(roles) == "case_weights")
+}
+
 make_submod_arg <- function(grid, model, submodels) {
   # Assumes only one submodel parameter per model
   real_name <-
