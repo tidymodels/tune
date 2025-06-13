@@ -163,3 +163,19 @@ initialize_catalog_melodie <- function(env = rlang::caller_env()) {
     envir = env
   )
 }
+
+new_note <- function(
+    location = character(0),
+    type = character(0),
+    note = character(0),
+    trace = list()
+) {
+  tibble::new_tibble(
+    list(
+      location = location,
+      type = type,
+      note = note,
+      trace = trace
+    )
+  )
+}
