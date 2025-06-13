@@ -13,7 +13,7 @@ tune_grid_loop_new <- function(
 
   mtr_info <- tibble::as_tibble(metrics)
 
-  control <- update_parallel_over(control, resamples)
+  control <- update_parallel_over(control, resamples, grid)
 
   # We'll significantly alter the rsample object but will need it intact later;
   # Make a copy and save some information before proceeding
@@ -134,11 +134,13 @@ vec_list_rowwise <- function(x) {
   vctrs::vec_split(x, by = 1:nrow(x))$val
 }
 
-update_parallel_over <- function(control, resamples) {
-  if (is.null(control$parallel_over)) {
+update_parallel_over <- function(control, resamples, grid) {
+  num_candidates <- nrow(grid)
+
+  if (is.null(control$parallel_over) | num_candidates == 0) {
     control$parallel_over <- "resamples"
   }
-  if (length(resamples$splits) == 1) {
+  if (length(resamples$splits) == 1 & num_candidates > 0) {
     control$parallel_over <- "everything"
   }
   control
