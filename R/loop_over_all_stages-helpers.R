@@ -226,6 +226,10 @@ predict_all_types <- function(
   processed_data_pred$outcomes <- processed_data_pred$outcomes |>
     dplyr::mutate(.row = .ind)
 
+  model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
+
+  # TODO tune::predict_model has some pre-prediction checks
+
   sub_param <- names(submodel_grid)
 
   # Convert argument names to parsnip format see #1011
@@ -234,7 +238,7 @@ predict_all_types <- function(
   pred <- NULL
   for (type_iter in static$pred_types) {
     tmp_res <- predict_wrapper(
-      model = wflow_fit |> hardhat::extract_fit_parsnip(),
+      model = model_fit,
       new_data = processed_data_pred$predictors,
       type = type_iter,
       eval_time = static$eval_time,
@@ -261,6 +265,24 @@ predict_all_types <- function(
 
   pred <- pred |>
     dplyr::full_join(processed_data_pred$outcomes, by = ".row")
+
+  # Add implicitly grouped metric data, if applicable
+  metrics_by <- get_metrics_by(static$metrics)
+  if (has_metrics_by(metrics_by)) {
+    .data$.row <- .ind
+    pred <- dplyr::full_join(pred, .data[c(metrics_by, ".row")], by = ".row")
+  }
+
+  # Add case weights (if needed)
+  if (has_case_weights(wflow_fit)) {
+    case_weights <- extract_case_weights(.data, wflow_fit)
+    if (.use_case_weights_with_yardstick(case_weights[[1]])) {
+      case_weights <- dplyr::mutate(case_weights, .row = .ind)
+      pred <- dplyr::full_join(pred, case_weights, by = ".row")
+    }
+  }
+
+  pred <- maybe_add_ipcw(pred, model_fit, static$pred_types)
 
   pred
 }

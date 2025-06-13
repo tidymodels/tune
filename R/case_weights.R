@@ -61,10 +61,19 @@ extract_case_weights <- function(data, workflow) {
   }
 
   loc <- eval_select_case_weights(col, data)
+  if (length(loc) != 1) {
+    # Can't happen now, make sure it doesn't happen in the future
+    cli::cli_abort("Only a single case weight column is allowed. {length(loc)}
+                   were found: {.val {names(loc)}}.")
+  }
 
-  case_weights <- data[[loc]]
+  if (!tibble::is_tibble(data)) {
+    data <- tibble::as_tibble(data)
+  }
+  case_weights <- data[, loc]
+  case_weights <- stats::setNames(case_weights, case_weights_column_name())
 
-  if (!hardhat::is_case_weights(case_weights)) {
+  if (!hardhat::is_case_weights(data[[names(loc)]])) {
     cli::cli_abort(
       "Case weights must be a supported case weights type, as determined by
       {.fn hardhat::is_case_weights}."
