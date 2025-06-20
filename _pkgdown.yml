@@ -40,13 +40,15 @@ reference:
     - conf_bound
     - starts_with("melodie")
     - fit_resamples
-    - starts_with("control")
+    - control_grid
+    - control_bayes
     - parallelism
   - title: Fit one model
     contents:
     - fit_best
     - last_fit
     - starts_with("finalize")
+    - control_last_fit
   - title: Inspect results
     contents:
     - starts_with("collect")
