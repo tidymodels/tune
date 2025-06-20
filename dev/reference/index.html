@@ -43,7 +43,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="functions-for-tuning">Functions for tuning<a class="anchor" aria-label="anchor" href="#functions-for-tuning"></a></h2>
+      <h2 id="fit-many-models">Fit many models<a class="anchor" aria-label="anchor" href="#fit-many-models"></a></h2>
 
 
 
@@ -55,16 +55,28 @@
 
       <dl><dt>
 
+          <code><a href="tune_grid.html">tune_grid()</a></code>
+
+        </dt>
+        <dd>Model tuning via grid search</dd>
+      </dl><dl><dt>
+
           <code><a href="tune_bayes.html">tune_bayes()</a></code>
 
         </dt>
         <dd>Bayesian optimization of model parameters.</dd>
       </dl><dl><dt>
 
-          <code><a href="tune_grid.html">tune_grid()</a></code>
+          <code><a href="expo_decay.html">expo_decay()</a></code>
 
         </dt>
-        <dd>Model tuning via grid search</dd>
+        <dd>Exponential decay function</dd>
+      </dl><dl><dt>
+
+          <code><a href="prob_improve.html">prob_improve()</a></code> <code><a href="prob_improve.html">exp_improve()</a></code> <code><a href="prob_improve.html">conf_bound()</a></code>
+
+        </dt>
+        <dd>Acquisition function for scoring parameter combinations</dd>
       </dl><dl><dt>
 
           <code><a href="melodie_grid.html">melodie_grid()</a></code>
@@ -79,6 +91,35 @@
         <dd>Fit multiple models via resampling</dd>
       </dl><dl><dt>
 
+          <code><a href="control_grid.html">control_grid()</a></code> <code><a href="control_grid.html">control_resamples()</a></code> <code><a href="control_grid.html">new_backend_options()</a></code>
+
+        </dt>
+        <dd>Control aspects of the grid search process</dd>
+      </dl><dl><dt>
+
+          <code><a href="control_bayes.html">control_bayes()</a></code>
+
+        </dt>
+        <dd>Control aspects of the Bayesian search process</dd>
+      </dl><dl><dt>
+
+          <code><a href="parallelism.html">parallelism</a></code>
+
+        </dt>
+        <dd>Support for parallel processing in tune</dd>
+      </dl></div><div class="section level2">
+      <h2 id="fit-one-model">Fit one model<a class="anchor" aria-label="anchor" href="#fit-one-model"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="fit_best.html">fit_best()</a></code>
 
         </dt>
@@ -91,47 +132,28 @@
         <dd>Fit the final best model to the training set and evaluate the test set</dd>
       </dl><dl><dt>
 
-          <code><a href="prob_improve.html">prob_improve()</a></code> <code><a href="prob_improve.html">exp_improve()</a></code> <code><a href="prob_improve.html">conf_bound()</a></code>
+          <code><a href="finalize_model.html">finalize_model()</a></code> <code><a href="finalize_model.html">finalize_recipe()</a></code> <code><a href="finalize_model.html">finalize_workflow()</a></code> <code><a href="finalize_model.html">finalize_tailor()</a></code>
 
         </dt>
-        <dd>Acquisition function for scoring parameter combinations</dd>
-      </dl><dl><dt>
-
-          <code><a href="control_bayes.html">control_bayes()</a></code>
-
-        </dt>
-        <dd>Control aspects of the Bayesian search process</dd>
+        <dd>Splice final parameters into objects</dd>
       </dl><dl><dt>
 
           <code><a href="control_last_fit.html">control_last_fit()</a></code>
 
         </dt>
         <dd>Control aspects of the last fit process</dd>
-      </dl><dl><dt>
+      </dl></div><div class="section level2">
+      <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a></h2>
 
-          <code><a href="autoplot.tune_results.html">autoplot(<i>&lt;tune_results&gt;</i>)</a></code>
 
-        </dt>
-        <dd>Plot tuning search results</dd>
-      </dl><dl><dt>
 
-          <code><a href="augment.tune_results.html">augment(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="augment.tune_results.html">augment(<i>&lt;resample_results&gt;</i>)</a></code> <code><a href="augment.tune_results.html">augment(<i>&lt;last_fit&gt;</i>)</a></code>
 
-        </dt>
-        <dd>Augment data with holdout predictions</dd>
-      </dl><dl><dt>
+    </div><div class="section level2">
 
-          <code><a href="coord_obs_pred.html">coord_obs_pred()</a></code>
 
-        </dt>
-        <dd>Use same scale for plots of observed vs predicted values</dd>
-      </dl><dl><dt>
 
-          <code><a href="expo_decay.html">expo_decay()</a></code>
 
-        </dt>
-        <dd>Exponential decay function</dd>
-      </dl><dl><dt>
+      <dl><dt>
 
           <code><a href="collect_predictions.html">collect_predictions()</a></code> <code><a href="collect_predictions.html">collect_metrics()</a></code> <code><a href="collect_predictions.html">collect_notes()</a></code> <code><a href="collect_predictions.html">collect_extracts()</a></code>
 
@@ -139,16 +161,10 @@
         <dd>Obtain and format results produced by tuning functions</dd>
       </dl><dl><dt>
 
-          <code><a href="compute_metrics.html">compute_metrics()</a></code>
+          <code><a href="show_notes.html">show_notes()</a></code>
 
         </dt>
-        <dd>Calculate and format metrics from tuning functions</dd>
-      </dl><dl><dt>
-
-          <code><a href="filter_parameters.html">filter_parameters()</a></code>
-
-        </dt>
-        <dd>Remove some tuning parameter results</dd>
+        <dd>Display distinct errors from tune objects</dd>
       </dl><dl><dt>
 
           <code><a href="show_best.html">show_best()</a></code> <code><a href="show_best.html">select_best()</a></code> <code><a href="show_best.html">select_by_pct_loss()</a></code> <code><a href="show_best.html">select_by_one_std_err()</a></code>
@@ -157,11 +173,40 @@
         <dd>Investigate best tuning parameters</dd>
       </dl><dl><dt>
 
-          <code><a href="show_notes.html">show_notes()</a></code>
+          <code><a href="filter_parameters.html">filter_parameters()</a></code>
 
         </dt>
-        <dd>Display distinct errors from tune objects</dd>
+        <dd>Remove some tuning parameter results</dd>
       </dl><dl><dt>
+
+          <code><a href="autoplot.tune_results.html">autoplot(<i>&lt;tune_results&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot tuning search results</dd>
+      </dl><dl><dt>
+
+          <code><a href="coord_obs_pred.html">coord_obs_pred()</a></code>
+
+        </dt>
+        <dd>Use same scale for plots of observed vs predicted values</dd>
+      </dl><dl><dt>
+
+          <code><a href="conf_mat_resampled.html">conf_mat_resampled()</a></code>
+
+        </dt>
+        <dd>Compute average confusion matrix across resamples</dd>
+      </dl></div><div class="section level2">
+      <h2 id="miscellaneous">Miscellaneous<a class="anchor" aria-label="anchor" href="#miscellaneous"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="extract-tune.html">extract_workflow(<i>&lt;last_fit&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_workflow(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_spec_parsnip(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_recipe(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_fit_parsnip(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_fit_engine(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_mold(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="extract-tune.html">extract_preprocessor(<i>&lt;tune_results&gt;</i>)</a></code>
 
@@ -175,34 +220,28 @@
         <dd>Convenience functions to extract model</dd>
       </dl><dl><dt>
 
-          <code><a href="finalize_model.html">finalize_model()</a></code> <code><a href="finalize_model.html">finalize_recipe()</a></code> <code><a href="finalize_model.html">finalize_workflow()</a></code> <code><a href="finalize_model.html">finalize_tailor()</a></code>
-
-        </dt>
-        <dd>Splice final parameters into objects</dd>
-      </dl><dl><dt>
-
-          <code><a href="conf_mat_resampled.html">conf_mat_resampled()</a></code>
-
-        </dt>
-        <dd>Compute average confusion matrix across resamples</dd>
-      </dl><dl><dt>
-
-          <code><a href="example_ames_knn.html">example_ames_knn</a></code> <code><a href="example_ames_knn.html">ames_wflow</a></code> <code><a href="example_ames_knn.html">ames_grid_search</a></code> <code><a href="example_ames_knn.html">ames_iter_search</a></code>
-
-        </dt>
-        <dd>Example Analysis of Ames Housing Data</dd>
-      </dl><dl><dt>
-
           <code><a href="int_pctl.tune_results.html">int_pctl(<i>&lt;tune_results&gt;</i>)</a></code>
 
         </dt>
         <dd>Bootstrap confidence intervals for performance metrics</dd>
       </dl><dl><dt>
 
-          <code><a href="parallelism.html">parallelism</a></code>
+          <code><a href="compute_metrics.html">compute_metrics()</a></code>
 
         </dt>
-        <dd>Support for parallel processing in tune</dd>
+        <dd>Calculate and format metrics from tuning functions</dd>
+      </dl><dl><dt>
+
+          <code><a href="augment.tune_results.html">augment(<i>&lt;tune_results&gt;</i>)</a></code> <code><a href="augment.tune_results.html">augment(<i>&lt;resample_results&gt;</i>)</a></code> <code><a href="augment.tune_results.html">augment(<i>&lt;last_fit&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Augment data with holdout predictions</dd>
+      </dl><dl><dt>
+
+          <code><a href="example_ames_knn.html">example_ames_knn</a></code> <code><a href="example_ames_knn.html">ames_wflow</a></code> <code><a href="example_ames_knn.html">ames_grid_search</a></code> <code><a href="example_ames_knn.html">ames_iter_search</a></code>
+
+        </dt>
+        <dd>Example Analysis of Ames Housing Data</dd>
       </dl></div><div class="section level2">
       <h2 id="developer-functions">Developer functions<a class="anchor" aria-label="anchor" href="#developer-functions"></a></h2>
 
@@ -244,12 +283,6 @@
 
         </dt>
         <dd>Save most recent results to search path</dd>
-      </dl><dl><dt>
-
-          <code><a href="control_grid.html">control_grid()</a></code> <code><a href="control_grid.html">control_resamples()</a></code> <code><a href="control_grid.html">new_backend_options()</a></code>
-
-        </dt>
-        <dd>Control aspects of the grid search process</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

@@ -148,15 +148,15 @@ generate <code>x</code> compute metrics of all needed types.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .metric .estimator  mean     n std_err .config             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> rmse    standard   3.21      5  0.363  Preprocessor1_Model1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> rsq     standard   0.732     5  0.049<span style="text-decoration: underline;">5</span> Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> rmse    standard   3.15      5  0.373  Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> rsq     standard   0.738     5  0.046<span style="text-decoration: underline;">1</span> Preprocessor1_Model1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># to compute new metrics:</span></span></span>
 <span class="r-in"><span><span class="fu">compute_metrics</span><span class="op">(</span><span class="va">res</span>, <span class="fu"><a href="https://yardstick.tidymodels.org/reference/metric_set.html" class="external-link">metric_set</a></span><span class="op">(</span><span class="va">mae</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   .metric .estimator  mean     n std_err .config             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> mae     standard    2.57     5   0.347 Preprocessor1_Model1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> mae     standard    2.54     5   0.378 Preprocessor1_Model1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if `metrics` is the same as that passed to `fit_resamples()`,</span></span></span>
 <span class="r-in"><span><span class="co"># then `collect_metrics()` and `compute_metrics()` give the same</span></span></span>
