@@ -95,6 +95,19 @@ test_that("workflows + formulas", {
   expect_equal(outcome_names(parsnip::fit(wflow_2, mtcars)), c("mpg", "wt"))
 })
 
+## -----------------------------------------------------------------------------
+
+test_that("workflows + variables", {
+  lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  wflow <- workflow() %>% add_model(lm_mod)
+
+  wflow_1 <- wflow %>% add_variables(outcomes = "mpg", predictors = c(wt))
+  fit_1 <- fit(wflow_1, mtcars)
+
+  expect_snapshot(outcome_names(wflow_1), error = TRUE)
+  expect_equal(outcome_names(wflow_1, mtcars), "mpg")
+  expect_equal(outcome_names(fit_1, mtcars), "mpg")
+})
 
 ## -----------------------------------------------------------------------------
 
