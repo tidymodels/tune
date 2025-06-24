@@ -28,10 +28,10 @@ tune_grid_loop_new <- function(
 
   # Notes on debugging:
   # 1. You can set `options(future.debug = TRUE)` to help
-  # 2. If you are debugging loop_over_all_stages, use the control option `allow_par = FALSE`;
-  #    that will use `lapply()` so that you can see output.
+  # 2. If you are debugging loop_over_all_stages, use the control option
+  #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
   static <- make_static(
