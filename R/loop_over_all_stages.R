@@ -270,23 +270,23 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # ----------------------------------------------------------------------------
   # Return the results
 
-  return_list <- tibble::tibble(
+  return_tbl <- tibble::tibble(
     .metrics = list(all_metrics),
     .notes = list(notes),
-    y_name = static$y_name
+    outcome_names = static$y_name
   )
 
   if (!is.null(extracts)) {
-    return_list <- dplyr::mutate(return_list, .extracts = list(extracts))
+    return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
   }
 
-  return_list <- vctrs::vec_cbind(return_list, split_labs)
+  return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
   if (static$control$save_pred) {
-    return_list$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
+    return_tbl$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
   }
 
-  return_list
+  return_tbl
 }
 
 loop_over_all_stages2 <- function(index, resamples, grid, static) {
