@@ -261,6 +261,9 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
     )
 
   last_fit_preds <- collect_predictions(last_fit_res)
+  last_fit_wflow <- extract_workflow(last_fit_res)
+  last_fit_cal <-
+    last_fit_wflow$post$fit$adjustments[[1]]$results$fit$estimates[[1]]$estimate
 
   set.seed(1)
   inner_split <- rsample::inner_split(split, split_args = list())
@@ -272,8 +275,15 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       rsample::analysis(inner_split),
       calibration = rsample::assessment(inner_split)
     )
+  wflow_cal <-
+    wflow_res$post$fit$adjustments[[1]]$results$fit$estimates[[1]]$estimate
   wflow_preds <- predict(wflow_res, rsample::assessment(split))
 
+  expect_equal(last_fit_cal, wflow_cal)
+
+  # TODO are different data being used?
+
+  # predict(wflow_res, augment(last_fit_res) |> select(x))
   expect_equal(last_fit_preds[".pred"], wflow_preds)
 })
 

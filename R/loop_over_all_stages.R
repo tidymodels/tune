@@ -1,3 +1,8 @@
+# Notes on debugging:
+# 1. You can set `options(future.debug = TRUE)` to help
+# 2. If you are debugging loop_over_all_stages, use the control option
+#    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
+
 loop_over_all_stages <- function(resamples, grid, static) {
   # Initialize some objects
 
@@ -22,7 +27,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
   data_splits <- get_data_subsets(static$wflow, split, static$split_args)
   static <- update_static(static, data_splits)
 
-  # Now that we have data, determine the names of the outcome data
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it later. See #1024
   static$y_name <- outcome_names(static$wflow, data = split$data)
 
   # ----------------------------------------------------------------------------
@@ -44,6 +51,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
       }
       current_wflow <- remove_log_notes(current_wflow)
     }
+    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
+    static$y_name <- outcome_names(current_wflow)
 
     num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
@@ -268,23 +277,23 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # ----------------------------------------------------------------------------
   # Return the results
 
-  return_list <- tibble::tibble(
+  return_tbl <- tibble::tibble(
     .metrics = list(all_metrics),
     .notes = list(notes),
-    y_name = static$y_name
+    outcome_names = static$y_name
   )
 
   if (!is.null(extracts)) {
-    return_list <- dplyr::mutate(return_list, .extracts = list(extracts))
+    return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
   }
 
-  return_list <- vctrs::vec_cbind(return_list, split_labs)
+  return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
   if (static$control$save_pred) {
-    return_list$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
+    return_tbl$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
   }
 
-  return_list
+  return_tbl
 }
 
 loop_over_all_stages2 <- function(index, resamples, grid, static) {
@@ -328,8 +337,12 @@ get_row_wise_grid <- function(wflow, grid) {
 # In the case of just resamples, fit, predict and move on
 
 resample_shortcut <- function(static, notes) {
-  res <- list(predictions = NULL, notes = new_note(), extracts = NULL)
-
+  res <- list(
+    predictions = NULL,
+    notes = new_note(),
+    extracts = NULL,
+    y_name = static$y_name
+  )
   current_wflow <- .catch_and_log_melodie(
     fit(
       static$wflow,
@@ -348,6 +361,12 @@ resample_shortcut <- function(static, notes) {
     }
     current_wflow <- remove_log_notes(current_wflow)
   }
+
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it. See #1024
+  static$y_name <- outcome_names(current_wflow)
+  res$y_name <- outcome_names(current_wflow)
 
   # ----------------------------------------------------------------------------
 
@@ -383,7 +402,7 @@ resample_shortcut <- function(static, notes) {
     }
   }
 
-res
+  res
 }
 
 add_configs <- function(x, static, config_tbl) {

@@ -360,8 +360,7 @@ tune_grid_workflow <- function(
     control = control
   )
 
-  y_name <- resamples$y_name[1]
-  resamples$y_name <- NULL
+  y_name <- outcome_names(resamples)
 
   if (is_cataclysmic(resamples)) {
     cli::cli_warn(

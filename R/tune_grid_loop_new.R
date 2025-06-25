@@ -28,10 +28,10 @@ tune_grid_loop_new <- function(
 
   # Notes on debugging:
   # 1. You can set `options(future.debug = TRUE)` to help
-  # 2. If you are debugging loop_over_all_stages, use the control option `allow_par = FALSE`;
-  #    that will use `lapply()` so that you can see output.
+  # 2. If you are debugging loop_over_all_stages, use the control option
+  #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
   static <- make_static(
@@ -92,6 +92,10 @@ tune_grid_loop_new <- function(
   # Separate results into different components
 
   res <- dplyr::bind_rows(res)
+
+  outcome_names <- unique(unlist(res$outcome_names))
+  res$outcome_names <- NULL
+
   resamples <- dplyr::bind_rows(resamples)
   id_cols <- grep("^id", names(resamples), value = TRUE)
 
@@ -118,16 +122,19 @@ tune_grid_loop_new <- function(
       dplyr::any_of(".extracts")
     )
 
-  new_tune_results(
-    x = res,
-    parameters = param_info,
-    metrics = metrics,
-    eval_time = eval_time,
-    eval_time_target = NULL,
-    outcomes = static$y_name,
-    rset_info = rset_info,
-    workflow = workflow
-  )
+  res <-
+    new_tune_results(
+      x = res,
+      parameters = param_info,
+      metrics = metrics,
+      eval_time = eval_time,
+      eval_time_target = NULL,
+      outcomes = outcome_names,
+      rset_info = rset_info,
+      workflow = workflow
+    )
+
+  res
 }
 
 vec_list_rowwise <- function(x) {
