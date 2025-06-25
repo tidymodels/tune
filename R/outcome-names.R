@@ -40,7 +40,7 @@ outcome_names.recipe <- function(x, ...) {
 #' @export
 #' @rdname outcome_names
 outcome_names.workflow <- function(x, ...) {
-  if (!is.null(x$fit$fit)) {
+  if (!is.null(x$pre$mold)) {
     y_vals <- extract_mold(x)$outcomes
     res <- colnames(y_vals)
   } else {
