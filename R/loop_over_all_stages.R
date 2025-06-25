@@ -27,7 +27,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
   data_splits <- get_data_subsets(static$wflow, split, static$split_args)
   static <- update_static(static, data_splits)
 
-  # Now that we have data, determine the names of the outcome data
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it later. See #1024
   static$y_name <- outcome_names(static$wflow, data = split$data)
 
   # ----------------------------------------------------------------------------
@@ -49,6 +51,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
       }
       current_wflow <- remove_log_notes(current_wflow)
     }
+    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
+    static$y_name <- outcome_names(current_wflow)
 
     num_iterations_model <- nrow(current_sched_pre$model_stage[[1]])
 
@@ -240,6 +244,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
     extracts <- res$extracts
     notes <- res$notes
     pred_reserve <- res$predictions
+    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
+    static$y_name <- res$y_name
     config_tbl <- tibble::tibble(.config = "pre0_mod0_post0")
   }
 
@@ -330,8 +336,12 @@ get_row_wise_grid <- function(wflow, grid) {
 # In the case of just resamples, fit, predict and move on
 
 resample_shortcut <- function(static, notes) {
-  res <- list(predictions = NULL, notes = new_note(), extracts = NULL)
-
+  res <- list(
+    predictions = NULL,
+    notes = new_note(),
+    extracts = NULL,
+    y_name = static$y_name
+  )
   current_wflow <- .catch_and_log_melodie(
     fit(
       static$wflow,
@@ -350,6 +360,12 @@ resample_shortcut <- function(static, notes) {
     }
     current_wflow <- remove_log_notes(current_wflow)
   }
+
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it. See #1024
+  static$y_name <- outcome_names(current_wflow)
+  res$y_name <- outcome_names(current_wflow)
 
   # ----------------------------------------------------------------------------
 
@@ -385,7 +401,7 @@ resample_shortcut <- function(static, notes) {
     }
   }
 
-res
+  res
 }
 
 add_configs <- function(x, static, config_tbl) {
