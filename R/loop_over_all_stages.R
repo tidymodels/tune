@@ -28,7 +28,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # ----------------------------------------------------------------------------
   # Iterate over preprocessors
 
-  num_iterations_pre <- nrow(sched)
+  num_iterations_pre <- max(nrow(sched), 1)
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
@@ -45,7 +45,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_wflow <- remove_log_notes(current_wflow)
     }
 
-    num_iterations_model <- nrow(current_sched_pre$model_stage[[1]])
+    num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
     # --------------------------------------------------------------------------
     # Iterate over model parameters
@@ -75,7 +75,10 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_grid <- rebind_grid(current_sched_pre, current_sched_model)
 
       has_submodel <- has_sub_param(current_sched_model$predict_stage[[1]])
-      num_iterations_pred <- nrow(current_sched_model$predict_stage[[1]])
+      num_iterations_pred <- max(
+        nrow(current_sched_model$predict_stage[[1]]),
+        1
+      )
 
       # --------------------------------------------------------------------------
       # Iterate over prediction submodels
@@ -119,7 +122,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         }
 
         has_post <- has_tailor(current_wflow)
-        num_iterations_post <- nrow(current_sched_pred$post_stage[[1]])
+        num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
 
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
@@ -230,13 +233,13 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # ----------------------------------------------------------------------------
   # Simple resample; no iteration
 
-  if (num_iterations_pre == 0) {
-    res <- resample_shortcut(static, notes)
-    extracts <- res$extracts
-    notes <- res$notes
-    pred_reserve <- res$predictions
-    config_tbl <- tibble::tibble(.config = "pre0_mod0_post0")
-  }
+  # if (num_iterations_pre == 0) {
+  #   res <- resample_shortcut(static, notes)
+  #   extracts <- res$extracts
+  #   notes <- res$notes
+  #   pred_reserve <- res$predictions
+  #   config_tbl <- tibble::tibble(.config = "pre0_mod0_post0")
+  # }
 
   # ----------------------------------------------------------------------------
   # Compute metrics on each config and eval_time
