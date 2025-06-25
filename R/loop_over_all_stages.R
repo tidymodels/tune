@@ -321,3 +321,17 @@ get_row_wise_grid <- function(wflow, grid) {
   }
   vctrs::vec_split(grid, inds)$val
 }
+
+# ------------------------------------------------------------------------------
+
+add_configs <- function(x, static, config_tbl) {
+  if (length(static$param_info$id) > 0) {
+    x <- dplyr::full_join(x, config_tbl, by = static$param_info$id)
+  } else {
+    x <- dplyr::bind_cols(x, config_tbl)
+  }
+
+  dplyr::arrange(x, .config)
+}
+
+
