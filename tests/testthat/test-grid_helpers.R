@@ -1,4 +1,5 @@
 test_that("compute_grid_info - recipe only", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(recipes)
   library(parsnip)
