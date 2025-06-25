@@ -425,6 +425,15 @@ get_config_key <- function(grid, wflow) {
       dplyr::mutate(post = "post0")
   }
 
+  # in the case of resampling without tuning, grid and thus key are 0-row tibbles
+  if (nrow(key) < 1) {
+    key <- dplyr::tibble(
+      pre = "pre0",
+      mod = "mod0",
+      post = "post0"
+    )
+  }
+
   key$.config <- paste(key$pre, key$mod, key$post, sep = "_")
   key$.config <- gsub("_$", "", key$.config)
   key |>

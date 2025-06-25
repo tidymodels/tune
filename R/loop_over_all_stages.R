@@ -35,7 +35,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # ----------------------------------------------------------------------------
   # Iterate over preprocessors
 
-  num_iterations_pre <- nrow(sched)
+  num_iterations_pre <- max(nrow(sched), 1)
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
@@ -54,7 +54,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
     static$y_name <- outcome_names(current_wflow)
 
-    num_iterations_model <- nrow(current_sched_pre$model_stage[[1]])
+    num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
     # --------------------------------------------------------------------------
     # Iterate over model parameters
@@ -84,7 +84,10 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_grid <- rebind_grid(current_sched_pre, current_sched_model)
 
       has_submodel <- has_sub_param(current_sched_model$predict_stage[[1]])
-      num_iterations_pred <- nrow(current_sched_model$predict_stage[[1]])
+      num_iterations_pred <- max(
+        nrow(current_sched_model$predict_stage[[1]]),
+        1
+      )
 
       # --------------------------------------------------------------------------
       # Iterate over prediction submodels
@@ -128,7 +131,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         }
 
         has_post <- has_tailor(current_wflow)
-        num_iterations_post <- nrow(current_sched_pred$post_stage[[1]])
+        num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
 
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
@@ -237,19 +240,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
   } # pre loop
 
   # ----------------------------------------------------------------------------
-  # Simple resample; no iteration
-
-  if (num_iterations_pre == 0) {
-    res <- resample_shortcut(static, notes)
-    extracts <- res$extracts
-    notes <- res$notes
-    pred_reserve <- res$predictions
-    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
-    static$y_name <- res$y_name
-    config_tbl <- tibble::tibble(.config = "pre0_mod0_post0")
-  }
-
-  # ----------------------------------------------------------------------------
   # Compute metrics on each config and eval_time
 
   if (is.null(pred_reserve)) {
@@ -331,86 +321,3 @@ get_row_wise_grid <- function(wflow, grid) {
   }
   vctrs::vec_split(grid, inds)$val
 }
-
-# ------------------------------------------------------------------------------
-# In the case of just resamples, fit, predict and move on
-
-resample_shortcut <- function(static, notes) {
-  res <- list(
-    predictions = NULL,
-    notes = new_note(),
-    extracts = NULL,
-    y_name = static$y_name
-  )
-  current_wflow <- .catch_and_log_melodie(
-    fit(
-      static$wflow,
-      data = static$data$fit$data,
-      calibration = static$data$cal$data
-    )
-  )
-
-  # copied
-  if (has_log_notes(current_wflow)) {
-    notes <- append_log_notes(notes, current_wflow, "model 1/1")
-    res$notes <- notes
-    if (is_failure_melodie(current_wflow)) {
-      # Can't predict or extract
-      return(res)
-    }
-    current_wflow <- remove_log_notes(current_wflow)
-  }
-
-  # Now that we have data, determine the names of the outcome data. NOTE that
-  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
-  # potentially change it. See #1024
-  static$y_name <- outcome_names(current_wflow)
-  res$y_name <- outcome_names(current_wflow)
-
-  # ----------------------------------------------------------------------------
-
-  current_pred <- .catch_and_log_melodie(
-    predict_all_types(current_wflow, static)
-  )
-
-  if (has_log_notes(current_pred)) {
-    notes <- append_log_notes(notes, current_pred, "prediction 1/1")
-    res$notes <- notes
-    if (is_failure_melodie(current_pred)) {
-      # Might be able to extract so move on
-    } else {
-      res$predictions <- remove_log_notes(current_pred)
-    }
-  } else {
-    res$predictions <- current_pred
-  }
-
-  # ----------------------------------------------------------------------------
-
-  if (!is.null(static$control$extract)) {
-    elt_extract <- .catch_and_log_melodie(
-      extract_details(current_wflow, static$control$extract)
-    )
-
-    if (has_log_notes(elt_extract)) {
-      notes <- append_log_notes(notes, elt_extract, "extraction")
-      res$notes <- notes
-      res$extracts <- c(list(remove_log_notes(elt_extract)))
-    }  else {
-      res$extracts <- c(list(elt_extract))
-    }
-  }
-
-  res
-}
-
-add_configs <- function(x, static, config_tbl) {
-  if (length(static$param_info$id) > 0) {
-    x <- dplyr::full_join(x, config_tbl, by = static$param_info$id)
-  } else {
-    x <- dplyr::bind_cols(x, config_tbl)
-  }
-
-  dplyr::arrange(x, .config)
-}
-
