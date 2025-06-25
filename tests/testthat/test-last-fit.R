@@ -244,6 +244,11 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   set.seed(1)
   split <- rsample::initial_split(dat)
 
+  set.seed(1)
+  inner_split <- rsample::inner_split(split, split_args = list())
+
+  # ----------------------------------------------------------------------------
+
   wflow <-
     workflows::workflow(
       y ~ x,
@@ -253,6 +258,8 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       tailor::tailor() %>% tailor::adjust_numeric_calibration("linear")
     )
 
+  # ----------------------------------------------------------------------------
+
   set.seed(1)
   last_fit_res <-
     last_fit(
@@ -260,13 +267,22 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       split
     )
 
+  expect_tue(is_trained_workflow(last_fit_wflow))
+
   last_fit_preds <- collect_predictions(last_fit_res)
   last_fit_wflow <- extract_workflow(last_fit_res)
   last_fit_cal <-
-    last_fit_wflow$post$fit$adjustments[[1]]$results$fit$estimates[[1]]$estimate
+    last_fit_wflow |>
+    extract_postprocessor() |>
+    pluck("adjustments") |>
+    pluck(1) |>
+    pluck("results") |>
+    pluck("fit") |>
+    pluck("estimates") |>
+    pluck(1) |>
+    pluck("estimate")
 
-  set.seed(1)
-  inner_split <- rsample::inner_split(split, split_args = list())
+  # ----------------------------------------------------------------------------
 
   set.seed(1)
   wflow_res <-
@@ -275,15 +291,24 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       rsample::analysis(inner_split),
       calibration = rsample::assessment(inner_split)
     )
+
   wflow_cal <-
-    wflow_res$post$fit$adjustments[[1]]$results$fit$estimates[[1]]$estimate
+    wflow_res |>
+    extract_postprocessor() |>
+    pluck("adjustments") |>
+    pluck(1) |>
+    pluck("results") |>
+    pluck("fit") |>
+    pluck("estimates") |>
+    pluck(1) |>
+    pluck("estimate")
+
   wflow_preds <- predict(wflow_res, rsample::assessment(split))
+
+  # ----------------------------------------------------------------------------
 
   expect_equal(last_fit_cal, wflow_cal)
 
-  # TODO are different data being used?
-
-  # predict(wflow_res, augment(last_fit_res) |> select(x))
   expect_equal(last_fit_preds[".pred"], wflow_preds)
 })
 

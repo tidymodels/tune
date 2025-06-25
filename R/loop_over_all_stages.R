@@ -197,6 +197,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
             }
 
             current_wflow <- set_workflow_tailor(current_wflow, post_fit)
+            current_wflow <- workflows::.fit_finalize(current_wflow)
+
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
           } else {
             # No postprocessor so just use what we have
