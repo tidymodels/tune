@@ -88,7 +88,7 @@ catalog_log <- function(x) {
       note <- paste0("\u00a0\u00a0", note)
     }
     msg <- glue::glue(
-      "{color(cli::style_bold(lbls_melodie[new_id]))} |{color(x$type)}: {x$note}"
+      "{color(cli::style_bold(lbls_melodie[new_id]))} | {color(x$type)}: {x$note}"
     )
     cli::cli_alert(msg)
   }
