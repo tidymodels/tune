@@ -148,7 +148,7 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
 }
 
 
-initialize_catalog_melodie <- function(env = rlang::caller_env()) {
+initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -160,6 +160,15 @@ initialize_catalog_melodie <- function(env = rlang::caller_env()) {
       nrow = 0
     )
 
+  if (!(allow_parallelism(control$allow_par) ||
+        is_testing()) &&
+      !control$verbose) {
+    progress_active <- TRUE
+  } else {
+    progress_active <- FALSE
+  }
+
+  
   rlang::env_bind(melodie_env, progress_env = env)
 
   rlang::env_bind(melodie_env, progress_catalog = catalog)
@@ -167,6 +176,14 @@ initialize_catalog_melodie <- function(env = rlang::caller_env()) {
     rlang::env_bind(melodie_env, progress_catalog = NULL),
     envir = env
   )
+
+  rlang::env_bind(melodie_env, progress_active = progress_active)
+  withr::defer(
+    rlang::env_bind(melodie_env, progress_active = FALSE),
+    envir = env
+  )
+
+  invisible(NULL)
 }
 
 new_note <- function(
