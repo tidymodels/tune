@@ -62,37 +62,42 @@ lbls_melodie <- c(LETTERS, letters, 1:1e3)
 catalog_log <- function(x) {
   catalog <- rlang::env_get(melodie_env, "progress_catalog")
 
-  if (x$note %in% catalog$note) {
-    idx <- match(x$note, catalog$note)
-    catalog$n[idx] <- catalog$n[idx] + 1
-  } else {
-    new_id <- nrow(catalog) + 1
-    catalog <- tibble::add_row(
-      catalog,
-      tibble::tibble(
-        type = x$type,
-        note = x$note,
-        n = 1,
-        id = new_id
+  for (i in seq_along(x$note)) {
+    x_note <- x$note[i]
+    x_type <- x$type[i]
+
+    if (x_note %in% catalog$note) {
+      idx <- match(x_note, catalog$note)
+      catalog$n[idx] <- catalog$n[idx] + 1
+    } else {
+      new_id <- nrow(catalog) + 1
+      catalog <- tibble::add_row(
+        catalog,
+        tibble::tibble(
+          type = x_type,
+          note = x_note,
+          n = 1,
+          id = new_id
+        )
       )
-    )
-
-    # construct issue summary
-    color <- if (x$type == "warning") cli::col_yellow else cli::col_red
-    # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-    pad <- nchar(x$note) + 14L
-    justify <- paste0("\n", strrep("\u00a0", pad))
-    note <- gsub("\n", justify, x$note)
-    # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
-    if (x$type == "error") {
-      note <- paste0("\u00a0\u00a0", note)
+      
+      # construct issue summary
+      color <- if (x_type == "warning") cli::col_yellow else cli::col_red
+      # pad by nchar(label) + nchar("warning") + additional spaces and symbols
+      pad <- nchar(x_note) + 14L
+      justify <- paste0("\n", strrep("\u00a0", pad))
+      note <- gsub("\n", justify, x_note)
+      # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
+      if (x_type == "error") {
+        note <- paste0("\u00a0\u00a0", note)
+      }
+      msg <- glue::glue(
+        "{color(cli::style_bold(lbls_melodie[new_id]))} | {color(x_type)}: {note}"
+      )
+      cli::cli_alert(msg)
     }
-    msg <- glue::glue(
-      "{color(cli::style_bold(lbls_melodie[new_id]))} | {color(x$type)}: {note}"
-    )
-    cli::cli_alert(msg)
-  }
-
+  } 
+    
   rlang::env_bind(melodie_env, progress_catalog = catalog)
   rlang::env_bind(
     melodie_env$progress_env,
