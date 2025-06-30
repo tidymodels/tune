@@ -75,6 +75,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
       if (has_log_notes(current_wflow)) {
         location <- glue::glue("model {iter_model}/{num_iterations_model}")
         notes <- append_log_notes(notes, current_wflow, location)
+        catalog_log(notes)
         if (is_failure_melodie(current_wflow)) {
           next
         }
@@ -124,6 +125,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         if (has_log_notes(current_pred)) {
           location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
           notes <- append_log_notes(notes, current_pred, location)
+          catalog_log(notes)
           if (is_failure_melodie(current_pred)) {
             next
           }
@@ -175,6 +177,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 "postprocessing {iter_pred}/{num_iterations_pred}"
               )
               notes <- append_log_notes(notes, post_fit, location)
+              catalog_log(notes)
               if (is_failure_melodie(post_fit)) {
                 next
               }
@@ -190,6 +193,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 "postprocessing {iter_pred}/{num_iterations_pred}"
               )
               notes <- append_log_notes(notes, post_pred, location)
+              catalog_log(notes)
               if (is_failure_melodie(post_pred)) {
                 next
               }
@@ -224,6 +228,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 "extraction"
               )
               notes <- append_log_notes(notes, elt_extract, location)
+              catalog_log(notes)
               if (is_failure_melodie(elt_extract)) {
                 next
               }
