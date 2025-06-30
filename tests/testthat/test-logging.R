@@ -272,7 +272,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
     )},
     transform = catalog_lines
   )
-redefer_initialize_catalog()
+
   # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
   expect_snapshot(catalog_summary_test)
 })
