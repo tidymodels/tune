@@ -61,7 +61,7 @@ test_that("enable future parallelism", {
 })
 
 test_that("enable mirai parallelism", {
-  skip_if_not_installed("mirai", minimum_version = "2.2.0.9008")
+  skip_if_not_installed("mirai", minimum_version = "2.4.0")
 
   svm_spec <- svm_rbf(mode = "classification")
   ctrl_no <- control_grid(allow_par = FALSE)
@@ -109,7 +109,7 @@ test_that("enable mirai parallelism", {
 })
 
 test_that("break parallelism tie", {
-  skip_if_not_installed("mirai", minimum_version = "2.2.0.9008")
+  skip_if_not_installed("mirai", minimum_version = "2.4.0")
   skip_if_not_installed("future")
   skip_on_cran()
 
