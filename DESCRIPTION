@@ -50,6 +50,7 @@ Suggests:
     kernlab,
     kknn,
     knitr,
+    mirai (>= 2.4.0),
     mgcv,
     modeldata,
     probably,
