@@ -37,21 +37,35 @@ has_log_notes <- function(x) {
 }
 
 append_log_notes <- function(notes, x, location) {
+  wrns <- attr(x, "notes")
+  if (length(wrns) > 0) {
+    for (wrn in wrns) {
+      type <- "warning"
+      note <- wrn$message
+
+      notes <- tibble::add_row(
+        notes,
+        location = unclass(location),
+        type = type,
+        note = note
+      )
+    }
+  }
+
   if (is_failure_melodie(x)) {
     type <- "error"
-    x <- attr(x, 'condition')
+    x <- attr(x, "condition")
     note <- conditionMessage(x)
-  } else {
-    type <- "warning"
-    note <- attr(x, "notes")
-    note <- note[[1]]$message
+
+    notes <- tibble::add_row(
+      notes,
+      location = unclass(location),
+      type = type,
+      note = note
+    )
   }
-  tibble::add_row(
-    notes,
-    location = unclass(location),
-    type = type,
-    note = note
-  )
+
+  notes 
 }
 
 remove_log_notes <- function(x) {
