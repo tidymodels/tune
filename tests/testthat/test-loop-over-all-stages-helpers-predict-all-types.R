@@ -1018,7 +1018,7 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   expect_equal(
     res_dyn$.pred[[1]][0, ],
-    pred_0
+    pred_dyn_0
   )
   expect_equal(nrow(res_dyn), nrow(assessment(cens$rs$splits[[1]])))
 })
@@ -1120,7 +1120,7 @@ test_that("predict censored regression - submodels - no calibration", {
 
   expect_equal(
     res_dyn$.pred[[1]][0, ],
-    pred_0
+    pred_dyn_0
   )
   expect_equal(nrow(res_dyn), nrow(assessment(cens$rs$splits[[1]])))
 })
