@@ -54,13 +54,16 @@ test_that("verifying loop_over_all_stages, no submodels, tuning, no estimation, 
 
   simple_res <- tune:::loop_over_all_stages(rs_iter, grd, static_1)
   expect_true(!is.null(simple_res$.metrics[[1]]))
-  expect_named(simple_res, c(".metrics", ".notes", ".extracts", "id"))
+  expect_named(
+    simple_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id")
+  )
   expect_true(nrow(simple_res) == 1)
 
   extracted <- simple_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(grd)
   )
   expect_named(extracted, c(names(grd), ".extracts", ".config"))
   expect_true(
@@ -158,13 +161,16 @@ test_that("verifying loop_over_all_stages, submodels, tuning, no estimation, ext
   static_1$y_name <- "outcome"
 
   submodel_res <- tune:::loop_over_all_stages(rs_iter, submodel_grid, static_1)
-  expect_named(submodel_res, c(".metrics", ".notes", ".extracts", "id"))
+  expect_named(
+    submodel_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id")
+  )
   expect_true(nrow(submodel_res) == 1)
 
   extracted <- submodel_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(submodel_grid)  
+    nrow(submodel_grid)
   )
   expect_named(extracted, c(names(submodel_grid), ".extracts", ".config"))
   expect_true(
@@ -224,14 +230,21 @@ test_that("verifying loop_over_all_stages, submodels only, tuning, no estimation
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
-  submodel_only_res <- tune:::loop_over_all_stages(rs_iter, submodel_only_grid, static_1)
-  expect_named(submodel_only_res, c(".metrics", ".notes", ".extracts", "id"))
+  submodel_only_res <- tune:::loop_over_all_stages(
+    rs_iter,
+    submodel_only_grid,
+    static_1
+  )
+  expect_named(
+    submodel_only_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id")
+  )
   expect_true(nrow(submodel_only_res) == 1)
 
   extracted <- submodel_only_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(submodel_only_grid)  
+    nrow(submodel_only_grid)
   )
   expect_named(extracted, c(names(submodel_only_grid), ".extracts", ".config"))
   expect_true(

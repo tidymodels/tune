@@ -44,7 +44,7 @@ test_that("verifying loop_over_all_stages, no submodels, no post estimation or t
   static_1$y_name <- "outcome"
 
   simple_res <- tune:::loop_over_all_stages(rs_iter, grd, static_1)
-  expect_named(simple_res, c(".metrics", ".notes", "id"))
+  expect_named(simple_res, c(".metrics", ".notes", "outcome_names", "id"))
   expect_true(nrow(simple_res) == 1)
 
   # A linear transformation so R^2 should be the same
@@ -163,7 +163,7 @@ test_that("verifying loop_over_all_stages, submodels, no post estimation or tuni
   static_1$y_name <- "outcome"
 
   submodel_res <- tune:::loop_over_all_stages(rs_iter, submodel_grid, static_1)
-  expect_named(submodel_res, c(".metrics", ".notes", "id"))
+  expect_named(submodel_res, c(".metrics", ".notes", "outcome_names", "id"))
   expect_true(nrow(submodel_res) == 1)
 
   # A linear transformation so R^2 should be the same
@@ -256,8 +256,15 @@ test_that("verifying loop_over_all_stages, submodels only, no post estimation or
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
-  submodel_only_res <- tune:::loop_over_all_stages(rs_iter, submodel_only_grid, static_1)
-  expect_named(submodel_only_res, c(".metrics", ".notes", "id"))
+  submodel_only_res <- tune:::loop_over_all_stages(
+    rs_iter,
+    submodel_only_grid,
+    static_1
+  )
+  expect_named(
+    submodel_only_res,
+    c(".metrics", ".notes", "outcome_names", "id")
+  )
   expect_true(nrow(submodel_only_res) == 1)
 
   # Thresholding so accuracy should be different and Brier and ROC should be
