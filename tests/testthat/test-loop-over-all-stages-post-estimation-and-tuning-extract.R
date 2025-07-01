@@ -56,7 +56,10 @@ test_that("verifying loop_over_all_stages, no submodels, post estimation with tu
 
   simple_res <- tune:::loop_over_all_stages(rs_iter, grd, static_1)
   expect_true(!is.null(simple_res$.metrics[[1]]))
-  expect_named(simple_res, c(".metrics", ".notes", ".extracts", "id", ".predictions"))
+  expect_named(
+    simple_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id", ".predictions")
+  )
   expect_true(nrow(simple_res) == 1)
   expect_equal(
     nrow(simple_res$.predictions[[1]]),
@@ -66,7 +69,7 @@ test_that("verifying loop_over_all_stages, no submodels, post estimation with tu
   extracted <- simple_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(grd)  
+    nrow(grd)
   )
   expect_named(extracted, c(names(grd), ".extracts", ".config"))
   expect_true(
@@ -165,7 +168,10 @@ test_that("verifying loop_over_all_stages, submodels, post estimation with tunin
 
   submodel_res <- tune:::loop_over_all_stages(rs_iter, submodel_grid, static_1)
   expect_true(!is.null(submodel_res$.metrics[[1]]))
-  expect_named(submodel_res, c(".metrics", ".notes", ".extracts", "id", ".predictions"))
+  expect_named(
+    submodel_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id", ".predictions")
+  )
   expect_true(nrow(submodel_res) == 1)
   expect_equal(
     nrow(submodel_res$.predictions[[1]]),
@@ -175,7 +181,7 @@ test_that("verifying loop_over_all_stages, submodels, post estimation with tunin
   extracted <- submodel_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(submodel_grid)  
+    nrow(submodel_grid)
   )
   expect_named(extracted, c(names(submodel_grid), ".extracts", ".config"))
   expect_true(
@@ -233,9 +239,16 @@ test_that("verifying loop_over_all_stages, submodels only, post estimation with 
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
-  submodel_only_res <- tune:::loop_over_all_stages(rs_iter, submodel_only_grid, static_1)
+  submodel_only_res <- tune:::loop_over_all_stages(
+    rs_iter,
+    submodel_only_grid,
+    static_1
+  )
   expect_true(!is.null(submodel_only_res$.metrics[[1]]))
-  expect_named(submodel_only_res, c(".metrics", ".notes", ".extracts", "id", ".predictions"))
+  expect_named(
+    submodel_only_res,
+    c(".metrics", ".notes", "outcome_names", ".extracts", "id", ".predictions")
+  )
   expect_true(nrow(submodel_only_res) == 1)
   expect_equal(
     nrow(submodel_only_res$.predictions[[1]]),
@@ -245,7 +258,7 @@ test_that("verifying loop_over_all_stages, submodels only, post estimation with 
   extracted <- submodel_only_res$.extracts[[1]]
   expect_identical(
     nrow(extracted),
-    nrow(submodel_only_grid)  
+    nrow(submodel_only_grid)
   )
   expect_named(extracted, c(names(submodel_only_grid), ".extracts", ".config"))
   expect_true(

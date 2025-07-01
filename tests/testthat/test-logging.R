@@ -254,7 +254,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
 
   raise_warning <- function(x) {warning("ope! yikes.")}
@@ -284,7 +284,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
 
   raise_warning_rl <- function(x) {rlang::warn("ope! yikes. (but rlang)")}
@@ -316,7 +316,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
 
@@ -349,7 +349,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
 
@@ -388,7 +388,7 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
 
   skip_on_cran()
@@ -443,7 +443,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
 
   skip_on_cran()
@@ -483,7 +483,7 @@ test_that("interactive logger works (tune grid, error)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
 
@@ -513,7 +513,7 @@ test_that("interactive logger works (bayesian, error)", {
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
-    initialize_catalog = redefer_initialize_catalog(rlang::current_env())
+    initialize_catalog_melodie = redefer_initialize_catalog(rlang::current_env())
   )
 
   skip_on_cran()

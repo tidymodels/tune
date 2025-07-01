@@ -18,13 +18,23 @@ test_that("compute_grid_info - recipe only", {
   expect_equal(res$.msg_preprocessor, paste0("preprocessor ", 1:5, "/5"))
   expect_equal(sort(res$deg_free), sort(grid$deg_free))
   expect_equal(res$.iter_model, rep(1, 5))
-  expect_equal(res$.iter_config, as.list(paste0("Preprocessor", 1:5, "_Model1")))
+  expect_equal(
+    res$.iter_config,
+    as.list(paste0("Preprocessor", 1:5, "_Model1"))
+  )
   expect_equal(res$.msg_model, paste0("preprocessor ", 1:5, "/5, model 1/1"))
   expect_equal(res$.submodels, list(list(), list(), list(), list(), list()))
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "deg_free", ".iter_model",
-      ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "deg_free",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
@@ -32,6 +42,7 @@ test_that("compute_grid_info - recipe only", {
 })
 
 test_that("compute_grid_info - model only (no submodels)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(dials)
@@ -54,8 +65,15 @@ test_that("compute_grid_info - model only (no submodels)", {
   expect_equal(res$.submodels, list(list(), list(), list(), list(), list()))
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "learn_rate", ".iter_model",
-      ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "learn_rate",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
@@ -63,6 +81,8 @@ test_that("compute_grid_info - model only (no submodels)", {
 })
 
 test_that("compute_grid_info - model only (with submodels)", {
+  skip("Marked for deletion post-melodie")
+
   library(workflows)
   library(parsnip)
   library(dials)
@@ -82,17 +102,28 @@ test_that("compute_grid_info - model only (with submodels)", {
   expect_equal(res$.iter_model, 1)
   expect_equal(res$.iter_config, list(paste0("Preprocessor1_Model", 1:5)))
   expect_equal(res$.msg_model, "preprocessor 1/1, model 1/1")
-  expect_equal(res$.submodels, list(list(trees = grid$trees[-which.max(grid$trees)])))
+  expect_equal(
+    res$.submodels,
+    list(list(trees = grid$trees[-which.max(grid$trees)]))
+  )
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "trees", ".iter_model",
-      ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "trees",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 1)
 })
 
 test_that("compute_grid_info - recipe and model (no submodels)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(recipes)
@@ -113,13 +144,24 @@ test_that("compute_grid_info - recipe and model (no submodels)", {
   expect_equal(sort(res$learn_rate), sort(grid$learn_rate))
   expect_equal(sort(res$deg_free), sort(grid$deg_free))
   expect_equal(res$.iter_model, rep(1, 5))
-  expect_equal(res$.iter_config, as.list(paste0("Preprocessor", 1:5, "_Model1")))
+  expect_equal(
+    res$.iter_config,
+    as.list(paste0("Preprocessor", 1:5, "_Model1"))
+  )
   expect_equal(res$.msg_model, paste0("preprocessor ", 1:5, "/5, model 1/1"))
   expect_equal(res$.submodels, list(list(), list(), list(), list(), list()))
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "deg_free", "learn_rate",
-      ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "deg_free",
+      "learn_rate",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
@@ -127,6 +169,7 @@ test_that("compute_grid_info - recipe and model (no submodels)", {
 })
 
 test_that("compute_grid_info - recipe and model (with submodels)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(recipes)
@@ -167,21 +210,34 @@ test_that("compute_grid_info - recipe and model (with submodels)", {
   )
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "deg_free", "trees",
-      ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "deg_free",
+      "trees",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 3)
 })
 
 test_that("compute_grid_info - recipe and model (with and without submodels)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(recipes)
   library(dials)
 
   rec <- recipe(mpg ~ ., mtcars) %>% step_spline_natural(deg_free = tune())
-  spec <- boost_tree(mode = "regression", trees = tune(), loss_reduction = tune())
+  spec <- boost_tree(
+    mode = "regression",
+    trees = tune(),
+    loss_reduction = tune()
+  )
 
   wflow <- workflow()
   wflow <- add_model(wflow, spec)
@@ -205,9 +261,22 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   expect_equal(
     res$.iter_config[res$.iter_preprocessor == 1],
     list(
-      c("Preprocessor1_Model01", "Preprocessor1_Model02", "Preprocessor1_Model03", "Preprocessor1_Model04"),
-      c("Preprocessor1_Model05", "Preprocessor1_Model06", "Preprocessor1_Model07"),
-      c("Preprocessor1_Model08", "Preprocessor1_Model09", "Preprocessor1_Model10")
+      c(
+        "Preprocessor1_Model01",
+        "Preprocessor1_Model02",
+        "Preprocessor1_Model03",
+        "Preprocessor1_Model04"
+      ),
+      c(
+        "Preprocessor1_Model05",
+        "Preprocessor1_Model06",
+        "Preprocessor1_Model07"
+      ),
+      c(
+        "Preprocessor1_Model08",
+        "Preprocessor1_Model09",
+        "Preprocessor1_Model10"
+      )
     )
   )
   expect_equal(
@@ -230,21 +299,35 @@ test_that("compute_grid_info - recipe and model (with and without submodels)", {
   )
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "deg_free", "trees",
-      "loss_reduction", ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "deg_free",
+      "trees",
+      "loss_reduction",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 11)
 })
 
 test_that("compute_grid_info - model (with and without submodels)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(recipes)
   library(dials)
 
   rec <- recipe(mpg ~ ., mtcars)
-  spec <- mars(num_terms = tune(), prod_degree = tune(), prune_method = tune()) %>%
+  spec <- mars(
+    num_terms = tune(),
+    prod_degree = tune(),
+    prune_method = tune()
+  ) %>%
     set_mode("classification") %>%
     set_engine("earth")
 
@@ -272,31 +355,45 @@ test_that("compute_grid_info - model (with and without submodels)", {
     list(
       c("Preprocessor1_Model1", "Preprocessor1_Model2"),
       c("Preprocessor1_Model3", "Preprocessor1_Model4"),
-      "Preprocessor1_Model5", "Preprocessor1_Model6", "Preprocessor1_Model7"
+      "Preprocessor1_Model5",
+      "Preprocessor1_Model6",
+      "Preprocessor1_Model7"
     )
   )
   expect_equal(
     unique(res$.msg_model),
-    paste0("preprocessor 1/1, model ", 1:5,"/5")
+    paste0("preprocessor 1/1, model ", 1:5, "/5")
   )
   expect_equal(
     res$.submodels,
     list(
       list(num_terms = c(1)),
       list(num_terms = c(3)),
-      list(), list(), list()
+      list(),
+      list(),
+      list()
     )
   )
   expect_named(
     res,
-    c(".iter_preprocessor", ".msg_preprocessor", "num_terms", "prod_degree",
-      "prune_method", ".iter_model", ".iter_config", ".msg_model", ".submodels"),
+    c(
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      "num_terms",
+      "prod_degree",
+      "prune_method",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model",
+      ".submodels"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 5)
 })
 
 test_that("compute_grid_info - recipe and model (no submodels but has inner grid)", {
+  skip("Marked for deletion post-melodie")
   library(workflows)
   library(parsnip)
   library(recipes)
@@ -318,7 +415,10 @@ test_that("compute_grid_info - recipe and model (no submodels but has inner grid
   res <- compute_grid_info(wflow, grid)
 
   expect_equal(res$.iter_preprocessor, rep(1:3, each = 3))
-  expect_equal(res$.msg_preprocessor, rep(paste0("preprocessor ", 1:3, "/3"), each = 3))
+  expect_equal(
+    res$.msg_preprocessor,
+    rep(paste0("preprocessor ", 1:3, "/3"), each = 3)
+  )
   expect_equal(res$.iter_model, rep(1:3, times = 3))
   expect_equal(
     res$.iter_config,
@@ -336,8 +436,16 @@ test_that("compute_grid_info - recipe and model (no submodels but has inner grid
   )
   expect_named(
     res,
-    c("cost", "num_comp", ".submodels", ".iter_preprocessor", ".msg_preprocessor",
-      ".iter_model", ".iter_config", ".msg_model"),
+    c(
+      "cost",
+      "num_comp",
+      ".submodels",
+      ".iter_preprocessor",
+      ".msg_preprocessor",
+      ".iter_model",
+      ".iter_config",
+      ".msg_model"
+    ),
     ignore.order = TRUE
   )
   expect_equal(nrow(res), 9)

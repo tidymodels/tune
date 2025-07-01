@@ -5,7 +5,10 @@ test_that("formula method", {
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
-  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
+  rmse_test <- yardstick::rsq_vec(
+    rsample::testing(split) %>% pull(mpg),
+    test_pred
+  )
 
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
@@ -27,7 +30,6 @@ test_that("formula method", {
   )
   expect_null(.get_tune_eval_times(res))
   expect_null(.get_tune_eval_time_target(res))
-
 })
 
 test_that("recipe method", {
@@ -37,7 +39,10 @@ test_that("recipe method", {
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
-  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(mpg), test_pred)
+  rmse_test <- yardstick::rsq_vec(
+    rsample::testing(split) %>% pull(mpg),
+    test_pred
+  )
 
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_poly(disp)
@@ -96,7 +101,9 @@ test_that("ellipses with last_fit", {
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
 
   expect_snapshot(
-    linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong")
+    linear_reg() %>%
+      set_engine("lm") %>%
+      last_fit(f, split, something = "wrong")
   )
 })
 
@@ -153,7 +160,8 @@ test_that("`last_fit()` when objects need tuning", {
 
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)
@@ -176,7 +184,10 @@ test_that("last_fit() excludes validation set for initial_validation_split objec
   f <- Sale_Price ~ Gr_Liv_Area + Year_Built
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
-  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(Sale_Price), test_pred)
+  rmse_test <- yardstick::rsq_vec(
+    rsample::testing(split) %>% pull(Sale_Price),
+    test_pred
+  )
 
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
@@ -209,7 +220,10 @@ test_that("last_fit() can include validation set for initial_validation_split ob
   train_val <- rbind(rsample::training(split), rsample::validation(split))
   lm_fit <- lm(f, data = train_val)
   test_pred <- predict(lm_fit, rsample::testing(split))
-  rmse_test <- yardstick::rsq_vec(rsample::testing(split) %>% pull(Sale_Price), test_pred)
+  rmse_test <- yardstick::rsq_vec(
+    rsample::testing(split) %>% pull(Sale_Price),
+    test_pred
+  )
 
   res <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm") %>%
@@ -237,7 +251,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   dat
 
@@ -267,20 +281,19 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
       split
     )
 
-  expect_tue(is_trained_workflow(last_fit_wflow))
-
   last_fit_preds <- collect_predictions(last_fit_res)
   last_fit_wflow <- extract_workflow(last_fit_res)
+  expect_true(is_trained_workflow(last_fit_wflow))
   last_fit_cal <-
     last_fit_wflow |>
     extract_postprocessor() |>
-    pluck("adjustments") |>
-    pluck(1) |>
-    pluck("results") |>
-    pluck("fit") |>
-    pluck("estimates") |>
-    pluck(1) |>
-    pluck("estimate")
+    purrr::pluck("adjustments") |>
+    purrr::pluck(1) |>
+    purrr::pluck("results") |>
+    purrr::pluck("fit") |>
+    purrr::pluck("estimates") |>
+    purrr::pluck(1) |>
+    purrr::pluck("estimate")
 
   # ----------------------------------------------------------------------------
 
@@ -295,13 +308,13 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   wflow_cal <-
     wflow_res |>
     extract_postprocessor() |>
-    pluck("adjustments") |>
-    pluck(1) |>
-    pluck("results") |>
-    pluck("fit") |>
-    pluck("estimates") |>
-    pluck(1) |>
-    pluck("estimate")
+    purrr::pluck("adjustments") |>
+    purrr::pluck(1) |>
+    purrr::pluck("results") |>
+    purrr::pluck("fit") |>
+    purrr::pluck("estimates") |>
+    purrr::pluck(1) |>
+    purrr::pluck("estimate")
 
   wflow_preds <- predict(wflow_res, rsample::assessment(split))
 
@@ -317,7 +330,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (does not requir
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   dat
 

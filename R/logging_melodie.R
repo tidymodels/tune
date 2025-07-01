@@ -6,13 +6,24 @@
 catcher_melodie <- function(expr) {
   signals <- list()
   add_cond <- function(cnd) {
-    signals <<- append(signals, list(cnd))
+    signals <<- append(signals, list(rlang::cnd_entrace(cnd)))
     rlang::cnd_muffle(cnd)
   }
-  res <- try(
-    withCallingHandlers(warning = add_cond, expr),
-    silent = TRUE
+
+  res <- rlang::try_fetch(
+    expr,
+    warning = add_cond,
+    error = function(e) {
+      structure(
+        catch_message(e),
+        class = "try-error",
+        # if a simple error, add a traceback.
+        # otherwise, pass the condition right along.
+        condition = rlang::`%||%`(rlang::cnd_entrace(e), e)
+      )
+    }
   )
+  
   attr(res, "notes") <- signals
   res
 }
@@ -26,21 +37,35 @@ has_log_notes <- function(x) {
 }
 
 append_log_notes <- function(notes, x, location) {
+  wrns <- attr(x, "notes")
+  if (length(wrns) > 0) {
+    for (wrn in wrns) {
+      type <- "warning"
+      note <- wrn$message
+
+      notes <- tibble::add_row(
+        notes,
+        location = unclass(location),
+        type = type,
+        note = note
+      )
+    }
+  }
+
   if (is_failure_melodie(x)) {
     type <- "error"
-    x <- attr(x, 'condition')
+    x <- attr(x, "condition")
     note <- conditionMessage(x)
-  } else {
-    type <- "warning"
-    note <- attr(x, "notes")
-    note <- note[[1]]$message
+
+    notes <- tibble::add_row(
+      notes,
+      location = unclass(location),
+      type = type,
+      note = note
+    )
   }
-  tibble::add_row(
-    notes,
-    location = unclass(location),
-    type = type,
-    note = note
-  )
+
+  notes 
 }
 
 remove_log_notes <- function(x) {
@@ -62,37 +87,42 @@ lbls_melodie <- c(LETTERS, letters, 1:1e3)
 catalog_log <- function(x) {
   catalog <- rlang::env_get(melodie_env, "progress_catalog")
 
-  if (x$note %in% catalog$note) {
-    idx <- match(x$note, catalog$note)
-    catalog$n[idx] <- catalog$n[idx] + 1
-  } else {
-    new_id <- nrow(catalog) + 1
-    catalog <- tibble::add_row(
-      catalog,
-      tibble::tibble(
-        type = x$type,
-        note = x$note,
-        n = 1,
-        id = new_id
+  for (i in seq_along(x$note)) {
+    x_note <- x$note[i]
+    x_type <- x$type[i]
+
+    if (x_note %in% catalog$note) {
+      idx <- match(x_note, catalog$note)
+      catalog$n[idx] <- catalog$n[idx] + 1
+    } else {
+      new_id <- nrow(catalog) + 1
+      catalog <- tibble::add_row(
+        catalog,
+        tibble::tibble(
+          type = x_type,
+          note = x_note,
+          n = 1,
+          id = new_id
+        )
       )
-    )
-
-    # construct issue summary
-    color <- if (x$type == "warning") cli::col_yellow else cli::col_red
-    # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-    pad <- nchar(x$note) + 14L
-    justify <- paste0("\n", strrep("\u00a0", pad))
-    note <- gsub("\n", justify, x$note)
-    # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
-    if (x$type == "error") {
-      note <- paste0("\u00a0\u00a0", note)
+      
+      # construct issue summary
+      color <- if (x_type == "warning") cli::col_yellow else cli::col_red
+      # pad by nchar(label) + nchar("warning") + additional spaces and symbols
+      pad <- nchar(x_note) + 14L
+      justify <- paste0("\n", strrep("\u00a0", pad))
+      note <- gsub("\n", justify, x_note)
+      # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
+      if (x_type == "error") {
+        note <- paste0("\u00a0\u00a0", note)
+      }
+      msg <- glue::glue(
+        "{color(cli::style_bold(lbls_melodie[new_id]))} | {color(x_type)}: {note}"
+      )
+      cli::cli_alert(msg)
     }
-    msg <- glue::glue(
-      "{color(cli::style_bold(lbls_melodie[new_id]))} |{color(x$type)}: {x$note}"
-    )
-    cli::cli_alert(msg)
-  }
-
+  } 
+    
   rlang::env_bind(melodie_env, progress_catalog = catalog)
   rlang::env_bind(
     melodie_env$progress_env,
@@ -143,7 +173,7 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
 }
 
 
-initialize_catalog_melodie <- function(env = rlang::caller_env()) {
+initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -155,6 +185,15 @@ initialize_catalog_melodie <- function(env = rlang::caller_env()) {
       nrow = 0
     )
 
+  if (!(allow_parallelism(control$allow_par) ||
+        is_testing()) &&
+      !control$verbose) {
+    progress_active <- TRUE
+  } else {
+    progress_active <- FALSE
+  }
+
+  
   rlang::env_bind(melodie_env, progress_env = env)
 
   rlang::env_bind(melodie_env, progress_catalog = catalog)
@@ -162,6 +201,14 @@ initialize_catalog_melodie <- function(env = rlang::caller_env()) {
     rlang::env_bind(melodie_env, progress_catalog = NULL),
     envir = env
   )
+
+  rlang::env_bind(melodie_env, progress_active = progress_active)
+  withr::defer(
+    rlang::env_bind(melodie_env, progress_active = FALSE),
+    envir = env
+  )
+
+  invisible(NULL)
 }
 
 new_note <- function(

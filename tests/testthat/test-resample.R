@@ -144,7 +144,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   dat
 
@@ -177,6 +177,8 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
 
   tune_wflow <- tune_wflow[[1]]
 
+  skip_if_not_installed("tune", "1.3.0.9005")
+  # TODO make equivalent test with new RNG advancer
   # mock `tune::tune_grid_loop_iter`'s RNG scheme
   set.seed(1)
   seed <- generate_seeds(TRUE, 1)[[1]]
@@ -208,7 +210,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   folds <- rsample::vfold_cv(dat, v = 2)
 
@@ -238,6 +240,8 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
     pull(.extracts)
   tune_wflow <- tune_wflow[[1]]
 
+  skip_if_not_installed("tune", "1.3.0.9005")
+  # TODO make equivalent test with new RNG advancer
   # mock `tune::tune_grid_loop_iter`'s RNG scheme
   set.seed(1)
   seed <- generate_seeds(TRUE, 1)[[1]]
@@ -453,7 +457,6 @@ test_that("argument order gives errors for recipe/formula", {
 })
 
 
-
 test_that("retain extra attributes", {
   skip_if_not_installed("splines2")
 
@@ -498,7 +501,8 @@ test_that("retain extra attributes", {
 
 
 test_that("`fit_resamples()` when objects need tuning", {
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)
@@ -510,4 +514,3 @@ test_that("`fit_resamples()` when objects need tuning", {
   expect_snapshot_error(fit_resamples(wflow_2, rs))
   expect_snapshot_error(fit_resamples(wflow_3, rs))
 })
-
