@@ -227,8 +227,16 @@ loop_over_all_stages <- function(resamples, grid, static) {
               location <- glue::glue(
                 "extraction"
               )
-              notes <- append_log_notes(notes, elt_extract, location)
-              catalog_log(notes)
+              
+              empty_notes <- tibble::tibble(
+                location = character(),
+                type = character(),
+                note = character()
+              )
+              new_notes <- append_log_notes(empty_notes, elt_extract, location)
+
+              catalog_log(new_notes)
+              notes <- dplyr::bind_rows(notes, new_notes)
               if (is_failure_melodie(elt_extract)) {
                 next
               }
@@ -236,12 +244,12 @@ loop_over_all_stages <- function(resamples, grid, static) {
             elt_extract <- remove_log_notes(elt_extract)
             extracts <- c(extracts, list(elt_extract))
           }
-
+          
           # Output for these loops:
           # - pred_reserve (probably not null)
           # - extracts (may be null)
           # - notes
-
+          
         } # post loop
       } # predict loop
     } # model loop
