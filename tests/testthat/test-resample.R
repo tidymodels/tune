@@ -240,6 +240,8 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
     pull(.extracts)
   tune_wflow <- tune_wflow[[1]]
 
+  skip_if_not_installed("tune", "1.3.0.9005")
+  # TODO make equivalent test with new RNG advancer
   # mock `tune::tune_grid_loop_iter`'s RNG scheme
   set.seed(1)
   seed <- generate_seeds(TRUE, 1)[[1]]
