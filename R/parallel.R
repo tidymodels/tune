@@ -59,38 +59,3 @@ manange_global_limit <- function(min = 1e9) {
   }
   invisible(NULL)
 }
-
-#' Support for parallel processing in tune
-#'
-#' @description
-#' Support for parallel backends registered with the [foreach][foreach::foreach]
-#' package was deprecated in tune 1.2.1 in favor of the
-#' [future][future::future] package. The package will now raise a warning when:
-#'
-#' 1) A parallel backend has been registered with foreach, and
-#' 2) No [plan][future::plan] has been specified with future.
-#'
-#' If parallelism has been configured with both framework, tune will use the
-#' plan specified with future and will not warn. To transition your code from
-#' foreach to future, remove code that registers a foreach `Backend`:
-#'
-#' ```r
-#' library(doBackend)
-#' registerDoBackend(cores = 4)
-#' ```
-#'
-#' And replace it with:
-#'
-#' ```r
-#' library(future)
-#' plan(multisession, workers = 4)
-#' ```
-#'
-#' See [future::plan()] for possible options other than `multisession`.
-#'
-#' Note that \pkg{tune} resets the _maximum_ limit of memory of global variables
-#' (e.g., attached packages) to be greater than the default when the package is
-#' loaded. This value can be altered using `options(future.globals.maxSize)`.
-#'
-#' @name parallelism
-NULL

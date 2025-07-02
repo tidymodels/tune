@@ -4,6 +4,8 @@
 
 * Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
 
+* Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
+
 # tune 1.3.0
 
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866). The next version of tune will move to a pure future implementation. 
