@@ -215,30 +215,30 @@
     Code
       tune:::loop_call("resamples", "mirai", list())
     Output
-      mirai::mirai_map(.x = resamples, loop_over_all_stages, grid = grid, 
-          static = static)
+      eval_mirai(.x = resamples, loop_over_all_stages, .args = list(
+          grid = grid, static = static))
 
 ---
 
     Code
       tune:::loop_call("resamples", "mirai", list(a = quote(a)))
     Output
-      mirai::mirai_map(.x = resamples, loop_over_all_stages, grid = grid, 
-          static = static, a = a)
+      eval_mirai(.x = resamples, loop_over_all_stages, .args = list(
+          grid = grid, static = static, a = a))
 
 ---
 
     Code
       tune:::loop_call("everything", "mirai", list())
     Output
-      mirai::mirai_map(.x = inds, loop_over_all_stages2, resamples = resamples, 
-          grid = candidates, static = static)
+      eval_mirai(.x = inds, loop_over_all_stages2, .args = list(resamples = resamples, 
+          grid = grid, static = static))
 
 ---
 
     Code
       tune:::loop_call("everything", "mirai", list(a = quote(a)))
     Output
-      mirai::mirai_map(.x = inds, loop_over_all_stages2, resamples = resamples, 
-          grid = candidates, static = static, a = a)
+      eval_mirai(.x = inds, loop_over_all_stages2, .args = list(resamples = resamples, 
+          grid = grid, static = static, a = a))
 
