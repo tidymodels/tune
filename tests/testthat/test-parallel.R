@@ -93,6 +93,7 @@ test_that("enable mirai parallelism", {
   expect_equal(tune:::choose_framework(control = ctrl_java), "sequential")
   expect_snapshot(tune:::choose_framework(control = ctrl_java, verbose = TRUE))
 
+  daemons(0)
   daemons(1)
 
   expect_equal(tune:::choose_framework(), "sequential")
@@ -100,7 +101,7 @@ test_that("enable mirai parallelism", {
 
   daemons(0)
   ## Give daemons a chance to shutdown
-  Sys.sleep(10)
+  Sys.sleep(1)
 
   detach("package:mirai", character.only = TRUE)
 
@@ -124,7 +125,7 @@ test_that("break parallelism tie", {
 
   daemons(0)
   ## Give daemons a chance to shutdown
-  Sys.sleep(10)
+  Sys.sleep(1)
   detach("package:mirai", character.only = TRUE)
 
   plan(sequential)
