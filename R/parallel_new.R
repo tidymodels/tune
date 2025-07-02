@@ -110,8 +110,9 @@ choose_framework <- function(
   both <- future_workers >= 2 & mirai_workers >= 2
 
   if (neither) {
-    res <- "sequential"
-  } else if (both) {
+    return("sequential")
+  } 
+  if (both) {
     if (verbose) {
       cli::cli_inform(
         "Multiple workers exist for both {.pkg mirai} and {.pkg future}; 
