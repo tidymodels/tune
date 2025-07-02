@@ -4,14 +4,35 @@
 \alias{parallelism}
 \title{Support for parallel processing in tune}
 \description{
-There are two frameworks that can be used to parallel process your work: the
-\link[future:future]{future} package and the \link[mirai:mirai]{mirai} package.
-Previously, you could use the \link[foreach:foreach]{foreach} package, but this
-has been deprecated as of version 1.2.1 of tune.
+\pkg{tune} can enable the simultaneous parallel computations. Tierney (2008)
+defined different classes of parallel processing techniques:
+\itemize{
+\item \emph{Implicit} is when a function uses low-level tools to perform a
+calculation that is small in scope in parallel. Examples are using
+multithreaded linear algebra libraries (e.g., BLAS) or basic R vectorization
+functions.
+\item \emph{Explicit} parallelization occurs when the user requests that some
+calculations should be run by generating multiple new R (sub)processes. These
+calculations can be more complex than those for implicit parallel
+processing.
+}
+
+For example, some decision tree libraries can implicitly parallelize their
+search for the optimal splitting routine using multiple threads.
+
+Alternatively, if you are resampling a model \emph{B} times, you can explicitly
+create \emph{B} new R jobs to train \emph{B} boosted trees in parallel and return their
+resampling results to the main R process (e.g., \code{\link[=fit_resamples]{fit_resamples()}}).
+
+There are two frameworks that can be used to explicitly parallel process
+your work in \pkg{tune}: the \link[future:future]{future} package and the
+\link[mirai:mirai]{mirai} package. Previously, you could use the
+\link[foreach:foreach]{foreach} package, but this has been deprecated as of
+version 1.2.1 of tune.
 
 By default, no parallelism is used to process models in \pkg{tune}; you have
 to opt-in.
-\subsection{Using futures}{
+\subsection{Using future}{
 
 You should install the package and choose your flavor of parallelism using
 the \link[future:plan]{plan} function. This allows you to specify the number of
@@ -38,6 +59,9 @@ See \code{\link[future:plan]{future::plan()}} for possible options other than \c
 Note that \pkg{tune} resets the \emph{maximum} limit of memory of global variables
 (e.g., attached packages) to be greater than the default when the package is
 loaded. This value can be altered using \code{options(future.globals.maxSize)}.
+
+If you want \pkg{future} to use \pkg{mirai} parallel workers, you can
+install and load the \pkg{future.mirai} package.
 }
 
 \subsection{Using mirai}{
@@ -46,8 +70,9 @@ To set the specific for parallel processing with \pkg{mirai}, the
 \code{\link[mirai:daemons]{mirai::daemons()}} functions. The first argument, \code{n}, determines the number
 of parallel workers. Using \code{daemons(0)} reverts to sequential processing.
 
-If you want to use \pkg{future} and \pkg{mirai} together, you can install
-and load the \pkg{future.mirai} package.
+The arguments \code{url} and \code{remote} are used to set up and launch parallel
+processes over the network for distributed computing. See \code{\link[mirai:daemons]{mirai::daemons()}}
+documentation for more details.
 }
 
 \subsection{Exceptions}{
@@ -58,14 +83,17 @@ processing, but it will revert to sequential execution.
 \item Many of the control functions (e.g. \code{\link[=control_grid]{control_grid()}}) have an argument
 called \code{allow_par}. If this is set to \code{FALSE}, parallel backends will always
 be ignored.
-\item Some packages, such as \pkg{rJava} and \pkg{keras} are not compatable with
-explict parallelization. If any of these packages are used, sequential
+\item Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
+explicit parallelization. If any of these packages are used, sequential
 processing occurs.
-\item If you specify fewer than two workers, the computations will occur
-sequentially.
+\item If you specify fewer than two workers, or if there is only a single task,
+the computations will occur sequentially.
 }
 }
 }
 \references{
 https://www.tmwr.org/grid-search#parallel-processing
+
+Tierney, Luke. "Implicit and explicit parallel computing in R." COMPSTAT
+2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
 }

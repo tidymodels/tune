@@ -141,10 +141,31 @@ choose_framework <- function(
 #' Support for parallel processing in tune
 #'
 #' @description
-#' There are two frameworks that can be used to parallel process your work: the
-#' [future][future::future] package and the [mirai][mirai:: mirai] package.
-#' Previously, you could use the [foreach][foreach::foreach] package, but this
-#' has been deprecated as of version 1.2.1 of tune.
+#'
+#' \pkg{tune} can enable the simultaneous parallel computations. Tierney (2008)
+#'  defined different classes of parallel processing techniques:
+#'
+#'  - _Implicit_ is when a function uses low-level tools to perform a
+#'  calculation that is small in scope in parallel. Examples are using
+#' multithreaded linear algebra libraries (e.g., BLAS) or basic R vectorization
+#' functions.
+#'  - _Explicit_ parallelization occurs when the user requests that some
+#' calculations should be run by generating multiple new R (sub)processes. These
+#' calculations can be more complex than those for implicit parallel
+#'  processing.
+#'
+#' For example, some decision tree libraries can implicitly parallelize their
+#' search for the optimal splitting routine using multiple threads.
+#'
+#' Alternatively, if you are resampling a model _B_ times, you can explicitly
+#' create _B_ new R jobs to train _B_ boosted trees in parallel and return their
+#' resampling results to the main R process (e.g., [fit_resamples()]).
+#'
+#' There are two frameworks that can be used to explicitly parallel process
+#' your work in \pkg{tune}: the [future][future::future] package and the
+#' [mirai][mirai:: mirai] package. Previously, you could use the
+#' [foreach][foreach::foreach] package, but this has been deprecated as of
+#' version 1.2.1 of tune.
 #'
 #' By default, no parallelism is used to process models in \pkg{tune}; you have
 #' to opt-in.
@@ -180,7 +201,7 @@ choose_framework <- function(
 #'
 #' If you want \pkg{future} to use \pkg{mirai} parallel workers, you can
 #' install and load the \pkg{future.mirai} package.
-#' 
+#'
 #' ## Using mirai
 #'
 #' To set the specific for parallel processing with \pkg{mirai}, the
@@ -201,9 +222,13 @@ choose_framework <- function(
 #' - Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
 #' explicit parallelization. If any of these packages are used, sequential
 #' processing occurs.
-#' - If you specify fewer than two workers, the computations will occur
-#' sequentially.
+#' - If you specify fewer than two workers, or if there is only a single task,
+#'  the computations will occur sequentially.
 #'
-#' @references https://www.tmwr.org/grid-search#parallel-processing
+#' @references
+#' https://www.tmwr.org/grid-search#parallel-processing
+#'
+#' Tierney, Luke. "Implicit and explicit parallel computing in R." COMPSTAT
+#' 2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
 #' @name parallelism
 NULL
