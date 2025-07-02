@@ -248,3 +248,106 @@ choose_framework <- function(
 #' 2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
 #' @name parallelism
 NULL
+
+
+# ------------------------------------------------------------------------------
+# Choosing how to execute the looping structure
+
+update_parallel_over <- function(control, resamples, grid) {
+  num_candidates <- nrow(grid)
+
+  if (is.null(control$parallel_over) | num_candidates == 0) {
+    control$parallel_over <- "resamples"
+  }
+  if (length(resamples$splits) == 1 & num_candidates > 0) {
+    control$parallel_over <- "everything"
+  }
+  control
+}
+
+
+loop_call <-
+  function(strategy, framework, opts) {
+    if (framework == "sequential") {
+      if (strategy == "resamples") {
+        cl <- rlang::call2(
+          "lapply",
+          X = quote(resamples),
+          FUN = "loop_over_all_stages",
+          grid = quote(grid),
+          static = quote(static),
+          !!!opts
+        )
+      } else {
+        cl <- rlang::call2(
+          "lapply",
+          X = quote(inds),
+          FUN = "loop_over_all_stages2",
+          resamples = quote(resamples),
+          quote(candidates),
+          static = quote(static),
+          !!!opts
+        )
+      }
+    } else if (framework == "future") {
+      rlang::check_installed("future")
+
+      future_opts <- list(
+        future.label = "tune-grid-%d",
+        future.stdout = TRUE,
+        future.seed = TRUE, # TODO <- this line may change
+        future.packages = quote(load_pkgs)
+      )
+
+      opts <- c(opts, future_opts)
+
+      if (strategy == "resamples") {
+        cl <- rlang::call2(
+          "future_lapply",
+          .ns = "future.apply",
+          X = quote(resamples),
+          FUN = "loop_over_all_stages",
+          grid = quote(grid),
+          static = quote(static),
+          !!!opts
+        )
+      } else {
+        cl <- rlang::call2(
+          "future_lapply",
+          .ns = "future.apply",
+          X = quote(inds),
+          FUN = "loop_over_all_stages2",
+          resamples = quote(resamples),
+          grid = quote(candidates),
+          static = quote(static),
+          !!!opts
+        )
+      }
+    } else if (framework == "mirai") {
+      rlang::check_installed("mirai")
+      if (strategy == "resamples") {
+        cl <- rlang::call2(
+          "mirai_map",
+          .ns = "mirai",
+          .x = quote(resamples),
+          quote(loop_over_all_stages),
+          grid = quote(grid),
+          static = quote(static),
+          !!!opts
+        )
+      } else {
+        cl <- rlang::call2(
+          "mirai_map",
+          .ns = "mirai",
+          .x = quote(inds),
+          quote(loop_over_all_stages2),
+          resamples = quote(resamples),
+          grid = quote(candidates),
+          static = quote(static),
+          !!!opts
+        )
+      }
+    }
+
+    cl
+  }
