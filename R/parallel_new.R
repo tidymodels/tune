@@ -118,8 +118,8 @@ choose_framework <- function(
         falling back to the default of {.pkg {default}}."
       )
     }
-    res <- default
-  } else {
+    return(default)
+  }
     if (future_workers >= 2) {
       res <- "future"
     } else {
