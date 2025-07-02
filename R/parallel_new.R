@@ -58,30 +58,23 @@ get_future_workers <- function(verbose) {
 }
 
 get_mirai_workers <- function(verbose) {
-  has_mirai <- mirai_avail()
-  if (has_mirai) {
-    if (mirai::daemons_set()) {
-      mirai_workers <- mirai::status()$connections
-      if (verbose) {
-        cli::cli_inform(
-          "{.pkg mirai} is loaded with {mirai_workers} worker{?s}"
-        )
-      }
-    } else {
-      mirai_workers <- 0L
-      if (verbose) {
-        cli::cli_inform(
-          "{.pkg mirai} is loaded with {mirai_workers} worker{?s}"
-        )
-      }
-    }
-  } else {
-    if (verbose) {
-      cli::cli_inform("{.pkg mirai} is not loaded")
-    }
-    mirai_workers <- 0L
-  }
-  mirai_workers
+ if (!mirai_avail()) {
+   if (verbose) {
+     cli::cli_inform("{.pkg mirai} is not loaded")
+   }
+   return(0L)
+ }
+ 
+ # note connections will be 0 if `!daemons_set()`
+ mirai_workers <- mirai::status()$connections
+ 
+ if (verbose) {
+   cli::cli_inform(
+     "{.pkg mirai} is loaded with {mirai_workers} worker{?s}"
+   )
+ }
+ 
+ mirai_workers
 }
 
 choose_framework <- function(
