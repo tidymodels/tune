@@ -49,15 +49,9 @@ tune_grid_loop_new <- function(
   load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
   load_pkgs <- unique(load_pkgs)
 
-  par_opt <- list(
-    future.label = "tune-grid-%d",
-    future.stdout = TRUE,
-    future.seed = TRUE,
-    # future.globals = c(), # add options from control?
-    future.packages = quote(load_pkgs)
-  )
+  par_opt <- list()
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Control execution
 
   # We'll make a call that defines how we iterate over resamples and grid points.
@@ -85,10 +79,11 @@ tune_grid_loop_new <- function(
     inds <- vec_list_rowwise(inds)
   }
 
-  cl <- loop_call(control, par_opt)
+  strategy <- choose_framework(static$workflow, control)
+  cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Separate results into different components
 
   res <- dplyr::bind_rows(res)

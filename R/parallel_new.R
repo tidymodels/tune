@@ -249,7 +249,6 @@ choose_framework <- function(
 #' @name parallelism
 NULL
 
-
 # ------------------------------------------------------------------------------
 # Choosing how to execute the looping structure
 
@@ -265,6 +264,14 @@ update_parallel_over <- function(control, resamples, grid) {
   control
 }
 
+# mirai_map() acts a little different form map(), lapply(), etc. It requires
+# that the elements in .args be the args (not symbols). It also requires an
+# extra step to collect the results and coerce them into a list.
+eval_mirai <- function(.x, .f, ..., .args) {
+  .args <- lapply(.args, eval, envir = parent.frame())
+  res <- mirai::mirai_map(.x, .f, ..., .args = .args)
+  res[]
+}
 
 loop_call <-
   function(strategy, framework, opts) {
@@ -326,25 +333,27 @@ loop_call <-
     } else if (framework == "mirai") {
       rlang::check_installed("mirai")
       if (strategy == "resamples") {
+        args <- list(grid = quote(grid), static = quote(static))
+        args <- c(args, opts)
+
         cl <- rlang::call2(
-          "mirai_map",
-          .ns = "mirai",
+          "eval_mirai",
           .x = quote(resamples),
           quote(loop_over_all_stages),
-          grid = quote(grid),
-          static = quote(static),
-          !!!opts
+          .args = args
         )
       } else {
+        args <- list(
+          resamples = quote(resamples),
+          grid = quote(grid),
+          static = quote(static)
+        )
+        args <- c(args, opts)
         cl <- rlang::call2(
-          "mirai_map",
-          .ns = "mirai",
+          "eval_mirai",
           .x = quote(inds),
           quote(loop_over_all_stages2),
-          resamples = quote(resamples),
-          grid = quote(candidates),
-          static = quote(static),
-          !!!opts
+          .args = args
         )
       }
     }
