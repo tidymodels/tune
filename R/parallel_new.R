@@ -149,7 +149,7 @@ choose_framework <- function(
 #' By default, no parallelism is used to process models in \pkg{tune}; you have
 #' to opt-in.
 #'
-#' ## Using futures
+#' ## Using future
 #'
 #' You should install the package and choose your flavor of parallelism using
 #' the [plan][future::plan] function. This allows you to specify the number of
@@ -178,14 +178,18 @@ choose_framework <- function(
 #' (e.g., attached packages) to be greater than the default when the package is
 #' loaded. This value can be altered using `options(future.globals.maxSize)`.
 #'
+#' If you want \pkg{future} to use \pkg{mirai} parallel workers, you can
+#' install and load the \pkg{future.mirai} package.
+#' 
 #' ## Using mirai
 #'
 #' To set the specific for parallel processing with \pkg{mirai}, the
 #' [mirai::daemons()] functions. The first argument, `n`, determines the number
 #' of parallel workers. Using `daemons(0)` reverts to sequential processing.
 #'
-#' If you want to use \pkg{future} and \pkg{mirai} together, you can install
-#' and load the \pkg{future.mirai} package.
+#' The arguments `url` and `remote` are used to set up and launch parallel
+#' processes over the network for distributed computing. See [mirai::daemons()]
+#' documentation for more details.
 #'
 #' ## Exceptions
 #'
@@ -194,8 +198,8 @@ choose_framework <- function(
 #' - Many of the control functions (e.g. [control_grid()]) have an argument
 #' called `allow_par`. If this is set to `FALSE`, parallel backends will always
 #' be ignored.
-#' - Some packages, such as \pkg{rJava} and \pkg{keras} are not compatable with
-#' explict parallelization. If any of these packages are used, sequential
+#' - Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
+#' explicit parallelization. If any of these packages are used, sequential
 #' processing occurs.
 #' - If you specify fewer than two workers, the computations will occur
 #' sequentially.

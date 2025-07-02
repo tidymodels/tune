@@ -4,7 +4,7 @@
 
 * Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
 
-* Updated `?parallelism` to describe changed for future and mirai. 
+* Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
 
 # tune 1.3.0
 
