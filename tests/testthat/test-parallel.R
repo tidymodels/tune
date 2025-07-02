@@ -129,3 +129,59 @@ test_that("break parallelism tie", {
 
   plan(sequential)
 })
+
+test_that("loop execution code", {
+  # sequential
+  expect_snapshot(tune:::loop_call("resamples", "sequential", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "resamples",
+      "sequential",
+      list(a = quote(a))
+    )
+  )
+  expect_snapshot(tune:::loop_call("everything", "sequential", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "everything",
+      "sequential",
+      list(a = quote(a))
+    )
+  )
+
+  # future
+  expect_snapshot(tune:::loop_call("resamples", "future", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "resamples",
+      "future",
+      list(a = quote(a))
+    )
+  )
+  expect_snapshot(tune:::loop_call("everything", "future", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "everything",
+      "future",
+      list(a = quote(a))
+    )
+  )
+
+  # mirai
+  expect_snapshot(tune:::loop_call("resamples", "mirai", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "resamples",
+      "mirai",
+      list(a = quote(a))
+    )
+  )
+  expect_snapshot(tune:::loop_call("everything", "mirai", list()))
+  expect_snapshot(
+    tune:::loop_call(
+      "everything",
+      "mirai",
+      list(a = quote(a))
+    )
+  )
+})
