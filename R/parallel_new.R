@@ -32,10 +32,10 @@ has_non_par_pkgs <- function(object, control, verbose = FALSE) {
 # ------------------------------------------------------------------------------
 
 future_avail <- function() {
-  any(search() == "package:future")
+  rlang::is_installed("future")
 }
 mirai_avail <- function() {
-  any(search() == "package:mirai")
+  rlang::is_installed("mirai")
 }
 
 get_future_workers <- function(verbose) {
@@ -105,7 +105,7 @@ choose_framework <- function(
 
   if (!has_future & !has_mirai) {
     if (verbose) {
-      cli::cli_inform("Neither {.pkg mirai} or {.pkg future} are loaded")
+      cli::cli_inform("Neither {.pkg mirai} or {.pkg future} are installed")
     }
     return("sequential")
   }
