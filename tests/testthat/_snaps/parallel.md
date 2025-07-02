@@ -3,7 +3,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      Neither mirai or future are loaded
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
     Output
       [1] "sequential"
 
@@ -12,8 +14,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is not loaded
-      future is loaded with 1 worker
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
     Output
       [1] "sequential"
 
@@ -22,8 +25,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is not loaded
-      future is loaded with 2 workers
+      mirai is not active.
+      future is active with 2 workers.
+      future will be used for parallel processing}.
     Output
       [1] "future"
 
@@ -48,8 +52,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is not loaded
-      future is loaded with 1 worker
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
     Output
       [1] "sequential"
 
@@ -58,7 +63,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      Neither mirai or future are loaded
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
     Output
       [1] "sequential"
 
@@ -67,8 +74,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is loaded with 0 workers
-      future is not loaded
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
     Output
       [1] "sequential"
 
@@ -77,8 +85,9 @@
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is loaded with 2 workers
-      future is not loaded
+      mirai is active with 2 workers.
+      future is active with 1 worker.
+      mirai will be used for parallel processing}.
     Output
       [1] "mirai"
 
@@ -98,13 +107,35 @@
     Output
       [1] "sequential"
 
+---
+
+    Code
+      tune:::choose_framework(verbose = TRUE)
+    Message
+      mirai is active with 1 worker.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
+    Output
+      [1] "sequential"
+
+---
+
+    Code
+      tune:::choose_framework(verbose = TRUE)
+    Message
+      mirai is not active.
+      future is active with 1 worker.
+      Too few workers for parallel processing.
+    Output
+      [1] "sequential"
+
 # break parallelism tie
 
     Code
       tune:::choose_framework(verbose = TRUE)
     Message
-      mirai is loaded with 2 workers
-      future is loaded with 2 workers
+      mirai is active with 2 workers.
+      future is active with 2 workers.
       Multiple workers exist for both mirai and future; falling back to the default of mirai.
     Output
       [1] "mirai"

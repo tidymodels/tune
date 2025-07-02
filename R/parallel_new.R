@@ -31,25 +31,32 @@ has_non_par_pkgs <- function(object, control, verbose = FALSE) {
 
 # ------------------------------------------------------------------------------
 
-future_avail <- function() {
+future_installed <- function() {
   rlang::is_installed("future")
 }
-mirai_avail <- function() {
+mirai_installed <- function() {
   rlang::is_installed("mirai")
 }
 
 get_future_workers <- function(verbose) {
-  has_future <- future_avail()
+  has_future <- future_installed()
+
   if (has_future) {
     future_workers <- future::nbrOfWorkers()
     if (verbose) {
-      cli::cli_inform(
-        "{.pkg future} is loaded with {future_workers} worker{?s}"
-      )
+      if (future_workers == 0) {
+        cli::cli_inform(
+          "{.pkg future} is not active."
+        )
+      } else {
+        cli::cli_inform(
+          "{.pkg future} is active with {future_workers} worker{?s}."
+        )
+      }
     }
   } else {
     if (verbose) {
-      cli::cli_inform("{.pkg future} is not loaded")
+      cli::cli_inform("{.pkg future} is not installed.")
     }
 
     future_workers <- 0L
@@ -58,23 +65,29 @@ get_future_workers <- function(verbose) {
 }
 
 get_mirai_workers <- function(verbose) {
- if (!mirai_avail()) {
-   if (verbose) {
-     cli::cli_inform("{.pkg mirai} is not loaded")
-   }
-   return(0L)
- }
- 
- # note connections will be 0 if `!daemons_set()`
- mirai_workers <- mirai::status()$connections
- 
- if (verbose) {
-   cli::cli_inform(
-     "{.pkg mirai} is loaded with {mirai_workers} worker{?s}"
-   )
- }
- 
- mirai_workers
+  if (!mirai_installed()) {
+    if (verbose) {
+      cli::cli_inform("{.pkg mirai} is not installed.")
+    }
+    return(0L)
+  }
+
+  # note connections will be 0 if `!daemons_set()`
+  mirai_workers <- mirai::status()$connections
+
+  if (verbose) {
+    if (mirai_workers == 0) {
+      cli::cli_inform(
+        "{.pkg mirai} is not active."
+      )
+    } else {
+      cli::cli_inform(
+        "{.pkg mirai} is active with {mirai_workers} worker{?s}."
+      )
+    }
+  }
+
+  mirai_workers
 }
 
 choose_framework <- function(
@@ -93,12 +106,12 @@ choose_framework <- function(
     return("sequential")
   }
 
-  has_future <- future_avail()
-  has_mirai <- mirai_avail()
+  has_future <- future_installed()
+  has_mirai <- mirai_installed()
 
   if (!has_future & !has_mirai) {
     if (verbose) {
-      cli::cli_inform("Neither {.pkg mirai} or {.pkg future} are installed")
+      cli::cli_inform("Neither {.pkg mirai} or {.pkg future} are installed.")
     }
     return("sequential")
   }
@@ -110,8 +123,12 @@ choose_framework <- function(
   both <- future_workers >= 2 & mirai_workers >= 2
 
   if (neither) {
+    if (verbose) {
+      cli::cli_inform("Too few workers for parallel processing.")
+    }
     return("sequential")
-  } 
+  }
+
   if (both) {
     if (verbose) {
       cli::cli_inform(
@@ -121,12 +138,17 @@ choose_framework <- function(
     }
     return(default)
   }
-    if (future_workers >= 2) {
-      res <- "future"
-    } else {
-      res <- "mirai"
-    }
+
+  if (future_workers >= 2) {
+    res <- "future"
+  } else {
+    res <- "mirai"
   }
+
+  if (verbose) {
+    cli::cli_inform("{.pkg {res}} will be used for parallel processing}.")
+  }
+
   res
 }
 
