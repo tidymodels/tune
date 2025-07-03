@@ -152,6 +152,32 @@ choose_framework <- function(
   res
 }
 
+get_parallel_seeds <- function(workers) {
+  # Get current rng info and save
+  orig_state <- .Random.seed
+  orig_kind <- RNGkind()[1]
+  # Reset the stream to get new rng's
+  on.exit({
+    RNGkind(orig_kind)
+    assign(".Random.seed", orig_state, globalenv())
+  })
+
+  # Set to type used for multiple streams
+  RNGkind("L'Ecuyer-CMRG")
+
+  # Capture the seed to make more seeds.
+  runif(1)
+  .seed <- .Random.seed
+
+  res <- vector(mode = "list", length = workers)
+  for (i in seq_along(res)) {
+    res[[i]] <- parallel::nextRNGSubStream(.seed)
+    .seed <- parallel::nextRNGStream(.seed)
+  }
+
+  res
+}
+
 # ------------------------------------------------------------------------------
 
 #' Support for parallel processing in tune
