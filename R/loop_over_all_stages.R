@@ -229,12 +229,15 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
               catalog_log(new_notes)
               notes <- dplyr::bind_rows(notes, new_notes)
+              elt_extract <- remove_log_notes(elt_extract)
+              extracts <- c(extracts, list(elt_extract))
               if (is_failure_melodie(elt_extract)) {
                 next
               }
+            } else {
+              elt_extract <- remove_log_notes(elt_extract)
+              extracts <- c(extracts, list(elt_extract))
             }
-            elt_extract <- remove_log_notes(elt_extract)
-            extracts <- c(extracts, list(elt_extract))
           }
           
           # Output for these loops:
