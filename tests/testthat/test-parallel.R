@@ -270,7 +270,7 @@ test_that("same results using future", {
       grid = 4
     )
 
-  future_mtr <- collect_metrics(mirai_res)
+  future_mtr <- collect_metrics(future_res)
 
   expect_equal(seq_mtr, future_mtr)
 
