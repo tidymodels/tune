@@ -270,33 +270,43 @@ update_parallel_over <- function(control, resamples, grid) {
 eval_mirai <- function(.x, .f, ..., .args) {
   .args <- lapply(.args, eval, envir = parent.frame())
   res <- mirai::mirai_map(.x, .f, ..., .args = .args)
-  res[]
+  mirai::collect_mirai(res)
 }
 
 loop_call <-
   function(strategy, framework, opts) {
-    if (framework == "sequential") {
-      if (strategy == "resamples") {
-        cl <- rlang::call2(
-          "lapply",
-          X = quote(resamples),
-          FUN = "loop_over_all_stages",
-          grid = quote(grid),
-          static = quote(static),
-          !!!opts
-        )
-      } else {
-        cl <- rlang::call2(
-          "lapply",
-          X = quote(inds),
-          FUN = "loop_over_all_stages2",
-          resamples = quote(resamples),
-          quote(candidates),
-          static = quote(static),
-          !!!opts
-        )
-      }
-    } else if (framework == "future") {
+    fns <- list(
+      sequential = list(fn = "lapply", ns = NULL),
+      future = list(fn = "future_lapply", ns = "future.apply"),
+      mirai = list(fn = "eval_mirai", ns = NULL)
+    )
+
+    if (strategy == "resamples") {
+      base_cl <- rlang::call2(
+        fns[[framework]][[1]],
+        .ns = fns[[framework]][[2]],
+        quote(resamples),
+        quote(loop_over_all_stages)
+      )
+      base_args <- list(grid = quote(grid), static = quote(static))
+    } else {
+      base_cl <- rlang::call2(
+        fns[[framework]][[1]],
+        .ns = fns[[framework]][[2]],
+        quote(inds),
+        quote(loop_over_all_stages2)
+      )
+      base_args <- list(
+        resamples = quote(resamples),
+        grid = quote(candidates),
+        static = quote(static)
+      )
+    }
+
+    # Configure arguments
+    base_args <- c(base_args, opts)
+
+    if (framework == "future") {
       rlang::check_installed("future")
 
       future_opts <- list(
@@ -305,58 +315,14 @@ loop_call <-
         future.seed = TRUE, # TODO <- this line may change
         future.packages = quote(load_pkgs)
       )
-
-      opts <- c(opts, future_opts)
-
-      if (strategy == "resamples") {
-        cl <- rlang::call2(
-          "future_lapply",
-          .ns = "future.apply",
-          X = quote(resamples),
-          FUN = "loop_over_all_stages",
-          grid = quote(grid),
-          static = quote(static),
-          !!!opts
-        )
-      } else {
-        cl <- rlang::call2(
-          "future_lapply",
-          .ns = "future.apply",
-          X = quote(inds),
-          FUN = "loop_over_all_stages2",
-          resamples = quote(resamples),
-          grid = quote(candidates),
-          static = quote(static),
-          !!!opts
-        )
-      }
-    } else if (framework == "mirai") {
-      rlang::check_installed("mirai")
-      if (strategy == "resamples") {
-        args <- list(grid = quote(grid), static = quote(static))
-        args <- c(args, opts)
-
-        cl <- rlang::call2(
-          "eval_mirai",
-          .x = quote(resamples),
-          quote(loop_over_all_stages),
-          .args = args
-        )
-      } else {
-        args <- list(
-          resamples = quote(resamples),
-          grid = quote(grid),
-          static = quote(static)
-        )
-        args <- c(args, opts)
-        cl <- rlang::call2(
-          "eval_mirai",
-          .x = quote(inds),
-          quote(loop_over_all_stages2),
-          .args = args
-        )
-      }
+      base_args <- c(base_args, future_opts)
     }
 
+    if (framework == "mirai") {
+      rlang::check_installed("mirai")
+      cl <- rlang::call_modify(base_cl, .args = base_args)
+    } else {
+      cl <- rlang::call_modify(base_cl, !!!base_args)
+    }
     cl
   }
