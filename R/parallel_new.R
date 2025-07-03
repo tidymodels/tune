@@ -248,3 +248,81 @@ choose_framework <- function(
 #' 2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
 #' @name parallelism
 NULL
+
+# ------------------------------------------------------------------------------
+# Choosing how to execute the looping structure
+
+update_parallel_over <- function(control, resamples, grid) {
+  num_candidates <- nrow(grid)
+
+  if (is.null(control$parallel_over) | num_candidates == 0) {
+    control$parallel_over <- "resamples"
+  }
+  if (length(resamples$splits) == 1 & num_candidates > 0) {
+    control$parallel_over <- "everything"
+  }
+  control
+}
+
+# mirai_map() acts a little different form map(), lapply(), etc. It requires
+# that the elements in .args be the args (not symbols). It also requires an
+# extra step to collect the results and coerce them into a list.
+eval_mirai <- function(.x, .f, ..., .args) {
+  .args <- lapply(.args, get, envir = parent.frame())
+  res <- mirai::mirai_map(.x, .f, ..., .args = .args)
+  mirai::collect_mirai(res)
+}
+
+loop_call <-
+  function(strategy, framework, opts) {
+    fns <- list(
+      sequential = list(fn = "lapply", ns = NULL),
+      future = list(fn = "future_lapply", ns = "future.apply"),
+      mirai = list(fn = "eval_mirai", ns = NULL)
+    )
+
+    if (strategy == "resamples") {
+      base_cl <- rlang::call2(
+        fns[[framework]][[1]],
+        .ns = fns[[framework]][[2]],
+        quote(resamples),
+        quote(loop_over_all_stages)
+      )
+      base_args <- list(grid = quote(grid), static = quote(static))
+    } else {
+      base_cl <- rlang::call2(
+        fns[[framework]][[1]],
+        .ns = fns[[framework]][[2]],
+        quote(inds),
+        quote(loop_over_all_stages2)
+      )
+      base_args <- list(
+        resamples = quote(resamples),
+        grid = quote(candidates),
+        static = quote(static)
+      )
+    }
+
+    # Configure arguments
+    base_args <- c(base_args, opts)
+
+    if (framework == "future") {
+      rlang::check_installed("future")
+
+      future_opts <- list(
+        future.label = "tune-grid-%d",
+        future.stdout = TRUE,
+        future.seed = TRUE, # TODO <- this line may change
+        future.packages = quote(load_pkgs)
+      )
+      base_args <- c(base_args, future_opts)
+    }
+
+    if (framework == "mirai") {
+      rlang::check_installed("mirai")
+      cl <- rlang::call_modify(base_cl, .args = base_args)
+    } else {
+      cl <- rlang::call_modify(base_cl, !!!base_args)
+    }
+    cl
+  }

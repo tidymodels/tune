@@ -49,15 +49,9 @@ tune_grid_loop_new <- function(
   load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
   load_pkgs <- unique(load_pkgs)
 
-  par_opt <- list(
-    future.label = "tune-grid-%d",
-    future.stdout = TRUE,
-    future.seed = TRUE,
-    # future.globals = c(), # add options from control?
-    future.packages = quote(load_pkgs)
-  )
+  par_opt <- list()
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Control execution
 
   # We'll make a call that defines how we iterate over resamples and grid points.
@@ -85,10 +79,11 @@ tune_grid_loop_new <- function(
     inds <- vec_list_rowwise(inds)
   }
 
-  cl <- loop_call(control, par_opt)
+  strategy <- choose_framework(static$workflow, control)
+  cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Separate results into different components
 
   res <- dplyr::bind_rows(res)
@@ -139,63 +134,4 @@ tune_grid_loop_new <- function(
 
 vec_list_rowwise <- function(x) {
   vctrs::vec_split(x, by = 1:nrow(x))$val
-}
-
-update_parallel_over <- function(control, resamples, grid) {
-  num_candidates <- nrow(grid)
-
-  if (is.null(control$parallel_over) | num_candidates == 0) {
-    control$parallel_over <- "resamples"
-  }
-  if (length(resamples$splits) == 1 & num_candidates > 0) {
-    control$parallel_over <- "everything"
-  }
-  control
-}
-
-loop_call <- function(ctrl, opts) {
-  if (ctrl$allow_par) {
-    if (ctrl$parallel_over == "resamples") {
-      cl <- rlang::call2(
-        "future_lapply",
-        .ns = "future.apply",
-        X = quote(resamples),
-        FUN = "loop_over_all_stages",
-        quote(grid),
-        quote(static),
-        !!!opts
-      )
-    } else {
-      cl <- rlang::call2(
-        "future_lapply",
-        .ns = "future.apply",
-        X = quote(inds),
-        FUN = "loop_over_all_stages2",
-        quote(resamples),
-        quote(candidates),
-        quote(static),
-        !!!opts
-      )
-    }
-  } else {
-    if (ctrl$parallel_over == "resamples") {
-      cl <- rlang::call2(
-        "lapply",
-        X = quote(resamples),
-        FUN = "loop_over_all_stages",
-        quote(grid),
-        quote(static)
-      )
-    } else {
-      cl <- rlang::call2(
-        "lapply",
-        X = quote(inds),
-        FUN = "loop_over_all_stages2",
-        quote(resamples),
-        quote(candidates),
-        quote(static)
-      )
-    }
-  }
-  cl
 }
