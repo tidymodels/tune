@@ -185,3 +185,94 @@ test_that("loop execution code", {
     )
   )
 })
+
+
+test_that("same results using mirai", {
+  skip_if_not_installed("mirai")
+  skip_if_not_installed("xgboost")
+  skip_if_not_installed("modeldata")
+  skip_on_cran()
+
+  set.seed(1)
+  dat <- modeldata::sim_regression(500)
+  rs <- vfold_cv(dat)
+
+  # ------------------------------------------------------------------------------
+
+  mod <- boost_tree(min_n = tune(), trees = 20, learn_rate = tune()) |>
+    set_mode("regression")
+
+  simple_wflow <- workflow(outcome ~ ., mod)
+
+  set.seed(1)
+  seq_res <-
+    simple_wflow |>
+    tune_grid(
+      resamples = rs,
+      grid = 4
+    )
+
+  seq_mtr <- collect_metrics(seq_res)
+
+  tmp <- mirai::daemons(2)
+
+  set.seed(1)
+  mirai_res <-
+    simple_wflow |>
+    tune_grid(
+      resamples = rs,
+      grid = 4
+    )
+
+  mirai_mtr <- collect_metrics(mirai_res)
+
+  expect_equal(seq_mtr, mirai_mtr)
+
+  tmp <- mirai::daemons(0)
+})
+
+
+test_that("same results using future", {
+  skip_if_not_installed("future")
+  skip_if_not_installed("future.apply")
+  skip_if_not_installed("xgboost")
+  skip_if_not_installed("modeldata")
+  skip_on_cran()
+
+  set.seed(1)
+  dat <- modeldata::sim_regression(500)
+  rs <- vfold_cv(dat)
+
+  # ------------------------------------------------------------------------------
+
+  mod <- boost_tree(min_n = tune(), trees = 20, learn_rate = tune()) |>
+    set_mode("regression")
+
+  simple_wflow <- workflow(outcome ~ ., mod)
+
+  set.seed(1)
+  seq_res <-
+    simple_wflow |>
+    tune_grid(
+      resamples = rs,
+      grid = 4
+    )
+
+  seq_mtr <- collect_metrics(seq_res)
+
+  future::plan(future::multisession(workers = 2))
+
+  set.seed(1)
+  future_res <-
+    simple_wflow |>
+    tune_grid(
+      resamples = rs,
+      grid = 4
+    )
+
+  future_mtr <- collect_metrics(mirai_res)
+
+  expect_equal(seq_mtr, future_mtr)
+
+  future::plan("sequential")
+})
