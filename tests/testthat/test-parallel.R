@@ -276,3 +276,30 @@ test_that("same results using future", {
 
   future::plan("sequential")
 })
+
+
+test_that("generating parallel seeds does not affect the space-time continuum", {
+  og_seed <- .Random.seed
+
+  before_kind <- RNGkind()
+  set.seed(1)
+  before_rnd <- runif(1)
+
+  set.seed(1)
+  tmp <- tune:::get_parallel_seeds(3)
+  after_rng <- runif(1)
+
+  expect_equal(3, length(tmp))
+  expect_equal(before_rnd, after_rng)
+  expect_equal(before_kind, RNGkind())
+
+  # The seeds work
+  assign(".Random.seed", tmp[[1]], envir = .GlobalEnv)
+  unif_1 <- runif(1)
+
+  assign(".Random.seed", tmp[[1]], envir = .GlobalEnv)
+  unif_2 <- runif(1)
+
+  expect_equal(unif_1, unif_2)
+  assign(".Random.seed", og_seed, envir = .GlobalEnv)
+})
