@@ -338,8 +338,7 @@ loop_call <-
       future_opts <- list(
         future.label = "tune-grid-%d",
         future.stdout = TRUE,
-        future.seed = TRUE, # TODO <- this line may change
-        future.packages = quote(load_pkgs)
+        future.seed = NULL
       )
       base_args <- c(base_args, future_opts)
     }
