@@ -47,7 +47,8 @@ append_log_notes <- function(notes, x, location) {
         notes,
         location = unclass(location),
         type = type,
-        note = note
+        note = note,
+        trace = list(wrn$trace)
       )
     }
   }
@@ -61,7 +62,8 @@ append_log_notes <- function(notes, x, location) {
       notes,
       location = unclass(location),
       type = type,
-      note = note
+      note = note,
+      trace = list(x$trace)
     )
   }
 

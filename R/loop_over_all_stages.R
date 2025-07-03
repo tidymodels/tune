@@ -12,11 +12,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   pred_reserve <- NULL
   pred_iter <- 0
-  notes <- tibble::tibble(
-    location = character(),
-    type = character(),
-    note = character()
-  )
+  notes <- new_note()
   extracts <- NULL
 
   sched <- schedule_grid(grid, static$wflow)
@@ -228,11 +224,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 "extraction"
               )
               
-              empty_notes <- tibble::tibble(
-                location = character(),
-                type = character(),
-                note = character()
-              )
+              empty_notes <- new_note()
               new_notes <- append_log_notes(empty_notes, elt_extract, location)
 
               catalog_log(new_notes)
