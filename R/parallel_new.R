@@ -268,7 +268,7 @@ update_parallel_over <- function(control, resamples, grid) {
 # that the elements in .args be the args (not symbols). It also requires an
 # extra step to collect the results and coerce them into a list.
 eval_mirai <- function(.x, .f, ..., .args) {
-  .args <- lapply(.args, get)
+  .args <- lapply(.args, get, envir = parent.frame())
   res <- mirai::mirai_map(.x, .f, ..., .args = .args)
   mirai::collect_mirai(res)
 }
