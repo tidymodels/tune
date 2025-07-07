@@ -6,7 +6,7 @@
 
 * Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
 
-* `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. 
+* `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently. 
 
 ## Breaking Changes
 
