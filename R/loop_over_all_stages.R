@@ -10,7 +10,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   # Set seed within the worker process
   assign(".Random.seed", resamples$.seeds[[1]], envir = .GlobalEnv)
   resamples$.seeds <- NULL
-
+  withr::defer(assign(".Random.seed", orig_seed, envir = .GlobalEnv))
   split <- resamples$splits[[1]]
   split_labs <- resamples |>
     dplyr::select(dplyr::starts_with("id"))
@@ -306,8 +306,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
     ))
   }
 
-  # Put the seed back where we found it
-  assign(".Random.seed", orig_seed, envir = globalenv())
   return_tbl
 }
 
