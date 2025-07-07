@@ -184,7 +184,7 @@ test_that("tune model and recipe", {
   )
   expect_no_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts))
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts", ".config")))
+  expect_named(extract_3_1,c("cost", "num_comp", ".extracts", ".config"))
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
