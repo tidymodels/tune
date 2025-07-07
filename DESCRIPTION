@@ -30,6 +30,7 @@ Imports:
     GPfit,
     hardhat (>= 1.4.0.9002),
     lifecycle (>= 1.0.0),
+    parallel,
     parsnip (>= 1.2.1.9003),
     purrr (>= 1.0.0),
     recipes (>= 1.1.0.9001),
