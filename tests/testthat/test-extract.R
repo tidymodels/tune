@@ -115,22 +115,26 @@ test_that("mis-specified extract function", {
 
   expect_snapshot(
     res_extract_warning <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_both <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_both))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_both)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error_once <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once)),
+    transform = catalog_lines
   )
 
   expect_snapshot(res_extract_warning)

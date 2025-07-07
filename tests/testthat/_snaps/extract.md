@@ -5,9 +5,6 @@
         extract = raise_warning))
     Message
       > A | warning: AHHH
-      There were issues with some computations   A: x1
-      There were issues with some computations   A: x2
-      
 
 ---
 
@@ -16,9 +13,6 @@
         extract = raise_error))
     Message
       > A | error:   AHHH
-      There were issues with some computations   A: x3
-      There were issues with some computations   A: x3
-      
 
 ---
 
