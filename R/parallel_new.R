@@ -132,7 +132,7 @@ choose_framework <- function(
   if (both) {
     if (verbose) {
       cli::cli_inform(
-        "Multiple workers exist for both {.pkg mirai} and {.pkg future}; 
+        "Multiple workers exist for both {.pkg mirai} and {.pkg future};
         falling back to the default of {.pkg {default}}."
       )
     }
@@ -166,7 +166,6 @@ get_parallel_seeds <- function(workers) {
   RNGkind("L'Ecuyer-CMRG")
 
   # Capture the seed to make more seeds.
-  runif(1)
   .seed <- .Random.seed
 
   res <- vector(mode = "list", length = workers)
