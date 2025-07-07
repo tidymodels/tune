@@ -235,7 +235,8 @@ test_that("collecting notes - last_fit", {
     parsnip::set_engine("lm")
 
   expect_snapshot(
-    lst <- last_fit(lin_mod, mpg ~ ., split)
+    lst <- last_fit(lin_mod, mpg ~ ., split),
+    transform = catalog_lines
   )
   expect_snapshot(lst)
 
