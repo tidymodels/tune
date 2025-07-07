@@ -1,4 +1,3 @@
-
 test_that("percentile intervals - resamples only", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("rsample", minimum_version = "1.2.1.9000")
@@ -25,10 +24,13 @@ test_that("percentile intervals - resamples only", {
   )
   set.seed(1)
   expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 500))
-  expect_equal(int_res_1[0,], template)
+  expect_equal(int_res_1[0, ], template)
   expect_equal(nrow(int_res_1), 2)
 
-  expect_snapshot(int_pctl(lm_res, times = 2000, metrics = "rmse"), error = TRUE)
+  expect_snapshot(
+    int_pctl(lm_res, times = 2000, metrics = "rmse"),
+    error = TRUE
+  )
 
   # check to make sure that alpha works
   set.seed(1)
@@ -66,13 +68,12 @@ test_that("percentile intervals - last fit", {
   )
   set.seed(1)
   expect_snapshot(int_res_1 <- int_pctl(lm_res, times = 200))
-  expect_equal(int_res_1[0,], template)
+  expect_equal(int_res_1[0, ], template)
   expect_equal(nrow(int_res_1), 1)
   set.seed(1)
   expect_snapshot(int_res_2 <- int_pctl(lm_res, times = 200))
   expect_equal(int_res_1, int_res_2)
 })
-
 
 
 test_that("percentile intervals - grid + bayes tuning", {
@@ -92,24 +93,24 @@ test_that("percentile intervals - grid + bayes tuning", {
     set_engine("C5.0") %>%
     set_mode("classification") %>%
     tune_grid(
-      Class ~.,
+      Class ~ .,
       resamples = cls_rs,
       grid = dplyr::tibble(min_n = c(5, 20, 40)),
       metrics = metric_set(sens),
       control = control_grid(save_pred = TRUE)
     )
   template <- dplyr::tibble(
+    min_n = numeric(0),
     .metric = character(0),
     .estimator = character(0),
     .lower = numeric(0),
     .estimate = numeric(0),
     .upper = numeric(0),
-    .config = character(0),
-    min_n = numeric(0)
+    .config = character(0)
   )
 
   expect_snapshot(int_res_1 <- int_pctl(c5_res))
-  expect_equal(int_res_1[0,], template)
+  expect_equal(int_res_1[0, ], template)
   expect_equal(nrow(int_res_1), 3)
 
   # ------------------------------------------------------------------------------
@@ -120,7 +121,7 @@ test_that("percentile intervals - grid + bayes tuning", {
     set_engine("C5.0") %>%
     set_mode("classification") %>%
     tune_bayes(
-      Class ~.,
+      Class ~ .,
       resamples = cls_rs,
       initial = c5_res,
       iter = 1,
@@ -128,22 +129,40 @@ test_that("percentile intervals - grid + bayes tuning", {
       control = control_bayes(save_pred = TRUE)
     )
   template <- dplyr::tibble(
+    min_n = integer(0),
     .metric = character(0),
     .estimator = character(0),
     .lower = numeric(0),
     .estimate = numeric(0),
     .upper = numeric(0),
     .config = character(0),
-    .iter = integer(0),
-    min_n = integer(0)
+    .iter = integer(0)
   )
   set.seed(1)
   int_res_2 <- int_pctl(c5_bo_res)
-  expect_equal(int_res_2[0,], template)
+  expect_equal(int_res_2[0, ], template)
   expect_equal(nrow(int_res_2), 4)
   set.seed(1)
   int_res_3 <- int_pctl(c5_bo_res, event_level = "second")
   expect_true(all(int_res_3$.estimate < int_res_2$.estimate))
+
+  ###
+
+  set.seed(1)
+  int_res_2_reps <- int_pctl(c5_bo_res, keep_replicates = TRUE)
+  expect_named(
+    int_res_2_reps,
+    # fmt: skip
+    c("min_n", ".metric", ".estimator", ".lower", ".estimate", ".upper",
+      ".config", ".iter", ".values")
+  )
+
+  qnts <- quantile(int_res_2_reps$.values[[1]]$estimate, probs = c(0.025, 0.5, 0.975))
+  expect_equal(
+    c(int_res_2_reps$.lower[1], int_res_2_reps$.estimate[1], int_res_2_reps$.upper[1]),
+    as.vector(qnts),
+    tolerance = 0.001
+  )
 
   # ------------------------------------------------------------------------------
 
@@ -152,28 +171,26 @@ test_that("percentile intervals - grid + bayes tuning", {
     set_engine("C5.0") %>%
     set_mode("classification") %>%
     tune_grid(
-      Class ~.,
+      Class ~ .,
       resamples = cls_rs,
       grid = dplyr::tibble(min_n = c(20, 40)),
       metrics = metric_set(roc_auc, sens),
       control = control_grid(save_pred = TRUE)
     )
   template <- dplyr::tibble(
+    min_n = numeric(0),
     .metric = character(0),
     .estimator = character(0),
     .lower = numeric(0),
     .estimate = numeric(0),
     .upper = numeric(0),
-    .config = character(0),
-    min_n = numeric(0)
+    .config = character(0)
   )
   set.seed(2093)
   int_res_4 <- int_pctl(c5_mixed_res)
-  expect_equal(int_res_4[0,], template)
+  expect_equal(int_res_4[0, ], template)
   expect_equal(nrow(int_res_4), 4)
 })
-
-
 
 
 test_that("percentile intervals - grid tuning with validation set", {
@@ -194,25 +211,23 @@ test_that("percentile intervals - grid tuning with validation set", {
     set_engine("C5.0") %>%
     set_mode("classification") %>%
     tune_grid(
-      Class ~.,
+      Class ~ .,
       resamples = cls_rs,
       grid = dplyr::tibble(min_n = c(5, 20, 40)),
       metrics = metric_set(sens),
       control = control_grid(save_pred = TRUE)
     )
   template <- dplyr::tibble(
+    min_n = numeric(0),
     .metric = character(0),
     .estimator = character(0),
     .lower = numeric(0),
     .estimate = numeric(0),
     .upper = numeric(0),
-    .config = character(0),
-    min_n = numeric(0)
+    .config = character(0)
   )
 
   expect_snapshot(int_res_1 <- int_pctl(c5_res))
-  expect_equal(int_res_1[0,], template)
+  expect_equal(int_res_1[0, ], template)
   expect_equal(nrow(int_res_1), 3)
-
 })
-

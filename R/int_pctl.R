@@ -165,10 +165,14 @@ int_pctl_iter <- function(
   rs$.metrics <- rlang::eval_bare(cl)
 
   res <- rsample::int_pctl(rs, .metrics, alpha = alpha)
+  has_iter <- any(names(res) == ".iter")
+
+  nest_cols <- c(".config", "term")
+  if (has_iter) {
+    nest_cols <- c(".iter", nest_cols)
+  }
 
   if (keep_replicates) {
-    nest_cols <- c(".config", "term")
-
     rs_est <- purrr::list_rbind(rs$.metrics)
 
     rs_est <-
@@ -179,10 +183,10 @@ int_pctl_iter <- function(
 
     rs_est <- vctrs::vec_cbind(
       rs_est$key,
-      tibble::new_tibble(list(values = rs_est$val))
+      tibble::new_tibble(list(.values = rs_est$val))
     )
 
-    res <- dplyr::full_join(res, rs_est, by = c(".config", "term"))
+    res <- dplyr::full_join(res, rs_est, by = nest_cols)
   }
 
   res$.metric <- res$term
@@ -190,8 +194,12 @@ int_pctl_iter <- function(
   res$.estimator <- "bootstrap"
   res$.alpha <- NULL
   res$.method <- NULL
-  res <- dplyr::inner_join(res, config, by = ".config")
-  res <- res[order(res$.metric, res$.config), ]
+
+  by_cols <- nest_cols[nest_cols != "term"]
+  res <- dplyr::inner_join(res, config, by = by_cols)
+
+  sort_cols <- rlang::syms(c(".metric", by_cols))
+  res <- res |> dplyr::arrange(!!!sort_cols)
   first_cols <- c(
     param_names,
     ".metric",
@@ -201,6 +209,10 @@ int_pctl_iter <- function(
     ".upper",
     ".config"
   )
+  if (has_iter) {
+    first_cols <- c(first_cols, ".iter")
+  }
+
   res[, c(first_cols, setdiff(names(res), first_cols))]
 }
 
@@ -225,7 +237,11 @@ boot_metrics <- function(
       metrics_info = metrics_info
     )
 
-  res <- dplyr::inner_join(res, configs, by = param_names)
+  if (length(param_names) > 0) {
+    res <- dplyr::inner_join(res, configs, by = param_names)
+  } else {
+    res <- vctrs::vec_cbind(res, configs)
+  }
 
   res$term <- res$.metric
   res$.metric <- NULL
