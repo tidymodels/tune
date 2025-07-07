@@ -221,7 +221,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
             if (has_log_notes(elt_extract)) {
               location <- glue::glue(
-                "extraction"
+                "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
               )
               
               empty_notes <- new_note()
