@@ -4,9 +4,10 @@
       res_extract_warning <- fit_resamples(wf, boots, control = control_resamples(
         extract = raise_warning))
     Message
-      ! Bootstrap1: preprocessor 1/1, model 1/1 (extracts): AHHH
-      ! Bootstrap2: preprocessor 1/1, model 1/1 (extracts): AHHH
-      ! Bootstrap3: preprocessor 1/1, model 1/1 (extracts): AHHH
+      > A | warning: AHHH
+      There were issues with some computations   A: x1
+      There were issues with some computations   A: x2
+      
 
 ---
 
@@ -14,9 +15,10 @@
       res_extract_error <- fit_resamples(wf, boots, control = control_resamples(
         extract = raise_error))
     Message
-      x Bootstrap1: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
-      x Bootstrap2: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
-      x Bootstrap3: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
+      > A | error:   AHHH
+      There were issues with some computations   A: x3
+      There were issues with some computations   A: x3
+      
 
 ---
 
@@ -24,12 +26,8 @@
       res_extract_both <- fit_resamples(wf, boots, control = control_resamples(
         extract = raise_both))
     Message
-      ! Bootstrap1: preprocessor 1/1, model 1/1 (extracts): AH
-      x Bootstrap1: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
-      ! Bootstrap2: preprocessor 1/1, model 1/1 (extracts): AH
-      x Bootstrap2: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
-      ! Bootstrap3: preprocessor 1/1, model 1/1 (extracts): AH
-      x Bootstrap3: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): AHHH
+      > A | warning: AH
+      > B | error:   AHHH
 
 ---
 
@@ -37,7 +35,7 @@
       res_extract_error_once <- fit_resamples(wf, boots, control = control_resamples(
         extract = raise_error_once))
     Message
-      x Bootstrap1: preprocessor 1/1, model 1/1 (extracts): Error in extractor(object): oh no
+      > A | error:   oh no
 
 ---
 
@@ -75,7 +73,7 @@
       
       There were issues with some computations:
       
-        - Error(s) x3: Error in extractor(object): AHHH
+        - Error(s) x3: AHHH
       
       Run `show_notes(.Last.tune.result)` for more information.
 
@@ -95,7 +93,7 @@
       
       There were issues with some computations:
       
-        - Error(s) x3: Error in extractor(object): AHHH
+        - Error(s) x3: AHHH
         - Warning(s) x3: AH
       
       Run `show_notes(.Last.tune.result)` for more information.
@@ -116,7 +114,7 @@
       
       There were issues with some computations:
       
-        - Error(s) x1: Error in extractor(object): oh no
+        - Error(s) x1: oh no
       
       Run `show_notes(.Last.tune.result)` for more information.
 
@@ -128,7 +126,7 @@
       # A tibble: 1 x 4
         location                               type    note  trace              
         <chr>                                  <chr>   <chr> <list>             
-      1 preprocessor 1/1, model 1/1 (extracts) warning AHHH  <rlng_trc [46 x 5]>
+      1 preprocessor 1/1, model 1/1 (extracts) warning AHHH  <rlng_trc [24 x 5]>
 
 ---
 
@@ -147,9 +145,9 @@
       res_extract_error$.notes[[1]]
     Output
       # A tibble: 1 x 4
-        location                               type  note                   trace     
-        <chr>                                  <chr> <chr>                  <list>    
-      1 preprocessor 1/1, model 1/1 (extracts) error Error in extractor(ob~ <rlng_trc>
+        location                               type  note  trace              
+        <chr>                                  <chr> <chr> <list>             
+      1 preprocessor 1/1, model 1/1 (extracts) error AHHH  <rlng_trc [21 x 5]>
 
 ---
 
