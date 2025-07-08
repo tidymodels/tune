@@ -107,6 +107,11 @@ new_tune_results <-
            rset_info,
            ...,
            class = character()) {
+
+    if (any(names(x) == ".seeds")) {
+      x$.seeds <- NULL
+    }
+
     res <-
       new_bare_tibble(
       x = x,
