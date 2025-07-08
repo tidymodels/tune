@@ -130,8 +130,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
           if (is_failure_melodie(current_pred)) {
             next
           }
-          current_pred <- remove_log_notes(current_pred)
         }
+        current_pred <- remove_log_notes(current_pred)
 
         has_post <- has_tailor(current_wflow)
         num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
