@@ -17,11 +17,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   pred_reserve <- NULL
   pred_iter <- 0
-  notes <- tibble::tibble(
-    location = character(),
-    type = character(),
-    note = character()
-  )
+  notes <- new_note()
   extracts <- NULL
 
   sched <- schedule_grid(grid, static$wflow)
@@ -134,8 +130,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
           if (is_failure_melodie(current_pred)) {
             next
           }
-          current_pred <- remove_log_notes(current_pred)
         }
+        current_pred <- remove_log_notes(current_pred)
 
         has_post <- has_tailor(current_wflow)
         num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
@@ -208,9 +204,11 @@ loop_over_all_stages <- function(resamples, grid, static) {
             current_wflow <- set_workflow_tailor(current_wflow, post_fit)
 
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
+            current_extract_grid <- current_post_grid
           } else {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
+            current_extract_grid <- current_predict_grid
           }
 
           current_wflow <- workflows::.fit_finalize(current_wflow)
@@ -223,31 +221,46 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
           # --------------------------------------------------------------------
           # Extractions
+
+          # TODO modularize this:
           if (!is.null(static$control$extract)) {
             elt_extract <- .catch_and_log_melodie(
               extract_details(current_wflow, static$control$extract)
             )
 
+            if (is.null(extracts)) {
+              extracts <- tibble::tibble(.extracts = list(1))
+              if (nrow(static$param_info) > 0) {
+                extracts <- tibble::add_column(current_extract_grid, .extracts = list(1))
+              }
+              extracts <- extracts[integer(), ]
+            }
+
             if (has_log_notes(elt_extract)) {
               location <- glue::glue(
-                "extraction"
+                "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
               )
-
-              empty_notes <- tibble::tibble(
-                location = character(),
-                type = character(),
-                note = character()
-              )
+              empty_notes <- new_note()
               new_notes <- append_log_notes(empty_notes, elt_extract, location)
 
               catalog_log(new_notes)
               notes <- dplyr::bind_rows(notes, new_notes)
+            }
+            elt_extract <- remove_log_notes(elt_extract)
+            if (nrow(static$param_info) > 0) {
+              extracts <- tibble::add_row(
+                extracts,
+                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
+              )
+              } else {
+              extracts <- tibble::add_row(
+                extracts,
+                tibble::tibble(.extracts = list(elt_extract))
+              )
+              }
               if (is_failure_melodie(elt_extract)) {
                 next
               }
-            }
-            elt_extract <- remove_log_notes(elt_extract)
-            extracts <- c(extracts, list(elt_extract))
           }
 
           # Output for these loops:
@@ -278,9 +291,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
   }
 
   if (!is.null(extracts)) {
-    extracts <- config_tbl |>
-      dplyr::mutate(.extracts = extracts) |>
-      dplyr::relocate(.config, .after = .extracts)
+
+    extracts <- add_configs(extracts, static, config_tbl) |>
+      dplyr::relocate(.config, .after = .extracts) |>
+      dplyr::relocate(names(grid))
+
+    # Failing rows are not in the output:
+    empty_extract <- purrr::map_lgl(extracts$.extracts, is.null)
+    extracts <- extracts[!empty_extract,]
   }
 
   # ----------------------------------------------------------------------------
@@ -292,18 +310,33 @@ loop_over_all_stages <- function(resamples, grid, static) {
     outcome_names = static$y_name
   )
 
-  if (!is.null(extracts)) {
-    return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
+  if (!is.null(static$control$extract)) {
+    if (is.null(extracts)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~ NULL)
+    } else {
+      return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
+    }
   }
 
   return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
   if (static$control$save_pred) {
-    return_tbl$.predictions <- list(add_configs(
-      pred_reserve,
-      static,
-      config_tbl
-    ))
+    if (is.null(pred_reserve)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~ NULL)
+    } else {
+      return_tbl$.predictions <-
+        list(
+          add_configs(
+            pred_reserve,
+            static,
+            config_tbl
+          ) |>
+            # Filter out joined rows that corresponded to a config that failed
+            dplyr::filter(!is.na(.row))
+        )
+    }
   }
 
   return_tbl

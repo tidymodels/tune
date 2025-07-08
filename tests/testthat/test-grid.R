@@ -552,7 +552,8 @@ test_that("tune model only - failure in formula is caught elegantly", {
       resamples = data_folds,
       grid = cars_grid,
       control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    )
+    ),
+    transform = catalog_lines
   )
 
   notes <- cars_res$.notes

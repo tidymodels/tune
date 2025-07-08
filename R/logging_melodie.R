@@ -47,7 +47,8 @@ append_log_notes <- function(notes, x, location) {
         notes,
         location = unclass(location),
         type = type,
-        note = note
+        note = note,
+        trace = list(wrn$trace)
       )
     }
   }
@@ -61,7 +62,8 @@ append_log_notes <- function(notes, x, location) {
       notes,
       location = unclass(location),
       type = type,
-      note = note
+      note = note,
+      trace = list(x$trace)
     )
   }
 
@@ -83,6 +85,16 @@ melodie_env <-
   )
 
 lbls_melodie <- c(LETTERS, letters, 1:1e3)
+
+# determines whether a currently running tuning process uses the cataloger.
+uses_catalog <- function() {
+  isTRUE(tune_env$progress_active && !is_testing())
+}
+
+# copied from testthat::is_testing
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
+}
 
 catalog_log <- function(x) {
   catalog <- rlang::env_get(melodie_env, "progress_catalog")
@@ -129,20 +141,22 @@ catalog_log <- function(x) {
     catalog_summary = summarize_catalog_melodie(catalog)
   )
 
-  rlang::with_options(
-    cli::cli_progress_bar(
-      type = "custom",
-      format = "There were issues with some computations   {catalog_summary}",
-      clear = FALSE,
-      .envir = melodie_env$progress_env
-    ),
-    cli.progress_show_after = 0
-  )
-
-  cli::cli_progress_update(.envir = melodie_env$progress_env)
+  if (uses_catalog()) {
+    rlang::with_options(
+      cli::cli_progress_bar(
+        type = "custom",
+        format = "There were issues with some computations   {catalog_summary}",
+        clear = FALSE,
+        .envir = melodie_env$progress_env
+      ),
+      cli.progress_show_after = 0
+    )
+    
+    cli::cli_progress_update(.envir = melodie_env$progress_env)
+  }
 
   return(NULL)
-}
+  }
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
