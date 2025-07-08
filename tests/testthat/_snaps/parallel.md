@@ -178,7 +178,7 @@
     Output
       future.apply::future_lapply(resamples, loop_over_all_stages, 
           grid = grid, static = static, future.label = "tune-grid-%d", 
-          future.stdout = TRUE, future.seed = TRUE, future.packages = load_pkgs)
+          future.stdout = TRUE, future.seed = NULL)
 
 ---
 
@@ -187,7 +187,7 @@
     Output
       future.apply::future_lapply(resamples, loop_over_all_stages, 
           grid = grid, static = static, a = a, future.label = "tune-grid-%d", 
-          future.stdout = TRUE, future.seed = TRUE, future.packages = load_pkgs)
+          future.stdout = TRUE, future.seed = NULL)
 
 ---
 
@@ -196,7 +196,7 @@
     Output
       future.apply::future_lapply(inds, loop_over_all_stages2, resamples = resamples, 
           grid = candidates, static = static, future.label = "tune-grid-%d", 
-          future.stdout = TRUE, future.seed = TRUE, future.packages = load_pkgs)
+          future.stdout = TRUE, future.seed = NULL)
 
 ---
 
@@ -205,7 +205,7 @@
     Output
       future.apply::future_lapply(inds, loop_over_all_stages2, resamples = resamples, 
           grid = candidates, static = static, a = a, future.label = "tune-grid-%d", 
-          future.stdout = TRUE, future.seed = TRUE, future.packages = load_pkgs)
+          future.stdout = TRUE, future.seed = NULL)
 
 ---
 

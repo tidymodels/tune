@@ -6,11 +6,13 @@
 
 * Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
 
+* Sequential and parallel processing all use the same L'Ecuyer-CMRG seeds (conditional on `parallel_over`) (#1033). 
+
 * `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (#1000).
 
 ## Breaking Changes
 
-* The parallel backend and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
+* The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
 
 # tune 1.3.0
 
