@@ -8,6 +8,12 @@
 
 * Sequential and parallel processing all use the same L'Ecuyer-CMRG seeds (conditional on `parallel_over`) (#1033). 
 
+* `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (#1000).
+
+## Breaking Changes
+
+* The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
+
 # tune 1.3.0
 
 * The package will now warn when parallel processing has been enabled with foreach but not with future. See [`?parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.html) to learn more about transitioning your code to future (#878, #866). The next version of tune will move to a pure future implementation. 
