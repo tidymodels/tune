@@ -199,9 +199,11 @@ loop_over_all_stages <- function(resamples, grid, static) {
             current_wflow <- set_workflow_tailor(current_wflow, post_fit)
 
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
+            current_extract_grid <- current_post_grid
           } else {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
+            current_extract_grid <- current_predict_grid
           }
 
           current_wflow <- workflows::.fit_finalize(current_wflow)
@@ -219,6 +221,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
               extract_details(current_wflow, static$control$extract)
             )
 
+            if (is.null(extracts)) {
+              extracts <- tibble::tibble(.extracts = list(1))
+              if (nrow(static$param_info) > 0) {
+                extracts <- tibble::add_column(current_extract_grid, .extracts = list(1))
+              }
+              extracts <- extracts[integer(), ]
+            }
+            
             if (has_log_notes(elt_extract)) {
               location <- glue::glue(
                 "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
@@ -230,13 +240,33 @@ loop_over_all_stages <- function(resamples, grid, static) {
               catalog_log(new_notes)
               notes <- dplyr::bind_rows(notes, new_notes)
               elt_extract <- remove_log_notes(elt_extract)
-              extracts <- c(extracts, list(elt_extract))
+              if (nrow(static$param_info) > 0) {
+              extracts <- tibble::add_row(
+                extracts, 
+                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
+              )
+              } else {
+              extracts <- tibble::add_row(
+                extracts, 
+                tibble::tibble(.extracts = list(elt_extract))
+              )
+              }
               if (is_failure_melodie(elt_extract)) {
                 next
               }
             } else {
               elt_extract <- remove_log_notes(elt_extract)
-              extracts <- c(extracts, list(elt_extract))
+              if (nrow(static$param_info) > 0) {
+              extracts <- tibble::add_row(
+                extracts, 
+                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
+              )
+              } else {
+              extracts <- tibble::add_row(
+                extracts, 
+                tibble::tibble(.extracts = list(elt_extract))
+              )
+              }
             }
           }
           
@@ -269,9 +299,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
   }
 
   if (!is.null(extracts)) {
-    extracts <- config_tbl |>
-      dplyr::mutate(.extracts = extracts) |>
-      dplyr::relocate(.config, .after = .extracts)
+    extracts <- add_configs(extracts, static, config_tbl) |>
+      dplyr::relocate(.config, .after = .extracts) |>
+      dplyr::relocate(names(grid))
   }
 
   # ----------------------------------------------------------------------------
