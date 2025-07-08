@@ -239,8 +239,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
               catalog_log(new_notes)
               notes <- dplyr::bind_rows(notes, new_notes)
-              elt_extract <- remove_log_notes(elt_extract)
-              if (nrow(static$param_info) > 0) {
+            } 
+            elt_extract <- remove_log_notes(elt_extract)
+            if (nrow(static$param_info) > 0) {
               extracts <- tibble::add_row(
                 extracts, 
                 tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
@@ -254,20 +255,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
               if (is_failure_melodie(elt_extract)) {
                 next
               }
-            } else {
-              elt_extract <- remove_log_notes(elt_extract)
-              if (nrow(static$param_info) > 0) {
-              extracts <- tibble::add_row(
-                extracts, 
-                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
-              )
-              } else {
-              extracts <- tibble::add_row(
-                extracts, 
-                tibble::tibble(.extracts = list(elt_extract))
-              )
-              }
-            }
           }
           
           # Output for these loops:
