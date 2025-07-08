@@ -132,7 +132,7 @@ choose_framework <- function(
   if (both) {
     if (verbose) {
       cli::cli_inform(
-        "Multiple workers exist for both {.pkg mirai} and {.pkg future}; 
+        "Multiple workers exist for both {.pkg mirai} and {.pkg future};
         falling back to the default of {.pkg {default}}."
       )
     }
@@ -147,6 +147,31 @@ choose_framework <- function(
 
   if (verbose) {
     cli::cli_inform("{.pkg {res}} will be used for parallel processing}.")
+  }
+
+  res
+}
+
+get_parallel_seeds <- function(workers) {
+  # Get current rng info and save
+  orig_state <- .Random.seed
+  orig_kind <- RNGkind()[1]
+  # Reset the stream to get new rng's
+  on.exit({
+    RNGkind(orig_kind)
+    assign(".Random.seed", orig_state, globalenv())
+  })
+
+  # Set to type used for multiple streams
+  RNGkind("L'Ecuyer-CMRG")
+
+  # Capture the seed to make more seeds.
+  .seed <- .Random.seed
+
+  res <- vector(mode = "list", length = workers)
+  for (i in seq_along(res)) {
+    res[[i]] <- parallel::nextRNGSubStream(.seed)
+    .seed <- parallel::nextRNGStream(.seed)
   }
 
   res
@@ -273,14 +298,14 @@ eval_mirai <- function(.x, .f, ..., .args) {
   mirai::collect_mirai(res)
 }
 
+fns <- list(
+  sequential = list(fn = "lapply", ns = NULL),
+  future = list(fn = "future_lapply", ns = "future.apply"),
+  mirai = list(fn = "eval_mirai", ns = NULL)
+)
+
 loop_call <-
   function(strategy, framework, opts) {
-    fns <- list(
-      sequential = list(fn = "lapply", ns = NULL),
-      future = list(fn = "future_lapply", ns = "future.apply"),
-      mirai = list(fn = "eval_mirai", ns = NULL)
-    )
-
     if (strategy == "resamples") {
       base_cl <- rlang::call2(
         fns[[framework]][[1]],
@@ -312,8 +337,7 @@ loop_call <-
       future_opts <- list(
         future.label = "tune-grid-%d",
         future.stdout = TRUE,
-        future.seed = TRUE, # TODO <- this line may change
-        future.packages = quote(load_pkgs)
+        future.seed = NULL
       )
       base_args <- c(base_args, future_opts)
     }
@@ -326,3 +350,44 @@ loop_call <-
     }
     cl
   }
+
+# ------------------------------------------------------------------------------
+# for int_pctl
+
+pctl_call <- function(framework, args = list()) {
+  if (framework == "future") {
+    rlang::check_installed("future")
+
+    future_opts <- list(
+      future.label = "int-pctl-%d",
+      future.stdout = TRUE,
+      future.seed = NULL
+    )
+    args <- c(args, future_opts)
+  }
+
+  main_args <- list(
+    y = quote(y_nm),
+    metrics = quote(metrics),
+    event_level = quote(event_level),
+    metrics_info = quote(metrics_info),
+    param_names = quote(param_names),
+    configs = quote(config)
+  )
+  args <- c(main_args, args)
+
+  base_cl <- rlang::call2(
+    fns[[framework]][[1]],
+    .ns = fns[[framework]][[2]],
+    quote(rs$splits),
+    quote(boot_metrics)
+  )
+  if (framework == "mirai") {
+    rlang::check_installed("mirai")
+    cl <- rlang::call_modify(base_cl, .args = args)
+  } else {
+    cl <- rlang::call_modify(base_cl, !!!args)
+  }
+
+  cl
+}

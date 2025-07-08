@@ -6,6 +6,11 @@
 loop_over_all_stages <- function(resamples, grid, static) {
   # Initialize some objects
 
+  orig_seed <- .Random.seed
+  # Set seed within the worker process
+  assign(".Random.seed", resamples$.seeds[[1]], envir = .GlobalEnv)
+  resamples$.seeds <- NULL
+  withr::defer(assign(".Random.seed", orig_seed, envir = .GlobalEnv))
   split <- resamples$splits[[1]]
   split_labs <- resamples |>
     dplyr::select(dplyr::starts_with("id"))
@@ -232,8 +237,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             if (has_log_notes(elt_extract)) {
               location <- glue::glue(
                 "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
-              )
-              
+              )              
               empty_notes <- new_note()
               new_notes <- append_log_notes(empty_notes, elt_extract, location)
 
@@ -256,12 +260,11 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 next
               }
           }
-          
+
           # Output for these loops:
           # - pred_reserve (probably not null)
           # - extracts (may be null)
           # - notes
-          
         } # post loop
       } # predict loop
     } # model loop
@@ -307,7 +310,11 @@ loop_over_all_stages <- function(resamples, grid, static) {
   return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
   if (static$control$save_pred) {
-    return_tbl$.predictions <- list(add_configs(pred_reserve, static, config_tbl))
+    return_tbl$.predictions <- list(add_configs(
+      pred_reserve,
+      static,
+      config_tbl
+    ))
   }
 
   return_tbl
@@ -361,5 +368,3 @@ add_configs <- function(x, static, config_tbl) {
 
   dplyr::arrange(x, .config)
 }
-
-

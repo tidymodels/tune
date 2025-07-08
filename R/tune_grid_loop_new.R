@@ -15,6 +15,9 @@ tune_grid_loop_new <- function(
 
   control <- update_parallel_over(control, resamples, grid)
 
+  # Make and set the worker/process seeds if workers get resamples
+  resamples$.seeds <- get_parallel_seeds(nrow(resamples))
+
   # We'll significantly alter the rsample object but will need it intact later;
   # Make a copy and save some information before proceeding
   rset_info <- pull_rset_attributes(resamples)
@@ -76,6 +79,8 @@ tune_grid_loop_new <- function(
     # Break all combinations of resamples and candidates into a list of integers
     # for each combination.
     inds <- tidyr::crossing(s = seq_along(candidates), b = seq_along(resamples))
+
+    # Split up for better processing
     inds <- vec_list_rowwise(inds)
   }
 
