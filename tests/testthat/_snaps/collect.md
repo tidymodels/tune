@@ -28,9 +28,6 @@
       lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
     Message
       > A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-      There were issues with some computations   A: x1
-      There were issues with some computations   A: x2
-      
 
 ---
 
