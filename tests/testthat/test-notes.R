@@ -77,7 +77,7 @@ test_that("notes are sorted in the correct order", {
   mt_boots <- bootstraps(mtcars, 3, apparent = TRUE)
 
   # induce the size zero yardstick error in Bootstrap1
-  mt_boots$splits[[1]]$out_id <- numeric(0)
+  mt_boots$splits[[1]]$out_id <- integer(0)
 
   suppressMessages({
     mt_res <- fit_resamples(linear_reg(), mpg ~ ., mt_boots)
