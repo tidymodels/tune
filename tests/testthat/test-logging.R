@@ -510,6 +510,7 @@ test_that("interactive logger works (bayesian, error)", {
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
+  skip_if_not_installed("tune", "1.3.0.9005") # bayes
 
   local_mocked_bindings(
     is_testing = function() {FALSE},
