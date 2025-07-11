@@ -1,4 +1,6 @@
 test_that("no parallelism", {
+  skip_if_not_installed("mirai")
+
   svm_spec <- svm_rbf(mode = "classification")
   ctrl_no <- control_grid(allow_par = FALSE)
   ctrl_java <- control_grid(pkgs = "rJava")
@@ -18,6 +20,7 @@ test_that("no parallelism", {
 
 test_that("enable future parallelism", {
   skip_if_not_installed("future")
+  skip_if_not_installed("mirai")
 
   svm_spec <- svm_rbf(mode = "classification")
   ctrl_no <- control_grid(allow_par = FALSE)
@@ -131,6 +134,8 @@ test_that("break parallelism tie", {
 })
 
 test_that("loop execution code", {
+  skip_if_not_installed("mirai")
+
   # sequential
   expect_snapshot(tune:::loop_call("resamples", "sequential", list()))
   expect_snapshot(
