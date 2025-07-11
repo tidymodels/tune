@@ -278,7 +278,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (is.null(pred_reserve)) {
     all_metrics <- NULL
   } else {
-    all_metrics <- pred_reserve |>
+    all_metrics <- .catch_and_log_melodie(
+      pred_reserve |>
       dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
       .estimate_metrics(
         metric = static$metrics,
@@ -288,6 +289,19 @@ loop_over_all_stages <- function(resamples, grid, static) {
         metrics_info = metrics_info(static$metrics)
       ) |>
       add_configs(static, config_tbl)
+    )
+
+    if (has_log_notes(all_metrics)) {
+      location <- glue::glue(
+        "internal"
+      )
+      empty_notes <- new_note()
+      new_notes <- append_log_notes(empty_notes, all_metrics, location)
+
+      catalog_log(new_notes)
+      notes <- dplyr::bind_rows(notes, new_notes)
+    }
+    all_metrics <- remove_log_notes(all_metrics)
   }
 
   if (!is.null(extracts)) {
