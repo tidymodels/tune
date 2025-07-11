@@ -47,25 +47,7 @@
     Message
       > A | warning: glm.fit: algorithm did not converge
       > B | warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    Condition
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
-      Warning:
-      No control observations were detected in `truth` with control level 'class_2'.
+      > C | warning: No control observations were detected in `truth` with control level 'class_2'.
 
 ---
 
@@ -77,4 +59,6 @@
       glm.fit: algorithm did not converge
       -----------------------------------
       glm.fit: fitted probabilities numerically 0 or 1 occurred
+      -----------------------------------
+      No control observations were detected in `truth` with control level 'class_2'.
 
