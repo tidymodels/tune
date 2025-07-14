@@ -496,6 +496,8 @@ tune_bayes_workflow <- function(object,
       }
       prev_gp_mod <- gp_mod
       check_time(start_time, control$time_limit)
+
+      save_bo_results(unsummarized, i, iter, control)
     }
 
     workflow_output <- set_workflow(object, control)
@@ -880,6 +882,21 @@ save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
   }
   invisible(res)
 }
+
+save_bo_results <- function(x, i, iter, ctrl) {
+  if (!ctrl$save_bo_progress) {
+    return(invisible(NULL))
+  }
+  nm <- recipes::names0(iter, "bo_results_")[i]
+  file_name <- glue::glue("{tempdir()}/{nm}.RData")
+  bo_results <- x
+  res <- try(save(bo_results, file = file_name), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_warn("Could not save BO results at iteration {i}: {as.character(res))}")
+  }
+  invisible(res)
+}
+
 
 
 clear_gp_results <- function() {

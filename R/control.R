@@ -165,6 +165,10 @@ print.control_last_fit <- function(x, ...) {
 #'  `tempdir()` with names `gp_candidates_{i}.RData` where `i` is the iteration.
 #'  These results are deleted when the R session ends. This option is only
 #'  useful for teaching purposes.
+#' @param save_bo_progress A logical to save the current progression of the
+#'  Bayesian optimization.  These are saved to `tempdir()` with names
+#'  `bo_results_{i}.RData` where `i` is the iteration. These results are deleted
+#'  when the R session ends.
 #' @param event_level A single string containing either `"first"` or `"second"`.
 #'   This argument is passed on to yardstick metric functions when any type
 #'   of class prediction is made, and specifies which level of the outcome
@@ -233,6 +237,7 @@ control_bayes <-
            pkgs = NULL,
            save_workflow = FALSE,
            save_gp_scoring = FALSE,
+           save_bo_progress = FALSE,
            event_level = "first",
            parallel_over = NULL,
            backend_options = NULL,
@@ -247,6 +252,7 @@ control_bayes <-
     check_bool(save_pred)
     check_bool(save_workflow)
     check_bool(save_gp_scoring)
+    check_bool(save_bo_progress)
     check_character(pkgs, allow_null = TRUE)
     check_function(extract, allow_null = TRUE)
     check_number_whole(no_improve, min = 0, allow_infinite = TRUE)
@@ -279,6 +285,7 @@ control_bayes <-
         pkgs = pkgs,
         save_workflow = save_workflow,
         save_gp_scoring = save_gp_scoring,
+        save_bo_progress = save_bo_progress,
         event_level = event_level,
         parallel_over = parallel_over,
         backend_options = backend_options

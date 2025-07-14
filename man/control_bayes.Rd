@@ -16,6 +16,7 @@ control_bayes(
   pkgs = NULL,
   save_workflow = FALSE,
   save_gp_scoring = FALSE,
+  save_bo_progress = FALSE,
   event_level = "first",
   parallel_over = NULL,
   backend_options = NULL,
@@ -79,6 +80,11 @@ models for each iteration of the search. These are saved to
 \code{tempdir()} with names \verb{gp_candidates_\{i\}.RData} where \code{i} is the iteration.
 These results are deleted when the R session ends. This option is only
 useful for teaching purposes.}
+
+\item{save_bo_progress}{A logical to save the current progression of the
+Bayesian optimization.  These are saved to \code{tempdir()} with names
+\verb{bo_results_\{i\}.RData} where \code{i} is the iteration. These results are deleted
+when the R session ends.}
 
 \item{event_level}{A single string containing either \code{"first"} or \code{"second"}.
 This argument is passed on to yardstick metric functions when any type
