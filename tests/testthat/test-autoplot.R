@@ -230,7 +230,6 @@ test_that("1D regular grid x labels", {
 })
 
 test_that("plot_regular_grid with fairness metrics (#773)", {
-  skip_if_not_installed("tune", "1.3.0.9005")
 
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
@@ -265,7 +264,6 @@ test_that("plot_regular_grid with fairness metrics (#773)", {
 })
 
 test_that("plot_marginals with fairness metrics (#773)", {
-  skip_if_not_installed("tune", "1.3.0.9005")
 
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
@@ -300,7 +298,6 @@ test_that("plot_marginals with fairness metrics (#773)", {
 })
 
 test_that("plot_perf_vs_iter with fairness metrics (#773)", {
-  skip_if_not_installed("tune", "1.3.0.9005")
 
   skip_on_cran()
   skip_if_not_installed("yardstick", minimum_version = "1.2.0.9001")
