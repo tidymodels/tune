@@ -89,6 +89,11 @@ processing occurs.
 \item If you specify fewer than two workers, or if there is only a single task,
 the computations will occur sequentially.
 }
+
+Also, we want the results for \code{\link[=last_fit]{last_fit()}} to be the same as what one would
+get by executing those steps manually (i.e., training the workflow,
+predicting the test set, etc.). If \code{\link[=last_fit]{last_fit()}} is used, we don’t affect the
+random number stream.
 }
 }
 \references{

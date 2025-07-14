@@ -266,6 +266,11 @@ get_parallel_seeds <- function(workers) {
 #' - If you specify fewer than two workers, or if there is only a single task,
 #'  the computations will occur sequentially.
 #'
+#' Also, we want the results for [last_fit()] to be the same as what one would
+#' get by executing those steps manually (i.e., training the workflow,
+#' predicting the test set, etc.). If [last_fit()] is used, we don’t affect the
+#' random number stream.
+#'
 #' @references
 #' https://www.tmwr.org/grid-search#parallel-processing
 #'
