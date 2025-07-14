@@ -9,7 +9,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   seed_length <- length(resamples$.seeds[[1]])
 
   # If we are using last_fit() (= zero seed length), don't mess with the RNG
-  # stream; otherwise set everything up
+  # stream; otherwise set everything up.
   if (seed_length > 0) {
     orig_seed <- .Random.seed
     # Set seed within the worker process
