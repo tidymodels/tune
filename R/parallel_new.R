@@ -268,7 +268,7 @@ get_parallel_seeds <- function(workers) {
 #'
 #' Also, we want the results for [last_fit()] to be the same as what one would
 #' get by executing those steps manually (i.e., training the workflow,
-#' predicting the test set, etc.). If [last_fit()] is used, we don’t affect the
+#' predicting the test set, etc.). If [last_fit()] is used, we don’t alter the
 #' random number stream.
 #'
 #' @references
