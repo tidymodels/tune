@@ -192,6 +192,9 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
   res
 }
 
+catalog_is_active_melodie <- function() {
+  melodie_env$progress_active
+}
 
 initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
   catalog <-
