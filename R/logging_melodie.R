@@ -88,7 +88,7 @@ lbls_melodie <- c(LETTERS, letters, 1:1e3)
 
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
-  isTRUE(tune_env$progress_active && !is_testing())
+  isTRUE(melodie_env$progress_active && !is_testing())
 }
 
 # copied from testthat::is_testing
@@ -152,11 +152,12 @@ catalog_log <- function(x) {
       cli.progress_show_after = 0
     )
     
-    cli::cli_progress_update(.envir = melodie_env$progress_env)
   }
 
+  cli::cli_progress_update(.envir = melodie_env$progress_env)
+
   return(NULL)
-  }
+}
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
