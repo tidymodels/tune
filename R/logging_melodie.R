@@ -80,7 +80,8 @@ melodie_env <-
     data = list(
       progress_env = NULL,
       progress_active = FALSE,
-      progress_catalog = NULL
+      progress_catalog = NULL,
+      progress_started = FALSE
     )
   )
 
@@ -142,19 +143,23 @@ catalog_log <- function(x) {
   )
 
   if (uses_catalog()) {
-    rlang::with_options(
-      cli::cli_progress_bar(
-        type = "custom",
-        format = "There were issues with some computations   {catalog_summary}",
-        clear = FALSE,
-        .envir = melodie_env$progress_env
-      ),
-      cli.progress_show_after = 0
-    )
-    
-  }
+    if (!melodie_env$progress_started) {
 
-  cli::cli_progress_update(.envir = melodie_env$progress_env)
+      rlang::with_options(
+        cli::cli_progress_bar(
+          type = "custom",
+          format = "There were issues with some computations   {catalog_summary}",
+          clear = FALSE,
+          .envir = melodie_env$progress_env
+        ),
+        cli.progress_show_after = 0
+      )
+      rlang::env_bind(melodie_env, progress_started = TRUE)
+    }
+    
+    
+    cli::cli_progress_update(.envir = melodie_env$progress_env)
+  }
 
   return(NULL)
 }
@@ -220,6 +225,10 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
   rlang::env_bind(melodie_env, progress_active = progress_active)
   withr::defer(
     rlang::env_bind(melodie_env, progress_active = FALSE),
+    envir = env
+  )
+  withr::defer(
+    rlang::env_bind(melodie_env, progress_started = FALSE),
     envir = env
   )
 
