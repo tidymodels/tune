@@ -381,7 +381,7 @@ format_msg <- function(loc, msg) {
   result <- caught$res
 
   # Log failures that come from parsnip before the model is fit
-  if (is_failure(result)) {
+  if (is_failure_melodie(result)) {
     result_parsnip <- list(res = result, signals = list())
 
     new_notes <- log_problems(notes, ..., result_parsnip)
@@ -399,7 +399,7 @@ format_msg <- function(loc, msg) {
 
   # Log underlying fit failures that parsnip caught during the actual
   # fitting process
-  if (is_failure(fit)) {
+  if (is_failure_melodie(fit)) {
     result_fit <- list(res = fit, signals = list())
 
     new_notes <- log_problems(notes, ..., result_fit)
