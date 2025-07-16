@@ -8,6 +8,7 @@ Codecov
 Davison
 Disambiguates
 EI
+GPUs
 HD
 Hinkley
 Isomap
@@ -36,7 +37,6 @@ foreach
 frac
 geo
 ggplot
-https
 mirai
 misspecified
 multithreaded
@@ -50,11 +50,9 @@ rsample's
 tibble
 tibbles
 tidymodels
-tmwr
 tunable
 unsummarized
 urations
 vectorization
 wiggliness
-www
 xgboost
