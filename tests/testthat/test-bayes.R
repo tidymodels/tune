@@ -1,5 +1,3 @@
-skip_if_not_installed("tune", "1.3.0.9005")
-
 rec_tune_1 <-
   recipes::recipe(mpg ~ ., data = mtcars) %>%
   recipes::step_normalize(recipes::all_predictors()) %>%
