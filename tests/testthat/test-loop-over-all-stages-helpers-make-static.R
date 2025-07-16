@@ -11,6 +11,7 @@ test_that("maker static object", {
   res <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = dt_grid,
     metrics = metric_set(accuracy),
     eval_time = NULL,
     split_args = mc_cv_args,
@@ -23,6 +24,7 @@ test_that("maker static object", {
     c(
       "wflow",
       "param_info",
+      "configs",
       "post_estimation",
       "metrics",
       "metric_info",
@@ -38,6 +40,7 @@ test_that("maker static object", {
     tune:::make_static(
       1,
       param_info = wflow |> extract_parameter_set_dials(),
+      grid = dt_grid,
       metrics = metric_set(accuracy),
       eval_time = NULL,
       split_args = mc_cv_args,
@@ -50,6 +53,7 @@ test_that("maker static object", {
     tune:::make_static(
       wflow,
       param_info = 2,
+      grid = dt_grid,
       metrics = metric_set(accuracy),
       eval_time = NULL,
       split_args = mc_cv_args,
@@ -62,6 +66,7 @@ test_that("maker static object", {
     tune:::make_static(
       wflow,
       param_info = wflow |> extract_parameter_set_dials(),
+      grid = dt_grid,
       metrics = 3,
       eval_time = NULL,
       split_args = mc_cv_args,
@@ -74,6 +79,7 @@ test_that("maker static object", {
     tune:::make_static(
       wflow,
       param_info = wflow |> extract_parameter_set_dials(),
+      grid = dt_grid,
       metrics = metric_set(accuracy),
       eval_time = "four",
       split_args = mc_cv_args,
@@ -91,6 +97,7 @@ test_that("maker static object", {
     c(
       "wflow",
       "param_info",
+      "configs",
       "post_estimation",
       "metrics",
       "metric_info",

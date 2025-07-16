@@ -7,6 +7,8 @@ test_that("predict classification - no submodels - no calibration", {
     step_pca(all_numeric_predictors(), num_comp = 2)
 
   wflow <- workflow(pca_rec, logistic_reg())
+  grd <- tibble()
+
   wflow_fit <- fit(wflow, cls$data)
 
   class_only <- metric_set(accuracy)
@@ -25,6 +27,7 @@ test_that("predict classification - no submodels - no calibration", {
   static_class <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = class_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -53,6 +56,7 @@ test_that("predict classification - no submodels - no calibration", {
   static_prob <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = prob_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -86,6 +90,7 @@ test_that("predict classification - no submodels - no calibration", {
   static_both <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = both_types,
     eval_time = NULL,
     split_args = cls$args,
@@ -154,6 +159,7 @@ test_that("predict classification - no submodels - with calibration", {
 
   wflow <- workflow(pca_rec, logistic_reg(), cal_pst)
   wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  grd <- tibble()
 
   class_only <- metric_set(accuracy)
   prob_only <- metric_set(brier_class)
@@ -171,6 +177,7 @@ test_that("predict classification - no submodels - with calibration", {
   static_class <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = class_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -226,6 +233,7 @@ test_that("predict classification - no submodels - with calibration", {
   static_prob <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = prob_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -281,6 +289,7 @@ test_that("predict classification - no submodels - with calibration", {
   static_both <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = both_types,
     eval_time = NULL,
     split_args = cls$args,
@@ -349,6 +358,7 @@ test_that("predict classification - with submodels - no calibration", {
 
   wflow <- workflow(pca_rec, knn_cls_spec)
   wflow_fit <- fit(wflow, cls$data)
+  grd <- tibble()
 
   class_only <- metric_set(accuracy)
   prob_only <- metric_set(brier_class)
@@ -366,6 +376,7 @@ test_that("predict classification - with submodels - no calibration", {
   static_class <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = class_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -399,6 +410,7 @@ test_that("predict classification - with submodels - no calibration", {
   static_prob <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = prob_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -433,6 +445,7 @@ test_that("predict classification - with submodels - no calibration", {
   static_both <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = both_types,
     eval_time = NULL,
     split_args = cls$args,
@@ -510,6 +523,7 @@ test_that("predict classification - with submodels - with calibration", {
 
   wflow <- workflow(pca_rec, knn_cls_spec, cal_pst)
   wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  grd <- tibble()
 
   class_only <- metric_set(accuracy)
   prob_only <- metric_set(brier_class)
@@ -527,6 +541,7 @@ test_that("predict classification - with submodels - with calibration", {
   static_class <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = class_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -584,6 +599,7 @@ test_that("predict classification - with submodels - with calibration", {
   static_prob <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = prob_only,
     eval_time = NULL,
     split_args = cls$args,
@@ -641,6 +657,7 @@ test_that("predict classification - with submodels - with calibration", {
   static_both <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = both_types,
     eval_time = NULL,
     split_args = cls$args,
@@ -703,6 +720,7 @@ test_that("predict regression - no submodels - no calibration", {
 
   wflow <- workflow(pca_rec, linear_reg())
   wflow_fit <- fit(wflow, reg$data)
+  grd <- tibble()
 
   reg_mtr <- metric_set(rmse)
 
@@ -715,6 +733,7 @@ test_that("predict regression - no submodels - no calibration", {
   static <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = reg_mtr,
     eval_time = NULL,
     split_args = reg$args,
@@ -752,6 +771,7 @@ test_that("predict regression - no submodels - with calibration", {
 
   wflow <- workflow(pca_rec, linear_reg(), reg_pst)
   wflow_fit <- fit(wflow, reg$data, calibration = reg$data)
+  grd <- tibble()
 
   reg_mtr <- metric_set(rmse)
 
@@ -764,6 +784,7 @@ test_that("predict regression - no submodels - with calibration", {
   static <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = reg_mtr,
     eval_time = NULL,
     split_args = reg$args,
@@ -821,6 +842,7 @@ test_that("predict regression - with submodels - no calibration", {
   static <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = tibble(),
     metrics = reg_mtr,
     eval_time = NULL,
     split_args = reg$args,
@@ -883,6 +905,7 @@ test_that("predict regression - with submodels - with calibration", {
   static <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = tibble(),
     metrics = reg_mtr,
     eval_time = NULL,
     split_args = reg$args,
@@ -945,6 +968,7 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   wflow <- workflow(pca_rec, survival_reg())
   wflow_fit <- fit(wflow, cens$data)
+  grd <- tibble()
 
   mtr_stc <- metric_set(concordance_survival)
   mtr_dyn <- metric_set(brier_survival)
@@ -967,6 +991,7 @@ test_that("predict censored regression - no submodels - no calibration", {
   static_stc <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = mtr_stc,
     eval_time = .times,
     split_args = cens$args,
@@ -995,6 +1020,7 @@ test_that("predict censored regression - no submodels - no calibration", {
   static_dyn <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = mtr_dyn,
     eval_time = .times,
     split_args = cens$args,
@@ -1043,6 +1069,10 @@ test_that("predict censored regression - submodels - no calibration", {
 
   wflow <- workflow(pca_rec, glmn_cens)
   wflow_fit <- fit(wflow, cens$data)
+  grd <-
+    wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 3)
 
   mtr_stc <- metric_set(concordance_survival)
   mtr_dyn <- metric_set(brier_survival)
@@ -1065,6 +1095,7 @@ test_that("predict censored regression - submodels - no calibration", {
   static_stc <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = mtr_stc,
     eval_time = .times,
     split_args = cens$args,
@@ -1097,6 +1128,7 @@ test_that("predict censored regression - submodels - no calibration", {
   static_dyn <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = mtr_dyn,
     eval_time = .times,
     split_args = cens$args,

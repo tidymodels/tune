@@ -8,10 +8,15 @@ test_that("finalize_fit_pre() with formulas", {
   # ----------------------------------------------------------------------------
 
   form_wflow <- workflow(Class ~ ., dt_spec)
+  grd <-
+    form_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 3)
 
   form_stc <- tune:::make_static(
     form_wflow,
     param_info = form_wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = metric_set(brier_class, spec),
     eval_time = NULL,
     split_args = rsample::.get_split_args(two_class_rs),
@@ -44,10 +49,15 @@ test_that("finalize_fit_pre() with recipes", {
     step_normalize(A, B)
 
   rec_wflow <- workflow(rec, dt_spec)
+  grd <-
+    rec_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 3)
 
   rec_stc <- tune:::make_static(
     rec_wflow,
     param_info = rec_wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = metric_set(brier_class, spec),
     eval_time = NULL,
     split_args = rsample::.get_split_args(two_class_rs),
@@ -81,10 +91,15 @@ test_that("finalize_fit_pre() with tuned recipes", {
   rec_grid <- tibble(comps = 1)
 
   rec_wflow <- workflow(rec, dt_spec)
+  grd <-
+    rec_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 3)
 
   rec_stc <- tune:::make_static(
     rec_wflow,
     param_info = rec_wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = metric_set(brier_class, spec),
     eval_time = NULL,
     split_args = rsample::.get_split_args(two_class_rs),
@@ -118,10 +133,15 @@ test_that("finalize_fit_pre() with selectors", {
 
   vars_wflow <- workflow(spec = dt_spec) |>
     add_variables(outcomes = c(Class), predictors = c(A, B))
+  grd <-
+    vars_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 3)
 
   vars_stc <- tune:::make_static(
     vars_wflow,
     param_info = vars_wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = metric_set(brier_class, spec),
     eval_time = NULL,
     split_args = rsample::.get_split_args(two_class_rs),
@@ -153,6 +173,7 @@ test_that("finalize_fit_model() for classification", {
   dt_stc <- tune:::make_static(
     dt_wflow,
     param_info = dt_wflow |> extract_parameter_set_dials(),
+    grid = dt_grid,
     metrics = metric_set(brier_class, spec),
     eval_time = NULL,
     split_args = rsample::.get_split_args(two_class_rs),
