@@ -277,7 +277,7 @@ get_parallel_seeds <- function(workers) {
 #' - You should expect differences in results between version 1.4.0 of tune and
 #'   previous versions.
 #' - When using [last_fit()], you should be able to get the same results as
-#'   manually using [fit()] and [predict()] to do the same work.
+#'   manually using [generics::fit()] and [stats::predict()] to do the same work.
 #' - When running with or without parallel processing (using any backend
 #'   package), you should be able to achieve the same results from
 #'   [fit_resamples()] and the various tuning functions.
