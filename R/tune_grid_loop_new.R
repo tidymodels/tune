@@ -40,6 +40,7 @@ tune_grid_loop_new <- function(
   static <- make_static(
     workflow,
     param_info = param_info,
+    grid = grid,
     metrics = metrics,
     eval_time = eval_time,
     split_args = split_args,
