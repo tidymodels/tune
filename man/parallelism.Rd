@@ -4,7 +4,7 @@
 \alias{parallelism}
 \title{Support for parallel processing in tune}
 \description{
-\pkg{tune} can enable the simultaneous parallel computations. Tierney (2008)
+\pkg{tune} can enable simultaneous parallel computations. Tierney (2008)
 defined different classes of parallel processing techniques:
 \itemize{
 \item \emph{Implicit} is when a function uses low-level tools to perform a
@@ -66,8 +66,8 @@ install and load the \pkg{future.mirai} package.
 
 \subsection{Using mirai}{
 
-To set the specific for parallel processing with \pkg{mirai}, the
-\code{\link[mirai:daemons]{mirai::daemons()}} functions. The first argument, \code{n}, determines the number
+To set the specific for parallel processing with \pkg{mirai}, use the
+\code{\link[mirai:daemons]{mirai::daemons()}} function. The first argument, \code{n}, determines the number
 of parallel workers. Using \code{daemons(0)} reverts to sequential processing.
 
 The arguments \code{url} and \code{remote} are used to set up and launch parallel
@@ -75,14 +75,14 @@ processes over the network for distributed computing. See \code{\link[mirai:daem
 documentation for more details.
 }
 
-\subsection{Exceptions}{
+\subsection{Reverting to sequential processing}{
 
 There are a few times when you might specify that you wish to use parallel
-processing, but it will revert to sequential execution.
+processing, but it will revert to sequential execution:
 \itemize{
 \item Many of the control functions (e.g. \code{\link[=control_grid]{control_grid()}}) have an argument
-called \code{allow_par}. If this is set to \code{FALSE}, parallel backends will always
-be ignored.
+called \code{allow_par}. If this is set to \code{FALSE}, parallel backends will
+always be ignored.
 \item Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
 explicit parallelization. If any of these packages are used, sequential
 processing occurs.
@@ -90,9 +90,40 @@ processing occurs.
 the computations will occur sequentially.
 }
 }
+
+\subsection{Expectations for reproducibility}{
+
+We advise that you \emph{always} run \code{\link[=set.seed]{set.seed()}} with a seed value just prior to
+using a function that uses (or might use) random numbers. Given this:
+\itemize{
+\item You should expect to get the same results if you run that section of code
+repeatedly, conditional on using version 1.4.0 of tune.
+\item You should expect differences in results between version 1.4.0 of tune and
+previous versions.
+\item When using \code{\link[=last_fit]{last_fit()}}, you should be able to get the same results as
+manually using \code{\link[=fit]{fit()}} and \code{\link[=predict]{predict()}} to do the same work.
+\item When running with or without parallel processing (using any backend
+package), you should be able to achieve the same results from
+\code{\link[=fit_resamples]{fit_resamples()}} and the various tuning functions.
+}
+
+Specific exceptions:
+\itemize{
+\item For SVM classification models using the \pkg{kernlab} package, the random
+number generator is independent of R, and there is no argument to control
+it. Unfortunately, it is likely to give you different results from
+run-to-run.
+\item For some deep learning packages (e.g., \pkg{tensorflow}, \pkg{keras}, and
+\pkg{torch}), it is very difficult to achieve reproducible results. This
+is especially true when using GPUs for computations. Additionally, we have
+seen differences in computations (stochastic or non-random) between
+platforms due to the packages' use of different numerical tolerance
+constants across operating systems.
+}
+}
 }
 \references{
-https://www.tmwr.org/grid-search#parallel-processing
+\url{https://www.tmwr.org/grid-search#parallel-processing}
 
 Tierney, Luke. "Implicit and explicit parallel computing in R." COMPSTAT
 2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.

@@ -15,8 +15,15 @@ tune_grid_loop_new <- function(
 
   control <- update_parallel_over(control, resamples, grid)
 
-  # Make and set the worker/process seeds if workers get resamples
-  resamples$.seeds <- get_parallel_seeds(nrow(resamples))
+  # For last_fit, we want to keep the RNG stream as-is to maintain reproducibility
+  # with manual execution. Otherwise, generate parallel seeds even if work is
+  # being executed sequentially. `resamples$id` is set in `last_fit_workflow`.
+  if (all(resamples$id == "train/test split")) {
+    resamples$.seeds <- purrr::map(resamples$id, ~ integer(0))
+  } else {
+    # Make and set the worker/process seeds if workers get resamples
+    resamples$.seeds <- get_parallel_seeds(nrow(resamples))
+  }
 
   # We'll significantly alter the rsample object but will need it intact later;
   # Make a copy and save some information before proceeding
