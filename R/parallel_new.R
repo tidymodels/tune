@@ -183,7 +183,7 @@ get_parallel_seeds <- function(workers) {
 #'
 #' @description
 #'
-#' \pkg{tune} can enable the simultaneous parallel computations. Tierney (2008)
+#' \pkg{tune} can enable simultaneous parallel computations. Tierney (2008)
 #'  defined different classes of parallel processing techniques:
 #'
 #'  - _Implicit_ is when a function uses low-level tools to perform a
@@ -245,34 +245,58 @@ get_parallel_seeds <- function(workers) {
 #'
 #' ## Using mirai
 #'
-#' To set the specific for parallel processing with \pkg{mirai}, the
-#' [mirai::daemons()] functions. The first argument, `n`, determines the number
+#' To set the specific for parallel processing with \pkg{mirai}, use the
+#' [mirai::daemons()] function. The first argument, `n`, determines the number
 #' of parallel workers. Using `daemons(0)` reverts to sequential processing.
 #'
 #' The arguments `url` and `remote` are used to set up and launch parallel
 #' processes over the network for distributed computing. See [mirai::daemons()]
 #' documentation for more details.
 #'
-#' ## Exceptions
+#' ## Reverting to sequential processing
 #'
 #' There are a few times when you might specify that you wish to use parallel
-#' processing, but it will revert to sequential execution.
-#' - Many of the control functions (e.g. [control_grid()]) have an argument
-#' called `allow_par`. If this is set to `FALSE`, parallel backends will always
-#' be ignored.
-#' - Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
-#' explicit parallelization. If any of these packages are used, sequential
-#' processing occurs.
-#' - If you specify fewer than two workers, or if there is only a single task,
-#'  the computations will occur sequentially.
+#' processing, but it will revert to sequential execution:
 #'
-#' Also, we want the results for [last_fit()] to be the same as what one would
-#' get by executing those steps manually (i.e., training the workflow,
-#' predicting the test set, etc.). If [last_fit()] is used, we don’t alter the
-#' random number stream.
+#' - Many of the control functions (e.g. [control_grid()]) have an argument
+#'   called `allow_par`. If this is set to `FALSE`, parallel backends will
+#'   always be ignored.
+#' - Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
+#'   explicit parallelization. If any of these packages are used, sequential
+#'   processing occurs.
+#' - If you specify fewer than two workers, or if there is only a single task,
+#'   the computations will occur sequentially.
+#'
+#' ## Expectations for reproducibility
+#'
+#' We advise that you _always_ run [set.seed()] with a seed value just prior to
+#' using a function that uses (or might use) random numbers. Given this:
+#'
+#' - You should expect to get the same results if you run that section of code
+#'   repeatedly, conditional on using version 1.4.0 of tune.
+#' - You should expect differences in results between version 1.4.0 of tune and
+#'   previous versions.
+#' - When using [last_fit()], you should be able to get the same results as
+#'   manually using [fit()] and [predict()] to do the same work.
+#' - When running with or without parallel processing (using any backend
+#'   package), you should be able to achieve the same results from
+#'   [fit_resamples()] and the various tuning functions.
+#'
+#' Specific exceptions:
+#'
+#' - For SVM classification models using the \pkg{kernlab} package, the random
+#'   number generator is independent of R, and there is no argument to control
+#'   it. Unfortunately, it is likely to give you different results from
+#'   run-to-run.
+#' - For some deep learning packages (e.g., \pkg{tensorflow}, \pkg{keras}, and
+#'   \pkg{torch}), it is very difficult to achieve reproducible results. This
+#'   is especially true when using GPUs for computations. Additionally, we have
+#'   seen differences in computations (stochastic or non-random) between
+#'   platforms due to the packages' use of different numerical tolerance
+#'   constants across operating systems.
 #'
 #' @references
-#' https://www.tmwr.org/grid-search#parallel-processing
+#' \url{https://www.tmwr.org/grid-search#parallel-processing}
 #'
 #' Tierney, Luke. "Implicit and explicit parallel computing in R." COMPSTAT
 #' 2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
