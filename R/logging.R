@@ -380,6 +380,11 @@ format_msg <- function(loc, msg) {
   caught <- catcher(.expr)
   result <- caught$res
 
+  # stop complaints (no visible global function definition... blah blah)
+  # before we delete this file:
+  is_failure <- NULL
+  allow_parallelism <- NULL
+
   # Log failures that come from parsnip before the model is fit
   if (is_failure(result)) {
     result_parsnip <- list(res = result, signals = list())
