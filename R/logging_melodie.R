@@ -194,7 +194,11 @@ catalog_is_active_melodie <- function() {
   melodie_env$progress_active
 }
 
-initialize_catalog_melodie <- function(is_parallel, env = rlang::caller_env()) {
+initialize_catalog_melodie <- function(
+    is_parallel,
+    control = control_grid(),
+    env = rlang::caller_env()
+) {
   catalog <-
     tibble::new_tibble(
       list(
