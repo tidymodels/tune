@@ -152,6 +152,10 @@ choose_framework <- function(
   res
 }
 
+uses_parallel <- function(workflow, control) {
+  choose_framework(workflow, control) != "sequential"
+}
+
 get_parallel_seeds <- function(workers) {
   # Get current rng info and save
   orig_state <- .Random.seed
@@ -379,6 +383,18 @@ loop_call <-
     }
     cl
   }
+
+manange_global_limit <- function(min = 1e9) {
+  currrent_value <- getOption("future.globals.maxSize")
+  if (is.null(currrent_value)) {
+    options(future.globals.maxSize = min)
+  } else {
+    if (currrent_value < min) {
+      options(future.globals.maxSize = min)
+    }
+  }
+  invisible(NULL)
+}
 
 # ------------------------------------------------------------------------------
 # for int_pctl
