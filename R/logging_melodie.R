@@ -122,7 +122,7 @@ catalog_log <- function(x) {
       # construct issue summary
       color <- if (x_type == "warning") cli::col_yellow else cli::col_red
       # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-      pad <- nchar(x_note) + 14L
+      pad <- nchar(new_id) + 14L
       justify <- paste0("\n", strrep("\u00a0", pad))
       note <- gsub("\n", justify, x_note)
       # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
