@@ -101,7 +101,7 @@ repeatedly, conditional on using version 1.4.0 of tune.
 \item You should expect differences in results between version 1.4.0 of tune and
 previous versions.
 \item When using \code{\link[=last_fit]{last_fit()}}, you should be able to get the same results as
-manually using \code{\link[=fit]{fit()}} and \code{\link[=predict]{predict()}} to do the same work.
+manually using \code{\link[generics:fit]{generics::fit()}} and \code{\link[=predict]{predict()}} to do the same work.
 \item When running with or without parallel processing (using any backend
 package), you should be able to achieve the same results from
 \code{\link[=fit_resamples]{fit_resamples()}} and the various tuning functions.
