@@ -4,8 +4,8 @@
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
       > A | error:   Error in `step_spline_natural()`:
-                                                                                                                                           Caused by error in `prep()`:
-                                                                                                                                           ! `deg_free` must be a whole number, not a numeric `NA`.
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -23,7 +23,7 @@
       result <- fit_resamples(workflow, folds, control = control)
     Message
       > A | error:   Can't select columns that don't exist.
-                                                                                           x Column `foobar` doesn't exist.
+                     x Column `foobar` doesn't exist.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.

@@ -152,8 +152,8 @@
       cars_res <- tune_bayes(svm_mod, preprocessor = rec, resamples = data_folds)
     Message
       > A | error:   Error in `step_spline_b()`:
-                                                                                                                                     Caused by error in `prep()`:
-                                                                                                                                     ! `deg_free` must be a whole number, not a numeric `NA`.
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
