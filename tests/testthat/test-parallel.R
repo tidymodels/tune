@@ -22,6 +22,9 @@ test_that("enable future parallelism", {
   skip_if_not_installed("future")
   skip_if_not_installed("mirai")
 
+  # temporary issue with GHA
+  skip_on_os("mac")
+
   svm_spec <- svm_rbf(mode = "classification")
   ctrl_no <- control_grid(allow_par = FALSE)
   ctrl_java <- control_grid(pkgs = "rJava")
@@ -115,6 +118,9 @@ test_that("break parallelism tie", {
   skip_if_not_installed("mirai", minimum_version = "2.4.0")
   skip_if_not_installed("future")
   skip_on_cran()
+
+  # temporary issue with GHA
+  skip_on_os("mac")
 
   library(mirai)
   daemons(2)
@@ -243,6 +249,9 @@ test_that("same results using future", {
   skip_if_not_installed("xgboost")
   skip_if_not_installed("modeldata")
   skip_on_cran()
+
+  # temporary issue with GHA
+  skip_on_os("mac")
 
   set.seed(1)
   dat <- modeldata::sim_regression(500)
