@@ -324,7 +324,7 @@ tune_grid_workflow <- function(
     call = caller_env()
 ) {
   if (!catalog_is_active_melodie()) {
-    initialize_catalog_melodie(control)
+    initialize_catalog_melodie(uses_parallel(workflow, control))
   }
 
   check_rset(resamples)

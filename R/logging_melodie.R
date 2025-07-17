@@ -23,7 +23,7 @@ catcher_melodie <- function(expr) {
       )
     }
   )
-  
+
   attr(res, "notes") <- signals
   res
 }
@@ -67,7 +67,7 @@ append_log_notes <- function(notes, x, location) {
     )
   }
 
-  notes 
+  notes
 }
 
 remove_log_notes <- function(x) {
@@ -118,7 +118,7 @@ catalog_log <- function(x) {
           id = new_id
         )
       )
-      
+
       # construct issue summary
       color <- if (x_type == "warning") cli::col_yellow else cli::col_red
       # pad by nchar(label) + nchar("warning") + additional spaces and symbols
@@ -134,8 +134,8 @@ catalog_log <- function(x) {
       )
       cli::cli_alert(msg)
     }
-  } 
-    
+  }
+
   rlang::env_bind(melodie_env, progress_catalog = catalog)
   rlang::env_bind(
     melodie_env$progress_env,
@@ -144,7 +144,6 @@ catalog_log <- function(x) {
 
   if (uses_catalog()) {
     if (!melodie_env$progress_started) {
-
       rlang::with_options(
         cli::cli_progress_bar(
           type = "custom",
@@ -156,8 +155,7 @@ catalog_log <- function(x) {
       )
       rlang::env_bind(melodie_env, progress_started = TRUE)
     }
-    
-    
+
     cli::cli_progress_update(.envir = melodie_env$progress_env)
   }
 
@@ -196,7 +194,7 @@ catalog_is_active_melodie <- function() {
   melodie_env$progress_active
 }
 
-initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
+initialize_catalog_melodie <- function(is_parallel, env = rlang::caller_env()) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -208,15 +206,12 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
       nrow = 0
     )
 
-  if (!(allow_parallelism(control$allow_par) ||
-        is_testing()) &&
-      !control$verbose) {
+  if (!(is_parallel || is_testing()) && !control$verbose) {
     progress_active <- TRUE
   } else {
     progress_active <- FALSE
   }
 
-  
   rlang::env_bind(melodie_env, progress_env = env)
 
   rlang::env_bind(melodie_env, progress_catalog = catalog)

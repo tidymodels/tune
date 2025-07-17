@@ -280,7 +280,7 @@ tune_bayes_workflow <- function(object,
     clear_gp_results()
     start_time <- proc.time()[3]
 
-    initialize_catalog_melodie(control = control)
+    initialize_catalog_melodie(uses_parallel(object, control))
 
     check_rset(resamples)
     rset_info <- pull_rset_attributes(resamples)
