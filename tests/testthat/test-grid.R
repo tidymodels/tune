@@ -735,5 +735,3 @@ test_that("retain extra attributes", {
     "being saved contains a recipe, which is"
   )
 })
-
-

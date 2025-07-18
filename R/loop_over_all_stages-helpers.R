@@ -6,6 +6,7 @@
 make_static <- function(
   workflow,
   param_info,
+  grid,
   metrics,
   eval_time,
   split_args,
@@ -26,9 +27,12 @@ make_static <- function(
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 
+  configs <- get_config_key(grid, workflow)
+
   list(
     wflow = workflow,
     param_info = param_info,
+    configs = configs,
     post_estimation = workflows::.workflow_includes_calibration(workflow),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),

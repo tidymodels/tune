@@ -29,7 +29,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   sched <- schedule_grid(grid, static$wflow)
 
-  config_tbl <- get_config_key(grid, static$wflow)
+  config_tbl <- static$configs
 
   # Append data partitions here; these are the same for the duration of this function
   data_splits <- get_data_subsets(static$wflow, split, static$split_args)
@@ -295,7 +295,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         event_level = static$control$event_level,
         metrics_info = metrics_info(static$metrics)
       ) |>
-      add_configs(static, config_tbl)
+      add_configs(static)
     )
 
     if (has_log_notes(all_metrics)) {
@@ -313,7 +313,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   if (!is.null(extracts)) {
 
-    extracts <- add_configs(extracts, static, config_tbl) |>
+    extracts <- add_configs(extracts, static) |>
       dplyr::relocate(.config, .after = .extracts) |>
       dplyr::relocate(names(grid))
 
@@ -349,11 +349,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
     } else {
       return_tbl$.predictions <-
         list(
-          add_configs(
-            pred_reserve,
-            static,
-            config_tbl
-          ) |>
+          add_configs(pred_reserve, static) |>
             # Filter out joined rows that corresponded to a config that failed
             dplyr::filter(!is.na(.row))
         )
@@ -402,9 +398,10 @@ get_row_wise_grid <- function(wflow, grid) {
 
 # ------------------------------------------------------------------------------
 
-add_configs <- function(x, static, config_tbl) {
+add_configs <- function(x, static) {
+  config_tbl <- static$configs
   if (length(static$param_info$id) > 0) {
-    x <- dplyr::full_join(x, config_tbl, by = static$param_info$id)
+    x <- dplyr::left_join(x, config_tbl, by = static$param_info$id)
   } else {
     x <- dplyr::bind_cols(x, config_tbl)
   }

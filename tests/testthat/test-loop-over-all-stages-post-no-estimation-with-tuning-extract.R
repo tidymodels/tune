@@ -22,7 +22,10 @@ test_that("verifying loop_over_all_stages, no submodels, tuning, no estimation, 
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -42,6 +45,7 @@ test_that("verifying loop_over_all_stages, no submodels, tuning, no estimation, 
   static_1 <- tune:::make_static(
     wflow,
     param_info = max_param,
+    grid = grd,
     metrics = metric_set(rmse, rsq),
     eval_time = NULL,
     split_args = rs_args,
@@ -96,7 +100,10 @@ test_that("verifying loop_over_all_stages, submodels, tuning, no estimation, ext
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -150,6 +157,7 @@ test_that("verifying loop_over_all_stages, submodels, tuning, no estimation, ext
   static_1 <- tune:::make_static(
     submodel_wflow,
     param_info = max_param,
+    grid = submodel_grid,
     metrics = metric_set(rmse),
     eval_time = NULL,
     split_args = rs_args,
@@ -203,7 +211,10 @@ test_that("verifying loop_over_all_stages, submodels only, tuning, no estimation
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -220,6 +231,7 @@ test_that("verifying loop_over_all_stages, submodels only, tuning, no estimation
   static_1 <- tune:::make_static(
     submodel_only_wflow,
     param_info = submodel_only_wflow |> extract_parameter_set_dials(),
+    grid = submodel_only_grid,
     metrics = metric_set(accuracy, roc_auc, brier_class),
     eval_time = NULL,
     split_args = rs_args,
