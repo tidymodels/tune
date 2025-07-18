@@ -23,7 +23,7 @@ catcher_melodie <- function(expr) {
       )
     }
   )
-  
+
   attr(res, "notes") <- signals
   res
 }
@@ -67,7 +67,7 @@ append_log_notes <- function(notes, x, location) {
     )
   }
 
-  notes 
+  notes
 }
 
 remove_log_notes <- function(x) {
@@ -118,11 +118,11 @@ catalog_log <- function(x) {
           id = new_id
         )
       )
-      
+
       # construct issue summary
       color <- if (x_type == "warning") cli::col_yellow else cli::col_red
       # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-      pad <- nchar(x_note) + 14L
+      pad <- nchar(new_id) + 14L
       justify <- paste0("\n", strrep("\u00a0", pad))
       note <- gsub("\n", justify, x_note)
       # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
@@ -134,8 +134,8 @@ catalog_log <- function(x) {
       )
       cli::cli_alert(msg)
     }
-  } 
-    
+  }
+
   rlang::env_bind(melodie_env, progress_catalog = catalog)
   rlang::env_bind(
     melodie_env$progress_env,
@@ -156,8 +156,8 @@ catalog_log <- function(x) {
       )
       rlang::env_bind(melodie_env, progress_started = TRUE)
     }
-    
-    
+
+
     cli::cli_progress_update(.envir = melodie_env$progress_env)
   }
 
@@ -192,6 +192,9 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
   res
 }
 
+catalog_is_active_melodie <- function() {
+  melodie_env$progress_active
+}
 
 initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
   catalog <-
@@ -213,7 +216,7 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
     progress_active <- FALSE
   }
 
-  
+
   rlang::env_bind(melodie_env, progress_env = env)
 
   rlang::env_bind(melodie_env, progress_catalog = catalog)
