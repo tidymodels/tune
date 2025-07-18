@@ -23,7 +23,7 @@ test_that("enable future parallelism", {
   skip_if_not_installed("mirai")
 
   # temporary issue with GHA
-  skip_on_os("mac")
+  skip_if(grepl("^darwin", R.version$os) & Sys.Date() < as.Date("2025-08-01"))
 
   svm_spec <- svm_rbf(mode = "classification")
   ctrl_no <- control_grid(allow_par = FALSE)
@@ -120,7 +120,7 @@ test_that("break parallelism tie", {
   skip_on_cran()
 
   # temporary issue with GHA
-  skip_on_os("mac")
+  skip_if(grepl("^darwin", R.version$os) & Sys.Date() < as.Date("2025-08-01"))
 
   library(mirai)
   daemons(2)
@@ -251,7 +251,7 @@ test_that("same results using future", {
   skip_on_cran()
 
   # temporary issue with GHA
-  skip_on_os("mac")
+  skip_if(grepl("^darwin", R.version$os) & Sys.Date() < as.Date("2025-08-01"))
 
   set.seed(1)
   dat <- modeldata::sim_regression(500)
