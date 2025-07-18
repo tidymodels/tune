@@ -291,7 +291,7 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
 
   control <- parsnip::condense_control(control, control_grid())
 
-  # Disallow `NULL` grids in `melodie_grid()`, as this is the special signal
+  # Disallow `NULL` grids in `tune_grid()`, as this is the special signal
   # used when no tuning is required
   if (is.null(grid)) {
     cli::cli_abort(grid_msg)
@@ -323,7 +323,7 @@ tune_grid_workflow <- function(
     rng = TRUE,
     call = caller_env()
 ) {
-  initialize_catalog_melodie(control)
+  initialize_catalog(control)
 
   check_rset(resamples)
 

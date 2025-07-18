@@ -47,14 +47,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
-    current_wflow <- .catch_and_log_melodie(
+    current_wflow <- .catch_and_log(
       finalize_fit_pre(static$wflow, current_sched_pre, static)
     )
     if (has_log_notes(current_wflow)) {
       location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
       notes <- append_log_notes(notes, current_wflow, location)
       catalog_log(notes)
-      if (is_failure_melodie(current_wflow)) {
+      if (is_failure(current_wflow)) {
         next
       }
       current_wflow <- remove_log_notes(current_wflow)
@@ -76,7 +76,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
       # Splice in any parameters marked for tuning and fit the model
-      current_wflow <- .catch_and_log_melodie(
+      current_wflow <- .catch_and_log(
         finalize_fit_model(pre_wflow, current_sched_model)
       )
 
@@ -84,7 +84,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         location <- glue::glue("model {iter_model}/{num_iterations_model}")
         notes <- append_log_notes(notes, current_wflow, location)
         catalog_log(notes)
-        if (is_failure_melodie(current_wflow)) {
+        if (is_failure(current_wflow)) {
           next
         }
         current_wflow <- remove_log_notes(current_wflow)
@@ -120,12 +120,12 @@ loop_over_all_stages <- function(resamples, grid, static) {
             rebind_grid(current_sched_pred)
 
           # Remove the submodel column since it is in the currrent grid.
-          current_pred <- .catch_and_log_melodie(
+          current_pred <- .catch_and_log(
             predict_all_types(current_wflow, static, sub_grid) |>
               dplyr::select(-dplyr::all_of(sub_nm))
           )
         } else {
-          current_pred <- .catch_and_log_melodie(
+          current_pred <- .catch_and_log(
             predict_all_types(current_wflow, static)
           )
         }
@@ -134,7 +134,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
           location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
           notes <- append_log_notes(notes, current_pred, location)
           catalog_log(notes)
-          if (is_failure_melodie(current_pred)) {
+          if (is_failure(current_pred)) {
             next
           }
         }
@@ -172,7 +172,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               tailor_train_data <- current_pred[0, ]
             }
 
-            post_fit <- .catch_and_log_melodie(
+            post_fit <- .catch_and_log(
               finalize_fit_post(
                 current_wflow,
                 predictions = tailor_train_data,
@@ -186,13 +186,13 @@ loop_over_all_stages <- function(resamples, grid, static) {
               )
               notes <- append_log_notes(notes, post_fit, location)
               catalog_log(notes)
-              if (is_failure_melodie(post_fit)) {
+              if (is_failure(post_fit)) {
                 next
               }
               post_fit <- remove_log_notes(post_fit)
             }
 
-            post_pred <- .catch_and_log_melodie(
+            post_pred <- .catch_and_log(
               predict(post_fit, current_pred)
             )
 
@@ -202,7 +202,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               )
               notes <- append_log_notes(notes, post_pred, location)
               catalog_log(notes)
-              if (is_failure_melodie(post_pred)) {
+              if (is_failure(post_pred)) {
                 next
               }
               post_pred <- remove_log_notes(post_pred)
@@ -231,7 +231,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
           # TODO modularize this:
           if (!is.null(static$control$extract)) {
-            elt_extract <- .catch_and_log_melodie(
+            elt_extract <- .catch_and_log(
               extract_details(current_wflow, static$control$extract)
             )
 
@@ -265,7 +265,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 tibble::tibble(.extracts = list(elt_extract))
               )
               }
-              if (is_failure_melodie(elt_extract)) {
+              if (is_failure(elt_extract)) {
                 next
               }
           }
@@ -285,7 +285,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (is.null(pred_reserve)) {
     all_metrics <- NULL
   } else {
-    all_metrics <- .catch_and_log_melodie(
+    all_metrics <- .catch_and_log(
       pred_reserve |>
       dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
       .estimate_metrics(

@@ -45,9 +45,9 @@ catalog_lines <- function(lines) {
 }
 
 # Make a new binding to prevent infinite recursion when the original is mocked.
-initialize_catalog_ <- tune:::initialize_catalog_melodie
+initialize_catalog_ <- tune:::initialize_catalog
 
-# Sets a new exit handler on `initialize_catalog_melodie()` that stores the summary
+# Sets a new exit handler on `initialize_catalog()` that stores the summary
 # of issues before it's cleared along with the progress bar. Together with
 # the above, we can test the full catalog output.
 redefer_initialize_catalog <- function(test_env) {
@@ -58,7 +58,7 @@ redefer_initialize_catalog <- function(test_env) {
       withr::defer(
         assign(
           "catalog_summary_test",
-          tune:::melodie_env$progress_env$catalog_summary,
+          tune:::tune_env$progress_env$catalog_summary,
           test_env
         ),
         envir = env,

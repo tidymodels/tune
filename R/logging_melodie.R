@@ -1,9 +1,11 @@
-.catch_and_log_melodie <- function(.expr) {
-  tmp <- catcher_melodie(.expr)
+#' @export
+#' @rdname tune-internal-functions
+.catch_and_log <- function(.expr) {
+  tmp <- catcher(.expr)
   tmp
 }
 
-catcher_melodie <- function(expr) {
+catcher <- function(expr) {
   signals <- list()
   add_cond <- function(cnd) {
     signals <<- append(signals, list(rlang::cnd_entrace(cnd)))
@@ -23,17 +25,17 @@ catcher_melodie <- function(expr) {
       )
     }
   )
-  
+
   attr(res, "notes") <- signals
   res
 }
 
-is_failure_melodie <- function(x) {
+is_failure <- function(x) {
   inherits(x, "try-error")
 }
 
 has_log_notes <- function(x) {
-  is_failure_melodie(x) || NROW(attr(x, "notes")) > 0
+  is_failure(x) || NROW(attr(x, "notes")) > 0
 }
 
 append_log_notes <- function(notes, x, location) {
@@ -53,7 +55,7 @@ append_log_notes <- function(notes, x, location) {
     }
   }
 
-  if (is_failure_melodie(x)) {
+  if (is_failure(x)) {
     type <- "error"
     x <- attr(x, "condition")
     note <- conditionMessage(x)
@@ -67,7 +69,7 @@ append_log_notes <- function(notes, x, location) {
     )
   }
 
-  notes 
+  notes
 }
 
 remove_log_notes <- function(x) {
@@ -75,7 +77,7 @@ remove_log_notes <- function(x) {
   x
 }
 
-melodie_env <-
+tune_env <-
   rlang::new_environment(
     data = list(
       progress_env = NULL,
@@ -85,11 +87,11 @@ melodie_env <-
     )
   )
 
-lbls_melodie <- c(LETTERS, letters, 1:1e3)
+lbls <- c(LETTERS, letters, 1:1e3)
 
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
-  isTRUE(melodie_env$progress_active && !is_testing())
+  isTRUE(tune_env$progress_active && !is_testing())
 }
 
 # copied from testthat::is_testing
@@ -98,7 +100,7 @@ is_testing <- function() {
 }
 
 catalog_log <- function(x) {
-  catalog <- rlang::env_get(melodie_env, "progress_catalog")
+  catalog <- rlang::env_get(tune_env, "progress_catalog")
 
   for (i in seq_along(x$note)) {
     x_note <- x$note[i]
@@ -118,7 +120,7 @@ catalog_log <- function(x) {
           id = new_id
         )
       )
-      
+
       # construct issue summary
       color <- if (x_type == "warning") cli::col_yellow else cli::col_red
       # pad by nchar(label) + nchar("warning") + additional spaces and symbols
@@ -130,35 +132,35 @@ catalog_log <- function(x) {
         note <- paste0("\u00a0\u00a0", note)
       }
       msg <- glue::glue(
-        "{color(cli::style_bold(lbls_melodie[new_id]))} | {color(x_type)}: {note}"
+        "{color(cli::style_bold(lbls[new_id]))} | {color(x_type)}: {note}"
       )
       cli::cli_alert(msg)
     }
-  } 
-    
-  rlang::env_bind(melodie_env, progress_catalog = catalog)
+  }
+
+  rlang::env_bind(tune_env, progress_catalog = catalog)
   rlang::env_bind(
-    melodie_env$progress_env,
-    catalog_summary = summarize_catalog_melodie(catalog)
+    tune_env$progress_env,
+    catalog_summary = summarize_catalog(catalog)
   )
 
   if (uses_catalog()) {
-    if (!melodie_env$progress_started) {
+    if (!tune_env$progress_started) {
 
       rlang::with_options(
         cli::cli_progress_bar(
           type = "custom",
           format = "There were issues with some computations   {catalog_summary}",
           clear = FALSE,
-          .envir = melodie_env$progress_env
+          .envir = tune_env$progress_env
         ),
         cli.progress_show_after = 0
       )
-      rlang::env_bind(melodie_env, progress_started = TRUE)
+      rlang::env_bind(tune_env, progress_started = TRUE)
     }
-    
-    
-    cli::cli_progress_update(.envir = melodie_env$progress_env)
+
+
+    cli::cli_progress_update(.envir = tune_env$progress_env)
   }
 
   return(NULL)
@@ -166,7 +168,7 @@ catalog_log <- function(x) {
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
-summarize_catalog_melodie <- function(catalog, sep = "   ") {
+summarize_catalog <- function(catalog, sep = "   ") {
   if (nrow(catalog) == 0) {
     return("")
   }
@@ -183,7 +185,7 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
   res <- dplyr::rowwise(res)
   res <- dplyr::mutate(
     res,
-    msg = glue::glue("{color(cli::style_bold(lbls_melodie[id]))}: x{n}")
+    msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}")
   )
   res <- dplyr::ungroup(res)
   res <- dplyr::pull(res, msg)
@@ -192,8 +194,9 @@ summarize_catalog_melodie <- function(catalog, sep = "   ") {
   res
 }
 
-
-initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
+# @rdname tune-internal-functions
+# @export
+initialize_catalog <- function(control, env = rlang::caller_env()) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -213,22 +216,22 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
     progress_active <- FALSE
   }
 
-  
-  rlang::env_bind(melodie_env, progress_env = env)
 
-  rlang::env_bind(melodie_env, progress_catalog = catalog)
+  rlang::env_bind(tune_env, progress_env = env)
+
+  rlang::env_bind(tune_env, progress_catalog = catalog)
   withr::defer(
-    rlang::env_bind(melodie_env, progress_catalog = NULL),
+    rlang::env_bind(tune_env, progress_catalog = NULL),
     envir = env
   )
 
-  rlang::env_bind(melodie_env, progress_active = progress_active)
+  rlang::env_bind(tune_env, progress_active = progress_active)
   withr::defer(
-    rlang::env_bind(melodie_env, progress_active = FALSE),
+    rlang::env_bind(tune_env, progress_active = FALSE),
     envir = env
   )
   withr::defer(
-    rlang::env_bind(melodie_env, progress_started = FALSE),
+    rlang::env_bind(tune_env, progress_started = FALSE),
     envir = env
   )
 

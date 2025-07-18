@@ -58,17 +58,10 @@ message_wrap <-
   }
 
 # issue cataloger --------------------------------------------------------------
-tune_env <-
-  rlang::new_environment(
-    data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
-  )
-
-lbls <- c(LETTERS, letters, 1:1e3)
-
 # determines whether a currently running tuning process uses the cataloger.
-uses_catalog <- function() {
-  isTRUE(tune_env$progress_active && !is_testing())
-}
+# uses_catalog <- function() {
+#   isTRUE(tune_env$progress_active && !is_testing())
+# }
 
 # determines whether a tuning process is currently active.
 # this function is intended to guard calls to `initialize_catalog()`
@@ -89,60 +82,60 @@ catalog_is_active <- function() {
 # a call to `on.exit()` in `env` after this function is called will cause
 # issues with the catalog. (see #845.)
 #
-#' @rdname tune-internal-functions
-#' @export
-initialize_catalog <- function(control, env = rlang::caller_env()) {
-  catalog <-
-    tibble::new_tibble(list(
-      type = character(0),
-      note = character(0),
-      n = numeric(0),
-      id = numeric(0)
-    ), nrow = 0)
-
-  if (!(allow_parallelism(control$allow_par) ||
-        is_testing()) &&
-      !control$verbose) {
-    progress_active <- TRUE
-  } else {
-    progress_active <- FALSE
-  }
-
-  rlang::env_bind(tune_env, progress_env = env)
-
-  rlang::env_bind(tune_env, progress_catalog = catalog)
-  withr::defer(
-    rlang::env_bind(tune_env, progress_catalog = NULL),
-    envir = env
-  )
-
-  rlang::env_bind(tune_env, progress_active = progress_active)
-  withr::defer(
-    rlang::env_bind(tune_env, progress_active = FALSE),
-    envir = env
-  )
-
-
-  invisible(NULL)
-}
+# @rdname tune-internal-functions
+# @export
+# initialize_catalog <- function(control, env = rlang::caller_env()) {
+#   catalog <-
+#     tibble::new_tibble(list(
+#       type = character(0),
+#       note = character(0),
+#       n = numeric(0),
+#       id = numeric(0)
+#     ), nrow = 0)
+#
+#   if (!(allow_parallelism(control$allow_par) ||
+#         is_testing()) &&
+#       !control$verbose) {
+#     progress_active <- TRUE
+#   } else {
+#     progress_active <- FALSE
+#   }
+#
+#   rlang::env_bind(tune_env, progress_env = env)
+#
+#   rlang::env_bind(tune_env, progress_catalog = catalog)
+#   withr::defer(
+#     rlang::env_bind(tune_env, progress_catalog = NULL),
+#     envir = env
+#   )
+#
+#   rlang::env_bind(tune_env, progress_active = progress_active)
+#   withr::defer(
+#     rlang::env_bind(tune_env, progress_active = FALSE),
+#     envir = env
+#   )
+#
+#
+#   invisible(NULL)
+# }
 
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
-summarize_catalog <- function(catalog, sep = "   ") {
-  if (nrow(catalog) == 0) {
-    return("")
-  }
-
-  res <- dplyr::arrange(catalog, id)
-  res <- dplyr::mutate(res, color = dplyr::if_else(type == "warning", list(cli::col_yellow), list(cli::col_red)))
-  res <- dplyr::rowwise(res)
-  res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}"))
-  res <- dplyr::ungroup(res)
-  res <- dplyr::pull(res, msg)
-  res <- glue::glue_collapse(res, sep = sep)
-
-  res
-}
+# summarize_catalog <- function(catalog, sep = "   ") {
+#   if (nrow(catalog) == 0) {
+#     return("")
+#   }
+#
+#   res <- dplyr::arrange(catalog, id)
+#   res <- dplyr::mutate(res, color = dplyr::if_else(type == "warning", list(cli::col_yellow), list(cli::col_red)))
+#   res <- dplyr::rowwise(res)
+#   res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}"))
+#   res <- dplyr::ungroup(res)
+#   res <- dplyr::pull(res, msg)
+#   res <- glue::glue_collapse(res, sep = sep)
+#
+#   res
+# }
 
 # a light wrapper around `tune_catalog()` for use inside of `tune_log()`
 log_catalog <- function(msg, type) {
@@ -282,9 +275,9 @@ tune_log <- function(control, split_labels = NULL, task, type = "success", catal
 }
 
 # copied from testthat::is_testing
-is_testing <- function() {
-  identical(Sys.getenv("TESTTHAT"), "true")
-}
+# is_testing <- function() {
+#   identical(Sys.getenv("TESTTHAT"), "true")
+# }
 
 log_problems <- function(notes, control, split_labels, loc, res, bad_only = FALSE) {
   # Always log warnings and errors
@@ -362,15 +355,15 @@ format_msg <- function(loc, msg) {
   paste0(loc, sep, msg)
 }
 
-#' @export
-#' @rdname tune-internal-functions
-.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
-  tune_log(..., type = "info", catalog = catalog)
-  tmp <- catcher(.expr)
-  new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
-  assign("out_notes", new_notes, envir = parent.frame())
-  tmp$res
-}
+# @export
+# @rdname tune-internal-functions
+# .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+#   tune_log(..., type = "info", catalog = catalog)
+#   tmp <- catcher(.expr)
+#   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
+#   assign("out_notes", new_notes, envir = parent.frame())
+#   tmp$res
+# }
 
 #' @export
 #' @rdname tune-internal-functions
@@ -381,7 +374,7 @@ format_msg <- function(loc, msg) {
   result <- caught$res
 
   # Log failures that come from parsnip before the model is fit
-  if (is_failure_melodie(result)) {
+  if (is_failure(result)) {
     result_parsnip <- list(res = result, signals = list())
 
     new_notes <- log_problems(notes, ..., result_parsnip)
@@ -399,7 +392,7 @@ format_msg <- function(loc, msg) {
 
   # Log underlying fit failures that parsnip caught during the actual
   # fitting process
-  if (is_failure_melodie(fit)) {
+  if (is_failure(fit)) {
     result_fit <- list(res = fit, signals = list())
 
     new_notes <- log_problems(notes, ..., result_fit)
