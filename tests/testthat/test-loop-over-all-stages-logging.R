@@ -1,4 +1,3 @@
-skip()
 test_that("preprocessor error doesn't stop grid", {
   skip_if_not_installed("modeldata")
 
@@ -17,7 +16,7 @@ test_that("preprocessor error doesn't stop grid", {
   )
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
       Sale_Price ~ .,
       folds,
@@ -65,7 +64,7 @@ test_that("model error doesn't stop grid", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -115,7 +114,7 @@ test_that("prediction error doesn't stop grid", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -164,7 +163,7 @@ test_that("capturing error correctly in notes", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -215,7 +214,7 @@ test_that("capturing warning correctly in notes", {
 
   wf_spec <- workflow(rec_spec, mod_spec)
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -268,7 +267,7 @@ test_that("doesn't capturing message in notes", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -314,7 +313,7 @@ test_that("captures extract errors", {
   }
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -349,7 +348,7 @@ test_that("captures kknn R errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -396,7 +395,7 @@ test_that("captures xgboost C errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -460,7 +459,7 @@ test_that("captures cli styled errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -517,7 +516,7 @@ test_that("emitter works with errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
