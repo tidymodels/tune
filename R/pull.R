@@ -66,58 +66,6 @@ maybe_repair <- function(x) {
   x
 }
 
-
-pull_metrics <- function(resamples, res, control, order) {
-  out <- pulley(resamples, res, ".metrics", order = order)
-  out$.metrics <- maybe_repair(out$.metrics)
-  out
-}
-
-pull_extracts <- function(resamples, res, control, order) {
-  if (!is.null(control$extract)) {
-    resamples <- pulley(resamples, res, ".extracts", order = order)
-  }
-  resamples
-}
-
-pull_predictions <- function(resamples, res, control, order) {
-  if (control$save_pred) {
-    resamples <- pulley(resamples, res, ".predictions", order = order)
-    resamples$.predictions <- maybe_repair(resamples$.predictions)
-  }
-  resamples
-}
-
-pull_all_outcome_names <- function(resamples, res) {
-  all_outcome_names <- purrr::map(res, ~ .x[[".all_outcome_names"]])
-  resamples$.all_outcome_names <- all_outcome_names
-  resamples
-}
-
-reduce_all_outcome_names <- function(resamples) {
-  all_outcome_names <- resamples$.all_outcome_names
-  all_outcome_names <- purrr::list_flatten(all_outcome_names)
-  all_outcome_names <- vctrs::vec_unique(all_outcome_names)
-
-  n_unique <- length(all_outcome_names)
-
-  # All models failed
-  if (n_unique == 0L) {
-    return(character())
-  }
-
-  if (n_unique > 1L) {
-    cli::cli_warn(
-      "More than one set of outcomes were used when tuning. This should never
-       happen. Please review how the outcome is specified in your model."
-    )
-  }
-
-  outcome_names <- all_outcome_names[[1L]]
-
-  outcome_names
-}
-
 ensure_tibble <- function(x) {
   if (is.null(x)) {
     res <- tibble::new_tibble(list(.notes = character(0)), nrow = 0)
@@ -125,24 +73,6 @@ ensure_tibble <- function(x) {
     res <- tibble::new_tibble(list(.notes = x), nrow = length(x))
   }
   res
-}
-
-pull_notes <- function(resamples, res, control, order) {
-  notes <- purrr::map(res, ~ purrr::pluck(.x, ".notes"))
-  resamples$.notes <- notes[order]
-
-  resamples
-}
-
-make_extracts <- function(extract, grid, split_labels, .config = NULL) {
-  extracts <- dplyr::bind_cols(grid, split_labels)
-  extracts$.extracts <- list(extract)
-
-  if (!rlang::is_null(.config)) {
-    extracts <- cbind(extracts, .config)
-  }
-
-  extracts
 }
 
 append_outcome_names <- function(all_outcome_names, outcome_names) {
