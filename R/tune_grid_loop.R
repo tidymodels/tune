@@ -1,4 +1,4 @@
-tune_grid_loop_new <- function(
+tune_grid_loop <- function(
   resamples,
   grid,
   workflow,

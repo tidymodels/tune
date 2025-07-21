@@ -352,7 +352,7 @@ tune_grid_workflow <- function(
   rset_info <- pull_rset_attributes(resamples)
   split_args <- rsample::.get_split_args(resamples)
 
-  resamples <- tune_grid_loop_new(
+  resamples <- tune_grid_loop(
     resamples = resamples,
     grid = grid,
     workflow = workflow,
