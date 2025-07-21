@@ -28,7 +28,6 @@ options(digits = 3)
 library(tidymodels)
 library(kknn)
 theme_set(theme_bw())
-doParallel::registerDoParallel()
 ```
 
 ## Introduction 

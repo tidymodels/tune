@@ -420,3 +420,48 @@ pctl_call <- function(framework, args = list()) {
 
   cl
 }
+
+# ------------------------------------------------------------------------------
+
+warn_foreach_deprecation <- function() {
+  cli::cli_warn(c(
+    "!" = "{.pkg tune} detected a parallel backend registered with \\
+               foreach but no backend registered with future.",
+    "i" = "Support for parallel processing with foreach was \\
+               soft-deprecated in {.pkg tune} 1.2.1.",
+    "i" = "See {.help [?parallelism](tune::parallelism)} to learn more."
+  ))
+}
+
+manange_global_limit <- function(min = 1e9) {
+  currrent_value <- getOption("future.globals.maxSize")
+  if (is.null(currrent_value)) {
+    options(future.globals.maxSize = min)
+  } else {
+    if (currrent_value < min) {
+      options(future.globals.maxSize = min)
+    }
+  }
+  invisible(NULL)
+}
+
+# ------------------------------------------------------------------------------
+# keeping this until we make a more accurate version based on choose_framework()
+
+# object should be a workflow
+allow_parallelism <- function(allow = TRUE, object = NULL) {
+  is_par <- TRUE # temp make this assumption
+  if (!is.null(object)) {
+    pkgs <- required_pkgs(object)
+    blacklist <- c("keras", "rJava")
+    if (is_par & allow && any(pkgs %in% blacklist)) {
+      pkgs <- pkgs[pkgs %in% blacklist]
+      msg <- paste0("'", pkgs, "'", collapse = ", ")
+      msg <- paste("Some required packages prohibit parallel processing: ", msg)
+      cli::cli_alert_warning(msg)
+      allow <- FALSE
+    }
+  }
+
+  allow && is_par
+}

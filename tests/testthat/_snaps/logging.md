@@ -332,11 +332,16 @@
         72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
       > A | error:   AHHhH
+      > A | error:   AHHhH
+      > A | error:   AHHhH
+      > A | error:   AHHhH
+      > A | error:   AHHhH
+      > A | error:   AHHhH
 
 ---
 
     Code
       catalog_summary_test
     Output
-      A: x50
+      A: x5
 
