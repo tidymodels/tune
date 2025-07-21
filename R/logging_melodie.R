@@ -33,7 +33,7 @@ is_failure <- function(x) {
 }
 
 has_log_notes <- function(x) {
-  is_failure_melodie(x) || NROW(attr(x, "notes")) > 0
+  is_failure(x) || NROW(attr(x, "notes")) > 0
 }
 
 append_log_notes <- function(notes, x, location) {
@@ -53,7 +53,7 @@ append_log_notes <- function(notes, x, location) {
     }
   }
 
-  if (is_failure_melodie(x)) {
+  if (is_failure(x)) {
     type <- "error"
     x <- attr(x, "condition")
     note <- conditionMessage(x)
