@@ -208,6 +208,9 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
       nrow = 0
     )
 
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
   if (!(allow_parallelism(control$allow_par) ||
         is_testing()) &&
       !control$verbose) {
