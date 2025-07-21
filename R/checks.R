@@ -477,16 +477,6 @@ check_initial <- function(x,
   x
 }
 
-get_objective_name <- function(x, metrics) {
-  if (is.null(x)) {
-    metric_data <- metrics_info(metrics)
-    x <- metric_data$.metric[1]
-  } else {
-    # check for a name or acquisition function
-  }
-  x
-}
-
 # ------------------------------------------------------------------------------
 
 check_class_or_null <- function(x, cls = "numeric") {

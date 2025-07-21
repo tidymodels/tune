@@ -427,10 +427,6 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
 #   paste0(msgs_preprocessor, ", model ", i, "/", n)
 # }
 
-# c(1, 10) -> c("01", "10")
-format_with_padding <- function(x) {
-  gsub(" ", "0", format(x))
-}
 
 # ------------------------------------------------------------------------------
 

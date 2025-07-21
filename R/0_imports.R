@@ -22,7 +22,6 @@
 #' @importFrom cli cli_inform cli_warn cli_abort qty
 #' @importFrom tibble obj_sum size_sum
 #' @import rlang
-#' @importFrom future.apply future_lapply
 
 # ------------------------------------------------------------------------------
 # Only a small number of functions in workflows.
