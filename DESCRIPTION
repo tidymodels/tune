@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 1.3.0.9000
+Version: 1.3.0.9001
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -15,7 +15,7 @@ License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
 BugReports: https://github.com/tidymodels/tune/issues
 Depends:
-    R (>= 4.0)
+    R (>= 4.1)
 Imports:
     cli (>= 3.3.0),
     dials (>= 1.3.0.9000),
@@ -23,6 +23,7 @@ Imports:
     dplyr (>= 1.1.0),
     foreach,
     future (>= 1.33.0),
+    future.apply,
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
@@ -40,7 +41,7 @@ Imports:
     tidyselect (>= 1.1.2),
     vctrs (>= 0.6.1),
     withr,
-    workflows (>= 1.1.4.9000),
+    workflows (>= 1.2.0.9000),
     yardstick (>= 1.3.0)
 Suggests: 
     C50,
@@ -49,23 +50,19 @@ Suggests:
     kernlab,
     kknn,
     knitr,
+    mgcv,
     modeldata,
     probably,
     scales,
     spelling,
     splines2,
+    survival,
     testthat (>= 3.0.0),
     xgboost,
     xml2
 Remotes:
-    tidymodels/hardhat,
-    tidymodels/parsnip,
-    tidymodels/recipes,
-    tidymodels/rsample,
     tidymodels/tailor,
-    tidymodels/workflows,
-    tidymodels/dials,
-    tidymodels/probably
+    tidymodels/workflows
 Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
     tidyverse/tidytemplate
 Config/testthat/edition: 3

@@ -32,31 +32,40 @@ figures:
   fig.height: 5.75
 
 reference:
-  - title: Functions for tuning
+  - title: Fit many models
     contents:
-    - starts_with("tune")
+    - tune_grid
+    - tune_bayes
+    - expo_decay
+    - conf_bound
+    - starts_with("melodie")
     - fit_resamples
+    - control_grid
+    - control_bayes
+    - parallelism
+  - title: Fit one model
+    contents:
     - fit_best
     - last_fit
-    - conf_bound
-    - starts_with("control")
-    - autoplot.tune_results
-    - augment.tune_results
-    - coord_obs_pred
-    - expo_decay
-    - starts_with("collect")
-    - starts_with("compute")
-    - filter_parameters
-    - show_best
-    - show_notes
-    - starts_with("select_")
-    - starts_with("extract_")
     - starts_with("finalize")
+    - control_last_fit
+  - title: Inspect results
+    contents:
+    - starts_with("collect")
+    - show_notes
+    - show_best
+    - starts_with("select_")
+    - filter_parameters
+    - autoplot.tune_results
     - coord_obs_pred
     - conf_mat_resampled
-    - example_ames_knn
+  - title: Miscellaneous
+    contents:
+    - starts_with("extract_")
     - starts_with("int_pctl")
-    - parallelism
+    - starts_with("compute")
+    - augment.tune_results
+    - example_ames_knn
   - title: Developer functions
     contents:
     - merge.recipe
@@ -64,4 +73,3 @@ reference:
     - message_wrap
     - .use_case_weights_with_yardstick
     - .stash_last_result
-    - new_backend_options
