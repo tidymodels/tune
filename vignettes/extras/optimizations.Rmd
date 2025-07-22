@@ -96,7 +96,7 @@ plan(multisession)
 
 For mirai, you can set the number of worker processes via
 
-```{r future, eval = FALSE}
+```{r mirai, eval = FALSE}
 library(mirai)
 daemons(4)
 ```
