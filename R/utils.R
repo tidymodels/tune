@@ -432,6 +432,49 @@ calculate_fold_weights <- function(rset) {
   fold_sizes / sum(fold_sizes)
 }
 
+#' Extract fold weights from rset or tune_results objects
+#' 
+#' This function provides a consistent interface to access fold weights
+#' regardless of whether they were added to an rset object or are stored
+#' in tune_results after tuning.
+#' 
+#' @param x An rset object with fold weights, or a tune_results object.
+#' @return A numeric vector of fold weights, or NULL if no weights are present.
+#' @export
+#' @examples
+#' \dontrun{
+#' library(rsample)
+#' folds <- vfold_cv(mtcars, v = 3)
+#' weighted_folds <- add_fold_weights(folds, c(0.2, 0.3, 0.5))
+#' get_fold_weights(weighted_folds)
+#' }
+get_fold_weights <- function(x) {
+  if (inherits(x, "rset")) {
+    # For rset objects, weights are stored as an attribute
+    return(attr(x, ".fold_weights"))
+  } else if (inherits(x, c("tune_results", "resample_results"))) {
+    # For tune results, use the internal function
+    return(.get_fold_weights(x))
+  } else {
+    cli::cli_abort("{.arg x} must be an rset or tune_results object.")
+  }
+}
+
+#' @export
+print.rset <- function(x, ...) {
+  fold_weights <- attr(x, ".fold_weights")
+  
+  if (!is.null(fold_weights)) {
+    # Create a tibble with fold weights as a column
+    x_tbl <- tibble::as_tibble(x)
+    x_tbl$fold_weight <- fold_weights
+    print(x_tbl, ...)
+  } else {
+    # Use default behavior
+    NextMethod("print")
+  }
+}
+
 # ------------------------------------------------------------------------------
 
 #' Save most recent results to search path

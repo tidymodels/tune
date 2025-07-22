@@ -308,4 +308,89 @@ if (rlang::is_installed(c("rsample", "parsnip", "yardstick", "workflows", "recip
     expect_false(is.na(metrics$mean))
   })
 
+  test_that("rset print method displays fold weights", {
+    weights <- c(0.2, 0.3, 0.5)
+    weighted_folds <- add_fold_weights(folds, weights)
+    
+    # Capture the printed output
+    output <- capture.output(print(weighted_folds))
+    
+    # Should contain the fold weights in the output
+    expect_true(any(grepl("fold_weight", output)))
+    expect_true(any(grepl("0.2", output)))
+    expect_true(any(grepl("0.3", output)))
+    expect_true(any(grepl("0.5", output)))
+  })
+
+  test_that("rset print method works normally without fold weights", {
+    # Should not error when printing an rset without weights
+    expect_no_error(print(folds))
+    
+    # Capture output and verify it doesn't contain fold_weight column
+    output <- capture.output(print(folds))
+    expect_false(any(grepl("fold_weight", output)))
+  })
+
+  test_that("rset tibble conversion includes fold weights", {
+    weights <- c(0.1, 0.4, 0.5)
+    weighted_folds <- add_fold_weights(folds, weights)
+    
+    # Convert to tibble manually (this is what our print method does)
+    x_tbl <- tibble::as_tibble(weighted_folds)
+    x_tbl$fold_weight <- weights
+    
+    # Verify the structure
+    expect_true("fold_weight" %in% names(x_tbl))
+    expect_equal(x_tbl$fold_weight, weights)
+    expect_equal(nrow(x_tbl), 3)
+  })
+
+  test_that("get_fold_weights() works with rset objects", {
+    weights <- c(0.2, 0.3, 0.5)
+    weighted_folds <- add_fold_weights(folds, weights)
+    
+    # Should return the weights
+    extracted_weights <- get_fold_weights(weighted_folds)
+    expect_equal(extracted_weights, weights)
+    
+    # Should return NULL for unweighted rsets
+    unweighted_result <- get_fold_weights(folds)
+    expect_null(unweighted_result)
+  })
+
+  test_that("get_fold_weights() works with tune_results objects", {
+    weights <- c(0.1, 0.5, 0.4)
+    weighted_folds <- add_fold_weights(folds, weights)
+    
+    mod <- create_test_model()
+    
+    suppressWarnings({
+      res <- tune_grid(
+        mod,
+        mpg ~ .,
+        resamples = weighted_folds,
+        grid = 1,
+        metrics = yardstick::metric_set(yardstick::rmse),
+        control = control_grid(verbose = FALSE)
+      )
+    })
+    
+    # Should extract weights from tune results
+    extracted_weights <- get_fold_weights(res)
+    expected_weights <- weights / sum(weights)  # normalized
+    expect_equal(extracted_weights, expected_weights)
+  })
+
+  test_that("get_fold_weights() validates input types", {
+    expect_error(
+      get_fold_weights("not_valid_input"),
+      "must be an rset or tune_results object"
+    )
+    
+    expect_error(
+      get_fold_weights(data.frame(x = 1:3)),
+      "must be an rset or tune_results object"
+    )
+  })
+
 } 
