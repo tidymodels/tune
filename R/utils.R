@@ -475,6 +475,21 @@ print.rset <- function(x, ...) {
   }
 }
 
+#' @export
+print.manual_rset <- function(x, ...) {
+  fold_weights <- attr(x, ".fold_weights")
+  
+  if (!is.null(fold_weights)) {
+    # Create a tibble with fold weights as a column
+    x_tbl <- tibble::as_tibble(x)
+    x_tbl$fold_weight <- fold_weights
+    print(x_tbl, ...)
+  } else {
+    # Use default behavior for manual_rset
+    NextMethod("print")
+  }
+}
+
 # ------------------------------------------------------------------------------
 
 #' Save most recent results to search path

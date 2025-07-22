@@ -393,4 +393,31 @@ if (rlang::is_installed(c("rsample", "parsnip", "yardstick", "workflows", "recip
     )
   })
 
+  test_that("manual_rset print method displays fold weights", {
+    # Create a manual_rset
+    splits1 <- rsample::make_splits(x = mtcars[1:20,], assessment = mtcars[21:32,])
+    splits2 <- rsample::make_splits(x = mtcars[1:15,], assessment = mtcars[16:32,])
+    
+    manual_folds <- rsample::manual_rset(
+      list(splits1, splits2),
+      c('Period1', 'Period2')
+    )
+    
+    weights <- c(0.4, 0.6)
+    weighted_manual <- add_fold_weights(manual_folds, weights)
+    
+    # Test that get_fold_weights works
+    expect_equal(get_fold_weights(weighted_manual), weights)
+    
+    # Test that print shows fold_weight column
+    output <- capture.output(print(weighted_manual))
+    expect_true(any(grepl("fold_weight", output)))
+    expect_true(any(grepl("0.4", output)))
+    expect_true(any(grepl("0.6", output)))
+    
+    # Test that unweighted manual_rset doesn't show fold_weight
+    output_unweighted <- capture.output(print(manual_folds))
+    expect_false(any(grepl("fold_weight", output_unweighted)))
+  })
+
 } 
