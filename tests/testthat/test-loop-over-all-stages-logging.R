@@ -407,7 +407,7 @@ test_that("captures xgboost C errors", {
 
   trim_timestamp <- function(lines) {
     lines <- catalog_lines(lines)
-    sub("\\[[0-9:]+\\]", "", lines)
+    lines[!grepl("\\[[0-9:]+\\]", lines)]
   }
 
   expect_snapshot(

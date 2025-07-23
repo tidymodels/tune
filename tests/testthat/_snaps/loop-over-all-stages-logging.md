@@ -73,7 +73,6 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:    src/data/data.cc:1104: Check failed: valid: Input data contains `inf` or `nan`
     Condition
 
 # captures cli styled errors
