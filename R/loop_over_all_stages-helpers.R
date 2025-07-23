@@ -503,15 +503,6 @@ determine_pred_types <- function(wflow, metrics) {
 }
 
 reorder_pred_cols <- function(x, y_name) {
-  # x |>
-  #   dplyr::relocate(dplyr::any_of(".row"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::any_of(".eval_time"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches(".pred_[A-Za-z]"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred_class$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred_time$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::all_of(y_name), .before = dplyr::everything())
-
   x |>
     dplyr::relocate(
       dplyr::all_of(y_name),

@@ -1,8 +1,7 @@
 library(tidymodels)
 library(tune)
-library("doFuture")
-registerDoFuture()
-plan(multicore)
+library(future)
+plan("multisession")
 
 data(two_class_dat, package = "modeldata")
 

@@ -54,7 +54,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
       location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
       notes <- append_log_notes(notes, current_wflow, location)
       catalog_log(notes)
-      if (is_failure_melodie(current_wflow)) {
+      if (is_failure(current_wflow)) {
         next
       }
       current_wflow <- remove_log_notes(current_wflow)
@@ -84,7 +84,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         location <- glue::glue("model {iter_model}/{num_iterations_model}")
         notes <- append_log_notes(notes, current_wflow, location)
         catalog_log(notes)
-        if (is_failure_melodie(current_wflow)) {
+        if (is_failure(current_wflow)) {
           next
         }
         current_wflow <- remove_log_notes(current_wflow)
@@ -134,7 +134,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
           location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
           notes <- append_log_notes(notes, current_pred, location)
           catalog_log(notes)
-          if (is_failure_melodie(current_pred)) {
+          if (is_failure(current_pred)) {
             next
           }
         }
@@ -186,7 +186,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               )
               notes <- append_log_notes(notes, post_fit, location)
               catalog_log(notes)
-              if (is_failure_melodie(post_fit)) {
+              if (is_failure(post_fit)) {
                 next
               }
               post_fit <- remove_log_notes(post_fit)
@@ -202,7 +202,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               )
               notes <- append_log_notes(notes, post_pred, location)
               catalog_log(notes)
-              if (is_failure_melodie(post_pred)) {
+              if (is_failure(post_pred)) {
                 next
               }
               post_pred <- remove_log_notes(post_pred)
@@ -265,7 +265,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 tibble::tibble(.extracts = list(elt_extract))
               )
               }
-              if (is_failure_melodie(elt_extract)) {
+              if (is_failure(elt_extract)) {
                 next
               }
           }

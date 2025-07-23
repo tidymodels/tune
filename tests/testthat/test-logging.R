@@ -248,6 +248,10 @@ test_that("message_wrap", {
 })
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
+
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")

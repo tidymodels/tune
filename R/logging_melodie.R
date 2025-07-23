@@ -23,17 +23,17 @@ catcher_melodie <- function(expr) {
       )
     }
   )
-  
+
   attr(res, "notes") <- signals
   res
 }
 
-is_failure_melodie <- function(x) {
+is_failure <- function(x) {
   inherits(x, "try-error")
 }
 
 has_log_notes <- function(x) {
-  is_failure_melodie(x) || NROW(attr(x, "notes")) > 0
+  is_failure(x) || NROW(attr(x, "notes")) > 0
 }
 
 append_log_notes <- function(notes, x, location) {
@@ -53,7 +53,7 @@ append_log_notes <- function(notes, x, location) {
     }
   }
 
-  if (is_failure_melodie(x)) {
+  if (is_failure(x)) {
     type <- "error"
     x <- attr(x, "condition")
     note <- conditionMessage(x)
@@ -67,7 +67,7 @@ append_log_notes <- function(notes, x, location) {
     )
   }
 
-  notes 
+  notes
 }
 
 remove_log_notes <- function(x) {
@@ -118,7 +118,7 @@ catalog_log <- function(x) {
           id = new_id
         )
       )
-      
+
       # construct issue summary
       color <- if (x_type == "warning") cli::col_yellow else cli::col_red
       # pad by nchar(label) + nchar("warning") + additional spaces and symbols
@@ -134,8 +134,8 @@ catalog_log <- function(x) {
       )
       cli::cli_alert(msg)
     }
-  } 
-    
+  }
+
   rlang::env_bind(melodie_env, progress_catalog = catalog)
   rlang::env_bind(
     melodie_env$progress_env,
@@ -156,8 +156,8 @@ catalog_log <- function(x) {
       )
       rlang::env_bind(melodie_env, progress_started = TRUE)
     }
-    
-    
+
+
     cli::cli_progress_update(.envir = melodie_env$progress_env)
   }
 
@@ -208,6 +208,9 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
       nrow = 0
     )
 
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
   if (!(allow_parallelism(control$allow_par) ||
         is_testing()) &&
       !control$verbose) {
@@ -216,7 +219,7 @@ initialize_catalog_melodie <- function(control, env = rlang::caller_env()) {
     progress_active <- FALSE
   }
 
-  
+
   rlang::env_bind(melodie_env, progress_env = env)
 
   rlang::env_bind(melodie_env, progress_catalog = catalog)

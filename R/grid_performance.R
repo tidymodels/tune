@@ -62,11 +62,15 @@ metrics_info <- function(x) {
                               metrics_info = metrics_info(metrics)) {
   # The call stack is:
   #
-  # tune_grid_loop_iter()
-  #   append_metrics(). <many times>
+  # tune_grid_loop()
+  #   loop_over_all_stages() <many times>
   #    .estimate_metrics()
 
-  # predictions made in predict_model()
+  # predictions made in:
+  #
+  # predict_all_types()
+  #   predict_wrapper()
+  #     parsnip::predict() (or multi_predict())
 
   if (inherits(dat, "try-error")) {
     return(NULL)

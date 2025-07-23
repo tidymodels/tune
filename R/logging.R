@@ -31,6 +31,7 @@
 #' )
 #' @export
 message_wrap <-
+  # TODO melodie; not in logging_melodie
   function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
     check_string(x)
     check_function(color_text, allow_null = TRUE)
@@ -59,14 +60,17 @@ message_wrap <-
 
 # issue cataloger --------------------------------------------------------------
 tune_env <-
+  # TODO melodie; replace with melodie analog
   rlang::new_environment(
     data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
   )
 
+# TODO melodie; same so delete
 lbls <- c(LETTERS, letters, 1:1e3)
 
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
+  # TODO melodie; replace with melodie analog
   isTRUE(tune_env$progress_active && !is_testing())
 }
 
@@ -76,6 +80,7 @@ uses_catalog <- function() {
 # methods. e.g. `tune_bayes()` has an issue cataloger that ought not to be
 # overwritten when fitting over an initial grid.
 catalog_is_active <- function() {
+  # TODO melodie; replace with melodie analog
   tune_env$progress_active
 }
 
@@ -92,6 +97,7 @@ catalog_is_active <- function() {
 #' @rdname tune-internal-functions
 #' @export
 initialize_catalog <- function(control, env = rlang::caller_env()) {
+  # TODO melodie; replace with melodie analog
   catalog <-
     tibble::new_tibble(list(
       type = character(0),
@@ -100,6 +106,9 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
       id = numeric(0)
     ), nrow = 0)
 
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
   if (!(allow_parallelism(control$allow_par) ||
         is_testing()) &&
       !control$verbose) {
@@ -129,6 +138,7 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
 # given a catalog, summarize errors and warnings in a 1-length glue vector.
 # for use by the progress bar inside of `tune_catalog()`.
 summarize_catalog <- function(catalog, sep = "   ") {
+  # TODO melodie; replace with melodie analog
   if (nrow(catalog) == 0) {
     return("")
   }
@@ -146,6 +156,7 @@ summarize_catalog <- function(catalog, sep = "   ") {
 
 # a light wrapper around `tune_catalog()` for use inside of `tune_log()`
 log_catalog <- function(msg, type) {
+  # TODO melodie; not sure; don't see it used but referenced in melodie file
   type <-
     switch(
       type,
@@ -169,6 +180,7 @@ log_catalog <- function(msg, type) {
 # encountered issues, and interactively summarizes them by type rather than
 # printing out each new tuning issue individually.
 tune_catalog <- function(issues) {
+  # TODO melodie; not sure; don't see it used but referenced in melodie file
   catalog <- rlang::env_get(env = tune_env, nm = "progress_catalog")
 
   res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
@@ -228,6 +240,7 @@ tune_catalog <- function(issues) {
 
 # catching and logging ---------------------------------------------------------
 siren <- function(x, type = "info") {
+  # TODO melodie; delete? only referenced in tests
   tune_color <- get_tune_colors()
   types <- names(tune_color$message)
   type <- match.arg(type, types)
@@ -256,6 +269,7 @@ siren <- function(x, type = "info") {
   message(paste(symb, msg))
 }
 
+# TODO melodie; keep; used and no melodie analog
 tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
@@ -282,11 +296,13 @@ tune_log <- function(control, split_labels = NULL, task, type = "success", catal
 }
 
 # copied from testthat::is_testing
+# TODO melodie; delete; redefined in melodie file with same name
 is_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
 
 log_problems <- function(notes, control, split_labels, loc, res, bad_only = FALSE) {
+  # TODO melodie; delete? only referenced in tests
   # Always log warnings and errors
   control2 <- control
   control2$verbose <- TRUE
@@ -346,6 +362,7 @@ log_problems <- function(notes, control, split_labels, loc, res, bad_only = FALS
   notes
 }
 
+# TODO melodie; delete? not used anywhere but this file
 format_msg <- function(loc, msg) {
   msg <- trimws(msg, "left")
   # truncate by line
@@ -365,6 +382,7 @@ format_msg <- function(loc, msg) {
 #' @export
 #' @rdname tune-internal-functions
 .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+  # TODO melodie; replace with melodie analog
   tune_log(..., type = "info", catalog = catalog)
   tmp <- catcher(.expr)
   new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
@@ -375,6 +393,7 @@ format_msg <- function(loc, msg) {
 #' @export
 #' @rdname tune-internal-functions
 .catch_and_log_fit <- function(.expr, ..., notes) {
+  # TODO melodie; delete? not referenced anywhere
   tune_log(..., type = "info")
 
   caught <- catcher(.expr)
@@ -414,6 +433,7 @@ format_msg <- function(loc, msg) {
 }
 
 log_best <- function(control, iter, info, digits = 4) {
+  # TODO melodie; keep: used by tune_bayes
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -436,6 +456,7 @@ log_best <- function(control, iter, info, digits = 4) {
 }
 
 check_and_log_flow <- function(control, results) {
+  # TODO melodie; keep: used by tune_bayes
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -454,6 +475,7 @@ check_and_log_flow <- function(control, results) {
   invisible(NULL)
 }
 
+# TODO melodie; keep: used by tune_bayes
 log_progress <- function(control, x, maximize = TRUE, objective = NULL,
                          eval_time = NULL, digits = 4) {
   if (!isTRUE(control$verbose_iter)) {
@@ -493,6 +515,7 @@ log_progress <- function(control, x, maximize = TRUE, objective = NULL,
   message(msg)
 }
 
+# TODO melodie; keep: used by tune_bayes
 param_msg <- function(control, candidate) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
@@ -508,7 +531,7 @@ param_msg <- function(control, candidate) {
   invisible(NULL)
 }
 
-
+# TODO melodie; keep: used by tune_bayes
 acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
