@@ -1,5 +1,15 @@
-.catch_and_log_melodie <- function(.expr) {
+.catch_and_log_melodie <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+  dots <- list(...)
+  tune_log(..., type = "info", catalog = catalog, task = dots$location)
   tmp <- catcher_melodie(.expr)
+
+  if (has_log_notes(tmp)) {
+    notes <- append_log_notes(notes, tmp, dots$location)
+    catalog_log(notes)
+  }
+  tmp <- remove_log_notes(tmp)
+  assign("notes", notes, envir = parent.frame())
+
   tmp
 }
 
@@ -255,4 +265,67 @@ new_note <- function(
       trace = trace
     )
   )
+}
+
+tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
+  if (!any(control$verbose, control$verbose_iter)) {
+    return(invisible(NULL))
+  }
+
+  if (task == "internal") {
+    return(NULL)
+  }
+
+  if (uses_catalog() & catalog) {
+    log_catalog(task, type)
+    return(NULL)
+  }
+
+  if (!is.null(split_labels)) {
+    labs <- rev(unlist(split_labels))
+    labs <- paste0(labs, collapse = ", ")
+    labs <- paste0(labs, ": ")
+  } else {
+    labs <- ""
+  }
+
+  # see https://github.com/r-lib/cli/issues/92
+  task <- gsub("\\{", "", task)
+
+  task <- paste0(labs, task)
+  siren(task, type = type)
+  NULL
+}
+
+siren <- function(x, type = "info") {
+  # TODO melodie; delete? only referenced in tests
+  tune_color <- get_tune_colors()
+  types <- names(tune_color$message)
+  type <- match.arg(type, types)
+
+  msg <- glue::glue(x, .trim = FALSE)
+
+  symb <- dplyr::case_when(
+    type == "warning" ~ tune_color$symbol$warning("!"),
+    type == "go" ~ tune_color$symbol$go(cli::symbol$pointer),
+    type == "danger" ~ tune_color$symbol$danger("x"),
+    type == "success" ~ tune_color$symbol$success(tune_symbol$success),
+    type == "info" ~ tune_color$symbol$info("i")
+  )
+
+  msg <- dplyr::case_when(
+    type == "warning" ~ tune_color$message$warning(msg),
+    type == "go" ~ tune_color$message$go(msg),
+    type == "danger" ~ tune_color$message$danger(msg),
+    type == "success" ~ tune_color$message$success(msg),
+    type == "info" ~ tune_color$message$info(msg)
+  )
+
+  if (inherits(msg, "character")) {
+    msg <- as.character(msg)
+  }
+
+  msg <- paste(symb, msg)
+
+  message(msg)
 }
