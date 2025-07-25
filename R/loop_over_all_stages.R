@@ -50,6 +50,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
     location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
     current_wflow <- .catch_and_log_melodie(
       finalize_fit_pre(static$wflow, current_sched_pre, static),
+      control = static$control,
+      split_labels = split_labs,
       location = location, notes = notes
     )
 
@@ -73,9 +75,13 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
       # Splice in any parameters marked for tuning and fit the model
-      location <- glue::glue("model {iter_model}/{num_iterations_model}")
+      location <- glue::glue(
+        "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
+      )
       current_wflow <- .catch_and_log_melodie(
         finalize_fit_model(pre_wflow, current_sched_model),
+        control = static$control,
+        split_labels = split_labs,
         location = location, notes = notes
       )
       
@@ -113,16 +119,24 @@ loop_over_all_stages <- function(resamples, grid, static) {
             rebind_grid(current_sched_pred)
 
           # Remove the submodel column since it is in the currrent grid.
-          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
+          )
           current_pred <- .catch_and_log_melodie(
             predict_all_types(current_wflow, static, sub_grid) |>
               dplyr::select(-dplyr::all_of(sub_nm)),
+            control = static$control,
+            split_labels = split_labs,
             location = location, notes = notes
           )
         } else {
-          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
+          )
           current_pred <- .catch_and_log_melodie(
             predict_all_types(current_wflow, static),
+            control = static$control,
+            split_labels = split_labs,
             location = location, notes = notes
           )
         }
@@ -165,7 +179,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             }
 
             location <- glue::glue(
-              "postprocessing {iter_pred}/{num_iterations_pred}"
+              "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
             post_fit <- .catch_and_log_melodie(
               finalize_fit_post(
@@ -173,6 +187,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
                 predictions = tailor_train_data,
                 grid = post_grid
               ),
+              control = static$control,
+              split_labels = split_labs,
               location = location, notes = notes
             )
             if (is_failure(post_fit)) {
@@ -181,6 +197,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
             
             post_pred <- .catch_and_log_melodie(
               predict(post_fit, current_pred),
+              control = static$control,
+              split_labels = split_labs,
               location = location, notes = notes
             )
             if (is_failure(post_pred)) {
@@ -215,6 +233,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
             )
             elt_extract <- .catch_and_log_melodie(
               extract_details(current_wflow, static$control$extract),
+              control = static$control,
+              split_labels = split_labs,
               location = location, notes = notes
             )
 
@@ -269,6 +289,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
         metrics_info = metrics_info(static$metrics)
       ) |>
       add_configs(static),
+      control = static$control,
+      split_labels = split_labs,
       location = location, notes = notes
     )
   }

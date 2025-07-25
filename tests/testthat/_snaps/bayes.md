@@ -15,12 +15,72 @@
       i Generating 3 candidates
       i Predicted candidates
       i Estimating performance
+      i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       i Gaussian process model
       v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i Estimating performance
+      i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
     Output
       # Tuning results
@@ -114,6 +174,36 @@
       i Predicted candidates
       i num_comp=5
       i Estimating performance
+      i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       <3 Newest results:	rmse=2.453 (+/-0.381)
       
@@ -126,6 +216,36 @@
       i Predicted candidates
       i num_comp=1
       i Estimating performance
+      i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1, model 1/1
+      i Fold01: preprocessor 1/1, model 1/1 (predictions)
+      i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1, model 1/1
+      i Fold02: preprocessor 1/1, model 1/1 (predictions)
+      i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1, model 1/1
+      i Fold03: preprocessor 1/1, model 1/1 (predictions)
+      i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1, model 1/1
+      i Fold04: preprocessor 1/1, model 1/1 (predictions)
+      i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1, model 1/1
+      i Fold05: preprocessor 1/1, model 1/1 (predictions)
+      i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1, model 1/1
+      i Fold06: preprocessor 1/1, model 1/1 (predictions)
+      i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1, model 1/1
+      i Fold07: preprocessor 1/1, model 1/1 (predictions)
+      i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1, model 1/1
+      i Fold08: preprocessor 1/1, model 1/1 (predictions)
+      i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1, model 1/1
+      i Fold09: preprocessor 1/1, model 1/1 (predictions)
+      i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1, model 1/1
+      i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       (x) Newest results:	rmse=2.646 (+/-0.286)
     Output
