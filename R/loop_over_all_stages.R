@@ -47,17 +47,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
+    location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
     current_wflow <- .catch_and_log_melodie(
-      finalize_fit_pre(static$wflow, current_sched_pre, static)
+      finalize_fit_pre(static$wflow, current_sched_pre, static),
+      location = location, notes = notes
     )
-    if (has_log_notes(current_wflow)) {
-      location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
-      notes <- append_log_notes(notes, current_wflow, location)
-      catalog_log(notes)
-      if (is_failure(current_wflow)) {
-        next
-      }
-      current_wflow <- remove_log_notes(current_wflow)
+
+    if (is_failure(current_wflow)) {
+      next
     }
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
     static$y_name <- outcome_names(current_wflow)
@@ -76,18 +73,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
       # Splice in any parameters marked for tuning and fit the model
+      location <- glue::glue("model {iter_model}/{num_iterations_model}")
       current_wflow <- .catch_and_log_melodie(
-        finalize_fit_model(pre_wflow, current_sched_model)
+        finalize_fit_model(pre_wflow, current_sched_model),
+        location = location, notes = notes
       )
-
-      if (has_log_notes(current_wflow)) {
-        location <- glue::glue("model {iter_model}/{num_iterations_model}")
-        notes <- append_log_notes(notes, current_wflow, location)
-        catalog_log(notes)
-        if (is_failure(current_wflow)) {
-          next
-        }
-        current_wflow <- remove_log_notes(current_wflow)
+      
+      if (is_failure(current_wflow)) {
+        next
       }
 
       current_grid <- rebind_grid(current_sched_pre, current_sched_model)
@@ -120,23 +113,22 @@ loop_over_all_stages <- function(resamples, grid, static) {
             rebind_grid(current_sched_pred)
 
           # Remove the submodel column since it is in the currrent grid.
+          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
           current_pred <- .catch_and_log_melodie(
             predict_all_types(current_wflow, static, sub_grid) |>
-              dplyr::select(-dplyr::all_of(sub_nm))
+              dplyr::select(-dplyr::all_of(sub_nm)),
+            location = location, notes = notes
           )
         } else {
+          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
           current_pred <- .catch_and_log_melodie(
-            predict_all_types(current_wflow, static)
+            predict_all_types(current_wflow, static),
+            location = location, notes = notes
           )
         }
 
-        if (has_log_notes(current_pred)) {
-          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
-          notes <- append_log_notes(notes, current_pred, location)
-          catalog_log(notes)
-          if (is_failure(current_pred)) {
-            next
-          }
+        if (is_failure(current_pred)) {
+          next
         }
         current_pred <- remove_log_notes(current_pred)
 
@@ -172,40 +164,27 @@ loop_over_all_stages <- function(resamples, grid, static) {
               tailor_train_data <- current_pred[0, ]
             }
 
+            location <- glue::glue(
+              "postprocessing {iter_pred}/{num_iterations_pred}"
+            )
             post_fit <- .catch_and_log_melodie(
               finalize_fit_post(
                 current_wflow,
                 predictions = tailor_train_data,
                 grid = post_grid
-              )
+              ),
+              location = location, notes = notes
             )
-
-            if (has_log_notes(post_fit)) {
-              location <- glue::glue(
-                "postprocessing {iter_pred}/{num_iterations_pred}"
-              )
-              notes <- append_log_notes(notes, post_fit, location)
-              catalog_log(notes)
-              if (is_failure(post_fit)) {
-                next
-              }
-              post_fit <- remove_log_notes(post_fit)
+            if (is_failure(post_fit)) {
+              next
             }
-
+            
             post_pred <- .catch_and_log_melodie(
-              predict(post_fit, current_pred)
+              predict(post_fit, current_pred),
+              location = location, notes = notes
             )
-
-            if (has_log_notes(post_pred)) {
-              location <- glue::glue(
-                "postprocessing {iter_pred}/{num_iterations_pred}"
-              )
-              notes <- append_log_notes(notes, post_pred, location)
-              catalog_log(notes)
-              if (is_failure(post_pred)) {
-                next
-              }
-              post_pred <- remove_log_notes(post_pred)
+            if (is_failure(post_pred)) {
+              next
             }
 
             current_wflow <- set_workflow_tailor(current_wflow, post_fit)
@@ -231,8 +210,12 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
           # TODO modularize this:
           if (!is.null(static$control$extract)) {
+            location <- glue::glue(
+              "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
+            )
             elt_extract <- .catch_and_log_melodie(
-              extract_details(current_wflow, static$control$extract)
+              extract_details(current_wflow, static$control$extract),
+              location = location, notes = notes
             )
 
             if (is.null(extracts)) {
@@ -243,17 +226,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
               extracts <- extracts[integer(), ]
             }
 
-            if (has_log_notes(elt_extract)) {
-              location <- glue::glue(
-                "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
-              )
-              empty_notes <- new_note()
-              new_notes <- append_log_notes(empty_notes, elt_extract, location)
-
-              catalog_log(new_notes)
-              notes <- dplyr::bind_rows(notes, new_notes)
-            }
-            elt_extract <- remove_log_notes(elt_extract)
             if (nrow(static$param_info) > 0) {
               extracts <- tibble::add_row(
                 extracts,
@@ -285,6 +257,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (is.null(pred_reserve)) {
     all_metrics <- NULL
   } else {
+    location <- glue::glue("internal")
     all_metrics <- .catch_and_log_melodie(
       pred_reserve |>
       dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
@@ -295,20 +268,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
         event_level = static$control$event_level,
         metrics_info = metrics_info(static$metrics)
       ) |>
-      add_configs(static)
+      add_configs(static),
+      location = location, notes = notes
     )
-
-    if (has_log_notes(all_metrics)) {
-      location <- glue::glue(
-        "internal"
-      )
-      empty_notes <- new_note()
-      new_notes <- append_log_notes(empty_notes, all_metrics, location)
-
-      catalog_log(new_notes)
-      notes <- dplyr::bind_rows(notes, new_notes)
-    }
-    all_metrics <- remove_log_notes(all_metrics)
   }
 
   if (!is.null(extracts)) {

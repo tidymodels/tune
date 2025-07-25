@@ -322,7 +322,7 @@
     Code
       catalog_summary_test
     Output
-      A: x25
+      A: x75
 
 # interactive logger works (bayesian, error)
 

@@ -1,5 +1,14 @@
-.catch_and_log_melodie <- function(.expr) {
+.catch_and_log_melodie <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+  dots <- list(...)
   tmp <- catcher_melodie(.expr)
+
+  if (has_log_notes(tmp)) {
+    notes <- append_log_notes(notes, tmp, dots$location)
+    catalog_log(notes)
+  }
+  tmp <- remove_log_notes(tmp)
+  assign("notes", notes, envir = parent.frame())
+
   tmp
 }
 
