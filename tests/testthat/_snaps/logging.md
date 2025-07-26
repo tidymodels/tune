@@ -68,52 +68,6 @@
     Output
       NULL
 
-# log issues
-
-    Code
-      problems_1 <- log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      problems_2 <- log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
-    Message
-      ! Fold01: toledo: NaNs produced
-
-# catch and log issues
-
-    Code
-      out_1 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_3 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      ! Fold01: toledo: NaNs produced
-
----
-
-    Code
-      out_5 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      x toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_6 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      ! toledo: NaNs produced
-
 # logging iterations
 
     Code

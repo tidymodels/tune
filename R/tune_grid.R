@@ -323,8 +323,8 @@ tune_grid_workflow <- function(
     rng = TRUE,
     call = caller_env()
 ) {
-  if (!catalog_is_active_melodie()) {
-    initialize_catalog_melodie(control)
+  if (!catalog_is_active()) {
+    initialize_catalog(control)
   }
 
   check_rset(resamples)

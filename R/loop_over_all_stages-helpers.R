@@ -324,7 +324,7 @@ finalize_fit_model <- function(wflow_current, grid) {
     wflow_current <- set_workflow_spec(wflow_current, mod_spec)
   }
 
-  # .catch_and_log_melodie_fit()
+  # .catch_and_log_fit()
   .fit_model(wflow_current, workflows::control_workflow())
 }
 

@@ -48,7 +48,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
     location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
-    current_wflow <- .catch_and_log_melodie(
+    current_wflow <- .catch_and_log(
       finalize_fit_pre(static$wflow, current_sched_pre, static),
       control = static$control,
       split_labels = split_labs,
@@ -78,7 +78,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
       location <- glue::glue(
         "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
-      current_wflow <- .catch_and_log_melodie(
+      current_wflow <- .catch_and_log(
         finalize_fit_model(pre_wflow, current_sched_model),
         control = static$control,
         split_labels = split_labs,
@@ -122,7 +122,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
           location <- glue::glue(
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
-          current_pred <- .catch_and_log_melodie(
+          current_pred <- .catch_and_log(
             predict_all_types(current_wflow, static, sub_grid) |>
               dplyr::select(-dplyr::all_of(sub_nm)),
             control = static$control,
@@ -133,7 +133,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
           location <- glue::glue(
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
-          current_pred <- .catch_and_log_melodie(
+          current_pred <- .catch_and_log(
             predict_all_types(current_wflow, static),
             control = static$control,
             split_labels = split_labs,
@@ -181,7 +181,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
-            post_fit <- .catch_and_log_melodie(
+            post_fit <- .catch_and_log(
               finalize_fit_post(
                 current_wflow,
                 predictions = tailor_train_data,
@@ -195,7 +195,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               next
             }
             
-            post_pred <- .catch_and_log_melodie(
+            post_pred <- .catch_and_log(
               predict(post_fit, current_pred),
               control = static$control,
               split_labels = split_labs,
@@ -231,7 +231,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
             )
-            elt_extract <- .catch_and_log_melodie(
+            elt_extract <- .catch_and_log(
               extract_details(current_wflow, static$control$extract),
               control = static$control,
               split_labels = split_labs,
@@ -278,7 +278,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
     all_metrics <- NULL
   } else {
     location <- glue::glue("internal")
-    all_metrics <- .catch_and_log_melodie(
+    all_metrics <- .catch_and_log(
       pred_reserve |>
       dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
       .estimate_metrics(
