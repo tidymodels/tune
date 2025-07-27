@@ -9,7 +9,6 @@
 \alias{.load_namespace}
 \alias{initialize_catalog}
 \alias{.catch_and_log}
-\alias{.catch_and_log_fit}
 \title{Internal functions used by other tidymodels packages}
 \usage{
 forge_from_workflow(new_data, workflow)
@@ -30,8 +29,6 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
 initialize_catalog(control, env = rlang::caller_env())
 
 .catch_and_log(.expr, ..., bad_only = FALSE, notes, catalog = TRUE)
-
-.catch_and_log_fit(.expr, ..., notes)
 }
 \arguments{
 \item{new_data}{A data frame or matrix of predictors to process.}

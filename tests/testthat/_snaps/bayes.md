@@ -11,7 +11,6 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i Estimating performance
@@ -47,7 +46,6 @@
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i Estimating performance
@@ -114,7 +112,6 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i num_comp=5
@@ -126,7 +123,6 @@
       
       i Current best:		rmse=2.453 (@iter 1)
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i num_comp=1
@@ -169,7 +165,6 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i num_comp=5
@@ -211,7 +206,6 @@
       
       i Current best:		rmse=2.453 (@iter 1)
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i num_comp=1
@@ -439,8 +433,9 @@
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! All of the rsq estimates were missing. The Gaussian process model cannot be
         fit to the data.
-      ! Gaussian process model: no non-missing arguments to min; returning Inf, no non-missing arguments...
-      x Gaussian process model: Error in seq_len(n - 1L): argument must be coercible to non-negative int...
+      > A | warning: no non-missing arguments to min; returning Inf
+      > B | warning: no non-missing arguments to max; returning -Inf
+      > C | error:   argument must be coercible to non-negative integer
     Condition
       Error in `check_gp_failure()`:
       ! Gaussian process model was not fit.
