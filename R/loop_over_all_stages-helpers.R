@@ -87,7 +87,7 @@ get_data_subsets <- function(wflow, split, split_args = NULL) {
     # * the preprocessor and model (excluding the post-processor) are fitted
     #   on `analysis(inner_split(split))`, the inner analysis set (just
     #   referred to as analysis)
-    # * that model generates predictions on `assessment(inner_split(split))`,
+    # * that model generates predictions on `calibration(inner_split(split))`,
     #   the calibration set
     # * the post-processor is trained on the predictions generated from the
     #   calibration set

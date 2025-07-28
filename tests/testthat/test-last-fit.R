@@ -305,7 +305,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
     generics::fit(
       wflow,
       rsample::analysis(inner_split),
-      calibration = rsample::assessment(inner_split)
+      calibration = rsample::calibration(inner_split)
     )
 
   wflow_cal <-
