@@ -250,7 +250,7 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   skip_if_not_installed("mgcv")
   skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
   skip_if_not_installed("probably")
-  skip("work on how to make inner_split reproducible")
+  skip("work on how to make internal_calibration_split reproducible")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y - 3)^2)
@@ -261,7 +261,10 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   split <- rsample::initial_split(dat)
 
   set.seed(1)
-  inner_split <- rsample::inner_split(split, split_args = list())
+  internal_calibration_split <- rsample::internal_calibration_split(
+    split,
+    split_args = list()
+  )
 
   # ----------------------------------------------------------------------------
 
@@ -304,8 +307,8 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   wflow_res <-
     generics::fit(
       wflow,
-      rsample::analysis(inner_split),
-      calibration = rsample::calibration(inner_split)
+      rsample::analysis(internal_calibration_split),
+      calibration = rsample::calibration(internal_calibration_split)
     )
 
   wflow_cal <-
