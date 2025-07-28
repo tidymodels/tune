@@ -54,7 +54,7 @@ test_that("extract data subsets - estimated postprocessing", {
     c("fit", "pred", "cal")
   )
   expect_equal(data_1$fit$data, analysis(rs_sub_split))
-  expect_equal(data_1$cal$data, assessment(rs_sub_split))
+  expect_equal(data_1$cal$data, calibration(rs_sub_split))
   expect_equal(data_1$pred$data, assessment(rs_split))
 
   expect_equal(data_1$fit$ind, as.integer(rs_sub_split))
