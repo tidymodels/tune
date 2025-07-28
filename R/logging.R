@@ -165,27 +165,6 @@ summarize_catalog <- function(catalog, sep = "   ") {
   res
 }
 
-# a light wrapper around `tune_catalog()` for use inside of `tune_log()`
-log_catalog <- function(msg, type) {
-  type <-
-    switch(
-      type,
-      warning = "warning",
-      danger = "error",
-      return(invisible(NULL))
-    )
-
-  issues <-
-    tibble::new_tibble(
-      list(type = type, note = msg),
-      nrow = length(msg)
-    )
-
-  tune_catalog(issues)
-
-  invisible(NULL)
-}
-
 # catching and logging ---------------------------------------------------------
 siren <- function(x, type = "info") {
   tune_color <- get_tune_colors()
@@ -225,11 +204,6 @@ tune_log <- function(control, split_labels = NULL, task, type = "success", catal
   }
 
   if (task == "internal") {
-    return(NULL)
-  }
-
-  if (uses_catalog() & catalog) {
-    log_catalog(task, type)
     return(NULL)
   }
 
