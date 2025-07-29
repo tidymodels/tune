@@ -85,15 +85,15 @@ get_data_subsets <- function(wflow, split, split_args = NULL) {
     # further split the analysis data into an "inner" analysis and
     # assessment set.
     # * the preprocessor and model (excluding the post-processor) are fitted
-    #   on `analysis(inner_split(split))`, the inner analysis set (just
+    #   on `analysis(internal_calibration_split(split))`, the inner analysis set (just
     #   referred to as analysis)
-    # * that model generates predictions on `calibration(inner_split(split))`,
+    # * that model generates predictions on `calibration(internal_calibration_split(split))`,
     #   the calibration set
     # * the post-processor is trained on the predictions generated from the
     #   calibration set
     # * the model (including the post-processor) generates predictions on the
     #   assessment set and those predictions are assessed with performance metrics
-    split <- rsample::inner_split(split, split_args = split_args)
+    split <- rsample::internal_calibration_split(split, split_args = split_args)
 
     cal_lst$ind <- as.integer(split, data = "assessment")
     cal_lst$data <- vctrs::vec_slice(split$data, cal_lst$ind)
