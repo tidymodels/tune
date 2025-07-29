@@ -11,7 +11,7 @@ recipe across one or more resamples of the data."><meta property="og:image" cont
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -373,13 +373,13 @@ the largest time corresponding to an event are constant (or <code>NA</code>).</p
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">spline_res</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    disp    wt .metric .estimator  mean     n std_err .config           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     3     2 rmse    standard    2.54     5   0.207 Preprocessor05_Mo…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     3     3 rmse    standard    2.64     5   0.234 Preprocessor06_Mo…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     4     3 rmse    standard    2.82     5   0.456 Preprocessor10_Mo…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4     2 rmse    standard    2.93     5   0.489 Preprocessor09_Mo…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     4     4 rmse    standard    3.01     5   0.475 Preprocessor11_Mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    disp    wt .metric .estimator  mean     n std_err .config         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     3     2 rmse    standard    2.54     5   0.207 pre05_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     3     3 rmse    standard    2.64     5   0.234 pre06_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     4     3 rmse    standard    2.82     5   0.456 pre10_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4     2 rmse    standard    2.93     5   0.489 pre09_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     4     4 rmse    standard    3.01     5   0.475 pre11_mod0_post0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ---------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -413,11 +413,11 @@ the largest time corresponding to an event are constant (or <code>NA</code>).</p
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        cost   rbf_sigma .metric .estimator  mean     n std_err .config </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  5.66     0.021<span style="text-decoration: underline;">5</span>      rmse    standard    2.69     5   0.186 Preproc…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  0.031<span style="text-decoration: underline;">2</span>   1           rmse    standard    5.82     5   0.946 Preproc…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 32        0.000<span style="text-decoration: underline;">000</span>215 rmse    standard    5.95     5   0.969 Preproc…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  0.177    0.000<span style="text-decoration: underline;">01</span>     rmse    standard    5.96     5   0.970 Preproc…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  0.000<span style="text-decoration: underline;">977</span> 0.000<span style="text-decoration: underline;">464</span>    rmse    standard    5.96     5   0.970 Preproc…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  5.66     0.021<span style="text-decoration: underline;">5</span>      rmse    standard    2.69     5   0.186 pre0_mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  0.031<span style="text-decoration: underline;">2</span>   1           rmse    standard    5.82     5   0.946 pre0_mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 32        0.000<span style="text-decoration: underline;">000</span>215 rmse    standard    5.95     5   0.969 pre0_mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  0.177    0.000<span style="text-decoration: underline;">01</span>     rmse    standard    5.96     5   0.970 pre0_mo…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  0.000<span style="text-decoration: underline;">977</span> 0.000<span style="text-decoration: underline;">464</span>    rmse    standard    5.96     5   0.970 pre0_mo…</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">svm_res</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_log10</a></span><span class="op">(</span><span class="op">)</span></span></span>

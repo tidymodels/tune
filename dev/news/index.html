@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,25 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li><p>The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new <code>trace</code> column in the <code>collect_notes(.Last.tune.result)</code> output to find precisely where the error occurred (<a href="https://github.com/tidymodels/tune/issues/873" class="external-link">#873</a>).</p></li>
+<div class="section level3">
+<h3 id="changes-to-tune_grid-development-version">Changes to <code>tune_grid()</code>.<a class="anchor" aria-label="anchor" href="#changes-to-tune_grid-development-version"></a></h3>
+<ul><li><p>A major rewrite and refactor of the underlying code that runs <code><a href="../reference/tune_grid.html">tune_grid()</a></code> was made.</p></li>
+<li><p>The pattern of <code>.config</code> values has changed from <code>Preprocessor{num}_Model{num}</code> to <code>pre{num}_mod{num}_post{num}</code>.</p></li>
+<li><p>The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new <code>trace</code> column in the <code>collect_notes(.Last.tune.result)</code> output to find precisely where the error occurred (<a href="https://github.com/tidymodels/tune/issues/873" class="external-link">#873</a>).</p></li>
 <li><p>Post-processing: new <code><a href="../reference/schedule_grid.html">schedule_grid()</a></code> for scheduling a grid including post-processing (<a href="https://github.com/tidymodels/tune/issues/988" class="external-link">#988</a>).</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="other-changes-development-version">Other Changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<ul><li><p>Introduced support for parallel processing with mirai in addition to the currently supported framework future. See <code><a href="../reference/parallelism.html">?parallelism</a></code> to learn more (<a href="https://github.com/tidymodels/tune/issues/1028" class="external-link">#1028</a>).</p></li>
+<li><p>Sequential and parallel processing all use the same L’Ecuyer-CMRG seeds (conditional on <code>parallel_over</code>) (<a href="https://github.com/tidymodels/tune/issues/1033" class="external-link">#1033</a>).</p></li>
+<li><p><code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> now includes an option (<code>keep_replicates</code>) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (<a href="https://github.com/tidymodels/tune/issues/1000" class="external-link">#1000</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>The <code>foreach</code> package is no longer supported. Instead, use the future or mirai packages.<br></li>
+<li>The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="tune-130">tune 1.3.0<a class="anchor" aria-label="anchor" href="#tune-130"></a></h2><p class="text-muted">CRAN release: 2025-02-21</p>
 <ul><li><p>The package will now warn when parallel processing has been enabled with foreach but not with future. See <a href="https://tune.tidymodels.org/dev/reference/parallelism.html"><code>?parallelism</code></a> to learn more about transitioning your code to future (<a href="https://github.com/tidymodels/tune/issues/878" class="external-link">#878</a>, <a href="https://github.com/tidymodels/tune/issues/866" class="external-link">#866</a>). The next version of tune will move to a pure future implementation.</p></li>

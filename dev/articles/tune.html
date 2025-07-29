@@ -31,7 +31,7 @@ basic usage, grid search, and model optimization.
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -255,12 +255,7 @@ this is the default for regression problems).</p>
 as &lt;code&gt;Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude&lt;/code&gt;.
 A recipe is not required.&lt;/p&gt;"><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">ames_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tune_grid.html">tune_grid</a></span><span class="op">(</span><span class="va">lm_mod</span>, <span class="va">ames_rec</span>, resamples <span class="op">=</span> <span class="va">cv_splits</span>, grid <span class="op">=</span> <span class="va">spline_grid</span><span class="op">)</span></span></code></pre></div>
 <p>The object is similar to the <code>rsample</code> object but with one
 or more extra columns:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
@@ -287,18 +282,18 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_res</span><span class="op">$</span><span class="va">.metrics</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 6</span></span></span>
-<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config             </span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">5</span> Preprocessor01_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.683  Preprocessor01_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard      0.097<span style="text-decoration: underline;">0</span> Preprocessor02_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard      0.693  Preprocessor02_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard      0.095<span style="text-decoration: underline;">9</span> Preprocessor03_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard      0.702  Preprocessor03_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard      0.092<span style="text-decoration: underline;">5</span> Preprocessor04_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard      0.724  Preprocessor04_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard      0.091<span style="text-decoration: underline;">8</span> Preprocessor05_Mode…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard      0.728  Preprocessor05_Mode…</span></span>
+<span><span class="co">#&gt;    `long df` `lat df` .metric .estimator .estimate .config         </span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard      0.098<span style="text-decoration: underline;">5</span> pre01_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard      0.683  pre01_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard      0.097<span style="text-decoration: underline;">0</span> pre02_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard      0.693  pre02_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard      0.095<span style="text-decoration: underline;">9</span> pre03_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard      0.702  pre03_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard      0.092<span style="text-decoration: underline;">5</span> pre04_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard      0.724  pre04_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard      0.091<span style="text-decoration: underline;">8</span> pre05_mod0_post0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard      0.728  pre05_mod0_post0</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>To get the average metric value for each parameter combination,
 <code><a href="../reference/collect_predictions.html">collect_metrics()</a></code> can be put to use:</p>
@@ -308,16 +303,16 @@ estimated. This can be changed using the &lt;code&gt;metrics&lt;/code&gt; option
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 162 × 8</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config  </span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.100     10 0.001<span style="text-decoration: underline;">45</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.674     10 0.007<span style="text-decoration: underline;">77</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">6</span>    10 0.001<span style="text-decoration: underline;">37</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard   0.680     10 0.006<span style="text-decoration: underline;">75</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard   0.098<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">27</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard   0.686     10 0.007<span style="text-decoration: underline;">34</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard   0.096<span style="text-decoration: underline;">6</span>    10 0.001<span style="text-decoration: underline;">22</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard   0.699     10 0.006<span style="text-decoration: underline;">62</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard   0.096<span style="text-decoration: underline;">5</span>    10 0.001<span style="text-decoration: underline;">17</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard   0.700     10 0.006<span style="text-decoration: underline;">61</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         2        2 rmse    standard   0.100     10 0.001<span style="text-decoration: underline;">45</span> pre01_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         2        2 rsq     standard   0.674     10 0.007<span style="text-decoration: underline;">77</span> pre01_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         2        4 rmse    standard   0.099<span style="text-decoration: underline;">6</span>    10 0.001<span style="text-decoration: underline;">37</span> pre02_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         2        4 rsq     standard   0.680     10 0.006<span style="text-decoration: underline;">75</span> pre02_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         2        6 rmse    standard   0.098<span style="text-decoration: underline;">7</span>    10 0.001<span style="text-decoration: underline;">27</span> pre03_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         2        6 rsq     standard   0.686     10 0.007<span style="text-decoration: underline;">34</span> pre03_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         2        8 rmse    standard   0.096<span style="text-decoration: underline;">6</span>    10 0.001<span style="text-decoration: underline;">22</span> pre04_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         2        8 rsq     standard   0.699     10 0.006<span style="text-decoration: underline;">62</span> pre04_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         2       10 rmse    standard   0.096<span style="text-decoration: underline;">5</span>    10 0.001<span style="text-decoration: underline;">17</span> pre05_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         2       10 rsq     standard   0.700     10 0.006<span style="text-decoration: underline;">61</span> pre05_mo…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 152 more rows</span></span></span></code></pre></div>
 <p>The values in the <code>mean</code> column are the averages of the 10
 resamples. The best RMSE values corresponded to:</p>
@@ -330,16 +325,16 @@ resamples. The best RMSE values corresponded to:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 81 × 8</span></span></span>
 <span><span class="co">#&gt;    `long df` `lat df` .metric .estimator   mean     n std_err .config  </span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        16       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">20</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        18       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">21</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        16        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        16       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        16       18 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        16       16 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">22</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        18       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        18        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        18       18 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">20</span> Preproce…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16       14 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">17</span> Preproce…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        16       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">20</span> pre69_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        18       12 rmse    standard   0.094<span style="text-decoration: underline;">8</span>    10 0.001<span style="text-decoration: underline;">21</span> pre78_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        16        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> pre67_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        16       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">18</span> pre68_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        16       18 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> pre72_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        16       16 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">22</span> pre71_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        18       10 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> pre77_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        18        8 rmse    standard   0.094<span style="text-decoration: underline;">9</span>    10 0.001<span style="text-decoration: underline;">19</span> pre76_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        18       18 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">20</span> pre81_mo…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        16       14 rmse    standard   0.095<span style="text-decoration: underline;">0</span>    10 0.001<span style="text-decoration: underline;">17</span> pre70_mo…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 71 more rows</span></span></span></code></pre></div>
 <p>Smaller degrees of freedom values correspond to more linear
 functions, but the grid search indicates that more nonlinearity is
@@ -437,244 +432,719 @@ here.</p></li>
 <span>                         param_info <span class="op">=</span> <span class="va">knn_param</span>, control <span class="op">=</span> <span class="va">ctrl</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #000000;">❯</span> <span style="color: #000000;"> Generating a set of 5 initial parameter results</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Initialization complete</span></span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">has 5 data points to do so. This may cause errors or a poor model</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4774 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4772 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">has 6 data points to do so. This may cause errors or a poor model</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4770 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4780 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">has 7 data points to do so. This may cause errors or a poor model</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4777 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4752 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> <span style="color: #BBBB00;">The Gaussian process model is being fit using 7 features but only</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">has 8 data points to do so. This may cause errors or a poor model</span></span></span>
 <span><span class="co">#&gt;   <span style="color: #BBBB00;">fit.</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4766 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4786 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4793 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4776 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4771 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4772 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4743 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4751 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4781 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4787 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4791 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4774 candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4761 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4783 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4784 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4782 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4767 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4776 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4722 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4775 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4776 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4774 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4768 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4755 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4746 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4760 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4780 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4795 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4772 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4774 candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Gaussian process model</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Generating 4759 candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Predicted candidates</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Estimating performance</span></span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> <span style="color: #0000BB;">tune</span> detected a parallel backend registered with foreach but no</span></span>
-<span><span class="co">#&gt;   backend registered with future.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Support for parallel processing with foreach was soft-deprecated in</span></span>
-<span><span class="co">#&gt;   <span style="color: #0000BB;">tune</span> 1.2.1.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> See ?parallelism (`?tune::parallelism()`) to learn more.</span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold01: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold02: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold03: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold04: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold05: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold06: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold07: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold08: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold09: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">Fold10: preprocessor 1/1, model 1/1 (predictions)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✓</span> <span style="color: #000000;">Estimating performance</span></span></span></code></pre></div>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -688,16 +1158,16 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 11</span></span></span>
 <span><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .metric .estimator   mean</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         8 inv                 3        4 rmse    standard   0.081<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         7 inv                 3        4 rmse    standard   0.081<span style="text-decoration: underline;">3</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         7 inv                 3        3 rmse    standard   0.081<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         9 inv                 4        5 rmse    standard   0.081<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5 inv                 3        4 rmse    standard   0.081<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        10 inv                 4        6 rmse    standard   0.082<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         8 inv                 5        4 rmse    standard   0.082<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>        12 inv                 2        4 rmse    standard   0.082<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        12 inv                 4        2 rmse    standard   0.082<span style="text-decoration: underline;">8</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         8 inv                 2        6 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        11 triangular          5        5 rmse    standard   0.081<span style="text-decoration: underline;">1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        10 triangular          5        6 rmse    standard   0.081<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        13 triangular          5        5 rmse    standard   0.081<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>        10 inv                 5        6 rmse    standard   0.081<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         8 inv                 4        6 rmse    standard   0.082<span style="text-decoration: underline;">0</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        12 inv                 5        7 rmse    standard   0.082<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         7 inv                 5        8 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         4 inv                 6        4 rmse    standard   0.083<span style="text-decoration: underline;">3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>        21 triangular          3        6 rmse    standard   0.083<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>        18 inv                 2        5 rmse    standard   0.083<span style="text-decoration: underline;">5</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   .iter &lt;int&gt;</span></span></span></code></pre></div>

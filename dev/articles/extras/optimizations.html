@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">1.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -216,14 +216,20 @@ unique combinations of preprocessor and model tuning parameters for that
 specific resample. This will result in the preprocessor being
 re-processed multiple times, but can be faster if that preprocessing is
 extremely fast.</p>
-<p>tune supports parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> framework. future
-supports a variety of technologies to share the computations and the
-choice of technology is determined by the chosen <em>plan</em>. To run
-tuning code in parallel, just provide a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> and tune
-will take care of the rest. For example:</p>
+<p>tune supports parallel processing using the <a href="https://www.futureverse.org/" class="external-link">future</a> and <a href="https://mirai.r-lib.org/" class="external-link">mirai</a> frameworks. future supports a
+variety of technologies to share the computations and the choice of
+technology is determined by the chosen <em>plan</em>. To run tuning code
+in parallel, just provide a <code><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan()</a></code> and tune will take care
+of the rest. For example:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
+<p>For mirai, you can set the number of worker processes via</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mirai.r-lib.org" class="external-link">mirai</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://mirai.r-lib.org/reference/daemons.html" class="external-link">daemons</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p>For either parallel frameworks, you don’t have to change your
+tidymodels code.</p>
 <div class="section level3">
 <h3 id="foreach-legacy">foreach (legacy)<a class="anchor" aria-label="anchor" href="#foreach-legacy"></a>
 </h3>
@@ -239,7 +245,7 @@ writing, the backend packages are doMC, doMPI, doParallel, doRedis,
 doSNOW, and doAzureParallel (GitHub only).</p>
 <p>Registering a parallel backend is also somewhat dependent of the
 package. For doParallel, one could use:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span></span>
@@ -249,7 +255,7 @@ package. For doParallel, one could use:</p>
 loading any foreach backend packages <code>library(do*)</code> as well
 as lines registering that technology with <code>registerDo*()</code>,
 and add the following lines:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span><span class="op">)</span></span></code></pre></div>
 <p>Switch out <code>multisession</code> for another strategy if
@@ -267,7 +273,7 @@ the <code>pkg</code> option in <code><a href="../../reference/control_grid.html"
 <p>Some helpful advice to avoid errors in parallel processing is to not
 use variables in the global environment. These may not be found when the
 code is run inside of a worker process. For example:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">num_pcs</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span></span>
 <span><span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
