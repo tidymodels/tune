@@ -6,6 +6,10 @@
 loop_over_all_stages <- function(resamples, grid, static) {
   # Initialize some objects
 
+  # Some packages may use random numbers so attach them prior to initializing
+  # the RNG seed
+  attach_pkgs(static$pkgs)
+
   seed_length <- length(resamples$.seeds[[1]])
 
   # If we are using last_fit() (= zero seed length), don't mess with the RNG
@@ -84,7 +88,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         split_labels = split_labs,
         location = location, notes = notes
       )
-      
+
       if (is_failure(current_wflow)) {
         next
       }
@@ -194,7 +198,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             if (is_failure(post_fit)) {
               next
             }
-            
+
             post_pred <- .catch_and_log(
               predict(post_fit, current_pred),
               control = static$control,

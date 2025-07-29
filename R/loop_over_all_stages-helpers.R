@@ -11,6 +11,7 @@ make_static <- function(
   eval_time,
   split_args,
   control,
+  pkgs = character(0),
   data = list(fit = NULL, pred = NULL, cal = NULL)
 ) {
   # check inputs
@@ -40,6 +41,7 @@ make_static <- function(
     eval_time = eval_time,
     split_args = split_args,
     control = control,
+    pkgs = pkgs,
     data = data
   )
 }
@@ -542,4 +544,21 @@ parsnip_to_engine <- function(wflow, grid) {
   nm_lst <- key$parsnip
   names(nm_lst) <- key$user
   dplyr::rename(grid, dplyr::all_of(nm_lst))
+}
+
+# ------------------------------------------------------------------------------
+
+attach_pkgs <- function(pkgs, load = character(0)) {
+  is_inst <- purrr::map_lgl(pkgs, rlang::is_installed)
+  if (any(!is_inst)) {
+    nms <- pkgs[!is_inst]
+    cli::cli_abort("Some package installs are needed: {.pkg {nms}}", call = NULL)
+  }
+
+  # There may be some packages that need to be fully loaded to work
+  # appropriately.
+  sshh_load <- purrr::quietly(library)
+  load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
+
+  invisible(pkgs)
 }
