@@ -373,12 +373,12 @@ catalog_log <- function(x) {
   }
 
   rlang::env_bind(tune_env, progress_catalog = catalog)
-  rlang::env_bind(
-    tune_env$progress_env,
-    catalog_summary = summarize_catalog(catalog)
-  )
-
   if (uses_catalog()) {
+    rlang::env_bind(
+      tune_env$progress_env,
+      catalog_summary = summarize_catalog(catalog)
+    )
+
     if (!tune_env$progress_started) {
 
       rlang::with_options(
