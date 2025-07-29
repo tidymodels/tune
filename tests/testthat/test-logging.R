@@ -12,17 +12,17 @@ test_that("low-level messages", {
   expect_snapshot(siren("bat", "success"))
 })
 
-test_that("tune_log", {
+test_that("update_printer", {
   ctrl_t <- control_grid(verbose = TRUE)
   ctrl_f <- control_grid(verbose = FALSE)
   rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
 
-  expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "go"))
-  expect_snapshot(tune_log(ctrl_t, NULL, task = "cube", type = "go"))
-  expect_silent(tune_log(ctrl_f, NULL, task = "cube", type = "go"))
+  expect_snapshot(update_printer(ctrl_t, rs, task = "cube", type = "go"))
+  expect_snapshot(update_printer(ctrl_t, NULL, task = "cube", type = "go"))
+  expect_silent(update_printer(ctrl_f, NULL, task = "cube", type = "go"))
 
   skip_on_os("windows")
-  expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "success"))
+  expect_snapshot(update_printer(ctrl_t, rs, task = "cube", type = "success"))
 })
 
 test_that("logging iterations", {

@@ -55,13 +55,13 @@ included as an argument to allow for pre-computing.}
 
 \item{.expr}{Code to execute.}
 
-\item{...}{Object to pass to the internal \code{tune_log()} function.}
+\item{...}{Object to pass to the internal \code{update_printer()} function.}
 
 \item{bad_only}{A logical for whether warnings and errors should be caught.}
 
 \item{notes}{Character data to add to the logging.}
 
-\item{catalog}{A logical passed to \code{tune_log()} giving whether the message
+\item{catalog}{A logical passed to \code{update_printer()} giving whether the message
 is compatible with the issue cataloger. Defaults to \code{TRUE}. Updates that are
 always unique and do not represent a tuning "issue" can bypass the cataloger
 by setting \code{catalog = FALSE}.}

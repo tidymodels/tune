@@ -474,7 +474,7 @@ tune_bayes_workflow <- function(object,
                      objective = opt_metric_name, eval_time = opt_metric_time)
       } else {
         if (all_bad) {
-          tune_log(control, split_labels = NULL, task = "All models failed", type = "danger")
+          update_printer(control, split_labels = NULL, task = "All models failed", type = "danger")
         }
         score_card$last_impr <- score_card$last_impr + 1
       }
@@ -636,11 +636,11 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       msg <- "An error occurred when creating candidates parameters: "
       msg <- paste(msg, as.character(object))
     }
-    tune_log(control, split_labels = NULL, task = msg, type = "warning")
+    update_printer(control, split_labels = NULL, task = msg, type = "warning")
     return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
   }
 
-  tune_log(
+  update_printer(
     control,
     split_labels = NULL,
     task = paste("Generating", nrow(pred_grid), "candidates"),
@@ -651,7 +651,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  tune_log(control, split_labels = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
+  update_printer(control, split_labels = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
 
   pred_grid %>%
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
@@ -758,7 +758,7 @@ initial_info <- function(stats, metrics, maximize, eval_time) {
 
 more_results <- function(object, resamples, candidates, metrics,
                          eval_time = NULL, control, param_info) {
-  tune_log(control, split_labels = NULL, task = "Estimating performance", type = "info")
+  update_printer(control, split_labels = NULL, task = "Estimating performance", type = "info")
 
   candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
   p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
@@ -778,7 +778,7 @@ more_results <- function(object, resamples, candidates, metrics,
     )
 
   if (inherits(tmp_res, "try-error")) {
-    tune_log(
+    update_printer(
       control,
       split_labels = NULL, task = "Couldn't estimate performance",
       type = "danger"
@@ -788,10 +788,10 @@ more_results <- function(object, resamples, candidates, metrics,
     if (all_bad) {
       p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
       msg <- paste("All models failed for:", p_chr)
-      tune_log(control, split_labels = NULL, task = msg, type = "danger")
+      update_printer(control, split_labels = NULL, task = msg, type = "danger")
       tmp_res <- simpleError(msg)
     } else {
-      tune_log(
+      update_printer(
         control,
         split_labels = NULL, task = "Estimating performance",
         type = "success"

@@ -41,10 +41,10 @@
     Message
       v bat
 
-# tune_log
+# update_printer
 
     Code
-      tune_log(ctrl_t, rs, task = "cube", type = "go")
+      update_printer(ctrl_t, rs, task = "cube", type = "go")
     Message
       > Fold01: cube
     Output
@@ -53,7 +53,7 @@
 ---
 
     Code
-      tune_log(ctrl_t, NULL, task = "cube", type = "go")
+      update_printer(ctrl_t, NULL, task = "cube", type = "go")
     Message
       > cube
     Output
@@ -62,7 +62,7 @@
 ---
 
     Code
-      tune_log(ctrl_t, rs, task = "cube", type = "success")
+      update_printer(ctrl_t, rs, task = "cube", type = "success")
     Message
       v Fold01: cube
     Output

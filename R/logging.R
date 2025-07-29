@@ -198,7 +198,7 @@ siren <- function(x, type = "info") {
   message(msg)
 }
 
-tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
+update_printer <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -232,7 +232,7 @@ is_testing <- function() {
 #' @rdname tune-internal-functions
 .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
   dots <- list(...)
-  tune_log(..., type = "info", catalog = catalog, task = dots$location)
+  update_printer(..., type = "info", catalog = catalog, task = dots$location)
   tmp <- catcher(.expr)
 
   if (has_log_notes(tmp)) {
@@ -436,7 +436,7 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
+  update_printer(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
 }
 
 check_and_log_flow <- function(control, results) {
@@ -446,11 +446,11 @@ check_and_log_flow <- function(control, results) {
 
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      tune_log(control, split_labels = NULL, task = "Halting search",
+      update_printer(control, split_labels = NULL, task = "Halting search",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "break"))
     } else {
-      tune_log(control, split_labels = NULL, task = "Skipping to next iteration",
+      update_printer(control, split_labels = NULL, task = "Skipping to next iteration",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "next"))
     }
@@ -527,7 +527,7 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
+    update_printer(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
   }
   invisible(NULL)
 }
