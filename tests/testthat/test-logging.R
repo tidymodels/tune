@@ -169,7 +169,9 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
-          extract = function(x) {raise_warning(); raise_error()})
+          extract = function(x) {raise_warning(); raise_error()}, 
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -199,7 +201,8 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
-          extract = function(x) {raise_warning_rl(); raise_error_rl()}
+          extract = function(x) {raise_warning_rl(); raise_error_rl()}, 
+          allow_par = FALSE
         )
     )},
     transform = catalog_lines
@@ -234,7 +237,10 @@ test_that("interactive logger works (fit_resamples, multiline)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = raise_multiline_conditions)
+        control = control_resamples(
+          extract = raise_multiline_conditions,
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -273,7 +279,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = later)
+        control = control_resamples(extract = later, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -327,7 +333,10 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
-        control = control_resamples(extract = function(x) {once(); later()})
+        control = control_resamples(
+          extract = function(x) {once(); later()},
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -368,7 +377,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = numbered)
+        control = control_resamples(extract = numbered, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -398,7 +407,7 @@ test_that("interactive logger works (tune grid, error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         grid = 5,
-        control = control_grid(extract = raise_error)
+        control = control_grid(extract = raise_error, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -430,7 +439,7 @@ test_that("interactive logger works (bayesian, error)", {
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         initial = 5,
         iter = 5,
-        control = control_bayes(extract = raise_error)
+        control = control_bayes(extract = raise_error, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
