@@ -157,7 +157,7 @@
         extract = function(x) {
           raise_warning()
           raise_error()
-        }))
+        }, allow_par = FALSE))
     Message
       > A | warning: ope! yikes.
       > B | error:   AHHhH
@@ -177,7 +177,7 @@
         extract = function(x) {
           raise_warning_rl()
           raise_error_rl()
-        }))
+        }, allow_par = FALSE))
     Message
       > A | warning: ope! yikes. (but rlang)
       > B | error:   AHHhH (but rlang)
@@ -194,7 +194,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = raise_multiline_conditions))
+        extract = raise_multiline_conditions, allow_par = FALSE))
     Message
       > A | warning: hmmm what's happening
       > B | error:   aHHHksdjvndiuf
@@ -211,7 +211,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = later))
+        extract = later, allow_par = FALSE))
     Message
       > A | error:   this errors now! ha!
 
@@ -230,7 +230,7 @@
       control = control_resamples(extract = function(x) {
         once()
         later()
-      }))
+      }, allow_par = FALSE))
     Message
       > A | error:   oh no
       > B | error:   this errors now! ha!
@@ -247,7 +247,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = numbered))
+        extract = numbered, allow_par = FALSE))
     Message
       > A | error:   error number 1
       > B | error:   error number 2
@@ -267,7 +267,8 @@
     Code
       res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn",
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
-        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
+        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error,
+        allow_par = FALSE))
     Message
       > A | error:   AHHhH
 
@@ -283,13 +284,9 @@
     Code
       res_grid <- tune_bayes(parsnip::nearest_neighbor("regression", "kknn",
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
-        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
+        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error,
+        allow_par = FALSE))
     Message
-      > A | error:   AHHhH
-      > A | error:   AHHhH
-      > A | error:   AHHhH
-      > A | error:   AHHhH
-      > A | error:   AHHhH
       > A | error:   AHHhH
 
 ---
@@ -297,5 +294,5 @@
     Code
       catalog_summary_test
     Output
-      A: x5
+      A: x100
 
