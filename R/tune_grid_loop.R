@@ -41,6 +41,17 @@ tune_grid_loop <- function(
   # 2. If you are debugging loop_over_all_stages, use the control option
   #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
+  # ------------------------------------------------------------------------------
+
+  # fmt: skip
+  tm_pkgs <- c("rsample", "workflows", "hardhat", "tune", "parsnip", "tailor",
+               "yardstick")
+  load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
+  load_pkgs <- unique(load_pkgs)
+
+  par_opt <- list()
+
+
   # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
@@ -51,16 +62,9 @@ tune_grid_loop <- function(
     metrics = metrics,
     eval_time = eval_time,
     split_args = split_args,
-    control = control
+    control = control,
+    pkgs = load_pkgs
   )
-
-  # fmt: skip
-  tm_pkgs <- c("rsample", "workflows", "hardhat", "tune", "parsnip", "tailor",
-               "yardstick")
-  load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
-  load_pkgs <- unique(load_pkgs)
-
-  par_opt <- list()
 
   # ----------------------------------------------------------------------------
   # Control execution
