@@ -297,31 +297,36 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
     cli::cli_abort(grid_msg)
   }
 
-  res <-
-    tune_grid_workflow(
-      object,
-      resamples = resamples,
-      grid = grid,
-      metrics = metrics,
-      eval_time = eval_time,
-      pset = param_info,
-      control = control
-    )
+  res <- tune_grid_workflow(
+    object,
+    resamples = resamples,
+    grid = grid,
+    metrics = metrics,
+    eval_time = eval_time,
+    pset = param_info,
+    control = control
+  )
   .stash_last_result(res)
   res
 }
 
 # ------------------------------------------------------------------------------
 
-tune_grid_workflow <- function(workflow,
-                               resamples,
-                               grid = 10,
-                               metrics = NULL,
-                               eval_time = NULL,
-                               pset = NULL,
-                               control = control_grid(),
-                               rng = TRUE,
-                               call = caller_env()) {
+tune_grid_workflow <- function(
+    workflow,
+    resamples,
+    grid = 10,
+    metrics = NULL,
+    eval_time = NULL,
+    pset = NULL,
+    control = control_grid(),
+    rng = TRUE,
+    call = caller_env()
+) {
+  if (!catalog_is_active()) {
+    initialize_catalog(control)
+  }
+
   check_rset(resamples)
 
   metrics <- check_metrics_arg(metrics, workflow, call = call)
@@ -346,18 +351,18 @@ tune_grid_workflow <- function(workflow,
   # Save rset attributes, then fall back to a bare tibble
   rset_info <- pull_rset_attributes(resamples)
   split_args <- rsample::.get_split_args(resamples)
-  resamples <- new_bare_tibble(resamples)
 
   resamples <- tune_grid_loop(
     resamples = resamples,
     grid = grid,
     workflow = workflow,
+    param_info = pset,
     metrics = metrics,
     eval_time = eval_time,
-    control = control,
-    rng = rng,
-    split_args = split_args
+    control = control
   )
+
+  y_name <- outcome_names(resamples)
 
   if (is_cataclysmic(resamples)) {
     cli::cli_warn(
@@ -365,9 +370,6 @@ tune_grid_workflow <- function(workflow,
        information."
     )
   }
-
-  outcomes <- reduce_all_outcome_names(resamples)
-  resamples[[".all_outcome_names"]] <- NULL
 
   workflow <- set_workflow(workflow, control)
 
@@ -377,7 +379,7 @@ tune_grid_workflow <- function(workflow,
     metrics = metrics,
     eval_time = eval_time,
     eval_time_target = NULL,
-    outcomes = outcomes,
+    outcomes = y_name,
     rset_info = rset_info,
     workflow = workflow
   )

@@ -1,11 +1,8 @@
 library(tidymodels)
 library(tune)
 library(textrecipes)
-library(doFuture)
-registerDoFuture()
-cl <- makeCluster(availableCores())
-plan(cluster, workers = cl)
-foreach::getDoParWorkers()
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 

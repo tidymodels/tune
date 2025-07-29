@@ -25,109 +25,6 @@ test_that("tune_log", {
   expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "success"))
 })
 
-test_that("log issues", {
-  ctrl_f <- control_grid(verbose = FALSE)
-
-  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
-
-  res_1 <- catcher(log("a"))
-  res_2 <- catcher(log(1))
-  res_3 <- catcher(log(-1))
-
-  note_1 <- tibble::tibble(location = "Roshar", type = "Alethi", note = "I'm a stick")
-  note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
-
-  expect_snapshot(
-    problems_1 <-
-      log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
-  )
-
-  expect_equal(
-    dplyr::select(problems_1, -trace),
-    dplyr::bind_rows(note_1, note_2)
-  )
-
-  expect_null(problems_1$trace[[1]])
-  expect_s3_class(problems_1$trace[[2]], "rlang_trace")
-
-  expect_silent(log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
-
-  note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
-  expect_snapshot(
-    problems_2 <-
-      log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
-  )
-
-  expect_equal(
-    dplyr::select(problems_2, -trace),
-    dplyr::bind_rows(note_1, note_3)
-  )
-
-  expect_null(problems_2$trace[[1]])
-  expect_s3_class(problems_2$trace[[2]], "rlang_trace")
-})
-
-
-test_that("catch and log issues", {
-  ctrl_f <- control_grid(verbose = FALSE)
-  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
-  null <- NULL
-
-  expect_snapshot(
-    out_1 <- .catch_and_log(
-      log("a"),
-      control = ctrl_f,
-      split_labels = rs,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- .catch_and_log(
-    log(1),
-    control = ctrl_f,
-    split_labels = rs,
-    "toledo",
-    bad_only = FALSE,
-    notes = null
-  ))
-  expect_true(out_2 == 0)
-  expect_snapshot(
-    out_3 <- .catch_and_log(
-      log(-1),
-      control = ctrl_f,
-      split_labels = rs,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(is.nan(out_3))
-  expect_snapshot(
-    out_5 <- .catch_and_log(
-      log("a"),
-      control = ctrl_f,
-      split_labels = NULL,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(inherits(out_5, "try-error"))
-  expect_snapshot(
-    out_6 <- .catch_and_log(
-      log(-1),
-      control = ctrl_f,
-      split_labels = NULL,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(is.nan(out_6))
-})
-
 test_that("logging iterations", {
   ctrl_t <- control_bayes(verbose_iter = TRUE)
   ctrl_f <- control_bayes(verbose_iter = FALSE)
@@ -248,6 +145,10 @@ test_that("message_wrap", {
 })
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
+
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")

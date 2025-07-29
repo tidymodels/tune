@@ -3,14 +3,9 @@
     Code
       result <- fit_resamples(lin_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `step_spline_natural()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
-      x Fold2: preprocessor 1/1:
-        Error in `step_spline_natural()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
+      > A | error:   Error in `step_spline_natural()`:
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -27,14 +22,8 @@
     Code
       result <- fit_resamples(workflow, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `fit()`:
-        ! Can't select columns that don't exist.
-        x Column `foobar` doesn't exist.
-      x Fold2: preprocessor 1/1:
-        Error in `fit()`:
-        ! Can't select columns that don't exist.
-        x Column `foobar` doesn't exist.
+      > A | error:   Can't select columns that don't exist.
+                     x Column `foobar` doesn't exist.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -44,19 +33,14 @@
     Code
       note
     Output
-      [1] "Error in `fit()`:\n! Can't select columns that don't exist.\nx Column `foobar` doesn't exist."
+      [1] "Can't select columns that don't exist.\nx Column `foobar` doesn't exist."
 
 # classification models generate correct error message
 
     Code
       result <- fit_resamples(log_mod, rec, folds, control = control)
     Message
-      x Fold1: preprocessor 1/1, model 1/1:
-        Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a <factor>, not a ...
-      x Fold2: preprocessor 1/1, model 1/1:
-        Error in `check_outcome()`:
-        ! For a classification model, the outcome should be a <factor>, not a ...
+      > A | error:   For a classification model, the outcome should be a <factor>, not a double vector.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -66,7 +50,7 @@
     Code
       note
     Output
-      [1] "Error in `check_outcome()`:\n! For a classification model, the outcome should be a <factor>, not a double vector."
+      [1] "For a classification model, the outcome should be a <factor>, not a double vector."
 
 # `tune_grid()` falls back to `fit_resamples()` - formula
 

@@ -1,5 +1,22 @@
+# Notes on debugging:
+# 1. You can set `options(future.debug = TRUE)` to help
+# 2. If you are debugging loop_over_all_stages, use the control option
+#    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
+
 loop_over_all_stages <- function(resamples, grid, static) {
   # Initialize some objects
+
+  seed_length <- length(resamples$.seeds[[1]])
+
+  # If we are using last_fit() (= zero seed length), don't mess with the RNG
+  # stream; otherwise set everything up.
+  if (seed_length > 0) {
+    orig_seed <- .Random.seed
+    # Set seed within the worker process
+    assign(".Random.seed", resamples$.seeds[[1]], envir = .GlobalEnv)
+    resamples$.seeds <- NULL
+    withr::defer(assign(".Random.seed", orig_seed, envir = .GlobalEnv))
+  }
 
   split <- resamples$splits[[1]]
   split_labs <- resamples |>
@@ -7,45 +24,44 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
   pred_reserve <- NULL
   pred_iter <- 0
-  notes <- tibble::tibble(
-    location = character(),
-    type = character(),
-    note = character()
-  )
+  notes <- new_note()
   extracts <- NULL
 
   sched <- schedule_grid(grid, static$wflow)
 
-  config_tbl <- get_config_key(grid, static$wflow)
+  config_tbl <- static$configs
 
   # Append data partitions here; these are the same for the duration of this function
   data_splits <- get_data_subsets(static$wflow, split, static$split_args)
   static <- update_static(static, data_splits)
 
-  # Now that we have data, determine the names of the outcome data
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it later. See #1024
   static$y_name <- outcome_names(static$wflow, data = split$data)
 
   # ----------------------------------------------------------------------------
   # Iterate over preprocessors
 
-  num_iterations_pre <- nrow(sched)
+  num_iterations_pre <- max(nrow(sched), 1)
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
-    current_wflow <- .catch_and_log_melodie(
-      finalize_fit_pre(static$wflow, current_sched_pre, static)
+    location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
+    current_wflow <- .catch_and_log(
+      finalize_fit_pre(static$wflow, current_sched_pre, static),
+      control = static$control,
+      split_labels = split_labs,
+      location = location, notes = notes
     )
-    if (has_log_notes(current_wflow)) {
-      location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
-      notes <- append_log_notes(notes, current_wflow, location)
-      catalog_log(notes)
-      if (is_failure_melodie(current_wflow)) {
-        next
-      }
-      current_wflow <- remove_log_notes(current_wflow)
-    }
 
-    num_iterations_model <- nrow(current_sched_pre$model_stage[[1]])
+    if (is_failure(current_wflow)) {
+      next
+    }
+    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
+    static$y_name <- outcome_names(current_wflow)
+
+    num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
     # --------------------------------------------------------------------------
     # Iterate over model parameters
@@ -59,23 +75,27 @@ loop_over_all_stages <- function(resamples, grid, static) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
       # Splice in any parameters marked for tuning and fit the model
-      current_wflow <- .catch_and_log_melodie(
-        finalize_fit_model(pre_wflow, current_sched_model)
+      location <- glue::glue(
+        "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
-
-      if (has_log_notes(current_wflow)) {
-        location <- glue::glue("model {iter_model}/{num_iterations_model}")
-        notes <- append_log_notes(notes, current_wflow, location)
-        if (is_failure_melodie(current_wflow)) {
-          next
-        }
-        current_wflow <- remove_log_notes(current_wflow)
+      current_wflow <- .catch_and_log(
+        finalize_fit_model(pre_wflow, current_sched_model),
+        control = static$control,
+        split_labels = split_labs,
+        location = location, notes = notes
+      )
+      
+      if (is_failure(current_wflow)) {
+        next
       }
 
       current_grid <- rebind_grid(current_sched_pre, current_sched_model)
 
       has_submodel <- has_sub_param(current_sched_model$predict_stage[[1]])
-      num_iterations_pred <- nrow(current_sched_model$predict_stage[[1]])
+      num_iterations_pred <- max(
+        nrow(current_sched_model$predict_stage[[1]]),
+        1
+      )
 
       # --------------------------------------------------------------------------
       # Iterate over prediction submodels
@@ -99,27 +119,35 @@ loop_over_all_stages <- function(resamples, grid, static) {
             rebind_grid(current_sched_pred)
 
           # Remove the submodel column since it is in the currrent grid.
-          current_pred <- .catch_and_log_melodie(
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
+          )
+          current_pred <- .catch_and_log(
             predict_all_types(current_wflow, static, sub_grid) |>
-              dplyr::select(-dplyr::all_of(sub_nm))
+              dplyr::select(-dplyr::all_of(sub_nm)),
+            control = static$control,
+            split_labels = split_labs,
+            location = location, notes = notes
           )
         } else {
-          current_pred <- .catch_and_log_melodie(
-            predict_all_types(current_wflow, static)
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
+          )
+          current_pred <- .catch_and_log(
+            predict_all_types(current_wflow, static),
+            control = static$control,
+            split_labels = split_labs,
+            location = location, notes = notes
           )
         }
 
-        if (has_log_notes(current_pred)) {
-          location <- glue::glue("prediction {iter_pred}/{num_iterations_pred}")
-          notes <- append_log_notes(notes, current_pred, location)
-          if (is_failure_melodie(current_pred)) {
-            next
-          }
-          current_pred <- remove_log_notes(current_pred)
+        if (is_failure(current_pred)) {
+          next
         }
+        current_pred <- remove_log_notes(current_pred)
 
         has_post <- has_tailor(current_wflow)
-        num_iterations_post <- nrow(current_sched_pred$post_stage[[1]])
+        num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
 
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
@@ -150,46 +178,44 @@ loop_over_all_stages <- function(resamples, grid, static) {
               tailor_train_data <- current_pred[0, ]
             }
 
-            post_fit <- .catch_and_log_melodie(
+            location <- glue::glue(
+              "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
+            )
+            post_fit <- .catch_and_log(
               finalize_fit_post(
                 current_wflow,
                 predictions = tailor_train_data,
                 grid = post_grid
-              )
+              ),
+              control = static$control,
+              split_labels = split_labs,
+              location = location, notes = notes
             )
-
-            if (has_log_notes(post_fit)) {
-              location <- glue::glue(
-                "postprocessing {iter_pred}/{num_iterations_pred}"
-              )
-              notes <- append_log_notes(notes, post_fit, location)
-              if (is_failure_melodie(post_fit)) {
-                next
-              }
-              post_fit <- remove_log_notes(post_fit)
+            if (is_failure(post_fit)) {
+              next
             }
-
-            post_pred <- .catch_and_log_melodie(
-              predict(post_fit, current_pred)
+            
+            post_pred <- .catch_and_log(
+              predict(post_fit, current_pred),
+              control = static$control,
+              split_labels = split_labs,
+              location = location, notes = notes
             )
-
-            if (has_log_notes(post_pred)) {
-              location <- glue::glue(
-                "postprocessing {iter_pred}/{num_iterations_pred}"
-              )
-              notes <- append_log_notes(notes, post_pred, location)
-              if (is_failure_melodie(post_pred)) {
-                next
-              }
-              post_pred <- remove_log_notes(post_pred)
+            if (is_failure(post_pred)) {
+              next
             }
 
             current_wflow <- set_workflow_tailor(current_wflow, post_fit)
+
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
+            current_extract_grid <- current_post_grid
           } else {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
+            current_extract_grid <- current_predict_grid
           }
+
+          current_wflow <- workflows::.fit_finalize(current_wflow)
 
           # --------------------------------------------------------------------
           # Allocate predictions to an overall object
@@ -199,23 +225,47 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
           # --------------------------------------------------------------------
           # Extractions
+
+          # TODO modularize this:
           if (!is.null(static$control$extract)) {
-            elt_extract <- .catch_and_log_melodie(
-              extract_details(current_wflow, static$control$extract)
+            location <- glue::glue(
+              "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
             )
-  
-            if (has_log_notes(elt_extract)) {
-              location <- glue::glue(
-                "extraction"
+            elt_extract <- .catch_and_log(
+              extract_details(current_wflow, static$control$extract),
+              control = static$control,
+              split_labels = split_labs,
+              location = location, notes = notes
+            )
+
+            if (is.null(extracts)) {
+              extracts <- tibble::tibble(.extracts = list(1))
+              if (nrow(static$param_info) > 0) {
+                extracts <- tibble::add_column(current_extract_grid, .extracts = list(1))
+              }
+              extracts <- extracts[integer(), ]
+            }
+
+            if (nrow(static$param_info) > 0) {
+              extracts <- tibble::add_row(
+                extracts,
+                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
               )
-              notes <- append_log_notes(notes, elt_extract, location)
-              if (is_failure_melodie(elt_extract)) {
+              } else {
+              extracts <- tibble::add_row(
+                extracts,
+                tibble::tibble(.extracts = list(elt_extract))
+              )
+              }
+              if (is_failure(elt_extract)) {
                 next
               }
-            }
-            elt_extract <- remove_log_notes(elt_extract)
-            extracts <- c(extracts, list(elt_extract))
           }
+
+          # Output for these loops:
+          # - pred_reserve (probably not null)
+          # - extracts (may be null)
+          # - notes
         } # post loop
       } # predict loop
     } # model loop
@@ -227,7 +277,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (is.null(pred_reserve)) {
     all_metrics <- NULL
   } else {
-    all_metrics <- pred_reserve |>
+    location <- glue::glue("internal")
+    all_metrics <- .catch_and_log(
+      pred_reserve |>
       dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
       .estimate_metrics(
         metric = static$metrics,
@@ -236,39 +288,59 @@ loop_over_all_stages <- function(resamples, grid, static) {
         event_level = static$control$event_level,
         metrics_info = metrics_info(static$metrics)
       ) |>
-      dplyr::full_join(config_tbl, by = static$param_info$id) |>
-      dplyr::arrange(.config)
+      add_configs(static),
+      control = static$control,
+      split_labels = split_labs,
+      location = location, notes = notes
+    )
   }
 
   if (!is.null(extracts)) {
-    extracts <- config_tbl |>
-      dplyr::mutate(.extracts = extracts) |>
-      dplyr::relocate(.config, .after = .extracts)
+
+    extracts <- add_configs(extracts, static) |>
+      dplyr::relocate(.config, .after = .extracts) |>
+      dplyr::relocate(names(grid))
+
+    # Failing rows are not in the output:
+    empty_extract <- purrr::map_lgl(extracts$.extracts, is.null)
+    extracts <- extracts[!empty_extract,]
   }
 
   # ----------------------------------------------------------------------------
   # Return the results
 
-  return_list <- tibble::tibble(
+  return_tbl <- tibble::tibble(
     .metrics = list(all_metrics),
-    .notes = list(notes)
+    .notes = list(notes),
+    outcome_names = static$y_name
   )
-  
-  if (!is.null(extracts)) {
-    return_list <- dplyr::mutate(return_list, .extracts = list(extracts))
+
+  if (!is.null(static$control$extract)) {
+    if (is.null(extracts)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~ NULL)
+    } else {
+      return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
+    }
   }
 
-  return_list <- vctrs::vec_cbind(return_list, split_labs)
+  return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
   if (static$control$save_pred) {
-    return_list$.predictions <- list(
-      pred_reserve |>
-        dplyr::full_join(config_tbl, by = static$param_info$id) |>
-        dplyr::arrange(.config)
-    )
+    if (is.null(pred_reserve)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~ NULL)
+    } else {
+      return_tbl$.predictions <-
+        list(
+          add_configs(pred_reserve, static) |>
+            # Filter out joined rows that corresponded to a config that failed
+            dplyr::filter(!is.na(.row))
+        )
+    }
   }
 
-  return_list
+  return_tbl
 }
 
 loop_over_all_stages2 <- function(index, resamples, grid, static) {
@@ -306,4 +378,17 @@ get_row_wise_grid <- function(wflow, grid) {
     inds <- grid_inds$inds
   }
   vctrs::vec_split(grid, inds)$val
+}
+
+# ------------------------------------------------------------------------------
+
+add_configs <- function(x, static) {
+  config_tbl <- static$configs
+  if (length(static$param_info$id) > 0) {
+    x <- dplyr::left_join(x, config_tbl, by = static$param_info$id)
+  } else {
+    x <- dplyr::bind_cols(x, config_tbl)
+  }
+
+  dplyr::arrange(x, .config)
 }

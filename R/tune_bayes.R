@@ -369,16 +369,7 @@ tune_bayes_workflow <- function(object,
     prev_gp_mod <- NULL
 
     for (i in seq_len(iter) + score_card$overall_iter) {
-      .notes <-
-        tibble::new_tibble(
-          list(
-            location = character(0),
-            type = character(0),
-            note = character(0),
-            trace = list()
-          ),
-          nrow = 0
-        )
+      .notes <- new_note()
 
       log_best(control, i, score_card)
 
@@ -397,7 +388,7 @@ tune_bayes_workflow <- function(object,
           ),
           control,
           NULL,
-          "Gaussian process model",
+          location = "Gaussian process model",
           notes = .notes,
           catalog = FALSE
         )

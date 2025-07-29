@@ -170,7 +170,7 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
       cli::format_inline(
         "Creating pre-processing data to finalize {num_unk} unknown parameter{?s}: {.val {unk_names}}")
 
-    tune_log(list(verbose = TRUE), split_labels = NULL, msg, type = "info")
+    tune_log(list(verbose = TRUE), split_labels = NULL, task = msg, type = "info")
 
     x <- workflows::.fit_pre(wflow, data)$pre$mold$predictors
     pset$object <- purrr::map(pset$object, dials::finalize, x = x)
@@ -416,7 +416,7 @@ check_initial <- function(x,
     if (ctrl$verbose) {
       message()
       msg <- cli::format_inline(" Generating a set of {nrow(x)} initial parameter results")
-      tune_log(ctrl, split_labels = NULL, msg, type = "go")
+      tune_log(ctrl, split_labels = NULL, task = msg, type = "go")
     }
 
     grid_ctrl <- ctrl
@@ -432,7 +432,7 @@ check_initial <- function(x,
     )
 
     if (ctrl$verbose) {
-      tune_log(ctrl, split_labels = NULL, "Initialization complete", type = "success")
+      tune_log(ctrl, split_labels = NULL, task = "Initialization complete", type = "success")
       message()
     }
   } else {
@@ -473,16 +473,6 @@ check_initial <- function(x,
   }
   if (!any(names(x) == ".iter")) {
     x <- x %>% dplyr::mutate(.iter = 0L)
-  }
-  x
-}
-
-get_objective_name <- function(x, metrics) {
-  if (is.null(x)) {
-    metric_data <- metrics_info(metrics)
-    x <- metric_data$.metric[1]
-  } else {
-    # check for a name or acquisition function
   }
   x
 }

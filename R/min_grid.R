@@ -95,11 +95,6 @@ blank_submodels <- function(grid) {
     dplyr::mutate_if(is.factor, as.character)
 }
 
-get_fixed_args <- function(info) {
-  # Get non-sub-model columns to iterate over
-  fixed_args <- info$name[!info$has_submodel]
-}
-
 get_submodel_info <- function(spec) {
   if (is.null(spec$engine)) {
     cli::cli_abort("Please set the model's engine.")

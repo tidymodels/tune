@@ -1,4 +1,4 @@
-tune_grid_loop_new <- function(
+tune_grid_loop <- function(
   resamples,
   grid,
   workflow,
@@ -7,14 +7,30 @@ tune_grid_loop_new <- function(
   eval_time,
   control
 ) {
+  if (is.null(grid)) {
+    grid <- tibble::tibble()
+  }
+
   mtr_info <- tibble::as_tibble(metrics)
 
-  control <- update_parallel_over(control, resamples)
+  control <- update_parallel_over(control, resamples, grid)
+
+  # For last_fit, we want to keep the RNG stream as-is to maintain reproducibility
+  # with manual execution. Otherwise, generate parallel seeds even if work is
+  # being executed sequentially. `resamples$id` is set in `last_fit_workflow`.
+  if (all(resamples$id == "train/test split")) {
+    resamples$.seeds <- purrr::map(resamples$id, ~ integer(0))
+  } else {
+    # Make and set the worker/process seeds if workers get resamples
+    resamples$.seeds <- get_parallel_seeds(nrow(resamples))
+  }
 
   # We'll significantly alter the rsample object but will need it intact later;
   # Make a copy and save some information before proceeding
   rset_info <- pull_rset_attributes(resamples)
   split_args <- rsample::.get_split_args(resamples)
+
+  resamples <- new_bare_tibble(resamples)
   # Break it up row-wise to facilitate mapping/parallelism
   resamples <- vec_list_rowwise(resamples)
 
@@ -22,15 +38,16 @@ tune_grid_loop_new <- function(
 
   # Notes on debugging:
   # 1. You can set `options(future.debug = TRUE)` to help
-  # 2. If you are debugging loop_over_all_stages, use the control option `allow_par = FALSE`;
-  #    that will use `lapply()` so that you can see output.
+  # 2. If you are debugging loop_over_all_stages, use the control option
+  #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
   static <- make_static(
     workflow,
     param_info = param_info,
+    grid = grid,
     metrics = metrics,
     eval_time = eval_time,
     split_args = split_args,
@@ -43,15 +60,9 @@ tune_grid_loop_new <- function(
   load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
   load_pkgs <- unique(load_pkgs)
 
-  par_opt <- list(
-    future.label = "tune-grid-%d",
-    future.stdout = TRUE,
-    future.seed = TRUE,
-    # future.globals = c(), # add options from control?
-    future.packages = quote(load_pkgs)
-  )
+  par_opt <- list()
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Control execution
 
   # We'll make a call that defines how we iterate over resamples and grid points.
@@ -76,16 +87,23 @@ tune_grid_loop_new <- function(
     # Break all combinations of resamples and candidates into a list of integers
     # for each combination.
     inds <- tidyr::crossing(s = seq_along(candidates), b = seq_along(resamples))
+
+    # Split up for better processing
     inds <- vec_list_rowwise(inds)
   }
 
-  cl <- loop_call(control, par_opt)
+  strategy <- choose_framework(static$workflow, control)
+  cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   # Separate results into different components
 
   res <- dplyr::bind_rows(res)
+
+  outcome_names <- unique(unlist(res$outcome_names))
+  res$outcome_names <- NULL
+
   resamples <- dplyr::bind_rows(resamples)
   id_cols <- grep("^id", names(resamples), value = TRUE)
 
@@ -112,75 +130,21 @@ tune_grid_loop_new <- function(
       dplyr::any_of(".extracts")
     )
 
-  new_tune_results(
-    x = res,
-    parameters = param_info,
-    metrics = metrics,
-    eval_time = eval_time,
-    eval_time_target = NULL,
-    outcomes = static$y_name,
-    rset_info = rset_info,
-    workflow = workflow
-  )
+  res <-
+    new_tune_results(
+      x = res,
+      parameters = param_info,
+      metrics = metrics,
+      eval_time = eval_time,
+      eval_time_target = NULL,
+      outcomes = outcome_names,
+      rset_info = rset_info,
+      workflow = workflow
+    )
+
+  res
 }
 
 vec_list_rowwise <- function(x) {
   vctrs::vec_split(x, by = 1:nrow(x))$val
-}
-
-update_parallel_over <- function(control, resamples) {
-  if (is.null(control$parallel_over)) {
-    control$parallel_over <- "resamples"
-  }
-  if (length(resamples$splits) == 1) {
-    control$parallel_over <- "everything"
-  }
-  control
-}
-
-loop_call <- function(ctrl, opts) {
-  if (ctrl$allow_par) {
-    if (ctrl$parallel_over == "resamples") {
-      cl <- rlang::call2(
-        "future_lapply",
-        .ns = "future.apply",
-        X = quote(resamples),
-        FUN = "loop_over_all_stages",
-        quote(grid),
-        quote(static),
-        !!!opts
-      )
-    } else {
-      cl <- rlang::call2(
-        "future_lapply",
-        .ns = "future.apply",
-        X = quote(inds),
-        FUN = "loop_over_all_stages2",
-        quote(resamples),
-        quote(candidates),
-        quote(static),
-        !!!opts
-      )
-    }
-  } else {
-    if (ctrl$parallel_over == "resamples") {
-      cl <- rlang::call2(
-        "lapply",
-        X = quote(resamples),
-        FUN = "loop_over_all_stages",
-        quote(grid),
-        quote(static)
-      )
-    } else {
-      cl <- rlang::call2(
-        "lapply",
-        X = quote(inds),
-        FUN = "loop_over_all_stages2",
-        quote(resamples),
-        quote(candidates),
-        quote(static)
-      )
-    }
-  }
-  cl
 }

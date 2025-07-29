@@ -118,8 +118,10 @@
     Code
       tune:::get_config_key(tibble(), wflow_none)
     Output
-      # A tibble: 0 x 1
-      # i 1 variable: .config <chr>
+      # A tibble: 1 x 1
+        .config        
+        <chr>          
+      1 pre0_mod0_post0
 
 ---
 

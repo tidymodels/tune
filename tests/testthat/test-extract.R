@@ -115,22 +115,26 @@ test_that("mis-specified extract function", {
 
   expect_snapshot(
     res_extract_warning <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_both <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_both))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_both)),
+    transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error_once <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once))
+      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once)),
+    transform = catalog_lines
   )
 
   expect_snapshot(res_extract_warning)
@@ -184,7 +188,7 @@ test_that("tune model and recipe", {
   )
   expect_no_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts))
 
-  expect_true(all(names(extract_3_1) == c("num_comp", "cost", ".extracts", ".config")))
+  expect_named(extract_3_1,c("cost", "num_comp", ".extracts", ".config"))
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )

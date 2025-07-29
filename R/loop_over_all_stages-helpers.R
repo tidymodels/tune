@@ -6,6 +6,7 @@
 make_static <- function(
   workflow,
   param_info,
+  grid,
   metrics,
   eval_time,
   split_args,
@@ -26,9 +27,12 @@ make_static <- function(
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 
+  configs <- get_config_key(grid, workflow)
+
   list(
     wflow = workflow,
     param_info = param_info,
+    configs = configs,
     post_estimation = workflows::.workflow_includes_calibration(workflow),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
@@ -81,15 +85,15 @@ get_data_subsets <- function(wflow, split, split_args = NULL) {
     # further split the analysis data into an "inner" analysis and
     # assessment set.
     # * the preprocessor and model (excluding the post-processor) are fitted
-    #   on `analysis(inner_split(split))`, the inner analysis set (just
+    #   on `analysis(internal_calibration_split(split))`, the inner analysis set (just
     #   referred to as analysis)
-    # * that model generates predictions on `assessment(inner_split(split))`,
+    # * that model generates predictions on `calibration(internal_calibration_split(split))`,
     #   the calibration set
     # * the post-processor is trained on the predictions generated from the
     #   calibration set
     # * the model (including the post-processor) generates predictions on the
     #   assessment set and those predictions are assessed with performance metrics
-    split <- rsample::inner_split(split, split_args = split_args)
+    split <- rsample::internal_calibration_split(split, split_args = split_args)
 
     cal_lst$ind <- as.integer(split, data = "assessment")
     cal_lst$data <- vctrs::vec_slice(split$data, cal_lst$ind)
@@ -226,6 +230,10 @@ predict_all_types <- function(
   processed_data_pred$outcomes <- processed_data_pred$outcomes |>
     dplyr::mutate(.row = .ind)
 
+  model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
+
+  # TODO tune::predict_model has some pre-prediction checks
+
   sub_param <- names(submodel_grid)
 
   # Convert argument names to parsnip format see #1011
@@ -234,7 +242,7 @@ predict_all_types <- function(
   pred <- NULL
   for (type_iter in static$pred_types) {
     tmp_res <- predict_wrapper(
-      model = wflow_fit |> hardhat::extract_fit_parsnip(),
+      model = model_fit,
       new_data = processed_data_pred$predictors,
       type = type_iter,
       eval_time = static$eval_time,
@@ -261,6 +269,24 @@ predict_all_types <- function(
 
   pred <- pred |>
     dplyr::full_join(processed_data_pred$outcomes, by = ".row")
+
+  # Add implicitly grouped metric data, if applicable
+  metrics_by <- get_metrics_by(static$metrics)
+  if (has_metrics_by(metrics_by)) {
+    .data$.row <- .ind
+    pred <- dplyr::full_join(pred, .data[c(metrics_by, ".row")], by = ".row")
+  }
+
+  # Add case weights (if needed)
+  if (has_case_weights(wflow_fit)) {
+    case_weights <- extract_case_weights(.data, wflow_fit)
+    if (.use_case_weights_with_yardstick(case_weights[[1]])) {
+      case_weights <- dplyr::mutate(case_weights, .row = .ind)
+      pred <- dplyr::full_join(pred, case_weights, by = ".row")
+    }
+  }
+
+  pred <- maybe_add_ipcw(pred, model_fit, static$pred_types)
 
   pred
 }
@@ -298,7 +324,7 @@ finalize_fit_model <- function(wflow_current, grid) {
     wflow_current <- set_workflow_spec(wflow_current, mod_spec)
   }
 
-  # .catch_and_log_melodie_fit()
+  # .catch_and_log_fit()
   .fit_model(wflow_current, workflows::control_workflow())
 }
 
@@ -403,6 +429,15 @@ get_config_key <- function(grid, wflow) {
       dplyr::mutate(post = "post0")
   }
 
+  # in the case of resampling without tuning, grid and thus key are 0-row tibbles
+  if (nrow(key) < 1) {
+    key <- dplyr::tibble(
+      pre = "pre0",
+      mod = "mod0",
+      post = "post0"
+    )
+  }
+
   key$.config <- paste(key$pre, key$mod, key$post, sep = "_")
   key$.config <- gsub("_$", "", key$.config)
   key |>
@@ -468,15 +503,6 @@ determine_pred_types <- function(wflow, metrics) {
 }
 
 reorder_pred_cols <- function(x, y_name) {
-  # x |>
-  #   dplyr::relocate(dplyr::any_of(".row"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::any_of(".eval_time"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches(".pred_[A-Za-z]"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred_class$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred_time$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::matches("^\\.pred$"), .before = dplyr::everything()) |>
-  #   dplyr::relocate(dplyr::all_of(y_name), .before = dplyr::everything())
-
   x |>
     dplyr::relocate(
       dplyr::all_of(y_name),
