@@ -1,63 +1,99 @@
-# General logging to the screen used in various places.
-# ------------------------------------------------------------------------------
 
-#' Write a message that respects the line width
-#'
-#' @param x A character string of the message text.
-#' @param width An integer for the width.
-#' @param prefix An optional string to go on the first line of the message.
-#' @param color_text,color_prefix A function (or `NULL`) that is used to color
-#'  the text and/or prefix.
-#' @return The processed text is returned (invisibly) but a message is written.
-#' @examples
-#' library(cli)
-#' Gaiman <-
-#'   paste(
-#'     '"Good point." Bod was pleased with himself, and glad he had thought of',
-#'     "asking the poet for advice. Really, he thought, if you couldn't trust a",
-#'     "poet to offer sensible advice, who could you trust?",
-#'     collapse = ""
-#'   )
-#' message_wrap(Gaiman)
-#' message_wrap(Gaiman, width = 20, prefix = "-")
-#' message_wrap(Gaiman,
-#'   width = 30, prefix = "-",
-#'   color_text = cli::col_silver
-#' )
-#' message_wrap(Gaiman,
-#'   width = 30, prefix = "-",
-#'   color_text = cli::style_underline,
-#'   color_prefix = cli::col_green
-#' )
-#' @export
-message_wrap <-
-  function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
-    check_string(x)
-    check_function(color_text, allow_null = TRUE)
-    check_function(color_prefix, allow_null = TRUE)
-    n <- nchar(prefix)
-    if (n > 0) {
-      buffer <- paste0(rep(" ", n + 1), collapse = "")
-    } else {
-      buffer <- ""
-    }
-    msg <- strwrap(x, width = width - n - 1)
-    if (!is.null(color_text)) {
-      msg <- purrr::map_chr(msg, ~ color_text(.x))
-    }
-    if (!is.null(color_prefix)) {
-      prefix <- color_prefix(prefix)
-    }
-    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
-    msg[-1] <- paste0(buffer, msg[-1])
-    if (n > 0) {
-      msg[1] <- paste(prefix, msg[1])
-    }
-    message(msg)
-    invisible(msg)
+# Overview ---------------------------------------------------------------------
+#
+# General logging to the screen is used in various places. The code in this file
+# is split into 4 sections.
+#
+# The first section contains functions that tune uses to let the user know what
+# is happening. The main function is `update_printer()`, which is used in
+# `logging.R` and throughout the package. Some examples of these are 
+# `Fold01: preprocessor 1/1, model 1/1` from `tune_grid()` and 
+# `Generating 3 candidates` from `tune_bayes()`. This function should be fully
+# controlled by `control$verbose`.
+#
+# The second section contains everything related to the catalog object. This
+# object contains all the errors and warnings that are captured when handling
+# workflows inside the training loop. The catalog is a tibble with the columns
+# `type`, `note`, `n`, and `id`.
+#
+# - `type` being whether it is a warning or an error,
+# - `note` is what the condition was as a string,
+# - `n` is how many times it was seen
+# - `id` is a unique identifier (created using `lbls`)
+#
+# All of this infrastructure is done using the `tune_env` environment that 
+# contains the catalog itself, and other useful information that toggles whether
+# we are using the catalog and ensures it is used correctly across the fits.
+#
+# The third section, `catching and logging`, is what is being used in tune or 
+# extension packages. `.catch_and_log()` is wrapping some code that we want to 
+# collect on. If an error or warning is seen, it will be captured and handled 
+# using the code in this and the previous section.
+#
+# The forth section contains functions that are exclusively used in 
+# `tune_bayes()`.
+
+# Tune printing ----------------------------------------------------------------
+
+update_printer <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
+  if (!any(control$verbose, control$verbose_iter)) {
+    return(invisible(NULL))
   }
 
-# issue cataloger --------------------------------------------------------------
+  if (task == "internal") {
+    return(NULL)
+  }
+
+  if (!is.null(split_labels)) {
+    labs <- rev(unlist(split_labels))
+    labs <- paste0(labs, collapse = ", ")
+    labs <- paste0(labs, ": ")
+  } else {
+    labs <- ""
+  }
+
+  # see https://github.com/r-lib/cli/issues/92
+  task <- gsub("\\{", "", task)
+
+  task <- paste0(labs, task)
+  siren(task, type = type)
+  NULL
+}
+
+siren <- function(x, type = "info") {
+  tune_color <- get_tune_colors()
+  types <- names(tune_color$message)
+  type <- match.arg(type, types)
+
+  msg <- glue::glue(x, .trim = FALSE)
+
+  symb <- dplyr::case_when(
+    type == "warning" ~ tune_color$symbol$warning("!"),
+    type == "go" ~ tune_color$symbol$go(cli::symbol$pointer),
+    type == "danger" ~ tune_color$symbol$danger("x"),
+    type == "success" ~ tune_color$symbol$success(tune_symbol$success),
+    type == "info" ~ tune_color$symbol$info("i")
+  )
+
+  msg <- dplyr::case_when(
+    type == "warning" ~ tune_color$message$warning(msg),
+    type == "go" ~ tune_color$message$go(msg),
+    type == "danger" ~ tune_color$message$danger(msg),
+    type == "success" ~ tune_color$message$success(msg),
+    type == "info" ~ tune_color$message$info(msg)
+  )
+
+  if (inherits(msg, "character")) {
+    msg <- as.character(msg)
+  }
+
+  msg <- paste(symb, msg)
+
+  message(msg)
+}
+
+# Catalog ----------------------------------------------------------------------
+
 tune_env <- rlang::new_environment(
   data = list(
     progress_env = NULL,
@@ -72,6 +108,11 @@ lbls <- c(LETTERS, letters, 1:1e3)
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
   isTRUE(tune_env$progress_active && !is_testing())
+}
+
+# copied from testthat::is_testing
+is_testing <- function() {
+  identical(Sys.getenv("TESTTHAT"), "true")
 }
 
 # determines whether a tuning process is currently active.
@@ -166,73 +207,12 @@ summarize_catalog <- function(catalog, sep = "   ") {
 }
 
 # catching and logging ---------------------------------------------------------
-siren <- function(x, type = "info") {
-  tune_color <- get_tune_colors()
-  types <- names(tune_color$message)
-  type <- match.arg(type, types)
-
-  msg <- glue::glue(x, .trim = FALSE)
-
-  symb <- dplyr::case_when(
-    type == "warning" ~ tune_color$symbol$warning("!"),
-    type == "go" ~ tune_color$symbol$go(cli::symbol$pointer),
-    type == "danger" ~ tune_color$symbol$danger("x"),
-    type == "success" ~ tune_color$symbol$success(tune_symbol$success),
-    type == "info" ~ tune_color$symbol$info("i")
-  )
-
-  msg <- dplyr::case_when(
-    type == "warning" ~ tune_color$message$warning(msg),
-    type == "go" ~ tune_color$message$go(msg),
-    type == "danger" ~ tune_color$message$danger(msg),
-    type == "success" ~ tune_color$message$success(msg),
-    type == "info" ~ tune_color$message$info(msg)
-  )
-
-  if (inherits(msg, "character")) {
-    msg <- as.character(msg)
-  }
-
-  msg <- paste(symb, msg)
-
-  message(msg)
-}
-
-tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
-  if (!any(control$verbose, control$verbose_iter)) {
-    return(invisible(NULL))
-  }
-
-  if (task == "internal") {
-    return(NULL)
-  }
-
-  if (!is.null(split_labels)) {
-    labs <- rev(unlist(split_labels))
-    labs <- paste0(labs, collapse = ", ")
-    labs <- paste0(labs, ": ")
-  } else {
-    labs <- ""
-  }
-
-  # see https://github.com/r-lib/cli/issues/92
-  task <- gsub("\\{", "", task)
-
-  task <- paste0(labs, task)
-  siren(task, type = type)
-  NULL
-}
-
-# copied from testthat::is_testing
-is_testing <- function() {
-  identical(Sys.getenv("TESTTHAT"), "true")
-}
 
 #' @export
 #' @rdname tune-internal-functions
 .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
   dots <- list(...)
-  tune_log(..., type = "info", catalog = catalog, task = dots$location)
+  update_printer(..., type = "info", catalog = catalog, task = dots$location)
   tmp <- catcher(.expr)
 
   if (has_log_notes(tmp)) {
@@ -270,12 +250,12 @@ catcher <- function(expr) {
   res
 }
 
-is_failure <- function(x) {
-  inherits(x, "try-error")
-}
-
 has_log_notes <- function(x) {
   is_failure(x) || NROW(attr(x, "notes")) > 0
+}
+
+is_failure <- function(x) {
+  inherits(x, "try-error")
 }
 
 append_log_notes <- function(notes, x, location) {
@@ -316,10 +296,22 @@ append_log_notes <- function(notes, x, location) {
   notes
 }
 
-remove_log_notes <- function(x) {
-  attr(x, "notes") <- NULL
-  x
+new_note <- function(
+    location = character(0),
+    type = character(0),
+    note = character(0),
+    trace = list()
+) {
+  tibble::new_tibble(
+    list(
+      location = location,
+      type = type,
+      note = note,
+      trace = trace
+    )
+  )
 }
+
 
 catalog_log <- function(x) {
   catalog <- rlang::env_get(tune_env, "progress_catalog")
@@ -400,24 +392,14 @@ catalog_log <- function(x) {
   return(NULL)
 }
 
-new_note <- function(
-    location = character(0),
-    type = character(0),
-    note = character(0),
-    trace = list()
-) {
-  tibble::new_tibble(
-    list(
-      location = location,
-      type = type,
-      note = note,
-      trace = trace
-    )
-  )
+remove_log_notes <- function(x) {
+  attr(x, "notes") <- NULL
+  x
 }
 
+# Bayes specific printing ------------------------------------------------------
+
 log_best <- function(control, iter, info, digits = 4) {
-  # TODO melodie; keep: used by tune_bayes
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -436,7 +418,7 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  tune_log(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
+  update_printer(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
 }
 
 check_and_log_flow <- function(control, results) {
@@ -446,11 +428,11 @@ check_and_log_flow <- function(control, results) {
 
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      tune_log(control, split_labels = NULL, task = "Halting search",
+      update_printer(control, split_labels = NULL, task = "Halting search",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "break"))
     } else {
-      tune_log(control, split_labels = NULL, task = "Skipping to next iteration",
+      update_printer(control, split_labels = NULL, task = "Skipping to next iteration",
                type = "danger", catalog = FALSE)
       eval.parent(parse(text = "next"))
     }
@@ -512,6 +494,63 @@ param_msg <- function(control, candidate) {
   invisible(NULL)
 }
 
+#' Write a message that respects the line width
+#'
+#' @param x A character string of the message text.
+#' @param width An integer for the width.
+#' @param prefix An optional string to go on the first line of the message.
+#' @param color_text,color_prefix A function (or `NULL`) that is used to color
+#'  the text and/or prefix.
+#' @return The processed text is returned (invisibly) but a message is written.
+#' @examples
+#' library(cli)
+#' Gaiman <-
+#'   paste(
+#'     '"Good point." Bod was pleased with himself, and glad he had thought of',
+#'     "asking the poet for advice. Really, he thought, if you couldn't trust a",
+#'     "poet to offer sensible advice, who could you trust?",
+#'     collapse = ""
+#'   )
+#' message_wrap(Gaiman)
+#' message_wrap(Gaiman, width = 20, prefix = "-")
+#' message_wrap(Gaiman,
+#'   width = 30, prefix = "-",
+#'   color_text = cli::col_silver
+#' )
+#' message_wrap(Gaiman,
+#'   width = 30, prefix = "-",
+#'   color_text = cli::style_underline,
+#'   color_prefix = cli::col_green
+#' )
+#' @export
+message_wrap <-
+  function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
+    check_string(x)
+    check_function(color_text, allow_null = TRUE)
+    check_function(color_prefix, allow_null = TRUE)
+    n <- nchar(prefix)
+    if (n > 0) {
+      buffer <- paste0(rep(" ", n + 1), collapse = "")
+    } else {
+      buffer <- ""
+    }
+    msg <- strwrap(x, width = width - n - 1)
+    if (!is.null(color_text)) {
+      msg <- purrr::map_chr(msg, ~ color_text(.x))
+    }
+    if (!is.null(color_prefix)) {
+      prefix <- color_prefix(prefix)
+    }
+    msg[-length(msg)] <- paste0(msg[-length(msg)], "\n")
+    msg[-1] <- paste0(buffer, msg[-1])
+    if (n > 0) {
+      msg[1] <- paste(prefix, msg[1])
+    }
+    message(msg)
+    invisible(msg)
+  }
+
+
 acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
@@ -527,7 +566,9 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     }
   }
   if (!is.null(val)) {
-    tune_log(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
+    update_printer(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
   }
   invisible(NULL)
 }
+
+# End --------------------------------------------------------------------------
