@@ -1110,3 +1110,35 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	)
 })
 
+test_that("parameter information with engine, recipe, and tailor parameters", {
+  mlp_spec <-
+    mlp(
+      hidden_units = tune(),
+      penalty = tune(),
+      learn_rate = tune(),
+      epochs = 500,
+      activation = tune()
+    ) |>
+    set_engine(
+      "brulee",
+      stop_iter = tune(),
+      class_weights = tune()
+    ) |>
+    set_mode("classification")
+
+  rec <- recipe(Class ~ ., data = tibble(Class = "a", x = 1)) |>
+    step_pca(all_numeric_predictors(), num_comp = tune())
+
+  tlr <- tailor() |> adjust_probability_threshold(threshold = tune())
+
+  mlp_wflow <- workflow(rec, mlp_spec, tlr)
+
+  mlp_grid <-
+    mlp_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 4)
+
+  mlp_info <- tune:::get_param_info(mlp_wflow)
+  expect_true(all(!is.na(mlp_info$has_submodel)))
+
+})
