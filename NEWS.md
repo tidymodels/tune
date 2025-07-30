@@ -1,8 +1,27 @@
 # tune (development version)
 
+## Changes to `tune_grid()`. 
+
+* A major rewrite and refactor of the underlying code that runs `tune_grid()` was made. 
+
+* The pattern of `.config` values has changed from `Preprocessor{num}_Model{num}` to `pre{num}_mod{num}_post{num}`. 
+
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
 * Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
+
+## Other Changes
+
+* Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
+
+* Sequential and parallel processing all use the same L'Ecuyer-CMRG seeds (conditional on `parallel_over`) (#1033). 
+
+* `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (#1000).
+
+## Breaking Changes
+
+* The `foreach` package is no longer supported. Instead, use the future or mirai packages.  
+* The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
 
 # tune 1.3.0
 

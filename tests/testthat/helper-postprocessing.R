@@ -25,7 +25,6 @@ knn_cls_spec <- parsnip::nearest_neighbor(
 
 
 if (rlang::is_installed("probably")) {
-
   cls_est_post <- tailor::tailor() |>
     tailor::adjust_probability_calibration(method = "logistic")
 
@@ -41,7 +40,6 @@ if (rlang::is_installed("probably")) {
 
   cls_post <- tailor::tailor() |>
     tailor::adjust_probability_threshold(threshold = tune("cut"))
-
 }
 
 fac_2c <- structure(
@@ -164,4 +162,10 @@ surv_0 <- structure(
 pred_0 <- tibble::tibble(
   .eval_time = numeric(0),
   .pred_survival = numeric(0)
+)
+
+pred_dyn_0 <- tibble::tibble(
+  .eval_time = numeric(0),
+  .pred_survival = numeric(0),
+  .weight_censored = numeric(0)
 )

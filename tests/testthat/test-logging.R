@@ -25,109 +25,6 @@ test_that("tune_log", {
   expect_snapshot(tune_log(ctrl_t, rs, task = "cube", type = "success"))
 })
 
-test_that("log issues", {
-  ctrl_f <- control_grid(verbose = FALSE)
-
-  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
-
-  res_1 <- catcher(log("a"))
-  res_2 <- catcher(log(1))
-  res_3 <- catcher(log(-1))
-
-  note_1 <- tibble::tibble(location = "Roshar", type = "Alethi", note = "I'm a stick")
-  note_2 <- tibble::tibble(location = "toledo", type = "error", note = "Error in log(\"a\"): non-numeric argument to mathematical function")
-
-  expect_snapshot(
-    problems_1 <-
-      log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
-  )
-
-  expect_equal(
-    dplyr::select(problems_1, -trace),
-    dplyr::bind_rows(note_1, note_2)
-  )
-
-  expect_null(problems_1$trace[[1]])
-  expect_s3_class(problems_1$trace[[2]], "rlang_trace")
-
-  expect_silent(log_problems(note_1, ctrl_f, rs, "toledo", res_2, bad_only = FALSE))
-
-  note_3 <- tibble::tibble(location = "toledo", type = "warning", note = "NaNs produced")
-  expect_snapshot(
-    problems_2 <-
-      log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
-  )
-
-  expect_equal(
-    dplyr::select(problems_2, -trace),
-    dplyr::bind_rows(note_1, note_3)
-  )
-
-  expect_null(problems_2$trace[[1]])
-  expect_s3_class(problems_2$trace[[2]], "rlang_trace")
-})
-
-
-test_that("catch and log issues", {
-  ctrl_f <- control_grid(verbose = FALSE)
-  rs <- labels(rsample::vfold_cv(mtcars)$splits[[1]])
-  null <- NULL
-
-  expect_snapshot(
-    out_1 <- .catch_and_log(
-      log("a"),
-      control = ctrl_f,
-      split_labels = rs,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(inherits(out_1, "try-error"))
-  expect_silent(out_2 <- .catch_and_log(
-    log(1),
-    control = ctrl_f,
-    split_labels = rs,
-    "toledo",
-    bad_only = FALSE,
-    notes = null
-  ))
-  expect_true(out_2 == 0)
-  expect_snapshot(
-    out_3 <- .catch_and_log(
-      log(-1),
-      control = ctrl_f,
-      split_labels = rs,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(is.nan(out_3))
-  expect_snapshot(
-    out_5 <- .catch_and_log(
-      log("a"),
-      control = ctrl_f,
-      split_labels = NULL,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(inherits(out_5, "try-error"))
-  expect_snapshot(
-    out_6 <- .catch_and_log(
-      log(-1),
-      control = ctrl_f,
-      split_labels = NULL,
-      "toledo",
-      bad_only = FALSE,
-      notes = null
-    )
-  )
-  expect_true(is.nan(out_6))
-})
-
 test_that("logging iterations", {
   ctrl_t <- control_bayes(verbose_iter = TRUE)
   ctrl_f <- control_bayes(verbose_iter = FALSE)
@@ -248,6 +145,10 @@ test_that("message_wrap", {
 })
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
+  # TODO melodie; we can keep this for now but should transition to a case where
+  # we use `choose_framework()` but that will require the control object as well
+  # as the workflow.
+
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
@@ -268,7 +169,9 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
-          extract = function(x) {raise_warning(); raise_error()})
+          extract = function(x) {raise_warning(); raise_error()}, 
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -298,7 +201,8 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         control = control_resamples(
-          extract = function(x) {raise_warning_rl(); raise_error_rl()}
+          extract = function(x) {raise_warning_rl(); raise_error_rl()}, 
+          allow_par = FALSE
         )
     )},
     transform = catalog_lines
@@ -333,7 +237,10 @@ test_that("interactive logger works (fit_resamples, multiline)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = raise_multiline_conditions)
+        control = control_resamples(
+          extract = raise_multiline_conditions,
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -372,7 +279,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = later)
+        control = control_resamples(extract = later, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -426,7 +333,10 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
-        control = control_resamples(extract = function(x) {once(); later()})
+        control = control_resamples(
+          extract = function(x) {once(); later()},
+          allow_par = FALSE
+        )
     )},
     transform = catalog_lines
   )
@@ -467,7 +377,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
         parsnip::nearest_neighbor("regression", "kknn"),
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = numbered)
+        control = control_resamples(extract = numbered, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -497,7 +407,7 @@ test_that("interactive logger works (tune grid, error)", {
         Sale_Price ~ .,
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         grid = 5,
-        control = control_grid(extract = raise_error)
+        control = control_grid(extract = raise_error, allow_par = FALSE)
     )},
     transform = catalog_lines
   )
@@ -529,7 +439,7 @@ test_that("interactive logger works (bayesian, error)", {
         rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
         initial = 5,
         iter = 5,
-        control = control_bayes(extract = raise_error)
+        control = control_bayes(extract = raise_error, allow_par = FALSE)
     )},
     transform = catalog_lines
   )

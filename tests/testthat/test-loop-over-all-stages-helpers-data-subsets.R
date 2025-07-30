@@ -42,7 +42,7 @@ test_that("extract data subsets - estimated postprocessing", {
   rs_split <- two_class_rs$splits[[1]]
 
   set.seed(1)
-  rs_sub_split <- rsample::inner_split(rs_split, mc_cv_args)
+  rs_sub_split <- rsample::internal_calibration_split(rs_split, mc_cv_args)
 
   wflow_1 <- workflow(Class ~ ., dt_spec, cls_est_post)
 
@@ -54,7 +54,7 @@ test_that("extract data subsets - estimated postprocessing", {
     c("fit", "pred", "cal")
   )
   expect_equal(data_1$fit$data, analysis(rs_sub_split))
-  expect_equal(data_1$cal$data, assessment(rs_sub_split))
+  expect_equal(data_1$cal$data, calibration(rs_sub_split))
   expect_equal(data_1$pred$data, assessment(rs_split))
 
   expect_equal(data_1$fit$ind, as.integer(rs_sub_split))

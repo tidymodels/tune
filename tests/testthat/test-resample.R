@@ -144,63 +144,52 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
-
-  dat
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   folds <- rsample::vfold_cv(dat, v = 2)
 
-  wflow <-
+  wflow_no_post <-
     workflows::workflow(
       y ~ x,
       parsnip::linear_reg()
-    ) %>%
+    )
+
+  wflow_post <-
+    wflow_no_post %>%
     workflows::add_tailor(
       tailor::tailor() %>% tailor::adjust_numeric_calibration("linear")
     )
 
   set.seed(1)
-  tune_res <-
+  no_post_res <-
     fit_resamples(
-      wflow,
+      wflow_no_post,
+      folds,
+      control = control_resamples(save_pred = TRUE)
+    )
+
+  set.seed(1)
+  post_res <-
+    fit_resamples(
+      wflow_post,
       folds,
       control = control_resamples(save_pred = TRUE, extract = identity)
     )
 
-  tune_preds <-
-    collect_predictions(tune_res) %>%
-    dplyr::filter(id == "Fold1")
+  no_post_preds <-
+    collect_predictions(no_post_res) |>
+    dplyr::rename(no_post = .pred)
+  post_preds <-
+    collect_predictions(post_res)|>
+    dplyr::rename(post = .pred) |>
+    dplyr::select(.row, post, id, .config)
 
-  tune_wflow <-
-    collect_extracts(tune_res) %>%
-    pull(.extracts)
+  both_preds <-
+    dplyr::full_join(no_post_preds, post_preds, by = c(".row", "id", ".config"))
 
-  tune_wflow <- tune_wflow[[1]]
+  expect_true(all(both_preds$post != both_preds$no_post))
+  expect_true(post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor())
 
-  # mock `tune::tune_grid_loop_iter`'s RNG scheme
-  set.seed(1)
-  seed <- generate_seeds(TRUE, 1)[[1]]
-  old_kind <- RNGkind()[[1]]
-  assign(".Random.seed", seed, envir = globalenv())
-  withr::defer(RNGkind(kind = old_kind))
-
-  inner_split_1 <-
-    rsample::inner_split(
-      folds$splits[[1]],
-      split_args = list(v = 2, repeats = 1, breaks = 4, pool = 0.1)
-    )
-
-  wflow_res <-
-    generics::fit(
-      wflow,
-      rsample::analysis(inner_split_1),
-      calibration = rsample::assessment(inner_split_1)
-    )
-  wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
-
-  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
-  expect_equal(tune_preds$.pred, wflow_preds$.pred)
-  expect_equal(tune_wflow, wflow_res)
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (no training)", {
@@ -208,48 +197,53 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
   skip_if_not_installed("probably")
 
   y <- seq(0, 7, .001)
-  dat <- data.frame(y = y, x = y + (y-3)^2)
+  dat <- data.frame(y = y, x = y + (y - 3)^2)
 
   folds <- rsample::vfold_cv(dat, v = 2)
 
-  wflow <-
+  wflow_no_post <-
     workflows::workflow(
       y ~ x,
       parsnip::linear_reg()
-    ) %>%
+    )
+
+  wflow_post <-
+    wflow_no_post %>%
     workflows::add_tailor(
-      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = 1)
+      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = 3)
     )
 
   set.seed(1)
-  tune_res <-
+  no_post_res <-
     fit_resamples(
-      wflow,
+      wflow_no_post,
+      folds,
+      control = control_resamples(save_pred = TRUE)
+    )
+
+  set.seed(1)
+  post_res <-
+    fit_resamples(
+      wflow_post,
       folds,
       control = control_resamples(save_pred = TRUE, extract = identity)
     )
 
-  tune_preds <-
-    collect_predictions(tune_res) %>%
-    dplyr::filter(id == "Fold1")
+  no_post_preds <-
+    collect_predictions(no_post_res) |>
+    dplyr::rename(no_post = .pred)
+  post_preds <-
+    collect_predictions(post_res)|>
+    dplyr::rename(post = .pred) |>
+    dplyr::select(.row, post, id, .config)
 
-  tune_wflow <-
-    collect_extracts(tune_res) %>%
-    pull(.extracts)
-  tune_wflow <- tune_wflow[[1]]
+  both_preds <-
+    dplyr::full_join(no_post_preds, post_preds, by = c(".row", "id", ".config")) |>
+    filter(no_post < 3)
 
-  # mock `tune::tune_grid_loop_iter`'s RNG scheme
-  set.seed(1)
-  seed <- generate_seeds(TRUE, 1)[[1]]
-  old_kind <- RNGkind()[[1]]
-  assign(".Random.seed", seed, envir = globalenv())
+  expect_true(all(both_preds$post == 3))
+  expect_true(post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor())
 
-  wflow_res <- generics::fit(wflow, rsample::analysis(folds$splits[[1]]))
-  wflow_preds <- predict(wflow_res, rsample::assessment(folds$splits[[1]]))
-
-  tune_wflow$fit$fit$elapsed$elapsed <- wflow_res$fit$fit$elapsed$elapsed
-  expect_equal(tune_preds$.pred, wflow_preds$.pred)
-  expect_equal(tune_wflow, wflow_res)
 })
 
 # Error capture ----------------------------------------------------------------
@@ -453,7 +447,6 @@ test_that("argument order gives errors for recipe/formula", {
 })
 
 
-
 test_that("retain extra attributes", {
   skip_if_not_installed("splines2")
 
@@ -498,7 +491,8 @@ test_that("retain extra attributes", {
 
 
 test_that("`fit_resamples()` when objects need tuning", {
-  rec <- recipe(mpg ~ ., data = mtcars) %>% step_spline_natural(disp, deg_free = tune())
+  rec <- recipe(mpg ~ ., data = mtcars) %>%
+    step_spline_natural(disp, deg_free = tune())
   spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)
@@ -510,4 +504,3 @@ test_that("`fit_resamples()` when objects need tuning", {
   expect_snapshot_error(fit_resamples(wflow_2, rs))
   expect_snapshot_error(fit_resamples(wflow_3, rs))
 })
-

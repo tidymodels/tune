@@ -27,8 +27,7 @@
     Code
       lm_splines <- fit_resamples(lin_mod, mpg ~ ., flds)
     Message
-      ! Bootstrap1: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-      ! Bootstrap2: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      > A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 
 ---
 
@@ -54,7 +53,7 @@
     Code
       lst <- last_fit(lin_mod, mpg ~ ., split)
     Message
-      ! train/test split: preprocessor 1/1, model 1/1 (predictions): prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
+      > A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 
 ---
 
@@ -88,13 +87,13 @@
       collect_extracts(res_fit)
     Output
       # A tibble: 5 x 3
-        id         .extracts .config             
-        <chr>      <list>    <chr>               
-      1 Bootstrap1 <lm>      Preprocessor1_Model1
-      2 Bootstrap2 <lm>      Preprocessor1_Model1
-      3 Bootstrap3 <lm>      Preprocessor1_Model1
-      4 Bootstrap4 <lm>      Preprocessor1_Model1
-      5 Bootstrap5 <lm>      Preprocessor1_Model1
+        id         .extracts .config        
+        <chr>      <list>    <chr>          
+      1 Bootstrap1 <lm>      pre0_mod0_post0
+      2 Bootstrap2 <lm>      pre0_mod0_post0
+      3 Bootstrap3 <lm>      pre0_mod0_post0
+      4 Bootstrap4 <lm>      pre0_mod0_post0
+      5 Bootstrap5 <lm>      pre0_mod0_post0
 
 ---
 
@@ -111,13 +110,13 @@
       collect_extracts(res_error)
     Output
       # A tibble: 5 x 3
-        id         .extracts      .config             
-        <chr>      <list>         <chr>               
-      1 Bootstrap1 <try-errr [1]> Preprocessor1_Model1
-      2 Bootstrap2 <try-errr [1]> Preprocessor1_Model1
-      3 Bootstrap3 <try-errr [1]> Preprocessor1_Model1
-      4 Bootstrap4 <try-errr [1]> Preprocessor1_Model1
-      5 Bootstrap5 <try-errr [1]> Preprocessor1_Model1
+        id         .extracts      .config        
+        <chr>      <list>         <chr>          
+      1 Bootstrap1 <try-errr [1]> pre0_mod0_post0
+      2 Bootstrap2 <try-errr [1]> pre0_mod0_post0
+      3 Bootstrap3 <try-errr [1]> pre0_mod0_post0
+      4 Bootstrap4 <try-errr [1]> pre0_mod0_post0
+      5 Bootstrap5 <try-errr [1]> pre0_mod0_post0
 
 # `collect_extracts()` errors informatively applied to unsupported class
 

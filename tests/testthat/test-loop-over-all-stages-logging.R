@@ -16,7 +16,7 @@ test_that("preprocessor error doesn't stop grid", {
   )
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
       Sale_Price ~ .,
       folds,
@@ -33,8 +33,11 @@ test_that("preprocessor error doesn't stop grid", {
   )
 
   expect_identical(nrow(res_fit$.notes[[1]]), 1L)
-  expect_identical(ncol(res_fit$.notes[[1]]), 3L)
-  expect_true(all(vapply(res_fit$.notes[[1]], is.character, logical(1))))
+  expect_identical(ncol(res_fit$.notes[[1]]), 4L)
+  expect_identical(
+    vapply(res_fit$.notes[[1]], class, character(1)),
+    c(location = "character", type = "character", note = "character", trace = "list")
+  )
 })
 
 test_that("model error doesn't stop grid", {
@@ -64,7 +67,7 @@ test_that("model error doesn't stop grid", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -80,8 +83,11 @@ test_that("model error doesn't stop grid", {
   )
 
   expect_identical(nrow(res_fit$.notes[[1]]), 2L)
-  expect_identical(ncol(res_fit$.notes[[1]]), 3L)
-  expect_true(all(vapply(res_fit$.notes[[1]], is.character, logical(1))))
+  expect_identical(ncol(res_fit$.notes[[1]]), 4L)
+  expect_identical(
+    vapply(res_fit$.notes[[1]], class, character(1)),
+    c(location = "character", type = "character", note = "character", trace = "list")
+  )
 })
 
 test_that("prediction error doesn't stop grid", {
@@ -114,7 +120,7 @@ test_that("prediction error doesn't stop grid", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -130,8 +136,11 @@ test_that("prediction error doesn't stop grid", {
   )
 
   expect_identical(nrow(res_fit$.notes[[1]]), 2L)
-  expect_identical(ncol(res_fit$.notes[[1]]), 3L)
-  expect_true(all(vapply(res_fit$.notes[[1]], is.character, logical(1))))
+  expect_identical(ncol(res_fit$.notes[[1]]), 4L)
+  expect_identical(
+    vapply(res_fit$.notes[[1]], class, character(1)),
+    c(location = "character", type = "character", note = "character", trace = "list")
+  )
 })
 
 test_that("capturing error correctly in notes", {
@@ -163,7 +172,7 @@ test_that("capturing error correctly in notes", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -214,7 +223,7 @@ test_that("capturing warning correctly in notes", {
 
   wf_spec <- workflow(rec_spec, mod_spec)
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -225,7 +234,8 @@ test_that("capturing warning correctly in notes", {
   exp <- tibble::tibble(
     location = "preprocessor 1/1",
     type = "warning",
-    note = "testing warning"
+    note = "testing warning",
+    trace = res_fit$.notes[[1]]$trace
   )
   expect_identical(res_fit$.notes[[1]], exp)
   expect_identical(res_fit$.notes[[2]], exp)
@@ -267,7 +277,7 @@ test_that("doesn't capturing message in notes", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -279,7 +289,8 @@ test_that("doesn't capturing message in notes", {
   exp <- tibble::tibble(
     location = character(0),
     type = character(0),
-    note = character(0)
+    note = character(0),
+    trace = list()
   )
 
   expect_identical(res_fit$.notes[[1]], exp)
@@ -313,7 +324,7 @@ test_that("captures extract errors", {
   }
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -348,7 +359,7 @@ test_that("captures kknn R errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -394,14 +405,19 @@ test_that("captures xgboost C errors", {
 
   wf_spec <- workflow(rec_spec, mod_spec)
 
+  trim_timestamp <- function(lines) {
+    lines <- catalog_lines(lines)
+    lines[!grepl("\\[[0-9:]+\\]", lines)]
+  }
+
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
       control = control_grid(allow_par = FALSE)
     ),
-    transform = catalog_lines
+    transform = trim_timestamp
   )
 
   expect_identical(
@@ -459,7 +475,7 @@ test_that("captures cli styled errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,
@@ -516,7 +532,7 @@ test_that("emitter works with errors", {
   wf_spec <- workflow(rec_spec, mod_spec)
 
   expect_snapshot(
-    res_fit <- melodie_grid(
+    res_fit <- tune_grid(
       wf_spec,
       folds,
       grid = 2,

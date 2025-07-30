@@ -4,26 +4,54 @@
 \alias{parallelism}
 \title{Support for parallel processing in tune}
 \description{
-Support for parallel backends registered with the \link[foreach:foreach]{foreach}
-package was deprecated in tune 1.2.1 in favor of the
-\link[future:future]{future} package. The package will now raise a warning when:
-\enumerate{
-\item A parallel backend has been registered with foreach, and
-\item No \link[future:plan]{plan} has been specified with future.
+\pkg{tune} can enable simultaneous parallel computations. Tierney (2008)
+defined different classes of parallel processing techniques:
+\itemize{
+\item \emph{Implicit} is when a function uses low-level tools to perform a
+calculation that is small in scope in parallel. Examples are using
+multithreaded linear algebra libraries (e.g., BLAS) or basic R vectorization
+functions.
+\item \emph{Explicit} parallelization occurs when the user requests that some
+calculations should be run by generating multiple new R (sub)processes. These
+calculations can be more complex than those for implicit parallel
+processing.
 }
 
-If parallelism has been configured with both framework, tune will use the
-plan specified with future and will not warn. To transition your code from
-foreach to future, remove code that registers a foreach \code{Backend}:
+For example, some decision tree libraries can implicitly parallelize their
+search for the optimal splitting routine using multiple threads.
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(doBackend)
-registerDoBackend(cores = 4)
+Alternatively, if you are resampling a model \emph{B} times, you can explicitly
+create \emph{B} new R jobs to train \emph{B} boosted trees in parallel and return their
+resampling results to the main R process (e.g., \code{\link[=fit_resamples]{fit_resamples()}}).
+
+There are two frameworks that can be used to explicitly parallel process
+your work in \pkg{tune}: the \link[future:future]{future} package and the
+\link[mirai:mirai]{mirai} package. Previously, you could use the
+\link[foreach:foreach]{foreach} package, but this has been deprecated as of
+version 1.2.1 of tune.
+
+By default, no parallelism is used to process models in \pkg{tune}; you have
+to opt-in.
+\subsection{Using future}{
+
+You should install the package and choose your flavor of parallelism using
+the \link[future:plan]{plan} function. This allows you to specify the number of
+worker processes and the specific technology to use.
+
+For example, you can use:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{   library(future)
+   plan(multisession, workers = 4)
 }\if{html}{\out{</div>}}
 
-And replace it with:
+and work will be conducted simultaneously (unless there is an exception; see
+the section below).
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{library(future)
-plan(multisession, workers = 4)
+If you had previously used \pkg{foreach}, this would replace your existing
+code that probably looked like:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{   library(doBackend)
+   registerDoBackend(cores = 4)
 }\if{html}{\out{</div>}}
 
 See \code{\link[future:plan]{future::plan()}} for possible options other than \code{multisession}.
@@ -31,4 +59,72 @@ See \code{\link[future:plan]{future::plan()}} for possible options other than \c
 Note that \pkg{tune} resets the \emph{maximum} limit of memory of global variables
 (e.g., attached packages) to be greater than the default when the package is
 loaded. This value can be altered using \code{options(future.globals.maxSize)}.
+
+If you want \pkg{future} to use \pkg{mirai} parallel workers, you can
+install and load the \pkg{future.mirai} package.
+}
+
+\subsection{Using mirai}{
+
+To set the specific for parallel processing with \pkg{mirai}, use the
+\code{\link[mirai:daemons]{mirai::daemons()}} function. The first argument, \code{n}, determines the number
+of parallel workers. Using \code{daemons(0)} reverts to sequential processing.
+
+The arguments \code{url} and \code{remote} are used to set up and launch parallel
+processes over the network for distributed computing. See \code{\link[mirai:daemons]{mirai::daemons()}}
+documentation for more details.
+}
+
+\subsection{Reverting to sequential processing}{
+
+There are a few times when you might specify that you wish to use parallel
+processing, but it will revert to sequential execution:
+\itemize{
+\item Many of the control functions (e.g. \code{\link[=control_grid]{control_grid()}}) have an argument
+called \code{allow_par}. If this is set to \code{FALSE}, parallel backends will
+always be ignored.
+\item Some packages, such as \pkg{rJava} and \pkg{keras} are not compatible with
+explicit parallelization. If any of these packages are used, sequential
+processing occurs.
+\item If you specify fewer than two workers, or if there is only a single task,
+the computations will occur sequentially.
+}
+}
+
+\subsection{Expectations for reproducibility}{
+
+We advise that you \emph{always} run \code{\link[=set.seed]{set.seed()}} with a seed value just prior to
+using a function that uses (or might use) random numbers. Given this:
+\itemize{
+\item You should expect to get the same results if you run that section of code
+repeatedly, conditional on using version 1.4.0 of tune.
+\item You should expect differences in results between version 1.4.0 of tune and
+previous versions.
+\item When using \code{\link[=last_fit]{last_fit()}}, you should be able to get the same results as
+manually using \code{\link[generics:fit]{generics::fit()}} and \code{\link[=predict]{predict()}} to do the same work.
+\item When running with or without parallel processing (using any backend
+package), you should be able to achieve the same results from
+\code{\link[=fit_resamples]{fit_resamples()}} and the various tuning functions.
+}
+
+Specific exceptions:
+\itemize{
+\item For SVM classification models using the \pkg{kernlab} package, the random
+number generator is independent of R, and there is no argument to control
+it. Unfortunately, it is likely to give you different results from
+run-to-run.
+\item For some deep learning packages (e.g., \pkg{tensorflow}, \pkg{keras}, and
+\pkg{torch}), it is very difficult to achieve reproducible results. This
+is especially true when using GPUs for computations. Additionally, we have
+seen differences in computations (stochastic or non-random) between
+platforms due to the packages' use of different numerical tolerance
+constants across operating systems.
+}
+}
+}
+\references{
+\url{https://www.tmwr.org/grid-search#parallel-processing}
+
+Tierney, Luke. "Implicit and explicit parallel computing in R." COMPSTAT
+2008: Proceedings in Computational Statistics. Physica-Verlag HD, 2008.
 }

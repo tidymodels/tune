@@ -21,7 +21,10 @@ test_that("verifying loop_over_all_stages, no submodels", {
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -33,6 +36,7 @@ test_that("verifying loop_over_all_stages, no submodels", {
   static_1 <- tune:::make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
+    grid = grd,
     metrics = metric_set(rmse),
     eval_time = NULL,
     split_args = rs_args,
@@ -44,7 +48,7 @@ test_that("verifying loop_over_all_stages, no submodels", {
   static_1$y_name <- "outcome"
 
   simple_res <- tune:::loop_over_all_stages(rs_iter, grd, static_1)
-  expect_named(simple_res, c(".metrics", ".notes", "id"))
+  expect_named(simple_res, c(".metrics", ".notes", "outcome_names", "id"))
   expect_true(nrow(simple_res) == 1)
 
   exp_mtr <-
@@ -84,7 +88,10 @@ test_that("verifying loop_over_all_stages, submodels", {
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -130,6 +137,7 @@ test_that("verifying loop_over_all_stages, submodels", {
   static_1 <- tune:::make_static(
     submodel_wflow,
     param_info = submodel_wflow |> extract_parameter_set_dials(),
+    grid = submodel_grid,
     metrics = metric_set(rmse, rsq),
     eval_time = NULL,
     split_args = rs_args,
@@ -141,7 +149,7 @@ test_that("verifying loop_over_all_stages, submodels", {
   static_1$y_name <- "outcome"
 
   submodel_res <- tune:::loop_over_all_stages(rs_iter, submodel_grid, static_1)
-  expect_named(submodel_res, c(".metrics", ".notes", "id"))
+  expect_named(submodel_res, c(".metrics", ".notes", "outcome_names", "id"))
   expect_true(nrow(submodel_res) == 1)
 
   exp_mtr <-
@@ -181,7 +189,10 @@ test_that("verifying loop_over_all_stages, submodels only", {
   rs_args <- rsample::.get_split_args(rs)
 
   rs_iter <- tune:::vec_list_rowwise(rs) |>
-    purrr::pluck(1)
+    purrr::pluck(1) |>
+    mutate(
+      .seeds = tune:::get_parallel_seeds(1)
+    )
 
   # ------------------------------------------------------------------------------
 
@@ -197,6 +208,7 @@ test_that("verifying loop_over_all_stages, submodels only", {
   static_1 <- tune:::make_static(
     submodel_only_wflow,
     param_info = submodel_only_wflow |> extract_parameter_set_dials(),
+    grid = submodel_only_grid,
     metrics = metric_set(accuracy, roc_auc, brier_class),
     eval_time = NULL,
     split_args = rs_args,
@@ -207,8 +219,15 @@ test_that("verifying loop_over_all_stages, submodels only", {
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
-  submodel_only_res <- tune:::loop_over_all_stages(rs_iter, submodel_only_grid, static_1)
-  expect_named(submodel_only_res, c(".metrics", ".notes", "id"))
+  submodel_only_res <- tune:::loop_over_all_stages(
+    rs_iter,
+    submodel_only_grid,
+    static_1
+  )
+  expect_named(
+    submodel_only_res,
+    c(".metrics", ".notes", "outcome_names", "id")
+  )
   expect_true(nrow(submodel_only_res) == 1)
 
   exp_mtr <-

@@ -58,10 +58,14 @@ message_wrap <-
   }
 
 # issue cataloger --------------------------------------------------------------
-tune_env <-
-  rlang::new_environment(
-    data = list(progress_env = NULL, progress_active = FALSE, progress_catalog = NULL)
+tune_env <- rlang::new_environment(
+  data = list(
+    progress_env = NULL,
+    progress_active = FALSE,
+    progress_catalog = NULL,
+    progress_started = FALSE
   )
+)
 
 lbls <- c(LETTERS, letters, 1:1e3)
 
@@ -93,12 +97,15 @@ catalog_is_active <- function() {
 #' @export
 initialize_catalog <- function(control, env = rlang::caller_env()) {
   catalog <-
-    tibble::new_tibble(list(
-      type = character(0),
-      note = character(0),
-      n = numeric(0),
-      id = numeric(0)
-    ), nrow = 0)
+    tibble::new_tibble(
+      list(
+        type = character(0),
+        note = character(0),
+        n = numeric(0),
+        id = numeric(0)
+      ),
+      nrow = 0
+    )
 
   if (!(allow_parallelism(control$allow_par) ||
         is_testing()) &&
@@ -107,6 +114,7 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
   } else {
     progress_active <- FALSE
   }
+
 
   rlang::env_bind(tune_env, progress_env = env)
 
@@ -121,7 +129,10 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
     rlang::env_bind(tune_env, progress_active = FALSE),
     envir = env
   )
-
+  withr::defer(
+    rlang::env_bind(tune_env, progress_started = FALSE),
+    envir = env
+  )
 
   invisible(NULL)
 }
@@ -134,96 +145,24 @@ summarize_catalog <- function(catalog, sep = "   ") {
   }
 
   res <- dplyr::arrange(catalog, id)
-  res <- dplyr::mutate(res, color = dplyr::if_else(type == "warning", list(cli::col_yellow), list(cli::col_red)))
+  res <- dplyr::mutate(
+    res,
+    color = dplyr::if_else(
+      type == "warning",
+      list(cli::col_yellow),
+      list(cli::col_red)
+    )
+  )
   res <- dplyr::rowwise(res)
-  res <- dplyr::mutate(res, msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}"))
+  res <- dplyr::mutate(
+    res,
+    msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}")
+  )
   res <- dplyr::ungroup(res)
   res <- dplyr::pull(res, msg)
   res <- glue::glue_collapse(res, sep = sep)
 
   res
-}
-
-# a light wrapper around `tune_catalog()` for use inside of `tune_log()`
-log_catalog <- function(msg, type) {
-  type <-
-    switch(
-      type,
-      warning = "warning",
-      danger = "error",
-      return(invisible(NULL))
-    )
-
-  issues <-
-    tibble::new_tibble(
-      list(type = type, note = msg),
-      nrow = length(msg)
-    )
-
-  tune_catalog(issues)
-
-  invisible(NULL)
-}
-
-# an alternative to `tune_log()` that maintains a "catalog" of previously
-# encountered issues, and interactively summarizes them by type rather than
-# printing out each new tuning issue individually.
-tune_catalog <- function(issues) {
-  catalog <- rlang::env_get(env = tune_env, nm = "progress_catalog")
-
-  res <- dplyr::count(issues, type, note) %>% mutate(id = NA_integer_)
-  res <- dplyr::bind_rows(res, catalog)
-  res <- dplyr::group_by(res, type, note)
-  # dplyr::first will gain an `na_rm` argument in 1.1.0
-  res <- dplyr::summarize(res, n = sum(n), id = dplyr::first(id[!is.na(id)]))
-  res <- dplyr::ungroup(res)
-
-  for (issue in seq_len(nrow(res))) {
-    current <- res[issue,]
-    if (is.na(current$id)) {
-      current_ids <- res$id[!is.na(res$id)]
-      if (length(current_ids) == 0) {
-        res[issue, "id"] <- 1L
-      } else {
-        res[issue, "id"] <- max(current_ids) + 1L
-      }
-
-      # construct issue summary
-      color <- if (current$type == "warning") cli::col_yellow else cli::col_red
-      # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-      pad <- nchar(pull(res[issue, "id"])) + 14L
-      justify <- paste0("\n", strrep("\u00a0", pad))
-      note <- gsub("\n", justify, current$note)
-      # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
-      if (current$type == "error") {
-        note <- paste0("\u00a0\u00a0", note)
-      }
-      msg <- glue::glue(
-        "{color(cli::style_bold(lbls[pull(res[issue, 'id'])]))} | \\
-         {color(current$type)}: {note}"
-      )
-      cli::cli_alert(msg)
-    }
-  }
-
-  rlang::env_bind(tune_env, progress_catalog = res)
-  rlang::env_bind(tune_env$progress_env, catalog_summary = summarize_catalog(res))
-
-  if (nrow(catalog) == 0) {
-    rlang::with_options(
-      cli::cli_progress_bar(
-        type = "custom",
-        format = "There were issues with some computations   {catalog_summary}",
-        clear = FALSE,
-        .envir = tune_env$progress_env
-      ),
-      cli.progress_show_after = 0
-    )
-  }
-
-  cli::cli_progress_update(.envir = tune_env$progress_env)
-
-  invisible(TRUE)
 }
 
 # catching and logging ---------------------------------------------------------
@@ -253,16 +192,18 @@ siren <- function(x, type = "info") {
   if (inherits(msg, "character")) {
     msg <- as.character(msg)
   }
-  message(paste(symb, msg))
+
+  msg <- paste(symb, msg)
+
+  message(msg)
 }
 
-tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE) {
+tune_log <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
 
-  if (uses_catalog() & catalog) {
-    log_catalog(task, type)
+  if (task == "internal") {
     return(NULL)
   }
 
@@ -277,7 +218,8 @@ tune_log <- function(control, split_labels = NULL, task, type = "success", catal
   # see https://github.com/r-lib/cli/issues/92
   task <- gsub("\\{", "", task)
 
-  siren(paste0(labs, task), type = type)
+  task <- paste0(labs, task)
+  siren(task, type = type)
   NULL
 }
 
@@ -286,134 +228,196 @@ is_testing <- function() {
   identical(Sys.getenv("TESTTHAT"), "true")
 }
 
-log_problems <- function(notes, control, split_labels, loc, res, bad_only = FALSE) {
-  # Always log warnings and errors
-  control2 <- control
-  control2$verbose <- TRUE
-  control2$verbose_iter <- TRUE
-
-  should_catalog <- uses_catalog()
-
-  wrn <- res$signals
-  if (length(wrn) > 0) {
-    wrn_msg <- purrr::map_chr(wrn, ~conditionMessage(.x))
-    wrn_msg <- unique(wrn_msg)
-    wrn_msg <- paste(wrn_msg, collapse = ", ")
-
-    wrn_traces <- purrr::map(wrn, `$`, "trace")
-
-    wrn_msg <- tibble::new_tibble(
-      list(location = loc, type = "warning", note = wrn_msg, trace = list(wrn_traces[[1]])),
-      nrow = 1
-    )
-
-    notes <- dplyr::bind_rows(notes, wrn_msg)
-
-    if (should_catalog) {
-      tune_catalog(dplyr::filter(notes, type == "warning" & location == loc))
-    } else {
-      wrn_msg <- format_msg(loc, wrn_msg$note)
-      tune_log(control2, split_labels, wrn_msg, type = "warning")
-    }
-  }
-  if (inherits(res$res, "try-error")) {
-    err_cnd <- attr(res$res, "condition")
-    if (should_catalog) {
-      err_msg <- conditionMessage(err_cnd)
-    } else {
-      err_msg <- as.character(err_cnd)
-      err_msg <- gsub("\n$", "", err_msg)
-    }
-
-    err_msg <- tibble::new_tibble(
-      list(location = loc, type = "error", note = err_msg, trace = list(err_cnd$trace)),
-      nrow = 1
-    )
-
-    notes <- dplyr::bind_rows(notes, err_msg)
-
-    if (should_catalog) {
-      tune_catalog(dplyr::filter(notes, type == "error" & location == loc))
-    } else {
-      err_msg <- format_msg(loc, err_msg$note)
-      tune_log(control2, split_labels, err_msg, type = "danger")
-    }
-  } else {
-    if (!bad_only) {
-      tune_log(control, split_labels, loc, type = "success")
-    }
-  }
-  notes
-}
-
-format_msg <- function(loc, msg) {
-  msg <- trimws(msg, "left")
-  # truncate by line
-  by_line <- strsplit(msg, split = "\n")[[1]]
-  multi_line <- length(unlist(by_line)) > 1
-  # A tad of indentation
-  if (multi_line) {
-    by_line <- purrr::map(by_line, ~ paste0("  ", .x))
-  }
-  by_line <- purrr::map(by_line, glue::glue_collapse, width = options()$width - 5)
-  # reform message
-  msg <- paste0(by_line, collapse = "\n")
-  sep <- ifelse(multi_line, ":\n", ": ")
-  paste0(loc, sep, msg)
-}
-
 #' @export
 #' @rdname tune-internal-functions
 .catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
-  tune_log(..., type = "info", catalog = catalog)
+  dots <- list(...)
+  tune_log(..., type = "info", catalog = catalog, task = dots$location)
   tmp <- catcher(.expr)
-  new_notes <- log_problems(notes, ..., tmp, bad_only = bad_only)
-  assign("out_notes", new_notes, envir = parent.frame())
-  tmp$res
+
+  if (has_log_notes(tmp)) {
+    notes <- append_log_notes(notes, tmp, dots$location)
+    catalog_log(notes)
+  }
+  tmp <- remove_log_notes(tmp)
+  assign("notes", notes, envir = parent.frame())
+
+  tmp
 }
 
-#' @export
-#' @rdname tune-internal-functions
-.catch_and_log_fit <- function(.expr, ..., notes) {
-  tune_log(..., type = "info")
-
-  caught <- catcher(.expr)
-  result <- caught$res
-
-  # Log failures that come from parsnip before the model is fit
-  if (is_failure(result)) {
-    result_parsnip <- list(res = result, signals = list())
-
-    new_notes <- log_problems(notes, ..., result_parsnip)
-    assign("out_notes", new_notes, envir = parent.frame())
-    return(result)
+catcher <- function(expr) {
+  signals <- list()
+  add_cond <- function(cnd) {
+    signals <<- append(signals, list(rlang::cnd_entrace(cnd)))
+    rlang::cnd_muffle(cnd)
   }
 
-  if (!is_workflow(result)) {
-    cli::cli_abort("Internal error: Model result is not a workflow, but
-                   not {.obj_type_friendly {object}.")
+  res <- rlang::try_fetch(
+    expr,
+    warning = add_cond,
+    error = function(e) {
+      structure(
+        catch_message(e),
+        class = "try-error",
+        # if a simple error, add a traceback.
+        # otherwise, pass the condition right along.
+        condition = rlang::`%||%`(rlang::cnd_entrace(e), e)
+      )
+    }
+  )
+
+  attr(res, "notes") <- signals
+  res
+}
+
+is_failure <- function(x) {
+  inherits(x, "try-error")
+}
+
+has_log_notes <- function(x) {
+  is_failure(x) || NROW(attr(x, "notes")) > 0
+}
+
+append_log_notes <- function(notes, x, location) {
+  if (is.null(notes)) {
+    notes <- new_note()
   }
 
-  # Extract the parsnip model from the fitted workflow
-  fit <- result$fit$fit$fit
+  wrns <- attr(x, "notes")
+  if (length(wrns) > 0) {
+    for (wrn in wrns) {
+      type <- "warning"
+      note <- wrn$message
 
-  # Log underlying fit failures that parsnip caught during the actual
-  # fitting process
-  if (is_failure(fit)) {
-    result_fit <- list(res = fit, signals = list())
-
-    new_notes <- log_problems(notes, ..., result_fit)
-    assign("out_notes", new_notes, envir = parent.frame())
-    return(result)
+      notes <- tibble::add_row(
+        notes,
+        location = unclass(location),
+        type = type,
+        note = note,
+        trace = list(wrn$trace)
+      )
+    }
   }
 
-  new_notes <- log_problems(notes, ..., caught)
-  assign("out_notes", new_notes, envir = parent.frame())
+  if (is_failure(x)) {
+    type <- "error"
+    x <- attr(x, "condition")
+    note <- conditionMessage(x)
 
-  result
+    notes <- tibble::add_row(
+      notes,
+      location = unclass(location),
+      type = type,
+      note = note,
+      trace = list(x$trace)
+    )
+  }
+
+  notes
+}
+
+remove_log_notes <- function(x) {
+  attr(x, "notes") <- NULL
+  x
+}
+
+catalog_log <- function(x) {
+  catalog <- rlang::env_get(tune_env, "progress_catalog")
+
+  if (is.null(catalog)) {
+    catalog <- tibble::new_tibble(
+      list(
+        type = character(0),
+        note = character(0),
+        n = numeric(0),
+        id = numeric(0)
+      ),
+      nrow = 0
+    )
+  }
+
+  for (i in seq_along(x$note)) {
+    x_note <- x$note[i]
+    x_type <- x$type[i]
+
+    if (x_note %in% catalog$note) {
+      idx <- match(x_note, catalog$note)
+      catalog$n[idx] <- catalog$n[idx] + 1
+    } else {
+      new_id <- nrow(catalog) + 1
+      catalog <- tibble::add_row(
+        catalog,
+        tibble::tibble(
+          type = x_type,
+          note = x_note,
+          n = 1,
+          id = new_id
+        )
+      )
+
+      # construct issue summary
+      color <- if (x_type == "warning") cli::col_yellow else cli::col_red
+      # pad by nchar(label) + nchar("warning") + additional spaces and symbols
+      pad <- nchar(new_id) + 14L
+      justify <- paste0("\n", strrep("\u00a0", pad))
+      note <- gsub("\n", justify, x_note)
+      # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
+      if (x_type == "error") {
+        note <- paste0("\u00a0\u00a0", note)
+      }
+      msg <- glue::glue(
+        "{color(cli::style_bold(lbls[new_id]))} | {color(x_type)}: {note}"
+      )
+      cli::cli_alert(msg)
+    }
+  }
+
+  rlang::env_bind(tune_env, progress_catalog = catalog)
+  if (uses_catalog()) {
+    rlang::env_bind(
+      tune_env$progress_env,
+      catalog_summary = summarize_catalog(catalog)
+    )
+
+    if (!tune_env$progress_started) {
+
+      rlang::with_options(
+        cli::cli_progress_bar(
+          type = "custom",
+          format = "There were issues with some computations   {catalog_summary}",
+          clear = FALSE,
+          .envir = tune_env$progress_env
+        ),
+        cli.progress_show_after = 0
+      )
+      rlang::env_bind(tune_env, progress_started = TRUE)
+    }
+
+
+    cli::cli_progress_update(.envir = tune_env$progress_env)
+  }
+
+  return(NULL)
+}
+
+new_note <- function(
+    location = character(0),
+    type = character(0),
+    note = character(0),
+    trace = list()
+) {
+  tibble::new_tibble(
+    list(
+      location = location,
+      type = type,
+      note = note,
+      trace = trace
+    )
+  )
 }
 
 log_best <- function(control, iter, info, digits = 4) {
+  # TODO melodie; keep: used by tune_bayes
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -507,7 +511,6 @@ param_msg <- function(control, candidate) {
   )
   invisible(NULL)
 }
-
 
 acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
   if (!isTRUE(control$verbose_iter)) {

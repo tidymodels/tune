@@ -68,52 +68,6 @@
     Output
       NULL
 
-# log issues
-
-    Code
-      problems_1 <- log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      problems_2 <- log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
-    Message
-      ! Fold01: toledo: NaNs produced
-
-# catch and log issues
-
-    Code
-      out_1 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_3 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      ! Fold01: toledo: NaNs produced
-
----
-
-    Code
-      out_5 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      x toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_6 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      ! toledo: NaNs produced
-
 # logging iterations
 
     Code
@@ -203,7 +157,7 @@
         extract = function(x) {
           raise_warning()
           raise_error()
-        }))
+        }, allow_par = FALSE))
     Message
       > A | warning: ope! yikes.
       > B | error:   AHHhH
@@ -223,7 +177,7 @@
         extract = function(x) {
           raise_warning_rl()
           raise_error_rl()
-        }))
+        }, allow_par = FALSE))
     Message
       > A | warning: ope! yikes. (but rlang)
       > B | error:   AHHhH (but rlang)
@@ -240,7 +194,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = raise_multiline_conditions))
+        extract = raise_multiline_conditions, allow_par = FALSE))
     Message
       > A | warning: hmmm what's happening
       > B | error:   aHHHksdjvndiuf
@@ -257,7 +211,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = later))
+        extract = later, allow_par = FALSE))
     Message
       > A | error:   this errors now! ha!
 
@@ -276,7 +230,7 @@
       control = control_resamples(extract = function(x) {
         once()
         later()
-      }))
+      }, allow_par = FALSE))
     Message
       > A | error:   oh no
       > B | error:   this errors now! ha!
@@ -293,7 +247,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = numbered))
+        extract = numbered, allow_par = FALSE))
     Message
       > A | error:   error number 1
       > B | error:   error number 2
@@ -313,7 +267,8 @@
     Code
       res_fit <- tune_grid(parsnip::nearest_neighbor("regression", "kknn",
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
-        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
+        72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error,
+        allow_par = FALSE))
     Message
       > A | error:   AHHhH
 
@@ -322,14 +277,15 @@
     Code
       catalog_summary_test
     Output
-      A: x25
+      A: x75
 
 # interactive logger works (bayesian, error)
 
     Code
       res_grid <- tune_bayes(parsnip::nearest_neighbor("regression", "kknn",
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
-        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
+        72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error,
+        allow_par = FALSE))
     Message
       > A | error:   AHHhH
 
@@ -338,5 +294,5 @@
     Code
       catalog_summary_test
     Output
-      A: x50
+      A: x100
 
