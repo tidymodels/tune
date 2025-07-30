@@ -23,7 +23,7 @@ test_that("`get_param_info()` works for a workflow with tags for tuning", {
 		param_info$id,
 		c("min_n", "threshold", "disp_df", "lower_limit")
 	)
-	expect_identical(param_info$has_submodel, c(FALSE, NA, NA, NA))
+	expect_identical(param_info$has_submodel, c(FALSE, FALSE, FALSE, FALSE))
 })
 
 test_that("`get_param_info()` works when there are submodel parameters", {
@@ -821,7 +821,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) 
+		distinct(threshold, disp_df)
 
 	grids_post <-
 		grid_pre_post %>%
@@ -890,7 +890,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 		distinct(min_n) %>%
 		arrange(min_n)
 
-	
+
 	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
@@ -952,7 +952,7 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
-	
+
 	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
@@ -1035,7 +1035,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
-	
+
 	sched_pre_model_post <- schedule_grid(
 		grid_pre_model_post,
 		wflow_pre_model_post
