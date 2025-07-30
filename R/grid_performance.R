@@ -43,7 +43,7 @@ metrics_info <- function(x) {
 #' @param event_level A logical passed from the control function.
 #' @param x A character vector of package names.
 #' @param .expr Code to execute.
-#' @param ... Object to pass to the internal `tune_log()` function.
+#' @param ... Object to pass to the internal `update_printer()` function.
 #' @param bad_only A logical for whether warnings and errors should be caught.
 #' @param notes Character data to add to the logging.
 #' @param workflow A workflow.
@@ -51,7 +51,7 @@ metrics_info <- function(x) {
 #' @param new_data A data frame or matrix of predictors to process.
 #' @param metrics_info The output of `tune:::metrics_info(metrics)`---only
 #' included as an argument to allow for pre-computing.
-#' @param catalog A logical passed to `tune_log()` giving whether the message
+#' @param catalog A logical passed to `update_printer()` giving whether the message
 #' is compatible with the issue cataloger. Defaults to `TRUE`. Updates that are
 #' always unique and do not represent a tuning "issue" can bypass the cataloger
 #' by setting `catalog = FALSE`.
