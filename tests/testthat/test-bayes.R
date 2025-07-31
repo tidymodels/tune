@@ -23,7 +23,8 @@ test_that("tune recipe only", {
   wflow <- workflow() %>%
     add_recipe(rec_tune_1) %>%
     add_model(lm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 5)))
+  pset <- extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(1, 5)))
   folds <- rsample::vfold_cv(mtcars)
   control <- control_bayes(extract = identity)
 
@@ -69,7 +70,6 @@ test_that("tune recipe only", {
       )
     )
   )
-
 
   # test verbose options
   set.seed(1)
@@ -221,7 +221,8 @@ test_that("tune model and recipe", {
   wflow <- workflow() %>%
     add_recipe(rec_tune_1) %>%
     add_model(svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(1, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(1, 3)))
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
     res <- tune_bayes(
@@ -256,7 +257,8 @@ test_that("tune model and recipe (multi-predict)", {
   wflow <- workflow() %>%
     add_recipe(rec_tune_1) %>%
     add_model(svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>% update(num_comp = dials::num_comp(c(2, 3)))
+  pset <- extract_parameter_set_dials(wflow) %>%
+    update(num_comp = dials::num_comp(c(2, 3)))
   grid <- dials::grid_regular(pset, levels = c(3, 2))
   folds <- rsample::vfold_cv(mtcars)
   suppressMessages({
@@ -368,7 +370,12 @@ test_that("tune model only - failure in formula is caught elegantly", {
     cars_res <- tune_bayes(
       wflow,
       resamples = data_folds,
-      control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
+      control = control_bayes(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   })
 
@@ -389,7 +396,6 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_spline_b(disp, deg_free = tune())
 
-
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
@@ -398,7 +404,12 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
       svm_mod,
       preprocessor = rec,
       resamples = data_folds,
-      control = control_bayes(extract = function(x) {1}, save_pred = TRUE)
+      control = control_bayes(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   })
 
@@ -539,8 +550,13 @@ test_that("missing performance values", {
     res <-
       mod %>%
       tune_bayes(
-        Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
-          Latitude + Longitude,
+        Sale_Price ~
+          Neighborhood +
+            Gr_Liv_Area +
+            Year_Built +
+            Bldg_Type +
+            Latitude +
+            Longitude,
         resamples = folds,
         initial = 3,
         metrics = yardstick::metric_set(rsq),
@@ -553,8 +569,13 @@ test_that("missing performance values", {
     res_fail <-
       mod %>%
       tune_bayes(
-        Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type +
-          Latitude + Longitude,
+        Sale_Price ~
+          Neighborhood +
+            Gr_Liv_Area +
+            Year_Built +
+            Bldg_Type +
+            Latitude +
+            Longitude,
         resamples = folds,
         initial = 5,
         metrics = yardstick::metric_set(rsq),
@@ -578,8 +599,13 @@ test_that("tune_bayes() output for `iter` edge cases (#721)", {
   ctrl_bayes <- control_bayes(seed = 1)
 
   set.seed(1)
-  res_bayes <- tune_bayes(wf, boots, iter = 0, initial = 10,
-                          control = ctrl_bayes)
+  res_bayes <- tune_bayes(
+    wf,
+    boots,
+    iter = 0,
+    initial = 10,
+    control = ctrl_bayes
+  )
 
   set.seed(1)
   res_grid <- tune_grid(wf, boots)

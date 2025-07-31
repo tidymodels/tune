@@ -47,7 +47,8 @@ test_that("tuning with engine parameters with dials objects", {
   set.seed(283)
   expect_no_error(
     suppressMessages(
-      rf_search <- rf_mod %>% tune_bayes(mpg ~ ., resamples = rs, initial = 3, iter = 2)
+      rf_search <- rf_mod %>%
+        tune_bayes(mpg ~ ., resamples = rs, initial = 3, iter = 2)
     )
   )
   expect_no_error(

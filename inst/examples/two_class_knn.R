@@ -33,7 +33,7 @@ two_class_wflow <-
 two_class_set <-
   parameters(two_class_wflow) %>%
   update(K = neighbors(c(1, 50))) %>%
-  update(exponent = dist_power(c(1/10, 2)))
+  update(exponent = dist_power(c(1 / 10, 2)))
 
 set.seed(2494)
 two_class_grid <-
@@ -42,8 +42,13 @@ two_class_grid <-
 
 class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid,
-                 metrics = class_metrics, control = control_grid(verbose = TRUE, save_pred = TRUE))
+res <- tune_grid(
+  two_class_wflow,
+  resamples = data_folds,
+  grid = two_class_grid,
+  metrics = class_metrics,
+  control = control_grid(verbose = TRUE, save_pred = TRUE)
+)
 
 
 # all_pred <-
@@ -51,7 +56,6 @@ res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid,
 #   select(starts_with("id"), .predictions) %>%
 #   unnest() %>%
 #   nest(-K, -weight_func, -exponent)
-
 
 summarize(res) %>% filter(.metric == "roc_auc") %>% arrange(desc(mean))
 
@@ -62,7 +66,7 @@ decr_kappa <- function(i) {
     if (i > 20) {
       res <- 1
     } else {
-      res <- ((i - 5)/(20 - 5))^2
+      res <- ((i - 5) / (20 - 5))^2
     }
   }
   2 * res
@@ -81,7 +85,6 @@ svm_search <-
     control = control_bayes(verbose = TRUE, uncertain = 5, save_pred = TRUE)
   )
 
-ggplot(svm_search %>%  summarize() %>% filter(.metric == "roc_auc")) +
+ggplot(svm_search %>% summarize() %>% filter(.metric == "roc_auc")) +
   aes(x = K, y = exponent, col = weight_func, size = mean) +
   geom_point(alpha = .7)
-

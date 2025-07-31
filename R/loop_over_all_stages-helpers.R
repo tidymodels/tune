@@ -553,7 +553,10 @@ attach_pkgs <- function(pkgs, load = character(0)) {
   is_inst <- purrr::map_lgl(pkgs, rlang::is_installed)
   if (any(!is_inst)) {
     nms <- pkgs[!is_inst]
-    cli::cli_abort("Some package installs are needed: {.pkg {nms}}", call = NULL)
+    cli::cli_abort(
+      "Some package installs are needed: {.pkg {nms}}",
+      call = NULL
+    )
   }
 
   # There may be some packages that need to be fully loaded to work
@@ -563,4 +566,3 @@ attach_pkgs <- function(pkgs, load = character(0)) {
 
   invisible(pkgs)
 }
-

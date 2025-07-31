@@ -2,12 +2,18 @@ library(tidymodels)
 library(tune)
 library(kknn)
 library(doMC)
-registerDoMC(cores=20)
+registerDoMC(cores = 20)
 
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- rolling_origin(Chicago, initial = 364 * 15, assess = 7 * 4, skip = 13, cumulative = FALSE)
+data_folds <- rolling_origin(
+  Chicago,
+  initial = 364 * 15,
+  assess = 7 * 4,
+  skip = 13,
+  cumulative = FALSE
+)
 
 # ------------------------------------------------------------------------------
 
@@ -24,7 +30,12 @@ chi_rec <-
 
 
 knn_model <-
-  nearest_neighbor(mode = "regression", neighbors = tune(), weight_func = tune(), dist_power = tune()) %>%
+  nearest_neighbor(
+    mode = "regression",
+    neighbors = tune(),
+    weight_func = tune(),
+    dist_power = tune()
+  ) %>%
   set_engine("kknn")
 
 chi_wflow <-
@@ -37,13 +48,19 @@ chi_param <-
   update(
     threshold = threshold(c(.8, .99)),
     dist_power = dist_power(c(1, 2)),
-    neighbors = neighbors(c(1, 50)))
+    neighbors = neighbors(c(1, 50))
+  )
 
 chi_grid <-
   chi_param %>%
   grid_latin_hypercube(size = 18)
 
-res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE))
+res <- tune_grid(
+  chi_wflow,
+  resamples = data_folds,
+  grid = chi_grid,
+  control = control_grid(verbose = TRUE)
+)
 
 # summarize(res) %>%
 #   dplyr::filter(.metric == "rmse") %>%
@@ -70,7 +87,6 @@ autoplot(knn_search, type = "performance")
 
 
 ## -----------------------------------------------------------------------------
-
 
 library(finetune)
 set.seed(121)

@@ -1,4 +1,3 @@
-
 test_that("augment fit_resamples", {
   skip_if_not_installed("modeldata")
   data(two_class_dat, package = "modeldata")
@@ -172,7 +171,9 @@ test_that("augment last_fit", {
   aug_1 <- augment(fit_1)
   expect_true(nrow(aug_1) == nrow(rsample::assessment(split)))
   expect_equal(aug_1[["A"]], rsample::assessment(split)[["A"]])
-  expect_true(sum(!is.na(aug_1$.pred_class)) == nrow(rsample::assessment(split)))
+  expect_true(
+    sum(!is.na(aug_1$.pred_class)) == nrow(rsample::assessment(split))
+  )
   expect_true(sum(names(aug_1) == ".pred_class") == 1)
   expect_true(sum(names(aug_1) == ".pred_Class1") == 1)
   expect_true(sum(names(aug_1) == ".pred_Class2") == 1)

@@ -28,13 +28,17 @@
 #' [control_resamples()] is an alias for [control_grid()] and is meant to be
 #' used with [fit_resamples()].
 #' @export
-control_grid <- function(verbose = FALSE, allow_par = TRUE,
-                         extract = NULL, save_pred = FALSE,
-                         pkgs = NULL, save_workflow = FALSE,
-                         event_level = "first",
-                         parallel_over = NULL,
-                         backend_options = NULL) {
-
+control_grid <- function(
+  verbose = FALSE,
+  allow_par = TRUE,
+  extract = NULL,
+  save_pred = FALSE,
+  pkgs = NULL,
+  save_workflow = FALSE,
+  event_level = "first",
+  parallel_over = NULL,
+  backend_options = NULL
+) {
   # Any added arguments should also be added in superset control functions
   # in other packages
 
@@ -48,7 +52,6 @@ control_grid <- function(verbose = FALSE, allow_par = TRUE,
   check_function(extract, allow_null = TRUE)
 
   val_parallel_over(parallel_over, "control_grid()")
-
 
   res <- list(
     verbose = verbose,
@@ -87,9 +90,9 @@ control_resamples <- control_grid
 #'
 #' @export
 control_last_fit <- function(
-    verbose = FALSE,
-    event_level = "first",
-    allow_par = FALSE
+  verbose = FALSE,
+  event_level = "first",
+  allow_par = FALSE
 ) {
   # Any added arguments should also be added in superset control functions
   # in other packages
@@ -222,21 +225,23 @@ print.control_last_fit <- function(x, ...) {
 #'  with the original data.
 #' @export
 control_bayes <-
-  function(verbose = FALSE,
-           verbose_iter = FALSE,
-           no_improve = 10L,
-           uncertain = Inf,
-           seed = sample.int(10^5, 1),
-           extract = NULL,
-           save_pred = FALSE,
-           time_limit = NA,
-           pkgs = NULL,
-           save_workflow = FALSE,
-           save_gp_scoring = FALSE,
-           event_level = "first",
-           parallel_over = NULL,
-           backend_options = NULL,
-           allow_par = TRUE) {
+  function(
+    verbose = FALSE,
+    verbose_iter = FALSE,
+    no_improve = 10L,
+    uncertain = Inf,
+    seed = sample.int(10^5, 1),
+    extract = NULL,
+    save_pred = FALSE,
+    time_limit = NA,
+    pkgs = NULL,
+    save_workflow = FALSE,
+    save_gp_scoring = FALSE,
+    event_level = "first",
+    parallel_over = NULL,
+    backend_options = NULL,
+    allow_par = TRUE
+  ) {
     # Any added arguments should also be added in superset control functions
     # in other packages
 
@@ -256,7 +261,6 @@ control_bayes <-
     check_time_limit_arg(time_limit)
 
     val_parallel_over(parallel_over, "control_bayes()")
-
 
     if (!is.infinite(uncertain) && uncertain > no_improve) {
       cli::cli_warn(
@@ -299,7 +303,11 @@ print.control_bayes <- function(x, ...) {
 val_parallel_over <- function(parallel_over, where) {
   check_string(parallel_over, allow_null = TRUE)
   if (!is.null(parallel_over)) {
-    rlang::arg_match0(parallel_over, c("resamples", "everything"), "parallel_over")
+    rlang::arg_match0(
+      parallel_over,
+      c("resamples", "everything"),
+      "parallel_over"
+    )
   }
 
   invisible(NULL)

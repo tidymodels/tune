@@ -14,7 +14,7 @@ basics <- names(textfeatures:::count_functions)
 
 binary_hash <- function(x) {
   x <- ifelse(x < 0, -1, x)
-  x <- ifelse(x > 0,  1, x)
+  x <- ifelse(x > 0, 1, x)
   x
 }
 
@@ -27,7 +27,7 @@ pre_proc <-
     starts_with("textfeature_"),
     fn = ~ gsub("textfeature_review_raw_", "", .)
   ) %>%
-  step_tokenize(review)  %>%
+  step_tokenize(review) %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
   step_texthash(review, signed = TRUE, num_terms = tune()) %>%
@@ -52,9 +52,11 @@ folds <- vfold_cv(training_data)
 
 # ------------------------------------------------------------------------------
 
-text_grid <- expand.grid(penalty = 10^seq(-10, 1, length = 20),
-                         mixture = seq(0, 1, length = 5),
-                         num_terms = 2^seq(5, 10, by = 1))
+text_grid <- expand.grid(
+  penalty = 10^seq(-10, 1, length = 20),
+  mixture = seq(0, 1, length = 5),
+  num_terms = 2^seq(5, 10, by = 1)
+)
 
 
 glmnet_vars <- function(x) {
@@ -63,9 +65,17 @@ glmnet_vars <- function(x) {
 
 cls <- metric_set(roc_auc)
 set.seed(1559)
-text_glmnet <- tune_grid(text_wflow, resamples = folds, grid = text_grid, metrics = cls,
-                         control = control_grid(verbose = TRUE, extract = glmnet_vars,
-                                                save_pred = TRUE))
+text_glmnet <- tune_grid(
+  text_wflow,
+  resamples = folds,
+  grid = text_grid,
+  metrics = cls,
+  control = control_grid(
+    verbose = TRUE,
+    extract = glmnet_vars,
+    save_pred = TRUE
+  )
+)
 
 print(warnings())
 
@@ -83,15 +93,16 @@ print(warnings())
 summarize(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
   ggplot(aes(x = log10(penalty), y = mixture, fill = mean)) +
-  facet_wrap(~ num_terms) +
+  facet_wrap(~num_terms) +
   geom_tile() +
   theme_bw()
 
 summarize(text_glmnet) %>%
   filter(.metric == "accuracy") %>%
   ggplot(aes(x = penalty, y = mean, col = mixture, group = mixture)) +
-  facet_wrap(~ num_terms) +
-  geom_point() + geom_line() +
+  facet_wrap(~num_terms) +
+  geom_point() +
+  geom_line() +
   scale_x_log10()
 
 # ------------------------------------------------------------------------------
@@ -102,7 +113,7 @@ test_set <-
   update(num_terms = num_hash())
 
 trade_decay <- function(iter) {
-  expo_decay(iter, start_val = .1, limit_val = 0, slope = 1/10)
+  expo_decay(iter, start_val = .1, limit_val = 0, slope = 1 / 10)
 }
 
 
@@ -115,11 +126,11 @@ search_res <-
     iter = 20,
     metrics = cls,
     objective = exp_improve(trade_decay),
-    control = control_bayes(verbose = FALSE, extract = glmnet_vars, save_pred = TRUE)
+    control = control_bayes(
+      verbose = FALSE,
+      extract = glmnet_vars,
+      save_pred = TRUE
+    )
   )
 
 print(warnings())
-
-
-
-

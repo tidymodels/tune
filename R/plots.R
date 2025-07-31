@@ -75,18 +75,22 @@
 #' autoplot(ames_iter_search, metric = "rmse", type = "performance")
 #' @export
 autoplot.tune_results <-
-  function(object,
-           type = c("marginals", "parameters", "performance"),
-           metric = NULL,
-           eval_time = NULL,
-           width = NULL,
-           call = rlang::current_env(),
-           ...) {
+  function(
+    object,
+    type = c("marginals", "parameters", "performance"),
+    metric = NULL,
+    eval_time = NULL,
+    width = NULL,
+    call = rlang::current_env(),
+    ...
+  ) {
     type <- match.arg(type)
     has_iter <- any(names(object) == ".iter")
     if (!has_iter && type != "marginals") {
-      cli::cli_abort("{.code type = {glue::double_quote(type)}} is only used with
-                      iterative search results.")
+      cli::cli_abort(
+        "{.code type = {glue::double_quote(type)}} is only used with
+                      iterative search results."
+      )
     }
     pset <- .get_tune_parameters(object)
     if (any(is.na(pset$object))) {
@@ -106,12 +110,29 @@ autoplot.tune_results <-
       p <- plot_param_vs_iter(object, call)
     } else {
       if (type == "performance") {
-        p <- plot_perf_vs_iter(object, metric, eval_time = eval_time, width, call)
+        p <- plot_perf_vs_iter(
+          object,
+          metric,
+          eval_time = eval_time,
+          width,
+          call
+        )
       } else {
         if (use_regular_grid_plot(object)) {
-          p <- plot_regular_grid(object, metric = metric, eval_time = eval_time, call, ...)
+          p <- plot_regular_grid(
+            object,
+            metric = metric,
+            eval_time = eval_time,
+            call,
+            ...
+          )
         } else {
-          p <- plot_marginals(object, metric = metric, eval_time = eval_time, call)
+          p <- plot_marginals(
+            object,
+            metric = metric,
+            eval_time = eval_time,
+            call
+          )
         }
       }
     }
@@ -120,7 +141,9 @@ autoplot.tune_results <-
 
 #' @export
 autoplot.resample_results <- function(object, ...) {
-  cli::cli_abort("There is no {.fn autoplot} implementation for {.cls resample_results}.")
+  cli::cli_abort(
+    "There is no {.fn autoplot} implementation for {.cls resample_results}."
+  )
 }
 
 # ------------------------------------------------------------------------------
@@ -142,8 +165,13 @@ get_param_columns <- function(x) {
   } else {
     dat <- collect_metrics(x)
     other_names <- c(
-      ".metric", ".estimator", "mean", "n",
-      "std_err", ".iter", ".config"
+      ".metric",
+      ".estimator",
+      "mean",
+      "n",
+      "std_err",
+      ".iter",
+      ".config"
     )
     res <- names(dat)[!(names(dat) %in% other_names)]
   }
@@ -223,8 +251,10 @@ is_regular_grid <- function(grid) {
   # Derived from simulation data and C5.0 tree
   if (max_pct_unique > 1 / 2) res <- FALSE
   if (max_pct_unique <= 1 / 2 & max_pct_unique <= 1 / 6) res <- TRUE
-  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio > 0.05) res <- TRUE
-  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio <= 0.05) res <- FALSE
+  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio > 0.05)
+    res <- TRUE
+  if (max_pct_unique <= 1 / 2 & max_pct_unique > 1 / 6 & np_ratio <= 0.05)
+    res <- FALSE
   res
 }
 
@@ -259,16 +289,15 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
 
   num_eval_times <- length(eval_time[!is.na(eval_time)])
 
-  if(any_dyn & num_eval_times > 0) {
+  if (any_dyn & num_eval_times > 0) {
     x <- x %>%
       dplyr::filter(.eval_time %in% eval_time) %>%
       dplyr::mutate(
-        .metric =
-          dplyr::if_else(
-            condition = !is.na(.eval_time),
-            true = paste0(.metric, " @", format(.eval_time, digits = 5)),
-            false = .metric
-          )
+        .metric = dplyr::if_else(
+          condition = !is.na(.eval_time),
+          true = paste0(.metric, " @", format(.eval_time, digits = 5)),
+          false = .metric
+        )
       )
   }
   x
@@ -276,8 +305,13 @@ process_autoplot_metrics <- function(x, metric, eval_time) {
 
 # ------------------------------------------------------------------------------
 
-plot_perf_vs_iter <- function(x, metric = NULL, eval_time = NULL, width = NULL,
-                              call = rlang::caller_env()) {
+plot_perf_vs_iter <- function(
+  x,
+  metric = NULL,
+  eval_time = NULL,
+  width = NULL,
+  call = rlang::caller_env()
+) {
   if (is.null(width)) {
     width <- max(x$.iter) / 75
   }
@@ -320,15 +354,20 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    cli::cli_abort("{.fn autoplot} requires objects made with {.pkg tune}
-                    version 0.1.0 or later.")
+    cli::cli_abort(
+      "{.fn autoplot} requires objects made with {.pkg tune}
+                    version 0.1.0 or later."
+    )
   }
 
   # ----------------------------------------------------------------------------
   # Collect and filter resampling results
 
   x <- estimate_tune_results(x)
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
+  is_num <- purrr::map_lgl(
+    x %>% dplyr::select(dplyr::all_of(param_cols)),
+    is.numeric
+  )
   num_param_cols <- param_cols[is_num]
 
   # ----------------------------------------------------------------------------
@@ -365,7 +404,7 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
     scale_x_continuous(breaks = iter_breaks(x$.iter))
 
   if (length(param_cols) == 1) {
-    p <- p  + ylab(param_cols)
+    p <- p + ylab(param_cols)
   } else {
     p <- p + ylab("") + facet_wrap(~name, scales = "free_y")
   }
@@ -373,12 +412,19 @@ plot_param_vs_iter <- function(x, call = rlang::caller_env()) {
   p
 }
 
-plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::caller_env()) {
+plot_marginals <- function(
+  x,
+  metric = NULL,
+  eval_time = NULL,
+  call = rlang::caller_env()
+) {
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    cli::cli_abort("{.fn autoplot} requires objects made with {.pkg tune}
-                   version 0.1.0 or later.")
+    cli::cli_abort(
+      "{.fn autoplot} requires objects made with {.pkg tune}
+                   version 0.1.0 or later."
+    )
   }
 
   # ----------------------------------------------------------------------------
@@ -394,8 +440,14 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
   # ----------------------------------------------------------------------------
   # Check types of parameters then sort by unique values
 
-  is_num <- purrr::map_lgl(x %>% dplyr::select(dplyr::all_of(param_cols)), is.numeric)
-  num_val <- purrr::map_int(x %>% dplyr::select(dplyr::all_of(param_cols)), ~ length(unique(.x)))
+  is_num <- purrr::map_lgl(
+    x %>% dplyr::select(dplyr::all_of(param_cols)),
+    is.numeric
+  )
+  num_val <- purrr::map_int(
+    x %>% dplyr::select(dplyr::all_of(param_cols)),
+    ~ length(unique(.x))
+  )
 
   if (any(num_val < 2)) {
     rm_param <- param_cols[num_val < 2]
@@ -408,10 +460,14 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
     num_param_cols <- param_cols[is_num]
     chr_param_cols <- param_cols[!is_num]
     if (length(chr_param_cols) > 1) {
-      cli::cli_abort("Currently cannot autoplot grids with 2+ non-numeric parameters.")
+      cli::cli_abort(
+        "Currently cannot autoplot grids with 2+ non-numeric parameters."
+      )
     }
     if (length(num_param_cols) == 0) {
-      cli::cli_abort("Currently cannot autoplot grids with only non-numeric parameters.")
+      cli::cli_abort(
+        "Currently cannot autoplot grids with only non-numeric parameters."
+      )
     }
     num_val <- num_val[param_cols %in% chr_param_cols]
     names(num_val) <- chr_param_cols
@@ -454,7 +510,12 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
 
   if (length(chr_param_cols) > 0) {
     if (is_race) {
-      p <- p + geom_point(aes(col = !!sym(chr_param_cols), alpha = `# resamples`, size = resamples))
+      p <- p +
+        geom_point(aes(
+          col = !!sym(chr_param_cols),
+          alpha = `# resamples`,
+          size = resamples
+        ))
       p <- p + ggplot2::labs(color = chr_param_cols)
     } else {
       p <- p + geom_point(aes(col = !!sym(chr_param_cols)), alpha = .7)
@@ -498,10 +559,13 @@ plot_marginals <- function(x, metric = NULL, eval_time = NULL, call = rlang::cal
 }
 
 
-plot_regular_grid <- function(x,
-                              metric = NULL,
-                              eval_time = NULL,
-                              call = rlang::caller_env(), ...) {
+plot_regular_grid <- function(
+  x,
+  metric = NULL,
+  eval_time = NULL,
+  call = rlang::caller_env(),
+  ...
+) {
   # Collect and filter resampling results
 
   is_race <- inherits(x, "tune_race")
@@ -521,8 +585,10 @@ plot_regular_grid <- function(x,
   param_cols <- get_param_columns(x)
   pset <- get_param_object(x)
   if (is.null(pset)) {
-    cli::cli_abort("The {.fn autoplot} function requires objects made with
-                    {.pkg tune} version 0.1.0 or later.")
+    cli::cli_abort(
+      "The {.fn autoplot} function requires objects made with
+                    {.pkg tune} version 0.1.0 or later."
+    )
   }
 
   grd <- dat %>% dplyr::select(all_of(param_cols))
@@ -591,9 +657,10 @@ plot_regular_grid <- function(x,
       dat[[col_col]] <- format(dat[[col_col]], ...)
     }
     col_col <- rlang::ensym(col_col)
-    p <- ggplot(dat, aes(value, y = mean,
-      col = {{col_col}}, group = {{col_col}}
-    ))
+    p <- ggplot(
+      dat,
+      aes(value, y = mean, col = {{ col_col }}, group = {{ col_col }})
+    )
     # Since `col_col` has either the parameter id or the parameter label, use
     # is in the key:
 
@@ -607,14 +674,18 @@ plot_regular_grid <- function(x,
       facets <- rlang::quos(!!!facets)
       # faceting variables
       if (multi_metrics) {
-        p <- p + facet_grid(
-          rows = vars(.metric), vars(!!!facets),
-          labeller = ggplot2::labeller(.cols = ggplot2::label_both),
-          scales = "free_y"
-        )
+        p <- p +
+          facet_grid(
+            rows = vars(.metric),
+            vars(!!!facets),
+            labeller = ggplot2::labeller(.cols = ggplot2::label_both),
+            scales = "free_y"
+          )
       } else {
         p <-
-          p + facet_wrap(vars(!!!facets),
+          p +
+          facet_wrap(
+            vars(!!!facets),
             labeller = ggplot2::labeller(.cols = ggplot2::label_both)
           )
       }
@@ -671,4 +742,3 @@ iter_breaks <- function(x, num = 10) {
   names(brks) <- attr(brks, "labels")
   brks
 }
-

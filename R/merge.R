@@ -122,7 +122,6 @@ merger <- function(x, y, ...) {
   grid_name <- colnames(y)
   # We will deliberately allow `y` to lack some tunable parameters in `x`
 
-
   if (inherits(x, "recipe")) {
     updater <- update_recipe
     step_ids <- purrr::map_chr(x$steps, ~ .x$id)
@@ -132,15 +131,17 @@ merger <- function(x, y, ...) {
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- purrr::map(seq_len(nrow(y)), ~ x)
+    res <- purrr::map(seq_len(nrow(y)), ~x)
     res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
 
   y %>%
     dplyr::mutate(
-      ..object = purrr::map(1:nrow(y), ~ updater(y[.x,], x, pset, step_ids, grid_name))
+      ..object = purrr::map(
+        1:nrow(y),
+        ~ updater(y[.x, ], x, pset, step_ids, grid_name)
+      )
     ) %>%
     dplyr::select(x = ..object)
 }
-

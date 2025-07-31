@@ -26,7 +26,11 @@ knn_two_vars <-
   set_mode("classification")
 
 knn_three_vars <-
-  nearest_neighbor(neighbors = tune(), weight_func = tune(), dist_power = tune()) %>%
+  nearest_neighbor(
+    neighbors = tune(),
+    weight_func = tune(),
+    dist_power = tune()
+  ) %>%
   set_engine("kknn") %>%
   set_mode("classification")
 
@@ -53,7 +57,7 @@ grid_plot <- function(rec, mod, sfd = TRUE, ...) {
   is_quant <- purrr::map_lgl(pull(pset, object), inherits, "quant_param")
 
   p <- nrow(pset)
-  p_num <- sum( is_quant)
+  p_num <- sum(is_quant)
   p_cat <- sum(!is_quant)
 
   if (sfd) {
@@ -61,8 +65,13 @@ grid_plot <- function(rec, mod, sfd = TRUE, ...) {
   } else {
     grid <- grid_regular(pset, levels = rep(3, p))
   }
-  note <- paste0(p_num, " quant, ", p_cat, " qual, ",
-                 ifelse(sfd, "space filling", "regular grid"))
+  note <- paste0(
+    p_num,
+    " quant, ",
+    p_cat,
+    " qual, ",
+    ifelse(sfd, "space filling", "regular grid")
+  )
 
   res <- tune_grid(wflow, resamples = data_folds, grid = grid, ...)
   plot_marginals(res) + ggtitle(note)
@@ -119,9 +128,10 @@ grid_plot(spline_rec, knn_three_vars, sfd = FALSE, metrics = one_perf)
 
 set.seed(7898)
 data_folds <- vfold_cv(two_class_dat, v = 5)
-search_res <- tune_bayes(spline_rec, model = knn_three_vars, resamples = data_folds, iter = 10)
+search_res <- tune_bayes(
+  spline_rec,
+  model = knn_three_vars,
+  resamples = data_folds,
+  iter = 10
+)
 search_res$splits <- lapply(search_res$splits, function(x) list())
-
-
-
-

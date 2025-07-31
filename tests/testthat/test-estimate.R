@@ -5,7 +5,15 @@ options(dplyr.summarise.inform = FALSE)
 
 compl <-
   unnest(rcv_results, .metrics) %>%
-  group_by(deg_free, degree, `wt df`, `wt degree`, .config, .metric, .estimator) %>%
+  group_by(
+    deg_free,
+    degree,
+    `wt df`,
+    `wt degree`,
+    .config,
+    .metric,
+    .estimator
+  ) %>%
   summarize(
     mean = mean(.estimate, na.rm = TRUE),
     n = sum(!is.na(.estimator)),

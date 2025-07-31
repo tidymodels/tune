@@ -14,13 +14,25 @@ test_that("select_best()", {
   )
   best_rmse <-
     tibble::tribble(
-      ~deg_free, ~degree, ~`wt df`, ~`wt degree`,
-      6L,        2L,      2L,       1L
+      ~deg_free,
+      ~degree,
+      ~`wt df`,
+      ~`wt degree`,
+      6L,
+      2L,
+      2L,
+      1L
     )
   best_rsq <-
     tibble::tribble(
-      ~deg_free, ~degree, ~`wt df`, ~`wt degree`,
-      10L,       2L,      2L,       2L
+      ~deg_free,
+      ~degree,
+      ~`wt df`,
+      ~`wt degree`,
+      10L,
+      2L,
+      2L,
+      2L
     )
 
   expect_equal(
@@ -90,11 +102,20 @@ test_that("one-std error rule", {
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
-    tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
+    tibble::is_tibble(select_by_one_std_err(
+      knn_results,
+      metric = "accuracy",
+      K
+    ))
   )
 
   expect_equal(
-    select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    select_by_one_std_err(
+      rcv_results,
+      metric = "rmse",
+      deg_free,
+      `wt degree`
+    )$.config,
     "Preprocessor19_Model1"
   )
   expect_equal(
@@ -147,7 +168,12 @@ test_that("percent loss", {
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
   )
   expect_equal(
-    select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    select_by_pct_loss(
+      rcv_results,
+      metric = "rmse",
+      deg_free,
+      `wt degree`
+    )$.config,
     "Preprocessor19_Model1"
   )
   expect_equal(
@@ -189,7 +215,12 @@ test_that("percent loss", {
 
   data("example_ames_knn")
   expect_equal(
-    select_by_pct_loss(ames_grid_search, metric = "rmse", limit = 10, desc(K))$K,
+    select_by_pct_loss(
+      ames_grid_search,
+      metric = "rmse",
+      limit = 10,
+      desc(K)
+    )$K,
     40
   )
 })
@@ -306,7 +337,12 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
     slice(1)
 
   expect_equal(
-    select_by_pct_loss(tune_res, metric = "msd", limit = 10, desc(neighbors))$.config,
+    select_by_pct_loss(
+      tune_res,
+      metric = "msd",
+      limit = 10,
+      desc(neighbors)
+    )$.config,
     tune_res_metrics %>%
       filter(.metric == "msd") %>%
       dplyr::rowwise() %>%
@@ -328,7 +364,12 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
     slice(1)
 
   expect_equal(
-    select_by_pct_loss(tune_res, metric = "mpe", limit = 10, desc(neighbors))$.config,
+    select_by_pct_loss(
+      tune_res,
+      metric = "mpe",
+      limit = 10,
+      desc(neighbors)
+    )$.config,
     tune_res_metrics %>%
       filter(.metric == "mpe") %>%
       dplyr::rowwise() %>%
@@ -381,7 +422,6 @@ test_that("show_best with survival models", {
     show_best(surv_res, metric = "brier_survival", eval_time = 3:4),
     error = TRUE
   )
-
 })
 
 test_that("select_best with survival models", {
@@ -422,7 +462,6 @@ test_that("select_best with survival models", {
     select_best(surv_res, metric = "brier_survival", eval_time = 3:4),
     error = TRUE
   )
-
 })
 
 test_that("select_by_one_std_err with survival models", {
@@ -441,36 +480,62 @@ test_that("select_by_one_std_err with survival models", {
     select_by_one_std_err(surv_res, metric = "brier_survival", trees)
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = c("brier_survival", "roc_auc_survival"),
-                          trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = c("brier_survival", "roc_auc_survival"),
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "concordance_survival",
-                          eval_time = 1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "concordance_survival",
-                          eval_time = 1.1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1.1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1.1, trees),
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1.1,
+      trees
+    ),
     error = TRUE
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1:2, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1:2,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 3:4, trees),
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 3:4,
+      trees
+    ),
     error = TRUE
   )
-
 })
 
 test_that("select_by_pct_loss with survival models", {
@@ -489,37 +554,60 @@ test_that("select_by_pct_loss with survival models", {
     select_by_pct_loss(surv_res, metric = "brier_survival", trees)
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = c("brier_survival", "roc_auc_survival"),
-                       trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = c("brier_survival", "roc_auc_survival"),
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "concordance_survival",
-                       eval_time = 1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "concordance_survival",
-                       eval_time = 1.1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1.1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1.1, trees),
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1.1,
+      trees
+    ),
     error = TRUE
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1:2, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1:2,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 3:4, trees),
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 3:4,
+      trees
+    ),
     error = TRUE
   )
-
 })
-
-
-

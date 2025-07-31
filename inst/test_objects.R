@@ -27,10 +27,14 @@ knn_mod <-
   set_engine("kknn")
 
 knn_mod_two <-
-  nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
+  nearest_neighbor(
+    mode = "regression",
+    neighbors = tune("K"),
+    weight_func = tune()
+  ) %>%
   set_engine("kknn")
 
-get_coefs  <- function(x) {
+get_coefs <- function(x) {
   x %>%
     extract_fit_parsnip() %>%
     tidy()
@@ -61,9 +65,7 @@ mt_knn <-
 
 set.seed(8825)
 mt_spln_lm_grid <-
-  tune_grid(mt_spln_lm,
-            resamples = folds,
-            control = g_ctrl)
+  tune_grid(mt_spln_lm, resamples = folds, control = g_ctrl)
 
 set.seed(8825)
 mt_spln_lm_bo <-
@@ -87,18 +89,17 @@ mt_spln_knn_grid <-
 
 set.seed(8825)
 mt_spln_knn_bo <-
-  tune_bayes(mt_spln_knn,
-             resamples = folds,
-             iter = 3,
-             control = b_ctrl)
+  tune_bayes(mt_spln_knn, resamples = folds, iter = 3, control = b_ctrl)
 
 set.seed(8825)
 mt_spln_knn_bo_sep <-
-  tune_bayes(knn_mod_two,
-             spline_rec,
-             resamples = folds,
-             iter = 3,
-             control = b_ctrl)
+  tune_bayes(
+    knn_mod_two,
+    spline_rec,
+    resamples = folds,
+    iter = 3,
+    control = b_ctrl
+  )
 
 # ------------------------------------------------------------------------------
 
@@ -107,10 +108,7 @@ mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
 
 set.seed(8825)
 mt_knn_bo <-
-  tune_bayes(mt_knn,
-             resamples = folds,
-             iter = 3,
-             control = b_ctrl)
+  tune_bayes(mt_knn, resamples = folds, iter = 3, control = b_ctrl)
 
 # ------------------------------------------------------------------------------
 
@@ -171,10 +169,11 @@ knn_results <-
 knn_set <- two_class_set
 
 knn_gp <-
-  tune:::fit_gp(dat = collect_metrics(knn_results),
-                pset = knn_set,
-                metric = "accuracy",
-                control = control_bayes()
+  tune:::fit_gp(
+    dat = collect_metrics(knn_results),
+    pset = knn_set,
+    metric = "accuracy",
+    control = control_bayes()
   )
 
 saveRDS(
@@ -414,7 +413,7 @@ surv_boost_tree_res <-
   tune_grid(
     event_time ~ X1 + X2,
     resamples = sim_rs,
-    grid  = tibble(trees = c(1, 5, 10, 20, 100)),
+    grid = tibble(trees = c(1, 5, 10, 20, 100)),
     metrics = srv_mtr,
     eval_time = time_points
   )

@@ -68,13 +68,15 @@ fit_resamples.default <- function(object, ...) {
 
 #' @export
 #' @rdname fit_resamples
-fit_resamples.model_spec <- function(object,
-                                     preprocessor,
-                                     resamples,
-                                     ...,
-                                     metrics = NULL,
-                                     eval_time = NULL,
-                                     control = control_resamples()) {
+fit_resamples.model_spec <- function(
+  object,
+  preprocessor,
+  resamples,
+  ...,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_resamples()
+) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     cli::cli_abort(tune_pp_msg)
   }
@@ -103,12 +105,14 @@ fit_resamples.model_spec <- function(object,
 
 #' @rdname fit_resamples
 #' @export
-fit_resamples.workflow <- function(object,
-                                   resamples,
-                                   ...,
-                                   metrics = NULL,
-                                   eval_time = NULL,
-                                   control = control_resamples()) {
+fit_resamples.workflow <- function(
+  object,
+  resamples,
+  ...,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_resamples()
+) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_resamples())
@@ -128,8 +132,15 @@ fit_resamples.workflow <- function(object,
 
 # ------------------------------------------------------------------------------
 
-resample_workflow <- function(workflow, resamples, metrics, eval_time = NULL,
-                              control, rng, call = caller_env()) {
+resample_workflow <- function(
+  workflow,
+  resamples,
+  metrics,
+  eval_time = NULL,
+  control,
+  rng,
+  call = caller_env()
+) {
   check_no_tuning(workflow)
 
   # `NULL` is the signal that we have no grid to tune with

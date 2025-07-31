@@ -1,4 +1,8 @@
-new_rng_snapshots <- utils::compareVersion("3.6.0", as.character(getRversion())) > 0
+new_rng_snapshots <- utils::compareVersion(
+  "3.6.0",
+  as.character(getRversion())
+) >
+  0
 
 # New (as of 4.3.0) a new option generates different snapshots
 rankdeficient_version <- any(names(formals("predict.lm")) == "rankdeficient")
@@ -74,50 +78,50 @@ redefer_initialize_catalog <- function(test_env) {
 # Objects to test grid processing
 
 if (rlang::is_installed("splines2")) {
-	rec_no_tune <-
-		recipes::recipe(mpg ~ ., data = mtcars) %>%
-		recipes::step_corr(all_predictors(), threshold = .1) %>%
-		recipes::step_spline_natural(disp, deg_free = 5)
+  rec_no_tune <-
+    recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_corr(all_predictors(), threshold = .1) %>%
+    recipes::step_spline_natural(disp, deg_free = 5)
 
-	rec_tune <-
-		recipes::recipe(mpg ~ ., data = mtcars) %>%
-		recipes::step_corr(all_predictors(), threshold = tune()) %>%
-		recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
+  rec_tune <-
+    recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::step_corr(all_predictors(), threshold = tune()) %>%
+    recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
 }
 
 mod_no_tune <-
-	parsnip::rand_forest(mode = "regression")
+  parsnip::rand_forest(mode = "regression")
 
 mod_tune <-
-	parsnip::boost_tree(
-		trees = tune(),
-		min_n = tune(),
-		mode = "regression"
-	)
+  parsnip::boost_tree(
+    trees = tune(),
+    min_n = tune(),
+    mode = "regression"
+  )
 
 mod_tune_submodel <-
-	parsnip::boost_tree(
-		trees = tune(),
-		mode = "regression"
-	)
+  parsnip::boost_tree(
+    trees = tune(),
+    mode = "regression"
+  )
 
 mod_tune_no_submodel <-
-	parsnip::rand_forest(
-		min_n = tune(),
-		mode = "regression"
-	)
+  parsnip::rand_forest(
+    min_n = tune(),
+    mode = "regression"
+  )
 
 if (rlang::is_installed("probably")) {
-	tlr_tune <-
-		tailor::tailor() %>%
-		tailor::adjust_numeric_range(lower_limit = tune())
+  tlr_tune <-
+    tailor::tailor() %>%
+    tailor::adjust_numeric_range(lower_limit = tune())
 
-	tlr_tune_cal <-
-		tailor::tailor() %>%
-		tailor::adjust_numeric_calibration(method = "linear") %>%
-		tailor::adjust_numeric_range(lower_limit = tune())
+  tlr_tune_cal <-
+    tailor::tailor() %>%
+    tailor::adjust_numeric_calibration(method = "linear") %>%
+    tailor::adjust_numeric_range(lower_limit = tune())
 
-	tlr_no_tune <-
-		tailor::tailor() %>%
-		tailor::adjust_numeric_range(lower_limit = 0)
+  tlr_no_tune <-
+    tailor::tailor() %>%
+    tailor::adjust_numeric_range(lower_limit = 0)
 }

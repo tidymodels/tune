@@ -4,7 +4,13 @@ library(tune)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- rolling_origin(Chicago, initial = 364 * 15, assess = 7 * 4, skip = 13, cumulative = FALSE)
+data_folds <- rolling_origin(
+  Chicago,
+  initial = 364 * 15,
+  assess = 7 * 4,
+  skip = 13,
+  cumulative = FALSE
+)
 
 # ------------------------------------------------------------------------------
 
@@ -21,7 +27,12 @@ chi_rec <-
 
 
 svm_mod <-
-  svm_rbf(mode = "regression", cost = tune(), rbf_sigma = tune(), margin = tune()) %>%
+  svm_rbf(
+    mode = "regression",
+    cost = tune(),
+    rbf_sigma = tune(),
+    margin = tune()
+  ) %>%
   set_engine("kernlab")
 
 chi_wflow <-
@@ -46,7 +57,12 @@ ext <- function(x) {
   tibble(num_sv = x$model@nSV)
 }
 
-res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE, save_pred = TRUE, extract = ext))
+res <- tune_grid(
+  chi_wflow,
+  resamples = data_folds,
+  grid = chi_grid,
+  control = control_grid(verbose = TRUE, save_pred = TRUE, extract = ext)
+)
 
 
 summarize(res) %>%
@@ -62,7 +78,7 @@ summarize(res) %>%
   slice(1)
 
 foo <- function(i) {
-  expo_decay(i, start_val = .5, 0, slope = 1/10)
+  expo_decay(i, start_val = .5, 0, slope = 1 / 10)
 }
 
 svm_search <-

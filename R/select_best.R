@@ -77,12 +77,14 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x,
-                                   ...,
-                                   metric = NULL,
-                                   eval_time = NULL,
-                                   n = 5,
-                                   call = rlang::current_env()) {
+show_best.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  n = 5,
+  call = rlang::current_env()
+) {
   rlang::check_dots_empty()
 
   metric_info <- choose_metric(x, metric, call = call)
@@ -127,9 +129,14 @@ select_best.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
 
   param_names <- .get_tune_parameter_names(x)
 
-  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time, call = rlang::current_env())
+  res <- show_best(
+    x,
+    metric = metric,
+    n = 1,
+    eval_time = eval_time,
+    call = rlang::current_env()
+  )
   res %>% dplyr::select(dplyr::all_of(param_names), .config)
-
 }
 
 #' @export
@@ -146,7 +153,13 @@ select_by_pct_loss.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = NULL, limit = 2) {
+select_by_pct_loss.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  limit = 2
+) {
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 
@@ -178,7 +191,6 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = N
     ) %>%
     dplyr::ungroup()
 
-
   dots <- rlang::enquos(...)
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
   if (inherits(summary_res, "try-error")) {
@@ -207,12 +219,19 @@ select_by_one_std_err <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err.default <- function(x, ...) {
-  cli::cli_abort("No {.fn select_by_one_std_err} exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn select_by_one_std_err} exists for this type of object."
+  )
 }
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
+select_by_one_std_err.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL
+) {
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 
@@ -278,8 +297,10 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
 check_select_dots <- function(..., call = rlang::caller_env()) {
   dots <- rlang::enquos(...)
   if (length(dots) == 0) {
-    cli::cli_abort("Please choose at least one tuning parameter to sort in {.code ...}.",
-                   call = call)
+    cli::cli_abort(
+      "Please choose at least one tuning parameter to sort in {.code ...}.",
+      call = call
+    )
   }
   invisible(NULL)
 }

@@ -252,9 +252,17 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
-                                 param_info = NULL, grid = 10, metrics = NULL,
-                                 eval_time = NULL, control = control_grid()) {
+tune_grid.model_spec <- function(
+  object,
+  preprocessor,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_grid()
+) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     cli::cli_abort(tune_pp_msg)
   }
@@ -284,9 +292,16 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
-                               grid = 10, metrics = NULL,
-                               eval_time = NULL, control = control_grid()) {
+tune_grid.workflow <- function(
+  object,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_grid()
+) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -313,15 +328,15 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <- function(
-    workflow,
-    resamples,
-    grid = 10,
-    metrics = NULL,
-    eval_time = NULL,
-    pset = NULL,
-    control = control_grid(),
-    rng = TRUE,
-    call = caller_env()
+  workflow,
+  resamples,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  pset = NULL,
+  control = control_grid(),
+  rng = TRUE,
+  call = caller_env()
 ) {
   if (!catalog_is_active()) {
     initialize_catalog(control)
@@ -421,7 +436,10 @@ set_workflow <- function(workflow, control) {
             "setting `save_workflow = FALSE`."
           )
         cols <- get_tune_colors()
-        msg <- strwrap(msg, prefix = paste0(cols$symbol$info(cli::symbol$info), " "))
+        msg <- strwrap(
+          msg,
+          prefix = paste0(cols$symbol$info(cli::symbol$info), " ")
+        )
         msg <- cols$message$info(paste0(msg, collapse = "\n"))
         cli::cli_bullets(msg)
       }

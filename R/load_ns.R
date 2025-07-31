@@ -68,6 +68,17 @@ full_load <- c("kknn", "earth")
 }
 
 infra_pkgs <- c(
-  "tune", "recipes", "parsnip", "yardstick", "purrr", "dplyr", "tibble",
-  "dials", "rsample", "workflows", "tidyr", "rlang", "vctrs"
+  "tune",
+  "recipes",
+  "parsnip",
+  "yardstick",
+  "purrr",
+  "dplyr",
+  "tibble",
+  "dials",
+  "rsample",
+  "workflows",
+  "tidyr",
+  "rlang",
+  "vctrs"
 )

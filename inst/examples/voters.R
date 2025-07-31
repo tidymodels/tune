@@ -5,7 +5,9 @@ library(readr)
 # From https://github.com/juliasilge/supervised-ML-case-studies-course
 # ------------------------------------------------------------------------------
 
-vote_train <- read_rds(url("https://github.com/juliasilge/supervised-ML-case-studies-course/blob/master/data/c3_training_full.rds?raw=true"))
+vote_train <- read_rds(url(
+  "https://github.com/juliasilge/supervised-ML-case-studies-course/blob/master/data/c3_training_full.rds?raw=true"
+))
 
 voters_rec <-
   recipe(turnout16_2016 ~ ., data = vote_train) %>%
@@ -16,7 +18,12 @@ lr_mod <-
   set_engine("glmnet")
 
 rf_mod <-
-  rand_forest(mode = "classification", mtry = tune(), min_n = tune(), trees = 1000) %>%
+  rand_forest(
+    mode = "classification",
+    mtry = tune(),
+    min_n = tune(),
+    trees = 1000
+  ) %>%
   set_engine("ranger")
 
 set.seed(6059)
@@ -24,12 +31,18 @@ voter_folds <- vfold_cv(vote_train)
 
 # ------------------------------------------------------------------------------
 
-glmn_grid <- expand.grid(penalty = 10^seq(-3, 0, length = 14),
-                         mixture = (0:5)/5)
+glmn_grid <- expand.grid(
+  penalty = 10^seq(-3, 0, length = 14),
+  mixture = (0:5) / 5
+)
 
-glmn_search <- tune_grid(voters_rec, lr_mod, resamples = voter_folds,
-                         grid = glmn_grid,
-                         metrics = metric_set(accuracy, roc_auc))
+glmn_search <- tune_grid(
+  voters_rec,
+  lr_mod,
+  resamples = voter_folds,
+  grid = glmn_grid,
+  metrics = metric_set(accuracy, roc_auc)
+)
 
 summarize(glmn_search) %>%
   filter(.metric == "accuracy") %>%
@@ -48,9 +61,13 @@ rf_grid <-
   grid_latin_hypercube(size = 20)
 
 set.seed(1354)
-rf_search <- tune_grid(voters_rec, rf_mod, resamples = voter_folds,
-                         grid = rf_grid,
-                         metrics = metric_set(accuracy, roc_auc))
+rf_search <- tune_grid(
+  voters_rec,
+  rf_mod,
+  resamples = voter_folds,
+  grid = rf_grid,
+  metrics = metric_set(accuracy, roc_auc)
+)
 
 summarize(rf_search) %>%
   filter(.metric == "accuracy") %>%
@@ -59,7 +76,7 @@ summarize(rf_search) %>%
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
   geom_smooth(se = FALSE) +
-  facet_wrap( ~ parameter, scales = "free_x")
+  facet_wrap(~parameter, scales = "free_x")
 
 
 summarize(rf_search) %>%

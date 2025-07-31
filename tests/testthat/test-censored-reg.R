@@ -14,32 +14,48 @@ test_that("evaluation time", {
   mtr <- metric_set(brier_survival)
   reg_mtr <- metric_set(rmse)
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(
+    error = TRUE,
     spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr)
   )
-  expect_snapshot(error = TRUE,
-    spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
+  expect_snapshot(
+    error = TRUE,
+    spec %>%
+      tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
   )
   expect_snapshot(
-    linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr, eval_time = 1)
+    linear_reg() %>%
+      tune_grid(age ~ ., resamples = rs, metrics = reg_mtr, eval_time = 1)
   )
 
-  expect_snapshot(error = TRUE,
+  expect_snapshot(
+    error = TRUE,
     no_usable_times <-
       spec %>%
-      tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr, eval_time = c(-1, Inf))
+      tune_grid(
+        Surv(time, status) ~ .,
+        resamples = rs,
+        metrics = mtr,
+        eval_time = c(-1, Inf)
+      )
   )
 
   times <- 4:1
   expect_equal(get_metric_time(metric_set(brier_survival), times), 4)
   expect_equal(get_metric_time(metric_set(concordance_survival), times), NULL)
-  expect_equal(get_metric_time(metric_set(brier_survival_integrated), times), NULL)
+  expect_equal(
+    get_metric_time(metric_set(brier_survival_integrated), times),
+    NULL
+  )
   expect_equal(
     get_metric_time(
-      metric_set(brier_survival, brier_survival_integrated, concordance_survival),
+      metric_set(
+        brier_survival,
+        brier_survival_integrated,
+        concordance_survival
+      ),
       times
     ),
     4
   )
-
 })

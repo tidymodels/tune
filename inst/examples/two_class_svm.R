@@ -2,7 +2,7 @@ library(tidymodels)
 library(tune)
 load("~/Downloads/two_class_svm.RData")
 library(doMC)
-registerDoMC(cores=8)
+registerDoMC(cores = 8)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
@@ -15,8 +15,12 @@ two_class_rec <-
   step_normalize(A, B)
 
 svm_model <-
-  svm_poly(mode = "classification", cost = tune(), degree = tune(),
-           scale_factor = tune()) %>%
+  svm_poly(
+    mode = "classification",
+    cost = tune(),
+    degree = tune(),
+    scale_factor = tune()
+  ) %>%
   set_engine("kernlab")
 
 two_class_wflow <-
@@ -35,8 +39,13 @@ two_class_grid <-
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(two_class_wflow, resamples = data_folds, grid = two_class_grid, metrics = class_only,
-                 control = control_grid(save_pred = TRUE))
+res <- tune_grid(
+  two_class_wflow,
+  resamples = data_folds,
+  grid = two_class_grid,
+  metrics = class_only,
+  control = control_grid(save_pred = TRUE)
+)
 
 summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
 
@@ -72,7 +81,12 @@ two_class_grid <-
 
 class_only <- metric_set(accuracy)
 
-grid_res <- tune_grid(two_class_wflow, resamples = data_folds, two_class_grid, metrics = class_only)
+grid_res <- tune_grid(
+  two_class_wflow,
+  resamples = data_folds,
+  two_class_grid,
+  metrics = class_only
+)
 
 ggplot(summarize(grid_res), aes(x = cost, y = mean)) +
   geom_point() +
@@ -90,25 +104,27 @@ gp_data_0 <-
   set_names("scaled_cost") %>%
   mutate(
     mean = acc_vals_0$mean,
-    cost = acc_vals_0$cost)
+    cost = acc_vals_0$cost
+  )
 
 gp_grid <-
-  tune:::encode_set(cost_grid, two_class_set)  %>%
+  tune:::encode_set(cost_grid, two_class_set) %>%
   set_names("scaled_cost") %>%
   mutate(cost = cost_grid$cost)
 
 library(GPfit)
-gp_0 <- GP_fit(X = as.matrix(gp_data_0[,1, drop = FALSE]), Y = gp_data_0$mean)
+gp_0 <- GP_fit(X = as.matrix(gp_data_0[, 1, drop = FALSE]), Y = gp_data_0$mean)
 gp_fit_0 <-
-  predict(gp_0, as.matrix(gp_grid[,1, drop = FALSE]))$complete_data %>%
+  predict(gp_0, as.matrix(gp_grid[, 1, drop = FALSE]))$complete_data %>%
   as_tibble() %>%
   setNames(c("scaled_cost", "mean", "var")) %>%
-  mutate(sd = sqrt(var),
-         lower = mean - 1 * sd,
-         upper = mean + 1 * sd,
-         snr = (mean - max(gp_data_0$mean))/sd,
-         prob_imp = pnorm(snr)
-         ) %>%
+  mutate(
+    sd = sqrt(var),
+    lower = mean - 1 * sd,
+    upper = mean + 1 * sd,
+    snr = (mean - max(gp_data_0$mean)) / sd,
+    prob_imp = pnorm(snr)
+  ) %>%
   bind_cols(gp_grid %>% select(cost))
 
 ggplot(gp_fit_0, aes(x = cost, y = sd)) +
@@ -143,8 +159,8 @@ ggplot(gp_fit_0, aes(x = cost, y = prob_imp)) +
 library(tgp)
 
 
-tgp_0 <- btgp(X = as.matrix(gp_data_0[,1, drop = FALSE]), Z = gp_data_0$mean)
-tgp_res_0 <- predict(tgp_0, as.matrix(gp_grid[,1, drop = FALSE]))
+tgp_0 <- btgp(X = as.matrix(gp_data_0[, 1, drop = FALSE]), Z = gp_data_0$mean)
+tgp_res_0 <- predict(tgp_0, as.matrix(gp_grid[, 1, drop = FALSE]))
 
 tgp_fit_0 <-
   gp_grid %>%
@@ -168,4 +184,3 @@ ggplot(tgp_fit_0, aes(x = cost)) +
   geom_vline(xintercept = gp_data_0$cost, lty = 3) +
   geom_point(data = gp_data_0, aes(y = mean)) +
   scale_x_log10()
-

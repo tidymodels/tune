@@ -69,7 +69,6 @@ test_that("showing notes", {
       fit_resamples(class ~ ., rs)
   )
   expect_snapshot(show_notes(fit_lr))
-
 })
 
 test_that("notes are sorted in the correct order", {

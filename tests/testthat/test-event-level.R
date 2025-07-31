@@ -178,5 +178,4 @@ test_that("`event_level` is passed through in last_fit()", {
 
   expect_identical(estimates[metrics$.metric == "sens"], expected_sens)
   expect_identical(estimates[metrics$.metric == "roc_auc"], expected_roc_auc)
-
 })

@@ -27,7 +27,6 @@
 # where there are multiple columns with the same name (maybe the results of
 # a recipe) and so on.
 
-
 #' Determine the minimum set of model fits
 #'
 #' `min_grid()` determines exactly what models should be fit in order to
@@ -109,7 +108,9 @@ get_submodel_info <- function(spec) {
     ) %>%
     dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%
     # In case the parameter is an engine parameter
-    dplyr::mutate(has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel))
+    dplyr::mutate(
+      has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel)
+    )
 
   param_info
 }
@@ -122,7 +123,10 @@ submod_only <- function(grid) {
     return(grid)
   }
   nm <- colnames(grid)[1]
-  fit_only <- tibble::new_tibble(list(nm = max(grid[[nm]], na.rm = TRUE)), nrow = 1)
+  fit_only <- tibble::new_tibble(
+    list(nm = max(grid[[nm]], na.rm = TRUE)),
+    nrow = 1
+  )
   names(fit_only) <- nm
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
@@ -265,7 +269,6 @@ min_grid.logistic_reg <- min_grid.linear_reg
 
 # ------------------------------------------------------------------------------
 # mars
-
 
 #' @export
 #' @export min_grid.mars

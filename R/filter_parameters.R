@@ -57,8 +57,10 @@ filter_parameters <- function(x, ..., parameters = NULL) {
   check_filter_dots(rlang::enquos(...))
   # check for type
   if (!inherits(x, "tune_results")) {
-    cli::cli_abort("{.arg {caller_arg(x)}} should have class {.cls tune_results};
-                    {.obj_type_friendly {x}} was passed.")
+    cli::cli_abort(
+      "{.arg {caller_arg(x)}} should have class {.cls tune_results};
+                    {.obj_type_friendly {x}} was passed."
+    )
   }
   x <- filter_by_join(x, parameters, nm = cl_x)
   x <- filter_by_filter(x, ...)
@@ -97,10 +99,18 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
 
   x$.metrics <- purrr::map(x$.metrics, filter_join_iter, .subset = parameters)
   if (any(names(x) == ".predictions")) {
-    x$.predictions <- purrr::map(x$.predictions, filter_join_iter, .subset = parameters)
+    x$.predictions <- purrr::map(
+      x$.predictions,
+      filter_join_iter,
+      .subset = parameters
+    )
   }
   if (any(names(x) == ".extracts")) {
-    x$.extracts <- purrr::map(x$.extracts, filter_join_iter, .subset = parameters)
+    x$.extracts <- purrr::map(
+      x$.extracts,
+      filter_join_iter,
+      .subset = parameters
+    )
   }
 
   x
@@ -129,7 +139,7 @@ filter_by_filter <- function(x, ...) {
 }
 
 check_filter_dots <- function(dots, call = rlang::caller_env()) {
-  res <- purrr::map(dots, ~try(rlang::eval_tidy(.x), silent = TRUE))
+  res <- purrr::map(dots, ~ try(rlang::eval_tidy(.x), silent = TRUE))
 
   if (any(purrr::map_lgl(res, inherits, "data.frame"))) {
     cli::cli_abort(

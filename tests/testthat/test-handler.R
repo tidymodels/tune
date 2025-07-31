@@ -2,7 +2,7 @@ test_that("catch errors", {
   res_1 <- tune:::catcher(log("a"))
   expect_true(class(res_1) == "try-error")
   expect_true(length(attr(res_1, "notes")) == 0)
-  
+
   res_2 <- tune:::catcher(log(1))
   expect_true(res_2 == log(1))
   expect_true(length(attr(res_2, "notes")) == 0)

@@ -67,11 +67,14 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
       .ns = "parsnip",
       object = rlang::expr(model),
       new_data = rlang::expr(new_data),
-      type = type)
+      type = type
+    )
 
   # Add in censored regression evaluation times (if needed)
   has_type <- type %in% c("survival", "hazard")
-  if (model$spec$mode == "censored regression" & !is.null(eval_time) & has_type) {
+  if (
+    model$spec$mode == "censored regression" & !is.null(eval_time) & has_type
+  ) {
     cl <- rlang::call_modify(cl, eval_time = eval_time)
   }
 

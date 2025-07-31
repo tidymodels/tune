@@ -28,7 +28,10 @@ pima_res <- tune_grid(pima_wflow, resamples = pima_rs, metrics = roc_vals)
 
 rs_estimates <- summarize(pima_res)
 
-ggplot(rs_estimates, aes(x = cost_complexity, y = min_n, col = mean, size = mean)) +
+ggplot(
+  rs_estimates,
+  aes(x = cost_complexity, y = min_n, col = mean, size = mean)
+) +
   geom_point() +
   scale_x_log10()
 
@@ -36,5 +39,3 @@ best_vals <-
   rs_estimates %>%
   arrange(desc(mean)) %>%
   slice(1:2)
-
-

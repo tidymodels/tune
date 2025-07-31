@@ -14,7 +14,7 @@ basics <- names(textfeatures:::count_functions)
 
 binary_hash <- function(x) {
   x <- ifelse(x < 0, -1, x)
-  x <- ifelse(x > 0,  1, x)
+  x <- ifelse(x > 0, 1, x)
   x
 }
 
@@ -27,7 +27,7 @@ pre_proc <-
     starts_with("textfeature_"),
     fn = ~ gsub("textfeature_review_raw_", "", .)
   ) %>%
-  step_tokenize(review)  %>%
+  step_tokenize(review) %>%
   step_stopwords(review) %>%
   step_stem(review) %>%
   step_texthash(review, signed = TRUE) %>%
@@ -37,9 +37,16 @@ pre_proc <-
   step_zv(all_predictors())
 
 boost_mod <-
-  boost_tree(mode = "classification", mtry = tune(), trees = tune(),
-             min_n = tune(), learn_rate = tune(), tree_depth = tune(),
-             loss_reduction = tune(), sample_size = tune()) %>%
+  boost_tree(
+    mode = "classification",
+    mtry = tune(),
+    trees = tune(),
+    min_n = tune(),
+    learn_rate = tune(),
+    tree_depth = tune(),
+    loss_reduction = tune(),
+    sample_size = tune()
+  ) %>%
   set_engine("xgboost")
 
 
@@ -60,13 +67,20 @@ folds <- vfold_cv(training_data)
 
 grid <- grid_latin_hypercube(text_set, size = 3)
 
-res <- tune_grid(text_wflow, resamples = folds, grid = grid,
-          control = control_grid(verbose = TRUE, pkgs = c("textrecipes", "textfeatures")))
+res <- tune_grid(
+  text_wflow,
+  resamples = folds,
+  grid = grid,
+  control = control_grid(
+    verbose = TRUE,
+    pkgs = c("textrecipes", "textfeatures")
+  )
+)
 
 # ------------------------------------------------------------------------------
 
 decr_trade_off <- function(i) {
-  expo_decay(i, start_val = .5, 0, slope = 1/10)
+  expo_decay(i, start_val = .5, 0, slope = 1 / 10)
 }
 
 text_search <-
@@ -78,5 +92,3 @@ text_search <-
     iter = 50,
     control = control_bayes(verbose = TRUE)
   )
-
-

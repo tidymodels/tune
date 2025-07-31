@@ -36,8 +36,10 @@
 conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   rlang::check_dots_empty()
   if (!inherits(x, "tune_results")) {
-    cli::cli_abort("The first argument needs to be {.cls tune_results} object,
-                   not {.obj_type_friendly {mtcars}}.")
+    cli::cli_abort(
+      "The first argument needs to be {.cls tune_results} object,
+                   not {.obj_type_friendly {mtcars}}."
+    )
   }
   if (!any(names(x) == ".predictions")) {
     cli::cli_abort(
@@ -78,8 +80,10 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
     preds %>%
     dplyr::group_nest(!!!syms(id_cols)) %>%
     dplyr::mutate(
-      conf_mats =
-        purrr::map(data, ~ yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class))
+      conf_mats = purrr::map(
+        data,
+        ~ yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class)
+      )
     )
 
   opt <- getOption("dplyr.summarise.inform", default = "FALSE")

@@ -5,7 +5,13 @@ library(ggforce)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- rolling_origin(Chicago, initial = 364 * 15, assess = 7 * 4, skip = 13, cumulative = FALSE)
+data_folds <- rolling_origin(
+  Chicago,
+  initial = 364 * 15,
+  assess = 7 * 4,
+  skip = 13,
+  cumulative = FALSE
+)
 
 # ------------------------------------------------------------------------------
 
@@ -40,11 +46,20 @@ ext <- function(x) {
   broom::glance(x$model)
 }
 
-res <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid,
-                 control = control_grid(verbose = TRUE, extract = ext))
+res <- tune_grid(
+  chi_wflow,
+  resamples = data_folds,
+  grid = chi_grid,
+  control = control_grid(verbose = TRUE, extract = ext)
+)
 
-res_2 <- tune_grid(chi_rec, lm_model, resamples = data_folds, grid = chi_grid,
-                   control = control_grid(verbose = TRUE, extract = ext))
+res_2 <- tune_grid(
+  chi_rec,
+  lm_model,
+  resamples = data_folds,
+  grid = chi_grid,
+  control = control_grid(verbose = TRUE, extract = ext)
+)
 
 # unnest(unnest(res %>% select(id, .extracts), cols = .extracts), cols = .extract)
 
@@ -70,8 +85,6 @@ rs_stats <-
 all_stats <- full_join(lm_stats, rs_stats)
 
 
-
-
 ggplot(all_stats, aes(x = .panel_x, y = .panel_y, colour = threshold)) +
   geom_point() +
   facet_matrix(vars(-threshold)) +
@@ -89,4 +102,3 @@ summarize(res) %>%
   dplyr::filter(.metric == "rmse") %>%
   arrange(mean) %>%
   slice(1)
-

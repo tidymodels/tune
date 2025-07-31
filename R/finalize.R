@@ -31,8 +31,10 @@
 #' finalize_model(knn_model, lowest_rmse)
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
-    cli::cli_abort("{.arg x} should be a parsnip model specification, not
-                    {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "{.arg x} should be a parsnip model specification, not
+                    {.obj_type_friendly {x}}."
+    )
   }
   check_final_param(parameters)
   pset <- hardhat::extract_parameter_set_dials(x)
@@ -82,7 +84,9 @@ finalize_recipe <- function(x, parameters) {
 #' @rdname finalize_model
 finalize_workflow <- function(x, parameters) {
   if (!inherits(x, "workflow")) {
-    cli::cli_abort("{.arg x} should be a workflow, not {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "{.arg x} should be a workflow, not {.obj_type_friendly {x}}."
+    )
   }
   check_final_param(parameters)
 
@@ -143,8 +147,10 @@ finalize_tailor <- function(x, parameters) {
 
 check_final_param <- function(x) {
   if (!is.list(x) & !tibble::is_tibble(x)) {
-    cli::cli_abort("The parameter object should be a {.cls list} or
-                   {.cls tibble}, not {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "The parameter object should be a {.cls list} or
+                   {.cls tibble}, not {.obj_type_friendly {x}}."
+    )
   }
   if (tibble::is_tibble(x) && nrow(x) > 1) {
     cli::cli_abort("The parameter {.arg tibble} should have a single row.")

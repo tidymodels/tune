@@ -157,9 +157,16 @@ test_that("percentile intervals - grid + bayes tuning", {
       ".config", ".iter", ".values")
   )
 
-  qnts <- quantile(int_res_2_reps$.values[[1]]$estimate, probs = c(0.025, 0.5, 0.975))
+  qnts <- quantile(
+    int_res_2_reps$.values[[1]]$estimate,
+    probs = c(0.025, 0.5, 0.975)
+  )
   expect_equal(
-    c(int_res_2_reps$.lower[1], int_res_2_reps$.estimate[1], int_res_2_reps$.upper[1]),
+    c(
+      int_res_2_reps$.lower[1],
+      int_res_2_reps$.estimate[1],
+      int_res_2_reps$.upper[1]
+    ),
     as.vector(qnts),
     tolerance = 0.001
   )

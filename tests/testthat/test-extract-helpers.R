@@ -20,8 +20,10 @@ test_that("extract methods for resample_results objects", {
   lm_rec_wflow <-
     workflow() %>%
     add_model(lm_spec) %>%
-    add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>%
-      recipes::step_normalize(recipes::all_numeric_predictors()))
+    add_recipe(
+      recipes::recipe(mpg ~ ., data = mtcars) %>%
+        recipes::step_normalize(recipes::all_numeric_predictors())
+    )
   lm_rec_res <- fit_resamples(
     lm_rec_wflow,
     resamples = rsample::vfold_cv(mtcars, v = 2),

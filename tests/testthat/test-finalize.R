@@ -33,7 +33,6 @@ test_that("skip error if grid is supplied", {
   skip_if_not_installed("randomForest")
   skip_if_not_installed("splines2")
 
-
   set.seed(21983)
   rs <- rsample::vfold_cv(mtcars)
 
@@ -64,7 +63,10 @@ test_that("finalize recipe step with multiple tune parameters", {
   model_spec <- parsnip::linear_reg() %>%
     parsnip::set_engine("lm")
 
-  rec <- recipes::recipe(HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur, data = biomass) %>%
+  rec <- recipes::recipe(
+    HHV ~ carbon + hydrogen + oxygen + nitrogen + sulfur,
+    data = biomass
+  ) %>%
     recipes::step_spline_b(carbon, hydrogen, deg_free = tune(), degree = tune())
 
   best <- tibble(deg_free = 2, degree = 1, .config = "Preprocessor1_Model1")
@@ -94,7 +96,10 @@ test_that("finalize tailors", {
   expect_equal(adj_2$adjustments[[1]]$arguments$lower_limit, 2)
   expect_equal(adj_2$adjustments[[1]]$arguments$upper_limit, 3)
 
-  adj_3 <- finalize_tailor(adjust_rng, tibble(lower_limit = 2, upper_limit = 3, a = 2))
+  adj_3 <- finalize_tailor(
+    adjust_rng,
+    tibble(lower_limit = 2, upper_limit = 3, a = 2)
+  )
   expect_equal(adj_3$adjustments[[1]]$arguments$lower_limit, 2)
   expect_equal(adj_3$adjustments[[1]]$arguments$upper_limit, 3)
 
@@ -158,7 +163,10 @@ test_that("finalize workflows with tailors", {
     3
   )
 
-  wflow_3 <- finalize_workflow(wflow, tibble(lower_limit = 2, upper_limit = 3, a = 2))
+  wflow_3 <- finalize_workflow(
+    wflow,
+    tibble(lower_limit = 2, upper_limit = 3, a = 2)
+  )
   expect_equal(
     wflow_3 %>%
       extract_postprocessor() %>%
@@ -185,7 +193,7 @@ test_that("finalize workflows with tailors", {
   cls_post <- tailor() %>%
     adjust_probability_threshold(threshold = tune("cut"))
   wflow_thrsh <- workflow(y ~ ., logistic_reg(), cls_post)
-  thrsh_param <- tibble(min_n = 2, cut = 1/3)
+  thrsh_param <- tibble(min_n = 2, cut = 1 / 3)
   wflow_thrsh <- wflow_thrsh %>% finalize_workflow(thrsh_param)
 
   expect_equal(
@@ -197,5 +205,4 @@ test_that("finalize workflows with tailors", {
       pluck("threshold"),
     1 / 3
   )
-
 })

@@ -55,7 +55,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
       finalize_fit_pre(static$wflow, current_sched_pre, static),
       control = static$control,
       split_labels = split_labs,
-      location = location, notes = notes
+      location = location,
+      notes = notes
     )
 
     if (is_failure(current_wflow)) {
@@ -85,7 +86,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
         finalize_fit_model(pre_wflow, current_sched_model),
         control = static$control,
         split_labels = split_labs,
-        location = location, notes = notes
+        location = location,
+        notes = notes
       )
 
       if (is_failure(current_wflow)) {
@@ -130,7 +132,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
               dplyr::select(-dplyr::all_of(sub_nm)),
             control = static$control,
             split_labels = split_labs,
-            location = location, notes = notes
+            location = location,
+            notes = notes
           )
         } else {
           location <- glue::glue(
@@ -140,7 +143,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
             predict_all_types(current_wflow, static),
             control = static$control,
             split_labels = split_labs,
-            location = location, notes = notes
+            location = location,
+            notes = notes
           )
         }
 
@@ -192,7 +196,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
               ),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
             if (is_failure(post_fit)) {
               next
@@ -202,7 +207,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
               predict(post_fit, current_pred),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
             if (is_failure(post_pred)) {
               next
@@ -238,13 +244,17 @@ loop_over_all_stages <- function(resamples, grid, static) {
               extract_details(current_wflow, static$control$extract),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
 
             if (is.null(extracts)) {
               extracts <- tibble::tibble(.extracts = list(1))
               if (nrow(static$param_info) > 0) {
-                extracts <- tibble::add_column(current_extract_grid, .extracts = list(1))
+                extracts <- tibble::add_column(
+                  current_extract_grid,
+                  .extracts = list(1)
+                )
               }
               extracts <- extracts[integer(), ]
             }
@@ -252,17 +262,20 @@ loop_over_all_stages <- function(resamples, grid, static) {
             if (nrow(static$param_info) > 0) {
               extracts <- tibble::add_row(
                 extracts,
-                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
+                tibble::add_column(
+                  current_extract_grid,
+                  .extracts = list(elt_extract)
+                )
               )
-              } else {
+            } else {
               extracts <- tibble::add_row(
                 extracts,
                 tibble::tibble(.extracts = list(elt_extract))
               )
-              }
-              if (is_failure(elt_extract)) {
-                next
-              }
+            }
+            if (is_failure(elt_extract)) {
+              next
+            }
           }
 
           # Output for these loops:
@@ -283,30 +296,30 @@ loop_over_all_stages <- function(resamples, grid, static) {
     location <- glue::glue("internal")
     all_metrics <- .catch_and_log(
       pred_reserve |>
-      dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
-      .estimate_metrics(
-        metric = static$metrics,
-        param_names = static$param_info$id,
-        outcome_name = static$y_name,
-        event_level = static$control$event_level,
-        metrics_info = metrics_info(static$metrics)
-      ) |>
-      add_configs(static),
+        dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
+        .estimate_metrics(
+          metric = static$metrics,
+          param_names = static$param_info$id,
+          outcome_name = static$y_name,
+          event_level = static$control$event_level,
+          metrics_info = metrics_info(static$metrics)
+        ) |>
+        add_configs(static),
       control = static$control,
       split_labels = split_labs,
-      location = location, notes = notes
+      location = location,
+      notes = notes
     )
   }
 
   if (!is.null(extracts)) {
-
     extracts <- add_configs(extracts, static) |>
       dplyr::relocate(.config, .after = .extracts) |>
       dplyr::relocate(names(grid))
 
     # Failing rows are not in the output:
     empty_extract <- purrr::map_lgl(extracts$.extracts, is.null)
-    extracts <- extracts[!empty_extract,]
+    extracts <- extracts[!empty_extract, ]
   }
 
   # ----------------------------------------------------------------------------
@@ -321,7 +334,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (!is.null(static$control$extract)) {
     if (is.null(extracts)) {
       # Everything failed; return NULL for each row
-      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~ NULL)
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~NULL)
     } else {
       return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
     }
@@ -332,7 +345,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (static$control$save_pred) {
     if (is.null(pred_reserve)) {
       # Everything failed; return NULL for each row
-      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~ NULL)
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~NULL)
     } else {
       return_tbl$.predictions <-
         list(

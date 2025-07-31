@@ -15,9 +15,7 @@ base_rec <-
 disp_rec <-
   base_rec %>%
   step_bs(disp, degree = tune(), deg_free = tune()) %>%
-  step_bs(wt,
-          degree = tune("wt degree"),
-          deg_free = tune("wt df"))
+  step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
 
 lm_model <-
   linear_reg(mode = "regression") %>%
@@ -72,7 +70,6 @@ more_spline_search <-
 
 ## -----------------------------------------------------------------------------
 
-
 library(finetune)
 set.seed(121)
 res_anova <-
@@ -101,6 +98,3 @@ res_sa <-
     param_info = cars_set,
     iter = 25
   )
-
-
-

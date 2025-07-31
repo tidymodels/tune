@@ -22,11 +22,18 @@ test_that("grid objects", {
     recipes::step_date(date) %>%
     recipes::step_holiday(date) %>%
     recipes::step_rm(date, dplyr::ends_with("away")) %>%
-    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_impute_knn(
+      recipes::all_predictors(),
+      neighbors = tune("imputation")
+    ) %>%
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(
+      recipes::all_predictors(),
+      deg_free = tune(),
+      degree = tune()
+    )
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -37,8 +44,12 @@ test_that("grid objects", {
     workflows::add_model(glmn)
 
   grid_1 <- tibble::tibble(
-    penalty = 1:10, mixture = 1:10, imputation = 1:10,
-    threshold = 1:10, deg_free = 1:10, degree = 1:10
+    penalty = 1:10,
+    mixture = 1:10,
+    imputation = 1:10,
+    threshold = 1:10,
+    deg_free = 1:10,
+    degree = 1:10
   )
 
   set_1 <- extract_parameter_set_dials(chi_wflow)
@@ -79,8 +90,12 @@ test_that("grid objects", {
 
   # For weird attributes
   grid_4 <- expand.grid(
-    penalty = 1:10, mixture = 12, imputation = 1:2,
-    threshold = 1:2, deg_free = 2:3, degree = 9:10
+    penalty = 1:10,
+    mixture = 12,
+    imputation = 1:2,
+    threshold = 1:2,
+    deg_free = 2:3,
+    degree = 9:10
   )
   expect_equal(
     tune:::check_grid(grid_4, chi_wflow),
@@ -211,7 +226,8 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
 
   # one recipe without tuning, one with:
   rec_bare <- recipes::recipe(ridership ~ ., data = head(Chicago, 30))
-  rec_tune <- rec_bare %>% recipes::step_spline_natural(temp_max, deg_free = tune())
+  rec_tune <- rec_bare %>%
+    recipes::step_spline_natural(temp_max, deg_free = tune())
 
   # well-defined:
   lr_lm_0 <- parsnip::linear_reg()
@@ -237,7 +253,9 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
   expect_no_error(check_workflow(workflow(rec_tune, lr_glmnet_2)))
 
   # error when supplied tune args don't make sense given engine / steps
-  expect_error_nt <- function(x) {testthat::expect_error(x, class = "not_tunable_error")}
+  expect_error_nt <- function(x) {
+    testthat::expect_error(x, class = "not_tunable_error")
+  }
 
   expect_error_nt(check_workflow(workflow(rec_bare, lr_lm_1)))
   expect_error_nt(check_workflow(workflow(rec_bare, lr_lm_2)))
@@ -274,11 +292,18 @@ test_that("yardstick objects", {
     recipes::step_date(date) %>%
     recipes::step_holiday(date) %>%
     recipes::step_rm(date, dplyr::ends_with("away")) %>%
-    recipes::step_impute_knn(recipes::all_predictors(), neighbors = tune("imputation")) %>%
+    recipes::step_impute_knn(
+      recipes::all_predictors(),
+      neighbors = tune("imputation")
+    ) %>%
     recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
     recipes::step_dummy(recipes::all_nominal()) %>%
     recipes::step_normalize(recipes::all_numeric_predictors()) %>%
-    recipes::step_spline_b(recipes::all_predictors(), deg_free = tune(), degree = tune())
+    recipes::step_spline_b(
+      recipes::all_predictors(),
+      deg_free = tune(),
+      degree = tune()
+    )
 
   glmn <- parsnip::linear_reg(penalty = tune(), mixture = tune()) %>%
     parsnip::set_engine("glmnet")
@@ -294,7 +319,10 @@ test_that("yardstick objects", {
   expect_snapshot(error = TRUE, {
     tune:::check_metrics(yardstick::rmse, chi_wflow)
   })
-  expect_true(inherits(tune:::check_metrics(metrics_2, chi_wflow), "numeric_metric_set"))
+  expect_true(inherits(
+    tune:::check_metrics(metrics_2, chi_wflow),
+    "numeric_metric_set"
+  ))
 })
 
 test_that("metrics must match the parsnip engine", {
@@ -382,7 +410,6 @@ test_that("initial values", {
     add_recipe(recipes::recipe(mpg ~ ., data = mtcars))
   mtfolds <- rsample::vfold_cv(mtcars)
 
-
   grid_1 <- tune:::check_initial(
     2,
     pset = extract_parameter_set_dials(wflow_1),
@@ -430,7 +457,8 @@ test_that("check parameter finalization", {
   rec <-
     recipes::recipe(mpg ~ ., data = mtcars) %>%
     recipes::step_spline_natural(disp, deg_free = 3)
-  rec_tune <- rec %>% recipes::step_pca(recipes::all_predictors(), num_comp = tune())
+  rec_tune <- rec %>%
+    recipes::step_pca(recipes::all_predictors(), num_comp = tune())
   f <- mpg ~ .
   rf1 <-
     parsnip::rand_forest(mtry = tune(), min_n = tune()) %>%
@@ -447,7 +475,11 @@ test_that("check parameter finalization", {
 
   expect_snapshot(
     expect_no_error(
-      p1 <- tune:::check_parameters(w1, data = mtcars, grid_names = character(0))
+      p1 <- tune:::check_parameters(
+        w1,
+        data = mtcars,
+        grid_names = character(0)
+      )
     )
   )
   expect_false(any(dials::has_unknowns(p1$object)))

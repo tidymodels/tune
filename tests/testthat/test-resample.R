@@ -180,7 +180,7 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
     collect_predictions(no_post_res) |>
     dplyr::rename(no_post = .pred)
   post_preds <-
-    collect_predictions(post_res)|>
+    collect_predictions(post_res) |>
     dplyr::rename(post = .pred) |>
     dplyr::select(.row, post, id, .config)
 
@@ -188,8 +188,9 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (requires t
     dplyr::full_join(no_post_preds, post_preds, by = c(".row", "id", ".config"))
 
   expect_true(all(both_preds$post != both_preds$no_post))
-  expect_true(post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor())
-
+  expect_true(
+    post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor()
+  )
 })
 
 test_that("can use `fit_resamples()` with a workflow - postprocessor (no training)", {
@@ -233,17 +234,22 @@ test_that("can use `fit_resamples()` with a workflow - postprocessor (no trainin
     collect_predictions(no_post_res) |>
     dplyr::rename(no_post = .pred)
   post_preds <-
-    collect_predictions(post_res)|>
+    collect_predictions(post_res) |>
     dplyr::rename(post = .pred) |>
     dplyr::select(.row, post, id, .config)
 
   both_preds <-
-    dplyr::full_join(no_post_preds, post_preds, by = c(".row", "id", ".config")) |>
+    dplyr::full_join(
+      no_post_preds,
+      post_preds,
+      by = c(".row", "id", ".config")
+    ) |>
     filter(no_post < 3)
 
   expect_true(all(both_preds$post == 3))
-  expect_true(post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor())
-
+  expect_true(
+    post_res$.extracts[[1]]$.extracts[[1]] |> tune:::has_postprocessor()
+  )
 })
 
 # Error capture ----------------------------------------------------------------

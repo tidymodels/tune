@@ -156,12 +156,14 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
 
   set.seed(1)
   res <- tune_grid(
-    knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp + cyl,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -171,7 +173,16 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
   res_est <- collect_metrics(res)
   expect_equal(
     colnames(res_est),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est), n_grid * 2)
   expect_equal(sum(res_est$.by == "cyl", na.rm = TRUE), n_grid)
@@ -197,12 +208,14 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
 
   set.seed(1)
   res2 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -212,7 +225,16 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
   res_est2 <- collect_metrics(res2)
   expect_equal(
     colnames(res_est2),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est2), n_grid * 2)
   expect_equal(sum(res_est2$.by == "cyl", na.rm = TRUE), n_grid)
@@ -238,13 +260,15 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
 
   set.seed(1)
   res3 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl),
-        yardstick::equal_opportunity(am)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl),
+      yardstick::equal_opportunity(am)
+    )
   )
 
   expect_equal(
@@ -254,7 +278,16 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
   res_est3 <- collect_metrics(res3)
   expect_equal(
     colnames(res_est3),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est3), n_grid * 3)
   expect_equal(sum(res_est3$.by == "cyl", na.rm = TRUE), n_grid)
@@ -280,13 +313,15 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
 
   set.seed(1)
   res4 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl),
-        yardstick::demographic_parity(am)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl),
+      yardstick::demographic_parity(am)
+    )
   )
 
   expect_equal(
@@ -296,7 +331,16 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
   res_est4 <- collect_metrics(res4)
   expect_equal(
     colnames(res_est4),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est4), n_grid * 3)
   expect_equal(sum(res_est4$.by == "cyl", na.rm = TRUE), n_grid)
@@ -323,11 +367,13 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
 
   set.seed(1)
   res5 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -337,7 +383,16 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
   res_est5 <- collect_metrics(res5)
   expect_equal(
     colnames(res_est5),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est5), n_grid)
   expect_equal(sum(res_est5$.by == "cyl", na.rm = TRUE), n_grid)
@@ -517,7 +572,12 @@ test_that("tune model only - failure in recipe is caught elegantly", {
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   )
 
@@ -551,7 +611,12 @@ test_that("tune model only - failure in formula is caught elegantly", {
       y ~ z,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     ),
     transform = catalog_lines
   )
@@ -581,7 +646,6 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   rec <- recipe(mpg ~ ., data = mtcars) %>%
     step_spline_b(disp, deg_free = tune())
 
-
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
 
@@ -591,7 +655,12 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   })
 
@@ -662,7 +731,6 @@ test_that("determining the grid type", {
   grid_2 <- data.frame(a = runif(length(letters)), b = letters)
   expect_false(tune:::is_regular_grid(grid_2))
 })
-
 
 
 test_that("retain extra attributes", {

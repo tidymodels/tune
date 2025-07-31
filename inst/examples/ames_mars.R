@@ -3,7 +3,7 @@ library(tune)
 library(AmesHousing)
 library(workflows)
 library(doMC)
-registerDoMC(cores=10)
+registerDoMC(cores = 10)
 # ------------------------------------------------------------------------------
 
 ames <- make_ames() %>% mutate(Sale_Price = log10(Sale_Price))
@@ -22,7 +22,7 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 ames_rec <-
   recipe(Sale_Price ~ ., data = ames_train) %>%
   step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune())  %>%
+  step_other(Neighborhood, threshold = tune()) %>%
   step_dummy(all_nominal()) %>%
   step_zv(all_predictors())
 

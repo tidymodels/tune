@@ -56,8 +56,7 @@ is_workflow <- function(x) {
 is_cran_check <- function() {
   if (identical(Sys.getenv("NOT_CRAN"), "true")) {
     FALSE
-  }
-  else {
+  } else {
     Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
   }
 }
@@ -93,7 +92,9 @@ new_bare_tibble <- function(x, ..., class = character()) {
   .iter
 }
 
-`%||%` <- function (x, y) {if (rlang::is_null(x)) y else x}
+`%||%` <- function(x, y) {
+  if (rlang::is_null(x)) y else x
+}
 
 ## -----------------------------------------------------------------------------
 
@@ -153,7 +154,6 @@ new_bare_tibble <- function(x, ..., class = character()) {
   }
   res
 }
-
 
 
 #' @export
@@ -257,12 +257,13 @@ pretty.tune_results <- function(x, ...) {
 #' the search path.
 #' @export
 .stash_last_result <- function(x) {
-  if (! "org:r-lib" %in% search()) {
-    do.call("attach", list(new.env(), pos = length(search()),
-                           name = "org:r-lib"))
+  if (!"org:r-lib" %in% search()) {
+    do.call(
+      "attach",
+      list(new.env(), pos = length(search()), name = "org:r-lib")
+    )
   }
   env <- as.environment("org:r-lib")
   env$.Last.tune.result <- x
   invisible(NULL)
 }
-

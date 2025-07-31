@@ -122,9 +122,16 @@ tune_pp_msg <- "To tune a model specification, you must preprocess with a
 
 #' @export
 #' @rdname last_fit
-last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL,
-                                eval_time = NULL, control = control_last_fit(),
-                                add_validation_set = FALSE) {
+last_fit.model_spec <- function(
+  object,
+  preprocessor,
+  split,
+  ...,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_last_fit(),
+  add_validation_set = FALSE
+) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     cli::cli_abort(tune_pp_msg)
   }
@@ -154,9 +161,15 @@ last_fit.model_spec <- function(object, preprocessor, split, ..., metrics = NULL
 
 #' @rdname last_fit
 #' @export
-last_fit.workflow <- function(object, split, ..., metrics = NULL,
-                              eval_time = NULL, control = control_last_fit(),
-                              add_validation_set = FALSE) {
+last_fit.workflow <- function(
+  object,
+  split,
+  ...,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_last_fit(),
+  add_validation_set = FALSE
+) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_last_fit())
@@ -172,14 +185,16 @@ last_fit.workflow <- function(object, split, ..., metrics = NULL,
 }
 
 
-last_fit_workflow <- function(object,
-                              split,
-                              metrics,
-                              eval_time = NULL,
-                              control,
-                              add_validation_set = FALSE,
-                              ...,
-                              call = rlang::caller_env()) {
+last_fit_workflow <- function(
+  object,
+  split,
+  metrics,
+  eval_time = NULL,
+  control,
+  add_validation_set = FALSE,
+  ...,
+  call = rlang::caller_env()
+) {
   rlang::check_dots_empty()
   check_no_tuning(object)
 
@@ -220,7 +235,7 @@ last_fit_workflow <- function(object,
 }
 
 
-prepare_validation_split <- function(split, add_validation_set){
+prepare_validation_split <- function(split, add_validation_set) {
   if (add_validation_set) {
     # equivalent to (unexported) rsample:::rsplit() without checks
     split <- structure(

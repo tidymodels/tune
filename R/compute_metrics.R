@@ -71,22 +71,28 @@ compute_metrics <- function(x, metrics, summarize, event_level, ...) {
 
 #' @export
 #' @rdname compute_metrics
-compute_metrics.default <- function(x,
-                                    metrics,
-                                    summarize = TRUE,
-                                    event_level = "first",
-                                    ...) {
-  cli::cli_abort("No {.fn compute_metrics} method exists for
-                 {.obj_type_friendly {x}}.")
+compute_metrics.default <- function(
+  x,
+  metrics,
+  summarize = TRUE,
+  event_level = "first",
+  ...
+) {
+  cli::cli_abort(
+    "No {.fn compute_metrics} method exists for
+                 {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export
 #' @rdname compute_metrics
-compute_metrics.tune_results <- function(x,
-                                         metrics,
-                                         ...,
-                                         summarize = TRUE,
-                                         event_level = "first") {
+compute_metrics.tune_results <- function(
+  x,
+  metrics,
+  ...,
+  summarize = TRUE,
+  event_level = "first"
+) {
   rlang::check_dots_empty()
   check_bool(summarize)
   if (!".predictions" %in% names(x)) {

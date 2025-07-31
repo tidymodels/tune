@@ -1,4 +1,3 @@
-
 test_that("tune recipe only", {
   skip_if_not_installed("kernlab")
 
@@ -15,7 +14,10 @@ test_that("tune recipe only", {
       workflow() %>%
       add_recipe(helper_objects$rec_tune_1) %>%
       add_model(helper_objects$lm_mod) %>%
-      tune_grid(resamples = mt_folds, control = control_grid(extract = extr_1_1))
+      tune_grid(
+        resamples = mt_folds,
+        control = control_grid(extract = extr_1_1)
+      )
   )
   after_kind <- RNGkind()[[1]]
   expect_equal(before_kind, after_kind)
@@ -59,7 +61,10 @@ test_that("tune model only", {
     all(purrr::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
   )
   expect_true(
-    all(purrr::map_lgl(extract_2_1$.extracts, ~ all(names(.x) == c("index", "estimate")))),
+    all(purrr::map_lgl(
+      extract_2_1$.extracts,
+      ~ all(names(.x) == c("index", "estimate"))
+    )),
   )
 
   extr_2_2 <- function(x) {
@@ -97,9 +102,19 @@ test_that("mis-specified extract function", {
   set.seed(1)
   boots <- rsample::bootstraps(mtcars, 3)
 
-  raise_warning <- function(x) {warning("AHHH"); TRUE}
-  raise_error <- function(x) {stop("AHHH"); TRUE}
-  raise_both <- function(x) {warning("AH"); stop("AHHH"); TRUE}
+  raise_warning <- function(x) {
+    warning("AHHH")
+    TRUE
+  }
+  raise_error <- function(x) {
+    stop("AHHH")
+    TRUE
+  }
+  raise_both <- function(x) {
+    warning("AH")
+    stop("AHHH")
+    TRUE
+  }
   raise_error_once <- local({
     first <- TRUE
 
@@ -115,25 +130,41 @@ test_that("mis-specified extract function", {
 
   expect_snapshot(
     res_extract_warning <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_warning)),
+      fit_resamples(
+        wf,
+        boots,
+        control = control_resamples(extract = raise_warning)
+      ),
     transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error)),
+      fit_resamples(
+        wf,
+        boots,
+        control = control_resamples(extract = raise_error)
+      ),
     transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_both <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_both)),
+      fit_resamples(
+        wf,
+        boots,
+        control = control_resamples(extract = raise_both)
+      ),
     transform = catalog_lines
   )
 
   expect_snapshot(
     res_extract_error_once <-
-      fit_resamples(wf, boots, control = control_resamples(extract = raise_error_once)),
+      fit_resamples(
+        wf,
+        boots,
+        control = control_resamples(extract = raise_error_once)
+      ),
     transform = catalog_lines
   )
 
@@ -188,14 +219,13 @@ test_that("tune model and recipe", {
   )
   expect_no_error(extract_3_1 <- dplyr::bind_rows(res_3_1$.extracts))
 
-  expect_named(extract_3_1,c("cost", "num_comp", ".extracts", ".config"))
+  expect_named(extract_3_1, c("cost", "num_comp", ".extracts", ".config"))
   expect_true(
     all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
   )
 })
 
 # ------------------------------------------------------------------------------
-
 
 test_that("check .config in extracts", {
   load(test_path("data", "test_objects.RData"))

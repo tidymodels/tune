@@ -1,4 +1,3 @@
-
 extract_details <- function(object, extractor) {
   if (is.null(extractor)) {
     return(list())

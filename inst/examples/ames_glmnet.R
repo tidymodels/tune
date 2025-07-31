@@ -29,7 +29,12 @@ ames_wflow <-
 
 grid_df <- grid_regular(ames_wflow, levels = c(10, 3))
 
-ames_glmnet <- tune_grid(ames_wflow, resamples = cv_splits, grid = grid_df, control = control_grid(verbose = TRUE))
+ames_glmnet <- tune_grid(
+  ames_wflow,
+  resamples = cv_splits,
+  grid = grid_df,
+  control = control_grid(verbose = TRUE)
+)
 
 
 # summarize(ames_glmnet) %>%
@@ -67,4 +72,3 @@ more_search_res <-
     iter = 50,
     control = control_bayes(verbose = TRUE, uncertain = 5)
   )
-

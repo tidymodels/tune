@@ -20,7 +20,7 @@ raw <-
   mutate(
     text = str_remove(text, "product/"),
     text = str_remove(text, "review/"),
-    prod_num  = ifelse(str_detect(text, "productId"), 1, 0),
+    prod_num = ifelse(str_detect(text, "productId"), 1, 0),
     prod_num = cumsum(prod_num)
   ) %>%
   dplyr::filter(
@@ -68,7 +68,13 @@ testing_data <-
   sampled %>%
   anti_join(training_data, by = c("product", "review", "score"))
 
-save(training_data, testing_data, file = "data/small_fine_foods.RData", version = 2, compress = "xz")
+save(
+  training_data,
+  testing_data,
+  file = "data/small_fine_foods.RData",
+  version = 2,
+  compress = "xz"
+)
 
 # ------------------------------------------------------------------------------
 

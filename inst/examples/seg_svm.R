@@ -15,7 +15,7 @@ set.seed(8567)
 tr_te_split <- initial_split(segmentationData)
 
 seg_train <- training(tr_te_split)
-seg_test  <-  testing(tr_te_split)
+seg_test <- testing(tr_te_split)
 
 folds <- vfold_cv(seg_train)
 # could also be a simple modeling/validation split
@@ -49,8 +49,12 @@ svm_set <-
 set.seed(1558)
 grid <- grid_max_entropy(svm_set, size = 5)
 
-grid_results <- tune_grid(svm_wflow, resamples = folds, grid = grid,
-                          control = control_grid(verbose = TRUE))
+grid_results <- tune_grid(
+  svm_wflow,
+  resamples = folds,
+  grid = grid,
+  control = control_grid(verbose = TRUE)
+)
 
 grid_results
 
@@ -67,32 +71,39 @@ registerDoMC(cores = 10)
 
 kappa_only <- metric_set(kap)
 
-svm_search <- tune_bayes(svm_wflow, resamples = folds,
-                         initial = grid_results,
-                         iter = 15,
-                         metrics = kappa_only,
-                         param_info = svm_set,
-                         control = control_bayes(verbose = TRUE))
+svm_search <- tune_bayes(
+  svm_wflow,
+  resamples = folds,
+  initial = grid_results,
+  iter = 15,
+  metrics = kappa_only,
+  param_info = svm_set,
+  control = control_bayes(verbose = TRUE)
+)
 
 autoplot(svm_search, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
-svm_search_2 <- tune_bayes(svm_wflow, resamples = folds,
-                           initial = svm_search,
-                           iter = 15,
-                           metrics = kappa_only,
-                           param_info = svm_set,
-                           control = control_bayes(verbose = TRUE))
+svm_search_2 <- tune_bayes(
+  svm_wflow,
+  resamples = folds,
+  initial = svm_search,
+  iter = 15,
+  metrics = kappa_only,
+  param_info = svm_set,
+  control = control_bayes(verbose = TRUE)
+)
 
 autoplot(svm_search_2, type = "performance", metric = "kap")
 
 # ------------------------------------------------------------------------------
 
-svm_search_2 %>% dplyr::filter(.iter > 0) %>%
+svm_search_2 %>%
+  dplyr::filter(.iter > 0) %>%
   ggplot(aes(x = cost, y = rbf_sigma)) +
   geom_path(aes(x = cost, y = rbf_sigma), col = "black") +
-  geom_point(aes(col = num_comp, size = mean))  +
+  geom_point(aes(col = num_comp, size = mean)) +
   geom_point(data = svm_search_2, aes(col = num_comp, size = mean), pch = 1) +
   scale_x_log10() +
   scale_y_log10()
@@ -104,7 +115,7 @@ svm_search_2 %>%
   gather(variable, value, -mean, -.iter) %>%
   ggplot(aes(x = .iter, y = value)) +
   geom_point() +
-  facet_wrap(~ variable, scales = "free_y")
+  facet_wrap(~variable, scales = "free_y")
 
 
 svm_search_2 %>%
@@ -114,6 +125,4 @@ svm_search_2 %>%
   gather(variable, value, -mean, -.iter) %>%
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
-  facet_wrap(~ variable, scales = "free_x")
-
-
+  facet_wrap(~variable, scales = "free_x")

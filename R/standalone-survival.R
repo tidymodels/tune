@@ -57,16 +57,15 @@
 }
 
 .check_cens_type <-
-  function(surv,
-           type = "right",
-           fail = TRUE,
-           call = rlang::caller_env()) {
+  function(surv, type = "right", fail = TRUE, call = rlang::caller_env()) {
     .is_surv(surv, call = call)
     obj_type <- .extract_surv_type(surv)
     good_type <- all(obj_type %in% type)
     if (!good_type && fail) {
       c_list <- paste0("'", type, "'")
-      msg <- cli::format_inline("For this usage, the allowed censoring type{?s} {?is/are}: {c_list}")
+      msg <- cli::format_inline(
+        "For this usage, the allowed censoring type{?s} {?is/are}: {c_list}"
+      )
       rlang::abort(msg, call = call)
     }
     good_type
@@ -95,13 +94,14 @@
 
 .extract_surv_status <- function(surv) {
   .is_surv(surv)
-  res <-   surv[, "status"]
+  res <- surv[, "status"]
   un_vals <- sort(unique(res))
   event_type_to_01 <-
     !(.extract_surv_type(surv) %in% c("interval", "interval2", "mstate"))
   if (
     event_type_to_01 &&
-    (identical(un_vals, 1:2) | identical(un_vals, c(1.0, 2.0))) ) {
+      (identical(un_vals, 1:2) | identical(un_vals, c(1.0, 2.0)))
+  ) {
     res <- res - 1
   }
   unname(res)
@@ -133,9 +133,11 @@
   }
   if (!identical(eval_time, eval_time_0)) {
     diffs <- setdiff(eval_time_0, eval_time)
-    cli::cli_warn("There {?was/were} {length(diffs)} inappropriate evaluation
-                  time point{?s} that {?was/were} removed.", call = NULL)
-
+    cli::cli_warn(
+      "There {?was/were} {length(diffs)} inappropriate evaluation
+                  time point{?s} that {?was/were} removed.",
+      call = NULL
+    )
   }
   eval_time
 }

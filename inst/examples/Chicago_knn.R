@@ -4,7 +4,13 @@ library(tune)
 # ------------------------------------------------------------------------------
 
 set.seed(7898)
-data_folds <- rolling_origin(Chicago, initial = 364 * 15, assess = 7 * 4, skip = 13, cumulative = FALSE)
+data_folds <- rolling_origin(
+  Chicago,
+  initial = 364 * 15,
+  assess = 7 * 4,
+  skip = 13,
+  cumulative = FALSE
+)
 
 # ------------------------------------------------------------------------------
 
@@ -39,19 +45,28 @@ chi_grid <-
   chi_wflow %>%
   parameters %>%
   update(neighbors = neighbors(c(1, 30))) %>%
-  update(dist_power = dist_power(c(1/4, 2))) %>%
+  update(dist_power = dist_power(c(1 / 4, 2))) %>%
   grid_regular(levels = c(30, 3, 3))
 
 
-reg_knn_grid <- tune_grid(chi_wflow, resamples = data_folds, grid = chi_grid, control = control_grid(verbose = TRUE))
+reg_knn_grid <- tune_grid(
+  chi_wflow,
+  resamples = data_folds,
+  grid = chi_grid,
+  control = control_grid(verbose = TRUE)
+)
 
 summarize(reg_knn_grid) %>%
   dplyr::filter(.metric == "rmse") %>%
-  mutate(RMSE = mean, `Minkowski distance parameter` = dist_power, weights = weight_func) %>%
+  mutate(
+    RMSE = mean,
+    `Minkowski distance parameter` = dist_power,
+    weights = weight_func
+  ) %>%
   ggplot(aes(x = neighbors, y = RMSE, col = weights)) +
   geom_path() +
   geom_point() +
-  facet_wrap(~ `Minkowski distance parameter`) +
+  facet_wrap(~`Minkowski distance parameter`) +
   theme_bw() +
   xlab("# Nearest-Neighbors")
 
@@ -67,7 +82,7 @@ chi_set <-
   chi_wflow %>%
   parameters %>%
   update(neighbors = neighbors(c(1, 30))) %>%
-  update(dist_power  = dist_power(c(1/10, 2)))
+  update(dist_power = dist_power(c(1 / 10, 2)))
 
 set.seed(255)
 smol_grid <-
@@ -75,7 +90,12 @@ smol_grid <-
   grid_random(size = 5)
 
 
-smol_knn_grid <- tune_grid(chi_wflow, resamples = data_folds, grid = smol_grid, control = control_grid(verbose = TRUE))
+smol_knn_grid <- tune_grid(
+  chi_wflow,
+  resamples = data_folds,
+  grid = smol_grid,
+  control = control_grid(verbose = TRUE)
+)
 
 knn_search <-
   tune_bayes(
@@ -90,7 +110,8 @@ knn_search <-
 
 ggplot(
   knn_search %>% filter(.metric == "rmse"),
-  aes(x = neighbors, y = dist_power, col = weight_func, size = mean)) +
+  aes(x = neighbors, y = dist_power, col = weight_func, size = mean)
+) +
   geom_point(alpha = .4) +
   theme_bw() +
   ylab("Minkowski distance parameter") +
@@ -114,8 +135,9 @@ for (i in 0:max(knn_search$.iter)) {
 
 p <-
   ggplot(
-  ani_data,
-  aes(x = neighbors, y = dist_power, col = weights, size = RMSE)) +
+    ani_data,
+    aes(x = neighbors, y = dist_power, col = weights, size = RMSE)
+  ) +
   geom_point(alpha = 0.4) +
   labs(title = 'Iteration: {closest_state}') +
   transition_states(frame, state_length = 1) +

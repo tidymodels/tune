@@ -169,9 +169,7 @@ test_that("boosted tree grid reduction - C5.0", {
 
 # ------------------------------------------------------------------------------
 
-
 test_that("linear regression grid reduction - glmnet", {
-
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -199,7 +197,11 @@ test_that("linear regression grid reduction - glmnet", {
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
+  reg_grid_extra <- expand.grid(
+    penalty = 1:3,
+    mixture = (1:5) / 5,
+    blah = 10:12
+  )
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
@@ -251,7 +253,11 @@ test_that("linear regression grid reduction - glmnet", {
 
   mod_2 <- parsnip::linear_reg(penalty = tune("Josephus Miller")) %>%
     parsnip::set_engine("glmnet")
-  reg_grid <- expand.grid(`Josephus Miller` = 1:3, mixture = 1:2, ` \t123` = 10:11)
+  reg_grid <- expand.grid(
+    `Josephus Miller` = 1:3,
+    mixture = 1:2,
+    ` \t123` = 10:11
+  )
   reg_grid_smol <- min_grid(mod_2, reg_grid)
 
   expect_equal(reg_grid_smol$`Josephus Miller`, rep(3, 4))
@@ -265,7 +271,6 @@ test_that("linear regression grid reduction - glmnet", {
 # ------------------------------------------------------------------------------
 
 test_that("logistic regression grid reduction - glmnet", {
-
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -293,7 +298,11 @@ test_that("logistic regression grid reduction - glmnet", {
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
+  reg_grid_extra <- expand.grid(
+    penalty = 1:3,
+    mixture = (1:5) / 5,
+    blah = 10:12
+  )
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
@@ -325,7 +334,6 @@ test_that("logistic regression grid reduction - glmnet", {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
 
-
   # different id names
   mod_1 <- parsnip::logistic_reg(penalty = tune("Prax")) %>%
     parsnip::set_engine("glmnet")
@@ -346,7 +354,11 @@ test_that("logistic regression grid reduction - glmnet", {
 
   mod_2 <- parsnip::logistic_reg(penalty = tune("Samara Rosenberg")) %>%
     parsnip::set_engine("glmnet")
-  reg_grid <- expand.grid(`Samara Rosenberg` = 1:3, mixture = 1:2, ` \t123` = 10:11)
+  reg_grid <- expand.grid(
+    `Samara Rosenberg` = 1:3,
+    mixture = 1:2,
+    ` \t123` = 10:11
+  )
   reg_grid_smol <- min_grid(mod_2, reg_grid)
 
   expect_equal(reg_grid_smol$`Samara Rosenberg`, rep(3, 4))
@@ -360,8 +372,11 @@ test_that("logistic regression grid reduction - glmnet", {
 # more of a negative control test
 test_that("logistic regression grid reduction - spark", {
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
-  reg_grid_smol <- min_grid(parsnip::logistic_reg() %>%
-    parsnip::set_engine("spark"), reg_grid)
+  reg_grid_smol <- min_grid(
+    parsnip::logistic_reg() %>%
+      parsnip::set_engine("spark"),
+    reg_grid
+  )
 
   expect_equal(reg_grid_smol$penalty, reg_grid$penalty)
   expect_equal(reg_grid_smol$mixture, reg_grid$mixture)
@@ -396,7 +411,11 @@ test_that("MARS grid reduction - earth", {
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(num_terms = 1:3, prod_degree = 1:2, blah = 10:12)
+  reg_grid_extra <- expand.grid(
+    num_terms = 1:3,
+    prod_degree = 1:2,
+    blah = 10:12
+  )
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$num_terms, rep(3, 6))
@@ -423,7 +442,6 @@ test_that("MARS grid reduction - earth", {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
 
-
   # different id names
   mod_1 <- parsnip::mars(num_terms = tune("Filip")) %>%
     parsnip::set_engine("earth")
@@ -444,7 +462,11 @@ test_that("MARS grid reduction - earth", {
 
   mod_2 <- parsnip::mars(num_terms = tune("Elvi Okoye")) %>%
     parsnip::set_engine("earth")
-  reg_grid <- expand.grid(`Elvi Okoye` = 1:3, prod_degree = 1:2, ` \t123` = 10:11)
+  reg_grid <- expand.grid(
+    `Elvi Okoye` = 1:3,
+    prod_degree = 1:2,
+    ` \t123` = 10:11
+  )
   reg_grid_smol <- min_grid(mod_2, reg_grid)
 
   expect_equal(reg_grid_smol$`Elvi Okoye`, rep(3, 4))
@@ -458,7 +480,6 @@ test_that("MARS grid reduction - earth", {
 # ------------------------------------------------------------------------------
 
 test_that("multinomial regression grid reduction - glmnet", {
-
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
@@ -486,7 +507,11 @@ test_that("multinomial regression grid reduction - glmnet", {
   }
 
   # Grid with a third parameter
-  reg_grid_extra <- expand.grid(penalty = 1:3, mixture = (1:5) / 5, blah = 10:12)
+  reg_grid_extra <- expand.grid(
+    penalty = 1:3,
+    mixture = (1:5) / 5,
+    blah = 10:12
+  )
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$penalty, rep(3, 15))
@@ -551,9 +576,7 @@ test_that("multinomial regression grid reduction - glmnet", {
 
 # ------------------------------------------------------------------------------
 
-
 test_that("nearest neighbors grid reduction - kknn", {
-
   mod <- parsnip::nearest_neighbor() %>% parsnip::set_engine("kknn")
 
   # A typical grid
@@ -578,7 +601,11 @@ test_that("nearest neighbors grid reduction - kknn", {
 
   # Grid with a third parameter
   wts <- c("rectangular", "triangular", "epanechnikov")
-  reg_grid_extra <- expand.grid(neighbors = 1:3, dist_power = 1:2, weight_func = wts)
+  reg_grid_extra <- expand.grid(
+    neighbors = 1:3,
+    dist_power = 1:2,
+    weight_func = wts
+  )
   reg_grid_extra_smol <- min_grid(mod, reg_grid_extra)
 
   expect_equal(reg_grid_extra_smol$neighbors, rep(3, 6))
@@ -604,7 +631,6 @@ test_that("nearest neighbors grid reduction - kknn", {
   for (i in 1:nrow(no_sub_smol)) {
     expect_length(no_sub_smol$.submodels[[i]], 0)
   }
-
 
   # different id names
   mod_1 <- parsnip::nearest_neighbor(neighbors = tune("Nami")) %>%

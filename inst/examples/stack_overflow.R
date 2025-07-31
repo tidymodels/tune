@@ -6,12 +6,17 @@ library(readr)
 # ------------------------------------------------------------------------------
 
 so_train <-
-  read_rds(url("https://github.com/juliasilge/supervised-ML-case-studies-course/blob/master/data/c2_training_full.rds?raw=true")) %>%
+  read_rds(url(
+    "https://github.com/juliasilge/supervised-ML-case-studies-course/blob/master/data/c2_training_full.rds?raw=true"
+  )) %>%
   mutate(Country = as.factor(Country)) %>%
   mutate_if(is.logical, as.numeric) %>%
   # ranger doesn't like spaces or "/" and will error with "Illegal column names in
   # formula interface. Fix column names or use alternative interface in ranger.
-  rename_at(vars(dplyr::contains(" ")), ~ gsub("([[:blank:]])|([[:punct:]])", "_", .))
+  rename_at(
+    vars(dplyr::contains(" ")),
+    ~ gsub("([[:blank:]])|([[:punct:]])", "_", .)
+  )
 
 lr_rec <-
   recipe(Remote ~ ., data = so_train) %>%
@@ -28,7 +33,12 @@ rf_rec <-
   step_downsample(Remote)
 
 rf_mod <-
-  rand_forest(mode = "classification", mtry = tune(), min_n = tune(), trees = 1000) %>%
+  rand_forest(
+    mode = "classification",
+    mtry = tune(),
+    min_n = tune(),
+    trees = 1000
+  ) %>%
   set_engine("ranger")
 
 set.seed(4290)
@@ -42,13 +52,19 @@ registerDoParallel(cl)
 
 # ------------------------------------------------------------------------------
 
-glmn_grid <- expand.grid(penalty = 10^seq(-3, -1, length = 14),
-                         mixture = (0:5)/5)
+glmn_grid <- expand.grid(
+  penalty = 10^seq(-3, -1, length = 14),
+  mixture = (0:5) / 5
+)
 
-glmn_search <- tune_grid(lr_rec, lr_mod, resamples = so_boots,
-                         grid = glmn_grid,
-                         metrics = metric_set(accuracy, roc_auc),
-                         control = control_grid(verbose = TRUE))
+glmn_search <- tune_grid(
+  lr_rec,
+  lr_mod,
+  resamples = so_boots,
+  grid = glmn_grid,
+  metrics = metric_set(accuracy, roc_auc),
+  control = control_grid(verbose = TRUE)
+)
 
 summarize(glmn_search) %>%
   filter(.metric == "accuracy") %>%
@@ -67,9 +83,13 @@ rf_grid <-
   grid_latin_hypercube(size = 20)
 
 set.seed(1809)
-rf_search <- tune_grid(rf_rec, rf_mod, resamples = so_boots,
-                       grid = rf_grid,
-                       metrics = metric_set(accuracy, roc_auc))
+rf_search <- tune_grid(
+  rf_rec,
+  rf_mod,
+  resamples = so_boots,
+  grid = rf_grid,
+  metrics = metric_set(accuracy, roc_auc)
+)
 
 summarize(rf_search) %>%
   filter(.metric == "accuracy") %>%
@@ -78,7 +98,7 @@ summarize(rf_search) %>%
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
   geom_smooth(se = FALSE) +
-  facet_wrap( ~ parameter, scales = "free_x")
+  facet_wrap(~parameter, scales = "free_x")
 
 
 summarize(rf_search) %>%

@@ -69,7 +69,6 @@ augment.resample_results <- function(x, ...) {
 }
 
 
-
 #' @rdname augment.tune_results
 #' @export
 augment.last_fit <- function(x, ...) {

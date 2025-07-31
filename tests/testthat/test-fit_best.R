@@ -36,9 +36,11 @@ test_that("fit_best", {
   expect_snapshot(fit_best(knn_pca_res, verbose = TRUE))
   expect_snapshot(
     tmp <-
-      fit_best(knn_pca_res,
-               verbose = TRUE,
-               parameters = tibble(neighbors = 1, num_comp = 1))
+      fit_best(
+        knn_pca_res,
+        verbose = TRUE,
+        parameters = tibble(neighbors = 1, num_comp = 1)
+      )
   )
 
   expect_snapshot_error(
@@ -83,7 +85,8 @@ test_that("fit_best() works with validation split: 3-way split", {
     grid = tibble(neighbors = c(1, 5)),
     resamples = val_set,
     control = control_grid(save_workflow = TRUE)
-  ) %>% suppressWarnings()
+  ) %>%
+    suppressWarnings()
   set.seed(3)
   fit_on_train <- fit_best(tune_res)
   pred <- predict(fit_on_train, testing(initial_val_split))
@@ -130,23 +133,27 @@ test_that("fit_best() works with validation split: 2x 2-way splits", {
   expect_equal(pred, exp_pred)
 })
 
-test_that(
-  "fit_best() warns when metric or eval_time are specified in addition to parameters", {
+test_that("fit_best() warns when metric or eval_time are specified in addition to parameters", {
   skip_if_not_installed("kknn")
 
   knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
   res <-
-      tune_grid(
+    tune_grid(
       workflow(mpg ~ ., knn_mod),
       bootstraps(mtcars),
       control = control_grid(save_workflow = TRUE)
-   )
+    )
 
-   tune_params <- select_best(res, metric = "rmse")
-   expect_snapshot(
+  tune_params <- select_best(res, metric = "rmse")
+  expect_snapshot(
     manual_wf <- fit_best(res, metric = "rmse", parameters = tune_params)
-   )
-   expect_snapshot(
-    manual_wf <- fit_best(res, metric = "rmse", eval_time = 10, parameters = tune_params)
-   )
+  )
+  expect_snapshot(
+    manual_wf <- fit_best(
+      res,
+      metric = "rmse",
+      eval_time = 10,
+      parameters = tune_params
+    )
+  )
 })

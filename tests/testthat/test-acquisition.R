@@ -39,9 +39,18 @@ test_that("prob_improve interface", {
 
   expect_snapshot(error = TRUE, prob_improve("a"))
   expect_snapshot(error = TRUE, prob_improve(function() 1))
-  expect_snapshot(error = TRUE, predict(prob_improve(), test_res, maximize = 2, iter = 1))
-  expect_snapshot(error = TRUE, predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = NA))
-  expect_snapshot(error = TRUE, predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT"))
+  expect_snapshot(
+    error = TRUE,
+    predict(prob_improve(), test_res, maximize = 2, iter = 1)
+  )
+  expect_snapshot(
+    error = TRUE,
+    predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = NA)
+  )
+  expect_snapshot(
+    error = TRUE,
+    predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT")
+  )
 })
 
 test_that("prob_improve calculations", {
@@ -75,13 +84,25 @@ test_that("prob_improve calculations", {
   )
 
   expect_equal(
-    predict(prob_improve(dbled), test_res, maximize = TRUE, iter = 2, best = 15),
+    predict(
+      prob_improve(dbled),
+      test_res,
+      maximize = TRUE,
+      iter = 2,
+      best = 15
+    ),
     test_res %>%
       mutate(objective = pnorm((.mean - 15 - 4) / .sd)) %>%
       select(objective)
   )
   expect_equal(
-    predict(prob_improve(dbled), test_res, maximize = FALSE, iter = 4, best = -2),
+    predict(
+      prob_improve(dbled),
+      test_res,
+      maximize = FALSE,
+      iter = 4,
+      best = -2
+    ),
     test_res %>%
       mutate(objective = pnorm((-2 + 16 - .mean) / .sd)) %>%
       select(objective)
@@ -96,9 +117,18 @@ test_that("exp_improve interface", {
 
   expect_snapshot(error = TRUE, exp_improve("a"))
   expect_snapshot(error = TRUE, exp_improve(function() 2))
-  expect_snapshot(error = TRUE, predict(exp_improve(), test_res, maximize = 2, iter = 1))
-  expect_snapshot(error = TRUE, predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = NA))
-  expect_snapshot(error = TRUE, predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT"))
+  expect_snapshot(
+    error = TRUE,
+    predict(exp_improve(), test_res, maximize = 2, iter = 1)
+  )
+  expect_snapshot(
+    error = TRUE,
+    predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = NA)
+  )
+  expect_snapshot(
+    error = TRUE,
+    predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = "WAT")
+  )
 })
 
 test_that("exp_improve calculations", {
@@ -153,7 +183,13 @@ test_that("exp_improve calculations", {
       select(objective)
   )
   expect_equal(
-    predict(exp_improve(dbled), test_res, maximize = FALSE, iter = 2, best = 15),
+    predict(
+      exp_improve(dbled),
+      test_res,
+      maximize = FALSE,
+      iter = 2,
+      best = 15
+    ),
     test_res %>%
       mutate(
         diff = 19 - .mean,

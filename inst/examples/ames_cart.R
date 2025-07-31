@@ -25,7 +25,10 @@ ames_rec <-
 
 cart_model <-
   decision_tree(
-    mode = "regression", cost_complexity = tune(), min_n = tune()) %>%
+    mode = "regression",
+    cost_complexity = tune(),
+    min_n = tune()
+  ) %>%
   set_engine("rpart")
 
 
@@ -60,7 +63,7 @@ initial_grid <-
 # ------------------------------------------------------------------------------
 
 foo <- function(i) {
-  expo_decay(i, start_val = .02, 0, slope = 1/10)
+  expo_decay(i, start_val = .02, 0, slope = 1 / 10)
 }
 
 
@@ -74,5 +77,9 @@ test <-
     objective = exp_improve(foo),
     param_info = prm,
     iter = 20,
-    control = control_bayes(verbose = TRUE, uncertain = 10, extract = num_leaves)
+    control = control_bayes(
+      verbose = TRUE,
+      uncertain = 10,
+      extract = num_leaves
+    )
   )
