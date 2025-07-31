@@ -143,6 +143,10 @@ get_param_info <- function(wflow) {
 		dplyr::select(name = parsnip, has_submodel)
 
 	param_info <- dplyr::left_join(param_info, model_param, by = "name")
+	# Parameters for model engines, preprocessors, and postprocessors will have
+	# NA values for `has_submodel` after this merge. Since they cannot be
+	# submodels, we'll convert them to FALSE
+	param_info$has_submodel[is.na(param_info$has_submodel)] <- FALSE
 
 	param_info
 }

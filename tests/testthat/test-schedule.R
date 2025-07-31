@@ -23,7 +23,7 @@ test_that("`get_param_info()` works for a workflow with tags for tuning", {
 		param_info$id,
 		c("min_n", "threshold", "disp_df", "lower_limit")
 	)
-	expect_identical(param_info$has_submodel, c(FALSE, NA, NA, NA))
+	expect_identical(param_info$has_submodel, c(FALSE, FALSE, FALSE, FALSE))
 })
 
 test_that("`get_param_info()` works when there are submodel parameters", {
@@ -821,7 +821,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
 
 	grid_pre <-
 		grid_pre_post %>%
-		distinct(threshold, disp_df) 
+		distinct(threshold, disp_df)
 
 	grids_post <-
 		grid_pre_post %>%
@@ -890,7 +890,7 @@ test_that("grid processing schedule - recipe + model, no submodels, regular grid
 		distinct(min_n) %>%
 		arrange(min_n)
 
-	
+
 	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
@@ -952,7 +952,7 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
 			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
-	
+
 	sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
 
 	expect_named(sched_pre_model, c("threshold", "disp_df", "model_stage"))
@@ -1035,7 +1035,7 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 			data = purrr::map(data, ~ .x %>% arrange(min_n))
 		)
 
-	
+
 	sched_pre_model_post <- schedule_grid(
 		grid_pre_model_post,
 		wflow_pre_model_post
@@ -1110,3 +1110,35 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
 	)
 })
 
+test_that("parameter information with engine, recipe, and tailor parameters", {
+  mlp_spec <-
+    mlp(
+      hidden_units = tune(),
+      penalty = tune(),
+      learn_rate = tune(),
+      epochs = 500,
+      activation = tune()
+    ) |>
+    set_engine(
+      "brulee",
+      stop_iter = tune(),
+      class_weights = tune()
+    ) |>
+    set_mode("classification")
+
+  rec <- recipe(Class ~ ., data = tibble(Class = "a", x = 1)) |>
+    step_pca(all_numeric_predictors(), num_comp = tune())
+
+  tlr <- tailor() |> adjust_probability_threshold(threshold = tune())
+
+  mlp_wflow <- workflow(rec, mlp_spec, tlr)
+
+  mlp_grid <-
+    mlp_wflow |>
+    extract_parameter_set_dials() |>
+    grid_space_filling(size = 4)
+
+  mlp_info <- tune:::get_param_info(mlp_wflow)
+  expect_true(all(!is.na(mlp_info$has_submodel)))
+
+})
