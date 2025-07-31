@@ -19,13 +19,13 @@ rs_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec <-
-  recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = .1)  %>%
-  step_dummy(all_nominal()) %>%
-  step_zv(all_predictors()) %>%
-  step_ns(Longitude, deg_free = tune("lon")) %>%
+  recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = .1) |>
+  step_dummy(all_nominal()) |>
+  step_zv(all_predictors()) |>
+  step_ns(Longitude, deg_free = tune("lon")) |>
   step_ns(Latitude, deg_free = tune("lat"))
 
 knn_model <-
@@ -34,21 +34,21 @@ knn_model <-
     neighbors = tune("K"),
     weight_func = tune(),
     dist_power = tune()
-  ) %>%
+  ) |>
   set_engine("kknn")
 
 ames_wflow <-
-  workflow() %>%
-  add_recipe(ames_rec) %>%
+  workflow() |>
+  add_recipe(ames_rec) |>
   add_model(knn_model)
 
 ames_set <-
-  parameters(ames_wflow) %>%
+  parameters(ames_wflow) |>
   update(K = neighbors(c(1, 50)))
 
 set.seed(7014)
 ames_grid <-
-  ames_set %>%
+  ames_set |>
   grid_max_entropy(size = 10)
 
 ames_grid_search <-
@@ -69,13 +69,18 @@ ames_iter_search <-
   )
 
 zero_out_data <- function(x) {
-  x$data <- x$data[0,]
+  x$data <- x$data[0, ]
   x
 }
 
 ames_grid_search$splits <- purrr::map(ames_grid_search$splits, zero_out_data)
 ames_iter_search$splits <- purrr::map(ames_iter_search$splits, zero_out_data)
 
-save(ames_wflow, ames_grid_search, ames_iter_search,
-     file = "data/example_ames_knn.RData",
-     version = 2, compress = "xz")
+save(
+  ames_wflow,
+  ames_grid_search,
+  ames_iter_search,
+  file = "data/example_ames_knn.RData",
+  version = 2,
+  compress = "xz"
+)

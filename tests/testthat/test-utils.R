@@ -1,5 +1,4 @@
 test_that("check for no arguments pass to ...", {
-
   expect_snapshot(
     empty_ellipses(a = 5)
   )

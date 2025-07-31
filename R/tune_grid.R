@@ -180,12 +180,12 @@
 #' # tuning recipe parameters:
 #'
 #' spline_rec <-
-#'   recipe(mpg ~ ., data = mtcars) %>%
-#'   step_spline_natural(disp, deg_free = tune("disp")) %>%
+#'   recipe(mpg ~ ., data = mtcars) |>
+#'   step_spline_natural(disp, deg_free = tune("disp")) |>
 #'   step_spline_natural(wt, deg_free = tune("wt"))
 #'
 #' lin_mod <-
-#'   linear_reg() %>%
+#'   linear_reg() |>
 #'   set_engine("lm")
 #'
 #' # manually create a grid
@@ -205,12 +205,12 @@
 #' # tune model parameters only (example requires the `kernlab` package)
 #'
 #' car_rec <-
-#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   recipe(mpg ~ ., data = mtcars) |>
 #'   step_normalize(all_predictors())
 #'
 #' svm_mod <-
-#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
-#'   set_engine("kernlab") %>%
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+#'   set_engine("kernlab") |>
 #'   set_mode("regression")
 #'
 #' # Use a space-filling design with 7 points
@@ -231,8 +231,8 @@
 #' # to `tune_grid()`, you can also wrap them up in a workflow and pass
 #' # that along instead (note that this doesn't do any preprocessing to
 #' # the variables, it passes them along as-is).
-#' wf <- workflow() %>%
-#'   add_variables(outcomes = mpg, predictors = everything()) %>%
+#' wf <- workflow() |>
+#'   add_variables(outcomes = mpg, predictors = everything()) |>
 #'   add_model(svm_mod)
 #'
 #' set.seed(3254)
@@ -252,9 +252,17 @@ tune_grid.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_grid
-tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
-                                 param_info = NULL, grid = 10, metrics = NULL,
-                                 eval_time = NULL, control = control_grid()) {
+tune_grid.model_spec <- function(
+  object,
+  preprocessor,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_grid()
+) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     cli::cli_abort(tune_pp_msg)
   }
@@ -284,9 +292,16 @@ tune_grid.model_spec <- function(object, preprocessor, resamples, ...,
 
 #' @export
 #' @rdname tune_grid
-tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
-                               grid = 10, metrics = NULL,
-                               eval_time = NULL, control = control_grid()) {
+tune_grid.workflow <- function(
+  object,
+  resamples,
+  ...,
+  param_info = NULL,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  control = control_grid()
+) {
   empty_ellipses(...)
 
   control <- parsnip::condense_control(control, control_grid())
@@ -313,15 +328,15 @@ tune_grid.workflow <- function(object, resamples, ..., param_info = NULL,
 # ------------------------------------------------------------------------------
 
 tune_grid_workflow <- function(
-    workflow,
-    resamples,
-    grid = 10,
-    metrics = NULL,
-    eval_time = NULL,
-    pset = NULL,
-    control = control_grid(),
-    rng = TRUE,
-    call = caller_env()
+  workflow,
+  resamples,
+  grid = 10,
+  metrics = NULL,
+  eval_time = NULL,
+  pset = NULL,
+  control = control_grid(),
+  rng = TRUE,
+  call = caller_env()
 ) {
   if (!catalog_is_active()) {
     initialize_catalog(control)
@@ -421,7 +436,10 @@ set_workflow <- function(workflow, control) {
             "setting `save_workflow = FALSE`."
           )
         cols <- get_tune_colors()
-        msg <- strwrap(msg, prefix = paste0(cols$symbol$info(cli::symbol$info), " "))
+        msg <- strwrap(
+          msg,
+          prefix = paste0(cols$symbol$info(cli::symbol$info), " ")
+        )
         msg <- cols$message$info(paste0(msg, collapse = "\n"))
         cli::cli_bullets(msg)
       }

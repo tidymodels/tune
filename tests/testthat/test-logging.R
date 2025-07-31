@@ -49,11 +49,11 @@ test_that("logging search info", {
   expect_silent(check_and_log_flow(ctrl_t, tb_1))
   expect_snapshot(
     error = TRUE,
-    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+    check_and_log_flow(ctrl_t, tb_1 |> mutate(.mean = .mean * NA))
   )
   expect_snapshot(
     error = TRUE,
-    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+    check_and_log_flow(ctrl_t, tb_1 |> mutate(.mean = .mean * NA) |> slice(1))
   )
 })
 
@@ -128,7 +128,12 @@ test_that("message_wrap", {
   )
   verify_output(
     test_path("message_wrap/width_50_prefix_red_text.txt"),
-    message_wrap(text, width = 50, prefix = "'grid':", color_text = cli::col_red),
+    message_wrap(
+      text,
+      width = 50,
+      prefix = "'grid':",
+      color_text = cli::col_red
+    ),
     crayon = TRUE
   )
   verify_output(
@@ -154,25 +159,36 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
 
-  raise_warning <- function(x) {warning("ope! yikes.")}
-  raise_error <- function(x) {stop("AHHhH")}
+  raise_warning <- function(x) {
+    warning("ope! yikes.")
+  }
+  raise_error <- function(x) {
+    stop("AHHhH")
+  }
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(
-          extract = function(x) {raise_warning(); raise_error()}, 
-          allow_par = FALSE
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          control = control_resamples(
+            extract = function(x) {
+              raise_warning()
+              raise_error()
+            },
+            allow_par = FALSE
+          )
         )
-    )},
+    },
     transform = catalog_lines
   )
 
@@ -186,25 +202,36 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
 
   skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
 
-  raise_warning_rl <- function(x) {rlang::warn("ope! yikes. (but rlang)")}
-  raise_error_rl <- function(x) {rlang::abort("AHHhH (but rlang)")}
+  raise_warning_rl <- function(x) {
+    rlang::warn("ope! yikes. (but rlang)")
+  }
+  raise_error_rl <- function(x) {
+    rlang::abort("AHHhH (but rlang)")
+  }
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(
-          extract = function(x) {raise_warning_rl(); raise_error_rl()}, 
-          allow_par = FALSE
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          control = control_resamples(
+            extract = function(x) {
+              raise_warning_rl()
+              raise_error_rl()
+            },
+            allow_par = FALSE
+          )
         )
-    )},
+    },
     transform = catalog_lines
   )
 
@@ -219,7 +246,9 @@ test_that("interactive logger works (fit_resamples, multiline)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
@@ -232,16 +261,18 @@ test_that("interactive logger works (fit_resamples, multiline)", {
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(
-          extract = raise_multiline_conditions,
-          allow_par = FALSE
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          control = control_resamples(
+            extract = raise_multiline_conditions,
+            allow_par = FALSE
+          )
         )
-    )},
+    },
     transform = catalog_lines
   )
 
@@ -255,32 +286,38 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
 
-  raise_error_later <- function() {local({
-    count <- 0
-    function(x) {
-      count <<- count + 1
-      if (count > 3) {
-        stop("this errors now! ha!")
+  raise_error_later <- function() {
+    local({
+      count <- 0
+      function(x) {
+        count <<- count + 1
+        if (count > 3) {
+          stop("this errors now! ha!")
+        }
+        "hi"
       }
-      "hi"
-    }
-  })}
+    })
+  }
   later <- raise_error_later()
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = later, allow_par = FALSE)
-    )},
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          control = control_resamples(extract = later, allow_par = FALSE)
+        )
+    },
     transform = catalog_lines
   )
 
@@ -294,50 +331,61 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
 
   skip_on_cran()
 
-  raise_error_once <- function() {local({
-    first <- TRUE
-    function(x) {
-      if (first) {
-        first <<- FALSE
-        stop("oh no")
-      }
+  raise_error_once <- function() {
+    local({
+      first <- TRUE
+      function(x) {
+        if (first) {
+          first <<- FALSE
+          stop("oh no")
+        }
 
-      "hi"
-    }
-  })}
-
-  raise_error_later <- function() {local({
-    count <- 0
-    function(x) {
-      count <<- count + 1
-      if (count > 3) {
-        stop("this errors now! ha!")
+        "hi"
       }
-      "hi"
-    }
-  })}
+    })
+  }
+
+  raise_error_later <- function() {
+    local({
+      count <- 0
+      function(x) {
+        count <<- count + 1
+        if (count > 3) {
+          stop("this errors now! ha!")
+        }
+        "hi"
+      }
+    })
+  }
 
   once <- raise_error_once()
   later <- raise_error_later()
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
-        control = control_resamples(
-          extract = function(x) {once(); later()},
-          allow_par = FALSE
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 10),
+          control = control_resamples(
+            extract = function(x) {
+              once()
+              later()
+            },
+            allow_par = FALSE
+          )
         )
-    )},
+    },
     transform = catalog_lines
   )
 
@@ -352,7 +400,9 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
 
@@ -360,25 +410,29 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
   # Enough characters to see 'E: x1'
   rlang::local_options(cli.width = 84)
 
-  raise_error_numbered <- function() {local({
-    count <- 0
-    function(x) {
-      count <<- count + 1
-      stop(paste0("error number ", count))
-      "hi"
-    }
-  })}
+  raise_error_numbered <- function() {
+    local({
+      count <- 0
+      function(x) {
+        count <<- count + 1
+        stop(paste0("error number ", count))
+        "hi"
+      }
+    })
+  }
   numbered <- raise_error_numbered()
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      fit_resamples(
-        parsnip::nearest_neighbor("regression", "kknn"),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        control = control_resamples(extract = numbered, allow_par = FALSE)
-    )},
+    {
+      res_fit <-
+        fit_resamples(
+          parsnip::nearest_neighbor("regression", "kknn"),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          control = control_resamples(extract = numbered, allow_par = FALSE)
+        )
+    },
     transform = catalog_lines
   )
 
@@ -392,23 +446,29 @@ test_that("interactive logger works (tune grid, error)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
   skip_on_cran()
 
-  raise_error <- function(x) {stop("AHHhH")}
+  raise_error <- function(x) {
+    stop("AHHhH")
+  }
 
   set.seed(1)
   expect_snapshot(
-    {res_fit <-
-      tune_grid(
-        parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        grid = 5,
-        control = control_grid(extract = raise_error, allow_par = FALSE)
-    )},
+    {
+      res_fit <-
+        tune_grid(
+          parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          grid = 5,
+          control = control_grid(extract = raise_error, allow_par = FALSE)
+        )
+    },
     transform = catalog_lines
   )
 
@@ -422,25 +482,31 @@ test_that("interactive logger works (bayesian, error)", {
   skip_if_not_installed("kknn")
 
   local_mocked_bindings(
-    is_testing = function() {FALSE},
+    is_testing = function() {
+      FALSE
+    },
     initialize_catalog = redefer_initialize_catalog(rlang::current_env())
   )
 
   skip_on_cran()
 
-  raise_error <- function(x) {stop("AHHhH")}
+  raise_error <- function(x) {
+    stop("AHHhH")
+  }
 
   set.seed(1)
   expect_snapshot(
-    {res_grid <-
-      tune_bayes(
-        parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
-        Sale_Price ~ .,
-        rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-        initial = 5,
-        iter = 5,
-        control = control_bayes(extract = raise_error, allow_par = FALSE)
-    )},
+    {
+      res_grid <-
+        tune_bayes(
+          parsnip::nearest_neighbor("regression", "kknn", dist_power = tune()),
+          Sale_Price ~ .,
+          rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
+          initial = 5,
+          iter = 5,
+          control = control_bayes(extract = raise_error, allow_par = FALSE)
+        )
+    },
     transform = catalog_lines
   )
 

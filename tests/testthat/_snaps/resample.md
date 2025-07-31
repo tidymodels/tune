@@ -73,7 +73,7 @@
 # `tune_grid()` ignores `grid` if there are no tuning parameters
 
     Code
-      result <- lin_mod %>% tune_grid(mpg ~ ., grid = data.frame(x = 1), folds)
+      result <- tune_grid(lin_mod, mpg ~ ., grid = data.frame(x = 1), folds)
     Condition
       Warning:
       No tuning parameters have been detected, performance will be evaluated using the resamples with no tuning.
@@ -90,7 +90,7 @@
 # ellipses with fit_resamples
 
     Code
-      lin_mod %>% fit_resamples(mpg ~ ., folds, something = "wrong")
+      fit_resamples(lin_mod, mpg ~ ., folds, something = "wrong")
     Condition
       Warning:
       The `...` are not used in this function but 1 object was passed: "something"

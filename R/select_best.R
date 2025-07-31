@@ -77,12 +77,14 @@ show_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-show_best.tune_results <- function(x,
-                                   ...,
-                                   metric = NULL,
-                                   eval_time = NULL,
-                                   n = 5,
-                                   call = rlang::current_env()) {
+show_best.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  n = 5,
+  call = rlang::current_env()
+) {
   rlang::check_dots_empty()
 
   metric_info <- choose_metric(x, metric, call = call)
@@ -93,14 +95,14 @@ show_best.tune_results <- function(x,
   summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
-    summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
+    summary_res <- summary_res |> dplyr::arrange(dplyr::desc(mean))
   } else if (metric_info$direction == "minimize") {
-    summary_res <- summary_res %>% dplyr::arrange(mean)
+    summary_res <- summary_res |> dplyr::arrange(mean)
   } else if (metric_info$direction == "zero") {
-    summary_res <- summary_res %>% dplyr::arrange(abs(mean))
+    summary_res <- summary_res |> dplyr::arrange(abs(mean))
   }
   show_ind <- 1:min(nrow(summary_res), n)
-  summary_res %>%
+  summary_res |>
     dplyr::slice(show_ind)
 }
 
@@ -127,9 +129,14 @@ select_best.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
 
   param_names <- .get_tune_parameter_names(x)
 
-  res <- show_best(x, metric = metric, n = 1, eval_time = eval_time, call = rlang::current_env())
-  res %>% dplyr::select(dplyr::all_of(param_names), .config)
-
+  res <- show_best(
+    x,
+    metric = metric,
+    n = 1,
+    eval_time = eval_time,
+    call = rlang::current_env()
+  )
+  res |> dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 #' @export
@@ -146,7 +153,13 @@ select_by_pct_loss.default <- function(x, ...) {
 
 #' @export
 #' @rdname show_best
-select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = NULL, limit = 2) {
+select_by_pct_loss.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  limit = 2
+) {
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 
@@ -168,22 +181,21 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = N
   }
 
   summary_res <-
-    summary_res %>%
-    dplyr::rowwise() %>%
+    summary_res |>
+    dplyr::rowwise() |>
     dplyr::mutate(
       .best = best_metric,
       # can calculate loss without knowledge of direction since
       # we know that losses must be larger than that for the best
       .loss = abs((abs(mean) - abs(.best)) / .best) * 100
-    ) %>%
+    ) |>
     dplyr::ungroup()
-
 
   dots <- rlang::enquos(...)
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
   if (inherits(summary_res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ rlang::quo_name(.x))
+    var_nm <- purrr::map_chr(var_nm, rlang::quo_name)
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
@@ -191,10 +203,10 @@ select_by_pct_loss.tune_results <- function(x, ..., metric = NULL, eval_time = N
   # discard models more complex than the best and
   # remove models with greater increase in loss than the limit
   best_index <- which(summary_res$.loss == 0)
-  summary_res %>%
-    dplyr::slice(1:best_index) %>%
-    dplyr::filter(.loss < limit) %>%
-    dplyr::slice(1) %>%
+  summary_res |>
+    dplyr::slice(1:best_index) |>
+    dplyr::filter(.loss < limit) |>
+    dplyr::slice(1) |>
     dplyr::select(dplyr::all_of(param_names), .config)
 }
 
@@ -207,12 +219,19 @@ select_by_one_std_err <- function(x, ...) {
 #' @export
 #' @rdname show_best
 select_by_one_std_err.default <- function(x, ...) {
-  cli::cli_abort("No {.fn select_by_one_std_err} exists for this type of object.")
+  cli::cli_abort(
+    "No {.fn select_by_one_std_err} exists for this type of object."
+  )
 }
 
 #' @export
 #' @rdname show_best
-select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
+select_by_one_std_err.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL
+) {
   metric_info <- choose_metric(x, metric)
   metric <- metric_info$metric
 
@@ -229,22 +248,22 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
     best <- summary_res$mean[best_index]
     bound <- best - summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
+      summary_res |>
       dplyr::mutate(
         .best = best,
         .bound = bound
-      ) %>%
+      ) |>
       dplyr::filter(mean >= .bound)
   } else if (metric_info$direction == "minimize") {
     best_index <- which.min(summary_res$mean)
     best <- summary_res$mean[best_index]
     bound <- best + summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
+      summary_res |>
       dplyr::mutate(
         .best = best,
         .bound = bound
-      ) %>%
+      ) |>
       dplyr::filter(mean <= .bound)
   } else if (metric_info$direction == "zero") {
     best_index <- which.min(abs(summary_res$mean))
@@ -252,13 +271,13 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
     bound_lower <- -abs(best) - summary_res$std_err[best_index]
     bound_upper <- abs(best) + summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
-      dplyr::rowwise() %>%
+      summary_res |>
+      dplyr::rowwise() |>
       dplyr::mutate(
         .best = best,
         .bound = list(c(lower = bound_lower, upper = bound_upper))
-      ) %>%
-      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) %>%
+      ) |>
+      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) |>
       dplyr::ungroup()
   }
 
@@ -266,20 +285,22 @@ select_by_one_std_err.tune_results <- function(x, ..., metric = NULL, eval_time 
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
   if (inherits(summary_res, "try-error")) {
     var_nm <- rlang::eval_tidy(dots)
-    var_nm <- purrr::map_chr(var_nm, ~ rlang::quo_name(.x))
+    var_nm <- purrr::map_chr(var_nm, rlang::quo_name)
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
-  summary_res %>%
-    dplyr::slice(1) %>%
+  summary_res |>
+    dplyr::slice(1) |>
     dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 check_select_dots <- function(..., call = rlang::caller_env()) {
   dots <- rlang::enquos(...)
   if (length(dots) == 0) {
-    cli::cli_abort("Please choose at least one tuning parameter to sort in {.code ...}.",
-                   call = call)
+    cli::cli_abort(
+      "Please choose at least one tuning parameter to sort in {.code ...}.",
+      call = call
+    )
   }
   invisible(NULL)
 }

@@ -27,5 +27,11 @@ catcher <- function(expr) {
 
 # A simplified version of the error handler supplied in `try()` source
 catch_message <- function(e) {
-  paste0("Error in ", deparse(conditionCall(e)), ": ", conditionMessage(e), "\n")
+  paste0(
+    "Error in ",
+    deparse(conditionCall(e)),
+    ": ",
+    conditionMessage(e),
+    "\n"
+  )
 }

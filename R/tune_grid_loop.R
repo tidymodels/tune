@@ -19,7 +19,7 @@ tune_grid_loop <- function(
   # with manual execution. Otherwise, generate parallel seeds even if work is
   # being executed sequentially. `resamples$id` is set in `last_fit_workflow`.
   if (all(resamples$id == "train/test split")) {
-    resamples$.seeds <- purrr::map(resamples$id, ~ integer(0))
+    resamples$.seeds <- purrr::map(resamples$id, \(x) integer(0))
   } else {
     # Make and set the worker/process seeds if workers get resamples
     resamples$.seeds <- get_parallel_seeds(nrow(resamples))

@@ -42,15 +42,17 @@ choose_metric <- function(x, metric, ..., call = rlang::caller_env()) {
 
   if (is.null(metric)) {
     metric <- mtr_info$metric[1]
-    cli::cli_warn("No value of {.arg metric} was given; {.val {metric}}
+    cli::cli_warn(
+      "No value of {.arg metric} was given; {.val {metric}}
                    will be used.",
-                  call = call)
+      call = call
+    )
   } else {
     metric <- check_mult_metrics(metric, call = call)
     check_metric_in_tune_results(mtr_info, metric, call = call)
   }
 
-  mtr_info[mtr_info$metric == metric,]
+  mtr_info[mtr_info$metric == metric, ]
 }
 
 check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
@@ -59,20 +61,30 @@ check_mult_metrics <- function(metric, ..., call = rlang::caller_env()) {
   num_metrics <- length(metric)
   metric <- metric[1]
   if (num_metrics > 1) {
-    cli::cli_warn("{num_metrics} metric{?s} were given; {.val {metric}} will
+    cli::cli_warn(
+      "{num_metrics} metric{?s} were given; {.val {metric}} will
                    be used.",
-                  call = call)
+      call = call
+    )
   }
   metric
 }
 
 #' @rdname choose_metric
 #' @export
-check_metric_in_tune_results <- function(mtr_info, metric, ..., call = rlang::caller_env()) {
+check_metric_in_tune_results <- function(
+  mtr_info,
+  metric,
+  ...,
+  call = rlang::caller_env()
+) {
   rlang::check_dots_empty(call = call)
   if (!any(mtr_info$metric == metric)) {
-    cli::cli_abort("{.val {metric}} was not in the metric set. Please choose
-                    from: {.val {mtr_info$metric}}.", call = call)
+    cli::cli_abort(
+      "{.val {metric}} was not in the metric set. Please choose
+                    from: {.val {mtr_info$metric}}.",
+      call = call
+    )
   }
   invisible(NULL)
 }
@@ -83,9 +95,11 @@ check_enough_eval_times <- function(eval_time, metrics) {
   cls <- tibble::as_tibble(metrics)$class
   uni_cls <- sort(unique(cls))
   if (max_times_req > num_times) {
-    cli::cli_abort("At least {max_times_req} evaluation time{?s} {?is/are}
+    cli::cli_abort(
+      "At least {max_times_req} evaluation time{?s} {?is/are}
                    required for the metric type(s) requested: {.val {uni_cls}}.
-                   Only {num_times} unique time{?s} {?was/were} given.")
+                   Only {num_times} unique time{?s} {?was/were} given."
+    )
   }
 
   invisible(NULL)
@@ -98,7 +112,14 @@ contains_survival_metric <- function(mtr_info) {
 # choose_eval_time() is called by show_best(), select_best(), and augment()
 #' @rdname choose_metric
 #' @export
-choose_eval_time <- function(x, metric, ..., eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
+choose_eval_time <- function(
+  x,
+  metric,
+  ...,
+  eval_time = NULL,
+  quietly = FALSE,
+  call = rlang::caller_env()
+) {
   rlang::check_dots_empty(call = call)
   mtr_set <- .get_tune_metrics(x)
   mtr_info <- tibble::as_tibble(mtr_set)
@@ -107,7 +128,8 @@ choose_eval_time <- function(x, metric, ..., eval_time = NULL, quietly = FALSE, 
     if (!is.null(eval_time) & !quietly) {
       cli::cli_warn(
         "{.arg eval_time} is only used for models with mode {.val censored regression}.",
-        call = call)
+        call = call
+      )
     }
     return(NULL)
   }
@@ -128,7 +150,13 @@ choose_eval_time <- function(x, metric, ..., eval_time = NULL, quietly = FALSE, 
     eval_time <- .get_tune_eval_times(x)
   }
 
-  eval_time <- first_eval_time(mtr_set, metric = metric, eval_time = eval_time, quietly = quietly, call = call)
+  eval_time <- first_eval_time(
+    mtr_set,
+    metric = metric,
+    eval_time = eval_time,
+    quietly = quietly,
+    call = call
+  )
 
   check_eval_time_in_tune_results(x, eval_time, call = call)
 
@@ -138,16 +166,22 @@ choose_eval_time <- function(x, metric, ..., eval_time = NULL, quietly = FALSE, 
 is_dyn <- function(mtr_set, metric) {
   mtr_info <- tibble::as_tibble(mtr_set)
   mtr_cls <- mtr_info$class[mtr_info$metric == metric]
-  mtr_cls  == "dynamic_survival_metric"
+  mtr_cls == "dynamic_survival_metric"
 }
 
-check_eval_time_in_tune_results <- function(x, eval_time, call = rlang::caller_env()) {
+check_eval_time_in_tune_results <- function(
+  x,
+  eval_time,
+  call = rlang::caller_env()
+) {
   given_times <- .get_tune_eval_times(x)
   if (!is.null(eval_time)) {
     if (!any(eval_time %in% given_times)) {
       print_time <- format(eval_time, digits = 3)
-      cli::cli_abort("Evaluation time {print_time} is not in the results.",
-                     call = call)
+      cli::cli_abort(
+        "Evaluation time {print_time} is not in the results.",
+        call = call
+      )
     }
   }
   invisible(NULL)
@@ -160,7 +194,10 @@ maybe_choose_eval_time <- function(x, mtr_set, eval_time) {
   if (any(grepl("integrated", mtr_info$metric))) {
     return(.get_tune_eval_times(x))
   }
-  eval_time <- purrr::map(mtr_info$metric, ~ choose_eval_time(x, .x, eval_time = eval_time, quietly = TRUE))
+  eval_time <- purrr::map(
+    mtr_info$metric,
+    \(.x) choose_eval_time(x, .x, eval_time = eval_time, quietly = TRUE)
+  )
   no_eval_time <- purrr::map_lgl(eval_time, is.null)
   if (all(no_eval_time)) {
     eval_time <- NULL
@@ -176,7 +213,7 @@ maybe_choose_eval_time <- function(x, mtr_set, eval_time) {
 #' @rdname choose_metric
 #' @export
 first_metric <- function(mtr_set) {
-  tibble::as_tibble(mtr_set)[1,]
+  tibble::as_tibble(mtr_set)[1, ]
 }
 
 # first_eval_time() is called by show_best(), select_best(), and augment() (by way of
@@ -184,7 +221,14 @@ first_metric <- function(mtr_set) {
 # such as tune_bayes().
 #' @rdname choose_metric
 #' @export
-first_eval_time <- function(mtr_set, ..., metric = NULL, eval_time = NULL, quietly = FALSE, call = rlang::caller_env()) {
+first_eval_time <- function(
+  mtr_set,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  quietly = FALSE,
+  call = rlang::caller_env()
+) {
   rlang::check_dots_empty()
 
   num_times <- length(eval_time)
@@ -194,7 +238,7 @@ first_eval_time <- function(mtr_set, ..., metric = NULL, eval_time = NULL, quiet
     metric <- mtr_info$metric
   } else {
     mtr_info <- tibble::as_tibble(mtr_set)
-    mtr_info <- mtr_info[mtr_info$metric == metric,]
+    mtr_info <- mtr_info[mtr_info$metric == metric, ]
   }
 
   # Not a survival metric
@@ -214,7 +258,7 @@ first_eval_time <- function(mtr_set, ..., metric = NULL, eval_time = NULL, quiet
       "A single evaluation time is required to use this metric.",
       call = call
     )
-  } else if ( num_times > 1 ) {
+  } else if (num_times > 1) {
     eval_time <- eval_time[1]
     print_time <- format(eval_time, digits = 5)
     if (!quietly) {
@@ -243,8 +287,10 @@ first_eval_time <- function(mtr_set, ..., metric = NULL, eval_time = NULL, quiet
     summary_res <- summary_res[summary_res$.eval_time == eval_time, ]
   }
   if (nrow(summary_res) == 0) {
-    cli::cli_abort("No results are available. Please use {.fun collect_metrics}
-                    to see if there were any issues.")
+    cli::cli_abort(
+      "No results are available. Please use {.fun collect_metrics}
+                    to see if there were any issues."
+    )
   }
 
   summary_res
@@ -259,18 +305,19 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
   mode <- extract_spec_parsnip(wflow)$mode
 
   if (is.null(mtr_set)) {
-    switch(mode,
-           regression = {
-             mtr_set <- yardstick::metric_set(rmse, rsq)
-           },
-           classification = {
-             mtr_set <- yardstick::metric_set(roc_auc, accuracy, brier_class)
-           },
-           'censored regression' = {
-             mtr_set <- yardstick::metric_set(brier_survival)
-           },
-           # workflows cannot be set with an unknown mode
-           cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
+    switch(
+      mode,
+      regression = {
+        mtr_set <- yardstick::metric_set(rmse, rsq)
+      },
+      classification = {
+        mtr_set <- yardstick::metric_set(roc_auc, accuracy, brier_class)
+      },
+      'censored regression' = {
+        mtr_set <- yardstick::metric_set(brier_survival)
+      },
+      # workflows cannot be set with an unknown mode
+      cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
     )
 
     return(mtr_set)
@@ -280,27 +327,41 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
   is_class_prob_metric_set <- inherits(mtr_set, "class_prob_metric_set")
   is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
 
-  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
-    cli::cli_abort("The {.arg metrics} argument should be the results of
-                   {.fn yardstick::metric_set}.", call = call)
+  if (
+    !is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set
+  ) {
+    cli::cli_abort(
+      "The {.arg metrics} argument should be the results of
+                   {.fn yardstick::metric_set}.",
+      call = call
+    )
   }
 
   if (mode == "regression" && !is_numeric_metric_set) {
-    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+    cli::cli_abort(
+      "The parsnip model has {.code mode} value of {.val {mode}},
                    but the {.arg metrics} is a metric set for a
-                   different model mode.", call = call)
+                   different model mode.",
+      call = call
+    )
   }
 
   if (mode == "classification" && !is_class_prob_metric_set) {
-    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+    cli::cli_abort(
+      "The parsnip model has {.code mode} value of {.val {mode}},
                    but the {.arg metrics} is a metric set for a
-                   different model mode.", call = call)
+                   different model mode.",
+      call = call
+    )
   }
 
   if (mode == "censored regression" && !is_surv_metric_set) {
-    cli::cli_abort("The parsnip model has {.code mode} value of {.val {mode}},
+    cli::cli_abort(
+      "The parsnip model has {.code mode} value of {.val {mode}},
                    but the {.arg metrics} is a metric set for a
-                   different model mode.", call = call)
+                   different model mode.",
+      call = call
+    )
   }
 
   mtr_set
@@ -310,7 +371,12 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
 
 #' @rdname choose_metric
 #' @export
-check_eval_time_arg <- function(eval_time, mtr_set, ..., call = rlang::caller_env()) {
+check_eval_time_arg <- function(
+  eval_time,
+  mtr_set,
+  ...,
+  call = rlang::caller_env()
+) {
   rlang::check_dots_empty(call = call)
   mtr_info <- tibble::as_tibble(mtr_set)
 
@@ -384,7 +450,9 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
     }
     eval_time <- .get_tune_eval_times(x)[1]
   } else {
-    any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(.get_tune_metrics(x), .x)))
+    any_dyn <- any(purrr::map_lgl(metric, \(.x) {
+      is_dyn(.get_tune_metrics(x), .x)
+    }))
     if (!any_dyn) {
       cli::cli_warn(
         "{.arg eval_time} is only used for dynamic survival metrics.",
@@ -396,7 +464,7 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
   }
 
   # But there could be NA eval times for non-dynamic metrics
-  met <- estimate_tune_results(x) %>% dplyr::filter(.metric %in% metric)
+  met <- estimate_tune_results(x) |> dplyr::filter(.metric %in% metric)
 
   if (any(names(met) == ".eval_time")) {
     if (any(is.na(met$.eval_time))) {

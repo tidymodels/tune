@@ -6,9 +6,8 @@
 # usethis::use_github_action("check-standard") will install it.
 on:
   push:
-    branches: [main, master, 'melodie-switch']
+    branches: [main, master]
   pull_request:
-    branches: [main, master, 'melodie-switch']
 
 name: R-CMD-check.yaml
 

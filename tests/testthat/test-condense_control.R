@@ -1,5 +1,4 @@
 test_that("control functions respect hierarchy with condense_control", {
-
   ctrl <- parsnip::condense_control(
     control_grid(),
     control_resamples()

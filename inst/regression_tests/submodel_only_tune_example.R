@@ -39,7 +39,11 @@ submodel_only_pred <- collect_predictions(submodel_only_res, summarize = FALSE)
 
 # ------------------------------------------------------------------------------
 
-save(submodel_only_metrics, submodel_only_pred, file = "submodel_only_example.RData")
+save(
+  submodel_only_metrics,
+  submodel_only_pred,
+  file = "submodel_only_example.RData"
+)
 
 # ------------------------------------------------------------------------------
 

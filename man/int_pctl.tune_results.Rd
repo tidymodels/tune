@@ -91,7 +91,7 @@ if (rlang::is_installed("modeldata")) {
   sac_rs <- vfold_cv(Sacramento)
 
   lm_res <-
-    linear_reg() \%>\%
+    linear_reg() |>
     fit_resamples(
       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
       resamples = sac_rs,

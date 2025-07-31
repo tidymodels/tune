@@ -44,7 +44,7 @@
 #' library(dplyr)
 #'
 #' data(meats, package = "modeldata")
-#' meats <- meats %>% select(-water, -fat)
+#' meats <- meats |> select(-water, -fat)
 #'
 #' set.seed(1)
 #' meat_split <- initial_split(meats)
@@ -55,11 +55,11 @@
 #' meat_rs <- vfold_cv(meat_train, v = 10)
 #'
 #' pca_rec <-
-#'   recipe(protein ~ ., data = meat_train) %>%
-#'   step_normalize(all_numeric_predictors()) %>%
+#'   recipe(protein ~ ., data = meat_train) |>
+#'   step_normalize(all_numeric_predictors()) |>
 #'   step_pca(all_numeric_predictors(), num_comp = tune())
 #'
-#' knn_mod <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+#' knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
 #'
 #' ctrl <- control_grid(save_workflow = TRUE)
 #'
@@ -85,17 +85,21 @@ fit_best.default <- function(x, ...) {
 
 #' @export
 #' @rdname fit_best
-fit_best.tune_results <- function(x,
-                                  ...,
-                                  metric = NULL,
-                                  eval_time = NULL,
-                                  parameters = NULL,
-                                  verbose = FALSE,
-                                  add_validation_set = NULL) {
+fit_best.tune_results <- function(
+  x,
+  ...,
+  metric = NULL,
+  eval_time = NULL,
+  parameters = NULL,
+  verbose = FALSE,
+  add_validation_set = NULL
+) {
   rlang::check_dots_empty()
   wflow <- .get_tune_workflow(x)
   if (is.null(wflow)) {
-    cli::cli_abort(c("x" = "The control option `save_workflow = TRUE` should be used when tuning."))
+    cli::cli_abort(c(
+      "x" = "The control option `save_workflow = TRUE` should be used when tuning."
+    ))
   }
 
   if (is.null(parameters)) {
@@ -117,12 +121,16 @@ fit_best.tune_results <- function(x,
     }
   } else {
     if (!is.null(metric)) {
-      cli::cli_warn("{.arg metric} is being ignored because {.arg parameters}
-      has been specified.")
+      cli::cli_warn(
+        "{.arg metric} is being ignored because {.arg parameters}
+      has been specified."
+      )
     }
     if (!is.null(eval_time)) {
-      cli::cli_warn("{.arg eval_time} is being ignored because {.arg parameters}
-      has been specified.")
+      cli::cli_warn(
+        "{.arg eval_time} is being ignored because {.arg parameters}
+      has been specified."
+      )
     }
   }
 
@@ -192,4 +200,3 @@ format_final_param <- function(x, metric) {
   cat("\n\n")
   invisible(x)
 }
-

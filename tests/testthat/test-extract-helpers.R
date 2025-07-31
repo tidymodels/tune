@@ -1,9 +1,9 @@
 test_that("extract methods for last_fit objects", {
-  lm_spec <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  lm_spec <- parsnip::linear_reg() |> parsnip::set_engine("lm")
   lm_prn_fit <- parsnip::fit(lm_spec, mpg ~ ., data = mtcars)
   lm_wflow <-
-    workflow() %>%
-    add_model(lm_spec) %>%
+    workflow() |>
+    add_model(lm_spec) |>
     add_formula(mpg ~ .)
   lm_res <- last_fit(lm_wflow, split = rsample::initial_split(mtcars))
 
@@ -16,12 +16,14 @@ test_that("extract methods for last_fit objects", {
 })
 
 test_that("extract methods for resample_results objects", {
-  lm_spec <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  lm_spec <- parsnip::linear_reg() |> parsnip::set_engine("lm")
   lm_rec_wflow <-
-    workflow() %>%
-    add_model(lm_spec) %>%
-    add_recipe(recipes::recipe(mpg ~ ., data = mtcars) %>%
-      recipes::step_normalize(recipes::all_numeric_predictors()))
+    workflow() |>
+    add_model(lm_spec) |>
+    add_recipe(
+      recipes::recipe(mpg ~ ., data = mtcars) |>
+        recipes::step_normalize(recipes::all_numeric_predictors())
+    )
   lm_rec_res <- fit_resamples(
     lm_rec_wflow,
     resamples = rsample::vfold_cv(mtcars, v = 2),

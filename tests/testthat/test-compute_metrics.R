@@ -68,7 +68,7 @@ test_that("`metrics` argument works (numeric metrics)", {
   library(yardstick)
 
   m_set_rmse <- metric_set(rmse)
-  m_set_rsq  <- metric_set(rsq)
+  m_set_rsq <- metric_set(rsq)
 
   set.seed(1)
 
@@ -95,22 +95,22 @@ test_that("`metrics` argument works (numeric metrics)", {
     )
 
   collected_sum_rsq <- collect_metrics(res_rsq)
-  computed_sum_rsq  <- compute_metrics(res_rmse, m_set_rsq)
+  computed_sum_rsq <- compute_metrics(res_rmse, m_set_rsq)
 
   expect_equal(collected_sum_rsq, computed_sum_rsq)
 
   collected_sum_rmse <- collect_metrics(res_rmse)
-  computed_sum_rmse  <- compute_metrics(res_rsq, m_set_rmse)
+  computed_sum_rmse <- compute_metrics(res_rsq, m_set_rmse)
 
   expect_equal(collected_sum_rsq, computed_sum_rsq)
 
   collected_unsum_rsq <- collect_metrics(res_rsq, summarize = FALSE)
-  computed_unsum_rsq  <- compute_metrics(res_rmse, m_set_rsq, summarize = FALSE)
+  computed_unsum_rsq <- compute_metrics(res_rmse, m_set_rsq, summarize = FALSE)
 
   expect_equal(collected_unsum_rsq, computed_unsum_rsq)
 
   collected_unsum_rmse <- collect_metrics(res_rmse, summarize = FALSE)
-  computed_unsum_rmse  <- compute_metrics(res_rsq, m_set_rmse, summarize = FALSE)
+  computed_unsum_rmse <- compute_metrics(res_rsq, m_set_rmse, summarize = FALSE)
 
   expect_equal(collected_unsum_rmse, computed_unsum_rmse)
 })
@@ -162,24 +162,30 @@ test_that("`metrics` argument works (compatible class metric types)", {
     )
 
   collected_sum_class <- collect_metrics(res_class)
-  computed_sum_class  <- compute_metrics(res_acc_auc, metric_set(precision))
+  computed_sum_class <- compute_metrics(res_acc_auc, metric_set(precision))
 
   expect_equal(collected_sum_class, computed_sum_class)
 
   collected_unsum_class <- collect_metrics(res_class, summarize = FALSE)
-  computed_unsum_class  <- compute_metrics(res_acc_auc, metric_set(precision),
-                                           summarize = FALSE)
+  computed_unsum_class <- compute_metrics(
+    res_acc_auc,
+    metric_set(precision),
+    summarize = FALSE
+  )
 
   expect_equal(collected_unsum_class, computed_unsum_class)
 
   collected_sum_prob <- collect_metrics(res_prob)
-  computed_sum_prob  <- compute_metrics(res_acc_auc, metric_set(mn_log_loss))
+  computed_sum_prob <- compute_metrics(res_acc_auc, metric_set(mn_log_loss))
 
   expect_equal(collected_sum_prob, computed_sum_prob)
 
   collected_unsum_prob <- collect_metrics(res_prob, summarize = FALSE)
-  computed_unsum_prob  <- compute_metrics(res_acc_auc, metric_set(mn_log_loss),
-                                        summarize = FALSE)
+  computed_unsum_prob <- compute_metrics(
+    res_acc_auc,
+    metric_set(mn_log_loss),
+    summarize = FALSE
+  )
 
   expect_equal(collected_unsum_prob, computed_unsum_prob)
 })
@@ -197,7 +203,7 @@ test_that("`metrics` argument works (differing class metric types)", {
   # class metric
   m_set_acc <- metric_set(accuracy)
   # prob metric
-  m_set_auc  <- metric_set(roc_auc)
+  m_set_auc <- metric_set(roc_auc)
 
   set.seed(1)
 
@@ -248,8 +254,8 @@ test_that("`metrics` argument works (iterative tuning)", {
   library(yardstick)
 
   m_set_rmse <- metric_set(rmse)
-  m_set_rsq  <- metric_set(rsq)
-  m_set_both  <- metric_set(rmse, rsq)
+  m_set_rsq <- metric_set(rsq)
+  m_set_both <- metric_set(rmse, rsq)
 
   set.seed(1)
 
@@ -260,7 +266,8 @@ test_that("`metrics` argument works (iterative tuning)", {
       vfold_cv(mtcars, v = 3),
       metrics = m_set_rmse,
       control = tune::control_bayes(save_pred = TRUE),
-      iter = 2, initial = 3
+      iter = 2,
+      initial = 3
     )
 
   set.seed(1)
@@ -272,16 +279,21 @@ test_that("`metrics` argument works (iterative tuning)", {
       vfold_cv(mtcars, v = 3),
       metrics = m_set_both,
       control = tune::control_bayes(save_pred = TRUE),
-      iter = 2, initial = 3
+      iter = 2,
+      initial = 3
     )
 
   collected_sum_rmse <- collect_metrics(res_rmse)
-  computed_sum_rmse  <- compute_metrics(res_both, m_set_rmse)
+  computed_sum_rmse <- compute_metrics(res_both, m_set_rmse)
 
   expect_equal(collected_sum_rmse, computed_sum_rmse)
 
   collected_unsum_rmse <- collect_metrics(res_rmse, summarize = FALSE)
-  computed_unsum_rmse  <- compute_metrics(res_both, m_set_rmse, summarize = FALSE)
+  computed_unsum_rmse <- compute_metrics(
+    res_both,
+    m_set_rmse,
+    summarize = FALSE
+  )
 
   expect_equal(collected_unsum_rmse, computed_unsum_rmse)
 })

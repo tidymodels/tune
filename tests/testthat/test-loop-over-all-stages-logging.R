@@ -36,7 +36,12 @@ test_that("preprocessor error doesn't stop grid", {
   expect_identical(ncol(res_fit$.notes[[1]]), 4L)
   expect_identical(
     vapply(res_fit$.notes[[1]], class, character(1)),
-    c(location = "character", type = "character", note = "character", trace = "list")
+    c(
+      location = "character",
+      type = "character",
+      note = "character",
+      trace = "list"
+    )
   )
 })
 
@@ -86,7 +91,12 @@ test_that("model error doesn't stop grid", {
   expect_identical(ncol(res_fit$.notes[[1]]), 4L)
   expect_identical(
     vapply(res_fit$.notes[[1]], class, character(1)),
-    c(location = "character", type = "character", note = "character", trace = "list")
+    c(
+      location = "character",
+      type = "character",
+      note = "character",
+      trace = "list"
+    )
   )
 })
 
@@ -139,7 +149,12 @@ test_that("prediction error doesn't stop grid", {
   expect_identical(ncol(res_fit$.notes[[1]]), 4L)
   expect_identical(
     vapply(res_fit$.notes[[1]], class, character(1)),
-    c(location = "character", type = "character", note = "character", trace = "list")
+    c(
+      location = "character",
+      type = "character",
+      note = "character",
+      trace = "list"
+    )
   )
 })
 

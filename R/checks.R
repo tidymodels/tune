@@ -12,7 +12,9 @@ check_rset <- function(x) {
     )
   }
   if (inherits(x, "loo_cv")) {
-    cli::cli_abort("Leave-one-out cross-validation is not currently supported with {.pkg tune}.")
+    cli::cli_abort(
+      "Leave-one-out cross-validation is not currently supported with {.pkg tune}."
+    )
   }
   if (inherits(x, "nested_cv")) {
     cli::cli_abort("Nested resampling is not currently supported with tune.")
@@ -26,8 +28,10 @@ check_rset <- function(x) {
 backend_options_msg <- "{.arg backend_options} should be created by {.fn tune::new_backend_options}."
 
 check_backend_options <- function(backend_options) {
-  if (!is.null(backend_options) &&
-      !inherits(backend_options, "tune_backend_options")) {
+  if (
+    !is.null(backend_options) &&
+      !inherits(backend_options, "tune_backend_options")
+  ) {
     cli::cli_abort(backend_options_msg)
   }
 
@@ -66,7 +70,10 @@ check_grid <- function(grid, workflow, pset = NULL, call = caller_env()) {
     grid_distinct <- distinct(grid)
 
     # remove attributes, particularly those tacked on by `expand.grid()`
-    grid_distinct <- vctrs::new_data_frame(grid_distinct, n = nrow(grid_distinct))
+    grid_distinct <- vctrs::new_data_frame(
+      grid_distinct,
+      n = nrow(grid_distinct)
+    )
 
     if (!identical(nrow(grid_distinct), nrow(grid))) {
       cli::cli_warn(
@@ -140,7 +147,12 @@ needs_finalization <- function(x, nms = character(0)) {
 #' @param grid_names A character vector of column names from the grid.
 #' @keywords internal
 #' @rdname empty_ellipses
-check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)) {
+check_parameters <- function(
+  wflow,
+  pset = NULL,
+  data,
+  grid_names = character(0)
+) {
   if (is.null(pset)) {
     pset <- hardhat::extract_parameter_set_dials(wflow)
   }
@@ -168,9 +180,15 @@ check_parameters <- function(wflow, pset = NULL, data, grid_names = character(0)
     num_unk <- length(unk_names)
     msg <-
       cli::format_inline(
-        "Creating pre-processing data to finalize {num_unk} unknown parameter{?s}: {.val {unk_names}}")
+        "Creating pre-processing data to finalize {num_unk} unknown parameter{?s}: {.val {unk_names}}"
+      )
 
-    update_printer(list(verbose = TRUE), split_labels = NULL, task = msg, type = "info")
+    update_printer(
+      list(verbose = TRUE),
+      split_labels = NULL,
+      task = msg,
+      type = "info"
+    )
 
     x <- workflows::.fit_pre(wflow, data)$pre$mold$predictors
     pset$object <- purrr::map(pset$object, dials::finalize, x = x)
@@ -229,9 +247,9 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
         "There are {cli::qty(diff)}{?as many/more} tuning parameters
           {cli::qty(diff)}{?as/than} there are initial points.
           This is likely to cause numerical issues in the first few
-          search iterations.")
+          search iterations."
+      )
     )
-
 
   if (race) {
     race_msg <- "With racing, only completely resampled parameters are used."
@@ -267,9 +285,17 @@ check_param_objects <- function(pset) {
 #' @keywords internal
 #' @rdname empty_ellipses
 #' @param check_dials A logical for check for a NULL parameter object.
-check_workflow <- function(x, ..., pset = NULL, check_dials = FALSE, call = caller_env()) {
+check_workflow <- function(
+  x,
+  ...,
+  pset = NULL,
+  check_dials = FALSE,
+  call = caller_env()
+) {
   if (!inherits(x, "workflow")) {
-    cli::cli_abort("The {.arg object} argument should be a {.cls workflow} object.")
+    cli::cli_abort(
+      "The {.arg object} argument should be a {.cls workflow} object."
+    )
   }
 
   if (!has_preprocessor(x)) {
@@ -313,17 +339,23 @@ check_extra_tune_parameters <- function(x) {
   marked_for_tuning <- generics::tune_args(mod)
 
   if (nrow(marked_for_tuning) > nrow(to_be_tuned)) {
-    not_tunable <- marked_for_tuning$name[!marked_for_tuning$name %in% to_be_tuned$name]
+    not_tunable <- marked_for_tuning$name[
+      !marked_for_tuning$name %in% to_be_tuned$name
+    ]
     msg <-
-      c("!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
+      c(
+        "!" = "{cli::qty(not_tunable)}The parameter{?s} {.var {not_tunable}}
                {?was/were} marked with `tune()`, though will not be tuned.",
         "i" = "This usually means that the current modeling engine
                {.var {extract_spec_parsnip(x)$engine}}
                does not support tuning {.var {not_tunable}}."
       )
 
-
-    cli::cli_abort(msg, call = rlang::caller_env(3), class = "not_tunable_error")
+    cli::cli_abort(
+      msg,
+      call = rlang::caller_env(3),
+      class = "not_tunable_error"
+    )
   }
   invisible(NULL)
 }
@@ -337,21 +369,24 @@ check_metrics <- function(x, object) {
   mode <- extract_spec_parsnip(object)$mode
 
   if (is.null(x)) {
-    switch(mode,
-           regression = {
-             x <- yardstick::metric_set(rmse, rsq)
-           },
-           classification = {
-             x <- yardstick::metric_set(roc_auc, accuracy, brier_class)
-           },
-           'censored regression' = {
-             x <- yardstick::metric_set(brier_survival)
-           },
-           unknown = {
-             cli::cli_abort("Internal error: {.fn check_installs} should have
-                            caught an {.val unknown} mode.")
-           },
-           cli::cli_abort("Unknown {.val mode} for parsnip model.")
+    switch(
+      mode,
+      regression = {
+        x <- yardstick::metric_set(rmse, rsq)
+      },
+      classification = {
+        x <- yardstick::metric_set(roc_auc, accuracy, brier_class)
+      },
+      'censored regression' = {
+        x <- yardstick::metric_set(brier_survival)
+      },
+      unknown = {
+        cli::cli_abort(
+          "Internal error: {.fn check_installs} should have
+                            caught an {.val unknown} mode."
+        )
+      },
+      cli::cli_abort("Unknown {.val mode} for parsnip model.")
     )
 
     return(x)
@@ -361,9 +396,13 @@ check_metrics <- function(x, object) {
   is_class_prob_metric_set <- inherits(x, "class_prob_metric_set")
   is_surv_metric_set <- inherits(x, c("survival_metric_set"))
 
-  if (!is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set) {
-    cli::cli_abort("The {.arg metrics} argument should be the results of
-                   {.fn yardstick::metric_set}.")
+  if (
+    !is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set
+  ) {
+    cli::cli_abort(
+      "The {.arg metrics} argument should be the results of
+                   {.fn yardstick::metric_set}."
+    )
   }
 
   if (mode == "regression" && !is_numeric_metric_set) {
@@ -399,23 +438,29 @@ check_metrics <- function(x, object) {
 #' @param wflow A `workflow` object.
 #' @param resamples An `rset` object.
 #' @param ctrl A `control_grid` object.
-check_initial <- function(x,
-                          pset,
-                          wflow,
-                          resamples,
-                          metrics,
-                          eval_time,
-                          ctrl,
-                          checks = "grid") {
+check_initial <- function(
+  x,
+  pset,
+  wflow,
+  resamples,
+  metrics,
+  eval_time,
+  ctrl,
+  checks = "grid"
+) {
   if (is.null(x)) {
-    cli::cli_abort("{.arg initial} should be a positive integer or the results
-                   of {.fn tune_grid}")
+    cli::cli_abort(
+      "{.arg initial} should be a positive integer or the results
+                   of {.fn tune_grid}"
+    )
   }
   if (is.numeric(x)) {
     x <- create_initial_set(pset, n = x, checks = checks)
     if (ctrl$verbose) {
       message()
-      msg <- cli::format_inline(" Generating a set of {nrow(x)} initial parameter results")
+      msg <- cli::format_inline(
+        " Generating a set of {nrow(x)} initial parameter results"
+      )
       update_printer(ctrl, split_labels = NULL, task = msg, type = "go")
     }
 
@@ -432,27 +477,38 @@ check_initial <- function(x,
     )
 
     if (ctrl$verbose) {
-      update_printer(ctrl, split_labels = NULL, task = "Initialization complete", type = "success")
+      update_printer(
+        ctrl,
+        split_labels = NULL,
+        task = "Initialization complete",
+        type = "success"
+      )
       message()
     }
   } else {
     if (!inherits(x, "tune_results")) {
-      cli::cli_abort("{.arg initial} should be a positive integer or the results
-                      of {.fn tune_grid}")
+      cli::cli_abort(
+        "{.arg initial} should be a positive integer or the results
+                      of {.fn tune_grid}"
+      )
     }
     if (ctrl$save_pred & !any(names(x) == ".predictions")) {
-      cli::cli_abort("{.arg save_pred} can only be used if the initial results
-                      saved predictions.")
+      cli::cli_abort(
+        "{.arg save_pred} can only be used if the initial results
+                      saved predictions."
+      )
     }
     if (!is.null(ctrl$extract) & !any(names(x) == ".extracts")) {
-      cli::cli_abort("The {.fn extract} function can only be used if the initial
-                     results have extractions.")
+      cli::cli_abort(
+        "The {.fn extract} function can only be used if the initial
+                     results have extractions."
+      )
     }
     param_nms <- .get_tune_parameter_names(x)
     if (inherits(x, "tune_race")) {
       num_resamples <-
-        x %>%
-        collect_metrics(summarize = FALSE) %>%
+        x |>
+        collect_metrics(summarize = FALSE) |>
         dplyr::count(.config)
       max_resamples <- max(num_resamples$n)
       configs <- num_resamples$.config[num_resamples$n == max_resamples]
@@ -461,18 +517,20 @@ check_initial <- function(x,
       x$.order <- NULL
     } else {
       num_grid <-
-        collect_metrics(x) %>%
-        dplyr::distinct(!!!rlang::syms(param_nms)) %>%
+        collect_metrics(x) |>
+        dplyr::distinct(!!!rlang::syms(param_nms)) |>
         nrow()
     }
     if (any(checks == "bayes")) {
-      check_bayes_initial_size(length(param_nms), num_grid,
-                               race = inherits(x, "tune_race")
+      check_bayes_initial_size(
+        length(param_nms),
+        num_grid,
+        race = inherits(x, "tune_race")
       )
     }
   }
   if (!any(names(x) == ".iter")) {
-    x <- x %>% dplyr::mutate(.iter = 0L)
+    x <- x |> dplyr::mutate(.iter = 0L)
   }
   x
 }
@@ -515,7 +573,9 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   fine <- check_class_and_single(x, cls)
   cls <- paste(cls, collapse = " or ")
   if (!fine) {
-    msg <- glue::glue("Argument '{deparse(cl$x)}' should be a single {cls} value")
+    msg <- glue::glue(
+      "Argument '{deparse(cl$x)}' should be a single {cls} value"
+    )
     if (!is.null(where)) {
       msg <- glue::glue(msg, " in `{where}`")
     }
@@ -536,12 +596,20 @@ check_gp_data <- function(x) {
       msg <- cli::pluralize(
         "All of the {met} estimates were missing. The Gaussian process model cannot be fit to the data."
       )
-      message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
+      message_wrap(
+        msg,
+        prefix = "!",
+        color_text = get_tune_colors()$message$danger
+      )
     } else {
       msg <- cli::pluralize(
         "For the {met} estimates, {miss_y} missing {?value was/values were} found and removed before fitting the Gaussian process model."
       )
-      message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
+      message_wrap(
+        msg,
+        prefix = "!",
+        color_text = get_tune_colors()$message$warning
+      )
     }
 
     x <- x[!is.na(x$mean), ]
@@ -553,7 +621,11 @@ check_gp_data <- function(x) {
       "All of the {met} values were identical. The Gaussian process model cannot
        be fit to the data. Try expanding the range of the tuning parameters."
     )
-    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$danger)
+    message_wrap(
+      msg,
+      prefix = "!",
+      color_text = get_tune_colors()$message$danger
+    )
   }
 
   x
@@ -608,13 +680,15 @@ check_eval_time <- function(eval_time, metrics) {
     )
   }
   invisible(NULL)
-
 }
 
 check_time_limit_arg <- function(x, call = rlang::caller_env()) {
   if (!inherits(x, c("logical", "numeric")) || length(x) != 1L) {
-    cli::cli_abort("{.arg time_limit} should be either a single numeric or
-                    logical value.", call = call)
+    cli::cli_abort(
+      "{.arg time_limit} should be either a single numeric or
+                    logical value.",
+      call = call
+    )
   }
   invisible(NULL)
 }

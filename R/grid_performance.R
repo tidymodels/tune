@@ -58,8 +58,14 @@ metrics_info <- function(x) {
 #' @keywords internal
 #' @name tune-internal-functions
 #' @export
-.estimate_metrics <- function(dat, metric, param_names, outcome_name, event_level,
-                              metrics_info = metrics_info(metrics)) {
+.estimate_metrics <- function(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  event_level,
+  metrics_info = metrics_info(metrics)
+) {
   # The call stack is:
   #
   # tune_grid_loop()
@@ -95,7 +101,15 @@ metrics_info <- function(x) {
   if (all(types == "numeric")) {
     estimate_reg(dat, metric, param_names, outcome_name, case_weights)
   } else if (all(types == "class" | types == "prob")) {
-    estimate_class_prob(dat, metric, param_names, outcome_name, case_weights, types, event_level)
+    estimate_class_prob(
+      dat,
+      metric,
+      param_names,
+      outcome_name,
+      case_weights,
+      types,
+      event_level
+    )
   } else if (all(types == "time" | types == "survival")) {
     estimate_surv(dat, metric, param_names, outcome_name, case_weights, types)
   } else {
@@ -104,13 +118,24 @@ metrics_info <- function(x) {
 }
 
 estimate_reg <- function(dat, metric, param_names, outcome_name, case_weights) {
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
-    metric(estimate = .pred, truth = !!sym(outcome_name), case_weights = !!case_weights)
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
+    metric(
+      estimate = .pred,
+      truth = !!sym(outcome_name),
+      case_weights = !!case_weights
+    )
 }
 
-estimate_class_prob <- function(dat, metric, param_names, outcome_name,
-                                case_weights, types, event_level) {
+estimate_class_prob <- function(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  case_weights,
+  types,
+  event_level
+) {
   truth <- sym(outcome_name)
 
   estimate <- NULL
@@ -131,14 +156,16 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
       } else if (identical(event_level, "second")) {
         probs <- probs[[2]]
       } else {
-        cli::cli_abort("{.arg event_level} must be either {.val first} or
-                        {.val second}.")
+        cli::cli_abort(
+          "{.arg event_level} must be either {.val first} or
+                        {.val second}."
+        )
       }
     }
   }
 
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       truth = !!truth,
       estimate = !!estimate,
@@ -150,11 +177,18 @@ estimate_class_prob <- function(dat, metric, param_names, outcome_name,
 
 # ------------------------------------------------------------------------------
 
-estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, types) {
+estimate_surv <- function(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  case_weights,
+  types
+) {
   #  potentially need to work around submodel parameters since those are within .pred
   dat <- unnest_parameters(dat, param_names)
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       truth = !!rlang::sym(outcome_name),
       estimate = !!maybe_estimate(metric),
@@ -164,9 +198,9 @@ estimate_surv <- function(dat, metric, param_names, outcome_name, case_weights, 
 }
 
 unnest_parameters <- function(x, params = NULL) {
-   if (is.null(params)) {
+  if (is.null(params)) {
     return(x)
-   }
+  }
 
   # When multi_predict() is used, .pred will have the tuning parameter values.
   # Other (non-submodel) parameters will be outside of 'x'.
@@ -175,7 +209,7 @@ unnest_parameters <- function(x, params = NULL) {
 
   outer_nms <- names(x)
   has_pred <- any(outer_nms == ".pred")
-   if (!has_pred) {
+  if (!has_pred) {
     return(x)
   }
 
@@ -185,18 +219,21 @@ unnest_parameters <- function(x, params = NULL) {
     return(x)
   }
 
-  x <- x %>% parsnip::add_rowindex()
+  x <- x |> parsnip::add_rowindex()
 
-  others <- x %>% dplyr::select(-.pred)
+  others <- x |> dplyr::select(-.pred)
   rm_cols <- c(".pred_censored", ".weight_time")
   nest_cols <- c(".eval_time", ".pred_survival", ".weight_censored")
   x <-
-    x %>%
-    dplyr::select(.pred, .row) %>%
-    tidyr::unnest(cols = c(.pred)) %>%
-    dplyr::select(-dplyr::any_of(rm_cols)) %>%
-    tidyr::nest(.pred = c(all_of(nest_cols)), .by = c(.row, dplyr::all_of(params))) %>%
-    dplyr::full_join(others, by = ".row") %>%
+    x |>
+    dplyr::select(.pred, .row) |>
+    tidyr::unnest(cols = c(.pred)) |>
+    dplyr::select(-dplyr::any_of(rm_cols)) |>
+    tidyr::nest(
+      .pred = c(all_of(nest_cols)),
+      .by = c(.row, dplyr::all_of(params))
+    ) |>
+    dplyr::full_join(others, by = ".row") |>
     dplyr::select(-.row)
   x
 }
@@ -221,5 +258,3 @@ maybe_surv_prob <- function(x) {
   }
   res
 }
-
-

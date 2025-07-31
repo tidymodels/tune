@@ -14,21 +14,33 @@ test_that("select_best()", {
   )
   best_rmse <-
     tibble::tribble(
-      ~deg_free, ~degree, ~`wt df`, ~`wt degree`,
-      6L,        2L,      2L,       1L
+      ~deg_free,
+      ~degree,
+      ~`wt df`,
+      ~`wt degree`,
+      6L,
+      2L,
+      2L,
+      1L
     )
   best_rsq <-
     tibble::tribble(
-      ~deg_free, ~degree, ~`wt df`, ~`wt degree`,
-      10L,       2L,      2L,       2L
+      ~deg_free,
+      ~degree,
+      ~`wt df`,
+      ~`wt degree`,
+      10L,
+      2L,
+      2L,
+      2L
     )
 
   expect_equal(
-    select_best(rcv_results, metric = "rmse") %>% select(-.config),
+    select_best(rcv_results, metric = "rmse") |> select(-.config),
     best_rmse
   )
   expect_equal(
-    select_best(rcv_results, metric = "rsq") %>% select(-.config),
+    select_best(rcv_results, metric = "rsq") |> select(-.config),
     best_rsq
   )
 
@@ -54,22 +66,22 @@ test_that("show_best()", {
   rcv_results <- readRDS(test_path("data", "rcv_results.rds"))
 
   rcv_rmse <-
-    rcv_results %>%
-    collect_metrics() %>%
-    dplyr::filter(.metric == "rmse") %>%
+    rcv_results |>
+    collect_metrics() |>
+    dplyr::filter(.metric == "rmse") |>
     dplyr::arrange(mean)
 
   expect_equal(
     show_best(rcv_results, metric = "rmse", n = 1),
-    rcv_rmse %>% slice(1)
+    rcv_rmse |> slice(1)
   )
   expect_equal(
     show_best(rcv_results, metric = "rmse", n = nrow(rcv_rmse) + 1),
     rcv_rmse
   )
   expect_equal(
-    show_best(rcv_results, metric = "rmse", n = 1) %>% names(),
-    rcv_rmse %>% names()
+    show_best(rcv_results, metric = "rmse", n = 1) |> names(),
+    rcv_rmse |> names()
   )
   expect_snapshot({
     best_default_metric <- show_best(rcv_results)
@@ -90,11 +102,20 @@ test_that("one-std error rule", {
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
 
   expect_true(
-    tibble::is_tibble(select_by_one_std_err(knn_results, metric = "accuracy", K))
+    tibble::is_tibble(select_by_one_std_err(
+      knn_results,
+      metric = "accuracy",
+      K
+    ))
   )
 
   expect_equal(
-    select_by_one_std_err(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    select_by_one_std_err(
+      rcv_results,
+      metric = "rmse",
+      deg_free,
+      `wt degree`
+    )$.config,
     "Preprocessor19_Model1"
   )
   expect_equal(
@@ -147,7 +168,12 @@ test_that("percent loss", {
     tibble::is_tibble(select_by_pct_loss(knn_results, metric = "accuracy", K))
   )
   expect_equal(
-    select_by_pct_loss(rcv_results, metric = "rmse", deg_free, `wt degree`)$.config,
+    select_by_pct_loss(
+      rcv_results,
+      metric = "rmse",
+      deg_free,
+      `wt degree`
+    )$.config,
     "Preprocessor19_Model1"
   )
   expect_equal(
@@ -189,7 +215,12 @@ test_that("percent loss", {
 
   data("example_ames_knn")
   expect_equal(
-    select_by_pct_loss(ames_grid_search, metric = "rmse", limit = 10, desc(K))$K,
+    select_by_pct_loss(
+      ames_grid_search,
+      metric = "rmse",
+      limit = 10,
+      desc(K)
+    )$K,
     40
   )
 })
@@ -210,53 +241,53 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
       metrics = yardstick::metric_set(yardstick::mpe, yardstick::msd)
     )
 
-  tune_res_metrics <- tune_res %>% collect_metrics()
+  tune_res_metrics <- tune_res |> collect_metrics()
 
   expect_equal(
     select_best(tune_res, metric = "msd")$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      arrange(abs(mean)) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      arrange(abs(mean)) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     select_best(tune_res, metric = "mpe")$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      arrange(abs(mean)) %>%
-      slice(1) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      arrange(abs(mean)) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     show_best(tune_res, metric = "msd", n = 5)$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      arrange(abs(mean)) %>%
-      slice(1:5) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      arrange(abs(mean)) |>
+      slice(1:5) |>
+      select(.config) |>
       pull()
   )
 
   expect_equal(
     show_best(tune_res, metric = "mpe", n = 5)$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      arrange(abs(mean)) %>%
-      slice(1:5) %>%
-      select(.config) %>%
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      arrange(abs(mean)) |>
+      slice(1:5) |>
+      select(.config) |>
       pull()
   )
 
   # one std error, msd ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    arrange(min(abs(mean))) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    arrange(min(abs(mean))) |>
     slice(1)
 
   bound_lower <- -abs(best$mean) - abs(best$std_err)
@@ -264,10 +295,10 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
   expect_equal(bound_lower, -bound_upper)
 
   simplest_within_bound <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    filter(abs(mean) < bound_upper) %>%
-    arrange(desc(neighbors)) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    filter(abs(mean) < bound_upper) |>
+    arrange(desc(neighbors)) |>
     slice(1)
 
   expect_equal(
@@ -277,9 +308,9 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
 
   # one std error, mpe ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    arrange(min(abs(mean))) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    arrange(min(abs(mean))) |>
     slice(1)
 
   bound_lower <- -abs(best$mean) - abs(best$std_err)
@@ -287,10 +318,10 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
   expect_equal(bound_lower, -bound_upper)
 
   simplest_within_bound <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    filter(abs(mean) < bound_upper) %>%
-    arrange(desc(neighbors)) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    filter(abs(mean) < bound_upper) |>
+    arrange(desc(neighbors)) |>
     slice(1)
 
   expect_equal(
@@ -300,45 +331,55 @@ test_that("select_by_* can handle metrics with direction == 'zero'", {
 
   # pct loss, msd ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "msd") %>%
-    arrange(abs(mean)) %>%
+    tune_res_metrics |>
+    filter(.metric == "msd") |>
+    arrange(abs(mean)) |>
     slice(1)
 
   expect_equal(
-    select_by_pct_loss(tune_res, metric = "msd", limit = 10, desc(neighbors))$.config,
-    tune_res_metrics %>%
-      filter(.metric == "msd") %>%
-      dplyr::rowwise() %>%
-      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
-      ungroup() %>%
-      arrange(desc(neighbors)) %>%
-      slice(1:which(.config == best$.config)) %>%
-      filter(loss < 10) %>%
-      slice(1) %>%
-      select(.config) %>%
+    select_by_pct_loss(
+      tune_res,
+      metric = "msd",
+      limit = 10,
+      desc(neighbors)
+    )$.config,
+    tune_res_metrics |>
+      filter(.metric == "msd") |>
+      dplyr::rowwise() |>
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) |>
+      ungroup() |>
+      arrange(desc(neighbors)) |>
+      slice(1:which(.config == best$.config)) |>
+      filter(loss < 10) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 
   # pct loss, mpe ----------
   best <-
-    tune_res_metrics %>%
-    filter(.metric == "mpe") %>%
-    arrange(abs(mean)) %>%
+    tune_res_metrics |>
+    filter(.metric == "mpe") |>
+    arrange(abs(mean)) |>
     slice(1)
 
   expect_equal(
-    select_by_pct_loss(tune_res, metric = "mpe", limit = 10, desc(neighbors))$.config,
-    tune_res_metrics %>%
-      filter(.metric == "mpe") %>%
-      dplyr::rowwise() %>%
-      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) %>%
-      ungroup() %>%
-      arrange(desc(neighbors)) %>%
-      slice(1:which(.config == best$.config)) %>%
-      filter(loss < 10) %>%
-      slice(1) %>%
-      select(.config) %>%
+    select_by_pct_loss(
+      tune_res,
+      metric = "mpe",
+      limit = 10,
+      desc(neighbors)
+    )$.config,
+    tune_res_metrics |>
+      filter(.metric == "mpe") |>
+      dplyr::rowwise() |>
+      mutate(loss = abs((abs(mean) - abs(best$mean)) / best$mean) * 100) |>
+      ungroup() |>
+      arrange(desc(neighbors)) |>
+      slice(1:which(.config == best$.config)) |>
+      filter(loss < 10) |>
+      slice(1) |>
+      select(.config) |>
       pull()
   )
 })
@@ -381,7 +422,6 @@ test_that("show_best with survival models", {
     show_best(surv_res, metric = "brier_survival", eval_time = 3:4),
     error = TRUE
   )
-
 })
 
 test_that("select_best with survival models", {
@@ -422,7 +462,6 @@ test_that("select_best with survival models", {
     select_best(surv_res, metric = "brier_survival", eval_time = 3:4),
     error = TRUE
   )
-
 })
 
 test_that("select_by_one_std_err with survival models", {
@@ -441,36 +480,62 @@ test_that("select_by_one_std_err with survival models", {
     select_by_one_std_err(surv_res, metric = "brier_survival", trees)
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = c("brier_survival", "roc_auc_survival"),
-                          trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = c("brier_survival", "roc_auc_survival"),
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "concordance_survival",
-                          eval_time = 1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "concordance_survival",
-                          eval_time = 1.1, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1.1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1.1, trees),
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1.1,
+      trees
+    ),
     error = TRUE
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 1:2, trees)
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1:2,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_one_std_err(surv_res, metric = "brier_survival",
-                          eval_time = 3:4, trees),
+    select_by_one_std_err(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 3:4,
+      trees
+    ),
     error = TRUE
   )
-
 })
 
 test_that("select_by_pct_loss with survival models", {
@@ -489,37 +554,60 @@ test_that("select_by_pct_loss with survival models", {
     select_by_pct_loss(surv_res, metric = "brier_survival", trees)
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = c("brier_survival", "roc_auc_survival"),
-                       trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = c("brier_survival", "roc_auc_survival"),
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "concordance_survival",
-                       eval_time = 1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "concordance_survival",
-                       eval_time = 1.1, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "concordance_survival",
+      eval_time = 1.1,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1.1, trees),
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1.1,
+      trees
+    ),
     error = TRUE
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 1:2, trees)
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 1:2,
+      trees
+    )
   )
   expect_snapshot(
-    select_by_pct_loss(surv_res, metric = "brier_survival",
-                       eval_time = 3:4, trees),
+    select_by_pct_loss(
+      surv_res,
+      metric = "brier_survival",
+      eval_time = 3:4,
+      trees
+    ),
     error = TRUE
   )
-
 })
-
-
-

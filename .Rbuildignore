@@ -19,3 +19,4 @@ _cache$
 ^CODE_OF_CONDUCT\.md$
 ^man-roxygen$
 ^\.vscode$
+^[.]?air[.]toml$
