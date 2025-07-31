@@ -86,13 +86,13 @@ generate these examples was:</p>
 <span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="co"># ------------------------------------------------------------------------------</span></span>
 <span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a></span>
 <span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>ames_rec <span class="ot">&lt;-</span></span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="fu">recipe</span>(Sale_Price <span class="sc">~</span> ., <span class="at">data =</span> ames_train) <span class="sc">%&gt;%</span></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="fu">step_log</span>(Sale_Price, <span class="at">base =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="fu">step_YeoJohnson</span>(Lot_Area, Gr_Liv_Area) <span class="sc">%&gt;%</span></span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="fu">step_other</span>(Neighborhood, <span class="at">threshold =</span> .<span class="dv">1</span>)  <span class="sc">%&gt;%</span></span>
-<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>  <span class="fu">step_spline_natural</span>(Longitude, <span class="at">deg_free =</span> <span class="fu">tune</span>(<span class="st">"lon"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="fu">recipe</span>(Sale_Price <span class="sc">~</span> ., <span class="at">data =</span> ames_train) <span class="sc">|&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  <span class="fu">step_log</span>(Sale_Price, <span class="at">base =</span> <span class="dv">10</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  <span class="fu">step_YeoJohnson</span>(Lot_Area, Gr_Liv_Area) <span class="sc">|&gt;</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>  <span class="fu">step_other</span>(Neighborhood, <span class="at">threshold =</span> .<span class="dv">1</span>)  <span class="sc">|&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>  <span class="fu">step_spline_natural</span>(Longitude, <span class="at">deg_free =</span> <span class="fu">tune</span>(<span class="st">"lon"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>  <span class="fu">step_spline_natural</span>(Latitude, <span class="at">deg_free =</span> <span class="fu">tune</span>(<span class="st">"lat"</span>))</span>
 <span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a></span>
 <span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>knn_model <span class="ot">&lt;-</span></span>
@@ -101,21 +101,21 @@ generate these examples was:</p>
 <span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>    <span class="at">neighbors =</span> <span class="fu">tune</span>(<span class="st">"K"</span>),</span>
 <span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>    <span class="at">weight_func =</span> <span class="fu">tune</span>(),</span>
 <span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>    <span class="at">dist_power =</span> <span class="fu">tune</span>()</span>
-<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>)</span>
 <span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a></span>
 <span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>ames_wflow <span class="ot">&lt;-</span></span>
-<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>  <span class="fu">add_recipe</span>(ames_rec) <span class="sc">%&gt;%</span></span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>  <span class="fu">add_recipe</span>(ames_rec) <span class="sc">|&gt;</span></span>
 <span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>  <span class="fu">add_model</span>(knn_model)</span>
 <span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a></span>
 <span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a>ames_set <span class="ot">&lt;-</span></span>
-<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>  <span class="fu">extract_parameter_set_dials</span>(ames_wflow) <span class="sc">%&gt;%</span></span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>  <span class="fu">extract_parameter_set_dials</span>(ames_wflow) <span class="sc">|&gt;</span></span>
 <span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a>  <span class="fu">update</span>(<span class="at">K =</span> <span class="fu">neighbors</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">50</span>)))</span>
 <span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a></span>
 <span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7014</span>)</span>
 <span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a>ames_grid <span class="ot">&lt;-</span></span>
-<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a>  ames_set <span class="sc">%&gt;%</span></span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a>  ames_set <span class="sc">|&gt;</span></span>
 <span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a>  <span class="fu">grid_max_entropy</span>(<span class="at">size =</span> <span class="dv">10</span>)</span>
 <span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a></span>
 <span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a>ames_grid_search <span class="ot">&lt;-</span></span>
