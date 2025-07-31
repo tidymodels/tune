@@ -136,7 +136,7 @@ test_that("`schedule_model_stage_i()` works with only non-submodel: with non-sub
   expect_identical(nrow(schedule), 2L)
   expect_identical(schedule$min_n, 1:2)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]),
     c("tbl_df", "tbl_df")
   )
   expect_identical(
@@ -157,7 +157,7 @@ test_that("`schedule_model_stage_i()` works with only submodel: no non-submodel,
   expect_identical(nrow(schedule), 1L)
   expect_identical(schedule$trees, 2L)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]),
     c("tbl_df")
   )
   expect_identical(
@@ -181,7 +181,7 @@ test_that("`schedule_model_stage_i()` works with only post: no non-submodel, no 
   expect_named(schedule, c("predict_stage"))
   expect_identical(nrow(schedule), 1L)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]),
     c("tbl_df")
   )
   expect_identical(
@@ -214,7 +214,7 @@ test_that("`schedule_model_stage_i()` works with both model types only: with non
   expect_identical(schedule$trees, c(2L, 2L, 3L))
   expect_identical(schedule$min_n, 1:3)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) |> unique(),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]) |> unique(),
     "tbl_df"
   )
   expect_identical(
@@ -269,7 +269,7 @@ test_that("`schedule_model_stage_i()` works without submodel: with non-submodel,
   expect_identical(nrow(schedule), 3L)
   expect_identical(schedule$min_n, 1:3)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) |> unique(),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]) |> unique(),
     "tbl_df"
   )
   expect_identical(
@@ -337,7 +337,7 @@ test_that("`schedule_model_stage_i()` works everything: with non-submodel, with 
   expect_identical(nrow(schedule), 2L)
   expect_identical(schedule$min_n, 1:2)
   expect_identical(
-    purrr::map_chr(schedule$predict_stage, ~ class(.)[1]) |> unique(),
+    purrr::map_chr(schedule$predict_stage, \(x) class(x)[1]) |> unique(),
     "tbl_df"
   )
   expect_identical(
@@ -830,7 +830,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
   grids_post <-
     grid_pre_post |>
     dplyr::group_nest(threshold, disp_df) |>
-    mutate(data = purrr::map(data, ~ arrange(.x, lower_limit)))
+    mutate(data = purrr::map(data, \(.x) arrange(.x, lower_limit)))
 
   sched_pre_post <- schedule_grid(grid_pre_post, wflow_pre_post)
 
@@ -952,9 +952,9 @@ test_that("grid processing schedule - recipe + model, submodels, irregular grid"
     mutate(
       data = purrr::map(
         data,
-        ~ .x |> dplyr::summarize(trees = max(trees), .by = c(min_n))
+        \(.x) .x |> dplyr::summarize(trees = max(trees), .by = c(min_n))
       ),
-      data = purrr::map(data, ~ .x |> arrange(min_n))
+      data = purrr::map(data, \(.x) .x |> arrange(min_n))
     )
 
   sched_pre_model <- schedule_grid(grid_pre_model, wflow_pre_model)
@@ -1032,9 +1032,9 @@ test_that("grid processing schedule - recipe + model + tailor, submodels, irregu
     mutate(
       data = purrr::map(
         data,
-        ~ .x |> dplyr::summarize(trees = max(trees), .by = c(min_n))
+        \(.x) .x |> dplyr::summarize(trees = max(trees), .by = c(min_n))
       ),
-      data = purrr::map(data, ~ .x |> arrange(min_n))
+      data = purrr::map(data, \(.x) .x |> arrange(min_n))
     )
 
   sched_pre_model_post <- schedule_grid(

@@ -25,7 +25,7 @@ test_that("tune recipe only", {
 
   expect_true(all(names(extract_1_1) == c("num_comp", ".extracts", ".config")))
   expect_true(
-    all(purrr::map_lgl(extract_1_1$.extracts, ~ tibble::is_tibble(.x))),
+    all(purrr::map_lgl(extract_1_1$.extracts, tibble::is_tibble)),
   )
 })
 
@@ -58,12 +58,12 @@ test_that("tune model only", {
 
   expect_true(all(names(extract_2_1) == c("cost", ".extracts", ".config")))
   expect_true(
-    all(purrr::map_lgl(extract_2_1$.extracts, ~ tibble::is_tibble(.x))),
+    all(purrr::map_lgl(extract_2_1$.extracts, tibble::is_tibble)),
   )
   expect_true(
     all(purrr::map_lgl(
       extract_2_1$.extracts,
-      ~ all(names(.x) == c("index", "estimate"))
+      \(.x) all(names(.x) == c("index", "estimate"))
     )),
   )
 
@@ -221,7 +221,7 @@ test_that("tune model and recipe", {
 
   expect_named(extract_3_1, c("cost", "num_comp", ".extracts", ".config"))
   expect_true(
-    all(purrr::map_lgl(extract_3_1$.extracts, ~ inherits(.x, "workflow"))),
+    all(purrr::map_lgl(extract_3_1$.extracts, inherits, "workflow")),
   )
 })
 

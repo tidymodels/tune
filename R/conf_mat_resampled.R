@@ -82,7 +82,9 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
     dplyr::mutate(
       conf_mats = purrr::map(
         data,
-        ~ yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class)
+        \(.x) {
+          yardstick::conf_mat(.x, truth = {{ truth }}, estimate = .pred_class)
+        }
       )
     )
 
@@ -90,7 +92,7 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
   options(dplyr.summarise.inform = FALSE)
 
   res <-
-    purrr::map(preds$conf_mats, ~ as.data.frame(.x$table)) |>
+    purrr::map(preds$conf_mats, \(.x) as.data.frame(.x$table)) |>
     purrr::list_rbind() |>
     dplyr::group_by(Prediction, Truth) |>
     dplyr::summarize(Freq = mean(Freq, na.rm = TRUE)) |>

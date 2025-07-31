@@ -130,16 +130,18 @@ filter_by_filter <- function(x, ...) {
   }
   x$.metrics <- purrr::map(x$.metrics, ~ dplyr::filter(.x, !!!dots))
   if (any(names(x) == ".predictions")) {
-    x$.predictions <- purrr::map(x$.predictions, ~ dplyr::filter(.x, !!!dots))
+    x$.predictions <- purrr::map(x$.predictions, \(.x) {
+      dplyr::filter(.x, !!!dots)
+    })
   }
   if (any(names(x) == ".extracts")) {
-    x$.extracts <- purrr::map(x$.extracts, ~ dplyr::filter(.x, !!!dots))
+    x$.extracts <- purrr::map(x$.extracts, \(.x) dplyr::filter(.x, !!!dots))
   }
   x
 }
 
 check_filter_dots <- function(dots, call = rlang::caller_env()) {
-  res <- purrr::map(dots, ~ try(rlang::eval_tidy(.x), silent = TRUE))
+  res <- purrr::map(dots, \(.x) try(rlang::eval_tidy(.x), silent = TRUE))
 
   if (any(purrr::map_lgl(res, inherits, "data.frame"))) {
     cli::cli_abort(

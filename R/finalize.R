@@ -130,7 +130,7 @@ finalize_tailor <- function(x, parameters) {
 
   for (i in seq_along(x$adjustments)) {
     adj <- x$adjustments[[i]]
-    adj_comps <- purrr::map_lgl(pset$component, ~ inherits(adj, .x))
+    adj_comps <- purrr::map_lgl(pset$component, \(.x) inherits(adj, .x))
     if (any(adj_comps)) {
       adj_ids <- pset$id[adj_comps]
       prm_nm <- pset$name[adj_comps]
@@ -160,7 +160,7 @@ check_final_param <- function(x) {
 
 complete_steps <- function(param, pset, object) {
   # find the corresponding step in the recipe
-  step_ids <- purrr::map_chr(object$steps, ~ .x$id)
+  step_ids <- purrr::map_chr(object$steps, "id")
   step_index <- which(unique(pset$component_id) == step_ids)
   step_to_update <- object$steps[[step_index]]
 

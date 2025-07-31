@@ -244,7 +244,7 @@ is_regular_grid <- function(grid) {
     }
   }
 
-  pct_unique <- purrr::map_int(grid, ~ length(unique(.x))) / num_points
+  pct_unique <- purrr::map_int(grid, \(.x) length(unique(.x))) / num_points
   max_pct_unique <- max(pct_unique, na.rm = TRUE)
   np_ratio <- p / num_points
 
@@ -278,7 +278,7 @@ use_regular_grid_plot <- function(x) {
 
 process_autoplot_metrics <- function(x, metric, eval_time) {
   met_set <- .get_tune_metrics(x)
-  any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(met_set, .x)))
+  any_dyn <- any(purrr::map_lgl(metric, \(.x) is_dyn(met_set, .x)))
 
   x <- estimate_tune_results(x)
 
@@ -452,7 +452,7 @@ plot_marginals <- function(
   )
   num_val <- purrr::map_int(
     x |> dplyr::select(dplyr::all_of(param_cols)),
-    ~ length(unique(.x))
+    \(.x) length(unique(.x))
   )
 
   if (any(num_val < 2)) {
@@ -606,7 +606,7 @@ plot_regular_grid <- function(
   num_param_cols <- param_cols[is_num]
   chr_param_cols <- param_cols[!is_num]
 
-  num_values <- purrr::map_int(grd[, num_param_cols], ~ length(unique(.x)))
+  num_values <- purrr::map_int(grd[, num_param_cols], \(.x) length(unique(.x)))
   num_values <- sort(num_values, decreasing = TRUE)
 
   if (!any(is_num)) {

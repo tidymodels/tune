@@ -421,7 +421,7 @@ test_that("initial values", {
   )
   expect_true(is.data.frame(grid_1))
   expect_equal(nrow(grid_1), nrow(mtfolds))
-  expect_true(all(purrr::map_lgl(grid_1$.metrics, ~ nrow(.x) == 2)))
+  expect_true(all(purrr::map_lgl(grid_1$.metrics, \(.x) nrow(.x) == 2)))
 
   expect_snapshot(error = TRUE, {
     tune:::check_initial(

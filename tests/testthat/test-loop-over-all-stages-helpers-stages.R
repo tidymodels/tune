@@ -128,7 +128,7 @@ test_that("stage helpers - recipe and model", {
   expect_equal(
     purrr::map_lgl(
       sched_1$model_stage,
-      ~ tune:::has_sub_param(.x$predict_stage)
+      \(.x) tune:::has_sub_param(.x$predict_stage)
     ),
     rep(FALSE, 3)
   )
@@ -158,7 +158,7 @@ test_that("stage helpers - recipe and model", {
   expect_equal(
     purrr::map_lgl(
       sched_2$model_stage,
-      ~ tune:::has_sub_param(.x$predict_stage[[1]])
+      \(.x) tune:::has_sub_param(.x$predict_stage[[1]])
     ),
     rep(TRUE, 3)
   )

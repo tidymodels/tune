@@ -115,7 +115,7 @@ merger <- function(x, y, ...) {
   pset <- hardhat::extract_parameter_set_dials(x)
 
   if (nrow(pset) == 0) {
-    res <- purrr::map(seq_len(nrow(y)), ~x)
+    res <- purrr::map(seq_len(nrow(y)), \(.x) x)
     res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
@@ -124,14 +124,14 @@ merger <- function(x, y, ...) {
 
   if (inherits(x, "recipe")) {
     updater <- update_recipe
-    step_ids <- purrr::map_chr(x$steps, ~ .x$id)
+    step_ids <- purrr::map_chr(x$steps, "id")
   } else {
     updater <- update_model
     step_ids <- NULL
   }
 
   if (!any(grid_name %in% pset$id)) {
-    res <- purrr::map(seq_len(nrow(y)), ~x)
+    res <- purrr::map(seq_len(nrow(y)), \(.x) x)
     res <- tibble::new_tibble(list(x = res), nrow = length(res))
     return(res)
   }
@@ -140,7 +140,7 @@ merger <- function(x, y, ...) {
     dplyr::mutate(
       ..object = purrr::map(
         1:nrow(y),
-        ~ updater(y[.x, ], x, pset, step_ids, grid_name)
+        \(.x) updater(y[.x, ], x, pset, step_ids, grid_name)
       )
     ) |>
     dplyr::select(x = ..object)

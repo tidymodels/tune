@@ -582,7 +582,7 @@ message_wrap <-
     }
     msg <- strwrap(x, width = width - n - 1)
     if (!is.null(color_text)) {
-      msg <- purrr::map_chr(msg, ~ color_text(.x))
+      msg <- purrr::map_chr(msg, color_text)
     }
     if (!is.null(color_prefix)) {
       prefix <- color_prefix(prefix)

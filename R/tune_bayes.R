@@ -487,18 +487,21 @@ tune_bayes_workflow <- function(
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         tmp_res[[".metrics"]] <- purrr::map(
           tmp_res[[".metrics"]],
-          ~ dplyr::mutate(., .config = paste0("Iter", i))
+          dplyr::mutate,
+          .config = paste0("Iter", i)
         )
         if (control$save_pred) {
           tmp_res[[".predictions"]] <- purrr::map(
             tmp_res[[".predictions"]],
-            ~ dplyr::mutate(., .config = paste0("Iter", i))
+            dplyr::mutate,
+            .config = paste0("Iter", i)
           )
         }
         if (".extracts" %in% names(tmp_res)) {
           tmp_res[[".extracts"]] <- purrr::map(
             tmp_res[[".extracts"]],
-            ~ dplyr::mutate(., .config = paste0("Iter", i))
+            dplyr::mutate,
+            .config = paste0("Iter", i)
           )
         }
         unsummarized <- dplyr::bind_rows(
@@ -594,7 +597,7 @@ check_iter <- function(iter, call) {
 encode_set <- function(x, pset, ..., as_matrix = FALSE) {
   rlang::check_dots_empty()
   # change the numeric variables to the transformed scale (if any)
-  has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
+  has_trans <- purrr::map_lgl(pset$object, \(.x) !is.null(.x$trans))
   if (any(has_trans)) {
     idx <- which(has_trans)
     for (i in idx) {
@@ -898,7 +901,7 @@ is_cataclysmic <- function(x) {
   if (any(!is_err)) {
     is_good <- purrr::map_lgl(
       x$.metrics[!is_err],
-      ~ tibble::is_tibble(.x) && nrow(.x) > 0
+      \(.x) tibble::is_tibble(.x) && nrow(.x) > 0
     )
     is_err[!is_err] <- !is_good
   }

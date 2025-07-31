@@ -468,8 +468,8 @@ determine_pred_types <- function(wflow, metrics) {
   pred_types <- unique(metrics_info(metrics)$type)
   if (has_tailor(wflow)) {
     post <- extract_postprocessor(wflow)
-    post_out <- purrr::map(post$adjustments, ~ .x$outputs)
-    post_in <- purrr::map(post$adjustments, ~ .x$inputs)
+    post_out <- purrr::map(post$adjustments, "outputs")
+    post_in <- purrr::map(post$adjustments, "inputs")
     post_types <- unlist(c(post_out, post_in))
     post_types[grepl("probability", post_types)] <- "prob"
     post_cls <- purrr::map(post$adjustments, class)
@@ -562,7 +562,7 @@ attach_pkgs <- function(pkgs, load = character(0)) {
   # There may be some packages that need to be fully loaded to work
   # appropriately.
   sshh_load <- purrr::quietly(library)
-  load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
+  load_res <- purrr::map(load, sshh_load, character.only = TRUE)
 
   invisible(pkgs)
 }

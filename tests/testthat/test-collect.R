@@ -44,7 +44,7 @@ if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
   svm_tune_class$.predictions <-
     purrr::map(
       svm_tune_class$.predictions,
-      ~ .x |> dplyr::select(-.pred_Class1, -.pred_Class2)
+      \(.x) .x |> dplyr::select(-.pred_Class1, -.pred_Class2)
     )
   attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 

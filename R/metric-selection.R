@@ -196,7 +196,7 @@ maybe_choose_eval_time <- function(x, mtr_set, eval_time) {
   }
   eval_time <- purrr::map(
     mtr_info$metric,
-    ~ choose_eval_time(x, .x, eval_time = eval_time, quietly = TRUE)
+    \(.x) choose_eval_time(x, .x, eval_time = eval_time, quietly = TRUE)
   )
   no_eval_time <- purrr::map_lgl(eval_time, is.null)
   if (all(no_eval_time)) {
@@ -450,7 +450,9 @@ check_autoplot_eval_times <- function(x, metric, eval_time, call) {
     }
     eval_time <- .get_tune_eval_times(x)[1]
   } else {
-    any_dyn <- any(purrr::map_lgl(metric, ~ is_dyn(.get_tune_metrics(x), .x)))
+    any_dyn <- any(purrr::map_lgl(metric, \(.x) {
+      is_dyn(.get_tune_metrics(x), .x)
+    }))
     if (!any_dyn) {
       cli::cli_warn(
         "{.arg eval_time} is only used for dynamic survival metrics.",

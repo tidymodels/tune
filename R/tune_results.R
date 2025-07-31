@@ -64,7 +64,7 @@ summarize_notes <- function(x) {
   by_type <-
     notes |>
     dplyr::group_nest(type) |>
-    dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) |>
+    dplyr::mutate(data = purrr::map(data, \(.x) dplyr::count(.x, note))) |>
     tidyr::unnest(data) |>
     dplyr::rowwise() |>
     dplyr::mutate(

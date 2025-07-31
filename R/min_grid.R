@@ -90,7 +90,7 @@ min_grid.model_spec <- function(x, grid, ...) {
 # Template for model results that do no have the sub-model feature
 blank_submodels <- function(grid) {
   grid |>
-    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), ~ list())) |>
+    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), \(x) list())) |>
     dplyr::mutate_if(is.factor, as.character)
 }
 
@@ -178,7 +178,7 @@ submod_and_others <- function(grid, fixed_args) {
     dplyr::if_else(
       !purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
       min_grid_df$.submodels,
-      purrr::map(1:nrow(min_grid_df), ~ list())
+      purrr::map(1:nrow(min_grid_df), \(x) list())
     )
 
   dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) |>

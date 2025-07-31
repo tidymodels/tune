@@ -334,7 +334,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (!is.null(static$control$extract)) {
     if (is.null(extracts)) {
       # Everything failed; return NULL for each row
-      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~NULL)
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), \(x) NULL)
     } else {
       return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
     }
@@ -345,7 +345,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (static$control$save_pred) {
     if (is.null(pred_reserve)) {
       # Everything failed; return NULL for each row
-      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~NULL)
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), \(x) NULL)
     } else {
       return_tbl$.predictions <-
         list(

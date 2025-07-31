@@ -9,38 +9,38 @@ test_that("basic functionality", {
   )
   expect_true(all(purrr::map_lgl(
     filtered_grid$.metrics,
-    ~ all(.x$`%^*#` == 1)
+    \(.x) all(.x$`%^*#` == 1)
   )))
   expect_true(all(purrr::map_lgl(
     filtered_grid$.predictions,
-    ~ all(.x$`%^*#` == 1)
+    \(.x) all(.x$`%^*#` == 1)
   )))
 
   best_param <- select_best(svm_reg_results, metric = "accuracy")
   best_grid <- filter_parameters(svm_reg_results, parameters = best_param)
   expect_true(all(purrr::map_lgl(
     best_grid$.metrics,
-    ~ all(.x$cost == best_param$cost)
+    \(.x) all(.x$cost == best_param$cost)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.metrics,
-    ~ all(.x$`%^*#` == best_param$`%^*#`)
+    \(.x) all(.x$`%^*#` == best_param$`%^*#`)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.metrics,
-    ~ all(.x$scale_factor == best_param$scale_factor)
+    \(.x) all(.x$scale_factor == best_param$scale_factor)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.predictions,
-    ~ all(.x$cost == best_param$cost)
+    \(.x) all(.x$cost == best_param$cost)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.predictions,
-    ~ all(.x$`%^*#` == best_param$`%^*#`)
+    \(.x) all(.x$`%^*#` == best_param$`%^*#`)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.predictions,
-    ~ all(.x$scale_factor == best_param$scale_factor)
+    \(.x) all(.x$scale_factor == best_param$scale_factor)
   )))
 
   filtered_grid <- filter_parameters(
@@ -49,22 +49,22 @@ test_that("basic functionality", {
   )
   expect_true(all(purrr::map_lgl(
     filtered_grid$.metrics,
-    ~ all(.x$neighbors == 1)
+    \(.x) all(.x$neighbors == 1)
   )))
   expect_true(all(purrr::map_lgl(
     filtered_grid$.predictions,
-    ~ all(.x$neighbors == 1)
+    \(.x) all(.x$neighbors == 1)
   )))
 
   best_param <- select_best(mt_knn_bo, metric = "rmse")
   best_grid <- filter_parameters(mt_knn_bo, parameters = best_param)
   expect_true(all(purrr::map_lgl(
     best_grid$.metrics,
-    ~ all(.x$neighbors == best_param$neighbors)
+    \(.x) all(.x$neighbors == best_param$neighbors)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.predictions,
-    ~ all(.x$neighbors == best_param$neighbors)
+    \(.x) all(.x$neighbors == best_param$neighbors)
   )))
 
   rec_tune_1 <-
@@ -96,32 +96,32 @@ test_that("basic functionality", {
   )
   expect_true(all(purrr::map_lgl(
     filtered_grid$.metrics,
-    ~ all(.x$num_comp == 1)
+    \(.x) all(.x$num_comp == 1)
   )))
   expect_true(all(purrr::map_lgl(
     filtered_grid$.extracts,
-    ~ all(.x$num_comp == 1)
+    \(.x) all(.x$num_comp == 1)
   )))
 
   best_param <- select_best(lm_res, metric = "rmse")
   best_grid <- filter_parameters(lm_res, parameters = best_param)
   expect_true(all(purrr::map_lgl(
     best_grid$.metrics,
-    ~ all(.x$num_comp == best_param$num_comp)
+    \(.x) all(.x$num_comp == best_param$num_comp)
   )))
   expect_true(all(purrr::map_lgl(
     best_grid$.extracts,
-    ~ all(.x$num_comp == best_param$num_comp)
+    \(.x) all(.x$num_comp == best_param$num_comp)
   )))
 
   filtered_grid <- filter_parameters(svm_reg_results, `%^*#` == 1)
   expect_true(all(purrr::map_lgl(
     filtered_grid$.metrics,
-    ~ all(.x$`%^*#` == 1)
+    \(.x) all(.x$`%^*#` == 1)
   )))
   expect_true(all(purrr::map_lgl(
     filtered_grid$.predictions,
-    ~ all(.x$`%^*#` == 1)
+    \(.x) all(.x$`%^*#` == 1)
   )))
 })
 

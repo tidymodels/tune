@@ -60,7 +60,9 @@ full_load <- c("kknn", "earth")
   if (length(x_full) > 0) {
     purrr::map(
       x_full,
-      ~ try(suppressPackageStartupMessages(attachNamespace(.x)), silent = TRUE)
+      \(.x) {
+        try(suppressPackageStartupMessages(attachNamespace(.x)), silent = TRUE)
+      }
     )
   }
 
