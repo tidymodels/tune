@@ -58,15 +58,15 @@ summarize_notes <- function(x) {
     return(invisible(NULL))
   }
   notes <-
-    x %>%
-    dplyr::select(dplyr::starts_with("id"), .notes) %>%
+    x |>
+    dplyr::select(dplyr::starts_with("id"), .notes) |>
     tidyr::unnest(cols = .notes)
   by_type <-
-    notes %>%
-    dplyr::group_nest(type) %>%
-    dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) %>%
-    tidyr::unnest(data) %>%
-    dplyr::rowwise() %>%
+    notes |>
+    dplyr::group_nest(type) |>
+    dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) |>
+    tidyr::unnest(data) |>
+    dplyr::rowwise() |>
     dplyr::mutate(
       note = gsub("(Error:)", "", note),
       note = glue::glue_collapse(note, width = 0.85 * getOption("width")),
@@ -162,7 +162,7 @@ peek_tune_results_outcomes <- function(x) {
 #' @export
 show_notes <- function(x, n = 10) {
   res <-
-    collect_notes(x) %>%
+    collect_notes(x) |>
     dplyr::distinct(type, note)
 
   if (nrow(res) == 0) {

@@ -19,32 +19,32 @@ binary_hash <- function(x) {
 }
 
 pre_proc <-
-  recipe(score ~ product + review, data = training_data) %>%
-  update_role(product, new_role = "id") %>%
-  step_mutate(review_raw = review) %>%
-  step_textfeature(review_raw) %>%
+  recipe(score ~ product + review, data = training_data) |>
+  update_role(product, new_role = "id") |>
+  step_mutate(review_raw = review) |>
+  step_textfeature(review_raw) |>
   step_rename_at(
     starts_with("textfeature_"),
     fn = ~ gsub("textfeature_review_raw_", "", .)
-  ) %>%
-  step_tokenize(review) %>%
-  step_stopwords(review) %>%
-  step_stem(review) %>%
-  step_texthash(review, signed = TRUE, num_terms = tune()) %>%
-  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
-  step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
-  step_YeoJohnson(all_of(basics)) %>%
-  step_zv(all_predictors()) %>%
+  ) |>
+  step_tokenize(review) |>
+  step_stopwords(review) |>
+  step_stem(review) |>
+  step_texthash(review, signed = TRUE, num_terms = tune()) |>
+  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) |>
+  step_mutate_at(starts_with("hash"), fn = binary_hash) |>
+  step_YeoJohnson(all_of(basics)) |>
+  step_zv(all_predictors()) |>
   step_normalize(all_predictors())
 
 lr_mod <-
-  logistic_reg(penalty = tune(), mixture = tune()) %>%
+  logistic_reg(penalty = tune(), mixture = tune()) |>
   set_engine("glmnet")
 
 
 text_wflow <-
-  workflow() %>%
-  add_recipe(pre_proc) %>%
+  workflow() |>
+  add_recipe(pre_proc) |>
   add_model(lr_mod)
 
 set.seed(8935)
@@ -79,26 +79,26 @@ text_glmnet <- tune_grid(
 
 print(warnings())
 
-# text_glmnet %>%
-#   select(id, .extracts) %>%
-#   unnest() %>%
-#   select(-penalty) %>%
-#   unnest() %>%
-#   filter(num_terms == 1024 & mixture > 0) %>%
-#   mutate(group = paste(id, mixture)) %>%
+# text_glmnet |>
+#   select(id, .extracts) |>
+#   unnest() |>
+#   select(-penalty) |>
+#   unnest() |>
+#   filter(num_terms == 1024 & mixture > 0) |>
+#   mutate(group = paste(id, mixture)) |>
 #   ggplot(aes(x = penalty, y = num_vars)) +
 #   geom_path(aes(group = group, col = factor(mixture)), alpha = .1) +
 #   scale_x_log10()
 
-summarize(text_glmnet) %>%
-  filter(.metric == "accuracy") %>%
+summarize(text_glmnet) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = log10(penalty), y = mixture, fill = mean)) +
   facet_wrap(~num_terms) +
   geom_tile() +
   theme_bw()
 
-summarize(text_glmnet) %>%
-  filter(.metric == "accuracy") %>%
+summarize(text_glmnet) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = penalty, y = mean, col = mixture, group = mixture)) +
   facet_wrap(~num_terms) +
   geom_point() +
@@ -108,8 +108,8 @@ summarize(text_glmnet) %>%
 # ------------------------------------------------------------------------------
 
 test_set <-
-  text_wflow %>%
-  parameters() %>%
+  text_wflow |>
+  parameters() |>
   update(num_terms = num_hash())
 
 trade_decay <- function(iter) {

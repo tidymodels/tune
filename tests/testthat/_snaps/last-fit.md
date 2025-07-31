@@ -18,7 +18,7 @@
 # ellipses with last_fit
 
     Code
-      linear_reg() %>% set_engine("lm") %>% last_fit(f, split, something = "wrong")
+      last_fit(set_engine(linear_reg(), "lm"), f, split, something = "wrong")
     Condition
       Warning:
       The `...` are not used in this function but 1 object was passed: "something"

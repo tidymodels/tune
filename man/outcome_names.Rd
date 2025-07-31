@@ -37,8 +37,8 @@ Determine names of the outcome data in a workflow
 }
 \examples{
 library(dplyr)
-lm(cbind(mpg, wt) ~ ., data = mtcars) \%>\%
-  purrr::pluck(terms) \%>\%
+lm(cbind(mpg, wt) ~ ., data = mtcars) |>
+  purrr::pluck(terms) |>
   outcome_names()
 }
 \keyword{internal}

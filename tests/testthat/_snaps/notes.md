@@ -1,7 +1,7 @@
 # showing notes
 
     Code
-      res_roles <- role_bp_wflow %>% fit_resamples(rs)
+      res_roles <- fit_resamples(role_bp_wflow, rs)
     Message
       > A | error:   The following required column is missing from `new_data`: date.
     Condition
@@ -20,7 +20,7 @@
 ---
 
     Code
-      res_simple <- simple_wflow %>% fit_resamples(rs)
+      res_simple <- fit_resamples(simple_wflow, rs)
     Message
       > A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 
@@ -43,7 +43,7 @@
 ---
 
     Code
-      fit_lr <- parsnip::logistic_reg() %>% fit_resamples(class ~ ., rs)
+      fit_lr <- fit_resamples(parsnip::logistic_reg(), class ~ ., rs)
     Message
       > A | warning: glm.fit: algorithm did not converge
       > B | warning: glm.fit: fitted probabilities numerically 0 or 1 occurred

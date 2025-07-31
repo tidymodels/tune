@@ -292,12 +292,12 @@ folds <- vfold_cv(mtcars, v = 5)
 # tuning recipe parameters:
 
 spline_rec <-
-  recipe(mpg ~ ., data = mtcars) \%>\%
-  step_spline_natural(disp, deg_free = tune("disp")) \%>\%
+  recipe(mpg ~ ., data = mtcars) |>
+  step_spline_natural(disp, deg_free = tune("disp")) |>
   step_spline_natural(wt, deg_free = tune("wt"))
 
 lin_mod <-
-  linear_reg() \%>\%
+  linear_reg() |>
   set_engine("lm")
 
 # manually create a grid
@@ -317,12 +317,12 @@ show_best(spline_res, metric = "rmse")
 # tune model parameters only (example requires the `kernlab` package)
 
 car_rec <-
-  recipe(mpg ~ ., data = mtcars) \%>\%
+  recipe(mpg ~ ., data = mtcars) |>
   step_normalize(all_predictors())
 
 svm_mod <-
-  svm_rbf(cost = tune(), rbf_sigma = tune()) \%>\%
-  set_engine("kernlab") \%>\%
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_engine("kernlab") |>
   set_mode("regression")
 
 # Use a space-filling design with 7 points
@@ -343,8 +343,8 @@ autoplot(svm_res, metric = "rmse") +
 # to `tune_grid()`, you can also wrap them up in a workflow and pass
 # that along instead (note that this doesn't do any preprocessing to
 # the variables, it passes them along as-is).
-wf <- workflow() \%>\%
-  add_variables(outcomes = mpg, predictors = everything()) \%>\%
+wf <- workflow() |>
+  add_variables(outcomes = mpg, predictors = everything()) |>
   add_model(svm_mod)
 
 set.seed(3254)

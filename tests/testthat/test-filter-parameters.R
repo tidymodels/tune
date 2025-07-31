@@ -68,22 +68,22 @@ test_that("basic functionality", {
   )))
 
   rec_tune_1 <-
-    recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_normalize(recipes::all_predictors()) %>%
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_normalize(recipes::all_predictors()) |>
     recipes::step_pca(recipes::all_predictors(), num_comp = tune())
 
-  lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  lm_mod <- parsnip::linear_reg() |> parsnip::set_engine("lm")
 
   set.seed(363)
   mt_folds <- rsample::vfold_cv(mtcars, v = 3)
 
   extr_rec <- function(x) {
-    extract_recipe(x) %>% tidy(number = 2)
+    extract_recipe(x) |> tidy(number = 2)
   }
   lm_res <-
-    workflow() %>%
-    add_recipe(rec_tune_1) %>%
-    add_model(lm_mod) %>%
+    workflow() |>
+    add_recipe(rec_tune_1) |>
+    add_model(lm_mod) |>
     tune_grid(
       resamples = mt_folds,
       control = control_grid(extract = extr_rec),

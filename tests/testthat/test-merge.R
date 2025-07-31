@@ -4,17 +4,17 @@ test_that("recipe merges", {
 
   data("Chicago", package = "modeldata")
   spline_rec <-
-    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
-    recipes::step_date(date) %>%
-    recipes::step_holiday(date) %>%
-    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::recipe(ridership ~ ., data = head(Chicago)) |>
+    recipes::step_date(date) |>
+    recipes::step_holiday(date) |>
+    recipes::step_rm(date, dplyr::ends_with("away")) |>
     recipes::step_impute_knn(
       recipes::all_predictors(),
       neighbors = tune("imputation")
-    ) %>%
-    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
-    recipes::step_dummy(recipes::all_nominal()) %>%
-    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    ) |>
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) |>
+    recipes::step_dummy(recipes::all_nominal()) |>
+    recipes::step_normalize(recipes::all_numeric_predictors()) |>
     recipes::step_spline_b(
       recipes::all_predictors(),
       deg_free = tune(),
@@ -98,17 +98,17 @@ test_that("partially recipe merge", {
 
   data("Chicago", package = "modeldata")
   spline_rec <-
-    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
-    recipes::step_date(date) %>%
-    recipes::step_holiday(date) %>%
-    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::recipe(ridership ~ ., data = head(Chicago)) |>
+    recipes::step_date(date) |>
+    recipes::step_holiday(date) |>
+    recipes::step_rm(date, dplyr::ends_with("away")) |>
     recipes::step_impute_knn(
       recipes::all_predictors(),
       neighbors = tune("imputation")
-    ) %>%
-    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
-    recipes::step_dummy(recipes::all_nominal()) %>%
-    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    ) |>
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) |>
+    recipes::step_dummy(recipes::all_nominal()) |>
+    recipes::step_normalize(recipes::all_numeric_predictors()) |>
     recipes::step_spline_b(
       recipes::all_predictors(),
       deg_free = tune(),
@@ -192,17 +192,17 @@ test_that("umerged recipe merge", {
 
   data("Chicago", package = "modeldata")
   spline_rec <-
-    recipes::recipe(ridership ~ ., data = head(Chicago)) %>%
-    recipes::step_date(date) %>%
-    recipes::step_holiday(date) %>%
-    recipes::step_rm(date, dplyr::ends_with("away")) %>%
+    recipes::recipe(ridership ~ ., data = head(Chicago)) |>
+    recipes::step_date(date) |>
+    recipes::step_holiday(date) |>
+    recipes::step_rm(date, dplyr::ends_with("away")) |>
     recipes::step_impute_knn(
       recipes::all_predictors(),
       neighbors = tune("imputation")
-    ) %>%
-    recipes::step_other(recipes::all_nominal(), threshold = tune()) %>%
-    recipes::step_dummy(recipes::all_nominal()) %>%
-    recipes::step_normalize(recipes::all_numeric_predictors()) %>%
+    ) |>
+    recipes::step_other(recipes::all_nominal(), threshold = tune()) |>
+    recipes::step_dummy(recipes::all_nominal()) |>
+    recipes::step_normalize(recipes::all_numeric_predictors()) |>
     recipes::step_spline_b(
       recipes::all_predictors(),
       deg_free = tune(),
@@ -245,7 +245,7 @@ test_that("model spec merges", {
     parsnip::boost_tree(
       mode = "classification",
       trees = tune("funky name \n")
-    ) %>%
+    ) |>
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
   bst_grid <- tibble::tibble(
     "funky name \n" = 1:4,
@@ -269,7 +269,7 @@ test_that("model spec merges", {
 
   # ensure that `grid` can handle list-columns
   bst_model_obj <-
-    boost_tree(mode = "classification") %>%
+    boost_tree(mode = "classification") |>
     set_args(objective = tune())
 
   bst_grid_obj <- tibble::tibble(objective = list("hey", "there"))
@@ -291,7 +291,7 @@ test_that("partially model spec merge", {
     parsnip::boost_tree(
       mode = "classification",
       trees = tune("funky name \n")
-    ) %>%
+    ) |>
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
   bst_grid <- tibble::tibble(
     "funky name \n" = 1:4,
@@ -319,7 +319,7 @@ test_that("umerged model spec merge", {
     parsnip::boost_tree(
       mode = "classification",
       trees = tune("funky name \n")
-    ) %>%
+    ) |>
     parsnip::set_engine("C5.0", rules = tune(), noGlobalPruning = TRUE)
   bst_grid <- tibble::tibble(
     "funky name \n" = 1:4,

@@ -95,14 +95,14 @@ show_best.tune_results <- function(
   summary_res <- .filter_perf_metrics(x, metric, eval_time)
 
   if (metric_info$direction == "maximize") {
-    summary_res <- summary_res %>% dplyr::arrange(dplyr::desc(mean))
+    summary_res <- summary_res |> dplyr::arrange(dplyr::desc(mean))
   } else if (metric_info$direction == "minimize") {
-    summary_res <- summary_res %>% dplyr::arrange(mean)
+    summary_res <- summary_res |> dplyr::arrange(mean)
   } else if (metric_info$direction == "zero") {
-    summary_res <- summary_res %>% dplyr::arrange(abs(mean))
+    summary_res <- summary_res |> dplyr::arrange(abs(mean))
   }
   show_ind <- 1:min(nrow(summary_res), n)
-  summary_res %>%
+  summary_res |>
     dplyr::slice(show_ind)
 }
 
@@ -136,7 +136,7 @@ select_best.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
     eval_time = eval_time,
     call = rlang::current_env()
   )
-  res %>% dplyr::select(dplyr::all_of(param_names), .config)
+  res |> dplyr::select(dplyr::all_of(param_names), .config)
 }
 
 #' @export
@@ -181,14 +181,14 @@ select_by_pct_loss.tune_results <- function(
   }
 
   summary_res <-
-    summary_res %>%
-    dplyr::rowwise() %>%
+    summary_res |>
+    dplyr::rowwise() |>
     dplyr::mutate(
       .best = best_metric,
       # can calculate loss without knowledge of direction since
       # we know that losses must be larger than that for the best
       .loss = abs((abs(mean) - abs(.best)) / .best) * 100
-    ) %>%
+    ) |>
     dplyr::ungroup()
 
   dots <- rlang::enquos(...)
@@ -203,10 +203,10 @@ select_by_pct_loss.tune_results <- function(
   # discard models more complex than the best and
   # remove models with greater increase in loss than the limit
   best_index <- which(summary_res$.loss == 0)
-  summary_res %>%
-    dplyr::slice(1:best_index) %>%
-    dplyr::filter(.loss < limit) %>%
-    dplyr::slice(1) %>%
+  summary_res |>
+    dplyr::slice(1:best_index) |>
+    dplyr::filter(.loss < limit) |>
+    dplyr::slice(1) |>
     dplyr::select(dplyr::all_of(param_names), .config)
 }
 
@@ -248,22 +248,22 @@ select_by_one_std_err.tune_results <- function(
     best <- summary_res$mean[best_index]
     bound <- best - summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
+      summary_res |>
       dplyr::mutate(
         .best = best,
         .bound = bound
-      ) %>%
+      ) |>
       dplyr::filter(mean >= .bound)
   } else if (metric_info$direction == "minimize") {
     best_index <- which.min(summary_res$mean)
     best <- summary_res$mean[best_index]
     bound <- best + summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
+      summary_res |>
       dplyr::mutate(
         .best = best,
         .bound = bound
-      ) %>%
+      ) |>
       dplyr::filter(mean <= .bound)
   } else if (metric_info$direction == "zero") {
     best_index <- which.min(abs(summary_res$mean))
@@ -271,13 +271,13 @@ select_by_one_std_err.tune_results <- function(
     bound_lower <- -abs(best) - summary_res$std_err[best_index]
     bound_upper <- abs(best) + summary_res$std_err[best_index]
     summary_res <-
-      summary_res %>%
-      dplyr::rowwise() %>%
+      summary_res |>
+      dplyr::rowwise() |>
       dplyr::mutate(
         .best = best,
         .bound = list(c(lower = bound_lower, upper = bound_upper))
-      ) %>%
-      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) %>%
+      ) |>
+      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) |>
       dplyr::ungroup()
   }
 
@@ -289,8 +289,8 @@ select_by_one_std_err.tune_results <- function(
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
-  summary_res %>%
-    dplyr::slice(1) %>%
+  summary_res |>
+    dplyr::slice(1) |>
     dplyr::select(dplyr::all_of(param_names), .config)
 }
 

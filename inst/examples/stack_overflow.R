@@ -8,9 +8,9 @@ library(readr)
 so_train <-
   read_rds(url(
     "https://github.com/juliasilge/supervised-ML-case-studies-course/blob/master/data/c2_training_full.rds?raw=true"
-  )) %>%
-  mutate(Country = as.factor(Country)) %>%
-  mutate_if(is.logical, as.numeric) %>%
+  )) |>
+  mutate(Country = as.factor(Country)) |>
+  mutate_if(is.logical, as.numeric) |>
   # ranger doesn't like spaces or "/" and will error with "Illegal column names in
   # formula interface. Fix column names or use alternative interface in ranger.
   rename_at(
@@ -19,17 +19,17 @@ so_train <-
   )
 
 lr_rec <-
-  recipe(Remote ~ ., data = so_train) %>%
-  step_dummy(Country) %>%
-  step_downsample(Remote) %>%
+  recipe(Remote ~ ., data = so_train) |>
+  step_dummy(Country) |>
+  step_downsample(Remote) |>
   step_zv(all_predictors())
 
 lr_mod <-
-  logistic_reg(penalty = tune(), mixture = tune()) %>%
+  logistic_reg(penalty = tune(), mixture = tune()) |>
   set_engine("glmnet")
 
 rf_rec <-
-  recipe(Remote ~ ., data = so_train) %>%
+  recipe(Remote ~ ., data = so_train) |>
   step_downsample(Remote)
 
 rf_mod <-
@@ -38,7 +38,7 @@ rf_mod <-
     mtry = tune(),
     min_n = tune(),
     trees = 1000
-  ) %>%
+  ) |>
   set_engine("ranger")
 
 set.seed(4290)
@@ -66,8 +66,8 @@ glmn_search <- tune_grid(
   control = control_grid(verbose = TRUE)
 )
 
-summarize(glmn_search) %>%
-  filter(.metric == "accuracy") %>%
+summarize(glmn_search) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = penalty, y = mean, col = factor(mixture))) +
   geom_point() +
   geom_line() +
@@ -78,8 +78,8 @@ summarize(glmn_search) %>%
 
 set.seed(4538)
 rf_grid <-
-  parameters(rf_mod) %>%
-  update(mtry = mtry(c(1, 20))) %>%
+  parameters(rf_mod) |>
+  update(mtry = mtry(c(1, 20))) |>
   grid_latin_hypercube(size = 20)
 
 set.seed(1809)
@@ -91,17 +91,17 @@ rf_search <- tune_grid(
   metrics = metric_set(accuracy, roc_auc)
 )
 
-summarize(rf_search) %>%
-  filter(.metric == "accuracy") %>%
-  select(mtry, min_n, mean) %>%
-  pivot_longer(-mean, names_to = "parameter", values_to = "value") %>%
+summarize(rf_search) |>
+  filter(.metric == "accuracy") |>
+  select(mtry, min_n, mean) |>
+  pivot_longer(-mean, names_to = "parameter", values_to = "value") |>
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
   geom_smooth(se = FALSE) +
   facet_wrap(~parameter, scales = "free_x")
 
 
-summarize(rf_search) %>%
-  filter(.metric == "accuracy") %>%
+summarize(rf_search) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = mtry, y = min_n, size = mean)) +
   geom_point()

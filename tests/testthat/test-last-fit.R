@@ -6,12 +6,12 @@ test_that("formula method", {
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
   rmse_test <- yardstick::rsq_vec(
-    rsample::testing(split) %>% pull(mpg),
+    rsample::testing(split) |> pull(mpg),
     test_pred
   )
 
-  res <- parsnip::linear_reg() %>%
-    parsnip::set_engine("lm") %>%
+  res <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
     last_fit(f, split)
 
   expect_equal(res, .Last.tune.result)
@@ -40,14 +40,14 @@ test_that("recipe method", {
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
   rmse_test <- yardstick::rsq_vec(
-    rsample::testing(split) %>% pull(mpg),
+    rsample::testing(split) |> pull(mpg),
     test_pred
   )
 
-  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) |>
     recipes::step_poly(disp)
-  res <- parsnip::linear_reg() %>%
-    parsnip::set_engine("lm") %>%
+  res <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
     last_fit(rec, split)
 
   expect_equal(
@@ -67,7 +67,7 @@ test_that("recipe method", {
 test_that("model_fit method", {
   library(parsnip)
 
-  lm_fit <- linear_reg() %>% fit(mpg ~ ., data = mtcars)
+  lm_fit <- linear_reg() |> fit(mpg ~ ., data = mtcars)
 
   expect_snapshot(last_fit(lm_fit), error = TRUE)
 })
@@ -75,7 +75,7 @@ test_that("model_fit method", {
 test_that("workflow method", {
   library(parsnip)
 
-  lm_fit <- workflows::workflow(mpg ~ ., linear_reg()) %>% fit(data = mtcars)
+  lm_fit <- workflows::workflow(mpg ~ ., linear_reg()) |> fit(data = mtcars)
 
   expect_snapshot(last_fit(lm_fit), error = TRUE)
 })
@@ -84,8 +84,8 @@ test_that("collect metrics of last fit", {
   set.seed(23598723)
   split <- rsample::initial_split(mtcars)
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
-  res <- parsnip::linear_reg() %>%
-    parsnip::set_engine("lm") %>%
+  res <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
     last_fit(f, split)
   met <- collect_metrics(res)
   expect_true(inherits(met, "tbl_df"))
@@ -101,8 +101,8 @@ test_that("ellipses with last_fit", {
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
 
   expect_snapshot(
-    linear_reg() %>%
-      set_engine("lm") %>%
+    linear_reg() |>
+      set_engine("lm") |>
       last_fit(f, split, something = "wrong")
   )
 })
@@ -115,8 +115,8 @@ test_that("argument order gives errors for recipe/formula", {
 
   f <- mpg ~ cyl + poly(disp, 2) + hp + drat + wt + qsec + vs + am + gear + carb
 
-  rec <- recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_poly(disp)
-  lin_mod <- parsnip::linear_reg() %>%
+  rec <- recipes::recipe(mpg ~ ., data = mtcars) |> recipes::step_poly(disp)
+  lin_mod <- parsnip::linear_reg() |>
     parsnip::set_engine("lm")
 
   expect_snapshot(error = TRUE, {
@@ -131,12 +131,12 @@ test_that("same results of last_fit() and fit() (#300)", {
   skip_if_not_installed("randomForest")
   skip("determine how to handle this with parallel seeds; maybe opt out?")
 
-  rf <- parsnip::rand_forest(mtry = 2, trees = 5) %>%
-    parsnip::set_engine("randomForest") %>%
+  rf <- parsnip::rand_forest(mtry = 2, trees = 5) |>
+    parsnip::set_engine("randomForest") |>
     parsnip::set_mode("regression")
 
-  wflow <- workflows::workflow() %>%
-    workflows::add_model(rf) %>%
+  wflow <- workflows::workflow() |>
+    workflows::add_model(rf) |>
     workflows::add_formula(mpg ~ .)
 
   set.seed(23598723)
@@ -161,9 +161,9 @@ test_that("`last_fit()` when objects need tuning", {
 
   options(width = 200, pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_natural(disp, deg_free = tune())
-  spec_1 <- linear_reg(penalty = tune()) %>% set_engine("glmnet")
+  spec_1 <- linear_reg(penalty = tune()) |> set_engine("glmnet")
   spec_2 <- linear_reg()
   wflow_1 <- workflow(rec, spec_1)
   wflow_2 <- workflow(mpg ~ ., spec_1)
@@ -186,12 +186,12 @@ test_that("last_fit() excludes validation set for initial_validation_split objec
   lm_fit <- lm(f, data = rsample::training(split))
   test_pred <- predict(lm_fit, rsample::testing(split))
   rmse_test <- yardstick::rsq_vec(
-    rsample::testing(split) %>% pull(Sale_Price),
+    rsample::testing(split) |> pull(Sale_Price),
     test_pred
   )
 
-  res <- parsnip::linear_reg() %>%
-    parsnip::set_engine("lm") %>%
+  res <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
     last_fit(f, split)
 
   expect_equal(res, .Last.tune.result)
@@ -222,12 +222,12 @@ test_that("last_fit() can include validation set for initial_validation_split ob
   lm_fit <- lm(f, data = train_val)
   test_pred <- predict(lm_fit, rsample::testing(split))
   rmse_test <- yardstick::rsq_vec(
-    rsample::testing(split) %>% pull(Sale_Price),
+    rsample::testing(split) |> pull(Sale_Price),
     test_pred
   )
 
-  res <- parsnip::linear_reg() %>%
-    parsnip::set_engine("lm") %>%
+  res <- parsnip::linear_reg() |>
+    parsnip::set_engine("lm") |>
     last_fit(f, split, add_validation_set = TRUE)
 
   expect_equal(res, .Last.tune.result)
@@ -272,9 +272,9 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
     workflows::workflow(
       y ~ x,
       parsnip::linear_reg()
-    ) %>%
+    ) |>
     workflows::add_tailor(
-      tailor::tailor() %>% tailor::adjust_numeric_calibration("linear")
+      tailor::tailor() |> tailor::adjust_numeric_calibration("linear")
     )
 
   # ----------------------------------------------------------------------------
@@ -347,9 +347,9 @@ test_that("can use `last_fit()` with a workflow - postprocessor (does not requir
     workflows::workflow(
       y ~ x,
       parsnip::linear_reg()
-    ) %>%
+    ) |>
     workflows::add_tailor(
-      tailor::tailor() %>% tailor::adjust_numeric_range(lower_limit = 1)
+      tailor::tailor() |> tailor::adjust_numeric_range(lower_limit = 1)
     )
 
   set.seed(1)

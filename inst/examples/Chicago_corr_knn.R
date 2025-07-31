@@ -20,12 +20,12 @@ data_folds <- rolling_origin(
 stations <- names(Chicago)[2:21]
 
 chi_rec <-
-  recipe(ridership ~ ., data = Chicago) %>%
-  step_holiday(date) %>%
-  step_date(date) %>%
-  step_rm(date) %>%
-  step_dummy(all_nominal()) %>%
-  step_zv(all_predictors()) %>%
+  recipe(ridership ~ ., data = Chicago) |>
+  step_holiday(date) |>
+  step_date(date) |>
+  step_rm(date) |>
+  step_dummy(all_nominal()) |>
+  step_zv(all_predictors()) |>
   step_corr(all_of(!!stations), threshold = tune())
 
 
@@ -35,16 +35,16 @@ knn_model <-
     neighbors = tune(),
     weight_func = tune(),
     dist_power = tune()
-  ) %>%
+  ) |>
   set_engine("kknn")
 
 chi_wflow <-
-  workflow() %>%
-  add_recipe(chi_rec) %>%
+  workflow() |>
+  add_recipe(chi_rec) |>
   add_model(knn_model)
 
 chi_param <-
-  parameters(chi_wflow) %>%
+  parameters(chi_wflow) |>
   update(
     threshold = threshold(c(.8, .99)),
     dist_power = dist_power(c(1, 2)),
@@ -52,7 +52,7 @@ chi_param <-
   )
 
 chi_grid <-
-  chi_param %>%
+  chi_param |>
   grid_latin_hypercube(size = 18)
 
 res <- tune_grid(
@@ -62,9 +62,9 @@ res <- tune_grid(
   control = control_grid(verbose = TRUE)
 )
 
-# summarize(res) %>%
-#   dplyr::filter(.metric == "rmse") %>%
-#   select(-n, -std_err, -.estimator, -.metric) %>%
+# summarize(res) |>
+#   dplyr::filter(.metric == "rmse") |>
+#   select(-n, -std_err, -.estimator, -.metric) |>
 #   ggplot(aes(x = neighbors, y = mean, col = weight_func)) +
 #   geom_point() + geom_line() +
 #   facet_wrap(~threshold, scales = "free_x")

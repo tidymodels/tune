@@ -10,11 +10,11 @@ vote_train <- read_rds(url(
 ))
 
 voters_rec <-
-  recipe(turnout16_2016 ~ ., data = vote_train) %>%
+  recipe(turnout16_2016 ~ ., data = vote_train) |>
   step_downsample(turnout16_2016)
 
 lr_mod <-
-  logistic_reg(penalty = tune(), mixture = tune()) %>%
+  logistic_reg(penalty = tune(), mixture = tune()) |>
   set_engine("glmnet")
 
 rf_mod <-
@@ -23,7 +23,7 @@ rf_mod <-
     mtry = tune(),
     min_n = tune(),
     trees = 1000
-  ) %>%
+  ) |>
   set_engine("ranger")
 
 set.seed(6059)
@@ -44,8 +44,8 @@ glmn_search <- tune_grid(
   metrics = metric_set(accuracy, roc_auc)
 )
 
-summarize(glmn_search) %>%
-  filter(.metric == "accuracy") %>%
+summarize(glmn_search) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = penalty, y = mean, col = factor(mixture))) +
   geom_point() +
   geom_line() +
@@ -56,8 +56,8 @@ summarize(glmn_search) %>%
 
 set.seed(606)
 rf_grid <-
-  parameters(rf_mod) %>%
-  update(mtry = mtry(c(1, 41))) %>%
+  parameters(rf_mod) |>
+  update(mtry = mtry(c(1, 41))) |>
   grid_latin_hypercube(size = 20)
 
 set.seed(1354)
@@ -69,17 +69,17 @@ rf_search <- tune_grid(
   metrics = metric_set(accuracy, roc_auc)
 )
 
-summarize(rf_search) %>%
-  filter(.metric == "accuracy") %>%
-  select(mtry, min_n, mean) %>%
-  pivot_longer(-mean, names_to = "parameter", values_to = "value") %>%
+summarize(rf_search) |>
+  filter(.metric == "accuracy") |>
+  select(mtry, min_n, mean) |>
+  pivot_longer(-mean, names_to = "parameter", values_to = "value") |>
   ggplot(aes(x = value, y = mean)) +
   geom_point() +
   geom_smooth(se = FALSE) +
   facet_wrap(~parameter, scales = "free_x")
 
 
-summarize(rf_search) %>%
-  filter(.metric == "accuracy") %>%
+summarize(rf_search) |>
+  filter(.metric == "accuracy") |>
   ggplot(aes(x = mtry, y = min_n, size = mean)) +
   geom_point()

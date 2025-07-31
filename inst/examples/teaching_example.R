@@ -22,7 +22,7 @@ registerDoMC(cores = 20)
 # ------------------------------------------------------------------------------
 
 segmentationData <-
-  segmentationData %>%
+  segmentationData |>
   dplyr::select(-Case, -Cell, -contains("Centroid"))
 
 set.seed(8567)
@@ -36,31 +36,31 @@ folds <- vfold_cv(seg_train, repeats = 3)
 # ------------------------------------------------------------------------------
 
 seg_pre_proc <-
-  recipe(Class ~ ., data = seg_train) %>%
-  step_YeoJohnson(all_predictors()) %>%
-  step_normalize(all_predictors()) %>%
-  step_pca(all_predictors(), num_comp = tune()) %>%
+  recipe(Class ~ ., data = seg_train) |>
+  step_YeoJohnson(all_predictors()) |>
+  step_normalize(all_predictors()) |>
+  step_pca(all_predictors(), num_comp = tune()) |>
   step_downsample(Class)
 
 svm_mod <-
-  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) %>%
+  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) |>
   set_engine("kernlab")
 
 svm_wflow <-
-  workflow() %>%
-  add_model(svm_mod) %>%
+  workflow() |>
+  add_model(svm_mod) |>
   add_recipe(seg_pre_proc)
 
 # ------------------------------------------------------------------------------
 
 svm_set <-
-  svm_wflow %>%
-  parameters() %>%
+  svm_wflow |>
+  parameters() |>
   update(num_comp = num_comp(c(1, 20)), rbf_sigma = rbf_sigma(c(-3, 0)))
 
 set.seed(354)
 grid <-
-  grid_max_entropy(svm_set, size = 150) %>%
+  grid_max_entropy(svm_set, size = 150) |>
   mutate(cost = 10^(-2.75), num_comp = 15)
 
 grid_results <- tune_grid(
@@ -72,7 +72,7 @@ grid_results <- tune_grid(
 collect_metrics(grid_results)
 
 ggplot(
-  collect_metrics(grid_results) %>% filter(.metric == "accuracy"),
+  collect_metrics(grid_results) |> filter(.metric == "accuracy"),
   aes(x = rbf_sigma, y = mean)
 ) +
   geom_path() +
@@ -81,7 +81,7 @@ ggplot(
 # ------------------------------------------------------------------------------
 
 sigma_set <-
-  svm_set %>%
+  svm_set |>
   slice(2)
 
 acc_results <-
@@ -116,8 +116,8 @@ initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
 initial_split
 #> <2199/731/2930>
 
-ames_train <- initial_split %>% training()
-ames_test <- initial_split %>% testing()
+ames_train <- initial_split |> training()
+ames_test <- initial_split |> testing()
 
 set.seed(2453)
 
@@ -125,11 +125,11 @@ cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 
 set.seed(24533)
 
-ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune()) %>%
-  step_dummy(all_nominal()) %>%
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = tune()) |>
+  step_dummy(all_nominal()) |>
   step_zv(all_predictors())
 
 mars_mod <-
@@ -137,22 +137,22 @@ mars_mod <-
     mode = "regression",
     prod_degree = tune(),
     prune_method = tune()
-  ) %>%
+  ) |>
   set_engine("earth")
 
 
-ames_wflow <- workflow() %>%
-  add_recipe(ames_rec) %>%
+ames_wflow <- workflow() |>
+  add_recipe(ames_rec) |>
   add_model(mars_mod)
 
 set.seed(123456)
-mars_set <- ames_wflow %>%
-  parameters() %>%
-  update(threshold = threshold(c(0, .2))) %>%
+mars_set <- ames_wflow |>
+  parameters() |>
+  update(threshold = threshold(c(0, .2))) |>
   update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
 
 set.seed(987654)
-mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+mars_grid <- mars_set |> grid_max_entropy(size = 5)
 
 set.seed(456321)
 initial_mars <-
@@ -448,8 +448,8 @@ initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
 initial_split
 #> <2199/731/2930>
 
-ames_train <- initial_split %>% training()
-ames_test <- initial_split %>% testing()
+ames_train <- initial_split |> training()
+ames_test <- initial_split |> testing()
 
 set.seed(2453)
 
@@ -457,11 +457,11 @@ cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 
 set.seed(24533)
 
-ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune()) %>%
-  step_dummy(all_nominal()) %>%
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = tune()) |>
+  step_dummy(all_nominal()) |>
   step_zv(all_predictors())
 
 mars_mod <-
@@ -469,24 +469,24 @@ mars_mod <-
     mode = "regression",
     prod_degree = tune(),
     prune_method = tune()
-  ) %>%
+  ) |>
   set_engine("earth")
 
 
-ames_wflow <- workflow() %>%
-  add_recipe(ames_rec) %>%
+ames_wflow <- workflow() |>
+  add_recipe(ames_rec) |>
   add_model(mars_mod)
 
 set.seed(123456)
-mars_set <- ames_wflow %>%
-  parameters() %>%
-  update(threshold = threshold(c(0, .2))) %>%
+mars_set <- ames_wflow |>
+  parameters() |>
+  update(threshold = threshold(c(0, .2))) |>
   update(
     prune_method = prune_method(values = c("backward", "none", "forward", "cv"))
   )
 
 set.seed(987654)
-mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+mars_grid <- mars_set |> grid_max_entropy(size = 5)
 
 set.seed(456321)
 initial_mars <-
@@ -781,8 +781,8 @@ initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
 initial_split
 #> <2199/731/2930>
 
-ames_train <- initial_split %>% training()
-ames_test <- initial_split %>% testing()
+ames_train <- initial_split |> training()
+ames_test <- initial_split |> testing()
 
 set.seed(2453)
 
@@ -790,11 +790,11 @@ cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 
 set.seed(24533)
 
-ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune()) %>%
-  step_dummy(all_nominal()) %>%
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = tune()) |>
+  step_dummy(all_nominal()) |>
   step_zv(all_predictors())
 
 mars_mod <-
@@ -802,22 +802,22 @@ mars_mod <-
     mode = "regression",
     prod_degree = tune(),
     prune_method = tune()
-  ) %>%
+  ) |>
   set_engine("earth")
 
 
-ames_wflow <- workflow() %>%
-  add_recipe(ames_rec) %>%
+ames_wflow <- workflow() |>
+  add_recipe(ames_rec) |>
   add_model(mars_mod)
 
 set.seed(123456)
-mars_set <- ames_wflow %>%
-  parameters() %>%
-  update(threshold = threshold(c(0, .2))) %>%
+mars_set <- ames_wflow |>
+  parameters() |>
+  update(threshold = threshold(c(0, .2))) |>
   update(prune_method = prune_method(values = c("backward", "none", "forward", "cv")))
 
 set.seed(987654)
-mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+mars_grid <- mars_set |> grid_max_entropy(size = 5)
 
 set.seed(456321)
 initial_mars <-
@@ -1113,8 +1113,8 @@ initial_split <- rsample::initial_split(ames, strata = "Sale_Price")
 initial_split
 #> <2199/731/2930>
 
-ames_train <- initial_split %>% training()
-ames_test <- initial_split %>% testing()
+ames_train <- initial_split |> training()
+ames_test <- initial_split |> testing()
 
 set.seed(2453)
 
@@ -1122,11 +1122,11 @@ cv_splits <- vfold_cv(ames_train, strata = "Sale_Price")
 
 set.seed(24533)
 
-ames_rec <- recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = tune()) %>%
-  step_dummy(all_nominal()) %>%
+ames_rec <- recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = tune()) |>
+  step_dummy(all_nominal()) |>
   step_zv(all_predictors())
 
 mars_mod <-
@@ -1134,24 +1134,24 @@ mars_mod <-
     mode = "regression",
     prod_degree = tune(),
     prune_method = tune()
-  ) %>%
+  ) |>
   set_engine("earth")
 
 
-ames_wflow <- workflow() %>%
-  add_recipe(ames_rec) %>%
+ames_wflow <- workflow() |>
+  add_recipe(ames_rec) |>
   add_model(mars_mod)
 
 set.seed(123456)
-mars_set <- ames_wflow %>%
-  parameters() %>%
-  update(threshold = threshold(c(0, .2))) %>%
+mars_set <- ames_wflow |>
+  parameters() |>
+  update(threshold = threshold(c(0, .2))) |>
   update(
     prune_method = prune_method(values = c("backward", "none", "forward", "cv"))
   )
 
 set.seed(987654)
-mars_grid <- mars_set %>% grid_max_entropy(size = 5)
+mars_grid <- mars_set |> grid_max_entropy(size = 5)
 
 set.seed(456321)
 initial_mars <-
@@ -1162,12 +1162,12 @@ initial_mars <-
     control = control_grid(verbose = TRUE)
   )
 
-collect_metrics(initial_mars) %>%
-  filter(.metric == "rmse") %>%
+collect_metrics(initial_mars) |>
+  filter(.metric == "rmse") |>
   arrange(rbf_sigma)
 
 acc_vals_1 <-
-  acc_results %>%
+  acc_results |>
   slice(c(50, 80, 120))
 
 ggplot(
@@ -1190,13 +1190,13 @@ gp_iter <- function(.data, pset, objective) {
   }
 
   gp_data_1 <-
-    tune:::encode_set(.data %>% select(rbf_sigma), pset) %>%
-    set_names("scaled_sigma") %>%
-    bind_cols(.data %>% select(mean, rbf_sigma))
+    tune:::encode_set(.data |> select(rbf_sigma), pset) |>
+    set_names("scaled_sigma") |>
+    bind_cols(.data |> select(mean, rbf_sigma))
 
   gp_grid_1 <-
-    tune:::encode_set(sigma_grid, pset) %>%
-    set_names("scaled_sigma") %>%
+    tune:::encode_set(sigma_grid, pset) |>
+    set_names("scaled_sigma") |>
     mutate(rbf_sigma = sigma_grid$rbf_sigma)
 
   gp_1 <- GP_fit(
@@ -1204,14 +1204,14 @@ gp_iter <- function(.data, pset, objective) {
     Y = gp_data_1$mean
   )
   gp_fit_1 <-
-    predict(gp_1, as.matrix(gp_grid_1[, 1, drop = FALSE]))$complete_data %>%
-    as_tibble() %>%
-    setNames(c("scaled_sigma", ".mean", "var")) %>%
-    mutate(.sd = sqrt(var)) %>%
-    bind_cols(gp_grid_1 %>% select(rbf_sigma))
+    predict(gp_1, as.matrix(gp_grid_1[, 1, drop = FALSE]))$complete_data |>
+    as_tibble() |>
+    setNames(c("scaled_sigma", ".mean", "var")) |>
+    mutate(.sd = sqrt(var)) |>
+    bind_cols(gp_grid_1 |> select(rbf_sigma))
 
   gp_fit_1 <-
-    gp_fit_1 %>%
+    gp_fit_1 |>
     bind_cols(
       predict(
         objective,
@@ -1220,7 +1220,7 @@ gp_iter <- function(.data, pset, objective) {
         iter = 1,
         best = max(.data$mean)
       )
-    ) %>%
+    ) |>
     mutate(
       objective = ifelse(objective < 0, 0, objective),
       lower = .mean - const * .sd,
@@ -1232,7 +1232,7 @@ gp_iter <- function(.data, pset, objective) {
 # ------------------------------------------------------------------------------
 
 acc_vals <-
-  acc_results %>%
+  acc_results |>
   slice(c(80, 110, 140))
 
 sigma_grid <- tibble(rbf_sigma = 10^seq(-3, 0, length = 500))
@@ -1269,7 +1269,7 @@ for (iter in 1:25) {
     xlab("Parameter")
 
   min_y <-
-    acc_vals %>%
+    acc_vals |>
     mutate(y = min(results$objective))
 
   p_lower <-
@@ -1308,21 +1308,21 @@ for (iter in 1:25) {
   }
 
   best <-
-    results %>%
-    arrange(desc(objective)) %>%
-    slice(1) %>%
-    select(best = rbf_sigma) %>%
+    results |>
+    arrange(desc(objective)) |>
+    slice(1) |>
+    select(best = rbf_sigma) |>
     cbind(
-      acc_results %>%
-        anti_join(acc_vals %>% select(rbf_sigma), by = "rbf_sigma")
-    ) %>%
-    mutate(error = abs(best - rbf_sigma)) %>%
-    arrange(error) %>%
-    slice(1) %>%
+      acc_results |>
+        anti_join(acc_vals |> select(rbf_sigma), by = "rbf_sigma")
+    ) |>
+    mutate(error = abs(best - rbf_sigma)) |>
+    arrange(error) |>
+    slice(1) |>
     select(rbf_sigma)
 
   acc_vals <-
-    acc_vals %>%
+    acc_vals |>
     bind_rows(
       inner_join(acc_results, best, by = "rbf_sigma")
     )

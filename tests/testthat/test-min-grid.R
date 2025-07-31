@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 
 test_that("boosted tree grid reduction - xgboost", {
-  mod <- parsnip::boost_tree() %>%
+  mod <- parsnip::boost_tree() |>
     parsnip::set_engine("xgboost")
 
   # A typical grid
@@ -53,7 +53,7 @@ test_that("boosted tree grid reduction - xgboost", {
   }
 
   # different id names
-  mod_1 <- parsnip::boost_tree(trees = tune("Amos")) %>%
+  mod_1 <- parsnip::boost_tree(trees = tune("Amos")) |>
     parsnip::set_engine("xgboost")
   reg_grid <- expand.grid(Amos = 1:3, min_n = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -70,7 +70,7 @@ test_that("boosted tree grid reduction - xgboost", {
   expect_equal(all_sub_smol$Amos, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Amos = 1:2))
 
-  mod_2 <- parsnip::boost_tree(trees = tune("Ade Tukunbo")) %>%
+  mod_2 <- parsnip::boost_tree(trees = tune("Ade Tukunbo")) |>
     parsnip::set_engine("xgboost")
   reg_grid <- expand.grid(`Ade Tukunbo` = 1:3, min_n = 1:2, ` \t123` = 10:11)
   reg_grid_smol <- min_grid(mod_2, reg_grid)
@@ -86,7 +86,7 @@ test_that("boosted tree grid reduction - xgboost", {
 # ------------------------------------------------------------------------------
 
 test_that("boosted tree grid reduction - C5.0", {
-  mod <- parsnip::boost_tree() %>% parsnip::set_engine("C5.0")
+  mod <- parsnip::boost_tree() |> parsnip::set_engine("C5.0")
 
   # A typical grid
   reg_grid <- expand.grid(trees = 1:3, min_n = 1:2)
@@ -137,7 +137,7 @@ test_that("boosted tree grid reduction - C5.0", {
   }
 
   # different id names
-  mod_1 <- parsnip::boost_tree(trees = tune("Marco")) %>%
+  mod_1 <- parsnip::boost_tree(trees = tune("Marco")) |>
     parsnip::set_engine("C5.0")
   reg_grid <- expand.grid(Marco = 1:3, min_n = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -154,7 +154,7 @@ test_that("boosted tree grid reduction - C5.0", {
   expect_equal(all_sub_smol$Marco, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Marco = 1:2))
 
-  mod_2 <- parsnip::boost_tree(trees = tune("Anderson Dawes")) %>%
+  mod_2 <- parsnip::boost_tree(trees = tune("Anderson Dawes")) |>
     parsnip::set_engine("C5.0")
   reg_grid <- expand.grid(`Anderson Dawes` = 1:3, min_n = 1:2, ` \t123` = 10:11)
   reg_grid_smol <- min_grid(mod_2, reg_grid)
@@ -173,7 +173,7 @@ test_that("linear regression grid reduction - glmnet", {
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
-  mod <- parsnip::linear_reg() %>% parsnip::set_engine("glmnet")
+  mod <- parsnip::linear_reg() |> parsnip::set_engine("glmnet")
 
   # A typical grid
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
@@ -234,7 +234,7 @@ test_that("linear regression grid reduction - glmnet", {
   }
 
   # different id names
-  mod_1 <- parsnip::linear_reg(penalty = tune("Shaddid")) %>%
+  mod_1 <- parsnip::linear_reg(penalty = tune("Shaddid")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(Shaddid = 1:3, mixture = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -251,7 +251,7 @@ test_that("linear regression grid reduction - glmnet", {
   expect_equal(all_sub_smol$Shaddid, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Shaddid = 1:2))
 
-  mod_2 <- parsnip::linear_reg(penalty = tune("Josephus Miller")) %>%
+  mod_2 <- parsnip::linear_reg(penalty = tune("Josephus Miller")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(
     `Josephus Miller` = 1:3,
@@ -274,7 +274,7 @@ test_that("logistic regression grid reduction - glmnet", {
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
-  mod <- parsnip::logistic_reg() %>% parsnip::set_engine("glmnet")
+  mod <- parsnip::logistic_reg() |> parsnip::set_engine("glmnet")
 
   # A typical grid
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
@@ -335,7 +335,7 @@ test_that("logistic regression grid reduction - glmnet", {
   }
 
   # different id names
-  mod_1 <- parsnip::logistic_reg(penalty = tune("Prax")) %>%
+  mod_1 <- parsnip::logistic_reg(penalty = tune("Prax")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(Prax = 1:3, mixture = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -352,7 +352,7 @@ test_that("logistic regression grid reduction - glmnet", {
   expect_equal(all_sub_smol$Prax, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Prax = 1:2))
 
-  mod_2 <- parsnip::logistic_reg(penalty = tune("Samara Rosenberg")) %>%
+  mod_2 <- parsnip::logistic_reg(penalty = tune("Samara Rosenberg")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(
     `Samara Rosenberg` = 1:3,
@@ -373,7 +373,7 @@ test_that("logistic regression grid reduction - glmnet", {
 test_that("logistic regression grid reduction - spark", {
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
   reg_grid_smol <- min_grid(
-    parsnip::logistic_reg() %>%
+    parsnip::logistic_reg() |>
       parsnip::set_engine("spark"),
     reg_grid
   )
@@ -388,7 +388,7 @@ test_that("logistic regression grid reduction - spark", {
 # ------------------------------------------------------------------------------
 
 test_that("MARS grid reduction - earth", {
-  mod <- parsnip::mars() %>% parsnip::set_engine("earth")
+  mod <- parsnip::mars() |> parsnip::set_engine("earth")
 
   # A typical grid
   reg_grid <- expand.grid(num_terms = 1:3, prod_degree = 1:2)
@@ -443,7 +443,7 @@ test_that("MARS grid reduction - earth", {
   }
 
   # different id names
-  mod_1 <- parsnip::mars(num_terms = tune("Filip")) %>%
+  mod_1 <- parsnip::mars(num_terms = tune("Filip")) |>
     parsnip::set_engine("earth")
   reg_grid <- expand.grid(Filip = 1:3, prod_degree = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -460,7 +460,7 @@ test_that("MARS grid reduction - earth", {
   expect_equal(all_sub_smol$Filip, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Filip = 1:2))
 
-  mod_2 <- parsnip::mars(num_terms = tune("Elvi Okoye")) %>%
+  mod_2 <- parsnip::mars(num_terms = tune("Elvi Okoye")) |>
     parsnip::set_engine("earth")
   reg_grid <- expand.grid(
     `Elvi Okoye` = 1:3,
@@ -483,7 +483,7 @@ test_that("multinomial regression grid reduction - glmnet", {
   # glmnet depends on >= 3.6.0 so we only test locally
   skip_if_not_installed("glmnet")
 
-  mod <- parsnip::multinom_reg() %>% parsnip::set_engine("glmnet")
+  mod <- parsnip::multinom_reg() |> parsnip::set_engine("glmnet")
 
   # A typical grid
   reg_grid <- expand.grid(penalty = 1:3, mixture = (1:5) / 5)
@@ -544,7 +544,7 @@ test_that("multinomial regression grid reduction - glmnet", {
   }
 
   # different id names
-  mod_1 <- parsnip::multinom_reg(penalty = tune("Cortazar")) %>%
+  mod_1 <- parsnip::multinom_reg(penalty = tune("Cortazar")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(Cortazar = 1:3, mixture = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -561,7 +561,7 @@ test_that("multinomial regression grid reduction - glmnet", {
   expect_equal(all_sub_smol$Cortazar, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Cortazar = 1:2))
 
-  mod_2 <- parsnip::multinom_reg(penalty = tune("Shed Garvey")) %>%
+  mod_2 <- parsnip::multinom_reg(penalty = tune("Shed Garvey")) |>
     parsnip::set_engine("glmnet")
   reg_grid <- expand.grid(`Shed Garvey` = 1:3, mixture = 1:2, ` \t123` = 10:11)
   reg_grid_smol <- min_grid(mod_2, reg_grid)
@@ -577,7 +577,7 @@ test_that("multinomial regression grid reduction - glmnet", {
 # ------------------------------------------------------------------------------
 
 test_that("nearest neighbors grid reduction - kknn", {
-  mod <- parsnip::nearest_neighbor() %>% parsnip::set_engine("kknn")
+  mod <- parsnip::nearest_neighbor() |> parsnip::set_engine("kknn")
 
   # A typical grid
   reg_grid <- expand.grid(neighbors = 1:3, dist_power = 1:2)
@@ -633,7 +633,7 @@ test_that("nearest neighbors grid reduction - kknn", {
   }
 
   # different id names
-  mod_1 <- parsnip::nearest_neighbor(neighbors = tune("Nami")) %>%
+  mod_1 <- parsnip::nearest_neighbor(neighbors = tune("Nami")) |>
     parsnip::set_engine("kknn")
   reg_grid <- expand.grid(Nami = 1:3, dist_power = 1:2)
   reg_grid_smol <- min_grid(mod_1, reg_grid)
@@ -650,7 +650,7 @@ test_that("nearest neighbors grid reduction - kknn", {
   expect_equal(all_sub_smol$Nami, 3)
   expect_equal(all_sub_smol$.submodels[[1]], list(Nami = 1:2))
 
-  mod_2 <- parsnip::nearest_neighbor(neighbors = tune("Michio Pa")) %>%
+  mod_2 <- parsnip::nearest_neighbor(neighbors = tune("Michio Pa")) |>
     parsnip::set_engine("kknn")
   reg_grid <- expand.grid(`Michio Pa` = 1:3, dist_power = 1:2, ` \t123` = 10:11)
   reg_grid_smol <- min_grid(mod_2, reg_grid)

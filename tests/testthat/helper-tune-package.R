@@ -10,17 +10,17 @@ rankdeficient_version <- any(names(formals("predict.lm")) == "rankdeficient")
 
 helper_objects_tune <- function() {
   rec_tune_1 <-
-    recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_normalize(recipes::all_predictors()) %>%
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_normalize(recipes::all_predictors()) |>
     recipes::step_pca(recipes::all_predictors(), num_comp = tune())
 
   rec_no_tune_1 <-
-    recipes::recipe(mpg ~ ., data = mtcars) %>%
+    recipes::recipe(mpg ~ ., data = mtcars) |>
     recipes::step_normalize(recipes::all_predictors())
 
-  lm_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
+  lm_mod <- parsnip::linear_reg() |> parsnip::set_engine("lm")
 
-  svm_mod <- parsnip::svm_rbf(mode = "regression", cost = tune()) %>%
+  svm_mod <- parsnip::svm_rbf(mode = "regression", cost = tune()) |>
     parsnip::set_engine("kernlab")
 
   list(
@@ -79,13 +79,13 @@ redefer_initialize_catalog <- function(test_env) {
 
 if (rlang::is_installed("splines2")) {
   rec_no_tune <-
-    recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_corr(all_predictors(), threshold = .1) %>%
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_corr(all_predictors(), threshold = .1) |>
     recipes::step_spline_natural(disp, deg_free = 5)
 
   rec_tune <-
-    recipes::recipe(mpg ~ ., data = mtcars) %>%
-    recipes::step_corr(all_predictors(), threshold = tune()) %>%
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_corr(all_predictors(), threshold = tune()) |>
     recipes::step_spline_natural(disp, deg_free = tune("disp_df"))
 }
 
@@ -113,15 +113,15 @@ mod_tune_no_submodel <-
 
 if (rlang::is_installed("probably")) {
   tlr_tune <-
-    tailor::tailor() %>%
+    tailor::tailor() |>
     tailor::adjust_numeric_range(lower_limit = tune())
 
   tlr_tune_cal <-
-    tailor::tailor() %>%
-    tailor::adjust_numeric_calibration(method = "linear") %>%
+    tailor::tailor() |>
+    tailor::adjust_numeric_calibration(method = "linear") |>
     tailor::adjust_numeric_range(lower_limit = tune())
 
   tlr_no_tune <-
-    tailor::tailor() %>%
+    tailor::tailor() |>
     tailor::adjust_numeric_range(lower_limit = 0)
 }

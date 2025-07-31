@@ -18,9 +18,9 @@ test_that("exponential decay", {
 test_that("in-line formulas on outcome", {
   # see issues 121
   w1 <-
-    workflow() %>%
-    add_formula(log(mpg) ~ .) %>%
-    add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
+    workflow() |>
+    add_formula(log(mpg) ~ .) |>
+    add_model(parsnip::linear_reg() |> parsnip::set_engine("lm"))
 
   expect_no_error(
     f1 <- fit_resamples(w1, resamples = rsample::vfold_cv(mtcars))
@@ -28,11 +28,11 @@ test_that("in-line formulas on outcome", {
   expect_true(inherits(f1, "resample_results"))
 
   w2 <-
-    workflow() %>%
+    workflow() |>
     add_recipe(
-      recipes::recipe(mpg ~ ., data = mtcars) %>% recipes::step_log(mpg)
-    ) %>%
-    add_model(parsnip::linear_reg() %>% parsnip::set_engine("lm"))
+      recipes::recipe(mpg ~ ., data = mtcars) |> recipes::step_log(mpg)
+    ) |>
+    add_model(parsnip::linear_reg() |> parsnip::set_engine("lm"))
 
   expect_no_error(
     f2 <- fit_resamples(w2, resamples = rsample::vfold_cv(mtcars))

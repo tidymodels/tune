@@ -7,22 +7,22 @@ theme_set(theme_bw())
 simple_rec <- recipe(Class ~ A + B, data = two_class_dat)
 
 spline_rec <-
-  simple_rec %>%
+  simple_rec |>
   step_ns(A, deg_free = tune("degrees of freedom"))
 
 knn_K <-
-  nearest_neighbor(neighbors = tune()) %>%
-  set_engine("kknn") %>%
+  nearest_neighbor(neighbors = tune()) |>
+  set_engine("kknn") |>
   set_mode("classification")
 
 knn_weights <-
-  nearest_neighbor(weight_func = tune()) %>%
-  set_engine("kknn") %>%
+  nearest_neighbor(weight_func = tune()) |>
+  set_engine("kknn") |>
   set_mode("classification")
 
 knn_two_vars <-
-  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>%
-  set_engine("kknn") %>%
+  nearest_neighbor(neighbors = tune(), weight_func = tune()) |>
+  set_engine("kknn") |>
   set_mode("classification")
 
 knn_three_vars <-
@@ -30,18 +30,18 @@ knn_three_vars <-
     neighbors = tune(),
     weight_func = tune(),
     dist_power = tune()
-  ) %>%
-  set_engine("kknn") %>%
+  ) |>
+  set_engine("kknn") |>
   set_mode("classification")
 
 knn_no_vars <-
-  nearest_neighbor(neighbors = 3) %>%
-  set_engine("kknn") %>%
+  nearest_neighbor(neighbors = 3) |>
+  set_engine("kknn") |>
   set_mode("classification")
 
 svm_mod <-
-  svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
-  set_engine("kernlab") %>%
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_engine("kernlab") |>
   set_mode("classification")
 
 one_perf <- metric_set(roc_auc)
@@ -52,7 +52,7 @@ two_perf <- metric_set(roc_auc, mcc)
 grid_plot <- function(rec, mod, sfd = TRUE, ...) {
   set.seed(7898)
   data_folds <- vfold_cv(two_class_dat, v = 3)
-  wflow <- workflow() %>% add_model(mod) %>% add_recipe(rec)
+  wflow <- workflow() |> add_model(mod) |> add_recipe(rec)
   pset <- parameters(wflow)
   is_quant <- purrr::map_lgl(pull(pset, object), inherits, "quant_param")
 

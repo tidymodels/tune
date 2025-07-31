@@ -86,20 +86,20 @@ predict.prob_improve <-
     }
 
     new_data <-
-      new_data %>%
+      new_data |>
       mutate(.sd = ifelse(.sd <= object$eps, object$eps, .sd))
 
     if (maximize) {
       new_data <-
-        new_data %>%
+        new_data |>
         mutate(delta = ((.mean - best - trade_off) / .sd))
     } else {
       new_data <-
-        new_data %>%
+        new_data |>
         mutate(delta = ((trade_off + best - .mean) / .sd))
     }
-    new_data %>%
-      dplyr::mutate(objective = pnorm(delta)) %>%
+    new_data |>
+      dplyr::mutate(objective = pnorm(delta)) |>
       dplyr::select(objective)
   }
 
@@ -141,23 +141,23 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
   }
 
   new_data <-
-    new_data %>%
+    new_data |>
     mutate(sd_trunc = ifelse(.sd <= object$eps, object$eps, .sd))
 
   if (maximize) {
-    new_data <- new_data %>% mutate(delta = .mean - best - trade_off)
+    new_data <- new_data |> mutate(delta = .mean - best - trade_off)
   } else {
-    new_data <- new_data %>% mutate(delta = trade_off + best - .mean)
+    new_data <- new_data |> mutate(delta = trade_off + best - .mean)
   }
   new_data <-
-    new_data %>%
+    new_data |>
     mutate(
       snr = delta / sd_trunc,
       z = ifelse(.sd <= object$eps, 0, snr),
       objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
     )
 
-  new_data %>% dplyr::select(objective)
+  new_data |> dplyr::select(objective)
 }
 
 
@@ -194,9 +194,9 @@ predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
 
   # `tune` is setup to always maximize the objective function
   if (maximize) {
-    new_data <- new_data %>% mutate(objective = .mean + kappa * .sd)
+    new_data <- new_data |> mutate(objective = .mean + kappa * .sd)
   } else {
-    new_data <- new_data %>% mutate(objective = -(.mean + kappa * .sd))
+    new_data <- new_data |> mutate(objective = -(.mean + kappa * .sd))
   }
-  new_data %>% dplyr::select(objective)
+  new_data |> dplyr::select(objective)
 }

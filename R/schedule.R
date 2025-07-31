@@ -45,14 +45,14 @@ schedule_stages <- function(grid, wflow) {
   param_info <- get_param_info(wflow)
 
   # schedule preprocessing stage and push the rest into a nested tibble
-  param_pre_stage <- param_info %>%
-    dplyr::filter(source == "recipe") %>%
+  param_pre_stage <- param_info |>
+    dplyr::filter(source == "recipe") |>
     dplyr::pull(id)
-  schedule <- grid %>%
+  schedule <- grid |>
     tidyr::nest(.by = dplyr::all_of(param_pre_stage), .key = "model_stage")
 
   # schedule next stages nested within `schedule_model_stage_i()`
-  schedule %>%
+  schedule |>
     dplyr::mutate(
       model_stage = purrr::map(
         model_stage,
@@ -64,11 +64,11 @@ schedule_stages <- function(grid, wflow) {
 }
 
 schedule_model_stage_i <- function(model_stage, param_info, wflow) {
-  model_param <- param_info %>%
-    dplyr::filter(source == "model_spec") %>%
+  model_param <- param_info |>
+    dplyr::filter(source == "model_spec") |>
     dplyr::pull(id)
-  non_submodel_param <- param_info %>%
-    dplyr::filter(source == "model_spec" & !has_submodel) %>%
+  non_submodel_param <- param_info |>
+    dplyr::filter(source == "model_spec" & !has_submodel) |>
     dplyr::pull(id)
 
   any_non_submodel_param <- length(non_submodel_param) > 0
@@ -77,7 +77,7 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
   schedule <- min_model_grid(model_stage, model_param, wflow)
 
   # push remaining parameters into the next stage
-  next_stage <- model_stage %>%
+  next_stage <- model_stage |>
     tidyr::nest(
       .by = dplyr::all_of(non_submodel_param),
       .key = "predict_stage"
@@ -86,15 +86,15 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
   if (any_non_submodel_param) {
     # min_model_grid() may change the row order, thus use next_stage as the
     # "left" data frame here to preserve the original row order
-    schedule <- next_stage %>%
-      dplyr::left_join(schedule, by = non_submodel_param) %>%
+    schedule <- next_stage |>
+      dplyr::left_join(schedule, by = non_submodel_param) |>
       dplyr::relocate(dplyr::all_of(model_param))
   } else {
     schedule <- dplyr::bind_cols(schedule, next_stage)
   }
 
   # schedule next stages nested within `schedule_predict_stage_i()`
-  schedule %>%
+  schedule |>
     dplyr::mutate(
       predict_stage = purrr::map(
         predict_stage,
@@ -106,24 +106,24 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
 
 min_model_grid <- function(grid, model_param, wflow) {
   # work on only the model parameters
-  model_grid <- grid %>%
-    dplyr::select(dplyr::all_of(model_param)) %>%
+  model_grid <- grid |>
+    dplyr::select(dplyr::all_of(model_param)) |>
     dplyr::distinct()
 
   if (nrow(model_grid) < 1) {
     return(model_grid)
   }
 
-  min_grid(extract_spec_parsnip(wflow), model_grid) %>%
+  min_grid(extract_spec_parsnip(wflow), model_grid) |>
     dplyr::select(dplyr::all_of(model_param))
 }
 
 schedule_predict_stage_i <- function(predict_stage, param_info) {
-  submodel_param <- param_info %>%
-    dplyr::filter(source == "model_spec" & has_submodel) %>%
+  submodel_param <- param_info |>
+    dplyr::filter(source == "model_spec" & has_submodel) |>
     dplyr::pull(id)
 
-  predict_stage %>%
+  predict_stage |>
     tidyr::nest(
       .by = dplyr::all_of(submodel_param),
       .key = "post_stage"
@@ -131,15 +131,15 @@ schedule_predict_stage_i <- function(predict_stage, param_info) {
 }
 
 get_param_info <- function(wflow) {
-  param_info <- tune_args(wflow) %>%
+  param_info <- tune_args(wflow) |>
     dplyr::select(name, id, source)
 
   model_spec <- extract_spec_parsnip(wflow)
   model_type <- class(model_spec)[1]
   model_eng <- model_spec$engine
 
-  model_param <- parsnip::get_from_env(paste0(model_type, "_args")) %>%
-    dplyr::filter(engine == model_spec$engine) %>%
+  model_param <- parsnip::get_from_env(paste0(model_type, "_args")) |>
+    dplyr::filter(engine == model_spec$engine) |>
     dplyr::select(name = parsnip, has_submodel)
 
   param_info <- dplyr::left_join(param_info, model_param, by = "name")

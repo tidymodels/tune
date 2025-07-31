@@ -10,13 +10,13 @@ set.seed(151)
 iono_rs <- bootstraps(Ionosphere, times = 30)
 
 svm_mod <-
-  svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
-  set_mode("classification") %>%
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_mode("classification") |>
   set_engine("kernlab")
 
 iono_rec <-
-  recipe(Class ~ ., data = Ionosphere) %>%
-  step_zv(all_predictors()) %>%
+  recipe(Class ~ ., data = Ionosphere) |>
+  step_zv(all_predictors()) |>
   step_dummy(all_predictors(), -all_numeric())
 
 roc_vals <- metric_set(roc_auc)

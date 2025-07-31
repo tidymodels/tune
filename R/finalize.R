@@ -21,7 +21,7 @@
 #'     neighbors = tune("K"),
 #'     weight_func = tune(),
 #'     dist_power = tune()
-#'   ) %>%
+#'   ) |>
 #'   set_engine("kknn")
 #'
 #' lowest_rmse <- select_best(ames_grid_search, metric = "rmse")
@@ -62,7 +62,7 @@ finalize_recipe <- function(x, parameters) {
   }
   check_final_param(parameters)
   pset <-
-    hardhat::extract_parameter_set_dials(x) %>%
+    hardhat::extract_parameter_set_dials(x) |>
     dplyr::filter(id %in% names(parameters) & source == "recipe")
 
   if (tibble::is_tibble(parameters)) {
@@ -117,8 +117,8 @@ finalize_tailor <- function(x, parameters) {
   }
   check_final_param(parameters)
   pset <-
-    hardhat::extract_parameter_set_dials(x) %>%
-    dplyr::filter(id %in% names(parameters) & source == "tailor") %>%
+    hardhat::extract_parameter_set_dials(x) |>
+    dplyr::filter(id %in% names(parameters) & source == "tailor") |>
     dplyr::as_tibble()
 
   if (tibble::is_tibble(parameters)) {

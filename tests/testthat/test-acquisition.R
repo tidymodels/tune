@@ -15,19 +15,19 @@ test_that("conf_bound calculations", {
 
   expect_equal(
     predict(conf_bound(kappa = 1), test_res, maximize = TRUE, iter = 1),
-    test_res %>% mutate(objective = .mean + 1 * .sd) %>% select(objective)
+    test_res |> mutate(objective = .mean + 1 * .sd) |> select(objective)
   )
   expect_equal(
     predict(conf_bound(2), test_res, maximize = TRUE, iter = 1),
-    test_res %>% mutate(objective = .mean + 2 * .sd) %>% select(objective)
+    test_res |> mutate(objective = .mean + 2 * .sd) |> select(objective)
   )
   expect_equal(
     predict(conf_bound(dbled), test_res, maximize = TRUE, iter = 2),
-    test_res %>% mutate(objective = .mean + 4 * .sd) %>% select(objective)
+    test_res |> mutate(objective = .mean + 4 * .sd) |> select(objective)
   )
   expect_equal(
     predict(conf_bound(kappa = 1), test_res, maximize = FALSE, iter = 1),
-    test_res %>% mutate(objective = -(.mean + 1 * .sd)) %>% select(objective)
+    test_res |> mutate(objective = -(.mean + 1 * .sd)) |> select(objective)
   )
 })
 
@@ -59,27 +59,27 @@ test_that("prob_improve calculations", {
 
   expect_equal(
     predict(prob_improve(), test_res, maximize = TRUE, iter = 1, best = 15),
-    test_res %>%
-      mutate(objective = pnorm((.mean - 15) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((.mean - 15) / .sd)) |>
       select(objective)
   )
   expect_equal(
     predict(prob_improve(), test_res, maximize = FALSE, iter = 1, best = -2),
-    test_res %>%
-      mutate(objective = pnorm((-2 - .mean) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((-2 - .mean) / .sd)) |>
       select(objective)
   )
 
   expect_equal(
     predict(prob_improve(.1), test_res, maximize = TRUE, iter = 1, best = 15),
-    test_res %>%
-      mutate(objective = pnorm((.mean - 15 - .1) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((.mean - 15 - .1) / .sd)) |>
       select(objective)
   )
   expect_equal(
     predict(prob_improve(.1), test_res, maximize = FALSE, iter = 1, best = -2),
-    test_res %>%
-      mutate(objective = pnorm((-2 + .1 - .mean) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((-2 + .1 - .mean) / .sd)) |>
       select(objective)
   )
 
@@ -91,8 +91,8 @@ test_that("prob_improve calculations", {
       iter = 2,
       best = 15
     ),
-    test_res %>%
-      mutate(objective = pnorm((.mean - 15 - 4) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((.mean - 15 - 4) / .sd)) |>
       select(objective)
   )
   expect_equal(
@@ -103,8 +103,8 @@ test_that("prob_improve calculations", {
       iter = 4,
       best = -2
     ),
-    test_res %>%
-      mutate(objective = pnorm((-2 + 16 - .mean) / .sd)) %>%
+    test_res |>
+      mutate(objective = pnorm((-2 + 16 - .mean) / .sd)) |>
       select(objective)
   )
 })
@@ -137,49 +137,49 @@ test_that("exp_improve calculations", {
 
   expect_equal(
     predict(exp_improve(), test_res, maximize = TRUE, iter = 1, best = 15),
-    test_res %>%
+    test_res |>
       mutate(
         diff = .mean - 15,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
   expect_equal(
     predict(exp_improve(), test_res, maximize = FALSE, iter = 1, best = 15),
-    test_res %>%
+    test_res |>
       mutate(
         diff = 15 - .mean,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
 
   expect_equal(
     predict(exp_improve(1), test_res, maximize = TRUE, iter = 1, best = 15),
-    test_res %>%
+    test_res |>
       mutate(
         diff = .mean - 16,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
   expect_equal(
     predict(exp_improve(1), test_res, maximize = FALSE, iter = 1, best = 15),
-    test_res %>%
+    test_res |>
       mutate(
         diff = 16 - .mean,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
 
   expect_equal(
     predict(exp_improve(dbled), test_res, maximize = TRUE, iter = 2, best = 15),
-    test_res %>%
+    test_res |>
       mutate(
         diff = .mean - 19,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
   expect_equal(
@@ -190,11 +190,11 @@ test_that("exp_improve calculations", {
       iter = 2,
       best = 15
     ),
-    test_res %>%
+    test_res |>
       mutate(
         diff = 19 - .mean,
         objective = (diff * pnorm(diff / .sd)) + (.sd * dnorm(diff / .sd))
-      ) %>%
+      ) |>
       select(objective)
   )
 })

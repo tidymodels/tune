@@ -17,12 +17,12 @@ data_folds <- rolling_origin(
 stations <- names(Chicago)[2:21]
 
 chi_rec <-
-  recipe(ridership ~ ., data = Chicago) %>%
-  step_holiday(date) %>%
-  step_date(date) %>%
-  step_rm(date) %>%
-  step_dummy(all_nominal()) %>%
-  step_zv(all_predictors()) %>%
+  recipe(ridership ~ ., data = Chicago) |>
+  step_holiday(date) |>
+  step_date(date) |>
+  step_rm(date) |>
+  step_dummy(all_nominal()) |>
+  step_zv(all_predictors()) |>
   step_normalize(all_predictors())
 
 knn_model <-
@@ -31,21 +31,21 @@ knn_model <-
     neighbors = tune(),
     weight_func = tune(),
     dist_power = tune()
-  ) %>%
+  ) |>
   set_engine("kknn")
 
 
 chi_wflow <-
-  workflow() %>%
-  add_recipe(chi_rec) %>%
+  workflow() |>
+  add_recipe(chi_rec) |>
   add_model(knn_model)
 
 set.seed(255)
 chi_grid <-
-  chi_wflow %>%
-  parameters %>%
-  update(neighbors = neighbors(c(1, 30))) %>%
-  update(dist_power = dist_power(c(1 / 4, 2))) %>%
+  chi_wflow |>
+  parameters |>
+  update(neighbors = neighbors(c(1, 30))) |>
+  update(dist_power = dist_power(c(1 / 4, 2))) |>
   grid_regular(levels = c(30, 3, 3))
 
 
@@ -56,13 +56,13 @@ reg_knn_grid <- tune_grid(
   control = control_grid(verbose = TRUE)
 )
 
-summarize(reg_knn_grid) %>%
-  dplyr::filter(.metric == "rmse") %>%
+summarize(reg_knn_grid) |>
+  dplyr::filter(.metric == "rmse") |>
   mutate(
     RMSE = mean,
     `Minkowski distance parameter` = dist_power,
     weights = weight_func
-  ) %>%
+  ) |>
   ggplot(aes(x = neighbors, y = RMSE, col = weights)) +
   geom_path() +
   geom_point() +
@@ -71,22 +71,22 @@ summarize(reg_knn_grid) %>%
   xlab("# Nearest-Neighbors")
 
 
-summarize(reg_knn_grid) %>%
-  dplyr::filter(.metric == "rmse") %>%
-  arrange(mean) %>%
+summarize(reg_knn_grid) |>
+  dplyr::filter(.metric == "rmse") |>
+  arrange(mean) |>
   slice(1)
 
 # ------------------------------------------------------------------------------
 
 chi_set <-
-  chi_wflow %>%
-  parameters %>%
-  update(neighbors = neighbors(c(1, 30))) %>%
+  chi_wflow |>
+  parameters |>
+  update(neighbors = neighbors(c(1, 30))) |>
   update(dist_power = dist_power(c(1 / 10, 2)))
 
 set.seed(255)
 smol_grid <-
-  chi_set %>%
+  chi_set |>
   grid_random(size = 5)
 
 
@@ -109,7 +109,7 @@ knn_search <-
   )
 
 ggplot(
-  knn_search %>% filter(.metric == "rmse"),
+  knn_search |> filter(.metric == "rmse"),
   aes(x = neighbors, y = dist_power, col = weight_func, size = mean)
 ) +
   geom_point(alpha = .4) +
@@ -122,8 +122,8 @@ library(gganimate)
 
 for (i in 0:max(knn_search$.iter)) {
   cumulative_data <-
-    knn_search %>%
-    filter(.metric == "rmse" & .iter <= i) %>%
+    knn_search |>
+    filter(.metric == "rmse" & .iter <= i) |>
     mutate(frame = i + 1, RMSE = mean, weights = weight_func)
   if (i == 0) {
     ani_data <- cumulative_data

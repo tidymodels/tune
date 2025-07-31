@@ -33,20 +33,20 @@ test_that("identify survival metrics", {
   library(yardstick)
 
   expect_false(
-    metric_set(rmse) %>%
-      tibble::as_tibble() %>%
+    metric_set(rmse) |>
+      tibble::as_tibble() |>
       tune:::contains_survival_metric()
   )
 
   expect_true(
-    metric_set(brier_survival_integrated) %>%
-      tibble::as_tibble() %>%
+    metric_set(brier_survival_integrated) |>
+      tibble::as_tibble() |>
       tune:::contains_survival_metric()
   )
 
   expect_true(
-    metric_set(brier_survival, concordance_survival) %>%
-      tibble::as_tibble() %>%
+    metric_set(brier_survival, concordance_survival) |>
+      tibble::as_tibble() |>
       tune:::contains_survival_metric()
   )
 })

@@ -507,8 +507,8 @@ check_initial <- function(
     param_nms <- .get_tune_parameter_names(x)
     if (inherits(x, "tune_race")) {
       num_resamples <-
-        x %>%
-        collect_metrics(summarize = FALSE) %>%
+        x |>
+        collect_metrics(summarize = FALSE) |>
         dplyr::count(.config)
       max_resamples <- max(num_resamples$n)
       configs <- num_resamples$.config[num_resamples$n == max_resamples]
@@ -517,8 +517,8 @@ check_initial <- function(
       x$.order <- NULL
     } else {
       num_grid <-
-        collect_metrics(x) %>%
-        dplyr::distinct(!!!rlang::syms(param_nms)) %>%
+        collect_metrics(x) |>
+        dplyr::distinct(!!!rlang::syms(param_nms)) |>
         nrow()
     }
     if (any(checks == "bayes")) {
@@ -530,7 +530,7 @@ check_initial <- function(
     }
   }
   if (!any(names(x) == ".iter")) {
-    x <- x %>% dplyr::mutate(.iter = 0L)
+    x <- x |> dplyr::mutate(.iter = 0L)
   }
   x
 }

@@ -118,8 +118,8 @@ metrics_info <- function(x) {
 }
 
 estimate_reg <- function(dat, metric, param_names, outcome_name, case_weights) {
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       estimate = .pred,
       truth = !!sym(outcome_name),
@@ -164,8 +164,8 @@ estimate_class_prob <- function(
     }
   }
 
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       truth = !!truth,
       estimate = !!estimate,
@@ -187,8 +187,8 @@ estimate_surv <- function(
 ) {
   #  potentially need to work around submodel parameters since those are within .pred
   dat <- unnest_parameters(dat, param_names)
-  dat %>%
-    dplyr::group_by(!!!rlang::syms(param_names)) %>%
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       truth = !!rlang::sym(outcome_name),
       estimate = !!maybe_estimate(metric),
@@ -219,21 +219,21 @@ unnest_parameters <- function(x, params = NULL) {
     return(x)
   }
 
-  x <- x %>% parsnip::add_rowindex()
+  x <- x |> parsnip::add_rowindex()
 
-  others <- x %>% dplyr::select(-.pred)
+  others <- x |> dplyr::select(-.pred)
   rm_cols <- c(".pred_censored", ".weight_time")
   nest_cols <- c(".eval_time", ".pred_survival", ".weight_censored")
   x <-
-    x %>%
-    dplyr::select(.pred, .row) %>%
-    tidyr::unnest(cols = c(.pred)) %>%
-    dplyr::select(-dplyr::any_of(rm_cols)) %>%
+    x |>
+    dplyr::select(.pred, .row) |>
+    tidyr::unnest(cols = c(.pred)) |>
+    dplyr::select(-dplyr::any_of(rm_cols)) |>
     tidyr::nest(
       .pred = c(all_of(nest_cols)),
       .by = c(.row, dplyr::all_of(params))
-    ) %>%
-    dplyr::full_join(others, by = ".row") %>%
+    ) |>
+    dplyr::full_join(others, by = ".row") |>
     dplyr::select(-.row)
   x
 }

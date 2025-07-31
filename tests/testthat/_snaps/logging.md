@@ -83,7 +83,7 @@
 # logging search info
 
     Code
-      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+      check_and_log_flow(ctrl_t, mutate(tb_1, .mean = .mean * NA))
     Message
       x Skipping to next iteration
     Condition
@@ -93,7 +93,7 @@
 ---
 
     Code
-      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+      check_and_log_flow(ctrl_t, slice(mutate(tb_1, .mean = .mean * NA), 1))
     Message
       x Halting search
     Condition

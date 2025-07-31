@@ -19,21 +19,21 @@ binary_hash <- function(x) {
 }
 
 pre_proc <-
-  recipe(score ~ product + review, data = training_data) %>%
-  update_role(product, new_role = "id") %>%
-  step_mutate(review_raw = review) %>%
-  step_textfeature(review_raw) %>%
+  recipe(score ~ product + review, data = training_data) |>
+  update_role(product, new_role = "id") |>
+  step_mutate(review_raw = review) |>
+  step_textfeature(review_raw) |>
   step_rename_at(
     starts_with("textfeature_"),
     fn = ~ gsub("textfeature_review_raw_", "", .)
-  ) %>%
-  step_tokenize(review) %>%
-  step_stopwords(review) %>%
-  step_stem(review) %>%
-  step_texthash(review, signed = TRUE) %>%
-  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) %>%
-  step_mutate_at(starts_with("hash"), fn = binary_hash) %>%
-  step_YeoJohnson(all_of(!!basics)) %>%
+  ) |>
+  step_tokenize(review) |>
+  step_stopwords(review) |>
+  step_stem(review) |>
+  step_texthash(review, signed = TRUE) |>
+  step_rename_at(starts_with("review_hash"), fn = ~ gsub("review_", "", .)) |>
+  step_mutate_at(starts_with("hash"), fn = binary_hash) |>
+  step_YeoJohnson(all_of(!!basics)) |>
   step_zv(all_predictors())
 
 boost_mod <-
@@ -46,19 +46,19 @@ boost_mod <-
     tree_depth = tune(),
     loss_reduction = tune(),
     sample_size = tune()
-  ) %>%
+  ) |>
   set_engine("xgboost")
 
 
 text_wflow <-
-  workflow() %>%
-  add_recipe(pre_proc) %>%
+  workflow() |>
+  add_recipe(pre_proc) |>
   add_model(boost_mod)
 
 text_set <-
-  text_wflow %>%
-  parameters() %>%
-  update(mtry = mtry_long(c(0, 3))) %>%
+  text_wflow |>
+  parameters() |>
+  update(mtry = mtry_long(c(0, 3))) |>
   update(sample_size = sample_prop(0:1))
 
 

@@ -18,11 +18,11 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec <-
-  recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
-  step_YeoJohnson(Lot_Area, Gr_Liv_Area) %>%
-  step_other(Neighborhood, threshold = .1) %>%
-  step_dummy(all_nominal()) %>%
+  recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
+  step_YeoJohnson(Lot_Area, Gr_Liv_Area) |>
+  step_other(Neighborhood, threshold = .1) |>
+  step_dummy(all_nominal()) |>
   step_zv(all_predictors())
 
 svm_model <-
@@ -30,13 +30,13 @@ svm_model <-
     mode = "regression",
     cost = tune(),
     rbf_sigma = tune()
-  ) %>%
+  ) |>
   set_engine("kernlab")
 
 
 ames_wflow <-
-  workflow() %>%
-  add_recipe(ames_rec) %>%
+  workflow() |>
+  add_recipe(ames_rec) |>
   add_model(svm_model)
 
 
@@ -45,7 +45,7 @@ ames_set <-
   parameters(ames_wflow)
 
 ames_grid <-
-  ames_set %>%
+  ames_set |>
   grid_max_entropy(size = 3)
 
 initial_grid <- tune_grid(

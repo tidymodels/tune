@@ -58,7 +58,7 @@
 #'   sac_rs <- vfold_cv(Sacramento)
 #'
 #'   lm_res <-
-#'     linear_reg() %>%
+#'     linear_reg() |>
 #'     fit_resamples(
 #'       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
 #'       resamples = sac_rs,
@@ -257,7 +257,7 @@ get_configs <- function(x, parameters = NULL, as_list = TRUE) {
   param <- .get_tune_parameter_names(x)
   config_cols <- c(".config", ".iter", param)
   config_keys <-
-    collect_metrics(x, summarize = FALSE) %>%
+    collect_metrics(x, summarize = FALSE) |>
     dplyr::distinct(dplyr::pick(dplyr::any_of(config_cols)))
   if (!is.null(parameters)) {
     merge_cols <- intersect(names(config_keys), names(parameters))

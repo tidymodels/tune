@@ -4,10 +4,10 @@ test_that("tune recipe only", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$lm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -41,8 +41,8 @@ test_that("tune model only (with recipe)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -75,8 +75,8 @@ test_that("tune model only (with variables)", {
 
   set.seed(4400)
 
-  wflow <- workflow() %>%
-    add_variables(mpg, everything()) %>%
+  wflow <- workflow() |>
+    add_variables(mpg, everything()) |>
     add_model(helper_objects$svm_mod)
 
   pset <- extract_parameter_set_dials(wflow)
@@ -104,8 +104,8 @@ test_that("tune model only (with recipe, multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -409,10 +409,10 @@ test_that("tune model and recipe", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -451,10 +451,10 @@ test_that("tune model and recipe (multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(2, 3)))
   grid <- dials::grid_regular(pset, levels = c(3, 2))
   folds <- rsample::vfold_cv(mtcars)
@@ -475,10 +475,10 @@ test_that('tune model and recipe (parallel_over = "everything")', {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -509,10 +509,10 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = tune())
 
-  model <- linear_reg(mode = "regression") %>%
+  model <- linear_reg(mode = "regression") |>
     set_engine("lm")
 
   # NA values not allowed in recipe
@@ -561,7 +561,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   # NA values not allowed in recipe
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = NA_real_)
 
   cars_grid <- tibble(cost = c(0.01, 0.02))
@@ -643,7 +643,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = tune())
 
   # NA values not allowed in recipe
@@ -712,8 +712,8 @@ test_that("ellipses with tune_grid", {
 
   helper_objects <- helper_objects_tune()
 
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$lm_mod)
   folds <- rsample::vfold_cv(mtcars)
   expect_snapshot(
@@ -739,8 +739,8 @@ test_that("retain extra attributes", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -759,8 +759,8 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$metrics, "metric_set"))
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_formula(mpg ~ .) %>%
+  wflow <- workflow() |>
+    add_formula(mpg ~ .) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -787,8 +787,8 @@ test_that("retain extra attributes", {
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
-  wflow2 <- workflow() %>%
-    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) %>%
+  wflow2 <- workflow() |>
+    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) |>
     add_model(helper_objects$svm_mod)
   pset2 <- extract_parameter_set_dials(wflow2)
   grid2 <- dials::grid_regular(pset2, levels = 3)

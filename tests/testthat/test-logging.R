@@ -49,11 +49,11 @@ test_that("logging search info", {
   expect_silent(check_and_log_flow(ctrl_t, tb_1))
   expect_snapshot(
     error = TRUE,
-    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+    check_and_log_flow(ctrl_t, tb_1 |> mutate(.mean = .mean * NA))
   )
   expect_snapshot(
     error = TRUE,
-    check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+    check_and_log_flow(ctrl_t, tb_1 |> mutate(.mean = .mean * NA) |> slice(1))
   )
 })
 

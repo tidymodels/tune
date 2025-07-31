@@ -145,13 +145,13 @@
 #' folds <- vfold_cv(mtcars, v = 5)
 #'
 #' car_rec <-
-#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   recipe(mpg ~ ., data = mtcars) |>
 #'   step_normalize(all_predictors())
 #'
 #' # define an svm with parameters to tune
 #' svm_mod <-
-#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
-#'   set_engine("kernlab") %>%
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+#'   set_engine("kernlab") |>
 #'   set_mode("regression")
 #'
 #' # use a space-filling design with 6 points
@@ -403,7 +403,7 @@ tune_bayes_workflow <- function(
       gp_mod <-
         .catch_and_log(
           fit_gp(
-            mean_stats %>% dplyr::select(-.iter),
+            mean_stats |> dplyr::select(-.iter),
             pset = param_info,
             metric = opt_metric_name,
             eval_time = opt_metric_time,
@@ -427,7 +427,7 @@ tune_bayes_workflow <- function(
           gp_mod,
           param_info,
           control = control,
-          current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
+          current = mean_stats |> dplyr::select(dplyr::all_of(param_info$id))
         )
 
       check_time(start_time, control$time_limit)
@@ -503,12 +503,12 @@ tune_bayes_workflow <- function(
         }
         unsummarized <- dplyr::bind_rows(
           unsummarized,
-          tmp_res %>% mutate(.iter = i)
+          tmp_res |> mutate(.iter = i)
         )
         rs_estimate <- estimate_tune_results(tmp_res)
         mean_stats <- dplyr::bind_rows(
           mean_stats,
-          rs_estimate %>% dplyr::mutate(.iter = i)
+          rs_estimate |> dplyr::mutate(.iter = i)
         )
         score_card <- update_score_card(score_card, i, tmp_res)
         log_progress(
@@ -632,17 +632,17 @@ encode_set <- function(x, pset, ..., as_matrix = FALSE) {
 }
 
 fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
-  dat <- dat %>% dplyr::filter(.metric == metric)
+  dat <- dat |> dplyr::filter(.metric == metric)
 
   if (!is.null(eval_time)) {
-    dat <- dat %>% dplyr::filter(.eval_time == eval_time)
+    dat <- dat |> dplyr::filter(.eval_time == eval_time)
   }
 
-  dat <- dat %>%
-    check_gp_data() %>%
+  dat <- dat |>
+    check_gp_data() |>
     dplyr::select(dplyr::all_of(pset$id), mean)
 
-  x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
+  x <- encode_set(dat |> dplyr::select(-mean), pset, as_matrix = TRUE)
 
   if (nrow(x) <= ncol(x) + 1 && nrow(x) > 0) {
     msg <-
@@ -685,12 +685,12 @@ fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
 
 pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   pred_grid <-
-    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") %>%
+    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") |>
     dplyr::distinct()
 
   if (!is.null(current)) {
     pred_grid <-
-      pred_grid %>%
+      pred_grid |>
       dplyr::anti_join(current, by = pset$id)
   }
 
@@ -702,7 +702,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       msg <- paste(msg, as.character(object))
     }
     update_printer(control, split_labels = NULL, task = msg, type = "warning")
-    return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
+    return(pred_grid |> dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
   }
 
   update_printer(
@@ -724,15 +724,15 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     catalog = FALSE
   )
 
-  pred_grid %>%
+  pred_grid |>
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
 }
 
 
 pick_candidate <- function(results, info, control) {
   if (info$uncertainty < control$uncertain) {
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(objective)) %>%
+    results <- results |>
+      dplyr::arrange(dplyr::desc(objective)) |>
       dplyr::slice(1)
   } else {
     if (control$verbose_iter) {
@@ -740,9 +740,9 @@ pick_candidate <- function(results, info, control) {
       message(msg)
     }
     results <-
-      results %>%
-      dplyr::arrange(dplyr::desc(.sd)) %>%
-      dplyr::slice(1:floor(.1 * nrow(results))) %>%
+      results |>
+      dplyr::arrange(dplyr::desc(.sd)) |>
+      dplyr::slice(1:floor(.1 * nrow(results))) |>
       dplyr::sample_n(1)
   }
   results
@@ -750,13 +750,13 @@ pick_candidate <- function(results, info, control) {
 
 update_score_card <- function(info, iter, results, control) {
   current_val <-
-    results %>%
-    estimate_tune_results() %>%
+    results |>
+    estimate_tune_results() |>
     dplyr::filter(.metric == info$metrics)
 
   if (!is.null(info$eval_time)) {
     current_val <-
-      current_val %>%
+      current_val |>
       dplyr::filter(.eval_time == info$eval_time)
   }
 
@@ -786,19 +786,19 @@ update_score_card <- function(info, iter, results, control) {
 # save opt_metric_name and maximize to simplify!!!!!!!!!!!!!!!
 initial_info <- function(stats, metrics, maximize, eval_time) {
   best_res <-
-    stats %>%
-    dplyr::filter(.metric == metrics) %>%
+    stats |>
+    dplyr::filter(.metric == metrics) |>
     dplyr::filter(!is.na(mean))
 
   if (maximize) {
     best_res <-
-      best_res %>%
-      dplyr::arrange(desc(mean)) %>%
+      best_res |>
+      dplyr::arrange(desc(mean)) |>
       slice(1)
   } else {
     best_res <-
-      best_res %>%
-      dplyr::arrange(mean) %>%
+      best_res |>
+      dplyr::arrange(mean) |>
       slice(1)
   }
   best_val <- best_res$mean[1]

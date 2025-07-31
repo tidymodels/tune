@@ -9,7 +9,7 @@ test_that("eval time inputs are checked for regression models", {
   # ------------------------------------------------------------------------------
 
   wflow <- workflow(mpg ~ ., linear_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_spec <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   wflow_tune <- workflow(mpg ~ ., knn_spec)
 
   set.seed(1)
@@ -67,7 +67,7 @@ test_that("eval time are checked for classification models", {
 
   data(two_class_dat, package = "modeldata")
   wflow <- workflow(Class ~ A + B, logistic_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>%
+  knn_spec <- nearest_neighbor(neighbors = tune()) |>
     set_mode("classification")
   wflow_tune <- workflow(Class ~ A + B, knn_spec)
 

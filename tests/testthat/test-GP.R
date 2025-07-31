@@ -61,8 +61,8 @@ test_that("GP scoring", {
 
   ctrl <- control_bayes()
   curr <-
-    collect_metrics(svm_results) %>%
-    dplyr::filter(.metric == "accuracy") %>%
+    collect_metrics(svm_results) |>
+    dplyr::filter(.metric == "accuracy") |>
     mutate(.iter = 0)
 
   svm_gp <-
