@@ -519,6 +519,9 @@ reorder_pred_cols <- function(x, y_name) {
 }
 
 engine_to_parsnip <- function(wflow, grid) {
+  if (is.null(grid)) {
+    return(grid)
+  }
   grid_nm <- names(grid)
   key <- parsnip::.model_param_name_key(wflow) |>
     dplyr::filter(user != parsnip & user %in% grid_nm) |>
