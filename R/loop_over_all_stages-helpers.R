@@ -561,6 +561,13 @@ attach_pkgs <- function(pkgs, load = character(0)) {
 
   # There may be some packages that need to be fully loaded to work
   # appropriately.
+
+  # These are packages that users might directly interact with so we should
+  # fully load them
+  load_user_pkgs <- c("parsnip", "recipes", "workflows", "tailor", "tune")
+  load_user_pkgs <- intersect(load_user_pkgs, pkgs)
+  load <- unique(c(load, load_user_pkgs))
+
   sshh_load <- purrr::quietly(library)
   load_res <- purrr::map(load, sshh_load, character.only = TRUE)
 
