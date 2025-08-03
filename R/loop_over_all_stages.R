@@ -363,6 +363,297 @@ loop_over_all_stages2 <- function(index, resamples, grid, static) {
   loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
 }
 
+loop_over_all_stages_agua <- function(resamples, grid, static) {
+  # Some packages may use random numbers so attach them prior to initializing
+  # the RNG seed
+  attach_pkgs(static$pkgs)
+
+  # Initialize some objects
+  seed_length <- length(resamples$.seeds[[1]])
+
+  # If we are using last_fit() (= zero seed length), don't mess with the RNG
+  # stream; otherwise set everything up.
+  if (seed_length > 0) {
+    orig_seed <- .Random.seed
+    # Set seed within the worker process
+    assign(".Random.seed", resamples$.seeds[[1]], envir = .GlobalEnv)
+    resamples$.seeds <- NULL
+    withr::defer(assign(".Random.seed", orig_seed, envir = .GlobalEnv))
+  }
+
+  split <- resamples$splits[[1]]
+  split_labs <- resamples |>
+    dplyr::select(dplyr::starts_with("id"))
+
+  pred_reserve <- NULL
+  pred_iter <- 0
+  notes <- new_note()
+  extracts <- NULL
+
+  sched <- schedule_grid(grid, static$wflow)
+
+  config_tbl <- static$configs
+
+  # Append data partitions here; these are the same for the duration of this function
+  data_splits <- get_data_subsets(static$wflow, split, static$split_args)
+  static <- update_static(static, data_splits)
+
+  # Now that we have data, determine the names of the outcome data. NOTE that
+  # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
+  # potentially change it later. See #1024
+  static$y_name <- outcome_names(static$wflow, data = split$data)
+
+  # ----------------------------------------------------------------------------
+  # Iterate over preprocessors
+
+  num_iterations_pre <- max(nrow(sched), 1)
+
+  for (iter_pre in seq_len(num_iterations_pre)) {
+    current_sched_pre <- sched[iter_pre, ]
+    location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
+    current_wflow <- .catch_and_log(
+      finalize_fit_pre(static$wflow, current_sched_pre, static),
+      control = static$control,
+      split_labels = split_labs,
+      location = location,
+      notes = notes
+    )
+
+    if (is_failure(current_wflow)) {
+      next
+    }
+    # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
+    static$y_name <- outcome_names(current_wflow)
+
+    num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
+
+    # --------------------------------------------------------------------------
+    # Iterate over model parameters using h2o
+
+    # Make a copy of the current workflow so that we can finalize it multiple
+    # times, since finalize_*() functions will not update parameters whose
+    # values currently are tune()
+    pre_wflow <- current_wflow
+
+    model_grid <- current_sched_pre$model_stage # TODO
+
+    # forge data sets
+
+    # Returns a list of predictions with model grid values attached. The list
+    # length is the same as nrow(model_grid)
+
+    # TODO catch and log
+    model_predictions <- agua_grid(
+      pre_wflow,
+      grid = model_grid,
+      outcome_name = static$y_name,
+      train_info = tr_info,
+      val_info = te_info,
+      resample_label = split_labs
+    )
+
+    # there are no submodels
+
+    # ----------------------------------------------------------------------
+    # Iterate over postprocessors
+
+    current_predict_grid <- current_grid
+
+    for (iter_post in seq_len(num_iterations_post)) {
+      # cli::cli_inform("-- Postprocessing {iter_post} of {num_iterations_post}")
+
+      if (has_post) {
+        current_sched_post <-
+          current_sched_pred$post_stage[[1]][iter_post, ]
+        post_grid <- current_sched_post
+
+        current_post_grid <- rebind_grid(
+          current_predict_grid,
+          current_sched_post
+        )
+
+        # make data for prediction
+        if (has_tailor_estimated(current_wflow)) {
+          tailor_train_data <- predict_all_types(
+            current_wflow,
+            static,
+            predictee = "calibration"
+          )
+        } else {
+          tailor_train_data <- current_pred[0, ]
+        }
+
+        location <- glue::glue(
+          "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
+        )
+        post_fit <- .catch_and_log(
+          finalize_fit_post(
+            current_wflow,
+            predictions = tailor_train_data,
+            grid = post_grid
+          ),
+          control = static$control,
+          split_labels = split_labs,
+          location = location,
+          notes = notes
+        )
+        if (is_failure(post_fit)) {
+          next
+        }
+
+        post_pred <- .catch_and_log(
+          predict(post_fit, current_pred),
+          control = static$control,
+          split_labels = split_labs,
+          location = location,
+          notes = notes
+        )
+        if (is_failure(post_pred)) {
+          next
+        }
+
+        current_wflow <- set_workflow_tailor(current_wflow, post_fit)
+
+        final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
+        current_extract_grid <- current_post_grid
+      } else {
+        # No postprocessor so just use what we have
+        final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
+        current_extract_grid <- current_predict_grid
+      }
+
+      current_wflow <- workflows::.fit_finalize(current_wflow)
+
+      # --------------------------------------------------------------------
+      # Allocate predictions to an overall object
+
+      pred_iter <- pred_iter + 1
+      pred_reserve <- dplyr::bind_rows(pred_reserve, final_pred)
+
+      # --------------------------------------------------------------------
+      # Extractions
+
+      # TODO modularize this:
+      if (!is.null(static$control$extract)) {
+        location <- glue::glue(
+          "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
+        )
+        elt_extract <- .catch_and_log(
+          extract_details(current_wflow, static$control$extract),
+          control = static$control,
+          split_labels = split_labs,
+          location = location,
+          notes = notes
+        )
+
+        if (is.null(extracts)) {
+          extracts <- tibble::tibble(.extracts = list(1))
+          if (nrow(static$param_info) > 0) {
+            extracts <- tibble::add_column(
+              current_extract_grid,
+              .extracts = list(1)
+            )
+          }
+          extracts <- extracts[integer(), ]
+        }
+
+        if (nrow(static$param_info) > 0) {
+          extracts <- tibble::add_row(
+            extracts,
+            tibble::add_column(
+              current_extract_grid,
+              .extracts = list(elt_extract)
+            )
+          )
+        } else {
+          extracts <- tibble::add_row(
+            extracts,
+            tibble::tibble(.extracts = list(elt_extract))
+          )
+        }
+        if (is_failure(elt_extract)) {
+          next
+        }
+      }
+
+      # Output for these loops:
+      # - pred_reserve (probably not null)
+      # - extracts (may be null)
+      # - notes
+    } # post loop
+  } # pre loop
+
+  # ----------------------------------------------------------------------------
+  # Compute metrics on each config and eval_time
+
+  if (is.null(pred_reserve)) {
+    all_metrics <- NULL
+  } else {
+    location <- glue::glue("internal")
+    all_metrics <- .catch_and_log(
+      pred_reserve |>
+        dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
+        .estimate_metrics(
+          metric = static$metrics,
+          param_names = static$param_info$id,
+          outcome_name = static$y_name,
+          event_level = static$control$event_level,
+          metrics_info = metrics_info(static$metrics)
+        ) |>
+        add_configs(static),
+      control = static$control,
+      split_labels = split_labs,
+      location = location,
+      notes = notes
+    )
+  }
+
+  if (!is.null(extracts)) {
+    extracts <- add_configs(extracts, static) |>
+      dplyr::relocate(.config, .after = .extracts) |>
+      dplyr::relocate(names(grid))
+
+    # Failing rows are not in the output:
+    empty_extract <- purrr::map_lgl(extracts$.extracts, is.null)
+    extracts <- extracts[!empty_extract, ]
+  }
+
+  # ----------------------------------------------------------------------------
+  # Return the results
+
+  return_tbl <- tibble::tibble(
+    .metrics = list(all_metrics),
+    .notes = list(notes),
+    outcome_names = static$y_name
+  )
+
+  if (!is.null(static$control$extract)) {
+    if (is.null(extracts)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), \(x) NULL)
+    } else {
+      return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
+    }
+  }
+
+  return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
+
+  if (static$control$save_pred) {
+    if (is.null(pred_reserve)) {
+      # Everything failed; return NULL for each row
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), \(x) NULL)
+    } else {
+      return_tbl$.predictions <-
+        list(
+          add_configs(pred_reserve, static) |>
+            # Filter out joined rows that corresponded to a config that failed
+            dplyr::filter(!is.na(.row))
+        )
+    }
+  }
+
+  return_tbl
+}
 # ------------------------------------------------------------------------------
 
 # This will take a grid and make a list of subgrids that should be used when
