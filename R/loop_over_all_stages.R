@@ -103,10 +103,10 @@ loop_over_all_stages <- function(resamples, grid, static) {
       )
 
       # --------------------------------------------------------------------------
-      # Iterate over prediction submodels
+      # Iterate over prediction submodels; no multipredict, just one at a time
+      # wothout retraining the model
 
       for (iter_pred in seq_len(num_iterations_pred)) {
-        # cli::cli_inform("Predicting {iter_pred} of {num_iterations_pred}")
 
         current_sched_pred <- current_sched_model$predict_stage[[1]][
           iter_pred,
@@ -162,7 +162,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
         current_predict_grid <- current_grid
 
         for (iter_post in seq_len(num_iterations_post)) {
-          # cli::cli_inform("-- Postprocessing {iter_post} of {num_iterations_post}")
 
           if (has_post) {
             current_sched_post <-
