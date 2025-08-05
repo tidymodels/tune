@@ -4,16 +4,16 @@
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
 make_static <- function(
-    workflow,
-    param_info,
-    grid,
-    metrics,
-    eval_time,
-    split_args,
-    control,
-    pkgs = character(0),
-    strategy = character(0),
-    data = list(fit = NULL, pred = NULL, cal = NULL)
+  workflow,
+  param_info,
+  grid,
+  metrics,
+  eval_time,
+  split_args,
+  control,
+  pkgs = character(0),
+  strategy = character(0),
+  data = list(fit = NULL, pred = NULL, cal = NULL)
 ) {
   # check inputs
   if (!inherits(workflow, "workflow")) {

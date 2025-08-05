@@ -55,7 +55,10 @@ tune_grid_loop <- function(
   is_inst <- purrr::map_lgl(load_pkgs, rlang::is_installed)
   if (any(!is_inst)) {
     nms <- load_pkgs[!is_inst]
-    cli::cli_abort("Some package installs are needed: {.pkg {nms}}", call = NULL)
+    cli::cli_abort(
+      "Some package installs are needed: {.pkg {nms}}",
+      call = NULL
+    )
   }
 
   par_opt <- list()
