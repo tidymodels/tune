@@ -107,7 +107,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
       # wothout retraining the model
 
       for (iter_pred in seq_len(num_iterations_pred)) {
-
         current_sched_pred <- current_sched_model$predict_stage[[1]][
           iter_pred,
         ]
