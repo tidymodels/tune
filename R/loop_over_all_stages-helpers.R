@@ -4,15 +4,16 @@
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
 make_static <- function(
-  workflow,
-  param_info,
-  grid,
-  metrics,
-  eval_time,
-  split_args,
-  control,
-  pkgs = character(0),
-  data = list(fit = NULL, pred = NULL, cal = NULL)
+    workflow,
+    param_info,
+    grid,
+    metrics,
+    eval_time,
+    split_args,
+    control,
+    pkgs = character(0),
+    strategy = character(0),
+    data = list(fit = NULL, pred = NULL, cal = NULL)
 ) {
   # check inputs
   if (!inherits(workflow, "workflow")) {
@@ -42,6 +43,7 @@ make_static <- function(
     split_args = split_args,
     control = control,
     pkgs = pkgs,
+    strategy = strategy,
     data = data
   )
 }
@@ -548,28 +550,16 @@ parsnip_to_engine <- function(wflow, grid) {
 
 # ------------------------------------------------------------------------------
 
-attach_pkgs <- function(pkgs, load = character(0)) {
-  # Testing to see if they are installed triggers package attachment.
-  is_inst <- purrr::map_lgl(pkgs, rlang::is_installed)
-  if (any(!is_inst)) {
-    nms <- pkgs[!is_inst]
-    cli::cli_abort(
-      "Some package installs are needed: {.pkg {nms}}",
-      call = NULL
-    )
-  }
-
+attach_pkgs <- function(pkgs, strategy, load = character(0)) {
   # There may be some packages that need to be fully loaded to work
   # appropriately.
-
-  # These are packages that users might directly interact with so we should
-  # fully load them
-  load_user_pkgs <- c("parsnip", "recipes", "workflows", "tailor", "tune")
-  load_user_pkgs <- intersect(load_user_pkgs, pkgs)
-  load <- unique(c(load, load_user_pkgs))
-
   sshh_load <- purrr::quietly(library)
-  load_res <- purrr::map(load, sshh_load, character.only = TRUE)
+  load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
+
+  # In parallel, load it all
+  if (strategy != "sequential") {
+    pkgs_res <- purrr::map(pkgs, ~ sshh_load(.x, character.only = TRUE))
+  }
 
   invisible(pkgs)
 }
