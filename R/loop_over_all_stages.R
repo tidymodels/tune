@@ -351,7 +351,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
         list(
           add_configs(pred_reserve, static) |>
             # Filter out joined rows that corresponded to a config that failed
-            dplyr::filter(!is.na(.row))
+            dplyr::filter(!is.na(.row)) |>
+            reorder_pred_cols(static$y_name, static$param_info$id)
         )
     }
   }
