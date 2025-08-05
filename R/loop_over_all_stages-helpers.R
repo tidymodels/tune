@@ -11,8 +11,8 @@ make_static <- function(
   eval_time,
   split_args,
   control,
-  pkgs = character(0),
-  strategy = character(0),
+  pkgs = "tune",
+  strategy = "sequential",
   data = list(fit = NULL, pred = NULL, cal = NULL)
 ) {
   # check inputs
@@ -550,14 +550,17 @@ parsnip_to_engine <- function(wflow, grid) {
 
 # ------------------------------------------------------------------------------
 
-attach_pkgs <- function(pkgs, strategy, load = character(0)) {
-  # There may be some packages that need to be fully loaded to work
-  # appropriately.
+attach_pkgs <- function(pkgs, strategy = "sequential", load = character(0)) {
   sshh_load <- purrr::quietly(library)
-  load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
 
-  # In parallel, load it all
-  if (strategy != "sequential") {
+  if (length(load) > 0) {
+    # There may be some packages that need to be fully loaded to work
+    # appropriately.
+    load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
+  }
+
+  if (length(pkgs) > 0 & strategy != "sequential") {
+    # In parallel, load it all
     pkgs_res <- purrr::map(pkgs, ~ sshh_load(.x, character.only = TRUE))
   }
 

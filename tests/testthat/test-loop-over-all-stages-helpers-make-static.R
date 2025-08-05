@@ -33,6 +33,7 @@ test_that("maker static object", {
       "split_args",
       "control",
       "pkgs",
+      "strategy",
       "data"
     )
   )
@@ -107,6 +108,7 @@ test_that("maker static object", {
       "split_args",
       "control",
       "pkgs",
+      "strategy",
       "data"
     )
   )
