@@ -163,8 +163,8 @@ initialize_catalog <- function(
   }
 
   if (
-    !(choose_framework(workflow, control) != "sequential" ||
-      is_testing()) &&
+    choose_framework(workflow, control) == "sequential" &&
+      !is_testing() &&
       !control$verbose
   ) {
     progress_active <- TRUE
