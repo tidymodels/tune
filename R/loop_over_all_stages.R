@@ -217,6 +217,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
             current_extract_grid <- current_post_grid
+            # end submodels
           } else {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
