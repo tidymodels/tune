@@ -444,24 +444,3 @@ manange_global_limit <- function(min = 1e9) {
   }
   invisible(NULL)
 }
-
-# ------------------------------------------------------------------------------
-# keeping this until we make a more accurate version based on choose_framework()
-
-# object should be a workflow
-allow_parallelism <- function(allow = TRUE, object = NULL) {
-  is_par <- TRUE # temp make this assumption
-  if (!is.null(object)) {
-    pkgs <- required_pkgs(object)
-    blacklist <- c("keras", "rJava")
-    if (is_par & allow && any(pkgs %in% blacklist)) {
-      pkgs <- pkgs[pkgs %in% blacklist]
-      msg <- paste0("'", pkgs, "'", collapse = ", ")
-      msg <- paste("Some required packages prohibit parallel processing: ", msg)
-      cli::cli_alert_warning(msg)
-      allow <- FALSE
-    }
-  }
-
-  allow && is_par
-}
