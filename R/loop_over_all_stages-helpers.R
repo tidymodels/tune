@@ -233,10 +233,6 @@ predict_all_types <- function(
     dplyr::mutate(.row = .ind)
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
-  model_mode <-
-    wflow_fit |>
-    hardhat::extract_spec_parsnip() |>
-    purrr::pluck("mode")
 
   # Will predictions have one value per row and should be in a list column?
   dyn_types <- c("survival", "hazard", "quantile")
