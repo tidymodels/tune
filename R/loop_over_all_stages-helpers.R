@@ -510,15 +510,15 @@ reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
       # Outcome first
       dplyr::all_of(outcome),
       # Dynamic columns next
-      dplyr::any_of(".eval_time"),
+      dplyr::any_of("^\\.eval_time"),
       # dplyr::any_of(".quantile_level"),     # placeholder for future value
       # Prediction columns
       dplyr::matches("^\\.pred_time$"),
       # dplyr::matches("^\\.pred$"),
       dplyr::matches("^\\.pred_class$"),
-      dplyr::matches(".pred_[A-Za-z0-9]"),
+      dplyr::matches("^\\.pred_."),
       # Row indicator
-      dplyr::any_of(".row"),
+      dplyr::any_of("^\\.row"),
       # Resample indicator(s)
       dplyr::matches("^id$"),
       dplyr::matches("^id[1-9]$"),
