@@ -161,7 +161,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
         current_predict_grid <- current_grid
 
         for (iter_post in seq_len(num_iterations_post)) {
-
           if (has_post) {
             current_sched_post <-
               current_sched_pred$post_stage[[1]][iter_post, ]
