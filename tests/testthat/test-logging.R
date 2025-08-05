@@ -184,8 +184,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
             extract = function(x) {
               raise_warning()
               raise_error()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },
@@ -231,8 +230,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
             extract = function(x) {
               raise_warning_rl()
               raise_error_rl()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },
@@ -276,8 +274,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
           Sale_Price ~ .,
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
           control = control_resamples(
-            extract = raise_multiline_conditions,
-            allow_par = FALSE
+            extract = raise_multiline_conditions
           )
         )
     },
@@ -397,8 +394,7 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
             extract = function(x) {
               once()
               later()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },

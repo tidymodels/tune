@@ -157,7 +157,7 @@
         extract = function(x) {
           raise_warning()
           raise_error()
-        }, allow_par = FALSE))
+        }))
     Message
       > A | warning: ope! yikes.
       > B | error:   AHHhH
@@ -177,7 +177,7 @@
         extract = function(x) {
           raise_warning_rl()
           raise_error_rl()
-        }, allow_par = FALSE))
+        }))
     Message
       > A | warning: ope! yikes. (but rlang)
       > B | error:   AHHhH (but rlang)
@@ -194,7 +194,7 @@
     Code
       res_fit <- fit_resamples(parsnip::nearest_neighbor("regression", "kknn"),
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
-        extract = raise_multiline_conditions, allow_par = FALSE))
+        extract = raise_multiline_conditions))
     Message
       > A | warning: hmmm what's happening
       > B | error:   aHHHksdjvndiuf
@@ -230,7 +230,7 @@
       control = control_resamples(extract = function(x) {
         once()
         later()
-      }, allow_par = FALSE))
+      }))
     Message
       > A | error:   oh no
       > B | error:   this errors now! ha!
