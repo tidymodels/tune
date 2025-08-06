@@ -248,16 +248,16 @@ via <a href="extract-tune.html">extract_workflow()</a>.</p>
 <span class="r-in"><span><span class="co"># test set predictions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="collect_predictions.html">collect_predictions</a></span><span class="op">(</span><span class="va">spline_res</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   .pred id                .row   mpg .config        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  21.8 train/test split     1  21   pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  23.2 train/test split     3  22.8 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  17.4 train/test split     7  14.3 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  17.3 train/test split    10  19.2 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  30.3 train/test split    18  32.4 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>  22.4 train/test split    25  19.2 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>  31.2 train/test split    26  27.3 pre0_mod0_post0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>  19.5 train/test split    32  21.4 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   .pred id                 mpg  .row .config        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  21.8 train/test split  21       1 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  23.2 train/test split  22.8     3 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  17.4 train/test split  14.3     7 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  17.3 train/test split  19.2    10 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  30.3 train/test split  32.4    18 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>  22.4 train/test split  19.2    25 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">7</span>  31.2 train/test split  27.3    26 pre0_mod0_post0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">8</span>  19.5 train/test split  21.4    32 pre0_mod0_post0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or use a workflow</span></span></span>
 <span class="r-in"><span></span></span>

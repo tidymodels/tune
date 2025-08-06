@@ -57,6 +57,7 @@
 <ul><li><p>Introduced support for parallel processing with mirai in addition to the currently supported framework future. See <code><a href="../reference/parallelism.html">?parallelism</a></code> to learn more (<a href="https://github.com/tidymodels/tune/issues/1028" class="external-link">#1028</a>).</p></li>
 <li><p>Sequential and parallel processing all use the same L’Ecuyer-CMRG seeds (conditional on <code>parallel_over</code>) (<a href="https://github.com/tidymodels/tune/issues/1033" class="external-link">#1033</a>).</p></li>
 <li><p><code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> now includes an option (<code>keep_replicates</code>) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (<a href="https://github.com/tidymodels/tune/issues/1000" class="external-link">#1000</a>).</p></li>
+<li><p>A <code><a href="https://generics.r-lib.org/reference/min_grid.html" class="external-link">min_grid()</a></code> methods was added for <code>proportional_hazards</code> models so that their submodels are processed appropriately.</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
