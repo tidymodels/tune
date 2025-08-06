@@ -121,6 +121,18 @@ platforms due to the packages' use of different numerical tolerance
 constants across operating systems.
 }
 }
+
+\subsection{Handling package dependencies}{
+
+\pkg{tune} knows what packages are required to fit a workflow object.
+
+When computations are run sequentially, an initial check is made to see if
+they are installed. This triggers the packages to be attached (but not fully
+loaded).
+
+In parallel, the required packages are fully loaded, as they were previously
+with \pkg{foreach}, in the worker processes (but not the main R session).
+}
 }
 \references{
 \url{https://www.tmwr.org/grid-search#parallel-processing}
