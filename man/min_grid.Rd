@@ -8,6 +8,7 @@
 \alias{min_grid.logistic_reg}
 \alias{min_grid.mars}
 \alias{min_grid.multinom_reg}
+\alias{min_grid.proportional_hazards}
 \alias{min_grid.nearest_neighbor}
 \alias{min_grid.cubist_rules}
 \alias{min_grid.C5_rules}
@@ -29,6 +30,8 @@ fit_max_value(x, grid, ...)
 \method{min_grid}{mars}(x, grid, ...)
 
 \method{min_grid}{multinom_reg}(x, grid, ...)
+
+\method{min_grid}{proportional_hazards}(x, grid, ...)
 
 \method{min_grid}{nearest_neighbor}(x, grid, ...)
 

@@ -284,6 +284,14 @@ min_grid.mars <- fit_max_value
 min_grid.multinom_reg <- min_grid.linear_reg
 
 # ------------------------------------------------------------------------------
+# Cox PH regression
+
+#' @export
+#' @export min_grid.multinom_reg
+#' @rdname min_grid
+min_grid.proportional_hazards <- min_grid.linear_reg
+
+# ------------------------------------------------------------------------------
 # Knn
 
 #' @export
