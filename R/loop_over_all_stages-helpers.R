@@ -253,10 +253,21 @@ predict_all_types <- function(
     tmp_res$.row <- .ind
 
     # predict_wrapper() is designed to predict all submodels at once; we get a
-    # list column back called .pred with a single row. Collapse that and remove
-    # the submodel column since it is in the current grid.
+    # list column back called .pred with a single row. Collapse that and move
+    # the submodel column.
     if (length(sub_param) > 0) {
       tmp_res <- tidyr::unnest(tmp_res, cols = c(.pred))
+
+      # For censored regression (and eventually quantile regression),
+      # dynamic predictions will generate a list column that can have multiple
+      # predictions per training set row so those end up in a list column.
+      # Since we unnested, we need to re-nest to get back to the original
+      # format.
+      if (type_iter %in% dyn_types) {
+        tmp_res <-
+          tmp_res |>
+          tidyr::nest(.pred = c(-dplyr::all_of(sub_param), -.row))
+      }
     }
 
     # Now go back to engine names
