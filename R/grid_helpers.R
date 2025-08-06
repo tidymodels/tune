@@ -71,7 +71,7 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
     )
 
   # Add in censored regression evaluation times (if needed)
-  has_type <- type %in% c("survival", "hazard")
+  has_type <- type %in% dyn_surv_types
   if (
     model$spec$mode == "censored regression" & !is.null(eval_time) & has_type
   ) {

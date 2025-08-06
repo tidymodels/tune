@@ -136,3 +136,11 @@ release_bullets <- function() {
     "**Do this before checks!**. Update dependencies with `devtools::install_dev_deps()` and update the test objects via `R CMD BATCH --vanilla inst/test_objects.R`."
   )
 }
+
+# ------------------------------------------------------------------------------
+# data on model prediction types
+
+# Will predictions have one value per row and should be in a list column?
+dyn_surv_types <- c("survival", "hazard")
+dyn_quant_types <- "quantile"
+dyn_types <- c(dyn_surv_types, dyn_quant_types)

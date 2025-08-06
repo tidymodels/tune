@@ -234,9 +234,6 @@ predict_all_types <- function(
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
-  # Will predictions have one value per row and should be in a list column?
-  dyn_types <- c("survival", "hazard", "quantile")
-
   # TODO tune::predict_model has some pre-prediction checks
 
   sub_param <- names(submodel_grid)
