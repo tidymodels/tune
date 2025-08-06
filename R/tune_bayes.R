@@ -284,7 +284,7 @@ tune_bayes_workflow <- function(
   clear_gp_results()
   start_time <- proc.time()[3]
 
-  initialize_catalog(control = control)
+  initialize_catalog(control = control, workflow = object)
 
   check_rset(resamples)
   rset_info <- pull_rset_attributes(resamples)

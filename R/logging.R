@@ -142,7 +142,11 @@ catalog_is_active <- function() {
 #
 #' @rdname tune-internal-functions
 #' @export
-initialize_catalog <- function(control, env = rlang::caller_env()) {
+initialize_catalog <- function(
+  control,
+  env = rlang::caller_env(),
+  workflow = NULL
+) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -154,9 +158,13 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
       nrow = 0
     )
 
+  if (is.null(workflow)) {
+    workflow <- workflow()
+  }
+
   if (
-    !(allow_parallelism(control$allow_par) ||
-      is_testing()) &&
+    choose_framework(workflow, control) == "sequential" &&
+      !is_testing() &&
       !control$verbose
   ) {
     progress_active <- TRUE

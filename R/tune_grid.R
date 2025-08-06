@@ -339,7 +339,7 @@ tune_grid_workflow <- function(
   call = caller_env()
 ) {
   if (!catalog_is_active()) {
-    initialize_catalog(control)
+    initialize_catalog(control, workflow = workflow)
   }
 
   check_rset(resamples)

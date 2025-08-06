@@ -150,11 +150,11 @@ test_that("message_wrap", {
 })
 
 test_that("interactive logger works (fit_resamples, warning + error)", {
-  # TODO melodie; we can keep this for now but should transition to a case where
-  # we use `choose_framework()` but that will require the control object as well
-  # as the workflow.
-
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -184,8 +184,7 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
             extract = function(x) {
               raise_warning()
               raise_error()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },
@@ -200,7 +199,11 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   local_mocked_bindings(
     is_testing = function() {
       FALSE
@@ -227,8 +230,7 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
             extract = function(x) {
               raise_warning_rl()
               raise_error_rl()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },
@@ -241,7 +243,11 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
 
 
 test_that("interactive logger works (fit_resamples, multiline)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -268,8 +274,7 @@ test_that("interactive logger works (fit_resamples, multiline)", {
           Sale_Price ~ .,
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
           control = control_resamples(
-            extract = raise_multiline_conditions,
-            allow_par = FALSE
+            extract = raise_multiline_conditions
           )
         )
     },
@@ -281,7 +286,11 @@ test_that("interactive logger works (fit_resamples, multiline)", {
 })
 
 test_that("interactive logger works (fit_resamples, occasional error)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -315,7 +324,7 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
           parsnip::nearest_neighbor("regression", "kknn"),
           Sale_Price ~ .,
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-          control = control_resamples(extract = later, allow_par = FALSE)
+          control = control_resamples(extract = later)
         )
     },
     transform = catalog_lines
@@ -326,7 +335,11 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
 })
 
 test_that("interactive logger works (fit_resamples, occasional errors)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -381,8 +394,7 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
             extract = function(x) {
               once()
               later()
-            },
-            allow_par = FALSE
+            }
           )
         )
     },
@@ -395,7 +407,11 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
 
 
 test_that("interactive logger works (fit_resamples, many distinct errors)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -430,7 +446,7 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
           parsnip::nearest_neighbor("regression", "kknn"),
           Sale_Price ~ .,
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
-          control = control_resamples(extract = numbered, allow_par = FALSE)
+          control = control_resamples(extract = numbered)
         )
     },
     transform = catalog_lines
@@ -441,7 +457,11 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
 })
 
 test_that("interactive logger works (tune grid, error)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -466,7 +486,7 @@ test_that("interactive logger works (tune grid, error)", {
           Sale_Price ~ .,
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
           grid = 5,
-          control = control_grid(extract = raise_error, allow_par = FALSE)
+          control = control_grid(extract = raise_error)
         )
     },
     transform = catalog_lines
@@ -477,7 +497,11 @@ test_that("interactive logger works (tune grid, error)", {
 })
 
 test_that("interactive logger works (bayesian, error)", {
-  skip_if(allow_parallelism(FALSE), "Will not catalog: parallelism is enabled")
+  skip_if(
+    choose_framework(workflow(), control_grid(allow_par = FALSE)) !=
+      "sequential",
+    "Will not catalog: parallelism is enabled"
+  )
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
 
@@ -504,7 +528,7 @@ test_that("interactive logger works (bayesian, error)", {
           rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5),
           initial = 5,
           iter = 5,
-          control = control_bayes(extract = raise_error, allow_par = FALSE)
+          control = control_bayes(extract = raise_error)
         )
     },
     transform = catalog_lines

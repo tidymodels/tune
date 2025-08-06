@@ -56,8 +56,8 @@ initialize_catalog_ <- tune:::initialize_catalog
 # the above, we can test the full catalog output.
 redefer_initialize_catalog <- function(test_env) {
   local({
-    function(control, env = rlang::caller_env()) {
-      initialize_catalog_(control, env)
+    function(control, env = rlang::caller_env(), workflow = NULL) {
+      initialize_catalog_(control, env, workflow)
 
       withr::defer(
         assign(
