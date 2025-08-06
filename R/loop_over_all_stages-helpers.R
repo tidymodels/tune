@@ -515,19 +515,34 @@ determine_pred_types <- function(wflow, metrics) {
   sort(unique(pred_types))
 }
 
-reorder_pred_cols <- function(x, y_name) {
+reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
   x |>
     dplyr::relocate(
-      dplyr::all_of(y_name),
+      # Outcome first
+      dplyr::all_of(outcome),
+      # Dynamic columns next
+      dplyr::any_of("^\\.eval_time"),
+      # dplyr::any_of(".quantile_level"),     # placeholder for future value
+      # Prediction columns
       dplyr::matches("^\\.pred_time$"),
       dplyr::matches("^\\.pred$"),
       dplyr::matches("^\\.pred_class$"),
-      dplyr::matches(".pred_[A-Za-z]"),
-      dplyr::any_of(".eval_time"),
-      dplyr::any_of(".row"),
+      dplyr::matches("^\\.pred_."),
+      # Row indicator
+      dplyr::any_of("^\\.row"),
+      # Resample indicator(s)
+      dplyr::matches("^id$"),
+      dplyr::matches("^id[1-9]$"),
       .before = dplyr::everything()
+    ) |>
+    # Put any tuning parameters at the end, .config at the very end
+    dplyr::relocate(
+      dplyr::all_of(param),
+      .config,
+      .after = dplyr::everything()
     )
 }
+
 
 engine_to_parsnip <- function(wflow, grid) {
   if (is.null(grid)) {

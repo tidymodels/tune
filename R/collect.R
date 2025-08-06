@@ -171,15 +171,9 @@ collect_predictions.tune_results <- function(
     x <- collector(x, coll_col = coll_col)
   }
 
-  x <- dplyr::relocate(
-    x,
-    dplyr::any_of(".pred"),
-    dplyr::any_of(".pred_class"),
-    dplyr::any_of(".pred_time"),
-    dplyr::starts_with(".pred")
-  )
-
-  x
+  param_names <- .get_tune_parameter_names(x)
+  y_name <- .get_tune_outcome_names(x)
+  reorder_pred_cols(x, y_name, param_names)
 }
 
 filter_predictions <- function(x, parameters) {
@@ -189,7 +183,7 @@ filter_predictions <- function(x, parameters) {
   params <- attr(x, "parameters")
   if (is.null(params)) {
     cli::cli_warn(
-      "The object is missing some attributes; it is probably from an earlier 
+      "The object is missing some attributes; it is probably from an earlier
        version of {.pkg tune}. The predictions can't be filtered."
     )
 
