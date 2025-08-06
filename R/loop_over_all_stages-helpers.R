@@ -514,7 +514,7 @@ reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
       # dplyr::any_of(".quantile_level"),     # placeholder for future value
       # Prediction columns
       dplyr::matches("^\\.pred_time$"),
-      # dplyr::matches("^\\.pred$"),
+      dplyr::matches("^\\.pred$"),
       dplyr::matches("^\\.pred_class$"),
       dplyr::matches("^\\.pred_."),
       # Row indicator
