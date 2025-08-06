@@ -18,6 +18,8 @@
 
 * `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (#1000).
 
+* A `min_grid()` methods was added for `proportional_hazards` models so that their submodels are processed appropriately. 
+
 ## Breaking Changes
 
 * The `foreach` package is no longer supported. Instead, use the future or mirai packages.  
