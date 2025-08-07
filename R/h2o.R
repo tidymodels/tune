@@ -10,10 +10,12 @@ submodel_names <- function(x) names(x)[names(x) != "post_stage"]
 
 late_stage_grid <- function(sched_pre_iter) {
 
+  # No tuning parameters anywhere
   if (nrow(sched_pre_iter) == 0) {
     return(tibble::tibble(post_stage = list()))
   }
 
+  # No submodels apart from the recipe
   if (!any(names(sched_pre_iter) == "model_stage")) {
     sched_pre_iter$post_stage <- list(tibble::tibble())
     return(sched_pre_iter)
@@ -24,6 +26,9 @@ late_stage_grid <- function(sched_pre_iter) {
     dplyr::select(model_stage) |>
     tidyr::unnest(model_stage)
 
+  # If there are submodels, the submodel column shows up at the model_stage
+  # and the full vector of values is in the predict_stage (the latter are what
+  # we want). If we leave both, the unnesting throws an error
   submodel_param <- unique(unlist(purrr::map(res$predict_stage, submodel_names)))
 
   if (any(names(res) == submodel_param)) {
