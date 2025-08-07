@@ -1469,8 +1469,16 @@ test_that("h2o grids - tuned recipe, simple model, and no postprocessor", {
 
   for (pr in 1:nrow(reg_scd)) {
     reg_info <- late_stage_grid(reg_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     reg_mod_info <- reg_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_mod_info,
+      tbl_1r
+    )
   }
 
   ### regular grid minus 1 row
@@ -1480,8 +1488,16 @@ test_that("h2o grids - tuned recipe, simple model, and no postprocessor", {
 
   for (pr in 1:nrow(reg_ish_scd)) {
     reg_ish_info <- late_stage_grid(reg_ish_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_ish_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     reg_ish_mod_info <- reg_ish_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_ish_mod_info,
+      tbl_1r
+    )
   }
 
   ### space-filling design row
@@ -1491,8 +1507,16 @@ test_that("h2o grids - tuned recipe, simple model, and no postprocessor", {
 
   for (pr in 1:nrow(sfd_scd)) {
     sfd_info <- late_stage_grid(sfd_scd |> dplyr::slice(pr))
+    expect_equal(
+      sfd_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     sfd_mod_info <- sfd_info |> dplyr::select(-post_stage)
+    expect_equal(
+      sfd_mod_info,
+      tbl_1r
+    )
   }
 })
 
@@ -1509,8 +1533,16 @@ test_that("h2o grids - tuned recipe, simple model, and static prob thresh", {
 
   for (pr in 1:nrow(reg_scd)) {
     reg_info <- late_stage_grid(reg_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     reg_mod_info <- reg_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_mod_info,
+      tbl_1r
+    )
   }
 
   ### regular grid minus 1 row
@@ -1520,8 +1552,16 @@ test_that("h2o grids - tuned recipe, simple model, and static prob thresh", {
 
   for (pr in 1:nrow(reg_ish_scd)) {
     reg_ish_info <- late_stage_grid(reg_ish_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_ish_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     reg_ish_mod_info <- reg_ish_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_ish_mod_info,
+      tbl_1r
+    )
   }
 
   ### space-filling design row
@@ -1531,8 +1571,16 @@ test_that("h2o grids - tuned recipe, simple model, and static prob thresh", {
 
   for (pr in 1:nrow(sfd_scd)) {
     sfd_info <- late_stage_grid(sfd_scd |> dplyr::slice(pr))
+    expect_equal(
+      sfd_info,
+      tibble::tibble(post_stage = list(tbl_1r))
+    )
 
     sfd_mod_info <- sfd_info |> dplyr::select(-post_stage)
+    expect_equal(
+      sfd_mod_info,
+      tbl_1r
+    )
   }
 })
 
@@ -1549,30 +1597,54 @@ test_that("h2o grids - tuned recipe, simple model, and tuned prob thresh", {
 
   for (pr in 1:nrow(reg_scd)) {
     reg_info <- late_stage_grid(reg_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_info,
+      reg_scd$model_stage[[pr]]$predict_stage[[1]]
+    )
 
     reg_mod_info <- reg_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_mod_info,
+      tbl_1r
+    )
   }
 
   ### regular grid minus 1 row
 
-  reg_ish_grd <- grid_regular(prm, levels = 3) |> dplyr::slice(-1)
+  reg_ish_grd <- grid_regular(prm, levels = 3)
   reg_ish_scd <- schedule_grid(reg_ish_grd, wflow)
 
   for (pr in 1:nrow(reg_ish_scd)) {
     reg_ish_info <- late_stage_grid(reg_ish_scd |> dplyr::slice(pr))
+    expect_equal(
+      reg_ish_info,
+      reg_ish_scd$model_stage[[pr]]$predict_stage[[1]]
+    )
 
     reg_ish_mod_info <- reg_ish_info |> dplyr::select(-post_stage)
+    expect_equal(
+      reg_ish_mod_info,
+      tbl_1r
+    )
   }
 
   ### space-filling design row
 
-  sfd_grd <- grid_space_filling(prm, size = 5)
+  sfd_grd <- grid_regular(prm, levels = 3)
   sfd_scd <- schedule_grid(sfd_grd, wflow)
 
   for (pr in 1:nrow(sfd_scd)) {
     sfd_info <- late_stage_grid(sfd_scd |> dplyr::slice(pr))
+    expect_equal(
+      sfd_info,
+      sfd_scd$model_stage[[pr]]$predict_stage[[1]]
+    )
 
     sfd_mod_info <- sfd_info |> dplyr::select(-post_stage)
+    expect_equal(
+      sfd_mod_info,
+      tbl_1r
+    )
   }
 })
 
@@ -1588,9 +1660,13 @@ test_that("h2o grids - tuned recipe, glmnet, and no postprocessor", {
   reg_scd <- schedule_grid(reg_grd, wflow)
 
   for (pr in 1:nrow(reg_scd)) {
-    reg_info <- late_stage_grid(reg_scd |> dplyr::slice(pr))
-
-    reg_mod_info <- reg_info |> dplyr::select(-post_stage)
+    reg_info <- reg_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      reg_info,
+      reg_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 
   ### regular grid minus 1 row
@@ -1599,9 +1675,13 @@ test_that("h2o grids - tuned recipe, glmnet, and no postprocessor", {
   reg_ish_scd <- schedule_grid(reg_ish_grd, wflow)
 
   for (pr in 1:nrow(reg_ish_scd)) {
-    reg_ish_info <- late_stage_grid(reg_ish_scd |> dplyr::slice(pr))
-
-    reg_ish_mod_info <- reg_ish_info |> dplyr::select(-post_stage)
+    reg_ish_info <- reg_ish_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      reg_ish_info,
+      reg_ish_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 
   ### space-filling design row
@@ -1610,9 +1690,13 @@ test_that("h2o grids - tuned recipe, glmnet, and no postprocessor", {
   sfd_scd <- schedule_grid(sfd_grd, wflow)
 
   for (pr in 1:nrow(sfd_scd)) {
-    sfd_info <- late_stage_grid(sfd_scd |> dplyr::slice(pr))
-
-    sfd_mod_info <- sfd_info |> dplyr::select(-post_stage)
+    sfd_info <- sfd_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      sfd_info,
+      sfd_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 })
 
@@ -1628,9 +1712,13 @@ test_that("h2o grids - tuned recipe, glmnet, and static prob thresh", {
   reg_scd <- schedule_grid(reg_grd, wflow)
 
   for (pr in 1:nrow(reg_scd)) {
-    reg_info <- late_stage_grid(reg_scd |> dplyr::slice(pr))
-
-    reg_mod_info <- reg_info |> dplyr::select(-post_stage)
+    reg_info <- reg_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      reg_info,
+      reg_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 
   ### regular grid minus 1 row
@@ -1639,9 +1727,13 @@ test_that("h2o grids - tuned recipe, glmnet, and static prob thresh", {
   reg_ish_scd <- schedule_grid(reg_ish_grd, wflow)
 
   for (pr in 1:nrow(reg_ish_scd)) {
-    reg_ish_info <- late_stage_grid(reg_ish_scd |> dplyr::slice(pr))
-
-    reg_ish_mod_info <- reg_ish_info |> dplyr::select(-post_stage)
+    reg_ish_info <- reg_ish_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      reg_ish_info,
+      reg_ish_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 
   ### space-filling design row
@@ -1650,9 +1742,13 @@ test_that("h2o grids - tuned recipe, glmnet, and static prob thresh", {
   sfd_scd <- schedule_grid(sfd_grd, wflow)
 
   for (pr in 1:nrow(sfd_scd)) {
-    sfd_info <- late_stage_grid(sfd_scd |> dplyr::slice(pr))
-
-    sfd_mod_info <- sfd_info |> dplyr::select(-post_stage)
+    sfd_info <- sfd_scd |> dplyr::slice(pr) |> late_stage_grid()
+    expect_equal(
+      sfd_info,
+      sfd_scd$model_stage[[pr]] |>
+        select(-lambda) |>
+        unnest(predict_stage)
+    )
   }
 })
 
