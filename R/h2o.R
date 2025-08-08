@@ -121,7 +121,8 @@ loop_over_all_stages_agua <- function(resamples, grid, static) {
 
     num_iterations_model <- max(nrow(h2o_grid), 1)
 
-    # TODO get processed versions of 2-3 data sets
+    # Get processed versions of 2-3 data sets
+    static_agua <- forge_all_from_workflow(static, pre_wflow)
 
     # Process all models across tuning parameters (if any) at the same time.
     # This results in a list of prediction tibbles for each candidate. The
@@ -130,9 +131,9 @@ loop_over_all_stages_agua <- function(resamples, grid, static) {
     agua_cl <- rlang::call2(
       "agua_train_predict",
       .ns = "agua",
-      static = static,
-      grid = h2o_grid,
-      resample_label = split_labs
+      static = quote(static_agua),
+      grid = quote(h2o_grid),
+      resample_label = quote(split_labs)
     )
 
     # TODO catch and log; not sure what the location should be
@@ -242,3 +243,14 @@ loop_over_all_stages_agua <- function(resamples, grid, static) {
 
   return_tbl
 }
+
+forge_all_from_workflow <- function(static, wflow) {
+  x <- static[c("data", "control", "wflow", "y_name")]
+  x$data$fit$data <- forge_from_workflow(x$data$fit$data, wflow)
+  x$data$pred$data <- forge_from_workflow(x$data$pred$data, wflow)
+  if (!is.null(x$data$cal$data)) {
+    x$cal$data <- forge_from_workflow(x$data$cal$data, wflow)
+  }
+  x
+}
+
