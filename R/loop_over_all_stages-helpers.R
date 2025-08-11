@@ -34,7 +34,9 @@ make_static <- function(
     wflow = workflow,
     param_info = param_info,
     configs = configs,
-    post_estimation = workflows::.workflow_includes_calibration(workflow),
+    post_estimation = workflows::.workflow_postprocessor_requires_fit(
+      workflow
+    ),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
     pred_types = determine_pred_types(workflow, metrics),
@@ -82,7 +84,7 @@ get_data_subsets <- function(wflow, split, split_args = NULL) {
   fit_lst <- pred_lst <- cal_lst <- list(data = NULL, ind = NULL)
   pred_lst$data <- rsample::assessment(split)
   pred_lst$ind <- as.integer(split, data = "assessment")
-  if (workflows::.workflow_includes_calibration(wflow)) {
+  if (workflows::.workflow_postprocessor_requires_fit(wflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "inner" analysis and
     # assessment set.
@@ -182,25 +184,16 @@ has_tailor_estimated <- function(x) {
 # ------------------------------------------------------------------------------
 # Prediction and postprocessing
 
-finalize_fit_post <- function(wflow_current, predictions, grid = NULL) {
+finalize_fit_post <- function(wflow_current, calibration, grid = NULL) {
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
 
   post_obj <- hardhat::extract_postprocessor(wflow_current) |>
     finalize_tailor(grid)
+  wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  outputs <- get_output_columns(wflow_current)
-
-  post_obj <- post_obj |>
-    fit(
-      .data = predictions,
-      outcome = !!outputs$outcome[[1]],
-      estimate = !!outputs$estimate[[1]],
-      probabilities = c(!!!outputs$probabilities)
-    )
-
-  post_obj
+  workflows::.fit_post(wflow_current, calibration)
 }
 
 # ------------------------------------------------------------------------------
