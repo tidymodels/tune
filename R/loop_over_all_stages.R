@@ -6,7 +6,7 @@
 loop_over_all_stages <- function(resamples, grid, static) {
   # Some packages may use random numbers so attach them prior to initializing
   # the RNG seed
-  attach_pkgs(static$pkgs)
+  attach_pkgs(static$pkgs, strategy = static$strategy)
 
   # Initialize some objects
   seed_length <- length(resamples$.seeds[[1]])
