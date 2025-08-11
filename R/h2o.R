@@ -119,6 +119,9 @@ loop_over_all_stages_agua <- function(resamples, grid, static) {
     # submodels.
     h2o_grid <- h2o_grid_info |> dplyr::select(-post_stage)
 
+    # Preprocessing grid
+    pre_grid <- remove_stage(current_sched_pre)
+
     num_iterations_model <- max(nrow(h2o_grid), 1)
 
     # Get processed versions of 2-3 data sets
@@ -137,22 +140,40 @@ loop_over_all_stages_agua <- function(resamples, grid, static) {
     )
 
     # TODO catch and log; not sure what the location should be
-    agua_pred <- rlang::eval_bare(agua_cl)
+    agua_pred <- try(rlang::eval_bare(agua_cl), silent = TRUE)
 
-    if (is_failure(current_wflow)) {
+    if (is_failure(agua_pred)) {
       next
     }
+
     # agua_pred <- remove_log_notes(agua_pred)
 
+    # Add preprocessing grid back in
+    # TODO maybe move this to agua
+    # TODO do same for cal
+    agua_pred$pred <- purrr::map(agua_pred$pred, ~ vctrs::vec_cbind(.x, pre_grid))
+
+    has_post <- has_tailor(current_wflow)
+
     for (iter_model in seq_len(num_iterations_model)) {
-      agua_pred_iter <- agua_pred[[iter_model]]
-      agua_post_grid <- h2o_grid_info$post_stage[[iter_model]]
-      num_iterations_post <- max(nrow(agua_post_grid), 1)
+      agua_pred_iter <- agua_pred$pred[[iter_model]]
+      all_sched_post <- h2o_grid_info$post_stage[[iter_model]]
+
+      has_post <- has_tailor(current_wflow)
+
+      num_iterations_post <- max(nrow(all_sched_post), 1)
 
       # TODO pull tailor object
 
       for (iter_post in seq_len(num_iterations_post)) {
 
+        current_sched_post <- all_sched_post[iter_post,]
+
+        if (has_post) {
+
+        } else {
+
+        }
         # TODOs:
         # everything from current_wflow <- workflows::.fit_finalize(current_wflow)
         # on down in the regular loop
