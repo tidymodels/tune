@@ -127,11 +127,12 @@ constants across operating systems.
 \pkg{tune} knows what packages are required to fit a workflow object.
 
 When computations are run sequentially, an initial check is made to see if
-they are installed. This triggers the packages to be attached (but not fully
-loaded).
+they are installed. This triggers the packages to be loaded but not visible
+in the search path.
 
-In parallel, the required packages are fully loaded, as they were previously
-with \pkg{foreach}, in the worker processes (but not the main R session).
+In parallel, the required packages are fully loaded (i.e., loaded and seen
+in the search path), as they were previously with \pkg{foreach}, in the
+worker processes (but not the main R session).
 }
 }
 \references{

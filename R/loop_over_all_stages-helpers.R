@@ -550,14 +550,8 @@ parsnip_to_engine <- function(wflow, grid) {
 
 # ------------------------------------------------------------------------------
 
-attach_pkgs <- function(pkgs, strategy = "sequential", load = character(0)) {
+attach_pkgs <- function(pkgs, strategy = "sequential") {
   sshh_load <- purrr::quietly(library)
-
-  if (length(load) > 0) {
-    # There may be some packages that need to be fully loaded to work
-    # appropriately.
-    load_res <- purrr::map(load, ~ sshh_load(.x, character.only = TRUE))
-  }
 
   if (length(pkgs) > 0 & strategy != "sequential") {
     # In parallel, load it all
