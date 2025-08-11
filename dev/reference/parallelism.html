@@ -109,6 +109,19 @@ constants across operating systems.
 
 
 
+
+
+Handling package dependencies
+
+
+tune knows what packages are required to fit a workflow object.
+When computations are run sequentially, an initial check is made to see if
+they are installed. This triggers the packages to be loaded but not visible
+in the search path.
+In parallel, the required packages are fully loaded (i.e., loaded and seen
+in the search path), as they were previously with foreach, in the
+worker processes (but not the main R session).
+
 "><meta property="og:description" content="tune can enable simultaneous parallel computations. Tierney (2008)
 defined different classes of parallel processing techniques:
 Implicit is when a function uses low-level tools to perform a
@@ -218,6 +231,19 @@ platforms due to the packages' use of different numerical tolerance
 constants across operating systems.
 
 
+
+
+
+Handling package dependencies
+
+
+tune knows what packages are required to fit a workflow object.
+When computations are run sequentially, an initial check is made to see if
+they are installed. This triggers the packages to be loaded but not visible
+in the search path.
+In parallel, the required packages are fully loaded (i.e., loaded and seen
+in the search path), as they were previously with foreach, in the
+worker processes (but not the main R session).
 
 "><meta property="og:image" content="https://tune.tidymodels.org/logo.png"><meta name="robots" content="noindex"><script defer data-domain="tune.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script></head><body>
     <a href="#container" class="visually-hidden-focusable">Skip to content</a>
@@ -361,6 +387,19 @@ seen differences in computations (stochastic or non-random) between
 platforms due to the packages' use of different numerical tolerance
 constants across operating systems.</p></li>
 </ul></div>
+
+<div class="section">
+<h3 id="handling-package-dependencies">Handling package dependencies<a class="anchor" aria-label="anchor" href="#handling-package-dependencies"></a></h3>
+
+
+<p><span class="pkg">tune</span> knows what packages are required to fit a workflow object.</p>
+<p>When computations are run sequentially, an initial check is made to see if
+they are installed. This triggers the packages to be loaded but not visible
+in the search path.</p>
+<p>In parallel, the required packages are fully loaded (i.e., loaded and seen
+in the search path), as they were previously with <span class="pkg">foreach</span>, in the
+worker processes (but not the main R session).</p>
+</div>
 
     </div>
 
