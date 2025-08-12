@@ -220,6 +220,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
             current_extract_grid <- current_predict_grid
+            final_wflow <- current_wflow
           }
 
           final_wflow <- workflows::.fit_finalize(final_wflow)
