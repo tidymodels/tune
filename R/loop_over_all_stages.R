@@ -211,7 +211,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               next
             }
 
-            current_wflow <- set_workflow_tailor(current_wflow, post_fit)
+            final_wflow <- set_workflow_tailor(current_wflow, post_fit)
 
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
             current_extract_grid <- current_post_grid
@@ -222,7 +222,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             current_extract_grid <- current_predict_grid
           }
 
-          current_wflow <- workflows::.fit_finalize(current_wflow)
+          final_wflow <- workflows::.fit_finalize(final_wflow)
 
           # --------------------------------------------------------------------
           # Allocate predictions to an overall object
@@ -239,7 +239,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
             )
             elt_extract <- .catch_and_log(
-              extract_details(current_wflow, static$control$extract),
+              extract_details(final_wflow, static$control$extract),
               control = static$control,
               split_labels = split_labs,
               location = location,
