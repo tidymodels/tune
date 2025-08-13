@@ -171,24 +171,24 @@ loop_over_all_stages <- function(resamples, grid, static) {
               current_sched_post
             )
 
-            # make data for prediction
-            if (has_tailor_estimated(current_wflow)) {
-              tailor_train_data <- predict_all_types(
-                current_wflow,
-                static,
-                predictee = "calibration"
-              )
+            # make data for post-processor
+            if (
+              workflows::.workflow_postprocessor_requires_fit(current_wflow)
+            ) {
+              tailor_train_data <- static$data$cal$data
             } else {
-              tailor_train_data <- current_pred[0, ]
+              # if the postprocessor does not require a fit,
+              # this does not cause data leakage
+              tailor_train_data <- static$data$fit$data
             }
 
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
-            post_fit <- .catch_and_log(
+            current_wflow <- .catch_and_log(
               finalize_fit_post(
                 current_wflow,
-                predictions = tailor_train_data,
+                calibration = tailor_train_data,
                 grid = post_grid
               ),
               control = static$control,
@@ -196,10 +196,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
               location = location,
               notes = notes
             )
-            if (is_failure(post_fit)) {
+            if (is_failure(current_wflow)) {
               next
             }
 
+            # to predict, use the post-processor directly rather than the
+            # workflow so that we don't have to generate the model predictions
+            # a second time
+            post_fit <- extract_postprocessor(current_wflow, estimated = TRUE)
             post_pred <- .catch_and_log(
               predict(post_fit, current_pred),
               control = static$control,
@@ -210,8 +214,6 @@ loop_over_all_stages <- function(resamples, grid, static) {
             if (is_failure(post_pred)) {
               next
             }
-
-            current_wflow <- set_workflow_tailor(current_wflow, post_fit)
 
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
             current_extract_grid <- current_post_grid
