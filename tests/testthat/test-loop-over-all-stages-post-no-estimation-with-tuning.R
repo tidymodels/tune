@@ -282,7 +282,7 @@ test_that("verifying loop_over_all_stages, submodels only, tuning, no estimation
   for (thrsh in cut_vals) {
     obs_acc <- obs_acc_submodel_only_mtr |> dplyr::filter(cut == thrsh)
     diff_acc <- inner_join(obs_acc, exp_acc_mtr, by = join_by(neighbors))
-    expect_true(all(diff_acc$.estimate < diff_acc$raw))
+    expect_true(all(diff_acc$.estimate != diff_acc$raw))
 
     obs_prob <- obs_prob_submodel_only_mtr |> dplyr::filter(cut == thrsh)
     diff_prob <- inner_join(

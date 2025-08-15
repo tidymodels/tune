@@ -71,9 +71,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
     # Iterate over model parameters
 
     # Make a copy of the current workflow so that we can finalize it multiple
-    # times, since finalize_*() functions will not update parameters whose
+    # times, since finalize_*() functions will only update parameters whose
     # values currently are tune()
-    pre_wflow <- current_wflow
+    wflow_with_fitted_pre <- current_wflow
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
@@ -83,7 +83,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
         "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
       current_wflow <- .catch_and_log(
-        finalize_fit_model(pre_wflow, current_sched_model),
+        finalize_fit_model(wflow_with_fitted_pre, current_sched_model),
         control = static$control,
         split_labels = split_labs,
         location = location,
@@ -158,6 +158,11 @@ loop_over_all_stages <- function(resamples, grid, static) {
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
 
+        # Make a copy of the current workflow so that we can finalize it multiple
+        # times, since finalize_*() functions will only update parameters whose
+        # values currently are tune()
+        wflow_with_fitted_pre_and_model <- current_wflow
+
         current_predict_grid <- current_grid
 
         for (iter_post in seq_len(num_iterations_post)) {
@@ -187,7 +192,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             )
             current_wflow <- .catch_and_log(
               finalize_fit_post(
-                current_wflow,
+                wflow_with_fitted_pre_and_model,
                 data_calibration = tailor_train_data,
                 grid = post_grid
               ),
