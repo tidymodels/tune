@@ -158,7 +158,7 @@ test_that("predict classification - no submodels - with calibration", {
   cal_pst <- tailor() |> adjust_probability_calibration()
 
   wflow <- workflow(pca_rec, logistic_reg(), cal_pst)
-  wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  wflow_fit <- fit(wflow, cls$data, data_calibration = cls$data)
   grd <- tibble()
 
   class_only <- metric_set(accuracy)
@@ -522,7 +522,7 @@ test_that("predict classification - with submodels - with calibration", {
   cal_pst <- tailor() |> adjust_probability_calibration()
 
   wflow <- workflow(pca_rec, knn_cls_spec, cal_pst)
-  wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  wflow_fit <- fit(wflow, cls$data, data_calibration = cls$data)
   grd <- tibble()
 
   class_only <- metric_set(accuracy)
@@ -770,7 +770,7 @@ test_that("predict regression - no submodels - with calibration", {
   reg_pst <- tailor() |> adjust_numeric_calibration()
 
   wflow <- workflow(pca_rec, linear_reg(), reg_pst)
-  wflow_fit <- fit(wflow, reg$data, calibration = reg$data)
+  wflow_fit <- fit(wflow, reg$data, data_calibration = reg$data)
   grd <- tibble()
 
   reg_mtr <- metric_set(rmse)
@@ -892,7 +892,7 @@ test_that("predict regression - with submodels - with calibration", {
   reg_pst <- tailor() |> adjust_numeric_calibration()
 
   wflow <- workflow(pca_rec, knn_reg_spec, reg_pst)
-  wflow_fit <- fit(wflow, reg$data, calibration = reg$data)
+  wflow_fit <- fit(wflow, reg$data, data_calibration = reg$data)
 
   reg_mtr <- metric_set(rmse)
 
