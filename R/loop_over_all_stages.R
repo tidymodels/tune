@@ -188,7 +188,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
             current_wflow <- .catch_and_log(
               finalize_fit_post(
                 current_wflow,
-                calibration = tailor_train_data,
+                data_calibration = tailor_train_data,
                 grid = post_grid
               ),
               control = static$control,
