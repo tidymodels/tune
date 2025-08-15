@@ -186,7 +186,7 @@ has_tailor_estimated <- function(x) {
 # ------------------------------------------------------------------------------
 # Prediction and postprocessing
 
-finalize_fit_post <- function(wflow_current, calibration, grid = NULL) {
+finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
@@ -195,7 +195,7 @@ finalize_fit_post <- function(wflow_current, calibration, grid = NULL) {
     finalize_tailor(grid)
   wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  workflows::.fit_post(wflow_current, calibration)
+  workflows::.fit_post(wflow_current, data_calibration)
 }
 
 # ------------------------------------------------------------------------------
