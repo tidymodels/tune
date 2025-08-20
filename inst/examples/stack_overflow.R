@@ -46,9 +46,8 @@ so_boots <- bootstraps(so_train)
 
 # ------------------------------------------------------------------------------
 
-library(doParallel)
-cl <- makePSOCKcluster(parallel::detectCores(logical = FALSE))
-registerDoParallel(cl)
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 

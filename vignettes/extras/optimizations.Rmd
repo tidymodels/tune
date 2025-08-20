@@ -102,7 +102,7 @@ tune supports parallel processing using the [future](https://www.futureverse.org
 #| label: future
 #| eval: false
 library(future)
-plan(multisession)
+plan("multisession")
 ```
 
 For mirai, you can set the number of worker processes via

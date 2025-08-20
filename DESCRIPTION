@@ -25,7 +25,7 @@ Imports:
     ggplot2,
     glue (>= 1.6.2),
     GPfit,
-    hardhat (>= 1.4.0.9002),
+    hardhat (>= 1.4.2),
     lifecycle (>= 1.0.0),
     parallel,
     parsnip (>= 1.2.1.9003),
@@ -64,8 +64,7 @@ Suggests:
 Remotes:
     tidymodels/tailor,
     tidymodels/workflows
-Config/Needs/website: pkgdown, tidymodels, kknn, doParallel, doFuture,
-    tidyverse/tidytemplate
+Config/Needs/website: pkgdown, tidymodels, kknn, tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
