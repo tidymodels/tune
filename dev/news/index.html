@@ -72,7 +72,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.1" id="tune-121">tune 1.2.1<a class="anchor" aria-label="anchor" href="#tune-121"></a></h2><p class="text-muted">CRAN release: 2024-04-18</p>
-<ul><li><p>Addressed issue in <code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> where the function would error when parallelized using <code><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster()</a></code> (<a href="https://github.com/tidymodels/tune/issues/885" class="external-link">#885</a>).</p></li>
+<ul><li><p>Addressed issue in <code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> where the function would error when parallelized using <code>makePSOCKcluster()</code> (<a href="https://github.com/tidymodels/tune/issues/885" class="external-link">#885</a>).</p></li>
 <li><p>Addressed issue where tuning functions would raise the error <code>object 'iteration' not found</code> with <code>plan(multisession)</code> and the control option <code>parallel_over = "everything"</code> (<a href="https://github.com/tidymodels/tune/issues/888" class="external-link">#888</a>).</p></li>
 </ul></div>
     <div class="section level2">

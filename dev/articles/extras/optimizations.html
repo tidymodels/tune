@@ -249,8 +249,8 @@ package. For doParallel, one could use:</p>
 <code class="sourceCode R"><span><span class="va">all_cores</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span>logical <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/doparallel" class="external-link">doParallel</a></span><span class="op">)</span></span>
-<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/parallel/makeCluster.html" class="external-link">makePSOCKcluster</a></span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html" class="external-link">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">makePSOCKcluster</span><span class="op">(</span><span class="va">all_cores</span><span class="op">)</span></span>
+<span><span class="fu">registerDoParallel</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span></span></code></pre></div>
 <p>To <strong>transition from foreach to future</strong>, remove lines
 loading any foreach backend packages <code>library(do*)</code> as well
 as lines registering that technology with <code>registerDo*()</code>,
