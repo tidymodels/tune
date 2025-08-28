@@ -468,7 +468,7 @@ test_that("grid processing schedule - recipe, model, and post", {
   skip_if_not_installed("splines2")
   skip_if_not_installed("probably")
 
-  wflow_three <- workflow(rec_no_tune, parsnip::logistic_reg(), tlr_no_tune)
+  wflow_three <- workflow(rec_no_tune, parsnip::linear_reg(), tlr_no_tune)
   grid_three <- tibble::tibble()
   sched_three <- schedule_grid(grid_three, wflow_three)
 
@@ -733,7 +733,7 @@ test_that("grid processing schedule - model only, submodels, 1 point design", {
 test_that("grid processing schedule - postprocessing only", {
   skip_if_not_installed("probably")
 
-  wflow_thrsh <- workflow(outcome ~ ., parsnip::logistic_reg(), tlr_tune)
+  wflow_thrsh <- workflow(outcome ~ ., parsnip::linear_reg(), tlr_tune)
   grid_thrsh <- extract_parameter_set_dials(wflow_thrsh) |>
     update(lower_limit = dials::lower_limit(c(0, 1))) |>
     dials::grid_regular(levels = 3)
@@ -767,7 +767,7 @@ test_that("grid processing schedule - recipe + postprocessing, regular grid", {
   skip_if_not_installed("splines2")
   skip_if_not_installed("probably")
 
-  wflow_pre_post <- workflow(rec_tune, parsnip::logistic_reg(), tlr_tune)
+  wflow_pre_post <- workflow(rec_tune, parsnip::linear_reg(), tlr_tune)
   grid_pre_post <-
     extract_parameter_set_dials(wflow_pre_post) |>
     update(lower_limit = dials::lower_limit(c(0, 1))) |>
@@ -816,7 +816,7 @@ test_that("grid processing schedule - recipe + postprocessing, irregular grid", 
   skip_if_not_installed("splines2")
   skip_if_not_installed("probably")
 
-  wflow_pre_post <- workflow(rec_tune, parsnip::logistic_reg(), tlr_tune)
+  wflow_pre_post <- workflow(rec_tune, parsnip::linear_reg(), tlr_tune)
   grid_pre_post <-
     extract_parameter_set_dials(wflow_pre_post) |>
     update(lower_limit = dials::lower_limit(c(0, 1))) |>
