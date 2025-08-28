@@ -290,6 +290,10 @@ every model that is \emph{fit} (as opposed to every model that is \emph{evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.
+
+Finally, it is a good idea to include calls to \code{\link[=require]{require()}} for packages that
+are used in the function. This helps prevent failures when using parallel
+processing.
 }
 
 \examples{

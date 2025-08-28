@@ -160,6 +160,10 @@
 #'  sub-models so that, in these cases, not every row in the tuning parameter
 #'  grid has a separate R object associated with it.
 #'
+#' Finally, it is a good idea to include calls to [require()] for packages that
+#' are used in the function. This helps prevent failures when using parallel
+#' processing.
+#'
 #' @template case-weights
 #' @template censored-regression
 #'
