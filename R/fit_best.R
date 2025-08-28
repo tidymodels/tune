@@ -37,7 +37,7 @@
 #'
 #' @inheritSection last_fit See also
 #'
-#' @examplesIf tune:::should_run_examples() & rlang::is_installed("modeldata")
+#' @examplesIf tune:::should_run_examples() & rlang::is_installed("modeldata") & !tune:::is_cran_check()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

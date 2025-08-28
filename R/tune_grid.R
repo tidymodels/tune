@@ -167,7 +167,7 @@
 #' @template case-weights
 #' @template censored-regression
 #'
-#' @examplesIf tune:::should_run_examples(suggests = "kernlab") & rlang::is_installed("splines2")
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab") & rlang::is_installed("splines2") & !tune:::is_cran_check()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)

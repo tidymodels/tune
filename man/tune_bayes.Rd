@@ -297,7 +297,7 @@ processing.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = "kernlab")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = "kernlab") & !tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)

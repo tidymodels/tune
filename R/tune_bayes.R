@@ -135,7 +135,7 @@
 #' calculated for every value of `eval_time` but the _first_ evaluation time
 #' given by the user (e.g., `eval_time[1]`) is used to guide the optimization.
 #'
-#' @examplesIf tune:::should_run_examples(suggests = "kernlab")
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab") & !tune:::is_cran_check()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
