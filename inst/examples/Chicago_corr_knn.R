@@ -1,8 +1,8 @@
 library(tidymodels)
 library(tune)
 library(kknn)
-library(doMC)
-registerDoMC(cores = 20)
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 

@@ -66,8 +66,8 @@ summarize(grid_results)
 
 # ------------------------------------------------------------------------------
 
-library(doMC)
-registerDoMC(cores = 10)
+library(future)
+plan("multisession")
 
 kappa_only <- metric_set(kap)
 
