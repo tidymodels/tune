@@ -96,10 +96,10 @@ test_that("accessor functions", {
 test_that("rsample fingerprinting", {
   expect_equal(
     .get_fingerprint(ames_grid_search),
-    "bfb2d02564c955d27ed78316b820e8ff"
+    "7a961db8a275a9f0d9b6733a967cea03"
   )
   expect_equal(
     .get_fingerprint(ames_iter_search),
-    "bfb2d02564c955d27ed78316b820e8ff"
+    "7a961db8a275a9f0d9b6733a967cea03"
   )
 })
