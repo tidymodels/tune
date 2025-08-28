@@ -483,16 +483,6 @@ pctl_call <- function(framework, args = list()) {
 
 # ------------------------------------------------------------------------------
 
-warn_foreach_deprecation <- function() {
-  cli::cli_warn(c(
-    "!" = "{.pkg tune} detected a parallel backend registered with \\
-               foreach but no backend registered with future.",
-    "i" = "Support for parallel processing with foreach was \\
-               soft-deprecated in {.pkg tune} 1.2.1.",
-    "i" = "See {.help [?parallelism](tune::parallelism)} to learn more."
-  ))
-}
-
 manange_global_limit <- function(min = 1e9) {
   currrent_value <- getOption("future.globals.maxSize")
   if (is.null(currrent_value)) {

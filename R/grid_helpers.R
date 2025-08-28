@@ -99,15 +99,6 @@ forge_from_workflow <- function(new_data, workflow) {
   forged
 }
 
-mold_has_case_weights <- function(mold) {
-  roles <- mold$extras$roles
-  no_extras <- is.null(roles)
-  if (no_extras) {
-    return(FALSE)
-  }
-  any(names(roles) == "case_weights")
-}
-
 get_metrics_by <- function(metric_set) {
   metrics <- attr(metric_set, "metrics")
   metrics_by <- purrr::map(metrics, attr, "by")

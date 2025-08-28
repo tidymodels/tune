@@ -370,21 +370,6 @@ replace_reserve_rows <- function(iter, chunk) {
   start_loc:end_loc
 }
 
-update_reserve <- function(reserve, iter, predictions, grid_size) {
-  grid_size <- min(1, grid_size)
-  pred_size <- nrow(predictions)
-
-  if (is.null(reserve)) {
-    reserve <- initialize_pred_reserve(predictions, grid_size)
-  } else {
-    if (tibble::is_tibble(predictions)) {
-      predictions <- dplyr::as_tibble(predictions)
-    }
-  }
-  reserve[replace_reserve_rows(iter, pred_size), ] <- predictions
-  reserve
-}
-
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
