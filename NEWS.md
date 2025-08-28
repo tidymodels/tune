@@ -2,9 +2,9 @@
 
 ## Changes to `tune_grid()`. 
 
-* A major rewrite/refactor of the underlying code that runs `tune_grid()`. 
+* A major rewrite/refactor of the underlying code that runs `tune_grid()`. This was an upgrade to add postprocessing and to modernize our parallel processing infrastructure. 
 
-* The pattern of `.config` values has changed from `Preprocessor{num}_Model{num}` to `pre{num}_mod{num}_post{num}`. 
+* The pattern of `.config` values has changed from `Preprocessor{num}_Model{num}` to `pre{num}_mod{num}_post{num}`. The numbers include a zero when that element was static. For example, a value of `pre0_mod3_post4` means no preprocessors were tuned and the model and postprocessor(s) had at least three and four candidates, respectively.   
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
