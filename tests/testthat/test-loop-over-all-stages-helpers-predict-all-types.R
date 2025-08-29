@@ -1056,8 +1056,6 @@ test_that("predict censored regression - submodels - no calibration", {
   skip_if_not_installed("survival")
   skip_if_not_installed("glmnet")
 
-  skip("not working")
-
   library(censored)
 
   cens <- make_post_data(mode = "censored")
@@ -1068,7 +1066,7 @@ test_that("predict censored regression - submodels - no calibration", {
   glmn_cens <- proportional_hazards(penalty = tune()) |> set_engine("glmnet")
 
   wflow <- workflow(pca_rec, glmn_cens)
-  wflow_fit <- fit(wflow, cens$data)
+
   grd <-
     wflow |>
     extract_parameter_set_dials() |>
@@ -1089,6 +1087,11 @@ test_that("predict censored regression - submodels - no calibration", {
 
   ctrl <- tune::control_grid()
 
+  wflow_fit <-
+    wflow |>
+    finalize_workflow(grd[1,]) |>
+    fit(cens$data)
+
   # ----------------------------------------------------------------------------
   # static metrics
 
@@ -1104,10 +1107,6 @@ test_that("predict censored regression - submodels - no calibration", {
 
   static_stc <- tune:::update_static(static_stc, data_1)
   static_stc$y_name <- "outcome"
-
-  # TODO error
-  # Error in lambda[1] - s : non-numeric argument to binary operator
-  # Called from: lambda.interp(lambda, s)
 
   res_stc <- tune:::predict_all_types(
     wflow_fit,
