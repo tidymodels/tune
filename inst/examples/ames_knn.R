@@ -1,8 +1,8 @@
 library(tidymodels)
 library(AmesHousing)
 library(butcher)
-library(doMC)
-registerDoMC(cores = 10)
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 

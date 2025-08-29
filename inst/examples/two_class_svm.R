@@ -1,8 +1,8 @@
 library(tidymodels)
 library(tune)
 load("~/Downloads/two_class_svm.RData")
-library(doMC)
-registerDoMC(cores = 8)
+library(future)
+plan("multisession")
 # ------------------------------------------------------------------------------
 
 set.seed(7898)

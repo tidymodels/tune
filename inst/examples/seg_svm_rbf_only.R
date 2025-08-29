@@ -5,8 +5,8 @@ load(url("http://bit.ly/seg-data"))
 
 theme_set(theme_bw())
 
-library(doMC)
-registerDoMC(cores = 20)
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 

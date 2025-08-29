@@ -2,8 +2,9 @@ library(tidymodels)
 library(tune)
 library(AmesHousing)
 library(workflows)
-library(doMC)
-registerDoMC(cores = 10)
+library(future)
+plan("multisession")
+
 # ------------------------------------------------------------------------------
 
 ames <- make_ames() |> mutate(Sale_Price = log10(Sale_Price))

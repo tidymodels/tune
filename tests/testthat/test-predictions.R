@@ -8,7 +8,8 @@ test_that("recipe only", {
     mt_spln_lm_grid$splits,
     mt_spln_lm_grid$.predictions,
     check_predictions,
-    grid
+    grid,
+    obj = mt_spln_lm_grid
   )
 
   # initial values for Bayes opt
@@ -23,7 +24,8 @@ test_that("recipe only", {
     init$splits,
     init$.predictions,
     check_predictions,
-    init_grid
+    init_grid,
+    obj = mt_spln_lm_grid
   )
 
   # Now search iterations with a dummy grid
@@ -34,7 +36,8 @@ test_that("recipe only", {
     bo$splits,
     bo$.predictions,
     check_predictions,
-    bo_grid
+    bo_grid,
+    obj = mt_spln_lm_bo
   )
 })
 
@@ -51,7 +54,8 @@ test_that("model only", {
     mt_knn_grid$splits,
     mt_knn_grid$.predictions,
     check_predictions,
-    grid
+    tune_df = grid,
+    obj = mt_knn_grid
   )
 
   # initial values for Bayes opt
@@ -66,7 +70,8 @@ test_that("model only", {
     init$splits,
     init$.predictions,
     check_predictions,
-    init_grid
+    init_grid,
+    obj = mt_knn_bo
   )
 
   # Now search iterations with a dummy grid
@@ -77,7 +82,8 @@ test_that("model only", {
     bo$splits,
     bo$.predictions,
     check_predictions,
-    bo_grid
+    bo_grid,
+    obj = mt_knn_bo
   )
 })
 
@@ -95,7 +101,8 @@ test_that("model and recipe", {
     mt_spln_knn_grid$splits,
     mt_spln_knn_grid$.predictions,
     check_predictions,
-    grid
+    grid,
+    obj = mt_spln_knn_grid
   )
 
   # initial values for Bayes opt
@@ -110,7 +117,8 @@ test_that("model and recipe", {
     init$splits,
     init$.predictions,
     check_predictions,
-    init_grid
+    init_grid,
+    obj = mt_spln_knn_grid
   )
 
   # Now search iterations with a dummy grid
@@ -121,6 +129,7 @@ test_that("model and recipe", {
     bo$splits,
     bo$.predictions,
     check_predictions,
-    bo_grid
+    bo_grid,
+    obj = mt_spln_knn_bo
   )
 })

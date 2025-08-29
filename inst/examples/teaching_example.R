@@ -16,8 +16,8 @@ thm <-
   )
 theme_set(thm)
 
-library(doMC)
-registerDoMC(cores = 20)
+library(future)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 
@@ -92,11 +92,11 @@ library(tidymodels)
 #>   method     from
 #>   as.zoo.xts zoo
 #> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
-#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3
 #> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
-#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
-#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
-#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4
 #> ✔ parsnip   0.0.3.9001
 #> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
 #> ✖ purrr::discard()  masks scales::discard()
@@ -757,11 +757,11 @@ library(tidymodels)
 #>   method     from
 #>   as.zoo.xts zoo
 #> ── Attaching packages ──────────────────────────────────────────────────────────────────────────────────────── tidymodels 0.0.3 ──
-#> ✔ broom     0.5.2          ✔ purrr     0.3.3     
+#> ✔ broom     0.5.2          ✔ purrr     0.3.3
 #> ✔ dials     0.0.3.9001     ✔ recipes   0.1.7.9001
-#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5     
-#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3     
-#> ✔ infer     0.5.0          ✔ yardstick 0.0.4     
+#> ✔ dplyr     0.8.3          ✔ rsample   0.0.5
+#> ✔ ggplot2   3.2.1          ✔ tibble    2.1.3
+#> ✔ infer     0.5.0          ✔ yardstick 0.0.4
 #> ✔ parsnip   0.0.3.9001
 #> ── Conflicts ─────────────────────────────────────────────────────────────────────────────────────────── tidymodels_conflicts() ──
 #> ✖ purrr::discard()  masks scales::discard()

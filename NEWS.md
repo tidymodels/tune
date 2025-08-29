@@ -2,28 +2,36 @@
 
 ## Changes to `tune_grid()`. 
 
-* A major rewrite and refactor of the underlying code that runs `tune_grid()` was made. 
+* A major rewrite/refactor of the underlying code that runs `tune_grid()`. This was an upgrade to add postprocessing and to modernize our parallel processing infrastructure. 
 
-* The pattern of `.config` values has changed from `Preprocessor{num}_Model{num}` to `pre{num}_mod{num}_post{num}`. 
+* The pattern of `.config` values has changed. 
+
+   - For grid search, it changes from `Preprocessor{num}_Model{num}` to `pre{num}_mod{num}_post{num}`. The numbers include a zero when that element was static. For example, a value of `pre0_mod3_post4` means no preprocessors were tuned and the model and postprocessor(s) had at least three and four candidates, respectively. 
+   - For iterative search, the pattern is not `iter{num}` instead of `Iter{num}` and the numbers are now zero padded to sort better. For example, if there between 10 and 99 iterations, the first `.config` value is now `iter01` instead of `Iter1`.
 
 * The package will now log a backtrace for errors and warnings that occur during tuning. When a tuning process encounters issues, see the new `trace` column in the `collect_notes(.Last.tune.result)` output to find precisely where the error occurred (#873).
 
-* Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
+* Postprocessors can now be tuned. Currently, we support the tailor package. 
 
-## Other Changes
+## Parallel Processing
 
 * Introduced support for parallel processing with mirai in addition to the currently supported framework future. See `?parallelism` to learn more (#1028).
 
 * Sequential and parallel processing all use the same L'Ecuyer-CMRG seeds (conditional on `parallel_over`) (#1033). 
 
+## Breaking Changes
+
+* The `foreach` package is no longer supported. Instead, use the future or mirai packages.  
+
+* The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
+
+## Other Changes
+
 * `int_pctl()` now includes an option (`keep_replicates`) to retain the individual bootstrap estimates. It also processes the resamples more efficiently (#1000).
 
 * A `min_grid()` methods was added for `proportional_hazards` models so that their submodels are processed appropriately. 
 
-## Breaking Changes
-
-* The `foreach` package is no longer supported. Instead, use the future or mirai packages.  
-* The parallel backend(s) and the methods of constructing seeds for workers have changed. There will be a lack of reproducibility between objects created in this version of tune and previous versions.
+* Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
 
 # tune 1.3.0
 

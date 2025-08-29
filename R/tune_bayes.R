@@ -61,6 +61,15 @@
 #' results. For good results, the number of initial values should be more than
 #' the number of parameters being optimized.
 #'
+#' The tuning parameter combinations that were tested are called _candidates_.
+#'  Each candidate has a unique `.config` value that, for the initial grid search,
+#'  has the pattern `pre{num}_mod{num}_post{num}`. The numbers include a zero
+#'  when that element was static. For example, a value of `pre0_mod3_post4` means
+#'  no preprocessors were tuned and the model and postprocessor(s) had at least
+#'  three and four candidates, respectively. The iterative part of the
+#'  search uses the pattern `iter{num}`. In each case, the numbers are
+#'  zero-padded to enable proper sorting.
+#'
 #' @section Parameter Ranges and Values:
 #'
 #' In some cases, the tuning parameter values depend on the dimensions of the
@@ -135,7 +144,7 @@
 #' calculated for every value of `eval_time` but the _first_ evaluation time
 #' given by the user (e.g., `eval_time[1]`) is used to guide the optimization.
 #'
-#' @examplesIf tune:::should_run_examples(suggests = "kernlab")
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab") && !tune:::is_cran_check()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -290,6 +299,11 @@ tune_bayes_workflow <- function(
   rset_info <- pull_rset_attributes(resamples)
 
   check_iter(iter, call = call)
+  if (iter > 0) {
+    iter_chr <- recipes::names0(iter, "iter")
+  } else {
+    iter_chr <- "iter0"
+  }
 
   metrics <- check_metrics_arg(metrics, object, call = call)
   opt_metric <- first_metric(metrics)
@@ -488,20 +502,20 @@ tune_bayes_workflow <- function(
         tmp_res[[".metrics"]] <- purrr::map(
           tmp_res[[".metrics"]],
           dplyr::mutate,
-          .config = paste0("Iter", i)
+          .config = iter_chr[i]
         )
         if (control$save_pred) {
           tmp_res[[".predictions"]] <- purrr::map(
             tmp_res[[".predictions"]],
             dplyr::mutate,
-            .config = paste0("Iter", i)
+            .config = iter_chr[i]
           )
         }
         if (".extracts" %in% names(tmp_res)) {
           tmp_res[[".extracts"]] <- purrr::map(
             tmp_res[[".extracts"]],
             dplyr::mutate,
-            .config = paste0("Iter", i)
+            .config = iter_chr[i]
           )
         }
         unsummarized <- dplyr::bind_rows(
