@@ -250,6 +250,9 @@ every model that is <em>fit</em> (as opposed to every model that is <em>evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
+<p>Finally, it is a good idea to include calls to <code><a href="https://rdrr.io/r/base/library.html" class="external-link">require()</a></code> for packages that
+are used in the function. This helps prevent failures when using parallel
+processing.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -278,7 +281,7 @@ grid has a separate R object associated with it.</p>
 <span class="r-in"><span><span class="va">spline_res</span> <span class="op">&lt;-</span> <span class="fu">fit_resamples</span><span class="op">(</span><span class="va">lin_mod</span>, <span class="va">spline_rec</span>, <span class="va">folds</span>, control <span class="op">=</span> <span class="va">control</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> → <span style="color: #BBBB00; font-weight: bold;">A</span> | <span style="color: #BBBB00;">warning</span>: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> There were issues with some computations   <span style="color: #BBBB00; font-weight: bold;">A</span>: x1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> There were issues with some computations   <span style="color: #BBBB00; font-weight: bold;">A</span>: x2</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> There were issues with some computations   <span style="color: #BBBB00; font-weight: bold;">A</span>: x3</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> There were issues with some computations   <span style="color: #BBBB00; font-weight: bold;">A</span>: x5</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>

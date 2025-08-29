@@ -193,6 +193,14 @@ in the <code>initial</code> argument. <code>initial</code> can also be a positiv
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
 the number of parameters being optimized.</p>
+<p>The tuning parameter combinations that were tested are called <em>candidates</em>.
+Each candidate has a unique <code>.config</code> value that, for the initial grid search,
+has the pattern <code>pre{num}_mod{num}_post{num}</code>. The numbers include a zero
+when that element was static. For example, a value of <code>pre0_mod3_post4</code> means
+no preprocessors were tuned and the model and postprocessor(s) had at least
+three and four candidates, respectively. The iterative part of the
+search uses the pattern <code>iter{num}</code>. In each case, the numbers are
+zero-padded to enable proper sorting.</p>
     </div>
     <div class="section level2">
     <h2 id="parameter-ranges-and-values">Parameter Ranges and Values<a class="anchor" aria-label="anchor" href="#parameter-ranges-and-values"></a></h2>
@@ -342,6 +350,9 @@ every model that is <em>fit</em> (as opposed to every model that is <em>evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.</p>
+<p>Finally, it is a good idea to include calls to <code><a href="https://rdrr.io/r/base/library.html" class="external-link">require()</a></code> for packages that
+are used in the function. This helps prevent failures when using parallel
+processing.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -395,11 +406,11 @@ grid has a separate R object associated with it.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      cost rbf_sigma .metric .estimator  mean     n std_err .config     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 15.8      0.009<span style="text-decoration: underline;">98</span> rmse    standard    2.66     5   0.180 Iter3       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 15.8      0.009<span style="text-decoration: underline;">98</span> rmse    standard    2.66     5   0.180 iter3       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> 32        0.01    rmse    standard    2.67     5   0.216 pre0_mod6_p…</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 20.8      0.015<span style="text-decoration: underline;">0</span>  rmse    standard    2.70     5   0.233 Iter6       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 25.6      0.117   rmse    standard    3.21     5   0.793 Iter1       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  0.040<span style="text-decoration: underline;">4</span>   0.008<span style="text-decoration: underline;">43</span> rmse    standard    5.63     5   0.920 Iter5       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> 20.8      0.015<span style="text-decoration: underline;">0</span>  rmse    standard    2.70     5   0.233 iter6       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> 25.6      0.117   rmse    standard    3.21     5   0.793 iter1       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  0.040<span style="text-decoration: underline;">4</span>   0.008<span style="text-decoration: underline;">43</span> rmse    standard    5.63     5   0.920 iter5       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .iter &lt;int&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># specifying `initial` as a numeric rather than previous tuning results</span></span></span>
@@ -412,10 +423,10 @@ grid has a separate R object associated with it.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    cost rbf_sigma .metric .estimator  mean     n std_err .config  .iter</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  31.2   0.002<span style="text-decoration: underline;">17</span> rmse    standard    2.59     5   0.221 Iter4        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  18.4   0.002<span style="text-decoration: underline;">47</span> rmse    standard    2.59     5   0.225 Iter5        5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  24.4   0.002<span style="text-decoration: underline;">88</span> rmse    standard    2.59     5   0.215 Iter6        6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  31.5   0.001<span style="text-decoration: underline;">44</span> rmse    standard    2.60     5   0.233 Iter3        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>  31.2   0.002<span style="text-decoration: underline;">17</span> rmse    standard    2.59     5   0.221 iter4        4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>  18.4   0.002<span style="text-decoration: underline;">47</span> rmse    standard    2.59     5   0.225 iter5        5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>  24.4   0.002<span style="text-decoration: underline;">88</span> rmse    standard    2.59     5   0.215 iter6        6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>  31.5   0.001<span style="text-decoration: underline;">44</span> rmse    standard    2.60     5   0.233 iter3        3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>  32     0.01    rmse    standard    2.67     5   0.216 pre0_mo…     0</span>
 </code></pre></div>
     </div>
