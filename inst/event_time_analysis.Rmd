@@ -13,14 +13,14 @@ date: "2023-04-13"
 library(tidymodels)
 library(censored)
 library(joineR)
-library(doMC)
+library(future)
 
 # ------------------------------------------------------------------------------
 
 tidymodels_prefer()
 theme_set(theme_bw())
 options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
-registerDoMC(cores = 10)
+plan("multisession")
 
 # ------------------------------------------------------------------------------
 
