@@ -86,8 +86,8 @@ new_bare_tibble <- function(x, ..., class = character()) {
 # `.iter = 0`.
 .config_to_.iter <- function(.config) {
   .iter <- .config
-  nonzero <- grepl("Iter", .iter)
-  .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
+  nonzero <- grepl("^[iI]ter", .iter)
+  .iter <- ifelse(nonzero, gsub("^[iI]ter", "", .iter), "0")
   .iter <- as.numeric(.iter)
   .iter
 }

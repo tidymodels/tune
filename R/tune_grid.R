@@ -77,6 +77,14 @@
 #'  change the values. This updated parameter set can be passed to the function
 #'  via the `param_info` argument.
 #'
+#'  The rows of the grid are called tuning parameter _candidates_. Each
+#'  candidate has a unique `.config` value that, for grid search, has the
+#'  pattern `pre{num}_mod{num}_post{num}`. The numbers include a zero when that
+#'  element was static. For example, a value of `pre0_mod3_post4` means no
+#'  preprocessors were tuned and the model and postprocessor(s) had at least
+#'  three and four candidates, respectively. Also, the numbers are zero-padded
+#'  to enable proper sorting.
+#'
 #' @section Performance Metrics:
 #'
 #' To use your own performance metrics, the [yardstick::metric_set()] function

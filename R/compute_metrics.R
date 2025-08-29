@@ -147,9 +147,9 @@ compute_metrics.tune_results <- function(
   # nest by resample id
   nest_cols <- "id"
 
-  if ("Iter1" %in% mtrcs$.config) {
+  # Convert the iterative .configs into numbers
+  if (any(grepl("^[iI]ter", mtrcs$.config))) {
     mtrcs$.iter <- .config_to_.iter(mtrcs$.config)
-
     nest_cols <- c(nest_cols, ".iter")
   }
 

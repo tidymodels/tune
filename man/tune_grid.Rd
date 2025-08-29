@@ -125,6 +125,14 @@ parameters. Otherwise, a parameter set can be created (via
 \code{\link[dials:parameters]{dials::parameters()}}) and the \code{dials} \code{update()} function can be used to
 change the values. This updated parameter set can be passed to the function
 via the \code{param_info} argument.
+
+The rows of the grid are called tuning parameter \emph{candidates}. Each
+candidate has a unique \code{.config} value that, for grid search, has the
+pattern \verb{pre\{num\}_mod\{num\}_post\{num\}}. The numbers include a zero when that
+element was static. For example, a value of \code{pre0_mod3_post4} means no
+preprocessors were tuned and the model and postprocessor(s) had at least
+three and four candidates, respectively. Also, the numbers are zero-padded
+to enable proper sorting.
 }
 
 \section{Performance Metrics}{

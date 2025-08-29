@@ -122,6 +122,15 @@ in the \code{initial} argument. \code{initial} can also be a positive integer. I
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
 the number of parameters being optimized.
+
+The tuning parameter combinations that were tested are called \emph{candidates}.
+Each candidate has a unique \code{.config} value that, for the initial grid search,
+has the pattern \verb{pre\{num\}_mod\{num\}_post\{num\}}. The numbers include a zero
+when that element was static. For example, a value of \code{pre0_mod3_post4} means
+no preprocessors were tuned and the model and postprocessor(s) had at least
+three and four candidates, respectively. The iterative part of the
+search uses the pattern \verb{iter\{num\}}. In each case, the numbers are
+zero-padded to enable proper sorting.
 }
 
 \section{Parameter Ranges and Values}{
