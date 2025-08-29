@@ -283,7 +283,6 @@ test_that("tune model and recipe (multi-predict)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
-  skip("test is not implemented for tune_bayes()")
   skip_if_not_installed("splines2")
 
   # With tune_grid() this tests for NA values in the grid.
@@ -301,36 +300,28 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(3, NA_real_, 4))
 
-  # ask for predictions and extractions
-  control <- control_bayes(
-    save_pred = TRUE,
-    extract = function(x) 1L
-  )
-
   suppressMessages({
-    cars_res <- tune_bayes(
+    cars_init_res <- tune_grid(
       model,
       preprocessor = rec,
       resamples = data_folds,
-      control = control
+      grid = cars_grid
     )
   })
 
-  notes <- cars_res$.notes
-  note <- notes[[1]]$note
+  exp_init_failures <- nrow(data_folds) * sum(!complete.cases(cars_grid))
+  obs_init_failures <- collect_notes(cars_init_res) |> filter(type == "error") |> nrow()
 
-  extract <- cars_res$.extracts[[1]]
+  expect_equal(obs_init_failures, exp_init_failures)
 
-  predictions <- cars_res$.predictions[[1]]
-  used_deg_free <- sort(unique(predictions$deg_free))
+  all_notes <- collect_notes(cars_init_res)
+  expect_equal(nrow(all_notes), 4L)
 
-  expect_length(notes, 2L)
+  expect_equal(
+    cars_init_res |> collect_metrics() |> distinct(deg_free),
+    cars_grid |> tidyr::drop_na() |> distinct(deg_free)
+  )
 
-  # failing rows are not in the output
-  expect_equal(nrow(extract), 2L)
-  expect_equal(extract$deg_free, c(3, 4))
-
-  expect_equal(used_deg_free, c(3, 4))
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
