@@ -1,643 +1,0 @@
-
-R version 4.3.2 (2023-10-31) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: aarch64-apple-darwin20 (64-bit)
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-> library(tidymodels)
-── Attaching packages ────────────────────────────────────── tidymodels 1.1.1 ──
-✔ broom        1.0.5          ✔ recipes      1.0.10    
-✔ dials        1.2.1          ✔ rsample      1.2.0     
-✔ dplyr        1.1.4          ✔ tibble       3.2.1     
-✔ ggplot2      3.5.0          ✔ tidyr        1.3.1     
-✔ infer        1.0.5          ✔ tune         1.2.0     
-✔ modeldata    1.3.0          ✔ workflows    1.1.4     
-✔ parsnip      1.2.0          ✔ workflowsets 1.0.1.9001
-✔ purrr        1.0.2          ✔ yardstick    1.3.0     
-── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
-✖ purrr::discard() masks scales::discard()
-✖ dplyr::filter()  masks stats::filter()
-✖ dplyr::lag()     masks stats::lag()
-✖ recipes::step()  masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/
-> library(scales)
-> library(censored)
-Loading required package: survival
-> library(sessioninfo)
-> library(testthat)
-
-Attaching package: ‘testthat’
-
-The following object is masked from ‘package:tidyr’:
-
-    matches
-
-The following object is masked from ‘package:rsample’:
-
-    matches
-
-The following object is masked from ‘package:purrr’:
-
-    is_null
-
-The following object is masked from ‘package:dplyr’:
-
-    matches
-
-> # also will require prodlim, mboost, kknn, and kernlab
-> 
-> # ------------------------------------------------------------------------------
-> # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
-> 
-> set.seed(455)
-> folds <- vfold_cv(mtcars, v = 5)
-> 
-> simple_rec <- recipe(mpg ~ ., data = mtcars)
-> 
-> form <- mpg ~ .
-> 
-> spline_rec <-
-+   recipe(mpg ~ ., data = mtcars) %>%
-+   step_normalize(all_predictors()) %>%
-+   step_bs(disp, deg_free = tune())
-> 
-> lm_mod <- linear_reg() %>% set_engine("lm")
-> 
-> knn_mod <-
-+   nearest_neighbor(mode = "regression", neighbors = tune()) %>%
-+   set_engine("kknn")
-> 
-> knn_mod_two <-
-+   nearest_neighbor(mode = "regression", neighbors = tune("K"), weight_func = tune()) %>%
-+   set_engine("kknn")
-> 
-> get_coefs  <- function(x) {
-+   x %>%
-+     extract_fit_parsnip() %>%
-+     tidy()
-+ }
-> 
-> verb <- FALSE
-> g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
-> b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
-> 
-> # ------------------------------------------------------------------------------
-> 
-> mt_spln_lm <-
-+   workflow() %>%
-+   add_recipe(spline_rec) %>%
-+   add_model(lm_mod)
-> 
-> mt_spln_knn <-
-+   workflow() %>%
-+   add_recipe(spline_rec) %>%
-+   add_model(knn_mod)
-> 
-> mt_knn <-
-+   workflow() %>%
-+   add_recipe(simple_rec) %>%
-+   add_model(knn_mod)
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_spln_lm_grid <-
-+   tune_grid(mt_spln_lm,
-+             resamples = folds,
-+             control = g_ctrl)
-→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x1   B: x4There were issues with some computations   A: x2   B: x10There were issues with some computations   A: x2   B: x11There were issues with some computations   A: x2   B: x16There were issues with some computations   A: x2   B: x20
-> 
-> set.seed(8825)
-> mt_spln_lm_bo <-
-+   tune_bayes(
-+     mt_spln_lm,
-+     resamples = folds,
-+     iter = 3,
-+     control = b_ctrl
-+   )
-→ A | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x5There were issues with some computations   A: x6There were issues with some computations   A: x11There were issues with some computations   A: x13There were issues with some computations   A: x14There were issues with some computations   A: x16There were issues with some computations   A: x16
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_spln_knn_grid <-
-+   tune_grid(
-+     mt_spln_knn,
-+     resamples = folds,
-+     grid = grid_regular(extract_parameter_set_dials(mt_spln_knn)),
-+     control = g_ctrl
-+   )
-→ A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x2                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x2There were issues with some computations   A: x6   B: x3There were issues with some computations   A: x12   B: x3There were issues with some computations   A: x15   B: x6
-> 
-> set.seed(8825)
-> mt_spln_knn_bo <-
-+   tune_bayes(mt_spln_knn,
-+              resamples = folds,
-+              iter = 3,
-+              control = b_ctrl)
-→ A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x4There were issues with some computations   A: x8   B: x2There were issues with some computations   A: x14   B: x5There were issues with some computations   A: x20   B: x5There were issues with some computations   A: x25   B: x10There were issues with some computations   A: x26   B: x10There were issues with some computations   A: x31   B: x12There were issues with some computations   A: x36   B: x14There were issues with some computations   A: x37   B: x14There were issues with some computations   A: x40   B: x16
-> 
-> set.seed(8825)
-> mt_spln_knn_bo_sep <-
-+   tune_bayes(knn_mod_two,
-+              spline_rec,
-+              resamples = folds,
-+              iter = 3,
-+              control = b_ctrl)
-→ A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x6                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x6There were issues with some computations   A: x12   B: x5There were issues with some computations   A: x18   B: x5There were issues with some computations   A: x24   B: x8! The Gaussian process model is being fit using 12 features but only has 5
-  data points to do so. This may cause errors or a poor model fit.
-                                                          → C | warning: did not converge in 10 iterations
-There were issues with some computations   A: x24   B: x8There were issues with some computations   A: x25   B: x10   C: x1There were issues with some computations   A: x26   B: x10   C: x1There were issues with some computations   A: x29   B: x11   C: x1! The Gaussian process model is being fit using 12 features but only has 6
-  data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x31   B: x12   C: x1! The Gaussian process model is being fit using 12 features but only has 7
-  data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x36   B: x14   C: x1There were issues with some computations   A: x37   B: x14   C: x1There were issues with some computations   A: x40   B: x16   C: x1
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
-→ A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x2There were issues with some computations   A: x5
-> 
-> set.seed(8825)
-> mt_knn_bo <-
-+   tune_bayes(mt_knn,
-+              resamples = folds,
-+              iter = 3,
-+              control = b_ctrl)
-→ A | error:   No tidy method for objects of class train.kknn
-There were issues with some computations   A: x1There were issues with some computations   A: x6There were issues with some computations   A: x11There were issues with some computations   A: x17There were issues with some computations   A: x20
-> 
-> # ------------------------------------------------------------------------------
-> 
-> save(
-+   list = grep("^mt_", ls(), value = TRUE),
-+   file = test_path("data", "test_objects.RData"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # "knn_*" test objects used in test-predictions.R, test-autoplot.R, test-GP.R
-> # and test-select_best.R
-> 
-> data(two_class_dat, package = "modeldata")
-> set.seed(7898)
-> data_folds <- vfold_cv(two_class_dat, repeats = 5)
-> 
-> two_class_rec <-
-+   recipe(Class ~ ., data = two_class_dat) %>%
-+   step_normalize(A, B)
-> 
-> knn_model <-
-+   nearest_neighbor(
-+     mode = "classification",
-+     neighbors = tune("K"),
-+     weight_func = tune(),
-+     dist_power = tune("exponent")
-+   ) %>%
-+   set_engine("kknn")
-> 
-> two_class_wflow <-
-+   workflow() %>%
-+   add_recipe(two_class_rec) %>%
-+   add_model(knn_model)
-> 
-> two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) %>%
-+   update(K = neighbors(c(1, 50))) %>%
-+   update(exponent = dist_power(c(1 / 10, 2)))
-> 
-> set.seed(2494)
-> two_class_grid <-
-+   two_class_set %>%
-+   grid_max_entropy(size = 10)
-> 
-> class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
-> 
-> knn_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_grid,
-+     metrics = class_metrics
-+   )
-> 
-> 
-> knn_set <- two_class_set
-> 
-> knn_gp <-
-+   tune:::fit_gp(dat = collect_metrics(knn_results),
-+                 pset = knn_set,
-+                 metric = "accuracy",
-+                 control = control_bayes()
-+   )
-! The Gaussian process model is being fit using 12 features but only has 10
-  data points to do so. This may cause errors or a poor model fit.
-> 
-> saveRDS(
-+   knn_results,
-+   file = testthat::test_path("data", "knn_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   two_class_set,
-+   file = testthat::test_path("data", "knn_set.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   two_class_grid,
-+   file = testthat::test_path("data", "knn_grid.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   knn_set,
-+   file = testthat::test_path("data", "knn_set.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   knn_gp,
-+   file = testthat::test_path("data", "knn_gp.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # "svm_*" test objects used in numerous test files
-> 
-> svm_model <-
-+   svm_poly(
-+     mode = "classification",
-+     cost = tune(),
-+     degree = tune("%^*#"),
-+     scale_factor = tune()
-+   ) %>%
-+   set_engine("kernlab")
-> 
-> two_class_wflow <-
-+   workflow() %>%
-+   add_recipe(two_class_rec) %>%
-+   add_model(svm_model)
-> 
-> two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) %>%
-+   update(cost = cost(c(-10, 4)))
-> 
-> set.seed(2494)
-> two_class_grid <-
-+   two_class_set %>%
-+   grid_max_entropy(size = 5)
-> 
-> class_only <- metric_set(accuracy, kap, mcc)
-> 
-> svm_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_grid,
-+     metrics = class_only,
-+     control = control_grid(save_pred = TRUE)
-+   )
-> 
-> saveRDS(
-+   svm_results,
-+   file = testthat::test_path("data", "svm_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> two_class_reg_grid <-
-+   two_class_set %>%
-+   grid_regular(levels = c(5, 4, 2))
-> 
-> svm_reg_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_reg_grid,
-+     metrics = class_only,
-+     control = control_grid(save_pred = TRUE)
-+   )
-> 
-> saveRDS(
-+   svm_reg_results,
-+   file = testthat::test_path("data", "svm_reg_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(7898)
-> data_folds <- vfold_cv(mtcars, repeats = 2)
-> 
-> # ------------------------------------------------------------------------------
-> # "rcv_results" used in test-autoplot.R, test-select_best.R, and test-estimate.R
-> 
-> base_rec <-
-+   recipe(mpg ~ ., data = mtcars) %>%
-+   step_normalize(all_predictors())
-> 
-> disp_rec <-
-+   base_rec %>%
-+   step_bs(disp, degree = tune(), deg_free = tune()) %>%
-+   step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
-> 
-> lm_model <-
-+   linear_reg(mode = "regression") %>%
-+   set_engine("lm")
-> 
-> cars_wflow <-
-+   workflow() %>%
-+   add_recipe(disp_rec) %>%
-+   add_model(lm_model)
-> 
-> cars_set <-
-+   cars_wflow %>%
-+   parameters %>%
-+   update(degree = degree_int(1:2)) %>%
-+   update(deg_free = deg_free(c(2, 10))) %>%
-+   update(`wt degree` = degree_int(1:2)) %>%
-+   update(`wt df` = deg_free(c(2, 10)))
-Warning message:
-`parameters.workflow()` was deprecated in tune 0.1.6.9003.
-ℹ Please use `hardhat::extract_parameter_set_dials()` instead. 
-> 
-> set.seed(255)
-> cars_grid <-
-+   cars_set %>%
-+   grid_regular(levels = c(3, 2, 3, 2))
-> 
-> 
-> rcv_results <-
-+   tune_grid(
-+     cars_wflow,
-+     resamples = data_folds,
-+     grid = cars_grid,
-+     control = control_grid(verbose = FALSE, save_pred = TRUE)
-+   )
-→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1There were issues with some computations   A: x3There were issues with some computations   A: x4                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x4There were issues with some computations   A: x4   B: x3There were issues with some computations   A: x4   B: x9There were issues with some computations   A: x4   B: x14                                                          → C | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases, prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x4   B: x14There were issues with some computations   A: x4   B: x18   C: x2There were issues with some computations   A: x4   B: x23   C: x2There were issues with some computations   A: x4   B: x29   C: x2There were issues with some computations   A: x4   B: x32   C: x4There were issues with some computations   A: x4   B: x33   C: x4There were issues with some computations   A: x4   B: x39   C: x4There were issues with some computations   A: x4   B: x44   C: x4There were issues with some computations   A: x4   B: x49   C: x4There were issues with some computations   A: x4   B: x54   C: x4There were issues with some computations   A: x4   B: x60   C: x4There were issues with some computations   A: x4   B: x65   C: x4There were issues with some computations   A: x4   B: x71   C: x4There were issues with some computations   A: x4   B: x76   C: x4There were issues with some computations   A: x4   B: x82   C: x4There were issues with some computations   A: x4   B: x88   C: x4There were issues with some computations   A: x4   B: x93   C: x4There were issues with some computations   A: x4   B: x99   C: x4There were issues with some computations   A: x4   B: x104   C: x4There were issues with some computations   A: x4   B: x105   C: x4There were issues with some computations   A: x4   B: x111   C: x4There were issues with some computations   A: x4   B: x117   C: x4There were issues with some computations   A: x4   B: x122   C: x4There were issues with some computations   A: x4   B: x128   C: x4There were issues with some computations   A: x4   B: x133   C: x4There were issues with some computations   A: x4   B: x139   C: x4There were issues with some computations   A: x4   B: x144   C: x4There were issues with some computations   A: x4   B: x150   C: x4There were issues with some computations   A: x4   B: x154   C: x5There were issues with some computations   A: x4   B: x159   C: x6There were issues with some computations   A: x4   B: x164   C: x6There were issues with some computations   A: x4   B: x170   C: x6There were issues with some computations   A: x5   B: x172   C: x8There were issues with some computations   A: x7   B: x172   C: x8There were issues with some computations   A: x8   B: x172   C: x8There were issues with some computations   A: x8   B: x173   C: x8There were issues with some computations   A: x8   B: x178   C: x8There were issues with some computations   A: x8   B: x184   C: x8There were issues with some computations   A: x8   B: x189   C: x8There were issues with some computations   A: x8   B: x195   C: x8There were issues with some computations   A: x8   B: x200   C: x8There were issues with some computations   A: x8   B: x206   C: x8There were issues with some computations   A: x8   B: x209   C: x8There were issues with some computations   A: x8   B: x215   C: x8There were issues with some computations   A: x8   B: x220   C: x8There were issues with some computations   A: x8   B: x226   C: x8There were issues with some computations   A: x8   B: x229   C: x8There were issues with some computations   A: x8   B: x235   C: x8There were issues with some computations   A: x8   B: x241   C: x8There were issues with some computations   A: x8   B: x245   C: x8There were issues with some computations   A: x8   B: x246   C: x8There were issues with some computations   A: x8   B: x251   C: x8There were issues with some computations   A: x8   B: x257   C: x8There were issues with some computations   A: x8   B: x263   C: x8There were issues with some computations   A: x8   B: x269   C: x8There were issues with some computations   A: x8   B: x274   C: x8There were issues with some computations   A: x8   B: x280   C: x8There were issues with some computations   A: x8   B: x280   C: x8
-> 
-> saveRDS(
-+   rcv_results,
-+   file = testthat::test_path("data", "rcv_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> 
-> # ------------------------------------------------------------------------------
-> # Object classed with `resample_results` for use in vctrs/dplyr tests
-> 
-> set.seed(6735)
-> 
-> folds <- vfold_cv(mtcars, v = 3)
-> 
-> rec <- recipe(mpg ~ ., data = mtcars)
-> 
-> mod <- linear_reg() %>%
-+   set_engine("lm")
-> 
-> lm_resamples <- fit_resamples(mod, rec, folds)
-> 
-> lm_resamples
-# Resampling results
-# 3-fold cross-validation 
-# A tibble: 3 × 4
-  splits          id    .metrics         .notes          
-  <list>          <chr> <list>           <list>          
-1 <split [21/11]> Fold1 <tibble [2 × 4]> <tibble [0 × 3]>
-2 <split [21/11]> Fold2 <tibble [2 × 4]> <tibble [0 × 3]>
-3 <split [22/10]> Fold3 <tibble [2 × 4]> <tibble [0 × 3]>
-> 
-> saveRDS(
-+   lm_resamples,
-+   file = testthat::test_path("data", "lm_resamples.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # Object classed with `iteration_results` for use in vctrs/dplyr tests
-> 
-> set.seed(7898)
-> folds <- vfold_cv(mtcars, v = 2)
-> 
-> rec <- recipe(mpg ~ ., data = mtcars) %>%
-+   step_normalize(all_predictors()) %>%
-+   step_ns(disp, deg_free = tune())
-> 
-> mod <- linear_reg(mode = "regression") %>%
-+   set_engine("lm")
-> 
-> wflow <- workflow() %>%
-+   add_recipe(rec) %>%
-+   add_model(mod)
-> 
-> set.seed(2934)
-> lm_bayes <- tune_bayes(wflow, folds, initial = 4, iter = 3)
-→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x2There were issues with some computations   A: x5There were issues with some computations   A: x6
-> 
-> saveRDS(
-+   lm_bayes,
-+   file = testthat::test_path("data", "lm_bayes.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # A single survival model
-> 
-> set.seed(1)
-> sim_dat <- prodlim::SimSurv(200) %>%
-+   mutate(event_time = Surv(time, event)) %>%
-+   select(event_time, X1, X2)
-> 
-> set.seed(2)
-> sim_rs <- vfold_cv(sim_dat)
-> 
-> time_points <- c(10, 1, 5, 15)
-> 
-> boost_spec <-
-+   boost_tree(trees = tune()) %>%
-+   set_mode("censored regression") %>%
-+   set_engine("mboost")
-> 
-> srv_mtr <-
-+   metric_set(
-+     brier_survival,
-+     roc_auc_survival,
-+     brier_survival_integrated,
-+     concordance_survival
-+   )
-> 
-> set.seed(2193)
-> surv_boost_tree_res <-
-+   boost_spec %>%
-+   tune_grid(
-+     event_time ~ X1 + X2,
-+     resamples = sim_rs,
-+     grid  = tibble(trees = c(1, 5, 10, 20, 100)),
-+     metrics = srv_mtr,
-+     eval_time = time_points
-+   )
-> 
-> saveRDS(
-+   surv_boost_tree_res,
-+   file = testthat::test_path("data", "surv_boost_tree_res.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> 
-> # ------------------------------------------------------------------------------
-> 
-> sessioninfo::session_info()
-─ Session info ───────────────────────────────────────────────────────────────
- setting  value
- version  R version 4.3.2 (2023-10-31)
- os       macOS Sonoma 14.4
- system   aarch64, darwin20
- ui       X11
- language (EN)
- collate  en_US.UTF-8
- ctype    en_US.UTF-8
- tz       America/New_York
- date     2024-03-20
- pandoc   3.1.11 @ /opt/homebrew/bin/pandoc
-
-─ Packages ───────────────────────────────────────────────────────────────────
- package      * version    date (UTC) lib source
- backports      1.4.1      2021-12-13 [1] CRAN (R 4.3.0)
- brio           1.1.4      2023-12-10 [1] CRAN (R 4.3.1)
- broom        * 1.0.5      2023-06-09 [1] CRAN (R 4.3.0)
- censored     * 0.3.0      2024-01-31 [1] CRAN (R 4.3.1)
- class          7.3-22     2023-05-03 [2] CRAN (R 4.3.2)
- cli            3.6.2      2023-12-11 [1] CRAN (R 4.3.1)
- codetools      0.2-19     2023-02-01 [2] CRAN (R 4.3.2)
- colorspace     2.1-0      2023-01-23 [1] CRAN (R 4.3.0)
- data.table     1.15.2     2024-02-29 [1] CRAN (R 4.3.1)
- dials        * 1.2.1      2024-02-22 [1] CRAN (R 4.3.1)
- DiceDesign     1.10       2023-12-07 [1] CRAN (R 4.3.2)
- digest         0.6.35     2024-03-11 [1] CRAN (R 4.3.1)
- dplyr        * 1.1.4      2023-11-17 [1] CRAN (R 4.3.1)
- ellipsis       0.3.2      2021-04-29 [1] CRAN (R 4.3.0)
- fansi          1.0.6      2023-12-08 [1] CRAN (R 4.3.1)
- foreach        1.5.2      2022-02-02 [1] CRAN (R 4.3.0)
- Formula        1.2-5      2023-02-24 [1] CRAN (R 4.3.0)
- furrr          0.3.1      2022-08-15 [1] CRAN (R 4.3.0)
- future         1.33.1     2023-12-22 [1] CRAN (R 4.3.1)
- future.apply   1.11.1     2023-12-21 [1] CRAN (R 4.3.1)
- generics       0.1.3      2022-07-05 [1] CRAN (R 4.3.0)
- ggplot2      * 3.5.0      2024-02-23 [1] CRAN (R 4.3.1)
- globals        0.16.3     2024-03-08 [1] CRAN (R 4.3.1)
- glue           1.7.0      2024-01-09 [1] CRAN (R 4.3.1)
- gower          1.0.1      2022-12-22 [1] CRAN (R 4.3.0)
- GPfit          1.0-8      2019-02-08 [1] CRAN (R 4.3.0)
- gtable         0.3.4      2023-08-21 [1] CRAN (R 4.3.0)
- hardhat        1.3.1      2024-02-02 [1] CRAN (R 4.3.1)
- igraph         2.0.3      2024-03-13 [1] CRAN (R 4.3.1)
- infer        * 1.0.5      2023-09-06 [1] CRAN (R 4.3.0)
- inum           1.0-5      2023-03-09 [1] CRAN (R 4.3.0)
- ipred          0.9-14     2023-03-09 [1] CRAN (R 4.3.0)
- iterators      1.0.14     2022-02-05 [1] CRAN (R 4.3.0)
- kernlab      * 0.9-32     2023-01-31 [1] CRAN (R 4.3.0)
- kknn         * 1.3.1      2016-03-26 [1] CRAN (R 4.3.0)
- lattice        0.22-5     2023-10-24 [1] CRAN (R 4.3.1)
- lava           1.8.0      2024-03-05 [1] CRAN (R 4.3.1)
- lhs            1.1.6      2022-12-17 [1] CRAN (R 4.3.0)
- libcoin        1.0-10     2023-09-27 [1] CRAN (R 4.3.1)
- lifecycle      1.0.4      2023-11-07 [1] CRAN (R 4.3.1)
- listenv        0.9.1      2024-01-29 [1] CRAN (R 4.3.1)
- lubridate      1.9.3      2023-09-27 [1] CRAN (R 4.3.1)
- magrittr       2.0.3      2022-03-30 [1] CRAN (R 4.3.0)
- MASS           7.3-60     2023-05-04 [2] CRAN (R 4.3.2)
- Matrix         1.6-4      2023-11-30 [1] CRAN (R 4.3.2)
- mboost       * 2.9-9      2023-12-07 [1] CRAN (R 4.3.2)
- modeldata    * 1.3.0      2024-01-21 [1] CRAN (R 4.3.1)
- modelenv       0.1.1      2023-03-08 [1] CRAN (R 4.3.0)
- munsell        0.5.0      2018-06-12 [1] CRAN (R 4.3.0)
- mvtnorm        1.2-4      2023-11-27 [1] CRAN (R 4.3.1)
- nnet           7.3-19     2023-05-03 [2] CRAN (R 4.3.2)
- nnls           1.5        2023-09-11 [1] CRAN (R 4.3.0)
- parallelly     1.37.1     2024-02-29 [1] CRAN (R 4.3.1)
- parsnip      * 1.2.0      2024-02-16 [1] CRAN (R 4.3.1)
- partykit       1.2-20     2023-04-14 [1] CRAN (R 4.3.0)
- pillar         1.9.0      2023-03-22 [1] CRAN (R 4.3.0)
- pkgconfig      2.0.3      2019-09-22 [1] CRAN (R 4.3.0)
- pkgload        1.3.4      2024-01-16 [1] CRAN (R 4.3.1)
- prodlim        2023.08.28 2023-08-28 [1] CRAN (R 4.3.0)
- purrr        * 1.0.2      2023-08-10 [1] CRAN (R 4.3.0)
- quadprog       1.5-8      2019-11-20 [1] CRAN (R 4.3.0)
- R6             2.5.1      2021-08-19 [1] CRAN (R 4.3.0)
- Rcpp           1.0.12     2024-01-09 [1] CRAN (R 4.3.1)
- recipes      * 1.0.10     2024-02-18 [1] CRAN (R 4.3.1)
- rlang          1.1.3      2024-01-10 [1] CRAN (R 4.3.1)
- rpart          4.1.23     2023-12-05 [1] CRAN (R 4.3.1)
- rsample      * 1.2.0      2023-08-23 [1] CRAN (R 4.3.0)
- rstudioapi     0.15.0     2023-07-07 [1] CRAN (R 4.3.0)
- scales       * 1.3.0      2023-11-28 [1] CRAN (R 4.3.1)
- sessioninfo  * 1.2.2      2021-12-06 [1] CRAN (R 4.3.0)
- stabs        * 0.6-4      2021-01-29 [1] CRAN (R 4.3.0)
- survival     * 3.5-7      2023-08-14 [2] CRAN (R 4.3.2)
- testthat     * 3.2.1      2023-12-02 [1] CRAN (R 4.3.1)
- tibble       * 3.2.1      2023-03-20 [1] CRAN (R 4.3.0)
- tidymodels   * 1.1.1      2023-08-24 [1] CRAN (R 4.3.0)
- tidyr        * 1.3.1      2024-01-24 [1] CRAN (R 4.3.1)
- tidyselect     1.2.1      2024-03-11 [1] CRAN (R 4.3.1)
- timechange     0.3.0      2024-01-18 [1] CRAN (R 4.3.1)
- timeDate       4032.109   2023-12-14 [1] CRAN (R 4.3.1)
- tune         * 1.2.0      2024-03-20 [1] local
- utf8           1.2.4      2023-10-22 [1] CRAN (R 4.3.1)
- vctrs          0.6.5      2023-12-01 [1] CRAN (R 4.3.1)
- withr          3.0.0      2024-01-16 [1] CRAN (R 4.3.1)
- workflows    * 1.1.4      2024-02-19 [1] CRAN (R 4.3.1)
- workflowsets * 1.0.1.9001 2024-01-25 [1] Github (tidymodels/workflowsets@1187448)
- yardstick    * 1.3.0      2024-01-19 [1] CRAN (R 4.3.1)
-
- [1] /Users/max/Library/R/arm64/4.3/library
- [2] /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/library
-
-──────────────────────────────────────────────────────────────────────────────
-> 
-> if (!interactive()) {
-+   q("no")
-+ }
-> proc.time()
-   user  system elapsed 
-179.967   1.245 181.806 
