@@ -129,7 +129,6 @@ test_that("argument order gives errors for recipe/formula", {
 
 test_that("same results of last_fit() and fit() (#300)", {
   skip_if_not_installed("randomForest")
-  skip("determine how to handle this with parallel seeds; maybe opt out?")
 
   rf <- parsnip::rand_forest(mtry = 2, trees = 5) |>
     parsnip::set_engine("randomForest") |>
@@ -250,7 +249,6 @@ test_that("can use `last_fit()` with a workflow - postprocessor (requires traini
   skip_if_not_installed("mgcv")
   skip_if_not_installed("tailor", minimum_version = "0.0.0.9002")
   skip_if_not_installed("probably")
-  skip("work on how to make internal_calibration_split reproducible")
 
   y <- seq(0, 7, .001)
   dat <- data.frame(y = y, x = y + (y - 3)^2)

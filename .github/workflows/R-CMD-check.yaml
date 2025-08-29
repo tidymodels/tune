@@ -56,6 +56,15 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+     - name: Try to install a few packages for testing
+        run: |
+          # from most dependency-heavy to least
+          try(pak::pkg_install(c(
+            "randomForest",
+            "glmnet"
+          )))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

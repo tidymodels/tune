@@ -283,7 +283,6 @@ test_that("tune model and recipe (multi-predict)", {
 # ------------------------------------------------------------------------------
 
 test_that("tune recipe only - failure in recipe is caught elegantly", {
-  skip("test is not implemented for tune_bayes()")
   skip_if_not_installed("splines2")
 
   # With tune_grid() this tests for NA values in the grid.
@@ -301,36 +300,47 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(3, NA_real_, 4))
 
-  # ask for predictions and extractions
-  control <- control_bayes(
-    save_pred = TRUE,
-    extract = function(x) 1L
-  )
-
   suppressMessages({
-    cars_res <- tune_bayes(
+    cars_init_res <- tune_grid(
       model,
       preprocessor = rec,
       resamples = data_folds,
-      control = control
+      grid = cars_grid
     )
   })
 
-  notes <- cars_res$.notes
-  note <- notes[[1]]$note
+  suppressMessages({
+    set.seed(283) #<- chosen to not generate faiures
+    cars_bayes_res <- tune_bayes(
+      model,
+      preprocessor = rec,
+      resamples = data_folds,
+      initial = cars_init_res,
+      iter = 2
+    )
+  })
 
-  extract <- cars_res$.extracts[[1]]
+  exp_failures <- nrow(data_folds) * sum(!complete.cases(cars_grid))
+  obs_init_failures <- collect_notes(cars_init_res) |>
+    filter(type == "error") |>
+    nrow()
+  obs_failures <- collect_notes(cars_bayes_res) |>
+    filter(type == "error") |>
+    nrow()
 
-  predictions <- cars_res$.predictions[[1]]
-  used_deg_free <- sort(unique(predictions$deg_free))
+  exp_init_grid_res <-
+    cars_grid |> tidyr::drop_na() |> distinct(deg_free) |> nrow()
 
-  expect_length(notes, 2L)
+  expect_equal(obs_init_failures, obs_failures)
+  expect_equal(obs_failures, exp_failures)
 
-  # failing rows are not in the output
-  expect_equal(nrow(extract), 2L)
-  expect_equal(extract$deg_free, c(3, 4))
+  all_notes <- collect_notes(cars_bayes_res)
+  expect_equal(nrow(all_notes), 11L)
 
-  expect_equal(used_deg_free, c(3, 4))
+  expect_equal(
+    collect_metrics(cars_bayes_res) |> distinct(deg_free) |> nrow(),
+    exp_init_grid_res + 2
+  )
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {
@@ -397,38 +407,51 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
     recipes::step_spline_b(disp, deg_free = tune())
 
   # NA values not allowed in recipe
-  cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
+  cars_grid <- tibble(
+    deg_free = c(3L, NA_real_, 10L),
+    cost = c(0.1, 0.01, 0.001)
+  )
 
   suppressMessages({
-    cars_res <- tune_bayes(
+    cars_init_res <- tune_grid(
       svm_mod,
       preprocessor = rec,
       resamples = data_folds,
-      control = control_bayes(
-        extract = function(x) {
-          1
-        },
-        save_pred = TRUE
-      )
+      grid = cars_grid
     )
   })
 
-  notes <- cars_res$.notes
-  note <- notes[[1]]$note
+  suppressMessages({
+    set.seed(283) #<- chosen to not generate faiures
+    cars_bayes_res <- tune_bayes(
+      svm_mod,
+      preprocessor = rec,
+      resamples = data_folds,
+      initial = cars_init_res,
+      iter = 2
+    )
+  })
 
-  extract <- cars_res$.extracts[[1]]
-  prediction <- cars_res$.predictions[[1]]
+  exp_failures <- nrow(data_folds) * sum(!complete.cases(cars_grid))
+  obs_init_failures <- collect_notes(cars_init_res) |>
+    filter(type == "error") |>
+    nrow()
+  obs_failures <- collect_notes(cars_bayes_res) |>
+    filter(type == "error") |>
+    nrow()
 
-  expect_length(notes, 2L)
+  exp_init_grid_res <-
+    cars_grid |> tidyr::drop_na() |> distinct(deg_free, cost) |> nrow()
 
-  # recipe failed half of the time, only 1 model passed
-  expect_equal(nrow(extract), 1L)
-  expect_equal(extract$deg_free, 10L)
-  expect_equal(extract$cost, 0.01)
+  expect_equal(obs_init_failures, obs_failures)
+  expect_equal(obs_failures, exp_failures)
+
+  all_notes <- collect_notes(cars_bayes_res)
+  expect_equal(nrow(all_notes), 6L)
 
   expect_equal(
-    unique(prediction[, c("deg_free", "cost")]),
-    tibble(deg_free = 10, cost = 0.01)
+    collect_metrics(cars_bayes_res) |> distinct(deg_free, cost) |> nrow(),
+    exp_init_grid_res + 2
   )
 })
 
