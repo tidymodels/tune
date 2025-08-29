@@ -254,7 +254,6 @@ test_that("`metrics` argument works (iterative tuning)", {
   library(yardstick)
 
   m_set_rmse <- metric_set(rmse)
-  m_set_rsq <- metric_set(rsq)
   m_set_both <- metric_set(rmse, rsq)
 
   set.seed(1)
