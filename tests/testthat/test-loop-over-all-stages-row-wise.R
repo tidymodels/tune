@@ -85,7 +85,7 @@ test_that("convert grid to rowwise - submodels", {
   skip_if_not_installed("probably")
 
   # Model only
-  wflow_1 <- workflow(Class ~ ., glmn_spec, cls_est_post)
+  wflow_1 <- workflow(Class ~ ., glmn_spec, reg_cal)
   param_1 <- wflow_1 |> extract_parameter_set_dials()
 
   grid_reg_1 <- grid_regular(param_1) |> arrange(mixture, penalty)
@@ -107,7 +107,7 @@ test_that("convert grid to rowwise - submodels", {
   }
 
   # Recipe + Model
-  wflow_2 <- workflow(puromycin_tune_rec, glmn_spec, cls_est_post)
+  wflow_2 <- workflow(puromycin_tune_rec, glmn_spec, reg_cal)
   param_2 <- wflow_2 |> extract_parameter_set_dials()
 
   grid_reg_2 <- grid_regular(param_2)
@@ -133,54 +133,54 @@ test_that("convert grid to rowwise - submodels", {
   }
 
   # Model + Post
-  wflow_3 <- workflow(Class ~ ., glmn_spec, cls_post)
+  wflow_3 <- workflow(Class ~ ., glmn_spec, reg_cal_tune)
   param_3 <- wflow_3 |> extract_parameter_set_dials()
 
   grid_reg_3 <- grid_regular(param_3)
-  distinct_reg_3 <- distinct(grid_reg_3, cut, mixture) |>
-    arrange(mixture, cut)
+  distinct_reg_3 <- distinct(grid_reg_3, method, mixture) |>
+    arrange(mixture, method)
 
   res_reg_3 <- tune:::get_row_wise_grid(wflow_3, grid_reg_3)
   for (i in 1:nrow(distinct_reg_3)) {
     sub <- grid_reg_3 |>
-      inner_join(distinct_reg_3[i, ], by = c("mixture", "cut"))
+      inner_join(distinct_reg_3[i, ], by = c("mixture", "method"))
     expect_equal(res_reg_3[[i]], sub)
   }
 
   grid_sfd_3 <- grid_space_filling(param_3)
-  distinct_sfd_3 <- distinct(grid_sfd_3, cut, mixture) |>
-    arrange(mixture, cut)
+  distinct_sfd_3 <- distinct(grid_sfd_3, method, mixture) |>
+    arrange(mixture, method)
 
   res_sfd_3 <- tune:::get_row_wise_grid(wflow_3, grid_sfd_3)
   for (i in 1:nrow(distinct_sfd_3)) {
     sub <- grid_sfd_3 |>
-      inner_join(distinct_sfd_3[i, ], by = c("mixture", "cut"))
+      inner_join(distinct_sfd_3[i, ], by = c("mixture", "method"))
     expect_equal(res_sfd_3[[i]], sub)
   }
 
   # Recipe + Model + Post
-  wflow_4 <- workflow(puromycin_tune_rec, glmn_spec, cls_post)
+  wflow_4 <- workflow(puromycin_tune_rec, glmn_spec, reg_cal_tune)
   param_4 <- wflow_4 |> extract_parameter_set_dials()
 
   grid_reg_4 <- grid_regular(param_4)
-  distinct_reg_4 <- distinct(grid_reg_4, degree, cut, mixture) |>
-    arrange(mixture, degree, cut)
+  distinct_reg_4 <- distinct(grid_reg_4, degree, method, mixture) |>
+    arrange(mixture, degree, method)
 
   res_reg_4 <- tune:::get_row_wise_grid(wflow_4, grid_reg_4)
   for (i in 1:nrow(distinct_reg_4)) {
     sub <- grid_reg_4 |>
-      inner_join(distinct_reg_4[i, ], by = c("mixture", "degree", "cut"))
+      inner_join(distinct_reg_4[i, ], by = c("mixture", "degree", "method"))
     expect_equal(res_reg_4[[i]], sub)
   }
 
   grid_sfd_4 <- grid_space_filling(param_4)
-  distinct_sfd_4 <- distinct(grid_sfd_4, degree, cut, mixture) |>
-    arrange(mixture, degree, cut)
+  distinct_sfd_4 <- distinct(grid_sfd_4, degree, method, mixture) |>
+    arrange(mixture, degree, method)
 
   res_sfd_4 <- tune:::get_row_wise_grid(wflow_4, grid_sfd_4)
   for (i in 1:nrow(distinct_sfd_4)) {
     sub <- grid_sfd_4 |>
-      inner_join(distinct_sfd_4[i, ], by = c("mixture", "degree", "cut"))
+      inner_join(distinct_sfd_4[i, ], by = c("mixture", "degree", "method"))
     expect_equal(res_sfd_4[[i]], sub)
   }
 })
