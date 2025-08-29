@@ -310,7 +310,9 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   })
 
   exp_init_failures <- nrow(data_folds) * sum(!complete.cases(cars_grid))
-  obs_init_failures <- collect_notes(cars_init_res) |> filter(type == "error") |> nrow()
+  obs_init_failures <- collect_notes(cars_init_res) |>
+    filter(type == "error") |>
+    nrow()
 
   expect_equal(obs_init_failures, exp_init_failures)
 
@@ -321,7 +323,6 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
     cars_init_res |> collect_metrics() |> distinct(deg_free),
     cars_grid |> tidyr::drop_na() |> distinct(deg_free)
   )
-
 })
 
 test_that("tune model only - failure in recipe is caught elegantly", {

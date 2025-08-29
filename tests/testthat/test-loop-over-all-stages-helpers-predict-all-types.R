@@ -1089,7 +1089,7 @@ test_that("predict censored regression - submodels - no calibration", {
 
   wflow_fit <-
     wflow |>
-    finalize_workflow(grd[1,]) |>
+    finalize_workflow(grd[1, ]) |>
     fit(cens$data)
 
   # ----------------------------------------------------------------------------
