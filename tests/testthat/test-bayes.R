@@ -546,121 +546,121 @@ test_that("too few starting values", {
   expect_snapshot(tune:::check_bayes_initial_size(5, 3, TRUE))
   expect_snapshot(tune:::check_bayes_initial_size(2, 2, FALSE))
 
-	expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, FALSE))
-	expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, TRUE))
+  expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, FALSE))
+  expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(5, 1, TRUE))
 
-	expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(1, 1, FALSE))
+  expect_snapshot(error = TRUE, tune:::check_bayes_initial_size(1, 1, FALSE))
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("missing performance values", {
-	skip_if(new_rng_snapshots)
-	skip_if(packageVersion("dplyr") < "1.1.1")
-	skip_if_not_installed("modeldata")
+  skip_if(new_rng_snapshots)
+  skip_if(packageVersion("dplyr") < "1.1.1")
+  skip_if_not_installed("modeldata")
 
-	data(ames, package = "modeldata")
+  data(ames, package = "modeldata")
 
-	mod <- parsnip::decision_tree(cost_complexity = tune()) |>
-		parsnip::set_mode("regression")
+  mod <- parsnip::decision_tree(cost_complexity = tune()) |>
+    parsnip::set_mode("regression")
 
-	set.seed(1)
-	split <- rsample::initial_validation_split(ames)
-	folds <- rsample::validation_set(split)
+  set.seed(1)
+  split <- rsample::initial_validation_split(ames)
+  folds <- rsample::validation_set(split)
 
-	expect_snapshot({
-		set.seed(1)
-		res <-
-			mod |>
-				tune_bayes(
-					Sale_Price ~
-						Neighborhood +
-							Gr_Liv_Area +
-							Year_Built +
-							Bldg_Type +
-							Latitude +
-							Longitude,
-					resamples = folds,
-					initial = 3,
-					metrics = yardstick::metric_set(rsq),
-					param_info = parameters(dials::cost_complexity(c(-2, 0)))
-				)
-	})
+  expect_snapshot({
+    set.seed(1)
+    res <-
+      mod |>
+      tune_bayes(
+        Sale_Price ~
+          Neighborhood +
+            Gr_Liv_Area +
+            Year_Built +
+            Bldg_Type +
+            Latitude +
+            Longitude,
+        resamples = folds,
+        initial = 3,
+        metrics = yardstick::metric_set(rsq),
+        param_info = parameters(dials::cost_complexity(c(-2, 0)))
+      )
+  })
 
-	expect_snapshot(error = TRUE, {
-		set.seed(2)
-		res_fail <-
-			mod |>
-				tune_bayes(
-					Sale_Price ~
-						Neighborhood +
-							Gr_Liv_Area +
-							Year_Built +
-							Bldg_Type +
-							Latitude +
-							Longitude,
-					resamples = folds,
-					initial = 5,
-					metrics = yardstick::metric_set(rsq),
-					param_info = parameters(dials::cost_complexity(c(0.5, 0)))
-				)
-	})
+  expect_snapshot(error = TRUE, {
+    set.seed(2)
+    res_fail <-
+      mod |>
+      tune_bayes(
+        Sale_Price ~
+          Neighborhood +
+            Gr_Liv_Area +
+            Year_Built +
+            Bldg_Type +
+            Latitude +
+            Longitude,
+        resamples = folds,
+        initial = 5,
+        metrics = yardstick::metric_set(rsq),
+        param_info = parameters(dials::cost_complexity(c(0.5, 0)))
+      )
+  })
 })
 
 # ------------------------------------------------------------------------------
 test_that("tune_bayes() output for `iter` edge cases (#721)", {
-	skip_if_not_installed("kknn")
+  skip_if_not_installed("kknn")
 
-	# for `iter = 0`, ought to match `tune_grid()`
-	boots <- rsample::bootstraps(mtcars)
-	wf <-
-		workflows::workflow(
-			mpg ~ .,
-			parsnip::nearest_neighbor("regression", "kknn", neighbors = tune())
-		)
+  # for `iter = 0`, ought to match `tune_grid()`
+  boots <- rsample::bootstraps(mtcars)
+  wf <-
+    workflows::workflow(
+      mpg ~ .,
+      parsnip::nearest_neighbor("regression", "kknn", neighbors = tune())
+    )
 
-	ctrl_bayes <- control_bayes(seed = 1)
+  ctrl_bayes <- control_bayes(seed = 1)
 
-	set.seed(1)
-	res_bayes <- tune_bayes(
-		wf,
-		boots,
-		iter = 0,
-		initial = 10,
-		control = ctrl_bayes
-	)
+  set.seed(1)
+  res_bayes <- tune_bayes(
+    wf,
+    boots,
+    iter = 0,
+    initial = 10,
+    control = ctrl_bayes
+  )
 
-	set.seed(1)
-	res_grid <- tune_grid(wf, boots)
+  set.seed(1)
+  res_grid <- tune_grid(wf, boots)
 
-	expect_equal(
-		collect_metrics(res_bayes) |> dplyr::select(-.iter),
-		collect_metrics(res_grid)
-	)
+  expect_equal(
+    collect_metrics(res_bayes) |> dplyr::select(-.iter),
+    collect_metrics(res_grid)
+  )
 
-	# for `iter < 0`, ought to error
-	expect_snapshot(
-		error = TRUE,
-		tune_bayes(wf, boots, iter = -1)
-	)
+  # for `iter < 0`, ought to error
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = -1)
+  )
 
-	expect_snapshot(
-		error = TRUE,
-		tune_bayes(wf, boots, iter = c(-1, 0, 1))
-	)
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = c(-1, 0, 1))
+  )
 
-	expect_snapshot(
-		error = TRUE,
-		tune_bayes(wf, boots, iter = c(0, 1, 2))
-	)
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = c(0, 1, 2))
+  )
 
-	expect_snapshot(
-		error = TRUE,
-		tune_bayes(wf, boots, iter = NA)
-	)
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = NA)
+  )
 
-	expect_snapshot(
-		error = TRUE,
-		tune_bayes(wf, boots, iter = NULL)
-	)
+  expect_snapshot(
+    error = TRUE,
+    tune_bayes(wf, boots, iter = NULL)
+  )
 })
