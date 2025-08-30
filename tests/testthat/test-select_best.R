@@ -116,7 +116,7 @@ test_that("one-std error rule", {
       deg_free,
       `wt degree`
     )$.config,
-    "Preprocessor19_Model1"
+    "pre19_mod0_post0"
   )
   expect_equal(
     select_by_one_std_err(knn_results, metric = "accuracy", K)$K,
@@ -174,7 +174,7 @@ test_that("percent loss", {
       deg_free,
       `wt degree`
     )$.config,
-    "Preprocessor19_Model1"
+    "pre19_mod0_post0"
   )
   expect_equal(
     select_by_pct_loss(knn_results, metric = "accuracy", K)$K,

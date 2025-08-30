@@ -82,7 +82,7 @@ new_bare_tibble <- function(x, ..., class = character()) {
 }
 
 # a helper that takes in a .config vector and returns the corresponding `.iter`.
-# entries from initial results, e.g. `Model1_Preprocessor3`, are assigned
+# entries from initial results, e.g. `pre2_mod1_post0`, are assigned
 # `.iter = 0`.
 .config_to_.iter <- function(.config) {
   .iter <- .config

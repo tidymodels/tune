@@ -567,3 +567,10 @@ attach_pkgs <- function(pkgs, strategy = "sequential") {
 
   invisible(pkgs)
 }
+
+extract_details <- function(object, extractor) {
+  if (is.null(extractor)) {
+    return(list())
+  }
+  extractor(object)
+}

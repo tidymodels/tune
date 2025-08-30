@@ -1,4 +1,4 @@
-# tune (development version)
+# tune 2.0.0
 
 ## Changes to `tune_grid()`. 
 
@@ -32,6 +32,8 @@
 * A `min_grid()` methods was added for `proportional_hazards` models so that their submodels are processed appropriately. 
 
 * Post-processing: new `schedule_grid()` for scheduling a grid including post-processing (#988).
+
+* Removed functions deprecated since tune version 1.6.0 (circa 2021-07-21). 
 
 # tune 1.3.0
 

@@ -303,7 +303,7 @@ cars_wflow <-
 
 cars_set <-
   cars_wflow |>
-  parameters |>
+  extract_parameter_set_dials() |>
   update(degree = degree_int(1:2)) |>
   update(deg_free = deg_free(c(2, 10))) |>
   update(`wt degree` = degree_int(1:2)) |>
@@ -313,7 +313,6 @@ set.seed(255)
 cars_grid <-
   cars_set |>
   grid_regular(levels = c(3, 2, 3, 2))
-
 
 rcv_results <-
   tune_grid(
