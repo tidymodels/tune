@@ -1,396 +1,0 @@
-
-R version 4.5.1 (2025-06-13) -- "Great Square Root"
-Copyright (C) 2025 The R Foundation for Statistical Computing
-Platform: aarch64-apple-darwin20
-
-R is free software and comes with ABSOLUTELY NO WARRANTY.
-You are welcome to redistribute it under certain conditions.
-Type 'license()' or 'licence()' for distribution details.
-
-  Natural language support but running in an English locale
-
-R is a collaborative project with many contributors.
-Type 'contributors()' for more information and
-'citation()' on how to cite R or R packages in publications.
-
-Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for an HTML browser interface to help.
-Type 'q()' to quit R.
-
-> library(tidymodels)
-── Attaching packages ────────────────────────────────────── tidymodels 1.3.0 ──
-✔ broom        1.0.9          ✔ recipes      1.3.1     
-✔ dials        1.4.1          ✔ rsample      1.3.1     
-✔ dplyr        1.1.4          ✔ tibble       3.3.0     
-✔ ggplot2      3.5.2          ✔ tidyr        1.3.1     
-✔ infer        1.0.9          ✔ tune         1.3.0.9006
-✔ modeldata    1.5.1          ✔ workflows    1.3.0     
-✔ parsnip      1.3.2.9000     ✔ workflowsets 1.1.1     
-✔ purrr        1.1.0          ✔ yardstick    1.3.2     
-── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
-✖ purrr::discard() masks scales::discard()
-✖ dplyr::filter()  masks stats::filter()
-✖ dplyr::lag()     masks stats::lag()
-✖ recipes::step()  masks stats::step()
-> library(scales)
-> library(censored)
-Loading required package: survival
-> library(sessioninfo)
-> library(testthat)
-
-Attaching package: ‘testthat’
-
-The following object is masked from ‘package:tidyr’:
-
-    matches
-
-The following object is masked from ‘package:rsample’:
-
-    matches
-
-The following object is masked from ‘package:purrr’:
-
-    is_null
-
-The following object is masked from ‘package:dplyr’:
-
-    matches
-
-> # also will require prodlim, mboost, kknn, and kernlab
-> 
-> # ------------------------------------------------------------------------------
-> # "mt_*" test objects used in test-predictions.R, test-extract.R, and test-autoplot.R
-> 
-> set.seed(455)
-> folds <- vfold_cv(mtcars, v = 5)
-> 
-> simple_rec <- recipe(mpg ~ ., data = mtcars)
-> 
-> form <- mpg ~ .
-> 
-> spline_rec <-
-+   recipe(mpg ~ ., data = mtcars) |>
-+   step_normalize(all_predictors()) |>
-+   step_bs(disp, deg_free = tune())
-> 
-> lm_mod <- linear_reg() |> set_engine("lm")
-> 
-> knn_mod <-
-+   nearest_neighbor(mode = "regression", neighbors = tune()) |>
-+   set_engine("kknn")
-> 
-> knn_mod_two <-
-+   nearest_neighbor(
-+     mode = "regression",
-+     neighbors = tune("K"),
-+     weight_func = tune()
-+   ) |>
-+   set_engine("kknn")
-> 
-> get_coefs <- function(x) {
-+   x |>
-+     extract_fit_parsnip() |>
-+     tidy()
-+ }
-> 
-> verb <- FALSE
-> g_ctrl <- control_grid(verbose = verb, save_pred = TRUE, extract = get_coefs)
-> b_ctrl <- control_bayes(verbose = verb, save_pred = TRUE, extract = get_coefs)
-> 
-> # ------------------------------------------------------------------------------
-> 
-> mt_spln_lm <-
-+   workflow() |>
-+   add_recipe(spline_rec) |>
-+   add_model(lm_mod)
-> 
-> mt_spln_knn <-
-+   workflow() |>
-+   add_recipe(spline_rec) |>
-+   add_model(knn_mod)
-> 
-> mt_knn <-
-+   workflow() |>
-+   add_recipe(simple_rec) |>
-+   add_model(knn_mod)
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_spln_lm_grid <-
-+   tune_grid(mt_spln_lm, resamples = folds, control = g_ctrl)
-→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x1   B: x1There were issues with some computations   A: x1   B: x10There were issues with some computations   A: x1   B: x28There were issues with some computations   A: x1   B: x45There were issues with some computations   A: x2   B: x55There were issues with some computations   A: x2   B: x56There were issues with some computations   A: x2   B: x58There were issues with some computations   A: x2   B: x70There were issues with some computations   A: x2   B: x91There were issues with some computations   A: x2   B: x110
-> 
-> set.seed(8825)
-> mt_spln_lm_bo <-
-+   tune_bayes(
-+     mt_spln_lm,
-+     resamples = folds,
-+     iter = 3,
-+     control = b_ctrl
-+   )
-→ A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
-There were issues with some computations   A: x1                                                 → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x1There were issues with some computations   A: x1   B: x1There were issues with some computations   A: x1   B: x10There were issues with some computations   A: x2   B: x15There were issues with some computations   A: x2   B: x16There were issues with some computations   A: x2   B: x18There were issues with some computations   A: x2   B: x30There were issues with some computations   A: x2   B: x31There were issues with some computations   A: x2   B: x32There were issues with some computations   A: x2   B: x33There were issues with some computations   A: x2   B: x34There were issues with some computations   A: x2   B: x35There were issues with some computations   A: x2   B: x36There were issues with some computations   A: x2   B: x36
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_spln_knn_grid <-
-+   tune_grid(
-+     mt_spln_knn,
-+     resamples = folds,
-+     grid = grid_regular(extract_parameter_set_dials(mt_spln_knn)),
-+     control = g_ctrl
-+   )
-→ A | error:   No `tidy()` method for objects of class <train.kknn/kknn>.
-There were issues with some computations   A: x1There were issues with some computations   A: x6There were issues with some computations   A: x28                                                  → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x28There were issues with some computations   A: x45   B: x1There were issues with some computations   A: x51   B: x9There were issues with some computations   A: x75   B: x36There were issues with some computations   A: x117   B: x81There were issues with some computations   A: x129   B: x90There were issues with some computations   A: x141   B: x90There were issues with some computations   A: x171   B: x90There were issues with some computations   A: x174   B: x90There were issues with some computations   A: x192   B: x90There were issues with some computations   A: x216   B: x90There were issues with some computations   A: x218   B: x94There were issues with some computations   A: x236   B: x115There were issues with some computations   A: x272   B: x154There were issues with some computations   A: x297   B: x180
-> 
-> set.seed(8825)
-> mt_spln_knn_bo <-
-+   tune_bayes(mt_spln_knn, resamples = folds, iter = 3, control = b_ctrl)
-→ A | error:   No `tidy()` method for objects of class <train.kknn/kknn>.
-There were issues with some computations   A: x1There were issues with some computations   A: x3There were issues with some computations   A: x15                                                  → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x15There were issues with some computations   A: x15   B: x1There were issues with some computations   A: x21   B: x9There were issues with some computations   A: x27   B: x16There were issues with some computations   A: x41   B: x30There were issues with some computations   A: x43   B: x30There were issues with some computations   A: x50   B: x30There were issues with some computations   A: x56   B: x30There were issues with some computations   A: x61   B: x30There were issues with some computations   A: x70   B: x30There were issues with some computations   A: x70   B: x31There were issues with some computations   A: x74   B: x36There were issues with some computations   A: x90   B: x55There were issues with some computations   A: x96   B: x60There were issues with some computations   A: x97   B: x62There were issues with some computations   A: x99   B: x62There were issues with some computations   A: x99   B: x63There were issues with some computations   A: x101   B: x64There were issues with some computations   A: x103   B: x66There were issues with some computations   A: x104   B: x66There were issues with some computations   A: x105   B: x68There were issues with some computations   A: x106   B: x68There were issues with some computations   A: x106   B: x69There were issues with some computations   A: x108   B: x70There were issues with some computations   A: x109   B: x70There were issues with some computations   A: x110   B: x72
-> 
-> set.seed(8825)
-> mt_spln_knn_bo_sep <-
-+   tune_bayes(
-+     knn_mod_two,
-+     spline_rec,
-+     resamples = folds,
-+     iter = 3,
-+     control = b_ctrl
-+   )
-→ A | error:   No `tidy()` method for objects of class <train.kknn/kknn>.
-There were issues with some computations   A: x1There were issues with some computations   A: x6There were issues with some computations   A: x15                                                  → B | warning: some 'x' values beyond boundary knots may cause ill-conditioned bases
-There were issues with some computations   A: x15There were issues with some computations   A: x15   B: x1There were issues with some computations   A: x21   B: x9There were issues with some computations   A: x35   B: x25There were issues with some computations   A: x41   B: x30There were issues with some computations   A: x43   B: x30There were issues with some computations   A: x55   B: x30There were issues with some computations   A: x56   B: x30There were issues with some computations   A: x61   B: x30There were issues with some computations   A: x70   B: x30There were issues with some computations   A: x70   B: x31There were issues with some computations   A: x74   B: x36There were issues with some computations   A: x86   B: x50! The Gaussian process model is being fit using 11 features but only has 5
-  data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x96   B: x60There were issues with some computations   A: x98   B: x62There were issues with some computations   A: x99   B: x62There were issues with some computations   A: x99   B: x63! The Gaussian process model is being fit using 11 features but only has 6
-  data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x101   B: x64There were issues with some computations   A: x101   B: x65There were issues with some computations   A: x103   B: x66There were issues with some computations   A: x104   B: x67! The Gaussian process model is being fit using 11 features but only has 7
-  data points to do so. This may cause errors or a poor model fit.
-There were issues with some computations   A: x106   B: x68There were issues with some computations   A: x108   B: x70There were issues with some computations   A: x109   B: x71There were issues with some computations   A: x110   B: x72
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(8825)
-> mt_knn_grid <- tune_grid(mt_knn, resamples = folds, control = g_ctrl)
-→ A | error:   No `tidy()` method for objects of class <train.kknn/kknn>.
-There were issues with some computations   A: x1There were issues with some computations   A: x10There were issues with some computations   A: x45There were issues with some computations   A: x61There were issues with some computations   A: x91There were issues with some computations   A: x113There were issues with some computations   A: x146There were issues with some computations   A: x166There were issues with some computations   A: x193There were issues with some computations   A: x221There were issues with some computations   A: x241There were issues with some computations   A: x275There were issues with some computations   A: x275
-> 
-> set.seed(8825)
-> mt_knn_bo <-
-+   tune_bayes(mt_knn, resamples = folds, iter = 3, control = b_ctrl)
-→ A | error:   No `tidy()` method for objects of class <train.kknn/kknn>.
-There were issues with some computations   A: x3There were issues with some computations   A: x16There were issues with some computations   A: x31There were issues with some computations   A: x45There were issues with some computations   A: x55There were issues with some computations   A: x66There were issues with some computations   A: x76There were issues with some computations   A: x79There were issues with some computations   A: x81There were issues with some computations   A: x83There were issues with some computations   A: x85There were issues with some computations   A: x87There were issues with some computations   A: x89There were issues with some computations   A: x90
-> 
-> # ------------------------------------------------------------------------------
-> 
-> save(
-+   list = grep("^mt_", ls(), value = TRUE),
-+   file = test_path("data", "test_objects.RData"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # "knn_*" test objects used in test-predictions.R, test-autoplot.R, test-GP.R
-> # and test-select_best.R
-> 
-> data(two_class_dat, package = "modeldata")
-> set.seed(7898)
-> data_folds <- vfold_cv(two_class_dat, repeats = 5)
-> 
-> two_class_rec <-
-+   recipe(Class ~ ., data = two_class_dat) |>
-+   step_normalize(A, B)
-> 
-> knn_model <-
-+   nearest_neighbor(
-+     mode = "classification",
-+     neighbors = tune("K"),
-+     weight_func = tune(),
-+     dist_power = tune("exponent")
-+   ) |>
-+   set_engine("kknn")
-> 
-> two_class_wflow <-
-+   workflow() |>
-+   add_recipe(two_class_rec) |>
-+   add_model(knn_model)
-> 
-> two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) |>
-+   update(K = neighbors(c(1, 50))) |>
-+   update(exponent = dist_power(c(1 / 10, 2)))
-> 
-> set.seed(2494)
-> two_class_grid <-
-+   two_class_set |>
-+   grid_max_entropy(size = 10)
-Warning message:
-`grid_max_entropy()` was deprecated in dials 1.3.0.
-ℹ Please use `grid_space_filling()` instead. 
-> 
-> class_metrics <- metric_set(roc_auc, accuracy, kap, mcc)
-> 
-> knn_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_grid,
-+     metrics = class_metrics
-+   )
-> 
-> 
-> knn_set <- two_class_set
-> 
-> knn_gp <-
-+   tune:::fit_gp(
-+     dat = collect_metrics(knn_results),
-+     pset = knn_set,
-+     metric = "accuracy",
-+     control = control_bayes()
-+   )
-! The Gaussian process model is being fit using 11 features but only has 10
-  data points to do so. This may cause errors or a poor model fit.
-> 
-> saveRDS(
-+   knn_results,
-+   file = testthat::test_path("data", "knn_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   two_class_set,
-+   file = testthat::test_path("data", "knn_set.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   two_class_grid,
-+   file = testthat::test_path("data", "knn_grid.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   knn_set,
-+   file = testthat::test_path("data", "knn_set.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> saveRDS(
-+   knn_gp,
-+   file = testthat::test_path("data", "knn_gp.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> # "svm_*" test objects used in numerous test files
-> 
-> svm_model <-
-+   svm_poly(
-+     mode = "classification",
-+     cost = tune(),
-+     degree = tune("%^*#"),
-+     scale_factor = tune()
-+   ) |>
-+   set_engine("kernlab")
-> 
-> two_class_wflow <-
-+   workflow() |>
-+   add_recipe(two_class_rec) |>
-+   add_model(svm_model)
-> 
-> two_class_set <-
-+   extract_parameter_set_dials(two_class_wflow) |>
-+   update(cost = cost(c(-10, 4)))
-> 
-> set.seed(2494)
-> two_class_grid <-
-+   two_class_set |>
-+   grid_max_entropy(size = 5)
-> 
-> class_only <- metric_set(accuracy, kap, mcc)
-> 
-> svm_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_grid,
-+     metrics = class_only,
-+     control = control_grid(save_pred = TRUE)
-+   )
-maximum number of iterations reached 0.0147193 0.01464424maximum number of iterations reached 0.0005896209 0.0005896206maximum number of iterations reached 0.01468962 0.01468484maximum number of iterations reached 0.0005983173 0.0005983171maximum number of iterations reached 0.01498524 0.01494014maximum number of iterations reached 0.0006210021 0.0006210018maximum number of iterations reached 0.01455547 0.01451559maximum number of iterations reached 0.0005808292 0.000580829maximum number of iterations reached 0.01458951 0.01455285maximum number of iterations reached 0.000591893 0.0005918927maximum number of iterations reached 0.01497192 0.01491845maximum number of iterations reached 0.0006148557 0.0006148554maximum number of iterations reached 0.01452122 0.01446037maximum number of iterations reached 0.000584184 0.0005841838maximum number of iterations reached 0.01473889 0.01473622maximum number of iterations reached 0.0006136611 0.0006136608maximum number of iterations reached 0.01437385 0.01430398maximum number of iterations reached 0.0005575946 0.0005575944maximum number of iterations reached 0.01414576 0.01410728maximum number of iterations reached 0.0005622069 0.0005622067maximum number of iterations reached 0.01443952 0.01435876maximum number of iterations reached 0.0005654766 0.0005654763maximum number of iterations reached 0.01458758 0.01459782maximum number of iterations reached 0.0006099751 0.0006099749maximum number of iterations reached 0.01482499 0.01478397maximum number of iterations reached 0.0005982511 0.0005982509maximum number of iterations reached 0.01443768 0.01439058maximum number of iterations reached 0.000578942 0.0005789418maximum number of iterations reached 0.01442711 0.0143943maximum number of iterations reached 0.0005851704 0.0005851701maximum number of iterations reached 0.01475669 0.01471816maximum number of iterations reached 0.0006057927 0.0006057925maximum number of iterations reached 0.0145014 0.01443084maximum number of iterations reached 0.0005717263 0.0005717261maximum number of iterations reached 0.01465702 0.01458496maximum number of iterations reached 0.000583117 0.0005831168maximum number of iterations reached 0.01508109 0.01506708maximum number of iterations reached 0.0006349145 0.0006349142maximum number of iterations reached 0.01488878 0.01484413maximum number of iterations reached 0.0006173543 0.000617354maximum number of iterations reached 0.01437898 0.01433509maximum number of iterations reached 0.0005651099 0.0005651097maximum number of iterations reached 0.01448436 0.01447827maximum number of iterations reached 0.0005931817 0.0005931815maximum number of iterations reached 0.01480564 0.01473799maximum number of iterations reached 0.0005782883 0.0005782881maximum number of iterations reached 0.01464281 0.01461223maximum number of iterations reached 0.0006042106 0.0006042103maximum number of iterations reached 0.01463839 0.01455345maximum number of iterations reached 0.0005652974 0.0005652972maximum number of iterations reached 0.0144932 0.01452861maximum number of iterations reached 0.0006280988 0.0006280986maximum number of iterations reached 0.01410125 0.01406053maximum number of iterations reached 0.000560685 0.0005606848maximum number of iterations reached 0.01489259 0.01481299maximum number of iterations reached 0.0006067066 0.0006067063maximum number of iterations reached 0.01490986 0.01485313maximum number of iterations reached 0.0006060482 0.000606048maximum number of iterations reached 0.01478961 0.01477167maximum number of iterations reached 0.0006197014 0.0006197012maximum number of iterations reached 0.01472612 0.01462859maximum number of iterations reached 0.0005733568 0.0005733565maximum number of iterations reached 0.0144819 0.01445166maximum number of iterations reached 0.0005769454 0.0005769452maximum number of iterations reached 0.01488742 0.01484895maximum number of iterations reached 0.0006122026 0.0006122023maximum number of iterations reached 0.01474648 0.01469916maximum number of iterations reached 0.0006093005 0.0006093002maximum number of iterations reached 0.01432721 0.01425123maximum number of iterations reached 0.0005475808 0.0005475806maximum number of iterations reached 0.01480241 0.01478307maximum number of iterations reached 0.0006033693 0.0006033691maximum number of iterations reached 0.01471383 0.01468239maximum number of iterations reached 0.0006110844 0.0006110841maximum number of iterations reached 0.01449605 0.01447789maximum number of iterations reached 0.0006085078 0.0006085075maximum number of iterations reached 0.01436903 0.01441723maximum number of iterations reached 0.0006243018 0.0006243016maximum number of iterations reached 0.01437591 0.01431371maximum number of iterations reached 0.0005526504 0.0005526502maximum number of iterations reached 0.01472635 0.01472042maximum number of iterations reached 0.0006103455 0.0006103452maximum number of iterations reached 0.01430363 0.01423593maximum number of iterations reached 0.000567856 0.0005678558maximum number of iterations reached 0.01434757 0.01430645maximum number of iterations reached 0.0005855226 0.0005855223maximum number of iterations reached 0.01439832 0.0143917maximum number of iterations reached 0.0006002902 0.00060029maximum number of iterations reached 0.01461099 0.01455091maximum number of iterations reached 0.0005893596 0.0005893594maximum number of iterations reached 0.01455653 0.01450732maximum number of iterations reached 0.0005781367 0.0005781365maximum number of iterations reached 0.01463399 0.01456803maximum number of iterations reached 0.0005846412 0.000584641maximum number of iterations reached 0.01463852 0.01458286maximum number of iterations reached 0.0005922697 0.0005922695maximum number of iterations reached 0.01494331 0.01494553maximum number of iterations reached 0.0006333766 0.0006333763maximum number of iterations reached 0.01439313 0.01437962maximum number of iterations reached 0.0005864591 0.0005864589> 
-> saveRDS(
-+   svm_results,
-+   file = testthat::test_path("data", "svm_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> two_class_reg_grid <-
-+   two_class_set |>
-+   grid_regular(levels = c(5, 4, 2))
-> 
-> svm_reg_results <-
-+   tune_grid(
-+     two_class_wflow,
-+     resamples = data_folds,
-+     grid = two_class_reg_grid,
-+     metrics = class_only,
-+     control = control_grid(save_pred = TRUE)
-+   )
-maximum number of iterations reached 5.689004e-05 5.689004e-05maximum number of iterations reached 1.003603e-05 1.003603e-05maximum number of iterations reached 0.0001138626 0.0001138626maximum number of iterations reached 1.499764e-05 1.499764e-05maximum number of iterations reached 0.0001709006 0.0001709006maximum number of iterations reached 5.831876e-05 5.831876e-05maximum number of iterations reached 1.021251e-05 1.021251e-05maximum number of iterations reached 0.0001165726 0.0001165726maximum number of iterations reached 1.528027e-05 1.528027e-05maximum number of iterations reached 0.0001735017 0.0001735017maximum number of iterations reached 6.009032e-05 6.009032e-05maximum number of iterations reached 1.062225e-05 1.062225e-05maximum number of iterations reached 0.0001212048 0.0001212048maximum number of iterations reached 1.593914e-05 1.593914e-05maximum number of iterations reached 0.0001801055 0.0001801055maximum number of iterations reached 5.633767e-05 5.633767e-05maximum number of iterations reached 1.002536e-05 1.002536e-05maximum number of iterations reached 0.0001126032 0.0001126032maximum number of iterations reached 1.496535e-05 1.496535e-05maximum number of iterations reached 0.0001682258 0.0001682258maximum number of iterations reached 5.703418e-05 5.703418e-05maximum number of iterations reached 1.010406e-05 1.010406e-05maximum number of iterations reached 0.000114268 0.000114268maximum number of iterations reached 1.518847e-05 1.518847e-05maximum number of iterations reached 0.0001718439 0.0001718439maximum number of iterations reached 5.956375e-05 5.956375e-05maximum number of iterations reached 1.054374e-05 1.054374e-05maximum number of iterations reached 0.0001194536 0.0001194536maximum number of iterations reached 1.582117e-05 1.582117e-05maximum number of iterations reached 0.0001779735 0.0001779735maximum number of iterations reached 5.674866e-05 5.674866e-05maximum number of iterations reached 1.005129e-05 1.005129e-05maximum number of iterations reached 0.0001127489 0.0001127489maximum number of iterations reached 1.498808e-05 1.498808e-05maximum number of iterations reached 0.0001691153 0.0001691153maximum number of iterations reached 5.916038e-05 5.916038e-05maximum number of iterations reached 1.036725e-05 1.036725e-05maximum number of iterations reached 0.0001184229 0.0001184229maximum number of iterations reached 1.568925e-05 1.568925e-05maximum number of iterations reached 0.0001781439 0.0001781439maximum number of iterations reached 5.385429e-05 5.385429e-05maximum number of iterations reached 0.0001079964 0.0001079964maximum number of iterations reached 1.435598e-05 1.435598e-05maximum number of iterations reached 0.0001623072 0.0001623072maximum number of iterations reached 5.463394e-05 5.463394e-05maximum number of iterations reached 0.0001089012 0.0001089012maximum number of iterations reached 1.439241e-05 1.439241e-05maximum number of iterations reached 0.0001625761 0.0001625761maximum number of iterations reached 5.36694e-05 5.36694e-05maximum number of iterations reached 0.0001083973 0.0001083973maximum number of iterations reached 1.446433e-05 1.446433e-05maximum number of iterations reached 0.0001633056 0.0001633056maximum number of iterations reached 5.91831e-05 5.91831e-05maximum number of iterations reached 1.030881e-05 1.030881e-05maximum number of iterations reached 0.0001174724 0.0001174724maximum number of iterations reached 1.534309e-05 1.534308e-05maximum number of iterations reached 0.0001755 0.0001755maximum number of iterations reached 5.750019e-05 5.750019e-05maximum number of iterations reached 1.011993e-05 1.011993e-05maximum number of iterations reached 0.0001148705 0.0001148705maximum number of iterations reached 1.519648e-05 1.519648e-05maximum number of iterations reached 0.0001729594 0.0001729594maximum number of iterations reached 5.576872e-05 5.576872e-05maximum number of iterations reached 0.0001111984 0.0001111984maximum number of iterations reached 1.47448e-05 1.47448e-05maximum number of iterations reached 0.0001667661 0.0001667661maximum number of iterations reached 5.612075e-05 5.612075e-05maximum number of iterations reached 0.0001125749 0.0001125749maximum number of iterations reached 1.48774e-05 1.48774e-05maximum number of iterations reached 0.0001693326 0.0001693326maximum number of iterations reached 5.810052e-05 5.810052e-05maximum number of iterations reached 1.031011e-05 1.031011e-05maximum number of iterations reached 0.0001161747 0.0001161747maximum number of iterations reached 1.553699e-05 1.553699e-05maximum number of iterations reached 0.0001763925 0.0001763925maximum number of iterations reached 5.531386e-05 5.531386e-05maximum number of iterations reached 0.0001105678 0.0001105678maximum number of iterations reached 1.464995e-05 1.464995e-05maximum number of iterations reached 0.0001641838 0.0001641838maximum number of iterations reached 5.59941e-05 5.59941e-05maximum number of iterations reached 0.0001114334 0.0001114334maximum number of iterations reached 1.489043e-05 1.489043e-05maximum number of iterations reached 0.000166264 0.000166264maximum number of iterations reached 6.148711e-05 6.148711e-05maximum number of iterations reached 1.081163e-05 1.081163e-05maximum number of iterations reached 0.0001217777 0.0001217777maximum number of iterations reached 1.62417e-05 1.62417e-05maximum number of iterations reached 0.0001824427 0.0001824427maximum number of iterations reached 5.947884e-05 5.947884e-05maximum number of iterations reached 1.049418e-05 1.049418e-05maximum number of iterations reached 0.0001192654 0.0001192654maximum number of iterations reached 1.57408e-05 1.57408e-05maximum number of iterations reached 0.0001787923 0.0001787923maximum number of iterations reached 5.457841e-05 5.457841e-05maximum number of iterations reached 0.0001103212 0.0001103212maximum number of iterations reached 1.455117e-05 1.455117e-05maximum number of iterations reached 0.0001638032 0.0001638032maximum number of iterations reached 5.757951e-05 5.757951e-05maximum number of iterations reached 1.026274e-05 1.026274e-05maximum number of iterations reached 0.0001156996 0.0001156996maximum number of iterations reached 1.541885e-05 1.541885e-05maximum number of iterations reached 0.0001726938 0.0001726938maximum number of iterations reached 5.690865e-05 5.690865e-05maximum number of iterations reached 0.000113267 0.000113267maximum number of iterations reached 1.496215e-05 1.496215e-05maximum number of iterations reached 0.0001697589 0.0001697589maximum number of iterations reached 5.816968e-05 5.816968e-05maximum number of iterations reached 1.034087e-05 1.034087e-05maximum number of iterations reached 0.0001165797 0.0001165797maximum number of iterations reached 1.543959e-05 1.543959e-05maximum number of iterations reached 0.0001746949 0.0001746949maximum number of iterations reached 5.429215e-05 5.429215e-05maximum number of iterations reached 0.000108371 0.000108371maximum number of iterations reached 1.430813e-05 1.430813e-05maximum number of iterations reached 0.0001625794 0.0001625794maximum number of iterations reached 6.07205e-05 6.07205e-05maximum number of iterations reached 1.068891e-05 1.068891e-05maximum number of iterations reached 0.0001209085 0.0001209085maximum number of iterations reached 1.601907e-05 1.601907e-05maximum number of iterations reached 0.0001827584 0.0001827584maximum number of iterations reached 5.449023e-05 5.449023e-05maximum number of iterations reached 0.0001084449 0.0001084449maximum number of iterations reached 1.443754e-05 1.443754e-05maximum number of iterations reached 0.0001619746 0.0001619746maximum number of iterations reached 5.845796e-05 5.845796e-05maximum number of iterations reached 1.02896e-05 1.02896e-05maximum number of iterations reached 0.0001161679 0.0001161679maximum number of iterations reached 1.540096e-05 1.540096e-05maximum number of iterations reached 0.0001743432 0.0001743432maximum number of iterations reached 5.869956e-05 5.869956e-05maximum number of iterations reached 1.030024e-05 1.030024e-05maximum number of iterations reached 0.0001161336 0.0001161336maximum number of iterations reached 1.547165e-05 1.547165e-05maximum number of iterations reached 0.0001754284 0.0001754284maximum number of iterations reached 5.986455e-05 5.986455e-05maximum number of iterations reached 1.068486e-05 1.068486e-05maximum number of iterations reached 0.0001203828 0.0001203828maximum number of iterations reached 1.583075e-05 1.583075e-05maximum number of iterations reached 0.0001795793 0.0001795793maximum number of iterations reached 5.557907e-05 5.557907e-05maximum number of iterations reached 0.0001105621 0.0001105621maximum number of iterations reached 1.464436e-05 1.464436e-05maximum number of iterations reached 0.0001650214 0.0001650214maximum number of iterations reached 5.577175e-05 5.577175e-05maximum number of iterations reached 0.0001117393 0.0001117393maximum number of iterations reached 1.491542e-05 1.491542e-05maximum number of iterations reached 0.0001693849 0.0001693849maximum number of iterations reached 5.920809e-05 5.920809e-05maximum number of iterations reached 1.049185e-05 1.049185e-05maximum number of iterations reached 0.0001194755 0.0001194755maximum number of iterations reached 1.558451e-05 1.558451e-05maximum number of iterations reached 0.0001776974 0.0001776974maximum number of iterations reached 5.865938e-05 5.865938e-05maximum number of iterations reached 1.035328e-05 1.035328e-05maximum number of iterations reached 0.0001176036 0.0001176036maximum number of iterations reached 1.540599e-05 1.540599e-05maximum number of iterations reached 0.0001753987 0.0001753987maximum number of iterations reached 5.364101e-05 5.364101e-05maximum number of iterations reached 0.0001069432 0.0001069432maximum number of iterations reached 1.418574e-05 1.418574e-05maximum number of iterations reached 0.0001602081 0.0001602081maximum number of iterations reached 5.865524e-05 5.865524e-05maximum number of iterations reached 1.035299e-05 1.035299e-05maximum number of iterations reached 0.0001162551 0.0001162551maximum number of iterations reached 1.551515e-05 1.551515e-05maximum number of iterations reached 0.0001753682 0.0001753682maximum number of iterations reached 5.966294e-05 5.966294e-05maximum number of iterations reached 1.052991e-05 1.052991e-05maximum number of iterations reached 0.0001191599 0.0001191599maximum number of iterations reached 1.569294e-05 1.569294e-05maximum number of iterations reached 0.0001777711 0.0001777711maximum number of iterations reached 5.8548e-05 5.8548e-05maximum number of iterations reached 1.033204e-05 1.033204e-05maximum number of iterations reached 0.0001174873 0.0001174873maximum number of iterations reached 1.549646e-05 1.549646e-05maximum number of iterations reached 0.0001766657 0.0001766657maximum number of iterations reached 5.990328e-05 5.990328e-05maximum number of iterations reached 1.065299e-05 1.065299e-05maximum number of iterations reached 0.0001203309 0.0001203309maximum number of iterations reached 1.600344e-05 1.600344e-05maximum number of iterations reached 0.0001781729 0.0001781729maximum number of iterations reached 5.369663e-05 5.369663e-05maximum number of iterations reached 0.0001073426 0.0001073426maximum number of iterations reached 1.424457e-05 1.424457e-05maximum number of iterations reached 0.0001598848 0.0001598848maximum number of iterations reached 5.868528e-05 5.868528e-05maximum number of iterations reached 1.038539e-05 1.038539e-05maximum number of iterations reached 0.0001177033 0.0001177033maximum number of iterations reached 1.550018e-05 1.550018e-05maximum number of iterations reached 0.0001760565 0.0001760565maximum number of iterations reached 5.483842e-05 5.483842e-05maximum number of iterations reached 0.0001095022 0.0001095022maximum number of iterations reached 1.45691e-05 1.45691e-05maximum number of iterations reached 0.0001633442 0.0001633442maximum number of iterations reached 5.634322e-05 5.634322e-05maximum number of iterations reached 1.00012e-05 1.00012e-05maximum number of iterations reached 0.0001129699 0.0001129699maximum number of iterations reached 1.496443e-05 1.496443e-05maximum number of iterations reached 0.0001676086 0.0001676086maximum number of iterations reached 5.72774e-05 5.72774e-05maximum number of iterations reached 1.018888e-05 1.018888e-05maximum number of iterations reached 0.0001137955 0.0001137955maximum number of iterations reached 1.532021e-05 1.532021e-05maximum number of iterations reached 0.0001719295 0.0001719295maximum number of iterations reached 5.690147e-05 5.690147e-05maximum number of iterations reached 1.011088e-05 1.011088e-05maximum number of iterations reached 0.000114344 0.000114344maximum number of iterations reached 1.515164e-05 1.515164e-05maximum number of iterations reached 0.0001708446 0.0001708446maximum number of iterations reached 5.598716e-05 5.598716e-05maximum number of iterations reached 0.0001117612 0.0001117612maximum number of iterations reached 1.48327e-05 1.48327e-05maximum number of iterations reached 0.0001667641 0.0001667641maximum number of iterations reached 5.732109e-05 5.732109e-05maximum number of iterations reached 1.010357e-05 1.010357e-05maximum number of iterations reached 0.0001146369 0.0001146369maximum number of iterations reached 1.509375e-05 1.509375e-05maximum number of iterations reached 0.000170771 0.000170771maximum number of iterations reached 5.713655e-05 5.713655e-05maximum number of iterations reached 1.010732e-05 1.010732e-05maximum number of iterations reached 0.0001142046 0.0001142046maximum number of iterations reached 1.516719e-05 1.516719e-05maximum number of iterations reached 0.0001716167 0.0001716167maximum number of iterations reached 6.066888e-05 6.066888e-05maximum number of iterations reached 1.079804e-05 1.079804e-05maximum number of iterations reached 0.0001226802 0.0001226802maximum number of iterations reached 1.623016e-05 1.623016e-05maximum number of iterations reached 0.0001836124 0.0001836124maximum number of iterations reached 5.651191e-05 5.651191e-05maximum number of iterations reached 0.0001131776 0.0001131776maximum number of iterations reached 1.507117e-05 1.507117e-05maximum number of iterations reached 0.000170777 0.000170777> 
-> saveRDS(
-+   svm_reg_results,
-+   file = testthat::test_path("data", "svm_reg_results.rds"),
-+   version = 2,
-+   compress = "xz"
-+ )
-> 
-> # ------------------------------------------------------------------------------
-> 
-> set.seed(7898)
-> data_folds <- vfold_cv(mtcars, repeats = 2)
-> 
-> # ------------------------------------------------------------------------------
-> # "rcv_results" used in test-autoplot.R, test-select_best.R, and test-estimate.R
-> 
-> base_rec <-
-+   recipe(mpg ~ ., data = mtcars) |>
-+   step_normalize(all_predictors())
-> 
-> disp_rec <-
-+   base_rec |>
-+   step_bs(disp, degree = tune(), deg_free = tune()) |>
-+   step_bs(wt, degree = tune("wt degree"), deg_free = tune("wt df"))
-> 
-> lm_model <-
-+   linear_reg(mode = "regression") |>
-+   set_engine("lm")
-> 
-> cars_wflow <-
-+   workflow() |>
-+   add_recipe(disp_rec) |>
-+   add_model(lm_model)
-> 
-> cars_set <-
-+   cars_wflow |>
-+   parameters |>
-+   update(degree = degree_int(1:2)) |>
-+   update(deg_free = deg_free(c(2, 10))) |>
-+   update(`wt degree` = degree_int(1:2)) |>
-+   update(`wt df` = deg_free(c(2, 10)))
-Error in parameters : 
-  The pipe operator requires a function call as RHS (<input>:3:3)
-Execution halted
