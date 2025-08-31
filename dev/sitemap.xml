@@ -26,7 +26,6 @@
 <url><loc>https://tune.tidymodels.org/dev/reference/example_ames_knn.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/expo_decay.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/extract-tune.html</loc></url>
-<url><loc>https://tune.tidymodels.org/dev/reference/extract_model.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/filter_parameters.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/finalize_model.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/fit_best.html</loc></url>
@@ -42,7 +41,6 @@
 <url><loc>https://tune.tidymodels.org/dev/reference/min_grid.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/outcome_names.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/parallelism.html</loc></url>
-<url><loc>https://tune.tidymodels.org/dev/reference/parameters.workflow.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/prob_improve.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/reexports.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/schedule_grid.html</loc></url>
