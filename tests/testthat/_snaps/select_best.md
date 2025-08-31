@@ -15,9 +15,9 @@
       2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
-        deg_free degree `wt df` `wt degree` .config              
-           <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor19_Model1
+        deg_free degree `wt df` `wt degree` .config         
+           <int>  <int>   <int>       <int> <chr>           
+      1        6      2       2           1 pre19_mod0_post0
 
 ---
 
@@ -72,9 +72,9 @@
       2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
-        deg_free degree `wt df` `wt degree` .config              
-           <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor19_Model1
+        deg_free degree `wt df` `wt degree` .config         
+           <int>  <int>   <int>       <int> <chr>           
+      1        6      2       2           1 pre19_mod0_post0
 
 ---
 
@@ -151,9 +151,9 @@
       2 metrics were given; "rmse" will be used.
     Output
       # A tibble: 1 x 5
-        deg_free degree `wt df` `wt degree` .config              
-           <int>  <int>   <int>       <int> <chr>                
-      1        6      2       2           1 Preprocessor19_Model1
+        deg_free degree `wt df` `wt degree` .config         
+           <int>  <int>   <int>       <int> <chr>           
+      1        6      2       2           1 pre19_mod0_post0
 
 ---
 
@@ -226,11 +226,11 @@
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
         <dbl> <chr>          <chr>           <dbl> <dbl> <int>   <dbl> <chr>          
-      1   100 brier_survival standard           10 0.118    10  0.0177 Preprocessor1_~
-      2    20 brier_survival standard           10 0.136    10  0.0153 Preprocessor1_~
-      3    10 brier_survival standard           10 0.155    10  0.0175 Preprocessor1_~
-      4     5 brier_survival standard           10 0.172    10  0.0198 Preprocessor1_~
-      5     1 brier_survival standard           10 0.194    10  0.0221 Preprocessor1_~
+      1   100 brier_survival standard           10 0.118    10  0.0177 pre0_mod5_post0
+      2    20 brier_survival standard           10 0.136    10  0.0153 pre0_mod4_post0
+      3    10 brier_survival standard           10 0.155    10  0.0175 pre0_mod3_post0
+      4     5 brier_survival standard           10 0.172    10  0.0198 pre0_mod2_post0
+      5     1 brier_survival standard           10 0.194    10  0.0221 pre0_mod1_post0
 
 ---
 
@@ -240,11 +240,11 @@
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
         <dbl> <chr>                <chr>           <dbl> <dbl> <int>   <dbl> <chr>    
-      1    20 concordance_survival standard           NA 0.677    10  0.0354 Preproce~
-      2   100 concordance_survival standard           NA 0.670    10  0.0329 Preproce~
-      3    10 concordance_survival standard           NA 0.668    10  0.0376 Preproce~
-      4     5 concordance_survival standard           NA 0.663    10  0.0363 Preproce~
-      5     1 concordance_survival standard           NA 0.626    10  0.0326 Preproce~
+      1    20 concordance_survival standard           NA 0.677    10  0.0354 pre0_mod~
+      2   100 concordance_survival standard           NA 0.670    10  0.0329 pre0_mod~
+      3    10 concordance_survival standard           NA 0.668    10  0.0376 pre0_mod~
+      4     5 concordance_survival standard           NA 0.663    10  0.0363 pre0_mod~
+      5     1 concordance_survival standard           NA 0.626    10  0.0326 pre0_mod~
 
 ---
 
@@ -254,11 +254,11 @@
       # A tibble: 5 x 8
         trees .metric                .estimator .eval_time  mean     n std_err .config
         <dbl> <chr>                  <chr>           <dbl> <dbl> <int>   <dbl> <chr>  
-      1   100 brier_survival_integr~ standard           NA 0.117    10 0.00699 Prepro~
-      2    20 brier_survival_integr~ standard           NA 0.127    10 0.00981 Prepro~
-      3    10 brier_survival_integr~ standard           NA 0.141    10 0.0134  Prepro~
-      4     5 brier_survival_integr~ standard           NA 0.151    10 0.0159  Prepro~
-      5     1 brier_survival_integr~ standard           NA 0.164    10 0.0182  Prepro~
+      1   100 brier_survival_integr~ standard           NA 0.117    10 0.00699 pre0_m~
+      2    20 brier_survival_integr~ standard           NA 0.127    10 0.00981 pre0_m~
+      3    10 brier_survival_integr~ standard           NA 0.141    10 0.0134  pre0_m~
+      4     5 brier_survival_integr~ standard           NA 0.151    10 0.0159  pre0_m~
+      5     1 brier_survival_integr~ standard           NA 0.164    10 0.0182  pre0_m~
 
 ---
 
@@ -271,11 +271,11 @@
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
         <dbl> <chr>          <chr>           <dbl> <dbl> <int>   <dbl> <chr>          
-      1   100 brier_survival standard           10 0.118    10  0.0177 Preprocessor1_~
-      2    20 brier_survival standard           10 0.136    10  0.0153 Preprocessor1_~
-      3    10 brier_survival standard           10 0.155    10  0.0175 Preprocessor1_~
-      4     5 brier_survival standard           10 0.172    10  0.0198 Preprocessor1_~
-      5     1 brier_survival standard           10 0.194    10  0.0221 Preprocessor1_~
+      1   100 brier_survival standard           10 0.118    10  0.0177 pre0_mod5_post0
+      2    20 brier_survival standard           10 0.136    10  0.0153 pre0_mod4_post0
+      3    10 brier_survival standard           10 0.155    10  0.0175 pre0_mod3_post0
+      4     5 brier_survival standard           10 0.172    10  0.0198 pre0_mod2_post0
+      5     1 brier_survival standard           10 0.194    10  0.0221 pre0_mod1_post0
 
 ---
 
@@ -290,11 +290,11 @@
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time  mean     n std_err .config        
         <dbl> <chr>          <chr>           <dbl> <dbl> <int>   <dbl> <chr>          
-      1   100 brier_survival standard           10 0.118    10  0.0177 Preprocessor1_~
-      2    20 brier_survival standard           10 0.136    10  0.0153 Preprocessor1_~
-      3    10 brier_survival standard           10 0.155    10  0.0175 Preprocessor1_~
-      4     5 brier_survival standard           10 0.172    10  0.0198 Preprocessor1_~
-      5     1 brier_survival standard           10 0.194    10  0.0221 Preprocessor1_~
+      1   100 brier_survival standard           10 0.118    10  0.0177 pre0_mod5_post0
+      2    20 brier_survival standard           10 0.136    10  0.0153 pre0_mod4_post0
+      3    10 brier_survival standard           10 0.155    10  0.0175 pre0_mod3_post0
+      4     5 brier_survival standard           10 0.172    10  0.0198 pre0_mod2_post0
+      5     1 brier_survival standard           10 0.194    10  0.0221 pre0_mod1_post0
 
 ---
 
@@ -304,11 +304,11 @@
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time   mean     n std_err .config       
         <dbl> <chr>          <chr>           <dbl>  <dbl> <int>   <dbl> <chr>         
-      1    20 brier_survival standard            1 0.0381    10  0.0149 Preprocessor1~
-      2    10 brier_survival standard            1 0.0386    10  0.0151 Preprocessor1~
-      3   100 brier_survival standard            1 0.0386    10  0.0147 Preprocessor1~
-      4     5 brier_survival standard            1 0.0389    10  0.0152 Preprocessor1~
-      5     1 brier_survival standard            1 0.0392    10  0.0153 Preprocessor1~
+      1    20 brier_survival standard            1 0.0381    10  0.0149 pre0_mod4_pos~
+      2    10 brier_survival standard            1 0.0386    10  0.0151 pre0_mod3_pos~
+      3   100 brier_survival standard            1 0.0386    10  0.0147 pre0_mod5_pos~
+      4     5 brier_survival standard            1 0.0389    10  0.0152 pre0_mod2_pos~
+      5     1 brier_survival standard            1 0.0392    10  0.0153 pre0_mod1_pos~
 
 ---
 
@@ -321,11 +321,11 @@
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
         <dbl> <chr>                <chr>           <dbl> <dbl> <int>   <dbl> <chr>    
-      1    20 concordance_survival standard           NA 0.677    10  0.0354 Preproce~
-      2   100 concordance_survival standard           NA 0.670    10  0.0329 Preproce~
-      3    10 concordance_survival standard           NA 0.668    10  0.0376 Preproce~
-      4     5 concordance_survival standard           NA 0.663    10  0.0363 Preproce~
-      5     1 concordance_survival standard           NA 0.626    10  0.0326 Preproce~
+      1    20 concordance_survival standard           NA 0.677    10  0.0354 pre0_mod~
+      2   100 concordance_survival standard           NA 0.670    10  0.0329 pre0_mod~
+      3    10 concordance_survival standard           NA 0.668    10  0.0376 pre0_mod~
+      4     5 concordance_survival standard           NA 0.663    10  0.0363 pre0_mod~
+      5     1 concordance_survival standard           NA 0.626    10  0.0326 pre0_mod~
 
 ---
 
@@ -338,11 +338,11 @@
       # A tibble: 5 x 8
         trees .metric              .estimator .eval_time  mean     n std_err .config  
         <dbl> <chr>                <chr>           <dbl> <dbl> <int>   <dbl> <chr>    
-      1    20 concordance_survival standard           NA 0.677    10  0.0354 Preproce~
-      2   100 concordance_survival standard           NA 0.670    10  0.0329 Preproce~
-      3    10 concordance_survival standard           NA 0.668    10  0.0376 Preproce~
-      4     5 concordance_survival standard           NA 0.663    10  0.0363 Preproce~
-      5     1 concordance_survival standard           NA 0.626    10  0.0326 Preproce~
+      1    20 concordance_survival standard           NA 0.677    10  0.0354 pre0_mod~
+      2   100 concordance_survival standard           NA 0.670    10  0.0329 pre0_mod~
+      3    10 concordance_survival standard           NA 0.668    10  0.0376 pre0_mod~
+      4     5 concordance_survival standard           NA 0.663    10  0.0363 pre0_mod~
+      5     1 concordance_survival standard           NA 0.626    10  0.0326 pre0_mod~
 
 ---
 
@@ -363,11 +363,11 @@
       # A tibble: 5 x 8
         trees .metric        .estimator .eval_time   mean     n std_err .config       
         <dbl> <chr>          <chr>           <dbl>  <dbl> <int>   <dbl> <chr>         
-      1    20 brier_survival standard            1 0.0381    10  0.0149 Preprocessor1~
-      2    10 brier_survival standard            1 0.0386    10  0.0151 Preprocessor1~
-      3   100 brier_survival standard            1 0.0386    10  0.0147 Preprocessor1~
-      4     5 brier_survival standard            1 0.0389    10  0.0152 Preprocessor1~
-      5     1 brier_survival standard            1 0.0392    10  0.0153 Preprocessor1~
+      1    20 brier_survival standard            1 0.0381    10  0.0149 pre0_mod4_pos~
+      2    10 brier_survival standard            1 0.0386    10  0.0151 pre0_mod3_pos~
+      3   100 brier_survival standard            1 0.0386    10  0.0147 pre0_mod5_pos~
+      4     5 brier_survival standard            1 0.0389    10  0.0152 pre0_mod2_pos~
+      5     1 brier_survival standard            1 0.0392    10  0.0153 pre0_mod1_pos~
 
 ---
 
@@ -390,9 +390,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -400,9 +400,9 @@
       select_best(surv_res, metric = "concordance_survival")
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -410,9 +410,9 @@
       select_best(surv_res, metric = "brier_survival_integrated")
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -423,9 +423,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -438,9 +438,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -448,9 +448,9 @@
       select_best(surv_res, metric = "brier_survival", eval_time = 1)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -461,9 +461,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -474,9 +474,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -495,9 +495,9 @@
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -520,9 +520,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -530,9 +530,9 @@
       select_by_one_std_err(surv_res, metric = "concordance_survival", trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     5 Preprocessor1_Model2
+        trees .config        
+        <dbl> <chr>          
+      1     5 pre0_mod2_post0
 
 ---
 
@@ -540,9 +540,9 @@
       select_by_one_std_err(surv_res, metric = "brier_survival_integrated", trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -553,9 +553,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -569,9 +569,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    20 Preprocessor1_Model4
+        trees .config        
+        <dbl> <chr>          
+      1    20 pre0_mod4_post0
 
 ---
 
@@ -579,9 +579,9 @@
       select_by_one_std_err(surv_res, metric = "brier_survival", eval_time = 1, trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     1 Preprocessor1_Model1
+        trees .config        
+        <dbl> <chr>          
+      1     1 pre0_mod1_post0
 
 ---
 
@@ -593,9 +593,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     5 Preprocessor1_Model2
+        trees .config        
+        <dbl> <chr>          
+      1     5 pre0_mod2_post0
 
 ---
 
@@ -607,9 +607,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     5 Preprocessor1_Model2
+        trees .config        
+        <dbl> <chr>          
+      1     5 pre0_mod2_post0
 
 ---
 
@@ -630,9 +630,9 @@
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     1 Preprocessor1_Model1
+        trees .config        
+        <dbl> <chr>          
+      1     1 pre0_mod1_post0
 
 ---
 
@@ -656,9 +656,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -666,9 +666,9 @@
       select_by_pct_loss(surv_res, metric = "concordance_survival", trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    10 Preprocessor1_Model3
+        trees .config        
+        <dbl> <chr>          
+      1    10 pre0_mod3_post0
 
 ---
 
@@ -676,9 +676,9 @@
       select_by_pct_loss(surv_res, metric = "brier_survival_integrated", trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -689,9 +689,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -705,9 +705,9 @@
       4 evaluation times are available; the first will be used (i.e. `eval_time = 10`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1   100 Preprocessor1_Model5
+        trees .config        
+        <dbl> <chr>          
+      1   100 pre0_mod5_post0
 
 ---
 
@@ -715,9 +715,9 @@
       select_by_pct_loss(surv_res, metric = "brier_survival", eval_time = 1, trees)
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     5 Preprocessor1_Model2
+        trees .config        
+        <dbl> <chr>          
+      1     5 pre0_mod2_post0
 
 ---
 
@@ -729,9 +729,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    10 Preprocessor1_Model3
+        trees .config        
+        <dbl> <chr>          
+      1    10 pre0_mod3_post0
 
 ---
 
@@ -743,9 +743,9 @@
       `eval_time` is only used for dynamic survival metrics.
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1    10 Preprocessor1_Model3
+        trees .config        
+        <dbl> <chr>          
+      1    10 pre0_mod3_post0
 
 ---
 
@@ -764,9 +764,9 @@
       2 evaluation times are available; the first will be used (i.e. `eval_time = 1`).
     Output
       # A tibble: 1 x 2
-        trees .config             
-        <dbl> <chr>               
-      1     5 Preprocessor1_Model2
+        trees .config        
+        <dbl> <chr>          
+      1     5 pre0_mod2_post0
 
 ---
 
