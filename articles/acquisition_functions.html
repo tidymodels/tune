@@ -8,8 +8,8 @@
 <title>Acquisition functions • tune</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.9/font.css" rel="stylesheet">
-<link href="../deps/Source_Code_Pro-0.4.9/font.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Acquisition functions">
@@ -30,7 +30,7 @@ exploration of the parameter space during Bayesian optimization.
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ exploration of the parameter space during Bayesian optimization.
       <img src="../logo.png" class="logo" alt=""><h1>Acquisition functions</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/v1.3.0/vignettes/acquisition_functions.Rmd" class="external-link"><code>vignettes/acquisition_functions.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/main/vignettes/acquisition_functions.Rmd" class="external-link"><code>vignettes/acquisition_functions.Rmd</code></a></small>
       <div class="d-none name"><code>acquisition_functions.Rmd</code></div>
     </div>
 
@@ -157,7 +157,7 @@ is searched for the value that maximizes the expected improvement.</p>
 <p>Suppose a single parameter were being optimized and that parameter
 was represented using a log10 transformation. Using resampling, suppose
 the accuracy results for three points were evaluated:</p>
-<p><img src="figures%2Finitial.svg" alt="A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There are three dots, with no immediately discernible trend."></p>
+<p><img src="figures/initial.svg" alt="A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There are three dots, with no immediately discernible trend."></p>
 <p>In the first iteration of Bayesian optimization, these three data
 points are given to the Gaussian process model to produce predictions
 across a wider range of values. The fitted curve
@@ -165,7 +165,7 @@ across a wider range of values. The fitted curve
 is shown on the top panel below, along with approximate 95% credible
 intervals
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>μ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>±</mo><mn>1.96</mn><mi>σ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mu(\theta) \pm 1.96 \sigma(\theta)</annotation></semantics></math>:</p>
-<p><img src="figures%2Fiter_1.svg" alt="A ggplot line plot. The data are the same as that plotted above, but a curved line is plotted over the points, now. A shaded region, representing a confidence band, grows wider as the distance in the x axis from an observed parameter value increases. An additional panel is shown below the plot, where a measure called Expected Improvement is plotted on the y axis."></p>
+<p><img src="figures/iter_1.svg" alt="A ggplot line plot. The data are the same as that plotted above, but a curved line is plotted over the points, now. A shaded region, representing a confidence band, grows wider as the distance in the x axis from an observed parameter value increases. An additional panel is shown below the plot, where a measure called Expected Improvement is plotted on the y axis."></p>
 <p>Notice that the interval width is large in regions far from observed
 data points.</p>
 <p>The bottom panel shows the expected improvement across the range of
@@ -181,7 +181,7 @@ mostly in the region of the best performance.</p>
 is then evaluated using cross-validation. The GP model is then updated
 and a new parameter is chosen and so on.</p>
 <p>The results at iteration 20 were:</p>
-<p><img src="figures%2Fiter_20.svg" alt="A ggplot2 dot plot much like the one above, except that an additional 17 points are now plotted. The confidence bands around the newly drawn line are much tighter. The expected improvement reaches higher values only in a much smaller portion of the x axis, now."></p>
+<p><img src="figures/iter_20.svg" alt="A ggplot2 dot plot much like the one above, except that an additional 17 points are now plotted. The confidence bands around the newly drawn line are much tighter. The expected improvement reaches higher values only in a much smaller portion of the x axis, now."></p>
 <p>The points shown on the graph indicate that there is a region in the
 neighborhood of 0.01 that appears to produce the best results, and that
 the expected improvement function has driven the optimization to focus
@@ -202,7 +202,7 @@ the equation above uses:</p>
 of the predicted accuracy during the search. Using the same three
 initial results, the procedure would end up in the same general location
 but would have explored more values across the total range:</p>
-<p><img src="figures%2Ftrade_off_20.svg" alt="A plot identical to the one above, though generated with a different parameter value for the trade-off. The expected improvement, in the bottom pane, is nearly always zero, with one narrow section remaining of positive value."></p>
+<p><img src="figures/trade_off_20.svg" alt="A plot identical to the one above, though generated with a different parameter value for the trade-off. The expected improvement, in the bottom pane, is nearly always zero, with one narrow section remaining of positive value."></p>
 <p>There are two main strategies for <em>dynamic trade-offs</em> during
 the optimization:</p>
 <ul>
@@ -210,10 +210,10 @@ the optimization:</p>
 functions. For expected improvement, this can be done using
 <code>exp_improve(trade_off = foo())</code>. <code>foo()</code> should
 be a function whose first parameter is the current iteration number.
-When <code>tune</code> invokes this function, only the first argument is
-used. A good strategy might be to set <code>trade_off</code> to some
-non-zero value at the start of the search and incrementally approach
-zero after a reasonable period.</p></li>
+When tune invokes this function, only the first argument is used. A good
+strategy might be to set <code>trade_off</code> to some non-zero value
+at the start of the search and incrementally approach zero after a
+reasonable period.</p></li>
 <li><p><code><a href="../reference/control_bayes.html">control_bayes()</a></code> has an option for doing an
 additional <em>uncertainty sample</em> when no improvements have been
 found. This is a technique from the active learning literature where new
@@ -234,7 +234,7 @@ improvements.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
   </div></footer>
