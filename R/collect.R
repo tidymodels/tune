@@ -604,9 +604,8 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
     x <- dplyr::distinct(x)
   }
 
-  x <- x |>
-    tibble::as_tibble() |>
-    vctrs::vec_slice(., .$id != "Apparent")
+  x <- tibble::as_tibble(x)
+  x <- vctrs::vec_slice(x, x$id != "Apparent")
 
   # Join weights to the data if available
   if (!is.null(fold_weights)) {
