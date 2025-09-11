@@ -544,26 +544,26 @@ test_that("check parameter finalization", {
 
 test_that("check fold weights", {
   folds <- rsample::vfold_cv(mtcars, v = 3)
-  
+
   # No weights should pass silently
   expect_no_error(tune:::check_fold_weights(folds))
-  
+
   # Valid weights should pass
   weights <- c(0.1, 0.5, 0.4)
   weighted_folds <- add_fold_weights(folds, weights)
   expect_no_error(tune:::check_fold_weights(weighted_folds))
-  
+
   # Invalid weights should error
   expect_error(
     add_fold_weights(folds, c("a", "b", "c")),
     "must be numeric"
   )
-  
+
   expect_error(
     add_fold_weights(folds, c(0.5, 0.3)),
     "must equal number of folds"
   )
-  
+
   expect_error(
     add_fold_weights(folds, c(-0.1, 0.5, 0.6)),
     "must be non-negative"
@@ -575,106 +575,129 @@ test_that("fold weights integration test", {
   skip_if_not_installed("parsnip")
   skip_if_not_installed("recipes")
   skip_if_not_installed("workflows")
-  
+
   # Create simple data and resamples
   set.seed(1234)
   data_small <- mtcars[1:20, ]
   folds <- rsample::vfold_cv(data_small, v = 3)
-  
+
   # Create simple model and recipe
   simple_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small)
   simple_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
   simple_wflow <- workflows::workflow() %>%
     workflows::add_recipe(simple_rec) %>%
     workflows::add_model(simple_mod)
-  
+
   # Test with equal weights (should match unweighted results)
   equal_weights <- c(1, 1, 1)
   weighted_folds_equal <- add_fold_weights(folds, equal_weights)
-  
+
   # Fit both weighted and unweighted
-  unweighted_results <- fit_resamples(simple_wflow, folds, 
-                                     control = control_resamples(save_pred = FALSE))
-  weighted_results_equal <- fit_resamples(simple_wflow, weighted_folds_equal,
-                                         control = control_resamples(save_pred = FALSE))
-  
+  unweighted_results <- fit_resamples(
+    simple_wflow,
+    folds,
+    control = control_resamples(save_pred = FALSE)
+  )
+  weighted_results_equal <- fit_resamples(
+    simple_wflow,
+    weighted_folds_equal,
+    control = control_resamples(save_pred = FALSE)
+  )
+
   # Extract metrics
   unweighted_metrics <- collect_metrics(unweighted_results)
   weighted_metrics_equal <- collect_metrics(weighted_results_equal)
-  
+
   # Should be nearly identical (allowing for small numerical differences)
-  expect_equal(unweighted_metrics$mean, weighted_metrics_equal$mean, tolerance = 1e-10)
-  
+  expect_equal(
+    unweighted_metrics$mean,
+    weighted_metrics_equal$mean,
+    tolerance = 1e-10
+  )
+
   # Test with unequal weights
-  unequal_weights <- c(0.1, 0.3, 0.6)  # Higher weight on last fold
+  unequal_weights <- c(0.1, 0.3, 0.6) # Higher weight on last fold
   weighted_folds_unequal <- add_fold_weights(folds, unequal_weights)
-  
-  weighted_results_unequal <- fit_resamples(simple_wflow, weighted_folds_unequal,
-                                           control = control_resamples(save_pred = FALSE))
+
+  weighted_results_unequal <- fit_resamples(
+    simple_wflow,
+    weighted_folds_unequal,
+    control = control_resamples(save_pred = FALSE)
+  )
   weighted_metrics_unequal <- collect_metrics(weighted_results_unequal)
-  
+
   # Should be different from unweighted results
-  expect_false(all(abs(unweighted_metrics$mean - weighted_metrics_unequal$mean) < 1e-10))
-  
+  expect_false(all(
+    abs(unweighted_metrics$mean - weighted_metrics_unequal$mean) < 1e-10
+  ))
+
   # Verify that weights are properly stored and retrieved
   expect_equal(attr(weighted_folds_unequal, ".fold_weights"), unequal_weights)
-  
+
   # Test fold size calculation
   calculated_weights <- calculate_fold_weights(folds)
   expect_length(calculated_weights, nrow(folds))
   expect_true(all(calculated_weights > 0))
-  expect_equal(sum(calculated_weights), 1)  # Should sum to 1 now
+  expect_equal(sum(calculated_weights), 1) # Should sum to 1 now
 })
 
 test_that("fold weights with tune_grid", {
   skip_if_not_installed("rsample")
-  skip_if_not_installed("parsnip") 
+  skip_if_not_installed("parsnip")
   skip_if_not_installed("recipes")
   skip_if_not_installed("workflows")
   skip_if_not_installed("dials")
-  
+
   # Create simple tuning scenario
   set.seed(5678)
   data_small <- mtcars[1:15, ]
   folds <- rsample::vfold_cv(data_small, v = 3)
-  
+
   # Create tunable workflow
   tune_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small) %>%
     recipes::step_normalize(recipes::all_predictors())
-  tune_mod <- parsnip::linear_reg(penalty = tune()) %>% 
+  tune_mod <- parsnip::linear_reg(penalty = tune()) %>%
     parsnip::set_engine("glmnet")
   tune_wflow <- workflows::workflow() %>%
     workflows::add_recipe(tune_rec) %>%
     workflows::add_model(tune_mod)
-  
+
   # Create simple grid
   simple_grid <- tibble::tibble(penalty = c(0.001, 0.01, 0.1))
-  
+
   # Test with unequal weights
   weights <- c(0.2, 0.3, 0.5)
   weighted_folds <- add_fold_weights(folds, weights)
-  
+
   # Tune with weights
-  weighted_tune_results <- tune_grid(tune_wflow, weighted_folds, 
-                                    grid = simple_grid,
-                                    control = control_grid(save_pred = FALSE))
-  
+  weighted_tune_results <- tune_grid(
+    tune_wflow,
+    weighted_folds,
+    grid = simple_grid,
+    control = control_grid(save_pred = FALSE)
+  )
+
   # Verify results structure
-  expect_s3_class(weighted_tune_results, "tune_results") 
-  
+  expect_s3_class(weighted_tune_results, "tune_results")
+
   # Extract metrics and verify they're computed
   weighted_metrics <- collect_metrics(weighted_tune_results)
   expect_true(nrow(weighted_metrics) > 0)
   expect_true(all(c("mean", "std_err") %in% names(weighted_metrics)))
-  
+
   # Compare with unweighted results
-  unweighted_tune_results <- tune_grid(tune_wflow, folds,
-                                      grid = simple_grid, 
-                                      control = control_grid(save_pred = FALSE))
+  unweighted_tune_results <- tune_grid(
+    tune_wflow,
+    folds,
+    grid = simple_grid,
+    control = control_grid(save_pred = FALSE)
+  )
   unweighted_metrics <- collect_metrics(unweighted_tune_results)
-  
+
   # Results should differ due to weighting
-  expect_false(all(abs(weighted_metrics$mean - unweighted_metrics$mean) < 1e-10))
+  expect_false(all(
+    abs(weighted_metrics$mean - unweighted_metrics$mean) < 1e-10
+  ))
 })
 
 # ------------------------------------------------------------------------------
