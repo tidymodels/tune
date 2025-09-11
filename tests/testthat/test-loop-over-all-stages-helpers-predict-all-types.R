@@ -158,7 +158,7 @@ test_that("predict classification - no submodels - with calibration", {
   cal_pst <- tailor() |> adjust_probability_calibration()
 
   wflow <- workflow(pca_rec, logistic_reg(), cal_pst)
-  wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  wflow_fit <- fit(wflow, cls$data, data_calibration = cls$data)
   grd <- tibble()
 
   class_only <- metric_set(accuracy)
@@ -522,7 +522,7 @@ test_that("predict classification - with submodels - with calibration", {
   cal_pst <- tailor() |> adjust_probability_calibration()
 
   wflow <- workflow(pca_rec, knn_cls_spec, cal_pst)
-  wflow_fit <- fit(wflow, cls$data, calibration = cls$data)
+  wflow_fit <- fit(wflow, cls$data, data_calibration = cls$data)
   grd <- tibble()
 
   class_only <- metric_set(accuracy)
@@ -770,7 +770,7 @@ test_that("predict regression - no submodels - with calibration", {
   reg_pst <- tailor() |> adjust_numeric_calibration()
 
   wflow <- workflow(pca_rec, linear_reg(), reg_pst)
-  wflow_fit <- fit(wflow, reg$data, calibration = reg$data)
+  wflow_fit <- fit(wflow, reg$data, data_calibration = reg$data)
   grd <- tibble()
 
   reg_mtr <- metric_set(rmse)
@@ -892,7 +892,7 @@ test_that("predict regression - with submodels - with calibration", {
   reg_pst <- tailor() |> adjust_numeric_calibration()
 
   wflow <- workflow(pca_rec, knn_reg_spec, reg_pst)
-  wflow_fit <- fit(wflow, reg$data, calibration = reg$data)
+  wflow_fit <- fit(wflow, reg$data, data_calibration = reg$data)
 
   reg_mtr <- metric_set(rmse)
 
@@ -1056,8 +1056,6 @@ test_that("predict censored regression - submodels - no calibration", {
   skip_if_not_installed("survival")
   skip_if_not_installed("glmnet")
 
-  skip("not working")
-
   library(censored)
 
   cens <- make_post_data(mode = "censored")
@@ -1068,7 +1066,7 @@ test_that("predict censored regression - submodels - no calibration", {
   glmn_cens <- proportional_hazards(penalty = tune()) |> set_engine("glmnet")
 
   wflow <- workflow(pca_rec, glmn_cens)
-  wflow_fit <- fit(wflow, cens$data)
+
   grd <-
     wflow |>
     extract_parameter_set_dials() |>
@@ -1089,6 +1087,11 @@ test_that("predict censored regression - submodels - no calibration", {
 
   ctrl <- tune::control_grid()
 
+  wflow_fit <-
+    wflow |>
+    finalize_workflow(grd[1, ]) |>
+    fit(cens$data)
+
   # ----------------------------------------------------------------------------
   # static metrics
 
@@ -1104,10 +1107,6 @@ test_that("predict censored regression - submodels - no calibration", {
 
   static_stc <- tune:::update_static(static_stc, data_1)
   static_stc$y_name <- "outcome"
-
-  # TODO error
-  # Error in lambda[1] - s : non-numeric argument to binary operator
-  # Called from: lambda.interp(lambda, s)
 
   res_stc <- tune:::predict_all_types(
     wflow_fit,

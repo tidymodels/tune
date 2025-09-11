@@ -130,6 +130,9 @@ if (rlang::is_installed("probably")) {
   reg_cal <- tailor::tailor() |>
     tailor::adjust_numeric_calibration()
 
+  reg_cal_tune <- tailor::tailor() |>
+    tailor::adjust_numeric_calibration(method = tune())
+
   reg_max <- tailor::tailor() |>
     tailor::adjust_numeric_range(upper_limit = tune())
 }

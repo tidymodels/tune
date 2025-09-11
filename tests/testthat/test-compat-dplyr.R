@@ -238,7 +238,11 @@ test_that("slice() keeps tune_results class when rows are untouched", {
 test_that("group_by() always returns a bare grouped-df or bare tibble", {
   for (x in helper_tune_results) {
     expect_s3_class_bare_tibble(group_by(x))
-    expect_s3_class(group_by(x, splits), c("grouped_df", "tbl_df", "tbl", "data.frame"), exact = TRUE)
+    expect_s3_class(
+      group_by(x, splits),
+      c("grouped_df", "tbl_df", "tbl", "data.frame"),
+      exact = TRUE
+    )
   }
 })
 

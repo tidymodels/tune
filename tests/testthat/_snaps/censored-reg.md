@@ -1,7 +1,7 @@
 # evaluation time
 
     Code
-      spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = mtr)
+      tune_grid(spec, Surv(time, status) ~ ., resamples = rs, metrics = mtr)
     Condition
       Error in `check_enough_eval_times()`:
       ! At least 1 evaluation time is required for the metric type(s) requested: "dynamic_survival_metric". Only 0 unique times were given.
@@ -9,7 +9,7 @@
 ---
 
     Code
-      spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
+      tune_grid(spec, Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
     Condition
       Error in `tune_grid()`:
       ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
@@ -17,8 +17,7 @@
 ---
 
     Code
-      linear_reg() %>% tune_grid(age ~ ., resamples = rs, metrics = reg_mtr,
-      eval_time = 1)
+      tune_grid(linear_reg(), age ~ ., resamples = rs, metrics = reg_mtr, eval_time = 1)
     Condition
       Warning in `tune_grid()`:
       `eval_time` is only used for models with mode "censored regression".
@@ -45,7 +44,7 @@
 ---
 
     Code
-      no_usable_times <- spec %>% tune_grid(Surv(time, status) ~ ., resamples = rs,
+      no_usable_times <- tune_grid(spec, Surv(time, status) ~ ., resamples = rs,
       metrics = mtr, eval_time = c(-1, Inf))
     Condition
       Error:

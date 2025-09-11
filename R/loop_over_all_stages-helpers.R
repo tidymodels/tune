@@ -11,6 +11,8 @@ make_static <- function(
   eval_time,
   split_args,
   control,
+  pkgs = "tune",
+  strategy = "sequential",
   data = list(fit = NULL, pred = NULL, cal = NULL)
 ) {
   # check inputs
@@ -33,13 +35,17 @@ make_static <- function(
     wflow = workflow,
     param_info = param_info,
     configs = configs,
-    post_estimation = workflows::.workflow_includes_calibration(workflow),
+    post_estimation = workflows::.workflow_postprocessor_requires_fit(
+      workflow
+    ),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
     pred_types = determine_pred_types(workflow, metrics),
     eval_time = eval_time,
     split_args = split_args,
     control = control,
+    pkgs = pkgs,
+    strategy = strategy,
     data = data
   )
 }
@@ -80,7 +86,7 @@ get_data_subsets <- function(wflow, split, split_args = NULL) {
   fit_lst <- pred_lst <- cal_lst <- list(data = NULL, ind = NULL)
   pred_lst$data <- rsample::assessment(split)
   pred_lst$ind <- as.integer(split, data = "assessment")
-  if (workflows::.workflow_includes_calibration(wflow)) {
+  if (workflows::.workflow_postprocessor_requires_fit(wflow)) {
     # if the workflow has a postprocessor that needs training (i.e. calibration),
     # further split the analysis data into an "inner" analysis and
     # assessment set.
@@ -180,25 +186,16 @@ has_tailor_estimated <- function(x) {
 # ------------------------------------------------------------------------------
 # Prediction and postprocessing
 
-finalize_fit_post <- function(wflow_current, predictions, grid = NULL) {
+finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
 
   post_obj <- hardhat::extract_postprocessor(wflow_current) |>
     finalize_tailor(grid)
+  wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  outputs <- get_output_columns(wflow_current)
-
-  post_obj <- post_obj |>
-    fit(
-      .data = predictions,
-      outcome = !!outputs$outcome[[1]],
-      estimate = !!outputs$estimate[[1]],
-      probabilities = c(!!!outputs$probabilities)
-    )
-
-  post_obj
+  workflows::.fit_post(wflow_current, data_calibration)
 }
 
 # ------------------------------------------------------------------------------
@@ -251,10 +248,21 @@ predict_all_types <- function(
     tmp_res$.row <- .ind
 
     # predict_wrapper() is designed to predict all submodels at once; we get a
-    # list column back called .pred with a single row. Collapse that and remove
-    # the submodel column since it is in the current grid.
+    # list column back called .pred with a single row. Collapse that and move
+    # the submodel column.
     if (length(sub_param) > 0) {
       tmp_res <- tidyr::unnest(tmp_res, cols = c(.pred))
+
+      # For censored regression (and eventually quantile regression),
+      # dynamic predictions will generate a list column that can have multiple
+      # predictions per training set row so those end up in a list column.
+      # Since we unnested, we need to re-nest to get back to the original
+      # format.
+      if (type_iter %in% dyn_types) {
+        tmp_res <-
+          tmp_res |>
+          tidyr::nest(.pred = c(-dplyr::all_of(sub_param), -.row))
+      }
     }
 
     # Now go back to engine names
@@ -362,21 +370,6 @@ replace_reserve_rows <- function(iter, chunk) {
   start_loc:end_loc
 }
 
-update_reserve <- function(reserve, iter, predictions, grid_size) {
-  grid_size <- min(1, grid_size)
-  pred_size <- nrow(predictions)
-
-  if (is.null(reserve)) {
-    reserve <- initialize_pred_reserve(predictions, grid_size)
-  } else {
-    if (tibble::is_tibble(predictions)) {
-      predictions <- dplyr::as_tibble(predictions)
-    }
-  }
-  reserve[replace_reserve_rows(iter, pred_size), ] <- predictions
-  reserve
-}
-
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
@@ -466,8 +459,8 @@ determine_pred_types <- function(wflow, metrics) {
   pred_types <- unique(metrics_info(metrics)$type)
   if (has_tailor(wflow)) {
     post <- extract_postprocessor(wflow)
-    post_out <- purrr::map(post$adjustments, ~ .x$outputs)
-    post_in <- purrr::map(post$adjustments, ~ .x$inputs)
+    post_out <- purrr::map(post$adjustments, "outputs")
+    post_in <- purrr::map(post$adjustments, "inputs")
     post_types <- unlist(c(post_out, post_in))
     post_types[grepl("probability", post_types)] <- "prob"
     post_cls <- purrr::map(post$adjustments, class)
@@ -502,21 +495,39 @@ determine_pred_types <- function(wflow, metrics) {
   sort(unique(pred_types))
 }
 
-reorder_pred_cols <- function(x, y_name) {
+reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
   x |>
     dplyr::relocate(
-      dplyr::all_of(y_name),
+      # Outcome first
+      dplyr::all_of(outcome),
+      # Dynamic columns next
+      dplyr::any_of("^\\.eval_time"),
+      # dplyr::any_of(".quantile_level"),     # placeholder for future value
+      # Prediction columns
       dplyr::matches("^\\.pred_time$"),
       dplyr::matches("^\\.pred$"),
       dplyr::matches("^\\.pred_class$"),
-      dplyr::matches(".pred_[A-Za-z]"),
-      dplyr::any_of(".eval_time"),
-      dplyr::any_of(".row"),
+      dplyr::matches("^\\.pred_."),
+      # Row indicator
+      dplyr::any_of("^\\.row"),
+      # Resample indicator(s)
+      dplyr::matches("^id$"),
+      dplyr::matches("^id[1-9]$"),
       .before = dplyr::everything()
+    ) |>
+    # Put any tuning parameters at the end, .config at the very end
+    dplyr::relocate(
+      dplyr::all_of(param),
+      .config,
+      .after = dplyr::everything()
     )
 }
 
+
 engine_to_parsnip <- function(wflow, grid) {
+  if (is.null(grid)) {
+    return(grid)
+  }
   grid_nm <- names(grid)
   key <- parsnip::.model_param_name_key(wflow) |>
     dplyr::filter(user != parsnip & user %in% grid_nm) |>
@@ -542,4 +553,24 @@ parsnip_to_engine <- function(wflow, grid) {
   nm_lst <- key$parsnip
   names(nm_lst) <- key$user
   dplyr::rename(grid, dplyr::all_of(nm_lst))
+}
+
+# ------------------------------------------------------------------------------
+
+attach_pkgs <- function(pkgs, strategy = "sequential") {
+  sshh_load <- purrr::quietly(library)
+
+  if (length(pkgs) > 0 & strategy != "sequential") {
+    # In parallel, load it all
+    pkgs_res <- purrr::map(pkgs, ~ sshh_load(.x, character.only = TRUE))
+  }
+
+  invisible(pkgs)
+}
+
+extract_details <- function(object, extractor) {
+  if (is.null(extractor)) {
+    return(list())
+  }
+  extractor(object)
 }

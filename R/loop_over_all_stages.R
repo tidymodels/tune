@@ -4,8 +4,11 @@
 #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
 loop_over_all_stages <- function(resamples, grid, static) {
-  # Initialize some objects
+  # Some packages may use random numbers so attach them prior to initializing
+  # the RNG seed
+  attach_pkgs(static$pkgs, strategy = static$strategy)
 
+  # Initialize some objects
   seed_length <- length(resamples$.seeds[[1]])
 
   # If we are using last_fit() (= zero seed length), don't mess with the RNG
@@ -52,7 +55,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
       finalize_fit_pre(static$wflow, current_sched_pre, static),
       control = static$control,
       split_labels = split_labs,
-      location = location, notes = notes
+      location = location,
+      notes = notes
     )
 
     if (is_failure(current_wflow)) {
@@ -67,9 +71,9 @@ loop_over_all_stages <- function(resamples, grid, static) {
     # Iterate over model parameters
 
     # Make a copy of the current workflow so that we can finalize it multiple
-    # times, since finalize_*() functions will not update parameters whose
+    # times, since finalize_*() functions will only update parameters whose
     # values currently are tune()
-    pre_wflow <- current_wflow
+    wflow_with_fitted_pre <- current_wflow
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
@@ -79,12 +83,13 @@ loop_over_all_stages <- function(resamples, grid, static) {
         "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
       current_wflow <- .catch_and_log(
-        finalize_fit_model(pre_wflow, current_sched_model),
+        finalize_fit_model(wflow_with_fitted_pre, current_sched_model),
         control = static$control,
         split_labels = split_labs,
-        location = location, notes = notes
+        location = location,
+        notes = notes
       )
-      
+
       if (is_failure(current_wflow)) {
         next
       }
@@ -98,11 +103,10 @@ loop_over_all_stages <- function(resamples, grid, static) {
       )
 
       # --------------------------------------------------------------------------
-      # Iterate over prediction submodels
+      # Iterate over prediction submodels; no multipredict, just one at a time
+      # wothout retraining the model
 
       for (iter_pred in seq_len(num_iterations_pred)) {
-        # cli::cli_inform("Predicting {iter_pred} of {num_iterations_pred}")
-
         current_sched_pred <- current_sched_model$predict_stage[[1]][
           iter_pred,
         ]
@@ -127,7 +131,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
               dplyr::select(-dplyr::all_of(sub_nm)),
             control = static$control,
             split_labels = split_labs,
-            location = location, notes = notes
+            location = location,
+            notes = notes
           )
         } else {
           location <- glue::glue(
@@ -137,7 +142,8 @@ loop_over_all_stages <- function(resamples, grid, static) {
             predict_all_types(current_wflow, static),
             control = static$control,
             split_labels = split_labs,
-            location = location, notes = notes
+            location = location,
+            notes = notes
           )
         }
 
@@ -152,11 +158,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
 
+        # Make a copy of the current workflow so that we can finalize it multiple
+        # times, since finalize_*() functions will only update parameters whose
+        # values currently are tune()
+        wflow_with_fitted_pre_and_model <- current_wflow
+
         current_predict_grid <- current_grid
 
         for (iter_post in seq_len(num_iterations_post)) {
-          # cli::cli_inform("-- Postprocessing {iter_post} of {num_iterations_post}")
-
           if (has_post) {
             current_sched_post <-
               current_sched_pred$post_stage[[1]][iter_post, ]
@@ -167,48 +176,53 @@ loop_over_all_stages <- function(resamples, grid, static) {
               current_sched_post
             )
 
-            # make data for prediction
-            if (has_tailor_estimated(current_wflow)) {
-              tailor_train_data <- predict_all_types(
-                current_wflow,
-                static,
-                predictee = "calibration"
-              )
+            # make data for post-processor
+            if (
+              workflows::.workflow_postprocessor_requires_fit(current_wflow)
+            ) {
+              tailor_train_data <- static$data$cal$data
             } else {
-              tailor_train_data <- current_pred[0, ]
+              # if the postprocessor does not require a fit,
+              # this does not cause data leakage
+              tailor_train_data <- static$data$fit$data
             }
 
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
-            post_fit <- .catch_and_log(
+            current_wflow <- .catch_and_log(
               finalize_fit_post(
-                current_wflow,
-                predictions = tailor_train_data,
+                wflow_with_fitted_pre_and_model,
+                data_calibration = tailor_train_data,
                 grid = post_grid
               ),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
-            if (is_failure(post_fit)) {
+            if (is_failure(current_wflow)) {
               next
             }
-            
+
+            # to predict, use the post-processor directly rather than the
+            # workflow so that we don't have to generate the model predictions
+            # a second time
+            post_fit <- extract_postprocessor(current_wflow, estimated = TRUE)
             post_pred <- .catch_and_log(
               predict(post_fit, current_pred),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
             if (is_failure(post_pred)) {
               next
             }
 
-            current_wflow <- set_workflow_tailor(current_wflow, post_fit)
-
             final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
             current_extract_grid <- current_post_grid
+            # end submodels
           } else {
             # No postprocessor so just use what we have
             final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
@@ -235,13 +249,17 @@ loop_over_all_stages <- function(resamples, grid, static) {
               extract_details(current_wflow, static$control$extract),
               control = static$control,
               split_labels = split_labs,
-              location = location, notes = notes
+              location = location,
+              notes = notes
             )
 
             if (is.null(extracts)) {
               extracts <- tibble::tibble(.extracts = list(1))
               if (nrow(static$param_info) > 0) {
-                extracts <- tibble::add_column(current_extract_grid, .extracts = list(1))
+                extracts <- tibble::add_column(
+                  current_extract_grid,
+                  .extracts = list(1)
+                )
               }
               extracts <- extracts[integer(), ]
             }
@@ -249,17 +267,20 @@ loop_over_all_stages <- function(resamples, grid, static) {
             if (nrow(static$param_info) > 0) {
               extracts <- tibble::add_row(
                 extracts,
-                tibble::add_column(current_extract_grid, .extracts = list(elt_extract))
+                tibble::add_column(
+                  current_extract_grid,
+                  .extracts = list(elt_extract)
+                )
               )
-              } else {
+            } else {
               extracts <- tibble::add_row(
                 extracts,
                 tibble::tibble(.extracts = list(elt_extract))
               )
-              }
-              if (is_failure(elt_extract)) {
-                next
-              }
+            }
+            if (is_failure(elt_extract)) {
+              next
+            }
           }
 
           # Output for these loops:
@@ -280,30 +301,30 @@ loop_over_all_stages <- function(resamples, grid, static) {
     location <- glue::glue("internal")
     all_metrics <- .catch_and_log(
       pred_reserve |>
-      dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
-      .estimate_metrics(
-        metric = static$metrics,
-        param_names = static$param_info$id,
-        outcome_name = static$y_name,
-        event_level = static$control$event_level,
-        metrics_info = metrics_info(static$metrics)
-      ) |>
-      add_configs(static),
+        dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
+        .estimate_metrics(
+          metric = static$metrics,
+          param_names = static$param_info$id,
+          outcome_name = static$y_name,
+          event_level = static$control$event_level,
+          metrics_info = metrics_info(static$metrics)
+        ) |>
+        add_configs(static),
       control = static$control,
       split_labels = split_labs,
-      location = location, notes = notes
+      location = location,
+      notes = notes
     )
   }
 
   if (!is.null(extracts)) {
-
     extracts <- add_configs(extracts, static) |>
       dplyr::relocate(.config, .after = .extracts) |>
       dplyr::relocate(names(grid))
 
     # Failing rows are not in the output:
     empty_extract <- purrr::map_lgl(extracts$.extracts, is.null)
-    extracts <- extracts[!empty_extract,]
+    extracts <- extracts[!empty_extract, ]
   }
 
   # ----------------------------------------------------------------------------
@@ -318,7 +339,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (!is.null(static$control$extract)) {
     if (is.null(extracts)) {
       # Everything failed; return NULL for each row
-      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), ~ NULL)
+      return_tbl$.extracts <- purrr::map(1:nrow(return_tbl), \(x) NULL)
     } else {
       return_tbl <- dplyr::mutate(return_tbl, .extracts = list(extracts))
     }
@@ -329,13 +350,14 @@ loop_over_all_stages <- function(resamples, grid, static) {
   if (static$control$save_pred) {
     if (is.null(pred_reserve)) {
       # Everything failed; return NULL for each row
-      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), ~ NULL)
+      return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), \(x) NULL)
     } else {
       return_tbl$.predictions <-
         list(
           add_configs(pred_reserve, static) |>
             # Filter out joined rows that corresponded to a config that failed
-            dplyr::filter(!is.na(.row))
+            dplyr::filter(!is.na(.row)) |>
+            reorder_pred_cols(static$y_name, static$param_info$id)
         )
     }
   }

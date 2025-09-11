@@ -15,7 +15,9 @@ resource_files:
   - figures/trade_off_20.svg
 ---
   
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(
   digits = 3,
   collapse = TRUE,
@@ -53,13 +55,25 @@ The value $\delta(\theta)$ measures how close we are (on average) to the current
 
 Suppose a single parameter were being optimized and that parameter was represented using a log10 transformation. Using resampling, suppose the accuracy results for three points were evaluated: 
 
-```{r iter-0, echo = FALSE, fig.alt = "A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There are three dots, with no immediately discernible trend."}
+```{r}
+#| label: iter-0
+#| echo: false
+#| fig-alt: A ggplot2 dot plot. The x axis is labeled Parameter, with values ranging
+#|   from .01 to 1 on a log scale, and accuracy values are plotted on the y axis. There
+#|   are three dots, with no immediately discernible trend.
 knitr::include_graphics("figures/initial.svg", auto_pdf = FALSE)
 ```
 
 In the first iteration of Bayesian optimization, these three data points are given to the Gaussian process model to produce predictions across a wider range of values. The fitted curve (i.e. $\mu(\theta)$) is shown on the top panel below, along with approximate 95% credible intervals  $\mu(\theta) \pm 1.96 \sigma(\theta)$: 
 
-```{r iter-1, echo = FALSE, fig.alt = "A ggplot line plot. The data are the same as that plotted above, but a curved line is plotted over the points, now. A shaded region, representing a confidence band, grows wider as the distance in the x axis from an observed parameter value increases. An additional panel is shown below the plot, where a measure called Expected Improvement is plotted on the y axis."}
+```{r}
+#| label: iter-1
+#| echo: false
+#| fig-alt: A ggplot line plot. The data are the same as that plotted above, but a curved
+#|   line is plotted over the points, now. A shaded region, representing a confidence
+#|   band, grows wider as the distance in the x axis from an observed parameter value
+#|   increases. An additional panel is shown below the plot, where a measure called Expected
+#|   Improvement is plotted on the y axis.
 knitr::include_graphics("figures/iter_1.svg", auto_pdf = FALSE)
 ```
 
@@ -71,7 +85,13 @@ Using these results, the parameter value with the largest improvement is then ev
 
 The results at iteration 20 were:
 
-```{r iter-14, echo = FALSE, fig.alt = "A ggplot2 dot plot much like the one above, except that an additional 17 points are now plotted. The confidence bands around the newly drawn line are much tighter. The expected improvement reaches higher values only in a much smaller portion of the x axis, now."}
+```{r}
+#| label: iter-14
+#| echo: false
+#| fig-alt: A ggplot2 dot plot much like the one above, except that an additional 17
+#|   points are now plotted. The confidence bands around the newly drawn line are much
+#|   tighter. The expected improvement reaches higher values only in a much smaller portion
+#|   of the x axis, now.
 knitr::include_graphics("figures/iter_20.svg", auto_pdf = FALSE)
 ```
 
@@ -85,7 +105,12 @@ $$
 
 Suppose that we were willing to trade-off $\tau = 0.05$% of the predicted accuracy during the search. Using the same three initial results, the procedure would end up in the same general location but would have explored more values across the total range:
 
-```{r trade-20, fig.alt = "A plot identical to the one above, though generated with a different parameter value for the trade-off. The expected improvement, in the bottom pane, is nearly always zero, with one narrow section remaining of positive value.", echo = FALSE}
+```{r}
+#| label: trade-20
+#| echo: false
+#| fig-alt: A plot identical to the one above, though generated with a different parameter
+#|   value for the trade-off. The expected improvement, in the bottom pane, is nearly
+#|   always zero, with one narrow section remaining of positive value.
 knitr::include_graphics("figures/trade_off_20.svg", auto_pdf = FALSE)
 ```
 

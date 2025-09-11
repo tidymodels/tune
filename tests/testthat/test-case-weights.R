@@ -56,7 +56,7 @@ test_that("`extract_case_weights()` works", {
   wf <- workflows::add_case_weights(wf, weight)
 
   extracted <- tune:::extract_case_weights(mtcars, wf)
-  expted <-  mtcars |>
+  expted <- mtcars |>
     tibble::as_tibble() |>
     dplyr::select(.case_weights = weight)
   expect_equal(extracted, expted)
@@ -101,7 +101,6 @@ test_that("weights are used during resampling", {
 
   expect_equal(res_metric, manual_with_wts)
   expect_true(!identical(res_metric, manual_with_no_wts))
-
 })
 
 
@@ -145,7 +144,8 @@ test_that("weights are used during tuning", {
     predictions |>
     yardstick::rmse(mpg, .pred)
 
-  res_metric <- res$.metrics[[1]] |> dplyr::select(all_of(names(manual_with_wts)))
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_wts)))
 
   expect_equal(res_metric, manual_with_wts)
   expect_true(!identical(res_metric, manual_with_no_wts))
@@ -192,7 +192,8 @@ test_that("weights work with multi-predict", {
     predictions |>
     yardstick::rmse(mpg, .pred)
 
-  res_metric <- res$.metrics[[1]] |> dplyr::select(all_of(names(manual_with_wts)))
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_wts)))
 
   expect_equal(res_metric, manual_with_wts)
   expect_true(!identical(res_metric, manual_with_no_wts))
@@ -202,7 +203,7 @@ test_that("importance weights are *not* used during prediction", {
   skip_if_not_installed("splines2")
   set.seed(1)
 
-  mtcars$weight <- hardhat::importance_weights((1:32)/32)
+  mtcars$weight <- hardhat::importance_weights((1:32) / 32)
 
   folds <- rsample::vfold_cv(mtcars, v = 2)
 
@@ -236,8 +237,8 @@ test_that("importance weights are *not* used during prediction", {
     predictions |>
     yardstick::rmse(mpg, .pred)
 
-  res_metric <- res$.metrics[[1]] |> dplyr::select(all_of(names(manual_with_no_wts)))
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_no_wts)))
 
   expect_equal(res_metric, manual_with_no_wts)
 })
-

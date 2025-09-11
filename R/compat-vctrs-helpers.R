@@ -38,7 +38,12 @@ tune_results_can_reconstruct <- function(x, to) {
   )
 }
 
-results_can_reconstruct <- function(x, to, detect_cols_fn, detect_order_cols_fn) {
+results_can_reconstruct <- function(
+  x,
+  to,
+  detect_cols_fn,
+  detect_order_cols_fn
+) {
   x_names <- names(x)
   to_names <- names(to)
 
@@ -165,7 +170,10 @@ iteration_results_can_reconstruct <- function(x, to) {
 #   list-columns, since `vec_order()` doesn't really order those.
 
 detect_cols_tune_results <- function(x) {
-  col_equals_splits(x) | col_starts_with_id(x) | col_equals_dot_metrics(x) | col_equals_dot_notes(x)
+  col_equals_splits(x) |
+    col_starts_with_id(x) |
+    col_equals_dot_metrics(x) |
+    col_equals_dot_notes(x)
 }
 
 detect_cols_iteration_results <- function(x) {

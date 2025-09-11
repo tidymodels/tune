@@ -67,11 +67,14 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
       .ns = "parsnip",
       object = rlang::expr(model),
       new_data = rlang::expr(new_data),
-      type = type)
+      type = type
+    )
 
   # Add in censored regression evaluation times (if needed)
-  has_type <- type %in% c("survival", "hazard")
-  if (model$spec$mode == "censored regression" & !is.null(eval_time) & has_type) {
+  has_type <- type %in% dyn_surv_types
+  if (
+    model$spec$mode == "censored regression" & !is.null(eval_time) & has_type
+  ) {
     cl <- rlang::call_modify(cl, eval_time = eval_time)
   }
 
@@ -94,15 +97,6 @@ forge_from_workflow <- function(new_data, workflow) {
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
   forged
-}
-
-mold_has_case_weights <- function(mold) {
-  roles <- mold$extras$roles
-  no_extras <- is.null(roles)
-  if (no_extras) {
-    return(FALSE)
-  }
-  any(names(roles) == "case_weights")
 }
 
 get_metrics_by <- function(metric_set) {

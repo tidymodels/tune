@@ -17,7 +17,6 @@
 # Same as `tune_results`, except that the vctrs invariants also require that
 # the `.iter` column sticks around.
 
-
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
@@ -29,14 +28,16 @@
 #' @param rset_info Attributes from an `rset` object.
 #' @param workflow The workflow used to fit the iteration results.
 new_iteration_results <-
-  function(x,
-           parameters,
-           metrics,
-           eval_time,
-           eval_time_target,
-           outcomes = character(0),
-           rset_info,
-           workflow) {
+  function(
+    x,
+    parameters,
+    metrics,
+    eval_time,
+    eval_time_target,
+    outcomes = character(0),
+    rset_info,
+    workflow
+  ) {
     new_tune_results(
       x = x,
       parameters = parameters,

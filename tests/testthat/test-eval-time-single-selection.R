@@ -11,7 +11,6 @@ test_that("selecting single eval time - non-survival case", {
   expect_null(first_eval_time(met_reg, eval_time = NULL))
   expect_null(first_eval_time(met_reg, eval_time = times_1))
   expect_null(first_eval_time(met_reg, eval_time = times_2))
-
 })
 
 test_that("selecting single eval time - pure metric sets", {
@@ -25,7 +24,11 @@ test_that("selecting single eval time - pure metric sets", {
   # all static; return NULL and add warning if times are given
 
   expect_null(first_eval_time(met_stc, eval_time = NULL))
-  expect_null(first_eval_time(met_stc, metric = "concordance_survival", eval_time = NULL))
+  expect_null(first_eval_time(
+    met_stc,
+    metric = "concordance_survival",
+    eval_time = NULL
+  ))
 
   expect_silent(
     stc_one <- first_eval_time(met_stc, eval_time = times_1)
@@ -63,7 +66,11 @@ test_that("selecting single eval time - pure metric sets", {
 
   expect_null(first_eval_time(met_int, eval_time = NULL))
   expect_null(
-    first_eval_time(met_int, metric = "brier_survival_integrated", eval_time = NULL)
+    first_eval_time(
+      met_int,
+      metric = "brier_survival_integrated",
+      eval_time = NULL
+    )
   )
 
   expect_silent(
@@ -75,12 +82,15 @@ test_that("selecting single eval time - pure metric sets", {
     int_multi <- first_eval_time(met_int, eval_time = times_2)
   )
   expect_null(int_multi)
-
 })
 
 test_that("selecting single eval time - mixed metric sets - static first", {
   met_mix_stc <- metric_set(concordance_survival, brier_survival)
-  met_mix_stc_all <- metric_set(concordance_survival, brier_survival, brier_survival_integrated)
+  met_mix_stc_all <- metric_set(
+    concordance_survival,
+    brier_survival,
+    brier_survival_integrated
+  )
 
   times_1 <- 1 / 3
   times_2 <- as.numeric(5:4) / 7
@@ -123,9 +133,7 @@ test_that("selecting single eval time - mixed metric sets - static first", {
 test_that("selecting single eval time - mixed metric sets - dynamic first", {
   met_mix_dyn <- metric_set(brier_survival, concordance_survival)
   met_mix_dyn_all <-
-    metric_set(brier_survival,
-               brier_survival_integrated,
-               concordance_survival)
+    metric_set(brier_survival, brier_survival_integrated, concordance_survival)
 
   times_1 <- 1 / 3
   times_2 <- as.numeric(5:4) / 7
@@ -161,16 +169,13 @@ test_that("selecting single eval time - mixed metric sets - dynamic first", {
     dyn_multi <- first_eval_time(met_mix_dyn_all, eval_time = times_2)
   )
   expect_equal(dyn_multi, times_2[1])
-
 })
 
 
 test_that("selecting single eval time - mixed metric sets - integrated first", {
   met_mix_int <- metric_set(brier_survival_integrated, concordance_survival)
   met_mix_int_all <-
-    metric_set(brier_survival_integrated,
-               brier_survival,
-               concordance_survival)
+    metric_set(brier_survival_integrated, brier_survival, concordance_survival)
 
   times_1 <- 1 / 3
   times_2 <- as.numeric(5:4) / 7

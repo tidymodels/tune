@@ -6,8 +6,8 @@
 #' @keywords internal
 #' @examples
 #' library(dplyr)
-#' lm(cbind(mpg, wt) ~ ., data = mtcars) %>%
-#'   purrr::pluck(terms) %>%
+#' lm(cbind(mpg, wt) ~ ., data = mtcars) |>
+#'   purrr::pluck(terms) |>
 #'   outcome_names()
 #' @export
 outcome_names <- function(x, ...) {

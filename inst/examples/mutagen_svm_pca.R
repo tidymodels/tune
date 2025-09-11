@@ -14,39 +14,44 @@ data_folds <- validation_split(Mutagen_Dragon)
 # ------------------------------------------------------------------------------
 
 Mutagen_rec <-
-  recipe(Class ~ ., data = Mutagen_Dragon) %>%
-  step_nzv(all_predictors()) %>%
-  step_YeoJohnson(all_predictors()) %>%
-  step_normalize(all_predictors()) %>%
+  recipe(Class ~ ., data = Mutagen_Dragon) |>
+  step_nzv(all_predictors()) |>
+  step_YeoJohnson(all_predictors()) |>
+  step_normalize(all_predictors()) |>
   step_pca(all_predictors(), num_comp = tune())
 
 svm_model <-
   # svm_poly(mode = "classification", cost = tune(), degree = tune(),
-  #          scale_factor = tune()) %>%
-  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) %>%
+  #          scale_factor = tune()) |>
+  svm_rbf(mode = "classification", cost = tune(), rbf_sigma = tune()) |>
   set_engine("kernlab")
 
 Mutagen_wflow <-
-  workflow() %>%
-  add_recipe(Mutagen_rec) %>%
+  workflow() |>
+  add_recipe(Mutagen_rec) |>
   add_model(svm_model)
 
 Mutagen_param <-
-  parameters(Mutagen_wflow) %>%
+  parameters(Mutagen_wflow) |>
   update(num_comp = num_comp(c(0, 20)))
 
 set.seed(552)
 Mutagen_grid <-
-  Mutagen_param %>%
+  Mutagen_param |>
   grid_max_entropy(size = 5)
 
 class_only <- metric_set(accuracy, kap, mcc)
 
-res <- tune_grid(Mutagen_wflow, resamples = data_folds, grid = Mutagen_grid, metrics = class_only,
-                 control = control_grid(verbose = TRUE))
+res <- tune_grid(
+  Mutagen_wflow,
+  resamples = data_folds,
+  grid = Mutagen_grid,
+  metrics = class_only,
+  control = control_grid(verbose = TRUE)
+)
 
 
-summarize(res) %>% filter(.metric == "accuracy") %>% arrange(desc(mean))
+summarize(res) |> filter(.metric == "accuracy") |> arrange(desc(mean))
 
 set.seed(3654)
 svm_search <-

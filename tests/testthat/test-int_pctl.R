@@ -8,7 +8,7 @@ test_that("percentile intervals - resamples only", {
   set.seed(13)
   sac_rs <- vfold_cv(Sacramento)
   lm_res <-
-    linear_reg() %>%
+    linear_reg() |>
     fit_resamples(
       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
       resamples = sac_rs,
@@ -52,7 +52,7 @@ test_that("percentile intervals - last fit", {
   sac_split <- initial_split(Sacramento)
 
   lm_res <-
-    linear_reg() %>%
+    linear_reg() |>
     last_fit(
       log10(price) ~ beds + baths + sqft + type + latitude + longitude,
       metrics = metric_set(mae),
@@ -89,9 +89,9 @@ test_that("percentile intervals - grid + bayes tuning", {
   cls_rs <- vfold_cv(two_class_dat)
 
   c5_res <-
-    decision_tree(min_n = tune()) %>%
-    set_engine("C5.0") %>%
-    set_mode("classification") %>%
+    decision_tree(min_n = tune()) |>
+    set_engine("C5.0") |>
+    set_mode("classification") |>
     tune_grid(
       Class ~ .,
       resamples = cls_rs,
@@ -117,9 +117,9 @@ test_that("percentile intervals - grid + bayes tuning", {
 
   set.seed(92)
   c5_bo_res <-
-    decision_tree(min_n = tune()) %>%
-    set_engine("C5.0") %>%
-    set_mode("classification") %>%
+    decision_tree(min_n = tune()) |>
+    set_engine("C5.0") |>
+    set_mode("classification") |>
     tune_bayes(
       Class ~ .,
       resamples = cls_rs,
@@ -157,9 +157,16 @@ test_that("percentile intervals - grid + bayes tuning", {
       ".config", ".iter", ".values")
   )
 
-  qnts <- quantile(int_res_2_reps$.values[[1]]$estimate, probs = c(0.025, 0.5, 0.975))
+  qnts <- quantile(
+    int_res_2_reps$.values[[1]]$estimate,
+    probs = c(0.025, 0.5, 0.975)
+  )
   expect_equal(
-    c(int_res_2_reps$.lower[1], int_res_2_reps$.estimate[1], int_res_2_reps$.upper[1]),
+    c(
+      int_res_2_reps$.lower[1],
+      int_res_2_reps$.estimate[1],
+      int_res_2_reps$.upper[1]
+    ),
     as.vector(qnts),
     tolerance = 0.001
   )
@@ -167,9 +174,9 @@ test_that("percentile intervals - grid + bayes tuning", {
   # ------------------------------------------------------------------------------
 
   c5_mixed_res <-
-    decision_tree(min_n = tune()) %>%
-    set_engine("C5.0") %>%
-    set_mode("classification") %>%
+    decision_tree(min_n = tune()) |>
+    set_engine("C5.0") |>
+    set_mode("classification") |>
     tune_grid(
       Class ~ .,
       resamples = cls_rs,
@@ -207,9 +214,9 @@ test_that("percentile intervals - grid tuning with validation set", {
   cls_rs <- validation_set(cls_split)
 
   c5_res <-
-    decision_tree(min_n = tune()) %>%
-    set_engine("C5.0") %>%
-    set_mode("classification") %>%
+    decision_tree(min_n = tune()) |>
+    set_engine("C5.0") |>
+    set_mode("classification") |>
     tune_grid(
       Class ~ .,
       resamples = cls_rs,

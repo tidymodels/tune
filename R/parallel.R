@@ -3,6 +3,13 @@
 
 # ------------------------------------------------------------------------------
 
+#' Internal functions to help use parallel processing
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+#' @param object A workflow.
+#' @param control A control object
+#' @param verbose A logical for printing
 has_non_par_pkgs <- function(object, control, verbose = FALSE) {
   pkgs <- character(0)
 
@@ -31,13 +38,23 @@ has_non_par_pkgs <- function(object, control, verbose = FALSE) {
 
 # ------------------------------------------------------------------------------
 
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 future_installed <- function() {
   rlang::is_installed("future")
 }
+
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 mirai_installed <- function() {
   rlang::is_installed("mirai")
 }
 
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 get_future_workers <- function(verbose) {
   has_future <- future_installed()
 
@@ -64,6 +81,9 @@ get_future_workers <- function(verbose) {
   future_workers
 }
 
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 get_mirai_workers <- function(verbose) {
   if (!mirai_installed()) {
     if (verbose) {
@@ -90,6 +110,10 @@ get_mirai_workers <- function(verbose) {
   mirai_workers
 }
 
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+#' @param default The default parallel processor.
 choose_framework <- function(
   object = NULL,
   control = NULL,
@@ -152,6 +176,10 @@ choose_framework <- function(
   res
 }
 
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+#' @param workers The number of existing workers
 get_parallel_seeds <- function(workers) {
   # Get current rng info and save
   orig_state <- .Random.seed
@@ -295,6 +323,18 @@ get_parallel_seeds <- function(workers) {
 #'   platforms due to the packages' use of different numerical tolerance
 #'   constants across operating systems.
 #'
+#' ## Handling package dependencies
+#'
+#' \pkg{tune} knows what packages are required to fit a workflow object.
+#'
+#' When computations are run sequentially, an initial check is made to see if
+#' they are installed. This triggers the packages to be loaded but not visible
+#' in the search path.
+#'
+#' In parallel, the required packages are fully loaded (i.e., loaded and seen
+#' in the search path), as they were previously with \pkg{foreach}, in the
+#' worker processes (but not the main R session).
+#'
 #' @references
 #' \url{https://www.tmwr.org/grid-search#parallel-processing}
 #'
@@ -321,32 +361,50 @@ update_parallel_over <- function(control, resamples, grid) {
 # mirai_map() acts a little different form map(), lapply(), etc. It requires
 # that the elements in .args be the args (not symbols). It also requires an
 # extra step to collect the results and coerce them into a list.
+
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+#' @param .x A list.
+#' @param .f A function
+#' @param ...,.args Options to pass to other functions.
+#'
 eval_mirai <- function(.x, .f, ..., .args) {
   .args <- lapply(.args, get, envir = parent.frame())
   res <- mirai::mirai_map(.x, .f, ..., .args = .args)
   mirai::collect_mirai(res)
 }
 
-fns <- list(
-  sequential = list(fn = "lapply", ns = NULL),
-  future = list(fn = "future_lapply", ns = "future.apply"),
-  mirai = list(fn = "eval_mirai", ns = NULL)
-)
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+par_fns <- function(framework) {
+  if (framework == "sequential") {
+    res <- list(fn = "lapply", ns = NULL)
+  } else if (framework == "future") {
+    res <- list(fn = "future_lapply", ns = "future.apply")
+  } else if (framework == "mirai") {
+    res <- list(fn = "eval_mirai", ns = NULL)
+  } else {
+    cli::cli_abort("Frmework {.val framework} is unknown.")
+  }
+  res
+}
 
 loop_call <-
   function(strategy, framework, opts) {
     if (strategy == "resamples") {
       base_cl <- rlang::call2(
-        fns[[framework]][[1]],
-        .ns = fns[[framework]][[2]],
+        par_fns(framework)[[1]],
+        .ns = par_fns(framework)[[2]],
         quote(resamples),
         quote(loop_over_all_stages)
       )
       base_args <- list(grid = quote(grid), static = quote(static))
     } else {
       base_cl <- rlang::call2(
-        fns[[framework]][[1]],
-        .ns = fns[[framework]][[2]],
+        par_fns(framework)[[1]],
+        .ns = par_fns(framework)[[2]],
         quote(inds),
         quote(loop_over_all_stages2)
       )
@@ -366,7 +424,8 @@ loop_call <-
       future_opts <- list(
         future.label = "tune-grid-%d",
         future.stdout = TRUE,
-        future.seed = NULL
+        future.seed = TRUE,
+        future.globals = names(base_args)
       )
       base_args <- c(base_args, future_opts)
     }
@@ -390,7 +449,8 @@ pctl_call <- function(framework, args = list()) {
     future_opts <- list(
       future.label = "int-pctl-%d",
       future.stdout = TRUE,
-      future.seed = NULL
+      future.seed = TRUE,
+      future.globals = names(args)
     )
     args <- c(args, future_opts)
   }
@@ -406,8 +466,8 @@ pctl_call <- function(framework, args = list()) {
   args <- c(main_args, args)
 
   base_cl <- rlang::call2(
-    fns[[framework]][[1]],
-    .ns = fns[[framework]][[2]],
+    par_fns(framework)[[1]],
+    .ns = par_fns(framework)[[2]],
     quote(rs$splits),
     quote(boot_metrics)
   )
@@ -423,16 +483,6 @@ pctl_call <- function(framework, args = list()) {
 
 # ------------------------------------------------------------------------------
 
-warn_foreach_deprecation <- function() {
-  cli::cli_warn(c(
-    "!" = "{.pkg tune} detected a parallel backend registered with \\
-               foreach but no backend registered with future.",
-    "i" = "Support for parallel processing with foreach was \\
-               soft-deprecated in {.pkg tune} 1.2.1.",
-    "i" = "See {.help [?parallelism](tune::parallelism)} to learn more."
-  ))
-}
-
 manange_global_limit <- function(min = 1e9) {
   currrent_value <- getOption("future.globals.maxSize")
   if (is.null(currrent_value)) {
@@ -443,25 +493,4 @@ manange_global_limit <- function(min = 1e9) {
     }
   }
   invisible(NULL)
-}
-
-# ------------------------------------------------------------------------------
-# keeping this until we make a more accurate version based on choose_framework()
-
-# object should be a workflow
-allow_parallelism <- function(allow = TRUE, object = NULL) {
-  is_par <- TRUE # temp make this assumption
-  if (!is.null(object)) {
-    pkgs <- required_pkgs(object)
-    blacklist <- c("keras", "rJava")
-    if (is_par & allow && any(pkgs %in% blacklist)) {
-      pkgs <- pkgs[pkgs %in% blacklist]
-      msg <- paste0("'", pkgs, "'", collapse = ", ")
-      msg <- paste("Some required packages prohibit parallel processing: ", msg)
-      cli::cli_alert_warning(msg)
-      allow <- FALSE
-    }
-  }
-
-  allow && is_par
 }

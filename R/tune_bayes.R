@@ -61,6 +61,15 @@
 #' results. For good results, the number of initial values should be more than
 #' the number of parameters being optimized.
 #'
+#' The tuning parameter combinations that were tested are called _candidates_.
+#'  Each candidate has a unique `.config` value that, for the initial grid search,
+#'  has the pattern `pre{num}_mod{num}_post{num}`. The numbers include a zero
+#'  when that element was static. For example, a value of `pre0_mod3_post4` means
+#'  no preprocessors were tuned and the model and postprocessor(s) had at least
+#'  three and four candidates, respectively. The iterative part of the
+#'  search uses the pattern `iter{num}`. In each case, the numbers are
+#'  zero-padded to enable proper sorting.
+#'
 #' @section Parameter Ranges and Values:
 #'
 #' In some cases, the tuning parameter values depend on the dimensions of the
@@ -135,7 +144,7 @@
 #' calculated for every value of `eval_time` but the _first_ evaluation time
 #' given by the user (e.g., `eval_time[1]`) is used to guide the optimization.
 #'
-#' @examplesIf tune:::should_run_examples(suggests = "kernlab")
+#' @examplesIf tune:::should_run_examples(suggests = "kernlab") && !tune:::is_cran_check()
 #' library(recipes)
 #' library(rsample)
 #' library(parsnip)
@@ -145,13 +154,13 @@
 #' folds <- vfold_cv(mtcars, v = 5)
 #'
 #' car_rec <-
-#'   recipe(mpg ~ ., data = mtcars) %>%
+#'   recipe(mpg ~ ., data = mtcars) |>
 #'   step_normalize(all_predictors())
 #'
 #' # define an svm with parameters to tune
 #' svm_mod <-
-#'   svm_rbf(cost = tune(), rbf_sigma = tune()) %>%
-#'   set_engine("kernlab") %>%
+#'   svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+#'   set_engine("kernlab") |>
 #'   set_mode("regression")
 #'
 #' # use a space-filling design with 6 points
@@ -190,17 +199,19 @@ tune_bayes.default <- function(object, ...) {
 
 #' @export
 #' @rdname tune_bayes
-tune_bayes.model_spec <- function(object,
-                                  preprocessor,
-                                  resamples,
-                                  ...,
-                                  iter = 10,
-                                  param_info = NULL,
-                                  metrics = NULL,
-                                  eval_time = NULL,
-                                  objective = exp_improve(),
-                                  initial = 5,
-                                  control = control_bayes()) {
+tune_bayes.model_spec <- function(
+  object,
+  preprocessor,
+  resamples,
+  ...,
+  iter = 10,
+  param_info = NULL,
+  metrics = NULL,
+  eval_time = NULL,
+  objective = exp_improve(),
+  initial = 5,
+  control = control_bayes()
+) {
   if (rlang::is_missing(preprocessor) || !is_preprocessor(preprocessor)) {
     cli::cli_abort(tune_pp_msg)
   }
@@ -234,17 +245,18 @@ tune_bayes.model_spec <- function(object,
 #' @export
 #' @rdname tune_bayes
 tune_bayes.workflow <-
-  function(object,
-           resamples,
-           ...,
-           iter = 10,
-           param_info = NULL,
-           metrics = NULL,
-           eval_time = NULL,
-           objective = exp_improve(),
-           initial = 5,
-           control = control_bayes()) {
-
+  function(
+    object,
+    resamples,
+    ...,
+    iter = 10,
+    param_info = NULL,
+    metrics = NULL,
+    eval_time = NULL,
+    objective = exp_improve(),
+    initial = 5,
+    control = control_bayes()
+  ) {
     # set `seed` so that calling `control_bayes()` doesn't alter RNG state (#721)
     control <- parsnip::condense_control(control, control_bayes(seed = 1))
 
@@ -265,65 +277,82 @@ tune_bayes.workflow <-
     res
   }
 
-tune_bayes_workflow <- function(object,
-                                resamples,
-                                iter = 10,
-                                param_info = NULL,
-                                metrics = NULL,
-                                eval_time = NULL,
-                                objective = exp_improve(),
-                                initial = 5,
-                                control,
-                                ...,
-                                call = caller_env()) {
+tune_bayes_workflow <- function(
+  object,
+  resamples,
+  iter = 10,
+  param_info = NULL,
+  metrics = NULL,
+  eval_time = NULL,
+  objective = exp_improve(),
+  initial = 5,
+  control,
+  ...,
+  call = caller_env()
+) {
+  clear_gp_results()
+  start_time <- proc.time()[3]
 
-    clear_gp_results()
-    start_time <- proc.time()[3]
+  initialize_catalog(control = control, workflow = object)
 
-    initialize_catalog(control = control)
+  check_rset(resamples)
+  rset_info <- pull_rset_attributes(resamples)
 
-    check_rset(resamples)
-    rset_info <- pull_rset_attributes(resamples)
+  check_iter(iter, call = call)
+  if (iter > 0) {
+    iter_chr <- recipes::names0(iter, "iter")
+  } else {
+    iter_chr <- "iter0"
+  }
 
-    check_iter(iter, call = call)
+  metrics <- check_metrics_arg(metrics, object, call = call)
+  opt_metric <- first_metric(metrics)
+  opt_metric_name <- opt_metric$metric
+  maximize <- opt_metric$direction == "maximize"
 
-    metrics <- check_metrics_arg(metrics, object, call = call)
-    opt_metric <- first_metric(metrics)
-    opt_metric_name <- opt_metric$metric
-    maximize <- opt_metric$direction == "maximize"
+  eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
+  opt_metric_time <- first_eval_time(
+    metrics,
+    metric = opt_metric_name,
+    eval_time = eval_time,
+    call = call
+  )
 
-    eval_time <- check_eval_time_arg(eval_time, metrics, call = call)
-    opt_metric_time <- first_eval_time(metrics, metric = opt_metric_name, eval_time = eval_time, call = call)
+  if (is.null(param_info)) {
+    param_info <- hardhat::extract_parameter_set_dials(object)
+  }
+  check_workflow(
+    object,
+    check_dials = is.null(param_info),
+    pset = param_info,
+    call = call
+  )
+  check_backend_options(control$backend_options)
 
-    if (is.null(param_info)) {
-      param_info <- hardhat::extract_parameter_set_dials(object)
-    }
-    check_workflow(object, check_dials = is.null(param_info), pset = param_info,
-                   call = call)
-    check_backend_options(control$backend_options)
+  unsummarized <- check_initial(
+    initial,
+    pset = param_info,
+    wflow = object,
+    resamples = resamples,
+    metrics = metrics,
+    eval_time = eval_time,
+    ctrl = control,
+    checks = "bayes"
+  )
 
-    unsummarized <- check_initial(
-      initial,
-      pset = param_info,
-      wflow = object,
-      resamples = resamples,
-      metrics = metrics,
-      eval_time = eval_time,
-      ctrl = control,
-      checks = "bayes"
-    )
+  # Pull outcome names from initialization run
+  outcomes <- peek_tune_results_outcomes(unsummarized)
 
-    # Pull outcome names from initialization run
-    outcomes <- peek_tune_results_outcomes(unsummarized)
-
-    # Evaluate this portion of the function in a local environment using
-    # `(function() expr)()` so that `on.exit()` doesn't touch the exit
-    # handlers attached to the execution environment of this function
-    # by `initialize_catalog()` (#828, #845).
-    (function() {
+  # Evaluate this portion of the function in a local environment using
+  # `(function() expr)()` so that `on.exit()` doesn't touch the exit
+  # handlers attached to the execution environment of this function
+  # by `initialize_catalog()` (#828, #845).
+  (function() {
     # Return whatever we have if there is a error (or execution is stopped)
     on.exit({
-      cli::cli_alert_danger("Optimization stopped prematurely; returning current results.")
+      cli::cli_alert_danger(
+        "Optimization stopped prematurely; returning current results."
+      )
 
       out <- new_iteration_results(
         x = unsummarized,
@@ -356,12 +385,21 @@ tune_bayes_workflow <- function(object,
 
     check_time(start_time, control$time_limit)
 
-    score_card <- initial_info(mean_stats, opt_metric_name, maximize, opt_metric_time)
+    score_card <- initial_info(
+      mean_stats,
+      opt_metric_name,
+      maximize,
+      opt_metric_time
+    )
 
     if (control$verbose_iter) {
       msg <- paste("Optimizing", opt_metric_name, "using", objective$label)
       if (!is.null(opt_metric_time)) {
-        msg <- paste(msg, "at evaluation time", format(opt_metric_time, digits = 3))
+        msg <- paste(
+          msg,
+          "at evaluation time",
+          format(opt_metric_time, digits = 3)
+        )
       }
       message_wrap(msg)
     }
@@ -379,7 +417,7 @@ tune_bayes_workflow <- function(object,
       gp_mod <-
         .catch_and_log(
           fit_gp(
-            mean_stats %>% dplyr::select(-.iter),
+            mean_stats |> dplyr::select(-.iter),
             pset = param_info,
             metric = opt_metric_name,
             eval_time = opt_metric_time,
@@ -400,9 +438,10 @@ tune_bayes_workflow <- function(object,
       set.seed(control$seed[1] + i + 1)
       candidates <-
         pred_gp(
-          gp_mod, param_info,
+          gp_mod,
+          param_info,
           control = control,
-          current = mean_stats %>% dplyr::select(dplyr::all_of(param_info$id))
+          current = mean_stats |> dplyr::select(dplyr::all_of(param_info$id))
         )
 
       check_time(start_time, control$time_limit)
@@ -413,9 +452,11 @@ tune_bayes_workflow <- function(object,
         dplyr::bind_cols(
           candidates,
           stats::predict(
-            objective, candidates,
+            objective,
+            candidates,
             iter = i,
-            maximize = maximize, score_card$best_val
+            maximize = maximize,
+            score_card$best_val
           )
         )
 
@@ -423,7 +464,15 @@ tune_bayes_workflow <- function(object,
 
       check_and_log_flow(control, candidates)
 
-      save_gp_results(gp_mod, param_info, control, i, iter, candidates, score_card)
+      save_gp_results(
+        gp_mod,
+        param_info,
+        control,
+        i,
+        iter,
+        candidates,
+        score_card
+      )
 
       candidates <- pick_candidate(candidates, score_card, control)
       if (score_card$uncertainty >= control$uncertain) {
@@ -452,29 +501,48 @@ tune_bayes_workflow <- function(object,
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         tmp_res[[".metrics"]] <- purrr::map(
           tmp_res[[".metrics"]],
-          ~ dplyr::mutate(., .config = paste0("Iter", i))
+          dplyr::mutate,
+          .config = iter_chr[i]
         )
         if (control$save_pred) {
           tmp_res[[".predictions"]] <- purrr::map(
             tmp_res[[".predictions"]],
-            ~ dplyr::mutate(., .config = paste0("Iter", i))
+            dplyr::mutate,
+            .config = iter_chr[i]
           )
         }
         if (".extracts" %in% names(tmp_res)) {
           tmp_res[[".extracts"]] <- purrr::map(
             tmp_res[[".extracts"]],
-            ~ dplyr::mutate(., .config = paste0("Iter", i))
+            dplyr::mutate,
+            .config = iter_chr[i]
           )
         }
-        unsummarized <- dplyr::bind_rows(unsummarized, tmp_res %>% mutate(.iter = i))
+        unsummarized <- dplyr::bind_rows(
+          unsummarized,
+          tmp_res |> mutate(.iter = i)
+        )
         rs_estimate <- estimate_tune_results(tmp_res)
-        mean_stats <- dplyr::bind_rows(mean_stats, rs_estimate %>% dplyr::mutate(.iter = i))
+        mean_stats <- dplyr::bind_rows(
+          mean_stats,
+          rs_estimate |> dplyr::mutate(.iter = i)
+        )
         score_card <- update_score_card(score_card, i, tmp_res)
-        log_progress(control, x = mean_stats, maximize = maximize,
-                     objective = opt_metric_name, eval_time = opt_metric_time)
+        log_progress(
+          control,
+          x = mean_stats,
+          maximize = maximize,
+          objective = opt_metric_name,
+          eval_time = opt_metric_time
+        )
       } else {
         if (all_bad) {
-          update_printer(control, split_labels = NULL, task = "All models failed", type = "danger")
+          update_printer(
+            control,
+            split_labels = NULL,
+            task = "All models failed",
+            type = "danger"
+          )
         }
         score_card$last_impr <- score_card$last_impr + 1
       }
@@ -508,8 +576,8 @@ tune_bayes_workflow <- function(object,
 
     .stash_last_result(res)
     res
-    })() # end of self calling lambda
-  }
+  })() # end of self calling lambda
+}
 
 create_initial_set <- function(param, n = NULL, checks) {
   check_param_objects(param)
@@ -543,7 +611,7 @@ check_iter <- function(iter, call) {
 encode_set <- function(x, pset, ..., as_matrix = FALSE) {
   rlang::check_dots_empty()
   # change the numeric variables to the transformed scale (if any)
-  has_trans <- purrr::map_lgl(pset$object, ~ !is.null(.x$trans))
+  has_trans <- purrr::map_lgl(pset$object, \(.x) !is.null(.x$trans))
   if (any(has_trans)) {
     idx <- which(has_trans)
     for (i in idx) {
@@ -556,7 +624,12 @@ encode_set <- function(x, pset, ..., as_matrix = FALSE) {
   # Convert all data to the [0, 1] scale based on their possible range (not on
   # their observed range)
   if (any(is_quant)) {
-    new_vals <- purrr::map2(pset$object[is_quant], x[, is_quant], encode_unit, direction = "forward")
+    new_vals <- purrr::map2(
+      pset$object[is_quant],
+      x[, is_quant],
+      encode_unit,
+      direction = "forward"
+    )
     names(new_vals) <- names(x)[is_quant]
     new_vals <- tibble::as_tibble(new_vals)
     x[, is_quant] <- new_vals
@@ -576,38 +649,47 @@ encode_set <- function(x, pset, ..., as_matrix = FALSE) {
 }
 
 fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
-  dat <- dat %>% dplyr::filter(.metric == metric)
+  dat <- dat |> dplyr::filter(.metric == metric)
 
   if (!is.null(eval_time)) {
-    dat <- dat %>% dplyr::filter(.eval_time == eval_time)
+    dat <- dat |> dplyr::filter(.eval_time == eval_time)
   }
 
-  dat <- dat %>%
-    check_gp_data() %>%
+  dat <- dat |>
+    check_gp_data() |>
     dplyr::select(dplyr::all_of(pset$id), mean)
 
-  x <- encode_set(dat %>% dplyr::select(-mean), pset, as_matrix = TRUE)
+  x <- encode_set(dat |> dplyr::select(-mean), pset, as_matrix = TRUE)
 
   if (nrow(x) <= ncol(x) + 1 && nrow(x) > 0) {
     msg <-
       paste(
-        "The Gaussian process model is being fit using ", ncol(x),
-        "features but only has", nrow(x), "data points to do so. This may cause",
+        "The Gaussian process model is being fit using ",
+        ncol(x),
+        "features but only has",
+        nrow(x),
+        "data points to do so. This may cause",
         "errors or a poor model fit."
       )
-    message_wrap(msg, prefix = "!", color_text = get_tune_colors()$message$warning)
+    message_wrap(
+      msg,
+      prefix = "!",
+      color_text = get_tune_colors()$message$warning
+    )
   }
 
   opts <- list(...)
 
-  withCallingHandlers({
-  if (any(names(opts) == "trace") && opts$trace) {
-    gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-  } else {
-    tmp_output <- utils::capture.output(
-      gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
-    )
-  }},
+  withCallingHandlers(
+    {
+      if (any(names(opts) == "trace") && opts$trace) {
+        gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
+      } else {
+        tmp_output <- utils::capture.output(
+          gp_fit <- GPfit::GP_fit(X = x, Y = dat$mean, ...)
+        )
+      }
+    },
     warning = function(w) {
       if (w$message == "X should be in range (0, 1)") {
         rlang::cnd_muffle(w)
@@ -620,12 +702,12 @@ fit_gp <- function(dat, pset, metric, eval_time = NULL, control, ...) {
 
 pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   pred_grid <-
-    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") %>%
+    dials::grid_space_filling(pset, size = size, type = "latin_hypercube") |>
     dplyr::distinct()
 
   if (!is.null(current)) {
     pred_grid <-
-      pred_grid %>%
+      pred_grid |>
       dplyr::anti_join(current, by = pset$id)
   }
 
@@ -637,7 +719,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       msg <- paste(msg, as.character(object))
     }
     update_printer(control, split_labels = NULL, task = msg, type = "warning")
-    return(pred_grid %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
+    return(pred_grid |> dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
   }
 
   update_printer(
@@ -651,17 +733,23 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   x <- encode_set(pred_grid, pset, as_matrix = TRUE)
   gp_pred <- predict(object, x)
 
-  update_printer(control, split_labels = NULL, task = "Predicted candidates", type = "info", catalog = FALSE)
+  update_printer(
+    control,
+    split_labels = NULL,
+    task = "Predicted candidates",
+    type = "info",
+    catalog = FALSE
+  )
 
-  pred_grid %>%
+  pred_grid |>
     dplyr::mutate(.mean = gp_pred$Y_hat, .sd = sqrt(gp_pred$MSE))
 }
 
 
 pick_candidate <- function(results, info, control) {
   if (info$uncertainty < control$uncertain) {
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(objective)) %>%
+    results <- results |>
+      dplyr::arrange(dplyr::desc(objective)) |>
       dplyr::slice(1)
   } else {
     if (control$verbose_iter) {
@@ -669,9 +757,9 @@ pick_candidate <- function(results, info, control) {
       message(msg)
     }
     results <-
-      results %>%
-      dplyr::arrange(dplyr::desc(.sd)) %>%
-      dplyr::slice(1:floor(.1 * nrow(results))) %>%
+      results |>
+      dplyr::arrange(dplyr::desc(.sd)) |>
+      dplyr::slice(1:floor(.1 * nrow(results))) |>
       dplyr::sample_n(1)
   }
   results
@@ -679,13 +767,13 @@ pick_candidate <- function(results, info, control) {
 
 update_score_card <- function(info, iter, results, control) {
   current_val <-
-    results %>%
-    estimate_tune_results() %>%
+    results |>
+    estimate_tune_results() |>
     dplyr::filter(.metric == info$metrics)
 
   if (!is.null(info$eval_time)) {
     current_val <-
-      current_val %>%
+      current_val |>
       dplyr::filter(.eval_time == info$eval_time)
   }
 
@@ -710,27 +798,24 @@ update_score_card <- function(info, iter, results, control) {
 }
 
 
-
-
 # ------------------------------------------------------------------------------
-
 
 # save opt_metric_name and maximize to simplify!!!!!!!!!!!!!!!
 initial_info <- function(stats, metrics, maximize, eval_time) {
   best_res <-
-    stats %>%
-    dplyr::filter(.metric == metrics) %>%
+    stats |>
+    dplyr::filter(.metric == metrics) |>
     dplyr::filter(!is.na(mean))
 
   if (maximize) {
     best_res <-
-      best_res %>%
-      dplyr::arrange(desc(mean)) %>%
+      best_res |>
+      dplyr::arrange(desc(mean)) |>
       slice(1)
   } else {
     best_res <-
-      best_res %>%
-      dplyr::arrange(mean) %>%
+      best_res |>
+      dplyr::arrange(mean) |>
       slice(1)
   }
   best_val <- best_res$mean[1]
@@ -755,13 +840,30 @@ initial_info <- function(stats, metrics, maximize, eval_time) {
 
 # ------------------------------------------------------------------------------
 
+more_results <- function(
+  object,
+  resamples,
+  candidates,
+  metrics,
+  eval_time = NULL,
+  control,
+  param_info
+) {
+  update_printer(
+    control,
+    split_labels = NULL,
+    task = "Estimating performance",
+    type = "info"
+  )
 
-more_results <- function(object, resamples, candidates, metrics,
-                         eval_time = NULL, control, param_info) {
-  update_printer(control, split_labels = NULL, task = "Estimating performance", type = "info")
-
-  candidates <- candidates[, !(names(candidates) %in% c(".mean", ".sd", "objective"))]
-  p_chr <- paste0(names(candidates), "=", format(as.data.frame(candidates), digits = 3))
+  candidates <- candidates[,
+    !(names(candidates) %in% c(".mean", ".sd", "objective"))
+  ]
+  p_chr <- paste0(
+    names(candidates),
+    "=",
+    format(as.data.frame(candidates), digits = 3)
+  )
 
   tmp_res <-
     try(
@@ -780,20 +882,26 @@ more_results <- function(object, resamples, candidates, metrics,
   if (inherits(tmp_res, "try-error")) {
     update_printer(
       control,
-      split_labels = NULL, task = "Couldn't estimate performance",
+      split_labels = NULL,
+      task = "Couldn't estimate performance",
       type = "danger"
     )
   } else {
     all_bad <- is_cataclysmic(tmp_res)
     if (all_bad) {
-      p_chr <- glue::glue_collapse(p_chr, width = options()$width - 28, sep = ", ")
+      p_chr <- glue::glue_collapse(
+        p_chr,
+        width = options()$width - 28,
+        sep = ", "
+      )
       msg <- paste("All models failed for:", p_chr)
       update_printer(control, split_labels = NULL, task = msg, type = "danger")
       tmp_res <- simpleError(msg)
     } else {
       update_printer(
         control,
-        split_labels = NULL, task = "Estimating performance",
+        split_labels = NULL,
+        task = "Estimating performance",
         type = "success"
       )
     }
@@ -807,13 +915,12 @@ is_cataclysmic <- function(x) {
   if (any(!is_err)) {
     is_good <- purrr::map_lgl(
       x$.metrics[!is_err],
-      ~ tibble::is_tibble(.x) && nrow(.x) > 0
+      \(.x) tibble::is_tibble(.x) && nrow(.x) > 0
     )
     is_err[!is_err] <- !is_good
   }
   all(is_err)
 }
-
 
 
 #' @export
@@ -864,10 +971,14 @@ save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
   nm <- recipes::names0(iter, "gp_candidates_")[i]
   file_name <- glue::glue("{tempdir()}/{nm}.RData")
   gp_fit <- x
-  res <- try(save(gp_fit, pset, i, candidates, score_card, file = file_name),
-             silent = TRUE)
+  res <- try(
+    save(gp_fit, pset, i, candidates, score_card, file = file_name),
+    silent = TRUE
+  )
   if (inherits(res, "try-error")) {
-    cli::cli_warn("Could not save GP results at iteration {i}: {as.character(res))}")
+    cli::cli_warn(
+      "Could not save GP results at iteration {i}: {as.character(res))}"
+    )
   }
   invisible(res)
 }

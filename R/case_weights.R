@@ -14,10 +14,10 @@
 #' library(parsnip)
 #' library(dplyr)
 #'
-#' frequency_weights(1:10) %>%
+#' frequency_weights(1:10) |>
 #'   .use_case_weights_with_yardstick()
 #'
-#' importance_weights(seq(1, 10, by = .1))%>%
+#' importance_weights(seq(1, 10, by = .1))|>
 #'   .use_case_weights_with_yardstick()
 .use_case_weights_with_yardstick <- function(x) {
   UseMethod(".use_case_weights_with_yardstick")
@@ -57,14 +57,19 @@ extract_case_weights <- function(data, workflow) {
   col <- extract_case_weights_col(workflow)
 
   if (!rlang::is_quosure(col)) {
-    cli::cli_abort("{.arg col} must exist and be a quosure at this point.", .internal = TRUE)
+    cli::cli_abort(
+      "{.arg col} must exist and be a quosure at this point.",
+      .internal = TRUE
+    )
   }
 
   loc <- eval_select_case_weights(col, data)
   if (length(loc) != 1) {
     # Can't happen now, make sure it doesn't happen in the future
-    cli::cli_abort("Only a single case weight column is allowed. {length(loc)}
-                   were found: {.val {names(loc)}}.")
+    cli::cli_abort(
+      "Only a single case weight column is allowed. {length(loc)}
+                   were found: {.val {names(loc)}}."
+    )
   }
 
   if (!tibble::is_tibble(data)) {
@@ -88,10 +93,12 @@ extract_case_weights_col <- function(x) {
   x$pre$actions$case_weights$col
 }
 
-eval_select_case_weights <- function(col,
-                                     data,
-                                     ...,
-                                     call = rlang::caller_env()) {
+eval_select_case_weights <- function(
+  col,
+  data,
+  ...,
+  call = rlang::caller_env()
+) {
   # workflows:::eval_select_case_weights()
 
   rlang::check_dots_empty()

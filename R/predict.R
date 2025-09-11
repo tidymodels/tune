@@ -5,7 +5,7 @@
 #' @export
 predict.tune_results <- function(object, ...) {
   cli::cli_abort(c(
-          "`predict()` is not well-defined for tuning results.",
+    "`predict()` is not well-defined for tuning results.",
     "i" = "To predict with the optimal model configuration from tuning \\
            results, ensure that the tuning result was generated with the \\
            {.help [control option](tune::control_grid)} \\
@@ -25,12 +25,10 @@ predict.tune_results <- function(object, ...) {
 #' @export
 predict.last_fit <- function(object, ...) {
   cli::cli_abort(c(
-          "`predict()` is not well-defined for {.code last_fit()} results.",
+    "`predict()` is not well-defined for {.code last_fit()} results.",
     "i" = "To predict with the model fitted in {.code last_fit()}, first run \\
            {.help [{.fun extract_workflow}](tune::extract_workflow.last_fit)} \\
            and then predict using \\
            {.help [{.fun predict}](workflows::predict.workflow)} on its output."
   ))
 }
-
-

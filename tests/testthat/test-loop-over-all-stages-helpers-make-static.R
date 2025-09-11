@@ -32,6 +32,8 @@ test_that("maker static object", {
       "eval_time",
       "split_args",
       "control",
+      "pkgs",
+      "strategy",
       "data"
     )
   )
@@ -105,6 +107,8 @@ test_that("maker static object", {
       "eval_time",
       "split_args",
       "control",
+      "pkgs",
+      "strategy",
       "data"
     )
   )

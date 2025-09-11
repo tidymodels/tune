@@ -8,6 +8,7 @@
 \alias{min_grid.logistic_reg}
 \alias{min_grid.mars}
 \alias{min_grid.multinom_reg}
+\alias{min_grid.proportional_hazards}
 \alias{min_grid.nearest_neighbor}
 \alias{min_grid.cubist_rules}
 \alias{min_grid.C5_rules}
@@ -29,6 +30,8 @@ fit_max_value(x, grid, ...)
 \method{min_grid}{mars}(x, grid, ...)
 
 \method{min_grid}{multinom_reg}(x, grid, ...)
+
+\method{min_grid}{proportional_hazards}(x, grid, ...)
 
 \method{min_grid}{nearest_neighbor}(x, grid, ...)
 
@@ -71,13 +74,13 @@ library(parsnip)
 ## No ability to exploit submodels:
 
 svm_spec <-
-  svm_poly(cost = tune(), degree = tune()) \%>\%
-  set_engine("kernlab") \%>\%
+  svm_poly(cost = tune(), degree = tune()) |>
+  set_engine("kernlab") |>
   set_mode("regression")
 
 svm_grid <-
-  svm_spec \%>\%
-  extract_parameter_set_dials() \%>\%
+  svm_spec |>
+  extract_parameter_set_dials() |>
   grid_regular(levels = 3)
 
 min_grid(svm_spec, svm_grid)
@@ -86,13 +89,13 @@ min_grid(svm_spec, svm_grid)
 ## Can use submodels
 
 xgb_spec <-
-  boost_tree(trees = tune(), min_n = tune()) \%>\%
-  set_engine("xgboost") \%>\%
+  boost_tree(trees = tune(), min_n = tune()) |>
+  set_engine("xgboost") |>
   set_mode("regression")
 
 xgb_grid <-
-  xgb_spec \%>\%
-  extract_parameter_set_dials() \%>\%
+  xgb_spec |>
+  extract_parameter_set_dials() |>
   grid_regular(levels = 3)
 
 min_grid(xgb_spec, xgb_grid)

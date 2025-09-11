@@ -1,4 +1,3 @@
-
 # Overview ---------------------------------------------------------------------
 #
 # General logging to the screen is used in various places. The code in this file
@@ -6,8 +5,8 @@
 #
 # The first section contains functions that tune uses to let the user know what
 # is happening. The main function is `update_printer()`, which is used in
-# `logging.R` and throughout the package. Some examples of these are 
-# `Fold01: preprocessor 1/1, model 1/1` from `tune_grid()` and 
+# `logging.R` and throughout the package. Some examples of these are
+# `Fold01: preprocessor 1/1, model 1/1` from `tune_grid()` and
 # `Generating 3 candidates` from `tune_bayes()`. This function should be fully
 # controlled by `control$verbose`.
 #
@@ -21,21 +20,28 @@
 # - `n` is how many times it was seen
 # - `id` is a unique identifier (created using `lbls`)
 #
-# All of this infrastructure is done using the `tune_env` environment that 
+# All of this infrastructure is done using the `tune_env` environment that
 # contains the catalog itself, and other useful information that toggles whether
 # we are using the catalog and ensures it is used correctly across the fits.
 #
-# The third section, `catching and logging`, is what is being used in tune or 
-# extension packages. `.catch_and_log()` is wrapping some code that we want to 
-# collect on. If an error or warning is seen, it will be captured and handled 
+# The third section, `catching and logging`, is what is being used in tune or
+# extension packages. `.catch_and_log()` is wrapping some code that we want to
+# collect on. If an error or warning is seen, it will be captured and handled
 # using the code in this and the previous section.
 #
-# The forth section contains functions that are exclusively used in 
+# The forth section contains functions that are exclusively used in
 # `tune_bayes()`.
 
 # Tune printing ----------------------------------------------------------------
 
-update_printer <- function(control, split_labels = NULL, task, type = "success", catalog = TRUE, ...) {
+update_printer <- function(
+  control,
+  split_labels = NULL,
+  task,
+  type = "success",
+  catalog = TRUE,
+  ...
+) {
   if (!any(control$verbose, control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -136,7 +142,11 @@ catalog_is_active <- function() {
 #
 #' @rdname tune-internal-functions
 #' @export
-initialize_catalog <- function(control, env = rlang::caller_env()) {
+initialize_catalog <- function(
+  control,
+  env = rlang::caller_env(),
+  workflow = NULL
+) {
   catalog <-
     tibble::new_tibble(
       list(
@@ -148,14 +158,19 @@ initialize_catalog <- function(control, env = rlang::caller_env()) {
       nrow = 0
     )
 
-  if (!(allow_parallelism(control$allow_par) ||
-        is_testing()) &&
-      !control$verbose) {
+  if (is.null(workflow)) {
+    workflow <- workflow()
+  }
+
+  if (
+    choose_framework(workflow, control) == "sequential" &&
+      !is_testing() &&
+      !control$verbose
+  ) {
     progress_active <- TRUE
   } else {
     progress_active <- FALSE
   }
-
 
   rlang::env_bind(tune_env, progress_env = env)
 
@@ -210,7 +225,13 @@ summarize_catalog <- function(catalog, sep = "   ") {
 
 #' @export
 #' @rdname tune-internal-functions
-.catch_and_log <- function(.expr, ..., bad_only = FALSE, notes, catalog = TRUE) {
+.catch_and_log <- function(
+  .expr,
+  ...,
+  bad_only = FALSE,
+  notes,
+  catalog = TRUE
+) {
   dots <- list(...)
   update_printer(..., type = "info", catalog = catalog, task = dots$location)
   tmp <- catcher(.expr)
@@ -297,10 +318,10 @@ append_log_notes <- function(notes, x, location) {
 }
 
 new_note <- function(
-    location = character(0),
-    type = character(0),
-    note = character(0),
-    trace = list()
+  location = character(0),
+  type = character(0),
+  note = character(0),
+  trace = list()
 ) {
   tibble::new_tibble(
     list(
@@ -372,7 +393,6 @@ catalog_log <- function(x) {
     )
 
     if (!tune_env$progress_started) {
-
       rlang::with_options(
         cli::cli_progress_bar(
           type = "custom",
@@ -384,7 +404,6 @@ catalog_log <- function(x) {
       )
       rlang::env_bind(tune_env, progress_started = TRUE)
     }
-
 
     cli::cli_progress_update(.envir = tune_env$progress_env)
   }
@@ -418,7 +437,13 @@ log_best <- function(control, iter, info, digits = 4) {
       info$best_iter,
       ")"
     )
-  update_printer(control, split_labels = NULL, task = msg, type = "info", catalog = FALSE)
+  update_printer(
+    control,
+    split_labels = NULL,
+    task = msg,
+    type = "info",
+    catalog = FALSE
+  )
 }
 
 check_and_log_flow <- function(control, results) {
@@ -428,20 +453,36 @@ check_and_log_flow <- function(control, results) {
 
   if (all(is.na(results$.mean))) {
     if (nrow(results) < 2) {
-      update_printer(control, split_labels = NULL, task = "Halting search",
-               type = "danger", catalog = FALSE)
+      update_printer(
+        control,
+        split_labels = NULL,
+        task = "Halting search",
+        type = "danger",
+        catalog = FALSE
+      )
       eval.parent(parse(text = "break"))
     } else {
-      update_printer(control, split_labels = NULL, task = "Skipping to next iteration",
-               type = "danger", catalog = FALSE)
+      update_printer(
+        control,
+        split_labels = NULL,
+        task = "Skipping to next iteration",
+        type = "danger",
+        catalog = FALSE
+      )
       eval.parent(parse(text = "next"))
     }
   }
   invisible(NULL)
 }
 
-log_progress <- function(control, x, maximize = TRUE, objective = NULL,
-                         eval_time = NULL, digits = 4) {
+log_progress <- function(
+  control,
+  x,
+  maximize = TRUE,
+  objective = NULL,
+  eval_time = NULL,
+  digits = 4
+) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
@@ -483,10 +524,17 @@ param_msg <- function(control, candidate) {
   if (!isTRUE(control$verbose_iter)) {
     return(invisible(NULL))
   }
-  candidate <- candidate[, !(names(candidate) %in% c(".mean", ".sd", "objective"))]
-  p_chr <- paste0(names(candidate), "=", format(as.data.frame(candidate), digits = 3))
+  candidate <- candidate[,
+    !(names(candidate) %in% c(".mean", ".sd", "objective"))
+  ]
+  p_chr <- paste0(
+    names(candidate),
+    "=",
+    format(as.data.frame(candidate), digits = 3)
+  )
   p_chr <- paste0(p_chr, collapse = ", ")
-  message_wrap(p_chr,
+  message_wrap(
+    p_chr,
     prefix = "i",
     color_text = get_tune_colors()$message$info,
     color_prefix = get_tune_colors()$symbol$info
@@ -524,7 +572,13 @@ param_msg <- function(control, candidate) {
 #' )
 #' @export
 message_wrap <-
-  function(x, width = options()$width - 2, prefix = "", color_text = NULL, color_prefix = color_text) {
+  function(
+    x,
+    width = options()$width - 2,
+    prefix = "",
+    color_text = NULL,
+    color_prefix = color_text
+  ) {
     check_string(x)
     check_function(color_text, allow_null = TRUE)
     check_function(color_prefix, allow_null = TRUE)
@@ -536,7 +590,7 @@ message_wrap <-
     }
     msg <- strwrap(x, width = width - n - 1)
     if (!is.null(color_text)) {
-      msg <- purrr::map_chr(msg, ~ color_text(.x))
+      msg <- purrr::map_chr(msg, color_text)
     }
     if (!is.null(color_prefix)) {
       prefix <- color_prefix(prefix)
@@ -556,17 +610,31 @@ acq_summarizer <- function(control, iter, objective = NULL, digits = 4) {
     return(invisible(NULL))
   }
   if (inherits(objective, "conf_bound") && is.function(objective$kappa)) {
-    val <- paste0("Kappa value: ", signif(objective$kappa(iter), digits = digits))
+    val <- paste0(
+      "Kappa value: ",
+      signif(objective$kappa(iter), digits = digits)
+    )
   } else {
-    if (inherits(objective, c("exp_improve", "prob_improve")) &&
-      is.function(objective$trade_off)) {
-      val <- paste0("Trade-off value: ", signif(objective$trade_off(iter), digits = digits))
+    if (
+      inherits(objective, c("exp_improve", "prob_improve")) &&
+        is.function(objective$trade_off)
+    ) {
+      val <- paste0(
+        "Trade-off value: ",
+        signif(objective$trade_off(iter), digits = digits)
+      )
     } else {
       val <- NULL
     }
   }
   if (!is.null(val)) {
-    update_printer(control, split_labels = NULL, task = val, type = "info", catalog = FALSE)
+    update_printer(
+      control,
+      split_labels = NULL,
+      task = val,
+      type = "info",
+      catalog = FALSE
+    )
   }
   invisible(NULL)
 }

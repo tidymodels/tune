@@ -69,7 +69,6 @@ reference:
   - title: Developer functions
     contents:
     - merge.recipe
-    - parameters.workflow
     - message_wrap
     - .use_case_weights_with_yardstick
     - .stash_last_result

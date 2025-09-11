@@ -159,19 +159,55 @@ vec_cast.data.frame.iteration_results <- function(x, to, ...) {
 
 # ------------------------------------------------------------------------------
 
-stop_incompatible_cast_tune_results <- function(x, to, ..., x_arg = "", to_arg = "") {
+stop_incompatible_cast_tune_results <- function(
+  x,
+  to,
+  ...,
+  x_arg = "",
+  to_arg = ""
+) {
   details <- "Can't cast to a <tune_results> because attributes are likely incompatible."
-  stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg, details = details)
+  stop_incompatible_cast(
+    x,
+    to,
+    x_arg = x_arg,
+    to_arg = to_arg,
+    details = details
+  )
 }
 
-stop_incompatible_cast_resample_results <- function(x, to, ..., x_arg = "", to_arg = "") {
+stop_incompatible_cast_resample_results <- function(
+  x,
+  to,
+  ...,
+  x_arg = "",
+  to_arg = ""
+) {
   details <- "Can't cast to a <resample_results> because attributes are likely incompatible."
-  stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg, details = details)
+  stop_incompatible_cast(
+    x,
+    to,
+    x_arg = x_arg,
+    to_arg = to_arg,
+    details = details
+  )
 }
 
-stop_incompatible_cast_iteration_results <- function(x, to, ..., x_arg = "", to_arg = "") {
+stop_incompatible_cast_iteration_results <- function(
+  x,
+  to,
+  ...,
+  x_arg = "",
+  to_arg = ""
+) {
   details <- "Can't cast to a <iteration_results> because attributes are likely incompatible."
-  stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg, details = details)
+  stop_incompatible_cast(
+    x,
+    to,
+    x_arg = x_arg,
+    to_arg = to_arg,
+    details = details
+  )
 }
 
 stop_never_called <- function(fn) {

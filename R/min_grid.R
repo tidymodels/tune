@@ -27,7 +27,6 @@
 # where there are multiple columns with the same name (maybe the results of
 # a recipe) and so on.
 
-
 #' Determine the minimum set of model fits
 #'
 #' `min_grid()` determines exactly what models should be fit in order to
@@ -51,13 +50,13 @@
 #' ## No ability to exploit submodels:
 #'
 #' svm_spec <-
-#'   svm_poly(cost = tune(), degree = tune()) %>%
-#'   set_engine("kernlab") %>%
+#'   svm_poly(cost = tune(), degree = tune()) |>
+#'   set_engine("kernlab") |>
 #'   set_mode("regression")
 #'
 #' svm_grid <-
-#'   svm_spec %>%
-#'   extract_parameter_set_dials() %>%
+#'   svm_spec |>
+#'   extract_parameter_set_dials() |>
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(svm_spec, svm_grid)
@@ -66,13 +65,13 @@
 #' ## Can use submodels
 #'
 #' xgb_spec <-
-#'   boost_tree(trees = tune(), min_n = tune()) %>%
-#'   set_engine("xgboost") %>%
+#'   boost_tree(trees = tune(), min_n = tune()) |>
+#'   set_engine("xgboost") |>
 #'   set_mode("regression")
 #'
 #' xgb_grid <-
-#'   xgb_spec %>%
-#'   extract_parameter_set_dials() %>%
+#'   xgb_spec |>
+#'   extract_parameter_set_dials() |>
 #'   grid_regular(levels = 3)
 #'
 #' min_grid(xgb_spec, xgb_grid)
@@ -90,8 +89,8 @@ min_grid.model_spec <- function(x, grid, ...) {
 
 # Template for model results that do no have the sub-model feature
 blank_submodels <- function(grid) {
-  grid %>%
-    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), ~ list())) %>%
+  grid |>
+    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), \(x) list())) |>
     dplyr::mutate_if(is.factor, as.character)
 }
 
@@ -100,16 +99,18 @@ get_submodel_info <- function(spec) {
     cli::cli_abort("Please set the model's engine.")
   }
   param_info <-
-    get_from_env(paste0(class(spec)[1], "_args")) %>%
-    dplyr::filter(engine == spec$engine) %>%
-    dplyr::select(name = parsnip, has_submodel) %>%
+    get_from_env(paste0(class(spec)[1], "_args")) |>
+    dplyr::filter(engine == spec$engine) |>
+    dplyr::select(name = parsnip, has_submodel) |>
     dplyr::full_join(
-      hardhat::extract_parameter_set_dials(spec) %>% dplyr::select(name, id),
+      hardhat::extract_parameter_set_dials(spec) |> dplyr::select(name, id),
       by = "name"
-    ) %>%
-    dplyr::mutate(id = ifelse(is.na(id), name, id)) %>%
+    ) |>
+    dplyr::mutate(id = ifelse(is.na(id), name, id)) |>
     # In case the parameter is an engine parameter
-    dplyr::mutate(has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel))
+    dplyr::mutate(
+      has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel)
+    )
 
   param_info
 }
@@ -122,7 +123,10 @@ submod_only <- function(grid) {
     return(grid)
   }
   nm <- colnames(grid)[1]
-  fit_only <- tibble::new_tibble(list(nm = max(grid[[nm]], na.rm = TRUE)), nrow = 1)
+  fit_only <- tibble::new_tibble(
+    list(nm = max(grid[[nm]], na.rm = TRUE)),
+    nrow = 1
+  )
   names(fit_only) <- nm
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
@@ -137,12 +141,12 @@ submod_and_others <- function(grid, fixed_args) {
   subm_nm <- orig_names[!(orig_names %in% fixed_args)]
 
   # avoid more rlangedness related to names until end:
-  grid <- grid %>% dplyr::rename(..val = !!subm_nm)
+  grid <- grid |> dplyr::rename(..val = !!subm_nm)
 
   fit_only <-
-    grid %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(max_val = max(..val, na.rm = TRUE)) %>%
+    grid |>
+    dplyr::group_by(!!!rlang::syms(fixed_args)) |>
+    dplyr::summarize(max_val = max(..val, na.rm = TRUE)) |>
     dplyr::ungroup()
 
   if (utils::packageVersion("dplyr") >= "1.0.99.9000") {
@@ -153,31 +157,31 @@ submod_and_others <- function(grid, fixed_args) {
       dplyr::full_join(fit_only, grid, by = fixed_args)
   }
 
-  min_grid_df <- min_grid_df %>%
-    dplyr::filter(..val != max_val) %>%
-    dplyr::group_by(!!!rlang::syms(fixed_args)) %>%
-    dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) %>%
+  min_grid_df <- min_grid_df |>
+    dplyr::filter(..val != max_val) |>
+    dplyr::group_by(!!!rlang::syms(fixed_args)) |>
+    dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) |>
     dplyr::ungroup()
 
   if (utils::packageVersion("dplyr") >= "1.0.99.9000") {
-    min_grid_df <- min_grid_df %>%
+    min_grid_df <- min_grid_df |>
       dplyr::full_join(fit_only, by = fixed_args, multiple = "all")
   } else {
-    min_grid_df <- min_grid_df %>%
+    min_grid_df <- min_grid_df |>
       dplyr::full_join(fit_only, by = fixed_args)
   }
 
-  min_grid_df <- min_grid_df %>%
+  min_grid_df <- min_grid_df |>
     dplyr::rename(!!subm_nm := max_val)
 
   min_grid_df$.submodels <-
     dplyr::if_else(
       !purrr::map_lgl(min_grid_df$.submodels, rlang::is_null),
       min_grid_df$.submodels,
-      purrr::map(1:nrow(min_grid_df), ~ list())
+      purrr::map(1:nrow(min_grid_df), \(x) list())
     )
 
-  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) %>%
+  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) |>
     dplyr::mutate_if(is.factor, as.character)
 }
 
@@ -266,7 +270,6 @@ min_grid.logistic_reg <- min_grid.linear_reg
 # ------------------------------------------------------------------------------
 # mars
 
-
 #' @export
 #' @export min_grid.mars
 #' @rdname min_grid
@@ -279,6 +282,14 @@ min_grid.mars <- fit_max_value
 #' @export min_grid.multinom_reg
 #' @rdname min_grid
 min_grid.multinom_reg <- min_grid.linear_reg
+
+# ------------------------------------------------------------------------------
+# Cox PH regression
+
+#' @export
+#' @export min_grid.multinom_reg
+#' @rdname min_grid
+min_grid.proportional_hazards <- min_grid.linear_reg
 
 # ------------------------------------------------------------------------------
 # Knn

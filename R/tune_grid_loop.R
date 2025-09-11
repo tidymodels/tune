@@ -15,11 +15,14 @@ tune_grid_loop <- function(
 
   control <- update_parallel_over(control, resamples, grid)
 
+  # Determine how to process the tasks (i.e. parallel engines or sequential)
+  strategy <- choose_framework(workflow, control)
+
   # For last_fit, we want to keep the RNG stream as-is to maintain reproducibility
   # with manual execution. Otherwise, generate parallel seeds even if work is
   # being executed sequentially. `resamples$id` is set in `last_fit_workflow`.
   if (all(resamples$id == "train/test split")) {
-    resamples$.seeds <- purrr::map(resamples$id, ~ integer(0))
+    resamples$.seeds <- purrr::map(resamples$id, \(x) integer(0))
   } else {
     # Make and set the worker/process seeds if workers get resamples
     resamples$.seeds <- get_parallel_seeds(nrow(resamples))
@@ -41,6 +44,25 @@ tune_grid_loop <- function(
   # 2. If you are debugging loop_over_all_stages, use the control option
   #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
+  # ------------------------------------------------------------------------------
+
+  # fmt: skip
+  tm_pkgs <- c("rsample", "workflows", "hardhat", "tune", "parsnip", "tailor",
+               "yardstick")
+  load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
+  load_pkgs <- unique(load_pkgs)
+
+  is_inst <- purrr::map_lgl(load_pkgs, rlang::is_installed)
+  if (any(!is_inst)) {
+    nms <- load_pkgs[!is_inst]
+    cli::cli_abort(
+      "Some package installs are needed: {.pkg {nms}}",
+      call = NULL
+    )
+  }
+
+  par_opt <- list()
+
   # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
@@ -51,7 +73,9 @@ tune_grid_loop <- function(
     metrics = metrics,
     eval_time = eval_time,
     split_args = split_args,
-    control = control
+    control = control,
+    pkgs = load_pkgs,
+    strategy = strategy
   )
 
   # fmt: skip
@@ -92,7 +116,6 @@ tune_grid_loop <- function(
     inds <- vec_list_rowwise(inds)
   }
 
-  strategy <- choose_framework(static$workflow, control)
   cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
 
