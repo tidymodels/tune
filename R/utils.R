@@ -285,7 +285,10 @@ pretty.tune_results <- function(x, ...) {
 
   if (nrow(unique_ids) != length(weights)) {
     cli::cli_warn(
-      "Number of weights ({length(weights)}) does not match number of resamples ({nrow(unique_ids)}). Weights will be ignored."
+      c(
+        "Number of weights ({length(weights)}) does not match number of resamples ({nrow(unique_ids)}).",
+        "Weights will be ignored."
+      )
     )
     return(NULL)
   }
@@ -397,9 +400,26 @@ pretty.tune_results <- function(x, ...) {
 
 #' Add fold weights to an rset object
 #'
-#' @param rset An rset object.
-#' @param weights A numeric vector of weights.
+#' This function allows you to specify custom weights for cross-validation
+#' folds. Weights are automatically normalized to sum to 1.
+#'
+#' @param rset An rset object from rsample.
+#' @param weights A numeric vector of weights, one per fold.
+#'     Weights will be normalized.
 #' @return The rset object with weights added as an attribute.
+#' @details
+#' Fold weights are useful when cross-validation folds have different
+#' sizes or when you want to upweight certain folds in the evaluation.
+#' The weights are stored as an attribute and used automatically during
+#' metric aggregation.
+#' @seealso [calculate_fold_weights()], [get_fold_weights()]
+#' @examples
+#' library(rsample)
+#' folds <- vfold_cv(mtcars, v = 3)
+#' # Give equal weight to all folds
+#' weighted_folds <- add_fold_weights(folds, c(1, 1, 1))
+#' # Emphasize the first fold
+#' weighted_folds <- add_fold_weights(folds, c(0.5, 0.25, 0.25))
 #' @export
 add_fold_weights <- function(rset, weights) {
   if (!inherits(rset, "rset")) {
@@ -417,8 +437,24 @@ add_fold_weights <- function(rset, weights) {
 
 #' Calculate fold weights from fold sizes
 #'
-#' @param rset An rset object.
-#' @return A numeric vector of weights proportional to fold sizes.
+#' This convenience function calculates weights proportional to the number of
+#' observations in each fold's analysis set. Larger folds get higher weights.
+#' This ensures that folds with more data have proportionally more influence
+#' on the final aggregated metrics.
+#'
+#' @param rset An rset object from rsample.
+#' @return A numeric vector of weights proportional to fold sizes, normalized
+#'   to sum to 1.
+#' @details
+#' This is particularly useful for time-based folds (e.g. expanding window CV)
+#' or stratified sampling  where folds might have slightly different sizes, in
+#' which folds are imbalanced.
+#' @seealso [add_fold_weights()], [get_fold_weights()]
+#' @examples
+#' library(rsample)
+#' folds <- vfold_cv(mtcars, v = 3)
+#' weights <- calculate_fold_weights(folds)
+#' weighted_folds <- add_fold_weights(folds, weights)
 #' @export
 calculate_fold_weights <- function(rset) {
   if (!inherits(rset, "rset")) {
@@ -451,7 +487,7 @@ calculate_fold_weights <- function(rset) {
 get_fold_weights <- function(x) {
   if (inherits(x, "rset")) {
     # For rset objects, weights are stored as an attribute
-    return(attr(x, ".fold_weights"))
+    attr(x, ".fold_weights")
   } else if (inherits(x, c("tune_results", "resample_results"))) {
     # For tune results, use the internal function
     return(.get_fold_weights(x))
