@@ -449,9 +449,11 @@ pctl_call <- function(framework, args = list()) {
     future_opts <- list(
       future.label = "int-pctl-%d",
       future.stdout = TRUE,
-      future.seed = TRUE,
-      future.globals = names(args)
+      future.seed = TRUE
     )
+    if (!is.null(names(args))) {
+      future_opts$future.globals <- names(args)
+    }
     args <- c(args, future_opts)
   }
 
