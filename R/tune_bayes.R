@@ -433,7 +433,7 @@ tune_bayes_workflow <- function(
 
       check_time(start_time, control$time_limit)
 
-      # Maybe remove .catch_and_log() here and do catching inside fintion
+      # Maybe remove .catch_and_log() here and do catching inside function
       set.seed(control$seed[1] + i)
 
       gp_mod <- fit_gp(

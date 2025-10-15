@@ -118,6 +118,8 @@ fit_gp <- function(
 	previous = NULL,
 	...
 ) {
+  # TODO check dots for options; no longer used; update docs
+
 	dat <- dat %>% dplyr::filter(.metric == metric)
 
 	if (!is.null(eval_time)) {
@@ -175,6 +177,7 @@ fit_gp <- function(
 			)
 		)
 	} else {
+	  # TODO we should remove the updating; not a great idea
 		new_val <- normalized %>% dplyr::slice_tail(n = 1)
 		new_x <- as.matrix(new_val[, pset$id])
 		new_y <- new_val$.outcome
@@ -275,12 +278,13 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 	)
 
 	gp_pred <- object$fit$pred(x, se.fit = TRUE)
+
 	gp_pred <- tibble::as_tibble(gp_pred) %>%
 		dplyr::select(.mean = mean, .sd = se)
 	dplyr::bind_cols(candidates, gp_pred)
 }
 
-# TODO add gp obj here
+
 pick_candidate <- function(results, info, control) {
 	bad_gp <- all(is.na(results$.mean))
 	if (!bad_gp & info$uncertainty < control$uncertain) {
@@ -289,8 +293,15 @@ pick_candidate <- function(results, info, control) {
 			dplyr::slice(1)
 	} else {
 		if (control$verbose_iter) {
-			msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
-			message(msg)
+			# msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
+			# message(msg)
+			tune_log(
+			  control,
+			  split_labels = NULL,
+			  task = "Uncertainty sample",
+			  type = "info",
+			  catalog = FALSE
+			)
 		}
 		results <- results %>%
 			dplyr::arrange(dplyr::desc(.sd)) %>%
