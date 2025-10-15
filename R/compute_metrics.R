@@ -71,22 +71,28 @@ compute_metrics <- function(x, metrics, summarize, event_level, ...) {
 
 #' @export
 #' @rdname compute_metrics
-compute_metrics.default <- function(x,
-                                    metrics,
-                                    summarize = TRUE,
-                                    event_level = "first",
-                                    ...) {
-  cli::cli_abort("No {.fn compute_metrics} method exists for
-                 {.obj_type_friendly {x}}.")
+compute_metrics.default <- function(
+  x,
+  metrics,
+  summarize = TRUE,
+  event_level = "first",
+  ...
+) {
+  cli::cli_abort(
+    "No {.fn compute_metrics} method exists for
+                 {.obj_type_friendly {x}}."
+  )
 }
 
 #' @export
 #' @rdname compute_metrics
-compute_metrics.tune_results <- function(x,
-                                         metrics,
-                                         ...,
-                                         summarize = TRUE,
-                                         event_level = "first") {
+compute_metrics.tune_results <- function(
+  x,
+  metrics,
+  ...,
+  summarize = TRUE,
+  event_level = "first"
+) {
   rlang::check_dots_empty()
   check_bool(summarize)
   if (!".predictions" %in% names(x)) {
@@ -141,9 +147,9 @@ compute_metrics.tune_results <- function(x,
   # nest by resample id
   nest_cols <- "id"
 
-  if ("Iter1" %in% mtrcs$.config) {
+  # Convert the iterative .configs into numbers
+  if (any(grepl("^[iI]ter", mtrcs$.config))) {
     mtrcs$.iter <- .config_to_.iter(mtrcs$.config)
-
     nest_cols <- c(nest_cols, ".iter")
   }
 

@@ -18,3 +18,5 @@ _cache$
 ^LICENSE\.md$
 ^CODE_OF_CONDUCT\.md$
 ^man-roxygen$
+^\.vscode$
+^[.]?air[.]toml$

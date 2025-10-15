@@ -9,7 +9,6 @@
 \alias{.load_namespace}
 \alias{initialize_catalog}
 \alias{.catch_and_log}
-\alias{.catch_and_log_fit}
 \title{Internal functions used by other tidymodels packages}
 \usage{
 forge_from_workflow(new_data, workflow)
@@ -27,11 +26,9 @@ finalize_workflow_preprocessor(workflow, grid_preprocessor)
 
 .load_namespace(x)
 
-initialize_catalog(control, env = rlang::caller_env())
+initialize_catalog(control, env = rlang::caller_env(), workflow = NULL)
 
 .catch_and_log(.expr, ..., bad_only = FALSE, notes, catalog = TRUE)
-
-.catch_and_log_fit(.expr, ..., notes)
 }
 \arguments{
 \item{new_data}{A data frame or matrix of predictors to process.}
@@ -58,13 +55,13 @@ included as an argument to allow for pre-computing.}
 
 \item{.expr}{Code to execute.}
 
-\item{...}{Object to pass to the internal \code{tune_log()} function.}
+\item{...}{Object to pass to the internal \code{update_printer()} function.}
 
 \item{bad_only}{A logical for whether warnings and errors should be caught.}
 
 \item{notes}{Character data to add to the logging.}
 
-\item{catalog}{A logical passed to \code{tune_log()} giving whether the message
+\item{catalog}{A logical passed to \code{update_printer()} giving whether the message
 is compatible with the issue cataloger. Defaults to \code{TRUE}. Updates that are
 always unique and do not represent a tuning "issue" can bypass the cataloger
 by setting \code{catalog = FALSE}.}

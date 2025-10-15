@@ -1,5 +1,4 @@
 if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
-
   data(two_class_dat, package = "modeldata")
 
   # ------------------------------------------------------------------------------
@@ -7,10 +6,10 @@ if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
   set.seed(6735)
   rep_folds <- rsample::vfold_cv(mtcars, v = 2, repeats = 2)
 
-  spline_rec <- recipes::recipe(mpg ~ ., data = mtcars) %>%
+  spline_rec <- recipes::recipe(mpg ~ ., data = mtcars) |>
     recipes::step_spline_natural(disp, deg_free = 3)
 
-  lin_mod <- parsnip::linear_reg() %>%
+  lin_mod <- parsnip::linear_reg() |>
     parsnip::set_engine("lm")
 
   lm_splines <-
@@ -25,8 +24,8 @@ if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
   rep_folds_class <- rsample::vfold_cv(two_class_dat, v = 2, repeats = 3)
 
   svm_mod <-
-    parsnip::svm_rbf(cost = tune("cost value")) %>%
-    parsnip::set_engine("kernlab") %>%
+    parsnip::svm_rbf(cost = tune("cost value")) |>
+    parsnip::set_engine("kernlab") |>
     parsnip::set_mode("classification")
 
   suppressMessages(
@@ -45,11 +44,12 @@ if (rlang::is_installed(c("modeldata", "splines2", "kernlab"))) {
   svm_tune_class$.predictions <-
     purrr::map(
       svm_tune_class$.predictions,
-      ~ .x %>% dplyr::select(-.pred_Class1, -.pred_Class2)
+      \(.x) .x |> dplyr::select(-.pred_Class1, -.pred_Class2)
     )
   attr(svm_tune_class, "metrics") <- yardstick::metric_set(yardstick::kap)
 
-  svm_grd <- show_best(svm_tune, metric = "roc_auc") %>% dplyr::select(`cost value`)
+  svm_grd <- show_best(svm_tune, metric = "roc_auc") |>
+    dplyr::select(`cost value`)
 }
 
 # ------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ test_that("`collect_predictions()` errors informatively if there is no `.predict
   skip_if_not_installed("splines2")
 
   expect_snapshot(error = TRUE, {
-    collect_predictions(lm_splines %>% dplyr::select(-.predictions))
+    collect_predictions(lm_splines |> dplyr::select(-.predictions))
   })
 })
 
@@ -78,20 +78,25 @@ test_that("`collect_predictions()`, un-averaged", {
 
   res <- collect_predictions(lm_splines)
   exp_res <-
-    unnest(lm_splines %>% dplyr::select(.predictions, starts_with("id")),
-           cols = c(.predictions)
-    ) %>% dplyr::select(all_of(names(res)))
+    unnest(
+      lm_splines |> dplyr::select(.predictions, starts_with("id")),
+      cols = c(.predictions)
+    ) |>
+    dplyr::select(all_of(names(res)))
   expect_equal(res, exp_res)
 
   res <- collect_predictions(svm_tune)
   exp_res <-
     unnest(
-      svm_tune %>% dplyr::select(.predictions, starts_with("id"), .iter),
+      svm_tune |> dplyr::select(.predictions, starts_with("id"), .iter),
       cols = c(.predictions)
-    ) %>%
+    ) |>
     dplyr::select(all_of(names(res)))
   res_subset <- collect_predictions(svm_tune, parameters = svm_grd[1, ])
-  exp_res_subset <- dplyr::filter(exp_res, `cost value` == svm_grd$`cost value`[[1]])
+  exp_res_subset <- dplyr::filter(
+    exp_res,
+    `cost value` == svm_grd$`cost value`[[1]]
+  )
   expect_equal(res_subset, exp_res_subset)
 })
 
@@ -106,7 +111,11 @@ test_that("bad filter grid", {
     collect_predictions(svm_tune, parameters = tibble(wrong = "value"))
   )
   expect_true(
-    nrow(collect_predictions(svm_tune, parameters = tibble(`cost value` = 1))) == 0
+    nrow(collect_predictions(
+      svm_tune,
+      parameters = tibble(`cost value` = 1)
+    )) ==
+      0
   )
 })
 
@@ -139,8 +148,17 @@ test_that("classification class predictions, averaged", {
   expect_false(dplyr::is_grouped_df(res))
   expect_named(
     collect_predictions(svm_tune, summarize = TRUE),
-    c(".pred_class", ".pred_Class1", ".pred_Class2", ".row", "cost value",
-      "Class", ".config", ".iter")
+    c(
+      ".pred_class",
+      ".pred_Class1",
+      ".pred_Class2",
+      ".row",
+      "cost value",
+      "Class",
+      ".config",
+      ".iter"
+    ),
+    ignore.order = TRUE
   )
 
   # pull out an example to test
@@ -186,11 +204,11 @@ test_that("collecting notes - fit_resamples", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("splines2")
 
-  mtcars2 <- mtcars %>% mutate(wt2 = wt)
+  mtcars2 <- mtcars |> mutate(wt2 = wt)
   set.seed(1)
   flds <- rsample::bootstraps(mtcars2, times = 2)
 
-  lin_mod <- parsnip::linear_reg() %>%
+  lin_mod <- parsnip::linear_reg() |>
     parsnip::set_engine("lm")
 
   expect_snapshot(
@@ -209,15 +227,16 @@ test_that("collecting notes - last_fit", {
 
   options(pillar.advice = FALSE, pillar.min_title_chars = Inf)
 
-  mtcars2 <- mtcars %>% mutate(wt2 = wt)
+  mtcars2 <- mtcars |> mutate(wt2 = wt)
   set.seed(1)
   split <- rsample::initial_split(mtcars2)
 
-  lin_mod <- parsnip::linear_reg() %>%
+  lin_mod <- parsnip::linear_reg() |>
     parsnip::set_engine("lm")
 
   expect_snapshot(
-    lst <- last_fit(lin_mod, mpg ~ ., split)
+    lst <- last_fit(lin_mod, mpg ~ ., split),
+    transform = catalog_lines
   )
   expect_snapshot(lst)
 
@@ -244,12 +263,14 @@ test_that("collecting extracted objects - fit_resamples", {
   boots <- rsample::bootstraps(mtcars, 5)
 
   ctrl_fit <- control_resamples(extract = extract_fit_engine)
-  ctrl_err <- control_resamples(extract = function(x) {stop("eeeep! eep!")})
+  ctrl_err <- control_resamples(extract = function(x) {
+    stop("eeeep! eep!")
+  })
 
-  res_fit <-     fit_resamples(spec, form, boots, control = ctrl_fit)
+  res_fit <- fit_resamples(spec, form, boots, control = ctrl_fit)
   res_nothing <- fit_resamples(spec, form, boots)
   suppressMessages({
-    res_error <-   fit_resamples(spec, form, boots, control = ctrl_err)
+    res_error <- fit_resamples(spec, form, boots, control = ctrl_err)
   })
 
   expect_snapshot(collect_extracts(res_fit))
@@ -287,7 +308,7 @@ test_that("`collect_metrics(type)` errors informatively with bad input", {
 
 test_that("`pivot_metrics()`, grid search, typical metrics, summarized", {
   expect_equal(
-    pivot_metrics(ames_grid_search, collect_metrics(ames_grid_search)) %>%
+    pivot_metrics(ames_grid_search, collect_metrics(ames_grid_search)) |>
       dplyr::slice(),
     tibble::tibble(
       K = integer(0),
@@ -307,7 +328,7 @@ test_that("`pivot_metrics()`, grid search, typical metrics, unsummarized", {
     pivot_metrics(
       ames_grid_search,
       collect_metrics(ames_grid_search, summarize = FALSE)
-    ) %>%
+    ) |>
       dplyr::slice(),
     tibble::tibble(
       K = integer(0),
@@ -325,7 +346,7 @@ test_that("`pivot_metrics()`, grid search, typical metrics, unsummarized", {
 
 test_that("`pivot_metrics()`, iterative search, typical metrics, summarized", {
   expect_equal(
-    pivot_metrics(ames_iter_search, collect_metrics(ames_iter_search)) %>%
+    pivot_metrics(ames_iter_search, collect_metrics(ames_iter_search)) |>
       dplyr::slice(),
     tibble::tibble(
       K = integer(0),
@@ -365,7 +386,7 @@ test_that("`pivot_metrics()`, resampled fits, fairness metrics, summarized", {
     )
 
   expect_equal(
-    pivot_metrics(res, collect_metrics(res)) %>% slice(),
+    pivot_metrics(res, collect_metrics(res)) |> slice(),
     tibble::tibble(
       .config = character(0),
       `demographic_parity(am)` = integer(0),
@@ -373,4 +394,3 @@ test_that("`pivot_metrics()`, resampled fits, fairness metrics, summarized", {
     )
   )
 })
-

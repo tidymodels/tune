@@ -10,7 +10,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 if (rlang::is_installed(c("tidymodels", "kknn", "modeldata", "splines2"))) {
   run <- TRUE
 } else {
@@ -28,7 +30,6 @@ options(digits = 3)
 library(tidymodels)
 library(kknn)
 theme_set(theme_bw())
-doParallel::registerDoParallel()
 ```
 
 ## Introduction 
@@ -37,7 +38,8 @@ The tune package helps optimize the modeling process. Users can _tag_ arguments 
 
 As an example, let's model the Ames housing data:
 
-```{r startup}
+```{r}
+#| label: startup
 library(tidymodels)
 
 data(ames)
@@ -52,7 +54,11 @@ ames_test  <- testing(data_split)
 
 For simplicity, the sale price of a house will be modeled as a function of its geo-location. These predictors appear to have nonlinear relationships with the outcome:
 
-```{r geo-plots, fig.alt = "A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side facets, and the log sale price is on the y axis. The clouds of points follow highly non-linear trends, traced by a blue trend line."}
+```{r}
+#| label: geo-plots
+#| fig-alt: A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side
+#|   facets, and the log sale price is on the y axis. The clouds of points follow highly
+#|   non-linear trends, traced by a blue trend line.
 ames_train %>% 
   dplyr::select(Sale_Price, Longitude, Latitude) %>% 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -67,7 +73,8 @@ These two predictors could be modeled using [natural splines](https://towardsdat
 
 We can tag these parameters for optimization using the `tune()` function: 
 
-```{r tag-rec}
+```{r}
+#| label: tag-rec
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
   step_log(Gr_Liv_Area, base = 10) %>% 
@@ -82,7 +89,8 @@ To accomplish this, individual `step_spline_natural()` terms can be added to the
 
 `tune()` has an option to provide a text annotation so that each tuning parameter has a unique identifier:
 
-```{r tag-rec-d}
+```{r}
+#| label: tag-rec-d
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) %>% 
   step_log(Gr_Liv_Area, base = 10) %>% 
@@ -92,25 +100,29 @@ ames_rec <-
 
 The function `extract_parameter_set_dials()` can detect and collect the parameters that have been flagged for tuning.
 
-```{r p-set}
+```{r}
+#| label: p-set
 extract_parameter_set_dials(ames_rec)
 ```
 
 The dials package has default ranges for many parameters. The generic parameter function for `deg_free()` has a fairly small range:
 
-```{r df}
+```{r}
+#| label: df
 deg_free()
 ```
 
 However, there is a function in dials that is more appropriate for splines:
 
-```{r sdf}
+```{r}
+#| label: sdf
 spline_degree()
 ```
 
 The parameter objects can be easily changed using the `update()` function:
 
-```{r updated}
+```{r}
+#| label: updated
 ames_param <- 
   ames_rec %>% 
   extract_parameter_set_dials() %>% 
@@ -133,14 +145,16 @@ Grid search uses a pre-defined set of candidate parameters and evaluates these u
 
 To make the grid, a data frame is needed with column names matching the "identifier" column above. There are several functions in dials to created grids (named `grid_*()`). For example, a space-filling design can be created by:
 
-```{r sf-grid}
+```{r}
+#| label: sf-grid
 spline_grid <- grid_max_entropy(ames_param, size = 10)
 spline_grid
 ```
 
 Alternately, `expand.grid()` also works to create a regular grid:
 
-```{r grid}
+```{r}
+#| label: grid
 df_vals <- seq(2, 18, by = 2)
 # A regular grid:
 spline_grid <- expand.grid(`long df` = df_vals, `lat df` = df_vals)
@@ -152,7 +166,8 @@ There are two other ingredients that are required before tuning.
 
 First is a model specification. Using functions in parsnip, a basic linear model can be used:
 
-```{r mod}
+```{r}
+#| label: mod
 lm_mod <- linear_reg() %>% set_engine("lm")
 ```
 
@@ -160,7 +175,8 @@ No tuning parameters here.
 
 As mentioned above, a resampling specification is also needed. The Ames data set is large enough to use simple 10-fold cross-validation:
 
-```{r folds}
+```{r}
+#| label: folds
 set.seed(2453)
 cv_splits <- vfold_cv(ames_train, v = 10, strata = Sale_Price)
 ```
@@ -169,32 +185,38 @@ The root mean squared error will be used to measure performance (and this is the
 
 Using these objects, `tune_grid()` can be used^[A simple R model formula could have been used here, such as `Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude`. A recipe is not required.]:
 
-```{r grid-search, cache = TRUE}
+```{r}
+#| label: grid-search
+#| cache: true
 ames_res <- tune_grid(lm_mod, ames_rec, resamples = cv_splits, grid = spline_grid)
 ```
 
 The object is similar to the `rsample` object but with one or more extra columns:
 
-```{r res}
+```{r}
+#| label: res
 ames_res
 ```
 
 The `.metrics` column has all of the holdout performance estimates^[the tune package has default measures of performance that it uses if none are specified. Here the RMSE and R<sup>2</sup> are estimated. This can be changed using the `metrics` option.] for each parameter combination: 
 
-```{r res-ex}
+```{r}
+#| label: res-ex
 ames_res$.metrics[[1]]
 ```
 
 To get the average metric value for each parameter combination, `collect_metrics()` can be put to use:
 
-```{r mean-res}
+```{r}
+#| label: mean-res
 estimates <- collect_metrics(ames_res)
 estimates
 ```
 
 The values in the `mean` column are the averages of the `r nrow(cv_splits)` resamples. The best RMSE values corresponded to:
 
-```{r best-rmse}
+```{r}
+#| label: best-rmse
 rmse_vals <- 
   estimates %>% 
   dplyr::filter(.metric == "rmse") %>% 
@@ -204,7 +226,13 @@ rmse_vals
 
 Smaller degrees of freedom values correspond to more linear functions, but the grid search indicates that more nonlinearity is better. What was the relationship between these two parameters and RMSE? 
 
-```{r rmse-tile, fig.alt = "A ggplot2 line plot. The x axis plots the degrees of freedom alotted to the spline parameter mapped to the longitude, and ranges from 0 to 17. The y axis plots the root mean squared error. Lines are colored by the spline terms for the latitude. Generally, from left to right, each line follows a downward trend, and lines from higher latitude degrees of freedom and centered lower."}
+```{r}
+#| label: rmse-tile
+#| fig-alt: A ggplot2 line plot. The x axis plots the degrees of freedom alotted to the
+#|   spline parameter mapped to the longitude, and ranges from 0 to 17. The y axis plots
+#|   the root mean squared error. Lines are colored by the spline terms for the latitude.
+#|   Generally, from left to right, each line follows a downward trend, and lines from
+#|   higher latitude degrees of freedom and centered lower.
 autoplot(ames_res, metric = "rmse")
 ```
 
@@ -212,7 +240,11 @@ Interestingly, latitude does _not_ do well with degrees of freedom less than 8. 
 
 Let's plot these spline functions over the data for both good and bad values of `deg_free`:  
 
-```{r final-vals, fig.alt = "A scatterplot much like the first one, except that a smoother, red line, representing a spline term with fewer degrees of freedom, is also plotted. The red line is much smoother but accounts for the less of the variation shown."}
+```{r}
+#| label: final-vals
+#| fig-alt: A scatterplot much like the first one, except that a smoother, red line,
+#|   representing a spline term with fewer degrees of freedom, is also plotted. The red
+#|   line is much smoother but accounts for the less of the variation shown.
 ames_train %>% 
   dplyr::select(Sale_Price, Longitude, Latitude) %>% 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -233,7 +265,8 @@ Based on these results, a new recipe would be created with the optimized values 
 
 Instead of a linear regression, a nonlinear model might provide good performance. A K-nearest-neighbor fit will also be optimized. For this example, the number of neighbors and the distance weighting function will be optimized:
 
-```{r knn}
+```{r}
+#| label: knn
 # requires the kknn package
 knn_mod <- 
   nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
@@ -243,7 +276,8 @@ knn_mod <-
 
 The easiest approach to optimize the pre-processing and model parameters is to bundle these objects into a _workflow_:
 
-```{r knn-wflow}
+```{r}
+#| label: knn-wflow
 library(workflows)
 knn_wflow <- 
   workflow() %>% 
@@ -253,7 +287,8 @@ knn_wflow <-
 
 From this, the parameter set can be used to modify the range and values of parameters being optimized^[One of the tuning parameters (`weight_func`) is categorical and, by default, has `r length(dials::values_weight_func)` unique values. The model used to predict new test parameters is a Gaussian process model, and this can become slow to fit when the number of tuning parameters is large or when a categorical parameter generates many dummy variables. We've reduced the number of categories for this parameter to speed things up a bit.]:
 
-```{r knn-set}
+```{r}
+#| label: knn-set
 knn_param <- 
   knn_wflow %>% 
   extract_parameter_set_dials() %>% 
@@ -279,7 +314,9 @@ Although no grid is required, the process requires a few additional pieces of in
 
 The code to conduct the search is: 
 
-```{r bo, cache = TRUE}
+```{r}
+#| label: bo
+#| cache: true
 ctrl <- control_bayes(verbose = TRUE)
 set.seed(8154)
 knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 20,
@@ -288,13 +325,18 @@ knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 2
 
 Visually, the performance gain was:
  
-```{r bo-iter, fig.alt = "A ggplot2 dot plot. The x axis plots iterations, ranging from 0 to 20, and the y axis plots root mean squared error. After iteration 0, each point has error bars for the metric value. Generally, the error decreases as the iteration increases."}
+```{r}
+#| label: bo-iter
+#| fig-alt: A ggplot2 dot plot. The x axis plots iterations, ranging from 0 to 20, and
+#|   the y axis plots root mean squared error. After iteration 0, each point has error
+#|   bars for the metric value. Generally, the error decreases as the iteration increases.
 autoplot(knn_search, type = "performance", metric = "rmse")
 ```
 
 The best results here were:
 
-```{r bo-best}
+```{r}
+#| label: bo-best
 collect_metrics(knn_search) %>% 
   dplyr::filter(.metric == "rmse") %>% 
   arrange(mean)

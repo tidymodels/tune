@@ -3,7 +3,8 @@
 #' The `finalize_*` functions take a list or tibble of tuning parameter values and
 #' update objects with those values.
 #'
-#' @param x A recipe, `parsnip` model specification, or workflow.
+#' @param x A recipe, \pkg{parsnip} model specification, \pkg{tailor}
+#'  postprocessor, or workflow.
 #' @param parameters A list or 1-row tibble of parameter values. Note that the
 #'  column names of the tibble should be the `id` fields attached to `tune()`.
 #'  For example, in the `Examples` section below, the model has `tune("K")`. In
@@ -20,7 +21,7 @@
 #'     neighbors = tune("K"),
 #'     weight_func = tune(),
 #'     dist_power = tune()
-#'   ) %>%
+#'   ) |>
 #'   set_engine("kknn")
 #'
 #' lowest_rmse <- select_best(ames_grid_search, metric = "rmse")
@@ -30,8 +31,10 @@
 #' finalize_model(knn_model, lowest_rmse)
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec")) {
-    cli::cli_abort("{.arg x} should be a parsnip model specification, not
-                    {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "{.arg x} should be a parsnip model specification, not
+                    {.obj_type_friendly {x}}."
+    )
   }
   check_final_param(parameters)
   pset <- hardhat::extract_parameter_set_dials(x)
@@ -59,7 +62,7 @@ finalize_recipe <- function(x, parameters) {
   }
   check_final_param(parameters)
   pset <-
-    hardhat::extract_parameter_set_dials(x) %>%
+    hardhat::extract_parameter_set_dials(x) |>
     dplyr::filter(id %in% names(parameters) & source == "recipe")
 
   if (tibble::is_tibble(parameters)) {
@@ -81,7 +84,9 @@ finalize_recipe <- function(x, parameters) {
 #' @rdname finalize_model
 finalize_workflow <- function(x, parameters) {
   if (!inherits(x, "workflow")) {
-    cli::cli_abort("{.arg x} should be a workflow, not {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "{.arg x} should be a workflow, not {.obj_type_friendly {x}}."
+    )
   }
   check_final_param(parameters)
 
@@ -112,8 +117,9 @@ finalize_tailor <- function(x, parameters) {
   }
   check_final_param(parameters)
   pset <-
-    hardhat::extract_parameter_set_dials(x) %>%
-    dplyr::filter(id %in% names(parameters) & source == "tailor")
+    hardhat::extract_parameter_set_dials(x) |>
+    dplyr::filter(id %in% names(parameters) & source == "tailor") |>
+    dplyr::as_tibble()
 
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)
@@ -124,10 +130,12 @@ finalize_tailor <- function(x, parameters) {
 
   for (i in seq_along(x$adjustments)) {
     adj <- x$adjustments[[i]]
-    adj_comps <- purrr::map_lgl(pset$component, ~ inherits(adj, .x))
+    adj_comps <- purrr::map_lgl(pset$component, \(.x) inherits(adj, .x))
     if (any(adj_comps)) {
       adj_ids <- pset$id[adj_comps]
+      prm_nm <- pset$name[adj_comps]
       adj_prms <- parameters[names(parameters) %in% adj_ids]
+      names(adj_prms) <- prm_nm
       adj$arguments <- purrr::list_modify(adj$arguments, !!!adj_prms)
       x$adjustments[[i]] <- adj
     }
@@ -139,8 +147,10 @@ finalize_tailor <- function(x, parameters) {
 
 check_final_param <- function(x) {
   if (!is.list(x) & !tibble::is_tibble(x)) {
-    cli::cli_abort("The parameter object should be a {.cls list} or
-                   {.cls tibble}, not {.obj_type_friendly {x}}.")
+    cli::cli_abort(
+      "The parameter object should be a {.cls list} or
+                   {.cls tibble}, not {.obj_type_friendly {x}}."
+    )
   }
   if (tibble::is_tibble(x) && nrow(x) > 1) {
     cli::cli_abort("The parameter {.arg tibble} should have a single row.")
@@ -150,7 +160,7 @@ check_final_param <- function(x) {
 
 complete_steps <- function(param, pset, object) {
   # find the corresponding step in the recipe
-  step_ids <- purrr::map_chr(object$steps, ~ .x$id)
+  step_ids <- purrr::map_chr(object$steps, "id")
   step_index <- which(unique(pset$component_id) == step_ids)
   step_to_update <- object$steps[[step_index]]
 

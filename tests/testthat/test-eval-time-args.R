@@ -9,7 +9,7 @@ test_that("eval time inputs are checked for regression models", {
   # ------------------------------------------------------------------------------
 
   wflow <- workflow(mpg ~ ., linear_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>% set_mode("regression")
+  knn_spec <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
   wflow_tune <- workflow(mpg ~ ., knn_spec)
 
   set.seed(1)
@@ -55,7 +55,6 @@ test_that("eval time inputs are checked for regression models", {
   expect_snapshot(
     res <- last_fit(wflow, split, eval_time = times)
   )
-
 })
 
 test_that("eval time are checked for classification models", {
@@ -68,7 +67,8 @@ test_that("eval time are checked for classification models", {
 
   data(two_class_dat, package = "modeldata")
   wflow <- workflow(Class ~ A + B, logistic_reg())
-  knn_spec <- nearest_neighbor(neighbors = tune()) %>% set_mode("classification")
+  knn_spec <- nearest_neighbor(neighbors = tune()) |>
+    set_mode("classification")
   wflow_tune <- workflow(Class ~ A + B, knn_spec)
 
   set.seed(1)
@@ -114,7 +114,6 @@ test_that("eval time are checked for classification models", {
   expect_snapshot(
     res <- last_fit(wflow, split, eval_time = times)
   )
-
 })
 
 test_that("eval time inputs are checked for censored regression models", {
@@ -213,32 +212,73 @@ test_that("eval time inputs are checked for censored regression models", {
   expect_snapshot(fit_resamples(wflow, rs, metrics = met_int_dyn), error = TRUE)
 
   # one eval time
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 2))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_dyn, eval_time = 2))
-  expect_snapshot(fit_resamples(wflow, rs, metrics = met_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    fit_resamples(wflow, rs, metrics = met_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_stc_dyn, eval_time = 2))
-  expect_snapshot(fit_resamples(wflow, rs, metrics = met_stc_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_stc_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    fit_resamples(wflow, rs, metrics = met_stc_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_dyn_stc, eval_time = 2))
-  expect_snapshot(fit_resamples(wflow, rs, metrics = met_dyn_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_dyn_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    fit_resamples(wflow, rs, metrics = met_dyn_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(fit_resamples(wflow, rs, metrics = met_int_stc, eval_time = 2), error = TRUE)
-  expect_snapshot(fit_resamples(wflow, rs, metrics = met_int_dyn, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    fit_resamples(wflow, rs, metrics = met_int_stc, eval_time = 2),
+    error = TRUE
+  )
+  expect_snapshot(
+    fit_resamples(wflow, rs, metrics = met_int_dyn, eval_time = 2),
+    error = TRUE
+  )
 
   # multiple eval times
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 1:3))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_dyn, eval_time = 1:3))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_stc_dyn, eval_time = 1:3))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_stc_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_stc_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_stc_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_dyn_stc, eval_time = 1:3))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_dyn_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_dyn_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_dyn_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_int_stc, eval_time = 1:3))
-  expect_snapshot(res <- fit_resamples(wflow, rs, metrics = met_int_dyn, eval_time = 1:3))
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_int_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- fit_resamples(wflow, rs, metrics = met_int_dyn, eval_time = 1:3)
+  )
 
   # ------------------------------------------------------------------------------
   # grid tuning (tune bayes tests in extratests repo)
@@ -248,41 +288,100 @@ test_that("eval time inputs are checked for censored regression models", {
   expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_dyn), error = TRUE)
   expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int), error = TRUE)
 
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_stc_dyn), error = TRUE)
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_stc_int), error = TRUE)
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_dyn_stc), error = TRUE)
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_stc_dyn),
+    error = TRUE
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_stc_int),
+    error = TRUE
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_dyn_stc),
+    error = TRUE
+  )
 
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_dyn_int), error = TRUE)
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int_stc), error = TRUE)
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int_dyn), error = TRUE)
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_dyn_int),
+    error = TRUE
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_int_stc),
+    error = TRUE
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_int_dyn),
+    error = TRUE
+  )
 
   # one eval time
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 2))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_dyn, eval_time = 2))
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_stc_dyn, eval_time = 2))
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_stc_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_stc_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_stc_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_dyn_stc, eval_time = 2))
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_dyn_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_dyn_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_dyn_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int_stc, eval_time = 2), error = TRUE)
-  expect_snapshot(tune_grid(wflow_tune, rs, metrics = met_int_dyn, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_int_stc, eval_time = 2),
+    error = TRUE
+  )
+  expect_snapshot(
+    tune_grid(wflow_tune, rs, metrics = met_int_dyn, eval_time = 2),
+    error = TRUE
+  )
 
   # multiple eval times
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 1:3))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_dyn, eval_time = 1:3))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_stc_dyn, eval_time = 1:3))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_stc_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_stc_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_stc_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_dyn_stc, eval_time = 1:3))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_dyn_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_dyn_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_dyn_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_int_stc, eval_time = 1:3))
-  expect_snapshot(res <- tune_grid(wflow_tune, rs, metrics = met_int_dyn, eval_time = 1:3))
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_int_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- tune_grid(wflow_tune, rs, metrics = met_int_dyn, eval_time = 1:3)
+  )
 
   # ------------------------------------------------------------------------------
   # last fit
@@ -301,33 +400,71 @@ test_that("eval time inputs are checked for censored regression models", {
   expect_snapshot(last_fit(wflow, split, metrics = met_int_dyn), error = TRUE)
 
   # one eval time
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_stc, eval_time = 2))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_dyn, eval_time = 2))
-  expect_snapshot(last_fit(wflow, split, metrics = met_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    last_fit(wflow, split, metrics = met_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_stc_dyn, eval_time = 2))
-  expect_snapshot(last_fit(wflow, split, metrics = met_stc_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_stc_dyn, eval_time = 2)
+  )
+  expect_snapshot(
+    last_fit(wflow, split, metrics = met_stc_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_dyn_stc, eval_time = 2))
-  expect_snapshot(last_fit(wflow, split, metrics = met_dyn_int, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_dyn_stc, eval_time = 2)
+  )
+  expect_snapshot(
+    last_fit(wflow, split, metrics = met_dyn_int, eval_time = 2),
+    error = TRUE
+  )
 
-  expect_snapshot(last_fit(wflow, split, metrics = met_int_stc, eval_time = 2), error = TRUE)
-  expect_snapshot(last_fit(wflow, split, metrics = met_int_dyn, eval_time = 2), error = TRUE)
+  expect_snapshot(
+    last_fit(wflow, split, metrics = met_int_stc, eval_time = 2),
+    error = TRUE
+  )
+  expect_snapshot(
+    last_fit(wflow, split, metrics = met_int_dyn, eval_time = 2),
+    error = TRUE
+  )
 
   # multiple eval times
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_stc, eval_time = 1:3))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_dyn, eval_time = 1:3))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_stc_dyn, eval_time = 1:3))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_stc_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_stc_dyn, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_stc_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_dyn_stc, eval_time = 1:3))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_dyn_int, eval_time = 1:3))
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_dyn_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_dyn_int, eval_time = 1:3)
+  )
 
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_int_stc, eval_time = 1:3))
-  expect_snapshot(res <- last_fit(wflow, split, metrics = met_int_dyn, eval_time = 1:3))
-
-
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_int_stc, eval_time = 1:3)
+  )
+  expect_snapshot(
+    res <- last_fit(wflow, split, metrics = met_int_dyn, eval_time = 1:3)
+  )
 })
-

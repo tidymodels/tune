@@ -6,14 +6,9 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
-      x Fold2: preprocessor 1/1:
-        Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
+      > A | error:   Error in `step_spline_b()`:
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -26,15 +21,8 @@
         1
       }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `hardhat::mold()`:
-        ! The following predictor was not found in `data`: "z".
-      x Fold2: preprocessor 1/1:
-        Error in `hardhat::mold()`:
-        ! The following predictor was not found in `data`: "z".
+      > A | error:   The following predictor was not found in `data`: "z".
     Condition
-      Warning:
-      All models failed. Run `show_notes(.Last.tune.result)` for more information.
 
 # argument order gives errors for recipes
 

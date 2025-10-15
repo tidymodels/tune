@@ -41,10 +41,10 @@
     Message
       v bat
 
-# tune_log
+# update_printer
 
     Code
-      tune_log(ctrl_t, rs, task = "cube", type = "go")
+      update_printer(ctrl_t, rs, task = "cube", type = "go")
     Message
       > Fold01: cube
     Output
@@ -53,7 +53,7 @@
 ---
 
     Code
-      tune_log(ctrl_t, NULL, task = "cube", type = "go")
+      update_printer(ctrl_t, NULL, task = "cube", type = "go")
     Message
       > cube
     Output
@@ -62,57 +62,11 @@
 ---
 
     Code
-      tune_log(ctrl_t, rs, task = "cube", type = "success")
+      update_printer(ctrl_t, rs, task = "cube", type = "success")
     Message
       v Fold01: cube
     Output
       NULL
-
-# log issues
-
-    Code
-      problems_1 <- log_problems(note_1, ctrl_f, rs, "toledo", res_1, bad_only = FALSE)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      problems_2 <- log_problems(note_1, ctrl_f, rs, "toledo", res_3, bad_only = FALSE)
-    Message
-      ! Fold01: toledo: NaNs produced
-
-# catch and log issues
-
-    Code
-      out_1 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      x Fold01: toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_3 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = rs, "toledo",
-      bad_only = FALSE, notes = null)
-    Message
-      ! Fold01: toledo: NaNs produced
-
----
-
-    Code
-      out_5 <- .catch_and_log(log("a"), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      x toledo: Error in log("a"): non-numeric argument to mathematical function
-
----
-
-    Code
-      out_6 <- .catch_and_log(log(-1), control = ctrl_f, split_labels = NULL,
-      "toledo", bad_only = FALSE, notes = null)
-    Message
-      ! toledo: NaNs produced
 
 # logging iterations
 
@@ -129,7 +83,7 @@
 # logging search info
 
     Code
-      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA))
+      check_and_log_flow(ctrl_t, mutate(tb_1, .mean = .mean * NA))
     Message
       x Skipping to next iteration
     Condition
@@ -139,7 +93,7 @@
 ---
 
     Code
-      check_and_log_flow(ctrl_t, tb_1 %>% mutate(.mean = .mean * NA) %>% slice(1))
+      check_and_log_flow(ctrl_t, slice(mutate(tb_1, .mean = .mean * NA), 1))
     Message
       x Halting search
     Condition
@@ -322,7 +276,7 @@
     Code
       catalog_summary_test
     Output
-      A: x25
+      A: x75
 
 # interactive logger works (bayesian, error)
 
@@ -338,5 +292,5 @@
     Code
       catalog_summary_test
     Output
-      A: x50
+      A: x100
 

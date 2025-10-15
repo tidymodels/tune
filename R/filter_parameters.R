@@ -28,25 +28,25 @@
 #' ## -----------------------------------------------------------------------------
 #' # select all combinations using the 'rank' weighting scheme
 #'
-#' ames_grid_search %>%
+#' ames_grid_search |>
 #'   collect_metrics()
 #'
-#' filter_parameters(ames_grid_search, weight_func == "rank") %>%
+#' filter_parameters(ames_grid_search, weight_func == "rank") |>
 #'   collect_metrics()
 #'
 #' rank_only <- tibble::tibble(weight_func = "rank")
-#' filter_parameters(ames_grid_search, parameters = rank_only) %>%
+#' filter_parameters(ames_grid_search, parameters = rank_only) |>
 #'   collect_metrics()
 #'
 #' ## -----------------------------------------------------------------------------
 #' # Keep only the results from the numerically best combination
 #'
-#' ames_iter_search %>%
+#' ames_iter_search |>
 #'   collect_metrics()
 #'
 #' best_param <- select_best(ames_iter_search, metric = "rmse")
-#' ames_iter_search %>%
-#'   filter_parameters(parameters = best_param) %>%
+#' ames_iter_search |>
+#'   filter_parameters(parameters = best_param) |>
 #'   collect_metrics()
 #' @details
 #' Removing some parameter combinations might affect the results of `autoplot()`
@@ -57,8 +57,10 @@ filter_parameters <- function(x, ..., parameters = NULL) {
   check_filter_dots(rlang::enquos(...))
   # check for type
   if (!inherits(x, "tune_results")) {
-    cli::cli_abort("{.arg {caller_arg(x)}} should have class {.cls tune_results};
-                    {.obj_type_friendly {x}} was passed.")
+    cli::cli_abort(
+      "{.arg {caller_arg(x)}} should have class {.cls tune_results};
+                    {.obj_type_friendly {x}} was passed."
+    )
   }
   x <- filter_by_join(x, parameters, nm = cl_x)
   x <- filter_by_filter(x, ...)
@@ -97,10 +99,18 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
 
   x$.metrics <- purrr::map(x$.metrics, filter_join_iter, .subset = parameters)
   if (any(names(x) == ".predictions")) {
-    x$.predictions <- purrr::map(x$.predictions, filter_join_iter, .subset = parameters)
+    x$.predictions <- purrr::map(
+      x$.predictions,
+      filter_join_iter,
+      .subset = parameters
+    )
   }
   if (any(names(x) == ".extracts")) {
-    x$.extracts <- purrr::map(x$.extracts, filter_join_iter, .subset = parameters)
+    x$.extracts <- purrr::map(
+      x$.extracts,
+      filter_join_iter,
+      .subset = parameters
+    )
   }
 
   x
@@ -120,16 +130,18 @@ filter_by_filter <- function(x, ...) {
   }
   x$.metrics <- purrr::map(x$.metrics, ~ dplyr::filter(.x, !!!dots))
   if (any(names(x) == ".predictions")) {
-    x$.predictions <- purrr::map(x$.predictions, ~ dplyr::filter(.x, !!!dots))
+    x$.predictions <- purrr::map(x$.predictions, \(.x) {
+      dplyr::filter(.x, !!!dots)
+    })
   }
   if (any(names(x) == ".extracts")) {
-    x$.extracts <- purrr::map(x$.extracts, ~ dplyr::filter(.x, !!!dots))
+    x$.extracts <- purrr::map(x$.extracts, \(.x) dplyr::filter(.x, !!!dots))
   }
   x
 }
 
 check_filter_dots <- function(dots, call = rlang::caller_env()) {
-  res <- purrr::map(dots, ~try(rlang::eval_tidy(.x), silent = TRUE))
+  res <- purrr::map(dots, \(.x) try(rlang::eval_tidy(.x), silent = TRUE))
 
   if (any(purrr::map_lgl(res, inherits, "data.frame"))) {
     cli::cli_abort(

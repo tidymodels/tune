@@ -37,10 +37,17 @@ test_that("GP fit - knn", {
   knn_gp <- readRDS(test_path("data", "knn_gp.rds"))
 
   knn_cols <- c(
-    "K", "weight_funcrectangular", "weight_functriangular",
-    "weight_funcepanechnikov", "weight_funcbiweight",
-    "weight_functriweight", "weight_funccos", "weight_funcinv",
-    "weight_funcgaussian", "weight_funcrank", "exponent"
+    "K",
+    "weight_funcrectangular",
+    "weight_functriangular",
+    "weight_funcepanechnikov",
+    "weight_funcbiweight",
+    "weight_functriweight",
+    "weight_funccos",
+    "weight_funcinv",
+    "weight_funcgaussian",
+    "weight_funcrank",
+    "exponent"
   )
   expect_equal(class(knn_gp), "GP")
   expect_equal(colnames(knn_gp$X), knn_cols)
@@ -54,8 +61,8 @@ test_that("GP scoring", {
 
   ctrl <- control_bayes()
   curr <-
-    collect_metrics(svm_results) %>%
-    dplyr::filter(.metric == "accuracy") %>%
+    collect_metrics(svm_results) |>
+    dplyr::filter(.metric == "accuracy") |>
     mutate(.iter = 0)
 
   svm_gp <-

@@ -11,135 +11,73 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i Estimating performance
       i Fold01: preprocessor 1/1
-      v Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
-      v Fold01: preprocessor 1/1, model 1/1
-      i Fold01: preprocessor 1/1, model 1/1 (extracts)
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
-      v Fold02: preprocessor 1/1
       i Fold02: preprocessor 1/1, model 1/1
-      v Fold02: preprocessor 1/1, model 1/1
-      i Fold02: preprocessor 1/1, model 1/1 (extracts)
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
-      v Fold03: preprocessor 1/1
       i Fold03: preprocessor 1/1, model 1/1
-      v Fold03: preprocessor 1/1, model 1/1
-      i Fold03: preprocessor 1/1, model 1/1 (extracts)
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
-      v Fold04: preprocessor 1/1
       i Fold04: preprocessor 1/1, model 1/1
-      v Fold04: preprocessor 1/1, model 1/1
-      i Fold04: preprocessor 1/1, model 1/1 (extracts)
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
-      v Fold05: preprocessor 1/1
       i Fold05: preprocessor 1/1, model 1/1
-      v Fold05: preprocessor 1/1, model 1/1
-      i Fold05: preprocessor 1/1, model 1/1 (extracts)
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
-      v Fold06: preprocessor 1/1
       i Fold06: preprocessor 1/1, model 1/1
-      v Fold06: preprocessor 1/1, model 1/1
-      i Fold06: preprocessor 1/1, model 1/1 (extracts)
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
-      v Fold07: preprocessor 1/1
       i Fold07: preprocessor 1/1, model 1/1
-      v Fold07: preprocessor 1/1, model 1/1
-      i Fold07: preprocessor 1/1, model 1/1 (extracts)
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
-      v Fold08: preprocessor 1/1
       i Fold08: preprocessor 1/1, model 1/1
-      v Fold08: preprocessor 1/1, model 1/1
-      i Fold08: preprocessor 1/1, model 1/1 (extracts)
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
-      v Fold09: preprocessor 1/1
       i Fold09: preprocessor 1/1, model 1/1
-      v Fold09: preprocessor 1/1, model 1/1
-      i Fold09: preprocessor 1/1, model 1/1 (extracts)
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
-      v Fold10: preprocessor 1/1
       i Fold10: preprocessor 1/1, model 1/1
-      v Fold10: preprocessor 1/1, model 1/1
-      i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i Estimating performance
       i Fold01: preprocessor 1/1
-      v Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
-      v Fold01: preprocessor 1/1, model 1/1
-      i Fold01: preprocessor 1/1, model 1/1 (extracts)
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
-      v Fold02: preprocessor 1/1
       i Fold02: preprocessor 1/1, model 1/1
-      v Fold02: preprocessor 1/1, model 1/1
-      i Fold02: preprocessor 1/1, model 1/1 (extracts)
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
-      v Fold03: preprocessor 1/1
       i Fold03: preprocessor 1/1, model 1/1
-      v Fold03: preprocessor 1/1, model 1/1
-      i Fold03: preprocessor 1/1, model 1/1 (extracts)
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
-      v Fold04: preprocessor 1/1
       i Fold04: preprocessor 1/1, model 1/1
-      v Fold04: preprocessor 1/1, model 1/1
-      i Fold04: preprocessor 1/1, model 1/1 (extracts)
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
-      v Fold05: preprocessor 1/1
       i Fold05: preprocessor 1/1, model 1/1
-      v Fold05: preprocessor 1/1, model 1/1
-      i Fold05: preprocessor 1/1, model 1/1 (extracts)
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
-      v Fold06: preprocessor 1/1
       i Fold06: preprocessor 1/1, model 1/1
-      v Fold06: preprocessor 1/1, model 1/1
-      i Fold06: preprocessor 1/1, model 1/1 (extracts)
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
-      v Fold07: preprocessor 1/1
       i Fold07: preprocessor 1/1, model 1/1
-      v Fold07: preprocessor 1/1, model 1/1
-      i Fold07: preprocessor 1/1, model 1/1 (extracts)
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
-      v Fold08: preprocessor 1/1
       i Fold08: preprocessor 1/1, model 1/1
-      v Fold08: preprocessor 1/1, model 1/1
-      i Fold08: preprocessor 1/1, model 1/1 (extracts)
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
-      v Fold09: preprocessor 1/1
       i Fold09: preprocessor 1/1, model 1/1
-      v Fold09: preprocessor 1/1, model 1/1
-      i Fold09: preprocessor 1/1, model 1/1 (extracts)
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
-      v Fold10: preprocessor 1/1
       i Fold10: preprocessor 1/1, model 1/1
-      v Fold10: preprocessor 1/1, model 1/1
-      i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
     Output
@@ -174,7 +112,6 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i num_comp=5
@@ -186,7 +123,6 @@
       
       i Current best:		rmse=2.453 (@iter 1)
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i num_comp=1
@@ -229,70 +165,39 @@
       i Gaussian process model
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
-      v Gaussian process model
       i Generating 3 candidates
       i Predicted candidates
       i num_comp=5
       i Estimating performance
       i Fold01: preprocessor 1/1
-      v Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
-      v Fold01: preprocessor 1/1, model 1/1
-      i Fold01: preprocessor 1/1, model 1/1 (extracts)
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
-      v Fold02: preprocessor 1/1
       i Fold02: preprocessor 1/1, model 1/1
-      v Fold02: preprocessor 1/1, model 1/1
-      i Fold02: preprocessor 1/1, model 1/1 (extracts)
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
-      v Fold03: preprocessor 1/1
       i Fold03: preprocessor 1/1, model 1/1
-      v Fold03: preprocessor 1/1, model 1/1
-      i Fold03: preprocessor 1/1, model 1/1 (extracts)
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
-      v Fold04: preprocessor 1/1
       i Fold04: preprocessor 1/1, model 1/1
-      v Fold04: preprocessor 1/1, model 1/1
-      i Fold04: preprocessor 1/1, model 1/1 (extracts)
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
-      v Fold05: preprocessor 1/1
       i Fold05: preprocessor 1/1, model 1/1
-      v Fold05: preprocessor 1/1, model 1/1
-      i Fold05: preprocessor 1/1, model 1/1 (extracts)
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
-      v Fold06: preprocessor 1/1
       i Fold06: preprocessor 1/1, model 1/1
-      v Fold06: preprocessor 1/1, model 1/1
-      i Fold06: preprocessor 1/1, model 1/1 (extracts)
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
-      v Fold07: preprocessor 1/1
       i Fold07: preprocessor 1/1, model 1/1
-      v Fold07: preprocessor 1/1, model 1/1
-      i Fold07: preprocessor 1/1, model 1/1 (extracts)
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
-      v Fold08: preprocessor 1/1
       i Fold08: preprocessor 1/1, model 1/1
-      v Fold08: preprocessor 1/1, model 1/1
-      i Fold08: preprocessor 1/1, model 1/1 (extracts)
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
-      v Fold09: preprocessor 1/1
       i Fold09: preprocessor 1/1, model 1/1
-      v Fold09: preprocessor 1/1, model 1/1
-      i Fold09: preprocessor 1/1, model 1/1 (extracts)
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
-      v Fold10: preprocessor 1/1
       i Fold10: preprocessor 1/1, model 1/1
-      v Fold10: preprocessor 1/1, model 1/1
-      i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       <3 Newest results:	rmse=2.453 (+/-0.381)
@@ -301,70 +206,39 @@
       
       i Current best:		rmse=2.453 (@iter 1)
       i Gaussian process model
-      v Gaussian process model
       i Generating 2 candidates
       i Predicted candidates
       i num_comp=1
       i Estimating performance
       i Fold01: preprocessor 1/1
-      v Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
-      v Fold01: preprocessor 1/1, model 1/1
-      i Fold01: preprocessor 1/1, model 1/1 (extracts)
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
-      v Fold02: preprocessor 1/1
       i Fold02: preprocessor 1/1, model 1/1
-      v Fold02: preprocessor 1/1, model 1/1
-      i Fold02: preprocessor 1/1, model 1/1 (extracts)
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
-      v Fold03: preprocessor 1/1
       i Fold03: preprocessor 1/1, model 1/1
-      v Fold03: preprocessor 1/1, model 1/1
-      i Fold03: preprocessor 1/1, model 1/1 (extracts)
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
-      v Fold04: preprocessor 1/1
       i Fold04: preprocessor 1/1, model 1/1
-      v Fold04: preprocessor 1/1, model 1/1
-      i Fold04: preprocessor 1/1, model 1/1 (extracts)
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
-      v Fold05: preprocessor 1/1
       i Fold05: preprocessor 1/1, model 1/1
-      v Fold05: preprocessor 1/1, model 1/1
-      i Fold05: preprocessor 1/1, model 1/1 (extracts)
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
-      v Fold06: preprocessor 1/1
       i Fold06: preprocessor 1/1, model 1/1
-      v Fold06: preprocessor 1/1, model 1/1
-      i Fold06: preprocessor 1/1, model 1/1 (extracts)
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
-      v Fold07: preprocessor 1/1
       i Fold07: preprocessor 1/1, model 1/1
-      v Fold07: preprocessor 1/1, model 1/1
-      i Fold07: preprocessor 1/1, model 1/1 (extracts)
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
-      v Fold08: preprocessor 1/1
       i Fold08: preprocessor 1/1, model 1/1
-      v Fold08: preprocessor 1/1, model 1/1
-      i Fold08: preprocessor 1/1, model 1/1 (extracts)
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
-      v Fold09: preprocessor 1/1
       i Fold09: preprocessor 1/1, model 1/1
-      v Fold09: preprocessor 1/1, model 1/1
-      i Fold09: preprocessor 1/1, model 1/1 (extracts)
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
-      v Fold10: preprocessor 1/1
       i Fold10: preprocessor 1/1, model 1/1
-      v Fold10: preprocessor 1/1, model 1/1
-      i Fold10: preprocessor 1/1, model 1/1 (extracts)
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       (x) Newest results:	rmse=2.646 (+/-0.286)
@@ -391,14 +265,9 @@
     Code
       cars_res <- tune_bayes(svm_mod, preprocessor = rec, resamples = data_folds)
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
-      x Fold2: preprocessor 1/1:
-        Error in `step_spline_b()`:
-        Caused by error in `prep()`:
-        ! `deg_free` must be a whole number, not a numeric `NA`.
+      > A | error:   Error in `step_spline_b()`:
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -413,12 +282,7 @@
           1
         }, save_pred = TRUE))
     Message
-      x Fold1: preprocessor 1/1:
-        Error in `hardhat::mold()`:
-        ! The following predictor was not found in `data`: "z".
-      x Fold2: preprocessor 1/1:
-        Error in `hardhat::mold()`:
-        ! The following predictor was not found in `data`: "z".
+      > A | error:   The following predictor was not found in `data`: "z".
     Condition
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
@@ -519,62 +383,59 @@
 
     Code
       set.seed(1)
-      res <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
+      res <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built +
         Bldg_Type + Latitude + Longitude, resamples = folds, initial = 3, metrics = yardstick::metric_set(
         rsq), param_info = parameters(dials::cost_complexity(c(-2, 0))))
     Message
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
       ! The Gaussian process model is being fit using 1 features but only has 2
         data points to do so. This may cause errors or a poor model fit.
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 8 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 9 missing values were found and removed before
         fitting the Gaussian process model.
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! No improvement for 10 iterations; returning current results.
 
 ---
 
     Code
       set.seed(2)
-      res_fail <- mod %>% tune_bayes(Sale_Price ~ Neighborhood + Gr_Liv_Area +
-        Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
+      res_fail <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area +
+      Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
       metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
         c(0.5, 0))))
     Message
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
-      ! validation: internal: A correlation computation is required, but `estimate` is constant and ha...
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! All of the rsq estimates were missing. The Gaussian process model cannot be
         fit to the data.
-      ! Gaussian process model: no non-missing arguments to min; returning Inf, no non-missing arguments...
-      x Gaussian process model: Error in seq_len(n - 1L): argument must be coercible to non-negative int...
+      > A | warning: no non-missing arguments to min; returning Inf
+      > B | warning: no non-missing arguments to max; returning -Inf
+      > C | error:   argument must be coercible to non-negative integer
     Condition
       Error in `check_gp_failure()`:
       ! Gaussian process model was not fit.

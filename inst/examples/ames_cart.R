@@ -19,19 +19,22 @@ cv_splits <- vfold_cv(ames_train, v = 10, strata = "Sale_Price")
 # ------------------------------------------------------------------------------
 
 ames_rec <-
-  recipe(Sale_Price ~ ., data = ames_train) %>%
-  step_log(Sale_Price, base = 10) %>%
+  recipe(Sale_Price ~ ., data = ames_train) |>
+  step_log(Sale_Price, base = 10) |>
   step_YeoJohnson(Lot_Area, Gr_Liv_Area)
 
 cart_model <-
   decision_tree(
-    mode = "regression", cost_complexity = tune(), min_n = tune()) %>%
+    mode = "regression",
+    cost_complexity = tune(),
+    min_n = tune()
+  ) |>
   set_engine("rpart")
 
 
 ames_wflow <-
-  workflow() %>%
-  add_recipe(ames_rec) %>%
+  workflow() |>
+  add_recipe(ames_rec) |>
   add_model(cart_model)
 
 extr <- function(x) {
@@ -45,7 +48,7 @@ num_leaves <- function(x) {
 
 
 prm <-
-  parameters(ames_wflow) %>%
+  parameters(ames_wflow) |>
   update(min_n = min_n(c(3, 10)))
 
 set.seed(4567367)
@@ -60,7 +63,7 @@ initial_grid <-
 # ------------------------------------------------------------------------------
 
 foo <- function(i) {
-  expo_decay(i, start_val = .02, 0, slope = 1/10)
+  expo_decay(i, start_val = .02, 0, slope = 1 / 10)
 }
 
 
@@ -74,5 +77,9 @@ test <-
     objective = exp_improve(foo),
     param_info = prm,
     iter = 20,
-    control = control_bayes(verbose = TRUE, uncertain = 10, extract = num_leaves)
+    control = control_bayes(
+      verbose = TRUE,
+      uncertain = 10,
+      extract = num_leaves
+    )
   )

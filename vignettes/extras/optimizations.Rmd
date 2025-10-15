@@ -9,7 +9,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
   
-```{r setup, include=FALSE}
+```{r}
+#| label: setup
+#| include: false
 knitr::opts_chunk$set(echo = TRUE)
 library(tidymodels)
 ```
@@ -22,7 +24,8 @@ For some types of models, such as boosted models or regularized models, the numb
 
 In order to know what models allow this, the parsnip package contains a `multi_predict()` function that enables this feature. Printing the S3 methods for it lists the possible models:
 
-```{r submodels}
+```{r}
+#| label: submodels
 library(tidymodels)
 methods("multi_predict")
 
@@ -41,7 +44,9 @@ When tuning a recipe and a model, it makes sense to avoid _recreating_ the recip
 
 For example, suppose that [Isomap multi-dimensional scaling](https://en.wikipedia.org/wiki/Isomap) is used to pre-process the data prior to tuning a K-nearest neighbor regression:
 
-```{r isomap, results="hide"}
+```{r}
+#| label: isomap
+#| results: hide
 data(Chicago)
 iso_rec <- 
   recipe(ridership ~ ., data = Chicago) %>% 
@@ -68,14 +73,18 @@ To evaluate these `r nrow(grid)` candidate models, we would have to compute the 
 
 `tune_grid()` determines when this occurs and fits all 70 candidate models for each unique configuration of the recipe. In essence, it nests the model parameters inside the unique parameters of the recipe:
 
-```{r nest, echo = FALSE}
+```{r}
+#| label: nest
+#| echo: false
 alt_grid <- tidyr::nest(grid, data = c(-num_terms))
 alt_grid
 ```
 
 When `parallel_over = "resamples"`, the default, only `r nrow(alt_grid)` recipes are prepared and, within each, all of the appropriate models are fit from the same recipe. In this example, once the recipe with `num_terms = 1` is created, the model parameters are iteratively tuned: 
 
-```{r model-param, echo = FALSE}
+```{r}
+#| label: model-param
+#| echo: false
 alt_grid$data[[1]]
 ```
 
@@ -87,12 +96,26 @@ Also, when using a model formula, the model matrix is only created once per resa
 
 The tune package allows users, when possible, to use multiple cores or separate machines to fit models. The package is currently able to parallelize over either the resampling loop of grid search (via `parallel_over = "resamples"` in `control_grid()`, the default) or both the resampling and preprocessing loops (via `parallel_over = "everything"`). When `parallel_over = "everything"`, an outer parallel loop will iterate over resamples and an inner parallel loop will iterate over all unique combinations of preprocessor and model tuning parameters for that specific resample. This will result in the preprocessor being re-processed multiple times, but can be faster if that preprocessing is extremely fast.
 
-tune supports parallel processing using the [future](https://www.futureverse.org/) framework. future supports a variety of technologies to share the computations and the choice of technology is determined by the chosen _plan_. To run tuning code in parallel, just provide a `plan()` and tune will take care of the rest. For example:
+tune supports parallel processing using the [future](https://www.futureverse.org/) and [mirai](https://mirai.r-lib.org/) frameworks. future supports a variety of technologies to share the computations and the choice of technology is determined by the chosen _plan_. To run tuning code in parallel, just provide a `plan()` and tune will take care of the rest. For example:
 
-```{r future, eval = FALSE}
+```{r}
+#| label: future
+#| eval: false
 library(future)
-plan(multisession)
+plan("multisession")
 ```
+
+For mirai, you can set the number of worker processes via
+
+```{r}
+#| label: mirai
+#| eval: false
+library(mirai)
+daemons(4)
+```
+
+For either parallel frameworks, you don't have to change your tidymodels code. 
+
 
 ### foreach (legacy)
 
@@ -100,7 +123,9 @@ Before the 1.2.0 release, tune supported parallelism using the foreach framework
 
 Registering a parallel backend is also somewhat dependent of the package. For doParallel, one could use:
 
-```{r doPar, eval = FALSE}
+```{r}
+#| label: doPar
+#| eval: false
 all_cores <- parallel::detectCores(logical = FALSE)
 
 library(doParallel)
@@ -110,7 +135,9 @@ registerDoParallel(cl)
 
 To **transition from foreach to future**, remove lines loading any foreach backend packages `library(do*)` as well as lines registering that technology with `registerDo*()`, and add the following lines:
 
-```{r future2, eval = FALSE}
+```{r}
+#| label: future2
+#| eval: false
 library(future)
 plan(multisession)
 ```
@@ -123,7 +150,9 @@ One downside to parallel processing is that the different technologies handle in
 
 Some helpful advice to avoid errors in parallel processing is to not use variables in the global environment. These may not be found when the code is run inside of a worker process. For example:
 
-```{r par-tip, eval = FALSE}
+```{r}
+#| label: par-tip
+#| eval: false
 num_pcs <- 3
 
 recipe(mpg ~ ., data = mtcars) %>% 

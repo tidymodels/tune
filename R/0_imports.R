@@ -1,4 +1,4 @@
-#' @importFrom dplyr filter select %>% full_join mutate bind_rows case_when vars
+#' @importFrom dplyr filter select full_join mutate bind_rows case_when vars
 #' @importFrom dplyr all_of ungroup slice bind_cols pull sample_n desc anti_join
 #' @importFrom dplyr distinct arrange rename mutate_if starts_with inner_join
 #' @importFrom dplyr last
@@ -20,7 +20,6 @@
 #' @importFrom cli cli_alert_danger cli_alert_info cli_alert_warning
 #' @importFrom cli cli_alert_success cli_alert
 #' @importFrom cli cli_inform cli_warn cli_abort qty
-#' @importFrom foreach foreach getDoParName %dopar%
 #' @importFrom tibble obj_sum size_sum
 #' @import rlang
 
@@ -34,21 +33,98 @@
 
 utils::globalVariables(
   c(
-    ".", "engine", "name", "func", "parsnip", "call_name", ".step", "call_info",
-    "component", "component_id", "id", "control", ".pred", ".metric",
-    ".estimator", ".estimate", "n", "note", "object", "splits", "grid",
-    "resamples", ".iter", "mean", ".submodels", "metrics", "data", ".mean",
-    ".sd", "iteration", "pkg", ".pred_class", "std_err", "const", "objective",
-    "delta", "sd_trunc", "snr", "z", "..val", "max_val", "has_submodel", "res",
-    ".extracts", ".metrics", "value", ".notes", ".loss", ".bound",
-    ".column", ".totals", ".value", "direction", ".config", "Freq", "Prediction",
-    "Truth", ".seed", ".order", ".iter_model", ".iter_preprocessor",
-    ".iter_config", ".msg_model", "# resamples", "seed", "pre", "type",
-    "rowwise", ".best", "location", "msg", "..object", ".eval_time",
-    ".pred_survival", ".pred_time", ".weight_censored", "nice_time",
-    "time_metric", ".lower", ".upper", "i", "results", "term", ".alpha",
-    ".method", "old_term", ".lab_pre", ".model", ".num_models", "model_stage",
-    "predict_stage", "se"
+    ".",
+    "engine",
+    "name",
+    "func",
+    "parsnip",
+    "call_name",
+    ".step",
+    "call_info",
+    "component",
+    "component_id",
+    "id",
+    "control",
+    ".pred",
+    ".metric",
+    ".estimator",
+    ".estimate",
+    "n",
+    "note",
+    "object",
+    "splits",
+    "grid",
+    "resamples",
+    ".iter",
+    "mean",
+    ".submodels",
+    "metrics",
+    "data",
+    ".mean",
+    ".sd",
+    "iteration",
+    "pkg",
+    ".pred_class",
+    "std_err",
+    "const",
+    "objective",
+    "delta",
+    "sd_trunc",
+    "snr",
+    "z",
+    "..val",
+    "max_val",
+    "has_submodel",
+    "res",
+    ".extracts",
+    ".metrics",
+    "value",
+    ".notes",
+    ".loss",
+    ".bound",
+    ".column",
+    ".totals",
+    ".value",
+    "direction",
+    ".config",
+    "Freq",
+    "Prediction",
+    "Truth",
+    ".seed",
+    ".order",
+    ".iter_model",
+    ".iter_preprocessor",
+    ".iter_config",
+    ".msg_model",
+    "# resamples",
+    "seed",
+    "pre",
+    "type",
+    "rowwise",
+    ".best",
+    "location",
+    "msg",
+    "..object",
+    ".eval_time",
+    ".pred_survival",
+    ".pred_time",
+    ".weight_censored",
+    "nice_time",
+    "time_metric",
+    ".lower",
+    ".upper",
+    "i",
+    "results",
+    "term",
+    ".alpha",
+    ".method",
+    "old_term",
+    ".lab_pre",
+    ".model",
+    ".num_models",
+    "model_stage",
+    "predict_stage",
+    "se"
   )
 )
 
@@ -60,4 +136,10 @@ release_bullets <- function() {
   )
 }
 
+# ------------------------------------------------------------------------------
+# data on model prediction types
 
+# Will predictions have one value per row and should be in a list column?
+dyn_surv_types <- c("survival", "hazard")
+dyn_quant_types <- "quantile"
+dyn_types <- c(dyn_surv_types, dyn_quant_types)

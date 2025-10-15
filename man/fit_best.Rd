@@ -109,14 +109,14 @@ via \link[=extract_workflow.tune_results]{extract_workflow()}.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples() & rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples() && rlang::is_installed("modeldata") && !tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
 library(dplyr)
 
 data(meats, package = "modeldata")
-meats <- meats \%>\% select(-water, -fat)
+meats <- meats |> select(-water, -fat)
 
 set.seed(1)
 meat_split <- initial_split(meats)
@@ -127,11 +127,11 @@ set.seed(2)
 meat_rs <- vfold_cv(meat_train, v = 10)
 
 pca_rec <-
-  recipe(protein ~ ., data = meat_train) \%>\%
-  step_normalize(all_numeric_predictors()) \%>\%
+  recipe(protein ~ ., data = meat_train) |>
+  step_normalize(all_numeric_predictors()) |>
   step_pca(all_numeric_predictors(), num_comp = tune())
 
-knn_mod <- nearest_neighbor(neighbors = tune()) \%>\% set_mode("regression")
+knn_mod <- nearest_neighbor(neighbors = tune()) |> set_mode("regression")
 
 ctrl <- control_grid(save_workflow = TRUE)
 

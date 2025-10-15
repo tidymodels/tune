@@ -122,6 +122,15 @@ in the \code{initial} argument. \code{initial} can also be a positive integer. I
 case, a space-filling design will be used to populate a preliminary set of
 results. For good results, the number of initial values should be more than
 the number of parameters being optimized.
+
+The tuning parameter combinations that were tested are called \emph{candidates}.
+Each candidate has a unique \code{.config} value that, for the initial grid search,
+has the pattern \verb{pre\{num\}_mod\{num\}_post\{num\}}. The numbers include a zero
+when that element was static. For example, a value of \code{pre0_mod3_post4} means
+no preprocessors were tuned and the model and postprocessor(s) had at least
+three and four candidates, respectively. The iterative part of the
+search uses the pattern \verb{iter\{num\}}. In each case, the numbers are
+zero-padded to enable proper sorting.
 }
 
 \section{Parameter Ranges and Values}{
@@ -290,10 +299,14 @@ every model that is \emph{fit} (as opposed to every model that is \emph{evaluate
 As noted above, in some cases, model predictions can be derived for
 sub-models so that, in these cases, not every row in the tuning parameter
 grid has a separate R object associated with it.
+
+Finally, it is a good idea to include calls to \code{\link[=require]{require()}} for packages that
+are used in the function. This helps prevent failures when using parallel
+processing.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = "kernlab")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = "kernlab") && !tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
@@ -303,13 +316,13 @@ set.seed(6735)
 folds <- vfold_cv(mtcars, v = 5)
 
 car_rec <-
-  recipe(mpg ~ ., data = mtcars) \%>\%
+  recipe(mpg ~ ., data = mtcars) |>
   step_normalize(all_predictors())
 
 # define an svm with parameters to tune
 svm_mod <-
-  svm_rbf(cost = tune(), rbf_sigma = tune()) \%>\%
-  set_engine("kernlab") \%>\%
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_engine("kernlab") |>
   set_mode("regression")
 
 # use a space-filling design with 6 points

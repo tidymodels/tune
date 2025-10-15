@@ -7,6 +7,7 @@
 \alias{outcome_names.recipe}
 \alias{outcome_names.workflow}
 \alias{outcome_names.tune_results}
+\alias{outcome_names.workflow_variables}
 \title{Determine names of the outcome data in a workflow}
 \usage{
 outcome_names(x, ...)
@@ -20,6 +21,8 @@ outcome_names(x, ...)
 \method{outcome_names}{workflow}(x, ...)
 
 \method{outcome_names}{tune_results}(x, ...)
+
+\method{outcome_names}{workflow_variables}(x, data = NULL, ...)
 }
 \arguments{
 \item{x}{An object.}
@@ -34,8 +37,8 @@ Determine names of the outcome data in a workflow
 }
 \examples{
 library(dplyr)
-lm(cbind(mpg, wt) ~ ., data = mtcars) \%>\%
-  purrr::pluck(terms) \%>\%
+lm(cbind(mpg, wt) ~ ., data = mtcars) |>
+  purrr::pluck(terms) |>
   outcome_names()
 }
 \keyword{internal}

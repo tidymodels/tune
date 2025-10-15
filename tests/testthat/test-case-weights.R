@@ -40,10 +40,32 @@ test_that("`extract_case_weights()` errors if case weights column isn't the righ
   })
 })
 
+test_that("`extract_case_weights()` works", {
+  set.seed(1)
+
+  mtcars$weight <- hardhat::frequency_weights(1:32)
+
+  folds <- rsample::vfold_cv(mtcars, v = 2)
+
+  spec <- parsnip::linear_reg()
+  metrics <- yardstick::metric_set(yardstick::rmse)
+
+  wf <- workflows::workflow()
+  wf <- workflows::add_variables(wf, mpg, c(disp, cyl))
+  wf <- workflows::add_model(wf, spec)
+  wf <- workflows::add_case_weights(wf, weight)
+
+  extracted <- tune:::extract_case_weights(mtcars, wf)
+  expted <- mtcars |>
+    tibble::as_tibble() |>
+    dplyr::select(.case_weights = weight)
+  expect_equal(extracted, expted)
+})
+
 # ------------------------------------------------------------------------------
 # Passed on during tuning
 
-test_that("weights are used during tuning", {
+test_that("weights are used during resampling", {
   set.seed(1)
 
   mtcars$weight <- hardhat::frequency_weights(1:32)
@@ -67,18 +89,68 @@ test_that("weights are used during tuning", {
 
   predictions <- res$.predictions[[1]]
 
-  new_data <- rsample::assessment(res$splits[[1]])
-  new_data[["predictions"]] <- predictions$.pred
+  manual_with_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred, case_weight = .case_weights)
 
-  expected_metric <- res$.metrics[[1]]
-  expect_true(nrow(expected_metric) == 1)
-  expected_metric <- expected_metric$.estimate
+  manual_with_no_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred)
 
-  actual_metric <- yardstick::rmse(new_data, mpg, predictions, case_weight = weight)
-  actual_metric <- actual_metric$.estimate
+  res_metric <- res$.metrics[[1]] |> dplyr::select(-.config)
 
-  expect_identical(actual_metric, expected_metric)
+  expect_equal(res_metric, manual_with_wts)
+  expect_true(!identical(res_metric, manual_with_no_wts))
 })
+
+
+test_that("weights are used during tuning", {
+  skip_if_not_installed("splines2")
+  set.seed(1)
+
+  mtcars$weight <- hardhat::frequency_weights(1:32)
+
+  folds <- rsample::vfold_cv(mtcars, v = 2)
+
+  rec <-
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_spline_natural(disp, deg_free = tune())
+
+  spec <- parsnip::linear_reg()
+  metrics <- yardstick::metric_set(yardstick::rmse)
+
+  wf <- workflows::workflow()
+  wf <- workflows::add_recipe(wf, rec)
+  wf <- workflows::add_model(wf, spec)
+  wf <- workflows::add_case_weights(wf, weight)
+
+  df_grid <- tibble(deg_free = 3:4)
+
+  res <- tune_grid(
+    object = wf,
+    resamples = folds,
+    metrics = metrics,
+    grid = df_grid,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+  predictions <- res$.predictions[[1]] |> group_by(.config)
+
+  manual_with_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred, case_weight = .case_weights)
+
+  manual_with_no_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred)
+
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_wts)))
+
+  expect_equal(res_metric, manual_with_wts)
+  expect_true(!identical(res_metric, manual_with_no_wts))
+})
+
 
 test_that("weights work with multi-predict", {
   # glmnet depends on >= 3.6.0 so we don't test on CRAN
@@ -110,22 +182,63 @@ test_that("weights work with multi-predict", {
     metrics = metrics
   )
 
-  penalty <- grid$penalty[[1]]
-  mixture <- grid$mixture[[1]]
+  predictions <- res$.predictions[[1]] |> group_by(.config)
 
-  predictions <- res$.predictions[[1]]
-  predictions <- dplyr::filter(predictions, penalty == !!penalty, mixture == !!mixture)
+  manual_with_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred, case_weight = .case_weights)
 
-  new_data <- rsample::assessment(res$splits[[1]])
-  new_data[["predictions"]] <- predictions$.pred
+  manual_with_no_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred)
 
-  expected_metric <- res$.metrics[[1]]
-  expected_metric <- dplyr::filter(expected_metric, penalty == !!penalty, mixture == !!mixture)
-  expect_true(nrow(expected_metric) == 1)
-  expected_metric <- expected_metric$.estimate
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_wts)))
 
-  actual_metric <- yardstick::rmse(new_data, mpg, predictions, case_weight = weight)
-  actual_metric <- actual_metric$.estimate
+  expect_equal(res_metric, manual_with_wts)
+  expect_true(!identical(res_metric, manual_with_no_wts))
+})
 
-  expect_identical(actual_metric, expected_metric)
+test_that("importance weights are *not* used during prediction", {
+  skip_if_not_installed("splines2")
+  set.seed(1)
+
+  mtcars$weight <- hardhat::importance_weights((1:32) / 32)
+
+  folds <- rsample::vfold_cv(mtcars, v = 2)
+
+  rec <-
+    recipes::recipe(mpg ~ ., data = mtcars) |>
+    recipes::step_spline_natural(disp, deg_free = tune())
+
+  spec <- parsnip::linear_reg()
+  metrics <- yardstick::metric_set(yardstick::rmse)
+
+  wf <- workflows::workflow()
+  wf <- workflows::add_recipe(wf, rec)
+  wf <- workflows::add_model(wf, spec)
+  wf <- workflows::add_case_weights(wf, weight)
+
+  df_grid <- tibble(deg_free = 3:4)
+
+  res <- tune_grid(
+    object = wf,
+    resamples = folds,
+    metrics = metrics,
+    grid = df_grid,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+  predictions <- res$.predictions[[1]] |> group_by(.config)
+
+  expect_true(!any(names(predictions) == ".case_weights"))
+
+  manual_with_no_wts <-
+    predictions |>
+    yardstick::rmse(mpg, .pred)
+
+  res_metric <- res$.metrics[[1]] |>
+    dplyr::select(all_of(names(manual_with_no_wts)))
+
+  expect_equal(res_metric, manual_with_no_wts)
 })

@@ -58,15 +58,15 @@ summarize_notes <- function(x) {
     return(invisible(NULL))
   }
   notes <-
-    x %>%
-    dplyr::select(dplyr::starts_with("id"), .notes) %>%
+    x |>
+    dplyr::select(dplyr::starts_with("id"), .notes) |>
     tidyr::unnest(cols = .notes)
   by_type <-
-    notes %>%
-    dplyr::group_nest(type) %>%
-    dplyr::mutate(data = purrr::map(data, ~ dplyr::count(.x, note))) %>%
-    tidyr::unnest(data) %>%
-    dplyr::rowwise() %>%
+    notes |>
+    dplyr::group_nest(type) |>
+    dplyr::mutate(data = purrr::map(data, \(.x) dplyr::count(.x, note))) |>
+    tidyr::unnest(data) |>
+    dplyr::rowwise() |>
     dplyr::mutate(
       note = gsub("(Error:)", "", note),
       note = glue::glue_collapse(note, width = 0.85 * getOption("width")),
@@ -98,26 +98,35 @@ summarize_notes <- function(x) {
 # ------------------------------------------------------------------------------
 
 new_tune_results <-
-  function(x,
-           parameters,
-           metrics,
-           eval_time,
-           eval_time_target,
-           outcomes = character(0),
-           rset_info,
-           ...,
-           class = character()) {
-    new_bare_tibble(
-      x = x,
-      parameters = parameters,
-      metrics = metrics,
-      eval_time = eval_time,
-      eval_time_target = eval_time_target,
-      outcomes = outcomes,
-      rset_info = rset_info,
-      ...,
-      class = c(class, "tune_results")
-    )
+  function(
+    x,
+    parameters,
+    metrics,
+    eval_time,
+    eval_time_target,
+    outcomes = character(0),
+    rset_info,
+    ...,
+    class = character()
+  ) {
+    if (any(names(x) == ".seeds")) {
+      x$.seeds <- NULL
+    }
+
+    res <-
+      new_bare_tibble(
+        x = x,
+        parameters = parameters,
+        metrics = metrics,
+        eval_time = eval_time,
+        eval_time_target = eval_time_target,
+        outcomes = outcomes,
+        rset_info = rset_info,
+        ...,
+        class = c(class, "tune_results")
+      )
+    attr(res, "outcomes") <- outcomes
+    res
   }
 
 is_tune_results <- function(x) {
@@ -126,15 +135,19 @@ is_tune_results <- function(x) {
 
 peek_tune_results_outcomes <- function(x) {
   if (!is_tune_results(x)) {
-    cli::cli_abort("Internal error: {.arg outcomes} can only be extracted from
-                   {.cls tune_results}.")
+    cli::cli_abort(
+      "Internal error: {.arg outcomes} can only be extracted from
+                   {.cls tune_results}."
+    )
   }
 
   out <- attr(x, "outcomes", exact = TRUE)
 
   if (is.null(out)) {
-    cli::cli_abort("The object of type {.cls tune_results} doesn't have an
-                    {.code outcomes} attribute.")
+    cli::cli_abort(
+      "The object of type {.cls tune_results} doesn't have an
+                    {.code outcomes} attribute."
+    )
   }
 
   out
@@ -149,7 +162,7 @@ peek_tune_results_outcomes <- function(x) {
 #' @export
 show_notes <- function(x, n = 10) {
   res <-
-    collect_notes(x) %>%
+    collect_notes(x) |>
     dplyr::distinct(type, note)
 
   if (nrow(res) == 0) {
@@ -169,10 +182,9 @@ show_notes <- function(x, n = 10) {
   max_width <- max(purrr::map_int(sub_notes, nchar))
   max_width <- min(max_width, cli::console_width())
 
-  notes <-  paste(cli::rule(width = max_width), notes, sep = "\n")
-  notes <-  paste0(notes, "\n")
+  notes <- paste(cli::rule(width = max_width), notes, sep = "\n")
+  notes <- paste0(notes, "\n")
   cat(msg)
   cat(notes, sep = "")
   invisible(x)
 }
-

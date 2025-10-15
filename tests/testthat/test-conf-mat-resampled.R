@@ -3,7 +3,10 @@ test_that("appropriate return values", {
 
   expect_no_error(
     cm_1 <-
-      conf_mat_resampled(svm_results, parameters = select_best(svm_results, metric = "accuracy"))
+      conf_mat_resampled(
+        svm_results,
+        parameters = select_best(svm_results, metric = "accuracy")
+      )
   )
   expect_true(tibble::is_tibble(cm_1))
 
@@ -53,7 +56,7 @@ test_that("bad argss", {
   broke_results$.predictions <-
     purrr::map(
       broke_results$.predictions,
-      ~ .x %>% dplyr::select(-.pred_class)
+      \(.x) .x |> dplyr::select(-.pred_class)
     )
 
   expect_snapshot(error = TRUE, {
@@ -64,7 +67,10 @@ test_that("bad argss", {
   attr(broke_results, "outcomes") <- NULL
 
   expect_snapshot(error = TRUE, {
-    conf_mat_resampled(broke_results, parameters = select_best(broke_results, metric = "accuracy"))
+    conf_mat_resampled(
+      broke_results,
+      parameters = select_best(broke_results, metric = "accuracy")
+    )
   })
 
   expect_snapshot(error = TRUE, {

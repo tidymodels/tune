@@ -4,10 +4,10 @@ test_that("tune recipe only", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$lm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -41,8 +41,8 @@ test_that("tune model only (with recipe)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -75,8 +75,8 @@ test_that("tune model only (with variables)", {
 
   set.seed(4400)
 
-  wflow <- workflow() %>%
-    add_variables(mpg, everything()) %>%
+  wflow <- workflow() |>
+    add_variables(mpg, everything()) |>
     add_model(helper_objects$svm_mod)
 
   pset <- extract_parameter_set_dials(wflow)
@@ -104,8 +104,8 @@ test_that("tune model only (with recipe, multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -156,12 +156,14 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
 
   set.seed(1)
   res <- tune_grid(
-    knn, vs ~ mpg + hp + cyl, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp + cyl,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -171,7 +173,16 @@ test_that("tune model only (fairness - include `by` variable as predictor)", {
   res_est <- collect_metrics(res)
   expect_equal(
     colnames(res_est),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est), n_grid * 2)
   expect_equal(sum(res_est$.by == "cyl", na.rm = TRUE), n_grid)
@@ -197,12 +208,14 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
 
   set.seed(1)
   res2 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -212,7 +225,16 @@ test_that("tune model only (fairness - don't include `by` variable as predictor)
   res_est2 <- collect_metrics(res2)
   expect_equal(
     colnames(res_est2),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est2), n_grid * 2)
   expect_equal(sum(res_est2$.by == "cyl", na.rm = TRUE), n_grid)
@@ -238,13 +260,15 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
 
   set.seed(1)
   res3 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl),
-        yardstick::equal_opportunity(am)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl),
+      yardstick::equal_opportunity(am)
+    )
   )
 
   expect_equal(
@@ -254,7 +278,16 @@ test_that("tune model only (fairness metrics - evaluate across multiple `by`)", 
   res_est3 <- collect_metrics(res3)
   expect_equal(
     colnames(res_est3),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est3), n_grid * 3)
   expect_equal(sum(res_est3$.by == "cyl", na.rm = TRUE), n_grid)
@@ -280,13 +313,15 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
 
   set.seed(1)
   res4 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::roc_auc,
-        yardstick::demographic_parity(cyl),
-        yardstick::demographic_parity(am)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::roc_auc,
+      yardstick::demographic_parity(cyl),
+      yardstick::demographic_parity(am)
+    )
   )
 
   expect_equal(
@@ -296,7 +331,16 @@ test_that("tune model only (fairness - evaluate across multiple `by`, same metri
   res_est4 <- collect_metrics(res4)
   expect_equal(
     colnames(res_est4),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est4), n_grid * 3)
   expect_equal(sum(res_est4$.by == "cyl", na.rm = TRUE), n_grid)
@@ -323,11 +367,13 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
 
   set.seed(1)
   res5 <- tune_grid(
-    knn, vs ~ mpg + hp, resamples = boots, grid = n_grid,
-    metrics =
-      yardstick::metric_set(
-        yardstick::demographic_parity(cyl)
-      )
+    knn,
+    vs ~ mpg + hp,
+    resamples = boots,
+    grid = n_grid,
+    metrics = yardstick::metric_set(
+      yardstick::demographic_parity(cyl)
+    )
   )
 
   expect_equal(
@@ -337,7 +383,16 @@ test_that("tune model only (fairness - evaluate only fairness metrics)", {
   res_est5 <- collect_metrics(res5)
   expect_equal(
     colnames(res_est5),
-    c("neighbors", ".metric", ".estimator", ".by", "mean", "n", "std_err", ".config")
+    c(
+      "neighbors",
+      ".metric",
+      ".estimator",
+      ".by",
+      "mean",
+      "n",
+      "std_err",
+      ".config"
+    )
   )
   expect_equal(nrow(res_est5), n_grid)
   expect_equal(sum(res_est5$.by == "cyl", na.rm = TRUE), n_grid)
@@ -354,10 +409,10 @@ test_that("tune model and recipe", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -396,10 +451,10 @@ test_that("tune model and recipe (multi-predict)", {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(2, 3)))
   grid <- dials::grid_regular(pset, levels = c(3, 2))
   folds <- rsample::vfold_cv(mtcars)
@@ -420,10 +475,10 @@ test_that('tune model and recipe (parallel_over = "everything")', {
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$svm_mod)
-  pset <- extract_parameter_set_dials(wflow) %>%
+  pset <- extract_parameter_set_dials(wflow) |>
     update(num_comp = dials::num_comp(c(1, 3)))
   grid <- dials::grid_regular(pset, levels = 3)
   folds <- rsample::vfold_cv(mtcars)
@@ -454,10 +509,10 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = tune())
 
-  model <- linear_reg(mode = "regression") %>%
+  model <- linear_reg(mode = "regression") |>
     set_engine("lm")
 
   # NA values not allowed in recipe
@@ -506,7 +561,7 @@ test_that("tune model only - failure in recipe is caught elegantly", {
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
   # NA values not allowed in recipe
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = NA_real_)
 
   cars_grid <- tibble(cost = c(0.01, 0.02))
@@ -517,7 +572,12 @@ test_that("tune model only - failure in recipe is caught elegantly", {
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   )
 
@@ -551,8 +611,14 @@ test_that("tune model only - failure in formula is caught elegantly", {
       y ~ z,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
-    )
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
+    ),
+    transform = catalog_lines
   )
 
   notes <- cars_res$.notes
@@ -577,9 +643,8 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   set.seed(7898)
   data_folds <- rsample::vfold_cv(mtcars, v = 2)
 
-  rec <- recipe(mpg ~ ., data = mtcars) %>%
+  rec <- recipe(mpg ~ ., data = mtcars) |>
     step_spline_b(disp, deg_free = tune())
-
 
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(NA_real_, 10L), cost = 0.01)
@@ -590,7 +655,12 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
       preprocessor = rec,
       resamples = data_folds,
       grid = cars_grid,
-      control = control_grid(extract = function(x) {1}, save_pred = TRUE)
+      control = control_grid(
+        extract = function(x) {
+          1
+        },
+        save_pred = TRUE
+      )
     )
   })
 
@@ -642,8 +712,8 @@ test_that("ellipses with tune_grid", {
 
   helper_objects <- helper_objects_tune()
 
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
     add_model(helper_objects$lm_mod)
   folds <- rsample::vfold_cv(mtcars)
   expect_snapshot(
@@ -663,15 +733,14 @@ test_that("determining the grid type", {
 })
 
 
-
 test_that("retain extra attributes", {
   skip_if_not_installed("kernlab")
 
   helper_objects <- helper_objects_tune()
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_recipe(helper_objects$rec_no_tune_1) %>%
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_no_tune_1) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -690,8 +759,8 @@ test_that("retain extra attributes", {
   expect_true(inherits(att$metrics, "metric_set"))
 
   set.seed(4400)
-  wflow <- workflow() %>%
-    add_formula(mpg ~ .) %>%
+  wflow <- workflow() |>
+    add_formula(mpg ~ .) |>
     add_model(helper_objects$svm_mod)
   pset <- extract_parameter_set_dials(wflow)
   grid <- dials::grid_regular(pset, levels = 3)
@@ -718,8 +787,8 @@ test_that("retain extra attributes", {
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 
-  wflow2 <- workflow() %>%
-    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) %>%
+  wflow2 <- workflow() |>
+    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) |>
     add_model(helper_objects$svm_mod)
   pset2 <- extract_parameter_set_dials(wflow2)
   grid2 <- dials::grid_regular(pset2, levels = 3)
@@ -734,5 +803,3 @@ test_that("retain extra attributes", {
     "being saved contains a recipe, which is"
   )
 })
-
-

@@ -15,14 +15,16 @@
 # ------------------------------------------------------------------------------
 
 new_resample_results <-
-  function(x,
-           parameters,
-           metrics,
-           eval_time,
-           eval_time_target = NULL,
-           outcomes = character(0),
-           rset_info,
-           workflow = NULL) {
+  function(
+    x,
+    parameters,
+    metrics,
+    eval_time,
+    eval_time_target = NULL,
+    outcomes = character(0),
+    rset_info,
+    workflow = NULL
+  ) {
     new_tune_results(
       x = x,
       parameters = parameters,

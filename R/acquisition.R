@@ -55,7 +55,9 @@ prob_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
+      cli::cli_abort(
+        "The {.fn trade_off} function should have at least one argument."
+      )
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -84,20 +86,20 @@ predict.prob_improve <-
     }
 
     new_data <-
-      new_data %>%
+      new_data |>
       mutate(.sd = ifelse(.sd <= object$eps, object$eps, .sd))
 
     if (maximize) {
       new_data <-
-        new_data %>%
+        new_data |>
         mutate(delta = ((.mean - best - trade_off) / .sd))
     } else {
       new_data <-
-        new_data %>%
+        new_data |>
         mutate(delta = ((trade_off + best - .mean) / .sd))
     }
-    new_data %>%
-      dplyr::mutate(objective = pnorm(delta)) %>%
+    new_data |>
+      dplyr::mutate(objective = pnorm(delta)) |>
       dplyr::select(objective)
   }
 
@@ -115,7 +117,9 @@ exp_improve <- function(trade_off = 0, eps = .Machine$double.eps) {
   if (rlang::is_function(trade_off)) {
     farg <- names(formals(trade_off))
     if (length(farg) == 0) {
-      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
+      cli::cli_abort(
+        "The {.fn trade_off} function should have at least one argument."
+      )
     }
     lab <- paste(lab, "with variable trade-off values.")
   }
@@ -137,23 +141,23 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
   }
 
   new_data <-
-    new_data %>%
+    new_data |>
     mutate(sd_trunc = ifelse(.sd <= object$eps, object$eps, .sd))
 
   if (maximize) {
-    new_data <- new_data %>% mutate(delta = .mean - best - trade_off)
+    new_data <- new_data |> mutate(delta = .mean - best - trade_off)
   } else {
-    new_data <- new_data %>% mutate(delta = trade_off + best - .mean)
+    new_data <- new_data |> mutate(delta = trade_off + best - .mean)
   }
   new_data <-
-    new_data %>%
+    new_data |>
     mutate(
       snr = delta / sd_trunc,
       z = ifelse(.sd <= object$eps, 0, snr),
       objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
     )
 
-  new_data %>% dplyr::select(objective)
+  new_data |> dplyr::select(objective)
 }
 
 
@@ -167,7 +171,9 @@ conf_bound <- function(kappa = 0.1) {
   if (rlang::is_function(kappa)) {
     farg <- names(formals(kappa))
     if (length(farg) == 0) {
-      cli::cli_abort("The {.fn trade_off} function should have at least one argument.")
+      cli::cli_abort(
+        "The {.fn trade_off} function should have at least one argument."
+      )
     }
     lab <- paste(lab, "with variable kappa values.")
   }
@@ -188,9 +194,9 @@ predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
 
   # `tune` is setup to always maximize the objective function
   if (maximize) {
-    new_data <- new_data %>% mutate(objective = .mean + kappa * .sd)
+    new_data <- new_data |> mutate(objective = .mean + kappa * .sd)
   } else {
-    new_data <- new_data %>% mutate(objective = -(.mean + kappa * .sd))
+    new_data <- new_data |> mutate(objective = -(.mean + kappa * .sd))
   }
-  new_data %>% dplyr::select(objective)
+  new_data |> dplyr::select(objective)
 }

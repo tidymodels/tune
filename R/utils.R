@@ -56,8 +56,7 @@ is_workflow <- function(x) {
 is_cran_check <- function() {
   if (identical(Sys.getenv("NOT_CRAN"), "true")) {
     FALSE
-  }
-  else {
+  } else {
     Sys.getenv("_R_CHECK_PACKAGE_NAME_", "") != ""
   }
 }
@@ -83,17 +82,19 @@ new_bare_tibble <- function(x, ..., class = character()) {
 }
 
 # a helper that takes in a .config vector and returns the corresponding `.iter`.
-# entries from initial results, e.g. `Model1_Preprocessor3`, are assigned
+# entries from initial results, e.g. `pre2_mod1_post0`, are assigned
 # `.iter = 0`.
 .config_to_.iter <- function(.config) {
   .iter <- .config
-  nonzero <- grepl("Iter", .iter)
-  .iter <- ifelse(nonzero, gsub("Iter", "", .iter), "0")
+  nonzero <- grepl("^[iI]ter", .iter)
+  .iter <- ifelse(nonzero, gsub("^[iI]ter", "", .iter), "0")
   .iter <- as.numeric(.iter)
   .iter
 }
 
-`%||%` <- function (x, y) {if (rlang::is_null(x)) y else x}
+`%||%` <- function(x, y) {
+  if (rlang::is_null(x)) y else x
+}
 
 ## -----------------------------------------------------------------------------
 
@@ -153,7 +154,6 @@ new_bare_tibble <- function(x, ..., class = character()) {
   }
   res
 }
-
 
 
 #' @export
@@ -257,12 +257,13 @@ pretty.tune_results <- function(x, ...) {
 #' the search path.
 #' @export
 .stash_last_result <- function(x) {
-  if (! "org:r-lib" %in% search()) {
-    do.call("attach", list(new.env(), pos = length(search()),
-                           name = "org:r-lib"))
+  if (!"org:r-lib" %in% search()) {
+    do.call(
+      "attach",
+      list(new.env(), pos = length(search()), name = "org:r-lib")
+    )
   }
   env <- as.environment("org:r-lib")
   env$.Last.tune.result <- x
   invisible(NULL)
 }
-
