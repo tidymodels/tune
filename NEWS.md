@@ -2,6 +2,14 @@
 
 * Fixed a bug where `int_pctl()` wouldn't work on `last_fit()` outcomes when future parallelism was enabled. (#1099) 
 
+## Breaking Changes
+
+* The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 
+
+   - Fit diagnostics are computed and reported. If the fit quality is poor, an "uncertainty sample" that is furthest away from the existing data is used as the new candidate. 
+   - The GP no longer uses binary indicators for qualitative predictors. Instead, a "categorical kernel" is used for those parameter columns. Fewer starting values are required with this change. 
+   - For numeric predictors, the Matern 3/2 kernel is always used. 
+
 # tune 2.0.0
 
 ## Changes to `tune_grid()`. 
