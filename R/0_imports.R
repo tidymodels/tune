@@ -123,7 +123,9 @@ utils::globalVariables(
     ".num_models",
     "model_stage",
     "predict_stage",
-    "se"
+    "se",
+    "num",
+    "user"
   )
 )
 
