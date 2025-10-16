@@ -110,7 +110,7 @@ partial_encode <- function(dat, pset) {
   }
 
   normalized <- encode_set(
-    dat %>% dplyr::select(dplyr::all_of(pset$id)),
+    dat |> dplyr::select(dplyr::all_of(pset$id)),
     pset = pset,
     as_matrix = FALSE
   )
@@ -140,14 +140,14 @@ fit_gp <- function(
 ) {
   tune::empty_ellipses(...)
 
-  dat <- dat %>% dplyr::filter(.metric == metric)
+  dat <- dat |> dplyr::filter(.metric == metric)
 
   if (!is.null(eval_time)) {
-    dat <- dat %>% dplyr::filter(.eval_time == eval_time)
+    dat <- dat |> dplyr::filter(.eval_time == eval_time)
   }
 
-  dat <- dat %>%
-    check_gp_data() %>%
+  dat <- dat |>
+    check_gp_data() |>
     dplyr::select(dplyr::all_of(pset$id), mean)
 
   qual_info <- find_qual_param(pset)
@@ -201,7 +201,7 @@ fit_gp <- function(
     )
   } else {
     # TODO we should remove the updating; not a great idea
-    new_val <- normalized %>% dplyr::slice_tail(n = 1)
+    new_val <- normalized |> dplyr::slice_tail(n = 1)
     new_x <- as.matrix(new_val[, pset$id])
     new_y <- new_val$.outcome
 
@@ -247,7 +247,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     pset,
     size = size,
     type = "latin_hypercube"
-  ) %>%
+  ) |>
     dplyr::distinct()
 
   if (!object$use) {
@@ -260,7 +260,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     x <- dplyr::anti_join(x, x_old, by = pset$id)
 
     keep_ind <- dissim_sample(x_old, x, pset, max_n = Inf)
-    candidates <- candidates[keep_ind, ] %>%
+    candidates <- candidates[keep_ind, ] |>
       dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
     msg <-
@@ -281,7 +281,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   }
 
   if (!is.null(current)) {
-    candidates <- candidates %>%
+    candidates <- candidates |>
       dplyr::anti_join(current, by = pset$id)
   }
 
@@ -291,7 +291,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       prefix = cli::symbol$tick,
       color_text = get_tune_colors()$message$warning
     )
-    return(candidates %>% dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
+    return(candidates |> dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
   }
 
   x <- partial_encode(candidates, pset)
@@ -299,7 +299,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 
   gp_pred <- object$fit$pred(x, se.fit = TRUE)
 
-  gp_pred <- tibble::as_tibble(gp_pred) %>%
+  gp_pred <- tibble::as_tibble(gp_pred) |>
     dplyr::select(.mean = mean, .sd = se)
   dplyr::bind_cols(candidates, gp_pred)
 }
@@ -308,8 +308,8 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 pick_candidate <- function(results, info, control) {
   bad_gp <- all(is.na(results$.mean))
   if (!bad_gp & info$uncertainty < control$uncertain) {
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(objective)) %>%
+    results <- results |>
+      dplyr::arrange(dplyr::desc(objective)) |>
       dplyr::slice(1)
   } else {
     if (control$verbose_iter) {
@@ -319,9 +319,9 @@ pick_candidate <- function(results, info, control) {
         color_text = get_tune_colors()$message$info
       )
     }
-    results <- results %>%
-      dplyr::arrange(dplyr::desc(.sd)) %>%
-      dplyr::slice(1:floor(.1 * nrow(results))) %>%
+    results <- results |>
+      dplyr::arrange(dplyr::desc(.sd)) |>
+      dplyr::slice(1:floor(.1 * nrow(results))) |>
       dplyr::sample_n(1)
   }
   results

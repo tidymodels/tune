@@ -437,32 +437,13 @@ tune_bayes_workflow <- function(
       set.seed(control$seed[1] + i)
 
       gp_mod <- fit_gp(
-        mean_stats %>% dplyr::select(-.iter),
+        mean_stats |> dplyr::select(-.iter),
         pset = param_info,
         metric = opt_metric_name,
         eval_time = opt_metric_time,
         control = control,
         ...
       )
-
-      # gp_mod <-
-      #   .catch_and_log(
-      #     fit_gp(
-      #       mean_stats |> dplyr::select(-.iter),
-      #       pset = param_info,
-      #       metric = opt_metric_name,
-      #       eval_time = opt_metric_time,
-      #       control = control,
-      #       ...
-      #     ),
-      #     control,
-      #     NULL,
-      #     location = "Gaussian process model",
-      #     notes = .notes,
-      #     catalog = FALSE
-      #   )
-
-      # gp_mod <- check_gp_failure(gp_mod, prev_gp_mod)
 
       check_time(start_time, control$time_limit)
 
@@ -509,8 +490,8 @@ tune_bayes_workflow <- function(
       candidates <- pick_candidate(candidates, score_card, control)
 
       # These were temp used to replace pick_candidate()
-      # candidates <- candidates %>%
-      #   dplyr::arrange(dplyr::desc(objective)) %>%
+      # candidates <- candidates |>
+      #   dplyr::arrange(dplyr::desc(objective)) |>
       #   dplyr::slice(1)
 
       if (score_card$uncertainty >= control$uncertain) {
