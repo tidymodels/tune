@@ -98,7 +98,7 @@ model has an RMSE of 1. The percent loss would be \code{(1.00 - 0.75)/1.00 * 100
 or 25 percent. Note that loss will always be non-negative.
 }
 \examples{
-\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples()) withAutoprint(\{ # examplesIf}
 data("example_ames_knn")
 
 show_best(ames_iter_search, metric = "rmse")

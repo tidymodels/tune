@@ -109,7 +109,7 @@ via \link[=extract_workflow.tune_results]{extract_workflow()}.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples() && rlang::is_installed("modeldata") && !tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples() && rlang::is_installed("modeldata") && !tune:::is_cran_check()) withAutoprint(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)
