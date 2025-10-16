@@ -257,16 +257,14 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     x_old <- x_old[, names(x)]
 
     # Remove existing points
-    x <- dplyr::anti_join(x, x_old, by = pset$id)
+    x <- dplyr::anti_join(x, x_old, by = make.names(pset$id))
 
     keep_ind <- dissim_sample(x_old, x, pset, max_n = Inf)
     candidates <- candidates[keep_ind, ] |>
       dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
-    msg <-
-      "Generating a candidate as far away from existing points as possible."
     message_wrap(
-      msg,
+      "Generating a candidate as far away from existing points as possible.",
       prefix = cli::symbol$info,
       color_text = get_tune_colors()$message$info
     )
