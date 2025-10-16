@@ -61,16 +61,42 @@ make_kernel <- function(pset, lvls) {
 
 check_gp <- function(x) {
   model_fail <- inherits(x, "try-error")
+  gp_threshold <- 0.1
   if (!model_fail) {
     loo_res <- summary(x)
-    loo_bad <- loo_res$coverage95LOO < 0.1
+    loo_bad <- loo_res$coverage95LOO < gp_threshold
     loo_rsq <- loo_res$r.squaredLOO
   } else {
     loo_bad <- TRUE
     loo_rsq <- 0.0
   }
   # convergence?
-  list(use = !loo_bad & !model_fail & loo_rsq > 0.1, rsq = loo_rsq)
+  if (model_fail) {
+    message_wrap(
+      cli::format_inline("GP failed: {as.character(x)}"),
+      prefix = cli::symbol$checkbox_circle_on,
+      color_text = get_tune_colors()$message$danger
+    )
+  } else if (loo_rsq < gp_threshold) {
+    msg <- cli::format_inline(
+      "GP has a LOO R\u00B2 of {round(loo_rsq * 100, 1)}% and is unreliable."
+    )
+    message_wrap(
+      msg,
+      prefix = cli::symbol$checkbox_circle_on,
+      color_text = get_tune_colors()$message$danger
+    )
+  } else if (loo_bad) {
+    msg <- cli::format_inline(
+      "GP has a coverage rate < {round(gp_threshold * 100, 1)}% and is unreliable."
+    )
+    message_wrap(
+      msg,
+      prefix = cli::symbol$checkbox_circle_on,
+      color_text = get_tune_colors()$message$danger
+    )
+  }
+  list(use = !loo_bad & !model_fail & loo_rsq > gp_threshold, rsq = loo_rsq)
 }
 
 # encode_set() was created to work on all types of tuning parameters; usage of
@@ -135,6 +161,11 @@ fit_gp <- function(
   num_cand <- nrow(dat)
 
   normalized <- partial_encode(dat, pset)
+  # gaupro will look for * or : in names and fail :-(
+  # change names and change back later
+  og_names <- colnames(normalized)
+  gp_names <- make.names(og_names)
+  colnames(normalized) <- gp_names
 
   gp_kernel <- make_kernel(pset, qual_info)
 
@@ -151,6 +182,7 @@ fit_gp <- function(
     )
   }
 
+  # TODO get rid of previous
   if (!is.null(previous)) {
     if (!previous$use) {
       previous <- NULL
@@ -164,6 +196,8 @@ fit_gp <- function(
       114,
       gp_fit <- try(
         GauPro::gpkm(
+          # TODO put in a PR to avoid the error with
+          # 'Don't use a formula with * or :. Interactions are all included.'
           .outcome ~ .,
           data = normalized,
           kernel = gp_kernel,
@@ -228,16 +262,19 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 
   if (!object$use) {
     x <- partial_encode(candidates, pset)
+    colnames(x) <- make.names(colnames(x))
     x_old <- object$tr
     x_old <- x_old[, names(x)]
+
+    # Remove existing points
+    x <- dplyr::anti_join(x, x_old, by = pset$id)
 
     keep_ind <- dissim_sample(x_old, x, pset, max_n = Inf)
     candidates <- candidates[keep_ind, ] %>%
       dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
-    msg <- cli::format_inline(
+    msg <-
       "Generating a candidate as far away from existing points as possible."
-    )
     message_wrap(
       msg,
       prefix = cli::symbol$info,
@@ -268,6 +305,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   }
 
   x <- partial_encode(candidates, pset)
+  colnames(x) <- make.names(colnames(x))
 
   gp_pred <- object$fit$pred(x, se.fit = TRUE)
 
