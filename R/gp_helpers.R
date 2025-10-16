@@ -129,12 +129,6 @@ partial_encode <- function(dat, pset) {
 
 # ------------------------------------------------------------------------------
 
-# TODO not catching warnings such as
-# Warning messages:
-#   1: In self$pred_one_matrix(XX = XX, se.fit = se.fit, covmat = covmat,  :
-#     Too small s2 predictions are being set to 4.2948089596254e-08 (2908 values, min=-30.8111711641092).
-#   2: covmat is not being altered.
-
 fit_gp <- function(
   dat,
   pset,
@@ -144,7 +138,7 @@ fit_gp <- function(
   previous = NULL,
   ...
 ) {
-  # TODO check dots for options; no longer used; update docs
+  tune::empty_ellipses(...)
 
   dat <- dat %>% dplyr::filter(.metric == metric)
 
@@ -189,15 +183,11 @@ fit_gp <- function(
     }
   }
 
-  # TODO use better handler to avoid warnings, use log_catalog to send to notes
-  # TODO pass `...` here?
   if (is.null(previous)) {
     withr::with_seed(
       114,
       gp_fit <- try(
         GauPro::gpkm(
-          # TODO put in a PR to avoid the error with
-          # 'Don't use a formula with * or :. Interactions are all included.'
           .outcome ~ .,
           data = normalized,
           kernel = gp_kernel,
