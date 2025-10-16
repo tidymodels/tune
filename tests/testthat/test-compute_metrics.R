@@ -256,31 +256,33 @@ test_that("`metrics` argument works (iterative tuning)", {
   m_set_rmse <- metric_set(rmse)
   m_set_both <- metric_set(rmse, rsq)
 
-  set.seed(1)
+  expect_snapshot({
+    set.seed(1)
+    res_rmse <-
+      tune_bayes(
+        nearest_neighbor("regression", neighbors = tune()),
+        mpg ~ .,
+        vfold_cv(mtcars, v = 3),
+        metrics = m_set_rmse,
+        control = tune::control_bayes(save_pred = TRUE),
+        iter = 2,
+        initial = 3
+      )
+  })
 
-  res_rmse <-
-    tune_bayes(
-      nearest_neighbor("regression", neighbors = tune()),
-      mpg ~ .,
-      vfold_cv(mtcars, v = 3),
-      metrics = m_set_rmse,
-      control = tune::control_bayes(save_pred = TRUE),
-      iter = 2,
-      initial = 3
-    )
-
-  set.seed(1)
-
-  res_both <-
-    tune_bayes(
-      nearest_neighbor("regression", neighbors = tune()),
-      mpg ~ .,
-      vfold_cv(mtcars, v = 3),
-      metrics = m_set_both,
-      control = tune::control_bayes(save_pred = TRUE),
-      iter = 2,
-      initial = 3
-    )
+  expect_snapshot({
+    set.seed(1)
+    res_both <-
+      tune_bayes(
+        nearest_neighbor("regression", neighbors = tune()),
+        mpg ~ .,
+        vfold_cv(mtcars, v = 3),
+        metrics = m_set_both,
+        control = tune::control_bayes(save_pred = TRUE),
+        iter = 2,
+        initial = 3
+      )
+  })
 
   collected_sum_rmse <- collect_metrics(res_rmse)
   computed_sum_rmse <- compute_metrics(res_both, m_set_rmse)
