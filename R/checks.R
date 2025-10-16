@@ -244,10 +244,7 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
     c(
       `!` = "{msg}",
       `*` = cli::pluralize(
-        "There are {cli::qty(diff)}{?as many/more} tuning parameters
-          {cli::qty(diff)}{?as/than} there are initial points.
-          This is likely to cause numerical issues in the first few
-          search iterations."
+        "This is likely to cause numerical issues in the first few search iterations."
       )
     )
 
