@@ -135,7 +135,6 @@ fit_gp <- function(
   metric,
   eval_time = NULL,
   control,
-  previous = NULL,
   ...
 ) {
   tune::empty_ellipses(...)
@@ -176,40 +175,21 @@ fit_gp <- function(
     )
   }
 
-  # TODO get rid of previous
-  if (!is.null(previous)) {
-    if (!previous$use) {
-      previous <- NULL
-    }
-  }
-
-  if (is.null(previous)) {
-    withr::with_seed(
-      114,
-      gp_fit <- try(
-        GauPro::gpkm(
-          .outcome ~ .,
-          data = normalized,
-          kernel = gp_kernel,
-          verbose = 0,
-          restarts = 5,
-          nug.est = FALSE,
-          parallel = FALSE
-        ),
-        silent = TRUE
-      )
+  withr::with_seed(
+    114,
+    gp_fit <- try(
+      GauPro::gpkm(
+        .outcome ~ .,
+        data = normalized,
+        kernel = gp_kernel,
+        verbose = 0,
+        restarts = 5,
+        nug.est = FALSE,
+        parallel = FALSE
+      ),
+      silent = TRUE
     )
-  } else {
-    # TODO we should remove the updating; not a great idea
-    new_val <- normalized |> dplyr::slice_tail(n = 1)
-    new_x <- as.matrix(new_val[, pset$id])
-    new_y <- new_val$.outcome
-
-    withr::with_seed(
-      114,
-      gp_fit <- try(previous$fit$update(new_x, new_y), silent = TRUE)
-    )
-  }
+  )
 
   new_check <- check_gp(gp_fit)
 
