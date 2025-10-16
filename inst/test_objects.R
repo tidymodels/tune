@@ -85,6 +85,7 @@ mt_spln_lm_bo <-
   tune_bayes(
     mt_spln_lm,
     resamples = folds,
+    initial = 2,
     iter = 3,
     control = b_ctrl
   )

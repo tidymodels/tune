@@ -40,5 +40,5 @@
       i Generating 20 candidates
     Condition
       Warning in `self$pred_one_matrix()`:
-      Too small s2 predictions are being set to 1.9315003017685e-09 (2 values, min=-0.000957110681268789). covmat is not being altered.
+      Too small s2 predictions are being set to 1.93149960474772e-09 (2 values, min=-0.000957105865404521). covmat is not being altered.
 
