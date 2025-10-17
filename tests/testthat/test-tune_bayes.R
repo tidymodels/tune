@@ -546,6 +546,7 @@ test_that("missing performance values", {
   skip_if(new_rng_snapshots)
   skip_if(packageVersion("dplyr") < "1.1.1")
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("pec")
 
   data(ames, package = "modeldata")
 
