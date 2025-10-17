@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.0" id="tune-200">tune 2.0.0<a class="anchor" aria-label="anchor" href="#tune-200"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.0.1" id="tune-201">tune 2.0.1<a class="anchor" aria-label="anchor" href="#tune-201"></a></h2><p class="text-muted">CRAN release: 2025-10-17</p>
+<ul><li>Fixed a bug where <code><a href="https://rsample.tidymodels.org/reference/int_pctl.html" class="external-link">int_pctl()</a></code> wouldn’t work on <code><a href="../reference/last_fit.html">last_fit()</a></code> outcomes when future parallelism was enabled. (<a href="https://github.com/tidymodels/tune/issues/1099" class="external-link">#1099</a>)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="tune-200">tune 2.0.0<a class="anchor" aria-label="anchor" href="#tune-200"></a></h2><p class="text-muted">CRAN release: 2025-09-01</p>
 <div class="section level3">
 <h3 id="changes-to-tune_grid-2-0-0">Changes to <code>tune_grid()</code>.<a class="anchor" aria-label="anchor" href="#changes-to-tune_grid-2-0-0"></a></h3>
 <ul><li><p>A major rewrite/refactor of the underlying code that runs <code><a href="../reference/tune_grid.html">tune_grid()</a></code>. This was an upgrade to add postprocessing and to modernize our parallel processing infrastructure.</p></li>
