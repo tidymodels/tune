@@ -571,11 +571,6 @@ test_that("check fold weights", {
 })
 
 test_that("fold weights integration test", {
-  skip_if_not_installed("rsample")
-  skip_if_not_installed("parsnip")
-  skip_if_not_installed("recipes")
-  skip_if_not_installed("workflows")
-
   # Create simple data and resamples
   set.seed(1234)
   data_small <- mtcars[1:20, ]
@@ -645,11 +640,6 @@ test_that("fold weights integration test", {
 })
 
 test_that("fold weights with tune_grid", {
-  skip_if_not_installed("rsample")
-  skip_if_not_installed("parsnip")
-  skip_if_not_installed("recipes")
-  skip_if_not_installed("workflows")
-  skip_if_not_installed("dials")
   skip_if_not_installed("kernlab")
 
   # Create simple tuning scenario

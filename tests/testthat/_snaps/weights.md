@@ -38,19 +38,19 @@
       Error in `.validate_resample_weights()`:
       ! At least one weight must be positive.
 
-# get_resample_weights() validates input types
+# extract_resample_weights() validates input types
 
     Code
-      get_resample_weights("not_valid_input")
+      extract_resample_weights("not_valid_input")
     Condition
-      Error in `get_resample_weights()`:
+      Error in `extract_resample_weights()`:
       ! `x` must be an rset or tune_results object.
 
 ---
 
     Code
-      get_resample_weights(data.frame(x = 1:3))
+      extract_resample_weights(data.frame(x = 1:3))
     Condition
-      Error in `get_resample_weights()`:
+      Error in `extract_resample_weights()`:
       ! `x` must be an rset or tune_results object.
 

@@ -34,5 +34,5 @@ weighted_folds <- add_resample_weights(folds, c(1, 1, 1))
 weighted_folds <- add_resample_weights(folds, c(0.5, 0.25, 0.25))
 }
 \seealso{
-\code{\link[=calculate_resample_weights]{calculate_resample_weights()}}, \code{\link[=get_resample_weights]{get_resample_weights()}}
+\code{\link[=calculate_resample_weights]{calculate_resample_weights()}}, \code{\link[=extract_resample_weights]{extract_resample_weights()}}
 }

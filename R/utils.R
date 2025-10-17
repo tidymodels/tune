@@ -388,7 +388,7 @@ pretty.tune_results <- function(x, ...) {
 #' different sizes or when you want to upweight certain resamples in the evaluation.
 #' The weights are stored as an attribute and used automatically during
 #' metric aggregation.
-#' @seealso [calculate_resample_weights()], [get_resample_weights()]
+#' @seealso [calculate_resample_weights()], [extract_resample_weights()]
 #' @examples
 #' library(rsample)
 #' folds <- vfold_cv(mtcars, v = 3)
@@ -425,7 +425,7 @@ add_resample_weights <- function(rset, weights) {
 #' This is particularly useful for time-based resamples (e.g., expanding window CV)
 #' or stratified sampling  where resamples might have slightly different sizes, in
 #' which resamples are imbalanced.
-#' @seealso [add_resample_weights()], [get_resample_weights()]
+#' @seealso [add_resample_weights()], [extract_resample_weights()]
 #' @examples
 #' library(rsample)
 #' folds <- vfold_cv(mtcars, v = 3)
@@ -458,18 +458,19 @@ calculate_resample_weights <- function(rset) {
 #' library(rsample)
 #' folds <- vfold_cv(mtcars, v = 3)
 #' weighted_folds <- add_resample_weights(folds, c(0.2, 0.3, 0.5))
-#' get_resample_weights(weighted_folds)
+#' extract_resample_weights(weighted_folds)
 #' }
-get_resample_weights <- function(x) {
+extract_resample_weights <- function(x) {
   if (inherits(x, "rset")) {
     # For rset objects, weights are stored as an attribute
-    attr(x, ".resample_weights")
+    res <- attr(x, ".resample_weights")
   } else if (inherits(x, c("tune_results", "resample_results"))) {
     # For tune results, use the internal function
-    return(.get_resample_weights(x))
+    res <- .get_resample_weights(x)
   } else {
     cli::cli_abort("{.arg x} must be an rset or tune_results object.")
   }
+  res
 }
 
 # ------------------------------------------------------------------------------

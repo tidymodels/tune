@@ -315,20 +315,20 @@ test_that("rset tibble conversion includes fold weights", {
   expect_equal(nrow(x_tbl), 3)
 })
 
-test_that("get_resample_weights() works with rset objects", {
+test_that("extract_resample_weights() works with rset objects", {
   weights <- c(0.2, 0.3, 0.5)
   weighted_folds <- add_resample_weights(folds, weights)
 
   # Should return the weights
-  extracted_weights <- get_resample_weights(weighted_folds)
+  extracted_weights <- extract_resample_weights(weighted_folds)
   expect_equal(extracted_weights, weights)
 
   # Should return NULL for unweighted rsets
-  unweighted_result <- get_resample_weights(folds)
+  unweighted_result <- extract_resample_weights(folds)
   expect_null(unweighted_result)
 })
 
-test_that("get_resample_weights() works with tune_results objects", {
+test_that("extract_resample_weights() works with tune_results objects", {
   weights <- c(0.1, 0.5, 0.4)
   weighted_folds <- add_resample_weights(folds, weights)
 
@@ -346,19 +346,19 @@ test_that("get_resample_weights() works with tune_results objects", {
   })
 
   # Should extract weights from tune results
-  extracted_weights <- get_resample_weights(res)
+  extracted_weights <- extract_resample_weights(res)
   expected_weights <- weights / sum(weights) # normalized
   expect_equal(extracted_weights, expected_weights)
 })
 
-test_that("get_resample_weights() validates input types", {
+test_that("extract_resample_weights() validates input types", {
   expect_snapshot(
-    get_resample_weights("not_valid_input"),
+    extract_resample_weights("not_valid_input"),
     error = TRUE
   )
 
   expect_snapshot(
-    get_resample_weights(data.frame(x = 1:3)),
+    extract_resample_weights(data.frame(x = 1:3)),
     error = TRUE
   )
 })
