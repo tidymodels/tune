@@ -222,6 +222,20 @@ fit_gp <- function(
 
 # ------------------------------------------------------------------------------
 
+quiet_pred_gp <- function(object, new_data, ...) {
+  sssh_pred <- purrr::quietly(object$fit$pred)
+  res <- sssh_pred(new_data, ...)
+  wrn <- res$warnings
+
+  if (length(wrn) > 0) {
+    wrn <- wrn[!grepl("Too small", wrn)]
+    for (i in seq_along(wrn)) {
+      cli::cli_warn("{wrn[i]}")
+    }
+  }
+  res$result
+}
+
 pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   candidates <- dials::grid_space_filling(
     pset,
@@ -275,7 +289,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
   x <- partial_encode(candidates, pset)
   colnames(x) <- make.names(colnames(x))
 
-  gp_pred <- object$fit$pred(x, se.fit = TRUE)
+  gp_pred <- quiet_pred_gp(object, x, se.fit = TRUE)
 
   gp_pred <- tibble::as_tibble(gp_pred) |>
     dplyr::select(.mean = mean, .sd = se)
