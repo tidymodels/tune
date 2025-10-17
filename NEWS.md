@@ -2,6 +2,8 @@
 
 * Fixed a bug where `int_pctl()` wouldn't work on `last_fit()` outcomes when future parallelism was enabled. (#1099) 
 
+* The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)
+
 # tune 2.0.0
 
 ## Changes to `tune_grid()`. 
