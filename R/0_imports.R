@@ -125,7 +125,9 @@ utils::globalVariables(
     "model_stage",
     "predict_stage",
     "user",
-    "num"
+    "num",
+    ".fold_weight",
+    "effective_n"
   )
 )
 
