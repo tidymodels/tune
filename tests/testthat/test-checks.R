@@ -647,6 +647,7 @@ test_that("fold weights with tune_grid", {
   skip_if_not_installed("recipes")
   skip_if_not_installed("workflows")
   skip_if_not_installed("dials")
+  skip_if_not_installed("kernlab")
 
   # Create simple tuning scenario
   set.seed(5678)
@@ -656,14 +657,18 @@ test_that("fold weights with tune_grid", {
   # Create tunable workflow
   tune_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small) %>%
     recipes::step_normalize(recipes::all_predictors())
-  tune_mod <- parsnip::linear_reg(penalty = tune()) %>%
-    parsnip::set_engine("glmnet")
+  tune_mod <- parsnip::svm_rbf(
+    cost = tune(),
+    rbf_sigma = 0.001,
+    mode = "regression"
+  )
+
   tune_wflow <- workflows::workflow() %>%
     workflows::add_recipe(tune_rec) %>%
     workflows::add_model(tune_mod)
 
   # Create simple grid
-  simple_grid <- tibble::tibble(penalty = c(0.001, 0.01, 0.1))
+  simple_grid <- tibble::tibble(cost = c(1, 10, 100))
 
   # Test with unequal weights
   weights <- c(0.2, 0.3, 0.5)
