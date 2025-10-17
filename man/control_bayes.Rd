@@ -19,7 +19,8 @@ control_bayes(
   event_level = "first",
   parallel_over = NULL,
   backend_options = NULL,
-  allow_par = TRUE
+  allow_par = TRUE,
+  workflow_size = 100
 )
 }
 \arguments{
@@ -115,6 +116,10 @@ backend. Defaults to \code{NULL} for default backend options.}
 
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}
+
+\item{workflow_size}{A non-negative number that is used as a threshold for a
+warning regarding the size of the workflow. Only used when
+\code{save_workflow = TRUE}.}
 }
 \description{
 Control aspects of the Bayesian search process

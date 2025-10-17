@@ -484,15 +484,6 @@ test_that("retain extra attributes", {
     )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
-
-  expect_snapshot(
-    fit_resamples(
-      lin_mod,
-      recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ]),
-      folds,
-      control = control_resamples(save_workflow = TRUE)
-    )
-  )
 })
 
 

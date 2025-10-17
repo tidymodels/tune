@@ -439,7 +439,7 @@ set_workflow <- function(workflow, control) {
     if (!is.null(workflow$pre$actions$recipe)) {
       w_size <- utils::object.size(workflow$pre$actions$recipe)
       # make 5MB cutoff
-      if (w_size / 1024^2 > 5) {
+      if (w_size / 1024^2 > control$workflow_size) {
         msg <-
           paste0(
             "The workflow being saved contains a recipe, which is ",
