@@ -1,5 +1,7 @@
 # tune (development version)
 
+# tune 2.0.1
+
 * Fixed a bug where `int_pctl()` wouldn't work on `last_fit()` outcomes when future parallelism was enabled. (#1099) 
 
 ## Breaking Changes
