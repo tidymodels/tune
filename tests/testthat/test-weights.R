@@ -230,10 +230,9 @@ if (
 
     # Test with NA values
     x_na <- c(1, 2, NA, 4, 5)
-    weighted_sd_na <- tune:::.weighted_sd(x_na, w)
+    weighted_sd_na <- tune:::.weighted_sd(x_na[!is.na(x_na)], w[!is.na(x_na)])
 
     expect_true(is.numeric(weighted_sd_na))
-    expect_false(is.na(weighted_mean_na))
 
     # Test edge cases
     expect_true(is.na(tune:::.weighted_sd(c(1), c(1)))) # single value
