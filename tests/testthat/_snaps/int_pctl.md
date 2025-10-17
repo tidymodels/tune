@@ -43,6 +43,17 @@
     Code
       int_res_1 <- int_pctl(c5_res)
 
+---
+
+    Code
+      set.seed(92)
+      c5_bo_res <- tune_bayes(set_mode(set_engine(decision_tree(min_n = tune()),
+      "C5.0"), "classification"), Class ~ ., resamples = cls_rs, initial = c5_res,
+      iter = 1, metrics = metric_set(sens), control = control_bayes(save_pred = TRUE))
+    Message
+      (x) GP has a LOO R² of 3.1% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+
 # percentile intervals - grid tuning with validation set
 
     Code
