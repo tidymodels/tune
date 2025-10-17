@@ -262,7 +262,7 @@ pretty.tune_results <- function(x, ...) {
 #' @return Various return values depending on the function.
 #' @keywords internal
 #' @name fold_weights_utils
-#' @aliases .create_weight_mapping .weighted_mean .weighted_sd .effective_sample_size .validate_fold_weights
+#' @aliases .create_weight_mapping .weighted_sd .effective_sample_size .validate_fold_weights
 #' @export
 #' @rdname fold_weights_utils
 .get_fold_weights <- function(x) {
@@ -300,28 +300,6 @@ pretty.tune_results <- function(x, ...) {
 
 #' @export
 #' @rdname fold_weights_utils
-.weighted_mean <- function(x, w) {
-  if (all(is.na(x))) {
-    return(NA_real_)
-  }
-
-  # Remove NA values and corresponding weights
-  valid <- !is.na(x)
-  x_valid <- x[valid]
-  w_valid <- w[valid]
-
-  if (length(x_valid) == 0) {
-    return(NA_real_)
-  }
-
-  # Normalize weights
-  w_valid <- w_valid / sum(w_valid)
-
-  sum(x_valid * w_valid)
-}
-
-#' @export
-#' @rdname fold_weights_utils
 .weighted_sd <- function(x, w) {
   if (all(is.na(x))) {
     return(NA_real_)
@@ -336,14 +314,12 @@ pretty.tune_results <- function(x, ...) {
     return(NA_real_)
   }
 
-  # Normalize weights
-  w_valid <- w_valid / sum(w_valid)
-
-  # Calculate weighted mean
-  weighted_mean <- sum(x_valid * w_valid)
-
   # Calculate weighted variance
-  weighted_var <- sum(w_valid * (x_valid - weighted_mean)^2)
+  weighted_var <-
+    tibble::as_tibble_col(x) |>
+    stats::cov.wt(wt = w, cor = FALSE)
+
+  weighted_var <- weighted_var$cov[1, 1]
 
   sqrt(weighted_var)
 }
@@ -403,13 +379,13 @@ pretty.tune_results <- function(x, ...) {
 #' This function allows you to specify custom weights for cross-validation
 #' folds. Weights are automatically normalized to sum to 1.
 #'
-#' @param rset An rset object from rsample.
-#' @param weights A numeric vector of weights, one per fold.
-#'     Weights will be normalized.
+#' @param rset An rset object from \pkg{rsample}.
+#' @param weights A numeric vector of weights, one per fold. Weights will be
+#' normalized.
 #' @return The rset object with weights added as an attribute.
 #' @details
-#' Fold weights are useful when cross-validation folds have different
-#' sizes or when you want to upweight certain folds in the evaluation.
+#' Fold weights are useful when assessment sets (i.e., held out data) have
+#' different sizes or when you want to upweight certain folds in the evaluation.
 #' The weights are stored as an attribute and used automatically during
 #' metric aggregation.
 #' @seealso [calculate_fold_weights()], [get_fold_weights()]
@@ -442,11 +418,11 @@ add_fold_weights <- function(rset, weights) {
 #' This ensures that folds with more data have proportionally more influence
 #' on the final aggregated metrics.
 #'
-#' @param rset An rset object from rsample.
+#' @param rset An rset object from \pkg{rsample}.
 #' @return A numeric vector of weights proportional to fold sizes, normalized
 #'   to sum to 1.
 #' @details
-#' This is particularly useful for time-based folds (e.g. expanding window CV)
+#' This is particularly useful for time-based folds (e.g., expanding window CV)
 #' or stratified sampling  where folds might have slightly different sizes, in
 #' which folds are imbalanced.
 #' @seealso [add_fold_weights()], [get_fold_weights()]
@@ -468,13 +444,13 @@ calculate_fold_weights <- function(rset) {
   fold_sizes / sum(fold_sizes)
 }
 
-#' Extract fold weights from rset or tune_results objects
+#' Extract fold weights from rset or tuning objects
 #'
 #' This function provides a consistent interface to access fold weights
 #' regardless of whether they were added to an rset object or are stored
-#' in tune_results after tuning.
+#' in `tune_results` after tuning.
 #'
-#' @param x An rset object with fold weights, or a tune_results object.
+#' @param x An rset object with fold weights, or a `tune_results` object.
 #' @return A numeric vector of fold weights, or NULL if no weights are present.
 #' @export
 #' @examples

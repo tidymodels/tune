@@ -222,26 +222,20 @@ if (
     x <- c(1, 2, 3, 4, 5)
     w <- c(0.1, 0.2, 0.3, 0.2, 0.2)
 
-    weighted_mean <- tune:::.weighted_mean(x, w)
     weighted_sd <- tune:::.weighted_sd(x, w)
 
-    expect_true(is.numeric(weighted_mean))
     expect_true(is.numeric(weighted_sd))
-    expect_false(is.na(weighted_mean))
     expect_false(is.na(weighted_sd))
     expect_true(weighted_sd >= 0)
 
     # Test with NA values
     x_na <- c(1, 2, NA, 4, 5)
-    weighted_mean_na <- tune:::.weighted_mean(x_na, w)
     weighted_sd_na <- tune:::.weighted_sd(x_na, w)
 
-    expect_true(is.numeric(weighted_mean_na))
     expect_true(is.numeric(weighted_sd_na))
     expect_false(is.na(weighted_mean_na))
 
     # Test edge cases
-    expect_true(is.na(tune:::.weighted_mean(c(NA, NA), c(0.5, 0.5))))
     expect_true(is.na(tune:::.weighted_sd(c(1), c(1)))) # single value
   })
 

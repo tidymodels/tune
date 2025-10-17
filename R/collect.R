@@ -628,7 +628,7 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
         !!!rlang::syms(group_cols)
       ) |>
       dplyr::summarize(
-        mean = .weighted_mean(.estimate, .fold_weight),
+        mean = stats::weighted.mean(.estimate, .fold_weight),
         n = sum(!is.na(.estimate)),
         effective_n = .effective_sample_size(.fold_weight[!is.na(.estimate)]),
         std_err = .weighted_sd(.estimate, .fold_weight) /
