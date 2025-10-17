@@ -7,10 +7,10 @@
 add_fold_weights(rset, weights)
 }
 \arguments{
-\item{rset}{An rset object from rsample.}
+\item{rset}{An rset object from \pkg{rsample}.}
 
-\item{weights}{A numeric vector of weights, one per fold.
-Weights will be normalized.}
+\item{weights}{A numeric vector of weights, one per fold. Weights will be
+normalized.}
 }
 \value{
 The rset object with weights added as an attribute.
@@ -20,8 +20,8 @@ This function allows you to specify custom weights for cross-validation
 folds. Weights are automatically normalized to sum to 1.
 }
 \details{
-Fold weights are useful when cross-validation folds have different
-sizes or when you want to upweight certain folds in the evaluation.
+Fold weights are useful when assessment sets (i.e., held out data) have
+different sizes or when you want to upweight certain folds in the evaluation.
 The weights are stored as an attribute and used automatically during
 metric aggregation.
 }

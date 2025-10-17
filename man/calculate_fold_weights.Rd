@@ -7,7 +7,7 @@
 calculate_fold_weights(rset)
 }
 \arguments{
-\item{rset}{An rset object from rsample.}
+\item{rset}{An rset object from \pkg{rsample}.}
 }
 \value{
 A numeric vector of weights proportional to fold sizes, normalized
@@ -20,7 +20,7 @@ This ensures that folds with more data have proportionally more influence
 on the final aggregated metrics.
 }
 \details{
-This is particularly useful for time-based folds (e.g. expanding window CV)
+This is particularly useful for time-based folds (e.g., expanding window CV)
 or stratified sampling  where folds might have slightly different sizes, in
 which folds are imbalanced.
 }

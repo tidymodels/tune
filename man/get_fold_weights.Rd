@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{get_fold_weights}
 \alias{get_fold_weights}
-\title{Extract fold weights from rset or tune_results objects}
+\title{Extract fold weights from rset or tuning objects}
 \usage{
 get_fold_weights(x)
 }
 \arguments{
-\item{x}{An rset object with fold weights, or a tune_results object.}
+\item{x}{An rset object with fold weights, or a \code{tune_results} object.}
 }
 \value{
 A numeric vector of fold weights, or NULL if no weights are present.
@@ -15,7 +15,7 @@ A numeric vector of fold weights, or NULL if no weights are present.
 \description{
 This function provides a consistent interface to access fold weights
 regardless of whether they were added to an rset object or are stored
-in tune_results after tuning.
+in \code{tune_results} after tuning.
 }
 \examples{
 \dontrun{
