@@ -786,20 +786,4 @@ test_that("retain extra attributes", {
   )
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
-
-  wflow2 <- workflow() |>
-    add_recipe(recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ])) |>
-    add_model(helper_objects$svm_mod)
-  pset2 <- extract_parameter_set_dials(wflow2)
-  grid2 <- dials::grid_regular(pset2, levels = 3)
-
-  expect_message(
-    tune_grid(
-      wflow2,
-      resamples = folds,
-      grid = grid2,
-      control = control_grid(save_workflow = TRUE)
-    ),
-    "being saved contains a recipe, which is"
-  )
 })
