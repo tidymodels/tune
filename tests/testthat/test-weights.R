@@ -23,7 +23,7 @@ if (
 
   # Helper function to create a simple model
   create_test_model <- function() {
-    parsnip::linear_reg() %>% parsnip::set_engine("lm")
+    parsnip::linear_reg() |> parsnip::set_engine("lm")
   }
 
   test_that("add_fold_weights() validates inputs correctly", {
@@ -150,8 +150,8 @@ if (
     extreme_weighted_folds <- add_fold_weights(test_folds, extreme_weights)
 
     # Create a model with tuning parameter
-    knn_spec <- parsnip::nearest_neighbor(neighbors = tune()) %>%
-      parsnip::set_engine("kknn") %>%
+    knn_spec <- parsnip::nearest_neighbor(neighbors = tune()) |>
+      parsnip::set_engine("kknn") |>
       parsnip::set_mode("regression")
 
     param_grid <- data.frame(neighbors = c(3, 5))

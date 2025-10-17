@@ -31,8 +31,8 @@ methods("multi_predict")
 
 # There are arguments for the parameter(s) that can create multiple predictions.
 # For xgboost, `trees` are cheap to evaluate: 
-parsnip:::multi_predict._xgb.Booster %>% 
-  formals() %>% 
+parsnip:::multi_predict._xgb.Booster |> 
+  formals() |> 
   names()
 ```
 
@@ -49,13 +49,13 @@ For example, suppose that [Isomap multi-dimensional scaling](https://en.wikipedi
 #| results: hide
 data(Chicago)
 iso_rec <- 
-  recipe(ridership ~ ., data = Chicago) %>% 
-  step_dummy(all_nominal()) %>% 
+  recipe(ridership ~ ., data = Chicago) |> 
+  step_dummy(all_nominal()) |> 
   step_isomap(all_predictors(), num_terms = tune())
 
 knn_mod <- 
-  nearest_neighbor(neighbors = tune(), weight_func = tune()) %>% 
-  set_engine("kknn") %>% 
+  nearest_neighbor(neighbors = tune(), weight_func = tune()) |> 
+  set_engine("kknn") |> 
   set_mode("regression")
 ```
 
@@ -63,8 +63,8 @@ With the following grid:
 
 ```{r}
 grid <- 
-  parameters(num_terms(c(1, 9)), neighbors(), weight_func()) %>% 
-  grid_regular(levels = c(5, 10, 7)) %>% 
+  parameters(num_terms(c(1, 9)), neighbors(), weight_func()) |> 
+  grid_regular(levels = c(5, 10, 7)) |> 
   arrange(num_terms, neighbors, weight_func)
 grid 
 ```
@@ -155,11 +155,11 @@ Some helpful advice to avoid errors in parallel processing is to not use variabl
 #| eval: false
 num_pcs <- 3
 
-recipe(mpg ~ ., data = mtcars) %>% 
+recipe(mpg ~ ., data = mtcars) |> 
   # Bad since num_pcs might not be found by a worker process
   step_pca(all_predictors(), num_comp = num_pcs)
 
-recipe(mpg ~ ., data = mtcars) %>% 
+recipe(mpg ~ ., data = mtcars) |> 
   # Good since the value is injected into the object
   step_pca(all_predictors(), num_comp = !!num_pcs)
 ```

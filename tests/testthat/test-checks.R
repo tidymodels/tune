@@ -583,9 +583,9 @@ test_that("fold weights integration test", {
 
   # Create simple model and recipe
   simple_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small)
-  simple_mod <- parsnip::linear_reg() %>% parsnip::set_engine("lm")
-  simple_wflow <- workflows::workflow() %>%
-    workflows::add_recipe(simple_rec) %>%
+  simple_mod <- parsnip::linear_reg() |> parsnip::set_engine("lm")
+  simple_wflow <- workflows::workflow() |>
+    workflows::add_recipe(simple_rec) |>
     workflows::add_model(simple_mod)
 
   # Test with equal weights (should match unweighted results)
@@ -655,7 +655,7 @@ test_that("fold weights with tune_grid", {
   folds <- rsample::vfold_cv(data_small, v = 3)
 
   # Create tunable workflow
-  tune_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small) %>%
+  tune_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small) |>
     recipes::step_normalize(recipes::all_predictors())
   tune_mod <- parsnip::svm_rbf(
     cost = tune(),
@@ -663,8 +663,8 @@ test_that("fold weights with tune_grid", {
     mode = "regression"
   )
 
-  tune_wflow <- workflows::workflow() %>%
-    workflows::add_recipe(tune_rec) %>%
+  tune_wflow <- workflows::workflow() |>
+    workflows::add_recipe(tune_rec) |>
     workflows::add_model(tune_mod)
 
   # Create simple grid
