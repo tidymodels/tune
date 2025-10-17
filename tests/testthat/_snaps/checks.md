@@ -335,3 +335,27 @@
       ! Some model parameters require finalization but there are recipe parameters that require tuning.
       i Please use `extract_parameter_set_dials()` to set parameter ranges manually and supply the output to the `param_info` argument.
 
+# check fold weights
+
+    Code
+      add_resample_weights(folds, c("a", "b", "c"))
+    Condition
+      Error in `.validate_resample_weights()`:
+      ! `weights` must be numeric.
+
+---
+
+    Code
+      add_resample_weights(folds, c(0.5, 0.3))
+    Condition
+      Error in `.validate_resample_weights()`:
+      ! Length of `weights` (2) must equal number of resamples (3).
+
+---
+
+    Code
+      add_resample_weights(folds, c(-0.1, 0.5, 0.6))
+    Condition
+      Error in `.validate_resample_weights()`:
+      ! `weights` must be non-negative.
+

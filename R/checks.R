@@ -22,6 +22,26 @@ check_rset <- function(x) {
   if (inherits(x, "permutations")) {
     cli::cli_abort("Permutation samples are not suitable for tuning.")
   }
+
+  # Check fold weights if present
+  check_resample_weights(x)
+
+  invisible(NULL)
+}
+
+#' Check fold weights in rset objects
+#'
+#' @param x An rset object.
+#' @return `NULL` invisibly, or error if weights are invalid.
+#' @keywords internal
+check_resample_weights <- function(x) {
+  weights <- attr(x, ".resample_weights")
+  if (is.null(weights)) {
+    return(invisible(NULL))
+  }
+
+  .validate_resample_weights(weights, nrow(x))
+
   invisible(NULL)
 }
 

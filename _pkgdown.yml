@@ -66,6 +66,7 @@ reference:
     - starts_with("compute")
     - augment.tune_results
     - example_ames_knn
+    - contains("resample_weight")
   - title: Developer functions
     contents:
     - merge.recipe
