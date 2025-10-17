@@ -1,6 +1,6 @@
 # tune (development version)
 
-When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_fold_weights()` function. See `?calculate_fold_weights` (#990)
+When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
 
 # tune 2.0.1
 

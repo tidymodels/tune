@@ -565,7 +565,7 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
     )
   }
 
-  fold_weights <- .get_fold_weights(x)
+  resample_weights <- .get_resample_weights(x)
 
   # The mapping of tuning parameters and .config.
   config_key <- .config_key_from_metrics(x)
@@ -608,17 +608,17 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
   x <- vctrs::vec_slice(x, x$id != "Apparent")
 
   # Join weights to the data if available
-  if (!is.null(fold_weights)) {
-    weight_data <- .create_weight_mapping(fold_weights, id_names, x)
+  if (!is.null(resample_weights)) {
+    weight_data <- .create_weight_mapping(resample_weights, id_names, x)
     if (!is.null(weight_data)) {
       x <- dplyr::left_join(x, weight_data, by = id_names)
     } else {
       # If weight mapping failed, fall back to unweighted
-      fold_weights <- NULL
+      resample_weights <- NULL
     }
   }
 
-  if (!is.null(fold_weights)) {
+  if (!is.null(resample_weights)) {
     # Use weighted aggregation
     x <- x |>
       dplyr::group_by(
@@ -628,10 +628,12 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
         !!!rlang::syms(group_cols)
       ) |>
       dplyr::summarize(
-        mean = stats::weighted.mean(.estimate, .fold_weight),
+        mean = stats::weighted.mean(.estimate, .resample_weight),
         n = sum(!is.na(.estimate)),
-        effective_n = .effective_sample_size(.fold_weight[!is.na(.estimate)]),
-        std_err = .weighted_sd(.estimate, .fold_weight) /
+        effective_n = .effective_sample_size(.resample_weight[
+          !is.na(.estimate)
+        ]),
+        std_err = .weighted_sd(.estimate, .resample_weight) /
           sqrt(pmax(effective_n, 1)),
         .groups = "drop"
       ) |>

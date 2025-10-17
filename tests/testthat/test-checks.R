@@ -16,7 +16,7 @@ test_that("grid objects", {
   skip_if_not_installed("splines2")
   skip_if_not_installed("kernlab")
   data("Chicago", package = "modeldata")
-  data("Chicago", package = "modeldata")
+
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) |>
     recipes::step_date(date) |>
@@ -546,27 +546,27 @@ test_that("check fold weights", {
   folds <- rsample::vfold_cv(mtcars, v = 3)
 
   # No weights should pass silently
-  expect_no_error(tune:::check_fold_weights(folds))
+  expect_no_error(tune:::check_resample_weights(folds))
 
   # Valid weights should pass
   weights <- c(0.1, 0.5, 0.4)
-  weighted_folds <- add_fold_weights(folds, weights)
-  expect_no_error(tune:::check_fold_weights(weighted_folds))
+  weighted_folds <- add_resample_weights(folds, weights)
+  expect_no_error(tune:::check_resample_weights(weighted_folds))
 
   # Invalid weights should error
-  expect_error(
-    add_fold_weights(folds, c("a", "b", "c")),
-    "must be numeric"
+  expect_snapshot(
+    add_resample_weights(folds, c("a", "b", "c")),
+    error = TRUE
   )
 
-  expect_error(
-    add_fold_weights(folds, c(0.5, 0.3)),
-    "must equal number of folds"
+  expect_snapshot(
+    add_resample_weights(folds, c(0.5, 0.3)),
+    error = TRUE
   )
 
-  expect_error(
-    add_fold_weights(folds, c(-0.1, 0.5, 0.6)),
-    "must be non-negative"
+  expect_snapshot(
+    add_resample_weights(folds, c(-0.1, 0.5, 0.6)),
+    error = TRUE
   )
 })
 
@@ -590,7 +590,7 @@ test_that("fold weights integration test", {
 
   # Test with equal weights (should match unweighted results)
   equal_weights <- c(1, 1, 1)
-  weighted_folds_equal <- add_fold_weights(folds, equal_weights)
+  weighted_folds_equal <- add_resample_weights(folds, equal_weights)
 
   # Fit both weighted and unweighted
   unweighted_results <- fit_resamples(
@@ -617,7 +617,7 @@ test_that("fold weights integration test", {
 
   # Test with unequal weights
   unequal_weights <- c(0.1, 0.3, 0.6) # Higher weight on last fold
-  weighted_folds_unequal <- add_fold_weights(folds, unequal_weights)
+  weighted_folds_unequal <- add_resample_weights(folds, unequal_weights)
 
   weighted_results_unequal <- fit_resamples(
     simple_wflow,
@@ -632,10 +632,13 @@ test_that("fold weights integration test", {
   ))
 
   # Verify that weights are properly stored and retrieved
-  expect_equal(attr(weighted_folds_unequal, ".fold_weights"), unequal_weights)
+  expect_equal(
+    attr(weighted_folds_unequal, ".resample_weights"),
+    unequal_weights
+  )
 
   # Test fold size calculation
-  calculated_weights <- calculate_fold_weights(folds)
+  calculated_weights <- calculate_resample_weights(folds)
   expect_length(calculated_weights, nrow(folds))
   expect_true(all(calculated_weights > 0))
   expect_equal(sum(calculated_weights), 1) # Should sum to 1 now
@@ -672,7 +675,7 @@ test_that("fold weights with tune_grid", {
 
   # Test with unequal weights
   weights <- c(0.2, 0.3, 0.5)
-  weighted_folds <- add_fold_weights(folds, weights)
+  weighted_folds <- add_resample_weights(folds, weights)
 
   # Tune with weights
   weighted_tune_results <- tune_grid(

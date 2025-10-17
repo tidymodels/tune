@@ -24,7 +24,7 @@ check_rset <- function(x) {
   }
 
   # Check fold weights if present
-  check_fold_weights(x)
+  check_resample_weights(x)
 
   invisible(NULL)
 }
@@ -34,13 +34,13 @@ check_rset <- function(x) {
 #' @param x An rset object.
 #' @return `NULL` invisibly, or error if weights are invalid.
 #' @keywords internal
-check_fold_weights <- function(x) {
-  weights <- attr(x, ".fold_weights")
+check_resample_weights <- function(x) {
+  weights <- attr(x, ".resample_weights")
   if (is.null(weights)) {
     return(invisible(NULL))
   }
 
-  .validate_fold_weights(weights, nrow(x))
+  .validate_resample_weights(weights, nrow(x))
 
   invisible(NULL)
 }
