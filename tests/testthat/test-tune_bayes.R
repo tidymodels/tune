@@ -24,11 +24,12 @@ test_that("tune recipe only", {
     add_recipe(rec_tune_1) |>
     add_model(lm_mod)
   pset <- extract_parameter_set_dials(wflow) |>
-    update(num_comp = dials::num_comp(c(1, 5)))
+    update(num_comp = dials::num_comp(c(1, 15)))
   folds <- rsample::vfold_cv(mtcars)
   control <- control_bayes(extract = identity)
 
-  suppressMessages({
+  expect_snapshot({
+    set.seed(2)
     res <- tune_bayes(
       wflow,
       resamples = folds,
@@ -38,6 +39,7 @@ test_that("tune recipe only", {
       control = control
     )
   })
+
   res_est <- collect_metrics(res)
   res_workflow <- res$.extracts[[1]]$.extracts[[1]]
 
@@ -56,20 +58,6 @@ test_that("tune recipe only", {
   expect_true(res_workflow$trained)
   expect_null(.get_tune_eval_times(res))
   expect_null(.get_tune_eval_time_target(res))
-
-  set.seed(1)
-  expect_no_error(
-    suppressMessages(
-      tune_bayes(
-        wflow,
-        resamples = folds,
-        param_info = pset,
-        initial = iter1,
-        iter = iter2,
-        corr = list(type = "matern", nu = 3 / 2)
-      )
-    )
-  )
 
   # test verbose options
   set.seed(1)
@@ -300,7 +288,7 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   # NA values not allowed in recipe
   cars_grid <- tibble(deg_free = c(3, NA_real_, 4))
 
-  suppressMessages({
+  expect_snapshot({
     cars_init_res <- tune_grid(
       model,
       preprocessor = rec,
@@ -309,8 +297,8 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
     )
   })
 
-  suppressMessages({
-    set.seed(283) #<- chosen to not generate faiures
+  expect_snapshot({
+    set.seed(283)
     cars_bayes_res <- tune_bayes(
       model,
       preprocessor = rec,
@@ -335,11 +323,11 @@ test_that("tune recipe only - failure in recipe is caught elegantly", {
   expect_equal(obs_failures, exp_failures)
 
   all_notes <- collect_notes(cars_bayes_res)
-  expect_equal(nrow(all_notes), 11L)
+  expect_equal(nrow(all_notes), 5L)
 
   expect_equal(
     collect_metrics(cars_bayes_res) |> distinct(deg_free) |> nrow(),
-    exp_init_grid_res + 2
+    3
   )
 })
 
@@ -422,7 +410,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   })
 
   suppressMessages({
-    set.seed(283) #<- chosen to not generate faiures
+    set.seed(283)
     cars_bayes_res <- tune_bayes(
       svm_mod,
       preprocessor = rec,
@@ -447,7 +435,7 @@ test_that("tune model and recipe - failure in recipe is caught elegantly", {
   expect_equal(obs_failures, exp_failures)
 
   all_notes <- collect_notes(cars_bayes_res)
-  expect_equal(nrow(all_notes), 6L)
+  expect_equal(nrow(all_notes), 7L)
 
   expect_equal(
     collect_metrics(cars_bayes_res) |> distinct(deg_free, cost) |> nrow(),
@@ -558,6 +546,7 @@ test_that("missing performance values", {
   skip_if(new_rng_snapshots)
   skip_if(packageVersion("dplyr") < "1.1.1")
   skip_if_not_installed("modeldata")
+  skip_if_not_installed("pec")
 
   data(ames, package = "modeldata")
 

@@ -81,7 +81,7 @@ computations can take a long time unless the times are filtered with the
 \code{eval_time} argument.
 }
 \examples{
-\dontshow{if (!tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (!tune:::is_cran_check()) withAutoprint(\{ # examplesIf}
 if (rlang::is_installed("modeldata")) {
   data(Sacramento, package = "modeldata")
   library(rsample)

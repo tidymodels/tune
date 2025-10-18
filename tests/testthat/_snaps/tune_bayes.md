@@ -1,6 +1,17 @@
 # tune recipe only
 
     Code
+      set.seed(2)
+      res <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,
+        iter = iter2, control = control)
+    Message
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      i Generating 15 candidates
+
+---
+
+    Code
       tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1, iter = iter2,
         control = control_bayes(verbose = TRUE))
     Message
@@ -8,11 +19,8 @@
       >  Generating a set of 2 initial parameter results
       v Initialization complete
       
-      i Gaussian process model
-      ! The Gaussian process model is being fit using 1 features but only has 2
-        data points to do so. This may cause errors or a poor model fit.
-      i Generating 3 candidates
-      i Predicted candidates
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -45,9 +53,7 @@
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      i Gaussian process model
-      i Generating 2 candidates
-      i Predicted candidates
+      i Generating 15 candidates
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -108,27 +114,24 @@
       
       -- Iteration 1 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.461 (@iter 0)
-      i Gaussian process model
-      ! The Gaussian process model is being fit using 1 features but only has 2
-        data points to do so. This may cause errors or a poor model fit.
-      i Generating 3 candidates
-      i Predicted candidates
-      i num_comp=5
+      i Current best:		rmse=2.505 (@iter 0)
+      (x) GP has a LOO R² of 0% and is unreliable.
+      v Gaussian process model failed
+      i Generating a candidate as far away from existing points as possible.
+      i num_comp=11
       i Estimating performance
       v Estimating performance
-      <3 Newest results:	rmse=2.453 (+/-0.381)
+      (x) Newest results:	rmse=3.589 (+/-0.499)
       
       -- Iteration 2 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.453 (@iter 1)
-      i Gaussian process model
-      i Generating 2 candidates
-      i Predicted candidates
-      i num_comp=1
+      i Current best:		rmse=2.505 (@iter 0)
+      v Gaussian process model (LOO R²: 30.5%)
+      i Generating 15 candidates
+      i num_comp=4
       i Estimating performance
       v Estimating performance
-      (x) Newest results:	rmse=2.646 (+/-0.286)
+      <3 Newest results:	rmse=2.461 (+/-0.37)
     Output
       # Tuning results
       # 10-fold cross-validation 
@@ -161,13 +164,11 @@
       
       -- Iteration 1 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.461 (@iter 0)
-      i Gaussian process model
-      ! The Gaussian process model is being fit using 1 features but only has 2
-        data points to do so. This may cause errors or a poor model fit.
-      i Generating 3 candidates
-      i Predicted candidates
-      i num_comp=5
+      i Current best:		rmse=2.505 (@iter 0)
+      (x) GP has a LOO R² of 0% and is unreliable.
+      v Gaussian process model failed
+      i Generating a candidate as far away from existing points as possible.
+      i num_comp=11
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -200,15 +201,14 @@
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      <3 Newest results:	rmse=2.453 (+/-0.381)
+      (x) Newest results:	rmse=3.589 (+/-0.499)
       
       -- Iteration 2 -----------------------------------------------------------------
       
-      i Current best:		rmse=2.453 (@iter 1)
-      i Gaussian process model
-      i Generating 2 candidates
-      i Predicted candidates
-      i num_comp=1
+      i Current best:		rmse=2.505 (@iter 0)
+      v Gaussian process model (LOO R²: 30.5%)
+      i Generating 15 candidates
+      i num_comp=4
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -241,7 +241,7 @@
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      (x) Newest results:	rmse=2.646 (+/-0.286)
+      <3 Newest results:	rmse=2.461 (+/-0.37)
     Output
       # Tuning results
       # 10-fold cross-validation 
@@ -259,6 +259,39 @@
        9 <split [29/3]> Fold09 <tibble [4 x 5]> <tibble [0 x 4]>     0
       10 <split [29/3]> Fold10 <tibble [4 x 5]> <tibble [0 x 4]>     0
       # i 20 more rows
+
+# tune recipe only - failure in recipe is caught elegantly
+
+    Code
+      cars_init_res <- tune_grid(model, preprocessor = rec, resamples = data_folds,
+        grid = cars_grid)
+    Message
+      > A | error:   Error in `step_spline_b()`:
+                     Caused by error in `prep()`:
+                     ! `deg_free` must be a whole number, not a numeric `NA`.
+      > B | warning: Some 'x' values beyond boundary knots may cause ill-conditioned basis
+                     functions.
+
+---
+
+    Code
+      set.seed(283)
+      cars_bayes_res <- tune_bayes(model, preprocessor = rec, resamples = data_folds,
+        initial = cars_init_res, iter = 2)
+    Message
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      > A | error:   Error in `step_spline_b()`:
+                     Caused by error in `prep()`:
+                     ! `degree` (3) must be less than or equal to `deg_free` (2) when `complete_set = TRUE`.
+    Condition
+      Warning:
+      All models failed. Run `show_notes(.Last.tune.result)` for more information.
+    Message
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      > A | warning: Some 'x' values beyond boundary knots may cause ill-conditioned basis
+                     functions.
 
 # tune model only - failure in recipe is caught elegantly
 
@@ -320,8 +353,9 @@
       res2 <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,
         iter = iter2, control = control_bayes(save_workflow = TRUE))
     Message
-      ! The Gaussian process model is being fit using 1 features but only has 2
-        data points to do so. This may cause errors or a poor model fit.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      i Generating 5 candidates
 
 # too few starting values
 
@@ -329,8 +363,7 @@
       tune:::check_bayes_initial_size(5, 3, FALSE)
     Message
       ! There are 5 tuning parameters and 3 grid points were requested.
-      * There are as many tuning parameters as there are initial points. This is
-        likely to cause numerical issues in the first few search iterations.
+      * This is likely to cause numerical issues in the first few search iterations.
 
 ---
 
@@ -338,8 +371,7 @@
       tune:::check_bayes_initial_size(5, 3, TRUE)
     Message
       ! There are 5 tuning parameters and 3 grid points were requested.
-      * There are as many tuning parameters as there are initial points. This is
-        likely to cause numerical issues in the first few search iterations.
+      * This is likely to cause numerical issues in the first few search iterations.
       * With racing, only completely resampled parameters are used.
 
 ---
@@ -348,8 +380,7 @@
       tune:::check_bayes_initial_size(2, 2, FALSE)
     Message
       ! There are 2 tuning parameters and 2 grid points were requested.
-      * There are as many tuning parameters as there are initial points. This is
-        likely to cause numerical issues in the first few search iterations.
+      * This is likely to cause numerical issues in the first few search iterations.
 
 ---
 
@@ -390,34 +421,53 @@
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
-      ! The Gaussian process model is being fit using 1 features but only has 2
-        data points to do so. This may cause errors or a poor model fit.
-      ! For the rsq estimates, 1 missing value was found and removed before fitting
-        the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 8 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 9 missing values were found and removed before
         fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
+      ! For the rsq estimates, 10 missing values were found and removed before
+        fitting the Gaussian process model.
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! No improvement for 10 iterations; returning current results.
 
@@ -433,12 +483,10 @@
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! All of the rsq estimates were missing. The Gaussian process model cannot be
         fit to the data.
-      > A | warning: no non-missing arguments to min; returning Inf
-      > B | warning: no non-missing arguments to max; returning -Inf
-      > C | error:   argument must be coercible to non-negative integer
+      (x) GP failed: Error in initialize(...) : is.numeric(X) is not TRUE
     Condition
-      Error in `check_gp_failure()`:
-      ! Gaussian process model was not fit.
+      Error in `apply()`:
+      ! dim(X) must have a positive length
     Message
       x Optimization stopped prematurely; returning current results.
 

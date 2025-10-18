@@ -115,19 +115,21 @@ test_that("percentile intervals - grid + bayes tuning", {
 
   # ------------------------------------------------------------------------------
 
-  set.seed(92)
-  c5_bo_res <-
-    decision_tree(min_n = tune()) |>
-    set_engine("C5.0") |>
-    set_mode("classification") |>
-    tune_bayes(
-      Class ~ .,
-      resamples = cls_rs,
-      initial = c5_res,
-      iter = 1,
-      metrics = metric_set(sens),
-      control = control_bayes(save_pred = TRUE)
-    )
+  expect_snapshot({
+    set.seed(92)
+    c5_bo_res <-
+      decision_tree(min_n = tune()) |>
+      set_engine("C5.0") |>
+      set_mode("classification") |>
+      tune_bayes(
+        Class ~ .,
+        resamples = cls_rs,
+        initial = c5_res,
+        iter = 1,
+        metrics = metric_set(sens),
+        control = control_bayes(save_pred = TRUE)
+      )
+  })
   template <- dplyr::tibble(
     min_n = integer(0),
     .metric = character(0),

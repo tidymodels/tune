@@ -152,7 +152,7 @@ via \link[=extract_workflow.tune_results]{extract_workflow()}.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples() & rlang::is_installed("splines2")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples() & rlang::is_installed("splines2")) withAutoprint(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)

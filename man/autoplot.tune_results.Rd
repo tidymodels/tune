@@ -83,7 +83,7 @@ Parameters are labeled using the labels found in the parameter object
 }
 }
 \examples{
-\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples()) withAutoprint(\{ # examplesIf}
 # For grid search:
 data("example_ames_knn")
 
