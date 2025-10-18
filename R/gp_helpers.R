@@ -96,7 +96,7 @@ check_gp <- function(x) {
       color_text = get_tune_colors()$message$danger
     )
   }
-  list(use = !loo_bad & !model_fail & loo_rsq > gp_threshold, rsq = loo_rsq)
+  list(use = !loo_bad && !model_fail && loo_rsq > gp_threshold, rsq = loo_rsq)
 }
 
 # encode_set() was created to work on all types of tuning parameters; usage of
@@ -266,7 +266,7 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     return(candidates)
   } else {
     message_wrap(
-      paste("Generating", nrow(candidates), "candidates"),
+      paste("Generating", nrow(candidates), "candidates."),
       prefix = cli::symbol$info,
       color_text = get_tune_colors()$message$info
     )
@@ -301,8 +301,7 @@ pick_candidate <- function(results, info, control) {
   bad_gp <- all(is.na(results$.mean))
   if (!bad_gp & info$uncertainty < control$uncertain) {
     results <- results |>
-      dplyr::arrange(dplyr::desc(objective)) |>
-      dplyr::slice(1)
+      dplyr::slice_max(objective, n = 1, with_ties = FALSE)
   } else {
     if (control$verbose_iter) {
       message_wrap(
@@ -313,7 +312,7 @@ pick_candidate <- function(results, info, control) {
     }
     results <- results |>
       dplyr::arrange(dplyr::desc(.sd)) |>
-      dplyr::slice(1:floor(.1 * nrow(results))) |>
+      dplyr::slice(seq_len(floor(.1 * nrow(results)))) |>
       dplyr::sample_n(1)
   }
   results
