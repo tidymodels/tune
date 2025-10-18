@@ -203,8 +203,8 @@ print.control_last_fit <- function(x, ...) {
 #'   backend. Defaults to `NULL` for default backend options.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
-#' @param workflow_size A non-negative number that is used as a threshold for a
-#' warning regarding the size of the workflow. Only used when
+#' @param workflow_size A non-negative number (in MB) that is used as a
+#' threshold for a warning regarding the size of the workflow. Only used when
 #' `save_workflow = TRUE`.
 #'
 #' @inheritSection collect_predictions Hyperparameters and extracted objects

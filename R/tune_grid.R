@@ -436,16 +436,19 @@ pull_rset_attributes <- function(x) {
 
 set_workflow <- function(workflow, control) {
   if (control$save_workflow) {
-    if (!is.null(workflow$pre$actions$recipe)) {
-      w_size <- utils::object.size(workflow$pre$actions$recipe)
-      # make 5MB cutoff
+    if (!is.null(workflow)) {
+      w_size <- utils::object.size(workflow)
       if (w_size / 1024^2 > control$workflow_size) {
+        rounded <- round(w_size / 1024^2, 1)
         msg <-
-          paste0(
-            "The workflow being saved contains a recipe, which is ",
-            format(w_size, units = "Mb", digits = 2),
-            " in memory. If this was not intentional, please set the control ",
-            "setting `save_workflow = FALSE`."
+          cli::format_inline(
+            "The workflow being saved is large ({rounded} MB). If this
+            was not intentional, please set the control setting
+            {.arg save_workflow} to be {.code FALSE} or change the threshold
+            for this warning (currently {control$workflow_size} MB) with the
+            {.arg workflow_size} argument.",
+            keep_whitespace = FALSE,
+            collapse = FALSE
           )
         cols <- get_tune_colors()
         msg <- strwrap(

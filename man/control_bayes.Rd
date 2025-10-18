@@ -117,8 +117,8 @@ backend. Defaults to \code{NULL} for default backend options.}
 \item{allow_par}{A logical to allow parallel processing (if a parallel
 backend is registered).}
 
-\item{workflow_size}{A non-negative number that is used as a threshold for a
-warning regarding the size of the workflow. Only used when
+\item{workflow_size}{A non-negative number (in MB) that is used as a
+threshold for a warning regarding the size of the workflow. Only used when
 \code{save_workflow = TRUE}.}
 }
 \description{

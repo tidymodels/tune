@@ -91,8 +91,8 @@ reproducible between runs.}
 by \code{tune::new_backend_options()}, used to pass arguments to specific tuning
 backend. Defaults to \code{NULL} for default backend options.}
 
-\item{workflow_size}{A non-negative number that is used as a threshold for a
-warning regarding the size of the workflow. Only used when
+\item{workflow_size}{A non-negative number (in MB) that is used as a
+threshold for a warning regarding the size of the workflow. Only used when
 \code{save_workflow = TRUE}.}
 }
 \description{

@@ -1,4 +1,6 @@
 test_that("workflow size warning", {
+  withr::local_options(width = 500)
+
   # A larger data set to trip the warning
   MTCARS <- mtcars[rep(1:32, each = 1000), ]
 
