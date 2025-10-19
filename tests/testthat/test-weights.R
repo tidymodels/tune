@@ -210,6 +210,72 @@ test_that("weight normalization works correctly", {
   )
 })
 
+test_that("equal weights return NULL", {
+  # Simplest integer match
+  expect_null(tune:::.validate_resample_weights(c(2, 2, 2), 3))
+
+  # Fractional match
+  expect_null(tune:::.validate_resample_weights(c(1 / 3, 1 / 3, 1 / 3), 3))
+
+  # Check more reseampless
+  expect_null(tune:::.validate_resample_weights(c(1, 1, 1, 1, 1), 5))
+})
+
+test_that("unequal weights do not return NULL", {
+  # Check non-null decimal values
+  result <- tune:::.validate_resample_weights(c(0.1, 0.5, 0.4), 3)
+  expect_false(is.null(result))
+  expect_equal(result, c(0.1, 0.5, 0.4))
+
+  # Non-null fractional values
+  result2 <- tune:::.validate_resample_weights(c(1, 2, 3), 3)
+  expect_false(is.null(result2))
+  expect_equal(result2, c(1 / 6, 2 / 6, 3 / 6))
+})
+
+test_that("add_resample_weights with equal weights returns NULL attribute", {
+  # Adding equal weights should trigger NULL assignment
+  equal_weighted_folds <- add_resample_weights(folds, c(1, 1, 1))
+  expect_null(attr(equal_weighted_folds, ".resample_weights"))
+
+  # Verify it's still an rset object
+  expect_s3_class(equal_weighted_folds, "rset")
+})
+
+test_that("equal weights produce same results as no weights", {
+  mod <- create_test_model()
+
+  suppressWarnings({
+    # Results with no weights
+    res_no_weights <- tune_grid(
+      mod,
+      mpg ~ .,
+      resamples = folds,
+      grid = 1,
+      metrics = yardstick::metric_set(yardstick::rmse),
+      control = control_grid(verbose = FALSE)
+    )
+
+    # Results with equal weights
+    equal_weighted_folds <- add_resample_weights(folds, c(1, 1, 1))
+    res_equal_weights <- tune_grid(
+      mod,
+      mpg ~ .,
+      resamples = equal_weighted_folds,
+      grid = 1,
+      metrics = yardstick::metric_set(yardstick::rmse),
+      control = control_grid(verbose = FALSE)
+    )
+  })
+
+  metrics_no_weights <- collect_metrics(res_no_weights)
+  metrics_equal_weights <- collect_metrics(res_equal_weights)
+
+  # Results should match
+  expect_equal(metrics_no_weights$mean, metrics_equal_weights$mean)
+  expect_equal(metrics_no_weights$std_err, metrics_equal_weights$std_err)
+})
+
 test_that("weighted statistics functions work correctly", {
   x <- c(1, 2, 3, 4, 5)
   w <- c(0.1, 0.2, 0.3, 0.2, 0.2)

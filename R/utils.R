@@ -371,7 +371,17 @@ pretty.tune_results <- function(x, ...) {
   }
 
   # Return normalized weights
-  weights / sum(weights)
+  normalized_weights <- weights / sum(weights)
+
+  # If equal, equivalent to not weighting
+  expected_equal <- 1 / num_resamples
+  if (
+    isTRUE(all.equal(normalized_weights, rep(expected_equal, num_resamples)))
+  ) {
+    return(NULL)
+  }
+
+  return(normalized_weights)
 }
 
 #' Add resample weights to an rset object
