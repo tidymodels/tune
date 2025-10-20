@@ -65,7 +65,8 @@
 <span>  event_level <span class="op">=</span> <span class="st">"first"</span>,</span>
 <span>  parallel_over <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  backend_options <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  allow_par <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  allow_par <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  workflow_size <span class="op">=</span> <span class="fl">100</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -189,6 +190,12 @@ backend. Defaults to <code>NULL</code> for default backend options.</p></dd>
 <dt id="arg-allow-par">allow_par<a class="anchor" aria-label="anchor" href="#arg-allow-par"></a></dt>
 <dd><p>A logical to allow parallel processing (if a parallel
 backend is registered).</p></dd>
+
+
+<dt id="arg-workflow-size">workflow_size<a class="anchor" aria-label="anchor" href="#arg-workflow-size"></a></dt>
+<dd><p>A non-negative number (in MB) that is used as a
+threshold for a warning regarding the size of the workflow. Only used when
+<code>save_workflow = TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
