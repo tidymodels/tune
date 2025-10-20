@@ -37,7 +37,8 @@ control_grid <- function(
   save_workflow = FALSE,
   event_level = "first",
   parallel_over = NULL,
-  backend_options = NULL
+  backend_options = NULL,
+  workflow_size = 100.0
 ) {
   # Any added arguments should also be added in superset control functions
   # in other packages
@@ -50,6 +51,7 @@ control_grid <- function(
   check_string(event_level)
   check_character(pkgs, allow_null = TRUE)
   check_function(extract, allow_null = TRUE)
+  check_number_decimal(workflow_size)
 
   val_parallel_over(parallel_over, "control_grid()")
 
@@ -62,7 +64,8 @@ control_grid <- function(
     save_workflow = save_workflow,
     event_level = event_level,
     parallel_over = parallel_over,
-    backend_options = backend_options
+    backend_options = backend_options,
+    workflow_size = workflow_size
   )
 
   class(res) <- c("control_grid", "control_resamples")
@@ -200,6 +203,9 @@ print.control_last_fit <- function(x, ...) {
 #'   backend. Defaults to `NULL` for default backend options.
 #' @param allow_par A logical to allow parallel processing (if a parallel
 #'   backend is registered).
+#' @param workflow_size A non-negative number (in MB) that is used as a
+#' threshold for a warning regarding the size of the workflow. Only used when
+#' `save_workflow = TRUE`.
 #'
 #' @inheritSection collect_predictions Hyperparameters and extracted objects
 #'
@@ -240,7 +246,8 @@ control_bayes <-
     event_level = "first",
     parallel_over = NULL,
     backend_options = NULL,
-    allow_par = TRUE
+    allow_par = TRUE,
+    workflow_size = 100.0
   ) {
     # Any added arguments should also be added in superset control functions
     # in other packages
@@ -257,6 +264,7 @@ control_bayes <-
     check_number_whole(no_improve, min = 0, allow_infinite = TRUE)
     check_number_whole(uncertain, min = 0, allow_infinite = TRUE)
     check_number_whole(seed)
+    check_number_decimal(workflow_size)
 
     check_time_limit_arg(time_limit)
 
@@ -285,7 +293,8 @@ control_bayes <-
         save_gp_scoring = save_gp_scoring,
         event_level = event_level,
         parallel_over = parallel_over,
-        backend_options = backend_options
+        backend_options = backend_options,
+        workflow_size = workflow_size
       )
 
     class(res) <- "control_bayes"
