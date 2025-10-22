@@ -425,6 +425,10 @@ pull_rset_attributes <- function(x) {
   att$class <- setdiff(class(x), class(tibble::new_tibble(list())))
   att$class <- att$class[att$class != "rset"]
 
+  if (!is.null(attr(x, ".resample_weights"))) {
+    att[[".resample_weights"]] <- attr(x, ".resample_weights")
+  }
+
   lab <- try(pretty(x), silent = TRUE)
   if (inherits(lab, "try-error")) {
     lab <- NA_character_

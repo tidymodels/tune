@@ -1,6 +1,9 @@
 # tune (development version)
 
+* When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
+
 * The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)
+
 
 # tune 2.0.1
 

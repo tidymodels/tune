@@ -16,7 +16,7 @@ test_that("grid objects", {
   skip_if_not_installed("splines2")
   skip_if_not_installed("kernlab")
   data("Chicago", package = "modeldata")
-  data("Chicago", package = "modeldata")
+
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) |>
     recipes::step_date(date) |>
@@ -541,3 +541,161 @@ test_that("check parameter finalization", {
   )
   expect_true(inherits(p5, "parameters"))
 })
+
+test_that("check fold weights", {
+  folds <- rsample::vfold_cv(mtcars, v = 3)
+
+  # No weights should pass silently
+  expect_no_error(tune:::check_resample_weights(folds))
+
+  # Valid weights should pass
+  weights <- c(0.1, 0.5, 0.4)
+  weighted_folds <- add_resample_weights(folds, weights)
+  expect_no_error(tune:::check_resample_weights(weighted_folds))
+
+  # Invalid weights should error
+  expect_snapshot(
+    add_resample_weights(folds, c("a", "b", "c")),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    add_resample_weights(folds, c(0.5, 0.3)),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    add_resample_weights(folds, c(-0.1, 0.5, 0.6)),
+    error = TRUE
+  )
+})
+
+test_that("fold weights integration test", {
+  # Create simple data and resamples
+  set.seed(1234)
+  data_small <- mtcars[1:20, ]
+  folds <- rsample::vfold_cv(data_small, v = 3)
+
+  # Create simple model and recipe
+  simple_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small)
+  simple_mod <- parsnip::linear_reg() |> parsnip::set_engine("lm")
+  simple_wflow <- workflows::workflow() |>
+    workflows::add_recipe(simple_rec) |>
+    workflows::add_model(simple_mod)
+
+  # Test with equal weights (should match unweighted results)
+  equal_weights <- c(1, 1, 1)
+  weighted_folds_equal <- add_resample_weights(folds, equal_weights)
+
+  # Fit both weighted and unweighted
+  unweighted_results <- fit_resamples(
+    simple_wflow,
+    folds,
+    control = control_resamples(save_pred = FALSE)
+  )
+  weighted_results_equal <- fit_resamples(
+    simple_wflow,
+    weighted_folds_equal,
+    control = control_resamples(save_pred = FALSE)
+  )
+
+  # Extract metrics
+  unweighted_metrics <- collect_metrics(unweighted_results)
+  weighted_metrics_equal <- collect_metrics(weighted_results_equal)
+
+  # Should be nearly identical (allowing for small numerical differences)
+  expect_equal(
+    unweighted_metrics$mean,
+    weighted_metrics_equal$mean,
+    tolerance = 1e-10
+  )
+
+  # Test with unequal weights
+  unequal_weights <- c(0.1, 0.3, 0.6) # Higher weight on last fold
+  weighted_folds_unequal <- add_resample_weights(folds, unequal_weights)
+
+  weighted_results_unequal <- fit_resamples(
+    simple_wflow,
+    weighted_folds_unequal,
+    control = control_resamples(save_pred = FALSE)
+  )
+  weighted_metrics_unequal <- collect_metrics(weighted_results_unequal)
+
+  # Should be different from unweighted results
+  expect_false(all(
+    abs(unweighted_metrics$mean - weighted_metrics_unequal$mean) < 1e-10
+  ))
+
+  # Verify that weights are properly stored and retrieved
+  expect_equal(
+    attr(weighted_folds_unequal, ".resample_weights"),
+    unequal_weights
+  )
+
+  # Test fold size calculation
+  calculated_weights <- calculate_resample_weights(folds)
+  expect_length(calculated_weights, nrow(folds))
+  expect_true(all(calculated_weights > 0))
+  expect_equal(sum(calculated_weights), 1) # Should sum to 1 now
+})
+
+test_that("fold weights with tune_grid", {
+  skip_if_not_installed("kernlab")
+
+  # Create simple tuning scenario
+  set.seed(5678)
+  data_small <- mtcars[1:15, ]
+  folds <- rsample::vfold_cv(data_small, v = 3)
+
+  # Create tunable workflow
+  tune_rec <- recipes::recipe(mpg ~ wt + hp, data = data_small) |>
+    recipes::step_normalize(recipes::all_predictors())
+  tune_mod <- parsnip::svm_rbf(
+    cost = tune(),
+    rbf_sigma = 0.001,
+    mode = "regression"
+  )
+
+  tune_wflow <- workflows::workflow() |>
+    workflows::add_recipe(tune_rec) |>
+    workflows::add_model(tune_mod)
+
+  # Create simple grid
+  simple_grid <- tibble::tibble(cost = c(1, 10, 100))
+
+  # Test with unequal weights
+  weights <- c(0.2, 0.3, 0.5)
+  weighted_folds <- add_resample_weights(folds, weights)
+
+  # Tune with weights
+  weighted_tune_results <- tune_grid(
+    tune_wflow,
+    weighted_folds,
+    grid = simple_grid,
+    control = control_grid(save_pred = FALSE)
+  )
+
+  # Verify results structure
+  expect_s3_class(weighted_tune_results, "tune_results")
+
+  # Extract metrics and verify they're computed
+  weighted_metrics <- collect_metrics(weighted_tune_results)
+  expect_true(nrow(weighted_metrics) > 0)
+  expect_true(all(c("mean", "std_err") %in% names(weighted_metrics)))
+
+  # Compare with unweighted results
+  unweighted_tune_results <- tune_grid(
+    tune_wflow,
+    folds,
+    grid = simple_grid,
+    control = control_grid(save_pred = FALSE)
+  )
+  unweighted_metrics <- collect_metrics(unweighted_tune_results)
+
+  # Results should differ due to weighting
+  expect_false(all(
+    abs(weighted_metrics$mean - unweighted_metrics$mean) < 1e-10
+  ))
+})
+
+# ------------------------------------------------------------------------------
