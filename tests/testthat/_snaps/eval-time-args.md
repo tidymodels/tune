@@ -40,6 +40,8 @@
     Condition
       Warning in `tune_bayes()`:
       `eval_time` is only used for models with mode "censored regression".
+    Message
+      i Generating 15 candidates.
 
 ---
 
@@ -91,6 +93,8 @@
     Condition
       Warning in `tune_bayes()`:
       `eval_time` is only used for models with mode "censored regression".
+    Message
+      i Generating 15 candidates.
 
 ---
 

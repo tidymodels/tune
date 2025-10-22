@@ -1,4 +1,17 @@
-library(tidymodels)
+library(broom)
+library(dials)
+library(dplyr)
+library(ggplot2)
+library(modeldata)
+library(parsnip)
+library(purrr)
+library(recipes)
+library(rsample)
+library(tailor)
+library(tidyr)
+library(tune)
+library(workflows)
+library(yardstick)
 library(scales)
 library(censored)
 library(sessioninfo)
@@ -72,6 +85,7 @@ mt_spln_lm_bo <-
   tune_bayes(
     mt_spln_lm,
     resamples = folds,
+    initial = 2,
     iter = 3,
     control = b_ctrl
   )

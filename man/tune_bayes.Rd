@@ -41,7 +41,7 @@ tune_bayes(object, ...)
 have been marked with \link[hardhat:tune]{tune()}, their values must be
 \link[=finalize_model]{finalized}.}
 
-\item{...}{Options to pass to \code{\link[GPfit:GP_fit]{GPfit::GP_fit()}} (mostly for the \code{corr} argument).}
+\item{...}{Not currently used.}
 
 \item{preprocessor}{A traditional model formula or a recipe created using
 \code{\link[recipes:recipe]{recipes::recipe()}}.}
@@ -306,7 +306,7 @@ processing.
 }
 
 \examples{
-\dontshow{if (tune:::should_run_examples(suggests = "kernlab") && !tune:::is_cran_check()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples(suggests = "kernlab") && !tune:::is_cran_check()) withAutoprint(\{ # examplesIf}
 library(recipes)
 library(rsample)
 library(parsnip)

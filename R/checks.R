@@ -264,10 +264,7 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
     c(
       `!` = "{msg}",
       `*` = cli::pluralize(
-        "There are {cli::qty(diff)}{?as many/more} tuning parameters
-          {cli::qty(diff)}{?as/than} there are initial points.
-          This is likely to cause numerical issues in the first few
-          search iterations."
+        "This is likely to cause numerical issues in the first few search iterations."
       )
     )
 
@@ -649,21 +646,6 @@ check_gp_data <- function(x) {
   }
 
   x
-}
-
-# If the current GP failed, use a previous one if it exists
-check_gp_failure <- function(current, prev) {
-  if (inherits(current, "GP")) {
-    return(current)
-  }
-
-  # first model failed or all previous models failed
-  if (is.null(prev) || inherits(prev, "try-error")) {
-    cli::cli_abort("Gaussian process model was not fit.")
-  }
-
-  # return prev model
-  prev
 }
 
 check_no_tuning <- function(x) {

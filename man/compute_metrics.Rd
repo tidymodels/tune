@@ -54,7 +54,7 @@ class probabilities (\code{"prob"}.) By default, the tuning functions used to
 generate \code{x} compute metrics of all needed types.
 }
 \examples{
-\dontshow{if (tune:::should_run_examples()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (tune:::should_run_examples()) withAutoprint(\{ # examplesIf}
 # load needed packages:
 library(parsnip)
 library(rsample)

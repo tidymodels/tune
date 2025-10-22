@@ -24,7 +24,7 @@ Imports:
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
-    GPfit,
+    GauPro (>= 0.2.15),
     hardhat (>= 1.4.2),
     parallel,
     parsnip (>= 1.2.1.9003),
@@ -66,4 +66,4 @@ Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

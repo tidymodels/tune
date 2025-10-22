@@ -12,7 +12,6 @@
 #' @importFrom stats model.matrix model.response model.frame update median
 #' @importFrom yardstick rsq rmse accuracy roc_auc brier_survival brier_class
 #' @importFrom tidyr unnest nest
-#' @importFrom GPfit GP_fit
 #' @importFrom parsnip get_from_env required_pkgs
 #' @importFrom recipes all_predictors all_outcomes
 #' @importFrom ggplot2 ggplot aes xlab geom_point geom_errorbar facet_wrap ylab
@@ -124,8 +123,9 @@ utils::globalVariables(
     ".num_models",
     "model_stage",
     "predict_stage",
-    "user",
+    "se",
     "num",
+    "user",
     ".resample_weight",
     "effective_n"
   )

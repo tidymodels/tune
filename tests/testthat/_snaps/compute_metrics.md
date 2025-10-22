@@ -16,6 +16,30 @@
       ! The supplied `metrics` argument has metrics of type "prob", while the metrics used to generate predictions only used "class" metrics.
       i To save predictions for prob metrics, generate `x` with metrics of that type.
 
+# `metrics` argument works (iterative tuning)
+
+    Code
+      set.seed(1)
+      res_rmse <- tune_bayes(nearest_neighbor("regression", neighbors = tune()), mpg ~
+        ., vfold_cv(mtcars, v = 3), metrics = m_set_rmse, control = tune::control_bayes(
+        save_pred = TRUE), iter = 2, initial = 3)
+    Message
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      i Generating 15 candidates.
+
+---
+
+    Code
+      set.seed(1)
+      res_both <- tune_bayes(nearest_neighbor("regression", neighbors = tune()), mpg ~
+        ., vfold_cv(mtcars, v = 3), metrics = m_set_both, control = tune::control_bayes(
+        save_pred = TRUE), iter = 2, initial = 3)
+    Message
+      (x) GP has a LOO R² of 0% and is unreliable.
+      i Generating a candidate as far away from existing points as possible.
+      i Generating 15 candidates.
+
 # errors informatively with bad input
 
     Code
