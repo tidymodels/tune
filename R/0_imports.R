@@ -126,6 +126,8 @@ utils::globalVariables(
     "se",
     "num",
     "user"
+    ".resample_weight",
+    "effective_n"
   )
 )
 

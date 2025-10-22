@@ -565,6 +565,8 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
     )
   }
 
+  resample_weights <- .get_resample_weights(x)
+
   # The mapping of tuning parameters and .config.
   config_key <- .config_key_from_metrics(x)
 
@@ -604,19 +606,53 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
 
   x <- tibble::as_tibble(x)
   x <- vctrs::vec_slice(x, x$id != "Apparent")
-  x <- x |>
-    dplyr::group_by(
-      !!!rlang::syms(param_names),
-      .metric,
-      .estimator,
-      !!!rlang::syms(group_cols)
-    ) |>
-    dplyr::summarize(
-      mean = mean(.estimate, na.rm = TRUE),
-      n = sum(!is.na(.estimate)),
-      std_err = sd(.estimate, na.rm = TRUE) / sqrt(n),
-      .groups = "drop"
-    )
+
+  # Join weights to the data if available
+  if (!is.null(resample_weights)) {
+    weight_data <- .create_weight_mapping(resample_weights, id_names, x)
+    if (!is.null(weight_data)) {
+      x <- dplyr::left_join(x, weight_data, by = id_names)
+    } else {
+      # If weight mapping failed, fall back to unweighted
+      resample_weights <- NULL
+    }
+  }
+
+  if (!is.null(resample_weights)) {
+    # Use weighted aggregation
+    x <- x |>
+      dplyr::group_by(
+        !!!rlang::syms(param_names),
+        .metric,
+        .estimator,
+        !!!rlang::syms(group_cols)
+      ) |>
+      dplyr::summarize(
+        mean = stats::weighted.mean(.estimate, .resample_weight),
+        n = sum(!is.na(.estimate)),
+        effective_n = .effective_sample_size(.resample_weight[
+          !is.na(.estimate)
+        ]),
+        std_err = .weighted_sd(.estimate, .resample_weight) /
+          sqrt(pmax(effective_n, 1)),
+        .groups = "drop"
+      ) |>
+      dplyr::select(-effective_n)
+  } else {
+    x <- x |>
+      dplyr::group_by(
+        !!!rlang::syms(param_names),
+        .metric,
+        .estimator,
+        !!!rlang::syms(group_cols)
+      ) |>
+      dplyr::summarize(
+        mean = mean(.estimate, na.rm = TRUE),
+        n = sum(!is.na(.estimate)),
+        std_err = sd(.estimate, na.rm = TRUE) / sqrt(n),
+        .groups = "drop"
+      )
+  }
 
   # only join when parameters are being tuned (#600)
   if (length(param_names) == 0) {

@@ -1,5 +1,9 @@
 # tune (development version)
 
+* When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
+
+* The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)
+
 ## Breaking Changes
 
 * The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 
@@ -7,6 +11,7 @@
    - Fit diagnostics are computed and reported. If the fit quality is poor, an "uncertainty sample" that is furthest away from the existing data is used as the new candidate. 
    - The GP no longer uses binary indicators for qualitative predictors. Instead, a "categorical kernel" is used for those parameter columns. Fewer starting values are required with this change. 
    - For numeric predictors, the Matern 3/2 kernel is always used. 
+
 
 # tune 2.0.1
 
