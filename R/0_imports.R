@@ -125,7 +125,7 @@ utils::globalVariables(
     "predict_stage",
     "se",
     "num",
-    "user"
+    "user",
     ".resample_weight",
     "effective_n"
   )
