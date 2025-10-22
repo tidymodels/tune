@@ -175,20 +175,17 @@ fit_gp <- function(
     )
   }
 
-  withr::with_seed(
-    114,
-    gp_fit <- try(
-      GauPro::gpkm(
-        .outcome ~ .,
-        data = normalized,
-        kernel = gp_kernel,
-        verbose = 0,
-        restarts = 5,
-        nug.est = FALSE,
-        parallel = FALSE
-      ),
-      silent = TRUE
-    )
+  gp_fit <- try(
+    GauPro::gpkm(
+      .outcome ~ .,
+      data = normalized,
+      kernel = gp_kernel,
+      verbose = 0,
+      restarts = 5,
+      nug.est = FALSE,
+      parallel = FALSE
+    ),
+    silent = TRUE
   )
 
   new_check <- check_gp(gp_fit)
