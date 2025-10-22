@@ -7,7 +7,7 @@
     Message
       (x) GP has a LOO R² of 0% and is unreliable.
       i Generating a candidate as far away from existing points as possible.
-      i Generating 15 candidates
+      i Generating 15 candidates.
 
 ---
 
@@ -53,7 +53,7 @@
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      i Generating 15 candidates
+      i Generating 15 candidates.
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -127,7 +127,7 @@
       
       i Current best:		rmse=2.505 (@iter 0)
       v Gaussian process model (LOO R²: 30.5%)
-      i Generating 15 candidates
+      i Generating 15 candidates.
       i num_comp=4
       i Estimating performance
       v Estimating performance
@@ -207,7 +207,7 @@
       
       i Current best:		rmse=2.505 (@iter 0)
       v Gaussian process model (LOO R²: 30.5%)
-      i Generating 15 candidates
+      i Generating 15 candidates.
       i num_comp=4
       i Estimating performance
       i Fold01: preprocessor 1/1
@@ -355,7 +355,7 @@
     Message
       (x) GP has a LOO R² of 0% and is unreliable.
       i Generating a candidate as far away from existing points as possible.
-      i Generating 5 candidates
+      i Generating 5 candidates.
 
 # too few starting values
 

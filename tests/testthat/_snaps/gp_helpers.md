@@ -37,5 +37,5 @@
       knn_scores <- tune:::pred_gp(knn_gp, pset = knn_set, size = 20, current = mutate(
         knn_mtr, .iter = 0), control = ctrl)
     Message
-      i Generating 20 candidates
+      i Generating 20 candidates.
 

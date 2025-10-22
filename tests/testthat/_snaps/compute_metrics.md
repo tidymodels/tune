@@ -26,7 +26,7 @@
     Message
       (x) GP has a LOO R² of 0% and is unreliable.
       i Generating a candidate as far away from existing points as possible.
-      i Generating 15 candidates
+      i Generating 15 candidates.
 
 ---
 
@@ -38,7 +38,7 @@
     Message
       (x) GP has a LOO R² of 0% and is unreliable.
       i Generating a candidate as far away from existing points as possible.
-      i Generating 15 candidates
+      i Generating 15 candidates.
 
 # errors informatively with bad input
 

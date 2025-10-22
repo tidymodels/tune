@@ -41,7 +41,7 @@
       Warning in `tune_bayes()`:
       `eval_time` is only used for models with mode "censored regression".
     Message
-      i Generating 15 candidates
+      i Generating 15 candidates.
 
 ---
 
@@ -94,7 +94,7 @@
       Warning in `tune_bayes()`:
       `eval_time` is only used for models with mode "censored regression".
     Message
-      i Generating 15 candidates
+      i Generating 15 candidates.
 
 ---
 
