@@ -10,8 +10,11 @@
 <url><loc>https://tune.tidymodels.org/dev/authors.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/index.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/news/index.html</loc></url>
+<url><loc>https://tune.tidymodels.org/dev/reference/add_resample_weights.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/augment.tune_results.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/autoplot.tune_results.html</loc></url>
+<url><loc>https://tune.tidymodels.org/dev/reference/calculate_resample_weights.html</loc></url>
+<url><loc>https://tune.tidymodels.org/dev/reference/check_resample_weights.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/choose_metric.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/collect_predictions.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/compute_metrics.html</loc></url>
@@ -26,6 +29,7 @@
 <url><loc>https://tune.tidymodels.org/dev/reference/example_ames_knn.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/expo_decay.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/extract-tune.html</loc></url>
+<url><loc>https://tune.tidymodels.org/dev/reference/extract_resample_weights.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/filter_parameters.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/finalize_model.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/fit_best.html</loc></url>
@@ -43,6 +47,7 @@
 <url><loc>https://tune.tidymodels.org/dev/reference/parallelism.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/prob_improve.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/reexports.html</loc></url>
+<url><loc>https://tune.tidymodels.org/dev/reference/resample_weights_utils.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/schedule_grid.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/show_best.html</loc></url>
 <url><loc>https://tune.tidymodels.org/dev/reference/show_notes.html</loc></url>
