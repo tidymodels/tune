@@ -59,7 +59,7 @@ make_kernel <- function(pset, lvls) {
   res
 }
 
-check_gp <- function(x) {
+check_gp <- function(x, control) {
   model_fail <- inherits(x, "try-error")
   gp_threshold <- 0.1
   if (!model_fail) {
@@ -78,23 +78,27 @@ check_gp <- function(x) {
       color_text = get_tune_colors()$message$danger
     )
   } else if (loo_rsq < gp_threshold) {
-    msg <- cli::format_inline(
-      "GP has a LOO R\u00B2 of {round(loo_rsq * 100, 1)}% and is unreliable."
-    )
-    message_wrap(
-      msg,
-      prefix = cli::symbol$checkbox_circle_on,
-      color_text = get_tune_colors()$message$danger
-    )
+    if (control$verbose_iter) {
+      msg <- cli::format_inline(
+        "GP has a LOO R\u00B2 of {round(loo_rsq * 100, 1)}% and is unreliable."
+      )
+      message_wrap(
+        msg,
+        prefix = cli::symbol$checkbox_circle_on,
+        color_text = get_tune_colors()$message$danger
+      )
+    }
   } else if (loo_bad) {
-    msg <- cli::format_inline(
-      "GP has a coverage rate < {round(gp_threshold * 100, 1)}% and is unreliable."
-    )
-    message_wrap(
-      msg,
-      prefix = cli::symbol$checkbox_circle_on,
-      color_text = get_tune_colors()$message$danger
-    )
+    if (control$verbose_iter) {
+      msg <- cli::format_inline(
+        "GP has a coverage rate < {round(gp_threshold * 100, 1)}% and is unreliable."
+      )
+      message_wrap(
+        msg,
+        prefix = cli::symbol$checkbox_circle_on,
+        color_text = get_tune_colors()$message$danger
+      )
+    }
   }
   list(use = !loo_bad && !model_fail && loo_rsq > gp_threshold, rsq = loo_rsq)
 }
@@ -188,7 +192,7 @@ fit_gp <- function(
     silent = TRUE
   )
 
-  new_check <- check_gp(gp_fit)
+  new_check <- check_gp(gp_fit, control)
 
   if (control$verbose_iter) {
     if (new_check$use) {
@@ -254,19 +258,23 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     candidates <- candidates[keep_ind, ] |>
       dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
 
-    message_wrap(
-      "Generating a candidate as far away from existing points as possible.",
-      prefix = cli::symbol$info,
-      color_text = get_tune_colors()$message$info
-    )
+    if (control$verbose_iter) {
+      message_wrap(
+        "Generating a candidate as far away from existing points as possible.",
+        prefix = cli::symbol$info,
+        color_text = get_tune_colors()$message$info
+      )
+    }
 
     return(candidates)
   } else {
-    message_wrap(
-      paste("Generating", nrow(candidates), "candidates."),
-      prefix = cli::symbol$info,
-      color_text = get_tune_colors()$message$info
-    )
+    if (control$verbose_iter) {
+      message_wrap(
+        paste("Generating", nrow(candidates), "candidates."),
+        prefix = cli::symbol$info,
+        color_text = get_tune_colors()$message$info
+      )
+    }
   }
 
   if (!is.null(current)) {
