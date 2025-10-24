@@ -56,7 +56,7 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-     - name: Try to install a few packages for testing
+      - name: Try to install a few packages for testing
         run: |
           # from most dependency-heavy to least
           try(pak::pkg_install(c(

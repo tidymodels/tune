@@ -4,10 +4,6 @@
       set.seed(2)
       res <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,
         iter = iter2, control = control)
-    Message
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
-      i Generating 15 candidates.
 
 ---
 
@@ -19,8 +15,6 @@
       >  Generating a set of 2 initial parameter results
       v Initialization complete
       
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -53,7 +47,6 @@
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
-      i Generating 15 candidates.
       i Estimating performance
       i Fold01: preprocessor 1/1
       i Fold01: preprocessor 1/1, model 1/1
@@ -279,8 +272,6 @@
       cars_bayes_res <- tune_bayes(model, preprocessor = rec, resamples = data_folds,
         initial = cars_init_res, iter = 2)
     Message
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | error:   Error in `step_spline_b()`:
                      Caused by error in `prep()`:
                      ! `degree` (3) must be less than or equal to `deg_free` (2) when `complete_set = TRUE`.
@@ -288,8 +279,6 @@
       Warning:
       All models failed. Run `show_notes(.Last.tune.result)` for more information.
     Message
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: Some 'x' values beyond boundary knots may cause ill-conditioned basis
                      functions.
 
@@ -352,10 +341,6 @@
     Code
       res2 <- tune_bayes(wflow, resamples = folds, param_info = pset, initial = iter1,
         iter = iter2, control = control_bayes(save_workflow = TRUE))
-    Message
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
-      i Generating 5 candidates.
 
 # too few starting values
 
@@ -421,53 +406,33 @@
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 1 missing value was found and removed before fitting
         the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 2 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 3 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 4 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 5 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 6 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 7 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 8 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 9 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! For the rsq estimates, 10 missing values were found and removed before
         fitting the Gaussian process model.
-      (x) GP has a LOO R² of 0% and is unreliable.
-      i Generating a candidate as far away from existing points as possible.
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! No improvement for 10 iterations; returning current results.
 

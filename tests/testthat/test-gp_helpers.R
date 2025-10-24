@@ -50,7 +50,7 @@ test_that("GP fit - svm - failure", {
         pset = svm_set,
         size = 20,
         current = curr,
-        control = ctrl
+        control = control_bayes(verbose_iter = TRUE)
       )
   })
 })
@@ -61,7 +61,7 @@ test_that("GP scoring with failed model", {
   svm_results <- readRDS(test_path("data", "svm_results.rds"))
   svm_set <- attributes(svm_results)$parameters
 
-  ctrl <- control_bayes()
+  ctrl <- control_bayes(verbose_iter = TRUE)
   curr <-
     collect_metrics(svm_results) |>
     dplyr::filter(.metric == "accuracy") |>
@@ -134,7 +134,7 @@ test_that("GP fit - knn", {
         pset = knn_set,
         size = 20,
         current = knn_mtr |> mutate(.iter = 0),
-        control = ctrl
+        control = control_bayes()
       )
   })
 

@@ -119,24 +119,6 @@
       Error in `fit_resamples()`:
       ! The first argument to `fit_resamples()` should be either a model or workflow, not a <formula> object.
 
-# retain extra attributes
-
-    Code
-      fit_resamples(lin_mod, recipes::recipe(mpg ~ ., mtcars[rep(1:32, 3000), ]),
-      folds, control = control_resamples(save_workflow = TRUE))
-    Message
-      i The workflow being saved contains a recipe, which is 8.07 Mb in i memory. If
-      this was not intentional, please set the control setting i `save_workflow =
-      FALSE`.
-    Output
-      # Resampling results
-      # 2-fold cross-validation 
-      # A tibble: 2 x 4
-        splits          id    .metrics         .notes          
-        <list>          <chr> <list>           <list>          
-      1 <split [16/16]> Fold1 <tibble [2 x 4]> <tibble [0 x 4]>
-      2 <split [16/16]> Fold2 <tibble [2 x 4]> <tibble [0 x 4]>
-
 # `fit_resamples()` when objects need tuning
 
     2 arguments have been tagged for tuning in these components: model_spec and recipe.
