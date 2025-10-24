@@ -399,14 +399,6 @@ processing.</p>
 <span class="r-in"><span><span class="co"># use bayesian optimization to evaluate at 6 more points</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">8241</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">svm_bayes</span> <span class="op">&lt;-</span> <span class="fu">tune_bayes</span><span class="op">(</span><span class="va">svm_mod</span>, <span class="va">car_rec</span>, <span class="va">folds</span>, initial <span class="op">=</span> <span class="va">svm_grid</span>, iter <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">ⓧ</span> <span style="color: #BB0000;">GP has a LOO R² of 0% and is unreliable.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating a candidate as far away from existing points as</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #000000;">possible.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># note that bayesian optimization evaluated parameterizations</span></span></span>
 <span class="r-in"><span><span class="co"># similar to those that previously decreased rmse in svm_grid</span></span></span>
@@ -425,14 +417,6 @@ processing.</p>
 <span class="r-in"><span><span class="co"># grid using `tune_grid` with `grid = initial`</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0239</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">svm_init</span> <span class="op">&lt;-</span> <span class="fu">tune_bayes</span><span class="op">(</span><span class="va">svm_mod</span>, <span class="va">car_rec</span>, <span class="va">folds</span>, initial <span class="op">=</span> <span class="fl">6</span>, iter <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">ⓧ</span> <span style="color: #BB0000;">GP has a LOO R² of 0% and is unreliable.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating a candidate as far away from existing points as</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   <span style="color: #000000;">possible.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #000000;">ℹ</span> <span style="color: #000000;">Generating 5000 candidates.</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="show_best.html">show_best</a></span><span class="op">(</span><span class="va">svm_init</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
