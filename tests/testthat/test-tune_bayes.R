@@ -653,3 +653,26 @@ test_that("tune_bayes() output for `iter` edge cases (#721)", {
     tune_bayes(wf, boots, iter = NULL)
   )
 })
+
+# ------------------------------------------------------------------------------
+
+test_that("tune_bayes loggining doesn't error with failed model", {
+  # no failed results:
+  res_1 <- purrr::map_dfr(
+    ames_iter_search$.metrics,
+    tune:::set_config,
+    config = "beratna"
+  )
+  expect_true(all(res_1$.config == "beratna"))
+
+  has_failure <- tune:::vec_list_rowwise(ames_iter_search$.metrics[[1]])[1:3]
+  has_failure[2] <- list(NULL)
+  res_2 <- purrr::map(
+    has_failure,
+    tune:::set_config,
+    config = "sasa ke?"
+  )
+  expect_null(res_2[[2]])
+  expect_equal(res_2[[1]]$.config, "sasa ke?")
+  expect_equal(res_2[[3]]$.config, "sasa ke?")
+})

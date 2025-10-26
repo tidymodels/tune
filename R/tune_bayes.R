@@ -516,25 +516,24 @@ tune_bayes_workflow <- function(
       check_time(start_time, control$time_limit)
 
       all_bad <- is_cataclysmic(tmp_res)
-
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         tmp_res[[".metrics"]] <- purrr::map(
           tmp_res[[".metrics"]],
-          dplyr::mutate,
-          .config = iter_chr[i]
+          set_config,
+          config = iter_chr[i]
         )
         if (control$save_pred) {
           tmp_res[[".predictions"]] <- purrr::map(
             tmp_res[[".predictions"]],
-            dplyr::mutate,
-            .config = iter_chr[i]
+            set_config,
+            config = iter_chr[i]
           )
         }
         if (".extracts" %in% names(tmp_res)) {
           tmp_res[[".extracts"]] <- purrr::map(
             tmp_res[[".extracts"]],
-            dplyr::mutate,
-            .config = iter_chr[i]
+            set_config,
+            config = iter_chr[i]
           )
         }
         unsummarized <- dplyr::bind_rows(
@@ -618,6 +617,17 @@ check_iter <- function(iter, call) {
   }
 
   iter
+}
+
+set_config <- function(x, config = NULL, prefix = NULL) {
+  if (!is.null(x)) {
+    if (!is.null(prefix)) {
+      x <- dplyr::mutate(x, .config = paste0(prefix, "_", .config))
+    } else {
+      x <- dplyr::mutate(x, .config = config)
+    }
+  }
+  x
 }
 
 # ------------------------------------------------------------------------------

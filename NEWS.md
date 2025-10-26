@@ -4,6 +4,8 @@
 
 * The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)
 
+* A bug was fixed where `NULL` results generated during simulated annealing would cause errors when logging. 
+
 ## Breaking Changes
 
 * The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 
