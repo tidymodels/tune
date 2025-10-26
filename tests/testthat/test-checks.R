@@ -404,7 +404,11 @@ test_that("control object print methods", {
   # Test control_bayes print
   set.seed(123)
   expect_snapshot(control_bayes())
-  expect_snapshot(control_bayes(verbose_iter = TRUE, no_improve = 5, save_gp_scoring = TRUE))
+  expect_snapshot(control_bayes(
+    verbose_iter = TRUE,
+    no_improve = 5,
+    save_gp_scoring = TRUE
+  ))
 
   # Test control_last_fit print
   expect_snapshot(control_last_fit())
