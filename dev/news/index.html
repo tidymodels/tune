@@ -47,6 +47,7 @@
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
 <ul><li><p>When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new <code><a href="../reference/add_resample_weights.html">add_resample_weights()</a></code> function. See <code><a href="../reference/calculate_resample_weights.html">?calculate_resample_weights</a></code> (<a href="https://github.com/tidymodels/tune/issues/990" class="external-link">#990</a>)</p></li>
 <li><p>The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (<a href="https://github.com/tidymodels/tune/issues/914" class="external-link">#914</a>)</p></li>
+<li><p>A bug was fixed where <code>NULL</code> results generated during simulated annealing would cause errors when logging.</p></li>
 </ul><div class="section level3">
 <h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>
