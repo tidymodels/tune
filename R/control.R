@@ -73,43 +73,42 @@ control_grid <- function(
 }
 
 # Helper function to print control settings using cli
-print_control_settings <- function(x) {
+print_control_settings <- function(x, default = FALSE, defaults = NULL) {
   # Get the fields to print
   fields <- names(x)
+
+  # Optionally reduce to only non-defaults
+  if (default && !is.null(defaults)) {
+    fields <- fields[
+      !vapply(
+        fields,
+        function(field) {
+          identical(x[[field]], defaults[[field]])
+        },
+        logical(1)
+      )
+    ]
+  }
 
   # Build formatted lines for each field
   for (field in fields) {
     value <- x[[field]]
 
-    # Format the value based on type
-    if (is.null(value)) {
-      formatted_value <- "NULL"
-    } else if (is.function(value)) {
-      formatted_value <- "<function>"
-    } else if (is.logical(value)) {
-      formatted_value <- as.character(value)
-    } else if (is.numeric(value)) {
-      formatted_value <- format(value)
-    } else if (is.character(value)) {
-      if (length(value) == 1) {
-        formatted_value <- paste0("'", value, "'")
-      } else {
-        formatted_value <- paste0("[", paste(value, collapse = ", "), "]")
-      }
+    if (is.function(value)) {
+      cli::cli_bullets(c(" " = "{.arg {field}}: <function>"))
     } else if (inherits(value, "tune_backend_options")) {
-      formatted_value <- "<backend_options>"
+      cli::cli_bullets(c(" " = "{.arg {field}}: <backend_options>"))
     } else {
-      formatted_value <- paste0("<", class(value)[1], ">")
+      cli::cli_bullets(c(" " = "{.arg {field}}: {.val {value}}"))
     }
-
-    cli::cli_bullets(c(" " = paste0("{.field ", field, "}: ", formatted_value)))
   }
 }
 
 #' @export
-print.control_grid <- function(x, ...) {
+print.control_grid <- function(x, default = FALSE, ...) {
   cli::cli_text("{.emph Grid/resamples control object}")
-  print_control_settings(x)
+  defaults <- control_grid()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 
@@ -150,9 +149,10 @@ control_last_fit <- function(
 }
 
 #' @export
-print.control_last_fit <- function(x, ...) {
+print.control_last_fit <- function(x, default = FALSE, ...) {
   cli::cli_text("{.emph Last fit control object}")
-  print_control_settings(x)
+  defaults <- control_last_fit()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 
@@ -338,9 +338,10 @@ control_bayes <-
   }
 
 #' @export
-print.control_bayes <- function(x, ...) {
+print.control_bayes <- function(x, default = FALSE, ...) {
   cli::cli_text("{.emph Bayes control object}")
-  print_control_settings(x)
+  defaults <- control_bayes()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 

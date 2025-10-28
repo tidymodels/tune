@@ -415,6 +415,19 @@ test_that("control object print methods", {
   expect_snapshot(control_last_fit(verbose = TRUE))
 })
 
+test_that("control object print methods with default = TRUE", {
+  expect_snapshot(print(
+    control_grid(verbose = TRUE, pkgs = c("pkg1", "pkg2")),
+    default = TRUE
+  ))
+  set.seed(456)
+  expect_snapshot(print(
+    control_bayes(verbose_iter = TRUE, no_improve = 5),
+    default = TRUE
+  ))
+  expect_snapshot(print(control_last_fit(verbose = TRUE), default = TRUE))
+})
+
 # ------------------------------------------------------------------------------
 
 test_that("initial values", {
