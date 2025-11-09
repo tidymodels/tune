@@ -98,6 +98,8 @@ print_control_settings <- function(x, default = FALSE, defaults = NULL) {
       cli::cli_bullets(c(" " = "{.arg {field}}: <function>"))
     } else if (inherits(value, "tune_backend_options")) {
       cli::cli_bullets(c(" " = "{.arg {field}}: <backend_options>"))
+    } else if (is.null(value)) {
+      cli::cli_bullets(c(" " = "{.arg {field}}: NULL"))
     } else {
       cli::cli_bullets(c(" " = "{.arg {field}}: {.val {value}}"))
     }

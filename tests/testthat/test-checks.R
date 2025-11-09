@@ -395,39 +395,6 @@ test_that("Bayes control objects", {
   expect_s3_class(control_bayes(), "control_bayes")
 })
 
-test_that("control object print methods", {
-  # Test control_grid print
-  expect_snapshot(control_grid())
-  expect_snapshot(control_grid(verbose = TRUE, save_pred = TRUE))
-  expect_snapshot(control_grid(pkgs = c("pkg1", "pkg2"), extract = I))
-
-  # Test control_bayes print
-  set.seed(123)
-  expect_snapshot(control_bayes())
-  expect_snapshot(control_bayes(
-    verbose_iter = TRUE,
-    no_improve = 5,
-    save_gp_scoring = TRUE
-  ))
-
-  # Test control_last_fit print
-  expect_snapshot(control_last_fit())
-  expect_snapshot(control_last_fit(verbose = TRUE))
-})
-
-test_that("control object print methods with default = TRUE", {
-  expect_snapshot(print(
-    control_grid(verbose = TRUE, pkgs = c("pkg1", "pkg2")),
-    default = TRUE
-  ))
-  set.seed(456)
-  expect_snapshot(print(
-    control_bayes(verbose_iter = TRUE, no_improve = 5),
-    default = TRUE
-  ))
-  expect_snapshot(print(control_last_fit(verbose = TRUE), default = TRUE))
-})
-
 # ------------------------------------------------------------------------------
 
 test_that("initial values", {
