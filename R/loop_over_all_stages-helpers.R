@@ -203,25 +203,12 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
 predict_all_types <- function(
   wflow_fit,
   static,
-  submodel_grid = NULL,
-  predictee = "assessment"
+  submodel_grid = NULL
 ) {
-  predictee <- rlang::arg_match(predictee, c("assessment", "calibration"))
   outputs <- get_output_columns(wflow_fit)
 
-  if (predictee == "calibration" && static$post_estimation) {
-    if (is.null(static$data$cal)) {
-      cli::cli_abort(
-        "Calibration data were requested but not reserved.",
-        call = NULL
-      )
-    }
-    .data <- static$data$cal$data
-    .ind <- static$data$cal$ind
-  } else {
-    .data <- static$data$pred$data
-    .ind <- static$data$pred$ind
-  }
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
 
   processed_data_pred <- forge_from_workflow(.data, wflow_fit)
   processed_data_pred$outcomes <- processed_data_pred$outcomes |>
