@@ -246,7 +246,7 @@
 <li><p>tune now supports setting the <code>event_level</code> option from yardstick through the control objects (i.e. <code>control_grid(event_level = "second")</code>) (<a href="https://github.com/tidymodels/tune/issues/240" class="external-link">#240</a>, <a href="https://github.com/tidymodels/tune/issues/249" class="external-link">#249</a>).</p></li>
 <li><p>tune now supports workflows created with the new <code><a href="https://workflows.tidymodels.org/reference/add_variables.html" class="external-link">workflows::add_variables()</a></code> preprocessor.</p></li>
 <li><p>Better control the random number streams in parallel for <code><a href="../reference/tune_grid.html">tune_grid()</a></code> and <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> (<a href="https://github.com/tidymodels/tune/issues/11" class="external-link">#11</a>)</p></li>
-<li><p>Allow <code>...</code> to pass options from <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> to <code><a href="https://rdrr.io/pkg/GPfit/man/GP_fit.html" class="external-link">GPfit::GP_fit()</a></code>.</p></li>
+<li><p>Allow <code>...</code> to pass options from <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> to <code>GPfit::GP_fit()</code>.</p></li>
 <li><p>Additional checks are done for the initial grid that is given to <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>. If the initial grid is small relative to the number of model terms, a warning is issued. If the grid is a single point, an error occurs. (<a href="https://github.com/tidymodels/tune/issues/269" class="external-link">#269</a>)</p></li>
 <li><p>Formatting of some messages created by <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> now respect the width and wrap lines using the new <code><a href="../reference/message_wrap.html">message_wrap()</a></code> function.</p></li>
 <li><p>tune functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) will now error if a model specification or model workflow are given as the first argument (the soft deprecation period is over).</p></li>
@@ -320,7 +320,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer></body></html>

@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   acquisition_functions: acquisition_functions.html
   extras/optimizations: extras/optimizations.html
   tune: tune.html
-last_built: 2025-10-27T02:43Z
+last_built: 2025-12-09T09:48Z
 urls:
   reference: https://tune.tidymodels.org/reference
   article: https://tune.tidymodels.org/articles

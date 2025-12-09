@@ -118,7 +118,7 @@ relationships with the outcome:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">predictor</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs =</span></span>
 <span><span class="co">#&gt; "cs")'</span></span></code></pre></div>
-<p><img src="tune_files/figure-html/geo-plots-1.png" alt="A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side facets, and the log sale price is on the y axis. The clouds of points follow highly non-linear trends, traced by a blue trend line." width="768"></p>
+<p><img src="tune_files/figure-html/geo-plots-1.png" class="r-plt" alt="A ggplot2 scatterplot. x axes plot the latitude and longitude, in side-by-side facets, and the log sale price is on the y axis. The clouds of points follow highly non-linear trends, traced by a blue trend line." width="768"></p>
 <p>These two predictors could be modeled using <a href="https://towardsdatascience.com/numerical-interpolation-natural-cubic-spline-52c1157b98ac" class="external-link">natural
 splines</a> in conjunction with a linear model. The amount of
 “wiggliness” in these splines is determined by the degrees of freedom.
@@ -342,7 +342,7 @@ better. What was the relationship between these two parameters and
 RMSE?</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">ames_res</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tune_files/figure-html/rmse-tile-1.png" alt="A ggplot2 line plot. The x axis plots the degrees of freedom alotted to the spline parameter mapped to the longitude, and ranges from 0 to 17. The y axis plots the root mean squared error. Lines are colored by the spline terms for the latitude. Generally, from left to right, each line follows a downward trend, and lines from higher latitude degrees of freedom and centered lower." width="768"></p>
+<p><img src="tune_files/figure-html/rmse-tile-1.png" class="r-plt" alt="A ggplot2 line plot. The x axis plots the degrees of freedom alotted to the spline parameter mapped to the longitude, and ranges from 0 to 17. The y axis plots the root mean squared error. Lines are colored by the spline terms for the latitude. Generally, from left to right, each line follows a downward trend, and lines from higher latitude degrees of freedom and centered lower." width="768"></p>
 <p>Interestingly, latitude does <em>not</em> do well with degrees of
 freedom less than 8. How nonlinear are the optimal degrees of
 freedom?</p>
@@ -359,7 +359,7 @@ values of <code>deg_free</code>:</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span>se <span class="op">=</span> <span class="cn">FALSE</span>, method <span class="op">=</span> <span class="va">lm</span>, formula <span class="op">=</span> <span class="va">y</span> <span class="op">~</span> <span class="fu">splines</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/splines/ns.html" class="external-link">ns</a></span><span class="op">(</span><span class="va">x</span>, df <span class="op">=</span> <span class="fl">16</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">predictor</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tune_files/figure-html/final-vals-1.png" alt="A scatterplot much like the first one, except that a smoother, red line, representing a spline term with fewer degrees of freedom, is also plotted. The red line is much smoother but accounts for the less of the variation shown." width="768"></p>
+<p><img src="tune_files/figure-html/final-vals-1.png" class="r-plt" alt="A scatterplot much like the first one, except that a smoother, red line, representing a spline term with fewer degrees of freedom, is also plotted. The red line is much smoother but accounts for the less of the variation shown." width="768"></p>
 <p>Looking at these plots, the smaller degrees of freedom (red) are
 clearly under-fitting. Visually, the more complex splines (blue) might
 indicate that there is overfitting but this would result in poor RMSE
@@ -1077,7 +1077,7 @@ here.</p></li>
 <p>Visually, the performance gain was:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot</a></span><span class="op">(</span><span class="va">knn_search</span>, type <span class="op">=</span> <span class="st">"performance"</span>, metric <span class="op">=</span> <span class="st">"rmse"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="tune_files/figure-html/bo-iter-1.png" alt="A ggplot2 dot plot. The x axis plots iterations, ranging from 0 to 20, and the y axis plots root mean squared error. After iteration 0, each point has error bars for the metric value. Generally, the error decreases as the iteration increases." width="768"></p>
+<p><img src="tune_files/figure-html/bo-iter-1.png" class="r-plt" alt="A ggplot2 dot plot. The x axis plots iterations, ranging from 0 to 20, and the y axis plots root mean squared error. After iteration 0, each point has error bars for the metric value. Generally, the error decreases as the iteration increases." width="768"></p>
 <p>The best results here were:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/collect_predictions.html">collect_metrics</a></span><span class="op">(</span><span class="va">knn_search</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -1086,16 +1086,16 @@ here.</p></li>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 25 × 11</span></span></span>
 <span><span class="co">#&gt;    neighbors weight_func `long df` `lat df` .metric .estimator   mean</span></span>
 <span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>         9 inv                 5        5 rmse    standard   0.081<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>         7 inv                 6        5 rmse    standard   0.082<span style="text-decoration: underline;">1</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>        10 inv                 6        6 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         7 inv                 6        7 rmse    standard   0.082<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>         5 inv                 5        6 rmse    standard   0.082<span style="text-decoration: underline;">5</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>        11 gaussian            5        6 rmse    standard   0.082<span style="text-decoration: underline;">6</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>        11 inv                 2        6 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         5 gaussian            8        5 rmse    standard   0.082<span style="text-decoration: underline;">9</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         5 inv                 2        6 rmse    standard   0.083<span style="text-decoration: underline;">2</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         5 gaussian            8        6 rmse    standard   0.083<span style="text-decoration: underline;">2</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>        10 triangular          3        3 rmse    standard   0.081<span style="text-decoration: underline;">9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>        10 inv                 2        4 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>         8 triangular          6        4 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>         6 gaussian            6        5 rmse    standard   0.082<span style="text-decoration: underline;">4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>        11 gaussian            4        5 rmse    standard   0.082<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>         5 gaussian            3        5 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>         6 gaussian            6        6 rmse    standard   0.082<span style="text-decoration: underline;">7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>         4 gaussian            4        6 rmse    standard   0.083<span style="text-decoration: underline;">5</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>         4 gaussian            4        4 rmse    standard   0.083<span style="text-decoration: underline;">8</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>         3 rectangular         6        6 rmse    standard   0.084<span style="text-decoration: underline;">3</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 15 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: n &lt;int&gt;, std_err &lt;dbl&gt;, .config &lt;chr&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   .iter &lt;int&gt;</span></span></span></code></pre></div>
@@ -1116,7 +1116,7 @@ nonlinear terms created by the recipe.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
   </div></footer>

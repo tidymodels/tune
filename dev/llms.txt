@@ -1,0 +1,208 @@
+# tune
+
+## Overview
+
+The goal of tune is to facilitate hyperparameter tuning for the
+tidymodels packages. It relies heavily on
+[recipes](https://recipes.tidymodels.org/),
+[parsnip](https://parsnip.tidymodels.org/), and
+[dials](https://dials.tidymodels.org/).
+
+## Installation
+
+Install from CRAN:
+
+``` r
+install.packages("tune", repos = "http://cran.r-project.org") #or your local mirror
+```
+
+or you can install the current development version using:
+
+``` r
+# install.packages("pak")
+pak::pak("tidymodels/tune")
+```
+
+## Examples
+
+There are several package vignettes, as well as articles available at
+[tidymodels.org](https://www.tidymodels.org/), demonstrating how to use
+tune.
+
+Good places to begin include:
+
+- [Getting started with cell segmentation
+  data](https://www.tidymodels.org/start/tuning/)
+- [Getting started with Ames housing
+  data](https://tune.tidymodels.org/articles/getting_started.html)
+
+More advanced resources available are:
+
+- [Basic grid search for an SVM
+  model](https://www.tidymodels.org/learn/work/tune-svm/)
+- [Iterative Bayesian optimization of a classification
+  model](https://www.tidymodels.org/learn/work/bayes-opt/)
+- [Advanced text mining
+  example](https://tune.tidymodels.org/articles/extras/text_analysis.html)
+- [Notes on optimizations and parallel
+  processing](https://tune.tidymodels.org/articles/extras/optimizations.html)
+- [Details on acquisition function for scoring parameter
+  combinations](https://tune.tidymodels.org/articles/acquisition_functions.html)
+
+## Contributing
+
+This project is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
+
+- For questions and discussions about tidymodels packages, modeling, and
+  machine learning, please [post on Posit
+  Community](https://forum.posit.co/new-topic?category_id=15&tags=tidymodels,question).
+
+- If you think you have encountered a bug, please [submit an
+  issue](https://github.com/tidymodels/tune/issues).
+
+- Either way, learn how to create and share a
+  [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html)
+  (a minimal, reproducible example), to clearly communicate about your
+  code.
+
+- Check out further details on [contributing guidelines for tidymodels
+  packages](https://www.tidymodels.org/contribute/) and [how to get
+  help](https://www.tidymodels.org/help/).
+
+# Package index
+
+## Fit many models
+
+- [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md)
+  : Model tuning via grid search
+- [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
+  : Bayesian optimization of model parameters.
+- [`expo_decay()`](https://tune.tidymodels.org/dev/reference/expo_decay.md)
+  : Exponential decay function
+- [`prob_improve()`](https://tune.tidymodels.org/dev/reference/prob_improve.md)
+  [`exp_improve()`](https://tune.tidymodels.org/dev/reference/prob_improve.md)
+  [`conf_bound()`](https://tune.tidymodels.org/dev/reference/prob_improve.md)
+  : Acquisition function for scoring parameter combinations
+- [`fit_resamples()`](https://tune.tidymodels.org/dev/reference/fit_resamples.md)
+  : Fit multiple models via resampling
+- [`control_grid()`](https://tune.tidymodels.org/dev/reference/control_grid.md)
+  [`control_resamples()`](https://tune.tidymodels.org/dev/reference/control_grid.md)
+  [`new_backend_options()`](https://tune.tidymodels.org/dev/reference/control_grid.md)
+  : Control aspects of the grid search process
+- [`control_bayes()`](https://tune.tidymodels.org/dev/reference/control_bayes.md)
+  : Control aspects of the Bayesian search process
+- [`parallelism`](https://tune.tidymodels.org/dev/reference/parallelism.md)
+  : Support for parallel processing in tune
+
+## Fit one model
+
+- [`fit_best()`](https://tune.tidymodels.org/dev/reference/fit_best.md)
+  : Fit a model to the numerically optimal configuration
+- [`last_fit()`](https://tune.tidymodels.org/dev/reference/last_fit.md)
+  : Fit the final best model to the training set and evaluate the test
+  set
+- [`finalize_model()`](https://tune.tidymodels.org/dev/reference/finalize_model.md)
+  [`finalize_recipe()`](https://tune.tidymodels.org/dev/reference/finalize_model.md)
+  [`finalize_workflow()`](https://tune.tidymodels.org/dev/reference/finalize_model.md)
+  [`finalize_tailor()`](https://tune.tidymodels.org/dev/reference/finalize_model.md)
+  : Splice final parameters into objects
+- [`control_last_fit()`](https://tune.tidymodels.org/dev/reference/control_last_fit.md)
+  : Control aspects of the last fit process
+
+## Inspect results
+
+- [`collect_predictions()`](https://tune.tidymodels.org/dev/reference/collect_predictions.md)
+  [`collect_metrics()`](https://tune.tidymodels.org/dev/reference/collect_predictions.md)
+  [`collect_notes()`](https://tune.tidymodels.org/dev/reference/collect_predictions.md)
+  [`collect_extracts()`](https://tune.tidymodels.org/dev/reference/collect_predictions.md)
+  : Obtain and format results produced by tuning functions
+- [`show_notes()`](https://tune.tidymodels.org/dev/reference/show_notes.md)
+  : Display distinct errors from tune objects
+- [`show_best()`](https://tune.tidymodels.org/dev/reference/show_best.md)
+  [`select_best()`](https://tune.tidymodels.org/dev/reference/show_best.md)
+  [`select_by_pct_loss()`](https://tune.tidymodels.org/dev/reference/show_best.md)
+  [`select_by_one_std_err()`](https://tune.tidymodels.org/dev/reference/show_best.md)
+  : Investigate best tuning parameters
+- [`filter_parameters()`](https://tune.tidymodels.org/dev/reference/filter_parameters.md)
+  : Remove some tuning parameter results
+- [`autoplot(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/autoplot.tune_results.md)
+  : Plot tuning search results
+- [`coord_obs_pred()`](https://tune.tidymodels.org/dev/reference/coord_obs_pred.md)
+  : Use same scale for plots of observed vs predicted values
+- [`conf_mat_resampled()`](https://tune.tidymodels.org/dev/reference/conf_mat_resampled.md)
+  : Compute average confusion matrix across resamples
+
+## Miscellaneous
+
+- [`extract_workflow(`*`<last_fit>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_workflow(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_spec_parsnip(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_recipe(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_fit_parsnip(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_fit_engine(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_mold(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  [`extract_preprocessor(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/extract-tune.md)
+  :
+
+  Extract elements of `tune` objects
+
+- [`extract_resample_weights()`](https://tune.tidymodels.org/dev/reference/extract_resample_weights.md)
+  : Extract resample weights from rset or tuning objects
+
+- [`int_pctl(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/int_pctl.tune_results.md)
+  : Bootstrap confidence intervals for performance metrics
+
+- [`compute_metrics()`](https://tune.tidymodels.org/dev/reference/compute_metrics.md)
+  : Calculate and format metrics from tuning functions
+
+- [`augment(`*`<tune_results>`*`)`](https://tune.tidymodels.org/dev/reference/augment.tune_results.md)
+  [`augment(`*`<resample_results>`*`)`](https://tune.tidymodels.org/dev/reference/augment.tune_results.md)
+  [`augment(`*`<last_fit>`*`)`](https://tune.tidymodels.org/dev/reference/augment.tune_results.md)
+  : Augment data with holdout predictions
+
+- [`example_ames_knn`](https://tune.tidymodels.org/dev/reference/example_ames_knn.md)
+  [`ames_wflow`](https://tune.tidymodels.org/dev/reference/example_ames_knn.md)
+  [`ames_grid_search`](https://tune.tidymodels.org/dev/reference/example_ames_knn.md)
+  [`ames_iter_search`](https://tune.tidymodels.org/dev/reference/example_ames_knn.md)
+  : Example Analysis of Ames Housing Data
+
+- [`add_resample_weights()`](https://tune.tidymodels.org/dev/reference/add_resample_weights.md)
+  : Add resample weights to an rset object
+
+- [`calculate_resample_weights()`](https://tune.tidymodels.org/dev/reference/calculate_resample_weights.md)
+  : Calculate resample weights from resample sizes
+
+## Developer functions
+
+- [`merge(`*`<recipe>`*`)`](https://tune.tidymodels.org/dev/reference/merge.recipe.md)
+  [`merge(`*`<model_spec>`*`)`](https://tune.tidymodels.org/dev/reference/merge.recipe.md)
+  : Merge parameter grid values into objects
+- [`message_wrap()`](https://tune.tidymodels.org/dev/reference/message_wrap.md)
+  : Write a message that respects the line width
+- [`.use_case_weights_with_yardstick()`](https://tune.tidymodels.org/dev/reference/dot-use_case_weights_with_yardstick.md)
+  : Determine if case weights should be passed on to yardstick
+- [`.stash_last_result()`](https://tune.tidymodels.org/dev/reference/dot-stash_last_result.md)
+  : Save most recent results to search path
+
+# Articles
+
+### All vignettes
+
+- [Acquisition
+  functions](https://tune.tidymodels.org/dev/articles/acquisition_functions.md):
+
+  What are acquisition functions? Learn how are they used to guide the
+  exploration of the parameter space during Bayesian optimization.
+
+- [Optimizations and parallel
+  processing](https://tune.tidymodels.org/dev/articles/extras/optimizations.md):
+
+  How can we evaluate candidate models in the shortest amount of time?
+
+- [Introduction to
+  tune](https://tune.tidymodels.org/dev/articles/tune.md):
+
+  Start here if this is your first time using tune! You will learn about
+  basic usage, grid search, and model optimization.
