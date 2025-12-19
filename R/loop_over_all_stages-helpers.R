@@ -40,7 +40,7 @@ make_static <- function(
     ),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
-    pred_types = determine_pred_types(workflow, metrics),
+    pred_types = .determine_pred_types(workflow, metrics),
     eval_time = eval_time,
     split_args = split_args,
     control = control,
@@ -440,7 +440,10 @@ make_config_labs <- function(grid, param, val = "pre") {
   res
 }
 
-determine_pred_types <- function(wflow, metrics) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
 
   pred_types <- unique(metrics_info(metrics)$type)
