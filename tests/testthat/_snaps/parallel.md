@@ -145,14 +145,14 @@
     Code
       tune:::loop_call("resamples", "sequential", list())
     Output
-      lapply(resamples, loop_over_all_stages, grid = grid, static = static)
+      lapply(resamples, .loop_over_all_stages, grid = grid, static = static)
 
 ---
 
     Code
       tune:::loop_call("resamples", "sequential", list(a = quote(a)))
     Output
-      lapply(resamples, loop_over_all_stages, grid = grid, static = static, 
+      lapply(resamples, .loop_over_all_stages, grid = grid, static = static, 
           a = a)
 
 ---
@@ -176,7 +176,7 @@
     Code
       tune:::loop_call("resamples", "future", list())
     Output
-      future.apply::future_lapply(resamples, loop_over_all_stages, 
+      future.apply::future_lapply(resamples, .loop_over_all_stages, 
           grid = grid, static = static, future.label = "tune-grid-%d", 
           future.stdout = TRUE, future.seed = TRUE, future.globals = c("grid", 
           "static"))
@@ -186,7 +186,7 @@
     Code
       tune:::loop_call("resamples", "future", list(a = quote(a)))
     Output
-      future.apply::future_lapply(resamples, loop_over_all_stages, 
+      future.apply::future_lapply(resamples, .loop_over_all_stages, 
           grid = grid, static = static, a = a, future.label = "tune-grid-%d", 
           future.stdout = TRUE, future.seed = TRUE, future.globals = c("grid", 
           "static", "a"))
@@ -216,7 +216,7 @@
     Code
       tune:::loop_call("resamples", "mirai", list())
     Output
-      eval_mirai(resamples, loop_over_all_stages, .args = list(grid = grid, 
+      eval_mirai(resamples, .loop_over_all_stages, .args = list(grid = grid, 
           static = static))
 
 ---
@@ -224,7 +224,7 @@
     Code
       tune:::loop_call("resamples", "mirai", list(a = quote(a)))
     Output
-      eval_mirai(resamples, loop_over_all_stages, .args = list(grid = grid, 
+      eval_mirai(resamples, .loop_over_all_stages, .args = list(grid = grid, 
           static = static, a = a))
 
 ---
