@@ -247,7 +247,11 @@ first_eval_time <- function(
   }
 
   # Not a metric that requires an eval_time
-  no_time_req <- c("static_survival_metric", "integrated_survival_metric")
+  no_time_req <- c(
+    "static_survival_metric",
+    "integrated_survival_metric",
+    "linear_pred_survival_metric"
+  )
   if (mtr_info$class %in% no_time_req) {
     return(NULL)
   }
