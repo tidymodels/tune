@@ -378,6 +378,24 @@ surv_summarize <- function(x, param, y) {
     }
   }
 
+  # Simple mean to summarize linear predictors
+  if (any(pred_cols == ".pred_linear_pred")) {
+    tmp <-
+      dplyr::summarize(
+        x,
+        .pred_linear_pred = mean(.pred_linear_pred, na.rm = TRUE),
+        .by = c(.row, .config, dplyr::any_of(param), dplyr::any_of(".iter"))
+      )
+
+    if (!is.null(res)) {
+      dot_iter <- grep("\\.iter", nms, value = TRUE)
+      res <-
+        dplyr::full_join(tmp, res, by = c(".row", ".config", param, dot_iter))
+    } else {
+      res <- tmp
+    }
+  }
+
   res <- dplyr::full_join(outcomes, res, by = ".row")
   res[order(res$.row, res$.config), nms]
 }
@@ -413,7 +431,7 @@ average_predictions <- function(x, grid = NULL) {
     x <- prob_summarize(x, param_names)
   } else if (any(metric_types == "class")) {
     x <- class_summarize(x, param_names)
-  } else if (any(metric_types %in% c("survival", "time"))) {
+  } else if (any(metric_types %in% c("survival", "time", "linear_pred"))) {
     x <- surv_summarize(x, param_names, y_nms)
   } else {
     cli::cli_abort(
