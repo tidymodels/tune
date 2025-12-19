@@ -3,6 +3,7 @@
 %   R/iteration_results.R, R/symbol.R, R/tune_bayes.R, R/tune_grid.R, R/utils.R
 \name{check_rset}
 \alias{check_rset}
+\alias{.check_grid}
 \alias{check_parameters}
 \alias{check_workflow}
 \alias{check_metrics}
@@ -24,6 +25,8 @@
 \title{Get colors for tune text.}
 \usage{
 check_rset(x)
+
+.check_grid(grid, workflow, pset = NULL, call = caller_env())
 
 check_parameters(wflow, pset = NULL, data, grid_names = character(0))
 
@@ -82,9 +85,11 @@ is_workflow(x)
 \arguments{
 \item{x}{An object.}
 
-\item{wflow}{A \code{workflow} object.}
+\item{workflow}{The workflow used to fit the iteration results.}
 
 \item{pset}{A \code{parameters} object.}
+
+\item{wflow}{A \code{workflow} object.}
 
 \item{data}{The training data.}
 
@@ -114,8 +119,6 @@ metrics should be computed (e.g. the time-dependent ROC curve, etc).}
 \item{outcomes}{A character vector of outcome names.}
 
 \item{rset_info}{Attributes from an \code{rset} object.}
-
-\item{workflow}{The workflow used to fit the iteration results.}
 
 \item{as_matrix}{A logical for the return type.}
 

@@ -55,16 +55,16 @@ test_that("grid objects", {
   set_1 <- extract_parameter_set_dials(chi_wflow)
   set_2 <- set_1 |> update(deg_free = dials::deg_free(c(1, 3)))
 
-  expect_equal(tune:::check_grid(grid_1, chi_wflow), grid_1)
+  expect_equal(tune:::.check_grid(grid_1, chi_wflow), grid_1)
 
-  expect_silent(tune:::check_grid(grid_1, chi_wflow))
+  expect_silent(tune:::.check_grid(grid_1, chi_wflow))
 
   expect_snapshot(
-    tune:::check_grid(rbind(grid_1, grid_1), chi_wflow)
+    tune:::.check_grid(rbind(grid_1, grid_1), chi_wflow)
   )
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(chi_wflow, chi_wflow)
+    tune:::.check_grid(chi_wflow, chi_wflow)
   })
 
   bare_rec <-
@@ -80,13 +80,13 @@ test_that("grid objects", {
     add_model(svm_mod) |>
     add_recipe(bare_rec)
 
-  expect_no_error(grid_2 <- tune:::check_grid(6, wflow_1))
+  expect_no_error(grid_2 <- tune:::.check_grid(6, wflow_1))
   expect_equal(nrow(grid_2), 6)
   expect_true(inherits(grid_2, "data.frame"))
 
   # For issue #56
   grid_3 <- as.data.frame(grid_1)
-  expect_equal(tune:::check_grid(grid_3, chi_wflow), grid_1)
+  expect_equal(tune:::.check_grid(grid_3, chi_wflow), grid_1)
 
   # For weird attributes
   grid_4 <- expand.grid(
@@ -98,11 +98,11 @@ test_that("grid objects", {
     degree = 9:10
   )
   expect_equal(
-    tune:::check_grid(grid_4, chi_wflow),
+    tune:::.check_grid(grid_4, chi_wflow),
     tibble::as_tibble(vctrs::data_frame(grid_4))
   )
 
-  expect_silent(tune:::check_grid(grid_4, chi_wflow))
+  expect_silent(tune:::.check_grid(grid_4, chi_wflow))
 })
 
 test_that("Unknown `grid` columns are caught", {
@@ -124,7 +124,7 @@ test_that("Unknown `grid` columns are caught", {
   grid <- tibble::tibble(deg_free = 2, num_comp = 0.01, other1 = 1, other2 = 1)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(grid, workflow)
+    tune:::.check_grid(grid, workflow)
   })
 })
 
@@ -147,7 +147,7 @@ test_that("Missing required `grid` columns are caught", {
   grid <- tibble::tibble(num_comp = 0.01)
 
   expect_snapshot(error = TRUE, {
-    tune:::check_grid(grid, workflow)
+    tune:::.check_grid(grid, workflow)
   })
 })
 

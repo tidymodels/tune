@@ -61,7 +61,10 @@ check_backend_options <- function(backend_options) {
 
 grid_msg <- "{.arg grid} should be a positive integer or a data frame."
 
-check_grid <- function(grid, workflow, pset = NULL, call = caller_env()) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.check_grid <- function(grid, workflow, pset = NULL, call = caller_env()) {
   # `NULL` grid is the signal that we are using `fit_resamples()`
   if (is.null(grid)) {
     return(grid)
