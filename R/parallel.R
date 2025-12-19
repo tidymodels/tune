@@ -401,7 +401,7 @@ loop_call <-
         par_fns(framework)[[1]],
         .ns = par_fns(framework)[[2]],
         quote(resamples),
-        quote(loop_over_all_stages)
+        quote(.loop_over_all_stages)
       )
       base_args <- list(grid = quote(grid), static = quote(static))
     } else {

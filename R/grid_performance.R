@@ -69,7 +69,7 @@ metrics_info <- function(x) {
   # The call stack is:
   #
   # tune_grid_loop()
-  #   loop_over_all_stages() <many times>
+  #   .loop_over_all_stages() <many times>
   #    .estimate_metrics()
 
   # predictions made in:

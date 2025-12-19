@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Helpers for loop_over_all_stages()
+# Helpers for .loop_over_all_stages()
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
@@ -360,6 +360,9 @@ replace_reserve_rows <- function(iter, chunk) {
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
 .get_config_key <- function(grid, wflow) {
   info <- tune_args(wflow)
   key <- grid
