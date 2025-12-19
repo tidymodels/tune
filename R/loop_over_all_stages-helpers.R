@@ -29,7 +29,7 @@ make_static <- function(
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 
-  configs <- get_config_key(grid, workflow)
+  configs <- .get_config_key(grid, workflow)
 
   list(
     wflow = workflow,
@@ -360,7 +360,7 @@ replace_reserve_rows <- function(iter, chunk) {
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
-get_config_key <- function(grid, wflow) {
+.get_config_key <- function(grid, wflow) {
   info <- tune_args(wflow)
   key <- grid
 
