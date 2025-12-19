@@ -13,7 +13,7 @@ tune_grid_loop <- function(
 
   mtr_info <- tibble::as_tibble(metrics)
 
-  control <- update_parallel_over(control, resamples, grid)
+  control <- .update_parallel_over(control, resamples, grid)
 
   # Determine how to process the tasks (i.e. parallel engines or sequential)
   strategy <- choose_framework(workflow, control)

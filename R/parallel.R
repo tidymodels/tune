@@ -346,7 +346,10 @@ NULL
 # ------------------------------------------------------------------------------
 # Choosing how to execute the looping structure
 
-update_parallel_over <- function(control, resamples, grid) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.update_parallel_over <- function(control, resamples, grid) {
   num_candidates <- nrow(grid)
 
   if (is.null(control$parallel_over) | num_candidates == 0) {
