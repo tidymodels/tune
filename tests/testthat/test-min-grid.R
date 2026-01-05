@@ -1,6 +1,8 @@
 # ------------------------------------------------------------------------------
 
 test_that("boosted tree grid reduction - xgboost", {
+  skip_if_not_installed("xgboost")
+
   mod <- parsnip::boost_tree() |>
     parsnip::set_engine("xgboost")
 
