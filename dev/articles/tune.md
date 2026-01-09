@@ -165,7 +165,7 @@ can be created by:
 spline_grid <- grid_max_entropy(ames_param, size = 10)
 #> Warning: `grid_max_entropy()` was deprecated in dials 1.3.0.
 #> ℹ Please use `grid_space_filling()` instead.
-#> This warning is displayed once every 8 hours.
+#> This warning is displayed once per session.
 #> Call `lifecycle::last_lifecycle_warnings()` to see where this warning
 #> was generated.
 spline_grid
