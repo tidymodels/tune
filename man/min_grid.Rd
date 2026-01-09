@@ -66,6 +66,7 @@ internal use only and the API may change in the near future.
 method.
 }
 \examples{
+\dontshow{if (tune:::should_run_examples(suggests = "xgboost")) withAutoprint(\{ # examplesIf}
 library(dplyr)
 library(dials)
 library(parsnip)
@@ -99,5 +100,6 @@ xgb_grid <-
   grid_regular(levels = 3)
 
 min_grid(xgb_spec, xgb_grid)
+\dontshow{\}) # examplesIf}
 }
 \keyword{internal}

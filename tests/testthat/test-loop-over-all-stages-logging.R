@@ -402,6 +402,7 @@ test_that("captures kknn R errors", {
 })
 
 test_that("captures xgboost C errors", {
+  skip_if_not_installed("xgboost")
   skip_if_not_installed("modeldata")
 
   # xgboost is gonna complain because one of the predictors is Inf

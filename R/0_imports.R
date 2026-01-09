@@ -105,6 +105,7 @@ utils::globalVariables(
     "msg",
     "..object",
     ".eval_time",
+    ".pred_linear_pred",
     ".pred_survival",
     ".pred_time",
     ".weight_censored",
