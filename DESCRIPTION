@@ -1,6 +1,6 @@
 Package: tune
 Title: Tidy Tuning Tools
-Version: 2.0.1.9001
+Version: 2.0.1.9002
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
