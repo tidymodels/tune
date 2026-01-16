@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">2.0.1.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">2.0.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,15 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li><p>When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new <code><a href="../reference/add_resample_weights.html">add_resample_weights()</a></code> function. See <code><a href="../reference/calculate_resample_weights.html">?calculate_resample_weights</a></code> (<a href="https://github.com/tidymodels/tune/issues/990" class="external-link">#990</a>)</p></li>
+<ul><li>
+<p>Prepends a period to the name, and exports the following functions. This is to improve integration with other packages:</p>
+<ul><li>check_grid(),</li>
+<li>determine_pred_types()</li>
+<li>get_config_key()</li>
+<li>loop_over_all_stages()</li>
+<li>update_parallel_over()</li>
+</ul></li>
+<li><p>When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new <code><a href="../reference/add_resample_weights.html">add_resample_weights()</a></code> function. See <code><a href="../reference/calculate_resample_weights.html">?calculate_resample_weights</a></code> (<a href="https://github.com/tidymodels/tune/issues/990" class="external-link">#990</a>)</p></li>
 <li><p>The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (<a href="https://github.com/tidymodels/tune/issues/914" class="external-link">#914</a>)</p></li>
 <li><p>A bug was fixed where <code>NULL</code> results generated during simulated annealing would cause errors when logging.</p></li>
 </ul><div class="section level3">
@@ -246,7 +254,7 @@
 <li><p>tune now supports setting the <code>event_level</code> option from yardstick through the control objects (i.e. <code>control_grid(event_level = "second")</code>) (<a href="https://github.com/tidymodels/tune/issues/240" class="external-link">#240</a>, <a href="https://github.com/tidymodels/tune/issues/249" class="external-link">#249</a>).</p></li>
 <li><p>tune now supports workflows created with the new <code><a href="https://workflows.tidymodels.org/reference/add_variables.html" class="external-link">workflows::add_variables()</a></code> preprocessor.</p></li>
 <li><p>Better control the random number streams in parallel for <code><a href="../reference/tune_grid.html">tune_grid()</a></code> and <code><a href="../reference/fit_resamples.html">fit_resamples()</a></code> (<a href="https://github.com/tidymodels/tune/issues/11" class="external-link">#11</a>)</p></li>
-<li><p>Allow <code>...</code> to pass options from <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> to <code>GPfit::GP_fit()</code>.</p></li>
+<li><p>Allow <code>...</code> to pass options from <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> to <code><a href="https://rdrr.io/pkg/GPfit/man/GP_fit.html" class="external-link">GPfit::GP_fit()</a></code>.</p></li>
 <li><p>Additional checks are done for the initial grid that is given to <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>. If the initial grid is small relative to the number of model terms, a warning is issued. If the grid is a single point, an error occurs. (<a href="https://github.com/tidymodels/tune/issues/269" class="external-link">#269</a>)</p></li>
 <li><p>Formatting of some messages created by <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> now respect the width and wrap lines using the new <code><a href="../reference/message_wrap.html">message_wrap()</a></code> function.</p></li>
 <li><p>tune functions (<code><a href="../reference/tune_grid.html">tune_grid()</a></code>, <code><a href="../reference/tune_bayes.html">tune_bayes()</a></code>, etc) will now error if a model specification or model workflow are given as the first argument (the soft deprecation period is over).</p></li>

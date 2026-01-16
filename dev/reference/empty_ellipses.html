@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tune</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">2.0.1.9001</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">2.0.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get colors for tune text.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/main/R/checks.R" class="external-link"><code>R/checks.R</code></a>, <a href="https://github.com/tidymodels/tune/blob/main/R/collect.R" class="external-link"><code>R/collect.R</code></a>, <a href="https://github.com/tidymodels/tune/blob/main/R/grid_performance.R" class="external-link"><code>R/grid_performance.R</code></a>, and 5 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/tune/blob/main/R/checks.R" class="external-link"><code>R/checks.R</code></a>, <a href="https://github.com/tidymodels/tune/blob/main/R/collect.R" class="external-link"><code>R/collect.R</code></a>, <a href="https://github.com/tidymodels/tune/blob/main/R/grid_performance.R" class="external-link"><code>R/grid_performance.R</code></a>, and 8 more</small>
       <div class="d-none name"><code>empty_ellipses.Rd</code></div>
     </div>
 
@@ -51,6 +51,8 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">check_rset</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.check_grid</span><span class="op">(</span><span class="va">grid</span>, <span class="va">workflow</span>, pset <span class="op">=</span> <span class="cn">NULL</span>, call <span class="op">=</span> <span class="fu">caller_env</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">check_parameters</span><span class="op">(</span><span class="va">wflow</span>, pset <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">data</span>, grid_names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -90,6 +92,14 @@
 <span>  <span class="va">workflow</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu">.get_config_key</span><span class="op">(</span><span class="va">grid</span>, <span class="va">wflow</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.determine_pred_types</span><span class="op">(</span><span class="va">wflow</span>, <span class="va">metrics</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.loop_over_all_stages</span><span class="op">(</span><span class="va">resamples</span>, <span class="va">grid</span>, <span class="va">static</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.update_parallel_over</span><span class="op">(</span><span class="va">control</span>, <span class="va">resamples</span>, <span class="va">grid</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu">get_tune_colors</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">encode_set</span><span class="op">(</span><span class="va">x</span>, <span class="va">pset</span>, <span class="va">...</span>, as_matrix <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -115,12 +125,16 @@
 <dd><p>An object.</p></dd>
 
 
-<dt id="arg-wflow">wflow<a class="anchor" aria-label="anchor" href="#arg-wflow"></a></dt>
-<dd><p>A <code>workflow</code> object.</p></dd>
+<dt id="arg-workflow">workflow<a class="anchor" aria-label="anchor" href="#arg-workflow"></a></dt>
+<dd><p>The workflow used to fit the iteration results.</p></dd>
 
 
 <dt id="arg-pset">pset<a class="anchor" aria-label="anchor" href="#arg-pset"></a></dt>
 <dd><p>A <code>parameters</code> object.</p></dd>
+
+
+<dt id="arg-wflow">wflow<a class="anchor" aria-label="anchor" href="#arg-wflow"></a></dt>
+<dd><p>A <code>workflow</code> object.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
@@ -178,10 +192,6 @@ metrics should be computed (e.g. the time-dependent ROC curve, etc).</p></dd>
 
 <dt id="arg-rset-info">rset_info<a class="anchor" aria-label="anchor" href="#arg-rset-info"></a></dt>
 <dd><p>Attributes from an <code>rset</code> object.</p></dd>
-
-
-<dt id="arg-workflow">workflow<a class="anchor" aria-label="anchor" href="#arg-workflow"></a></dt>
-<dd><p>The workflow used to fit the iteration results.</p></dd>
 
 
 <dt id="arg-as-matrix">as_matrix<a class="anchor" aria-label="anchor" href="#arg-as-matrix"></a></dt>

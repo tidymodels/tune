@@ -2,6 +2,15 @@
 
 ## tune (development version)
 
+- Prepends a period to the name, and exports the following functions.
+  This is to improve integration with other packages:
+
+  - check_grid(),
+  - determine_pred_types()
+  - get_config_key()
+  - loop_over_all_stages()
+  - update_parallel_over()
+
 - When calculating resampling estimates, we can now use a weighted mean
   based on the number of rows in the assessment set. You can opt-in to
   this using the new
@@ -719,7 +728,7 @@ CRAN release: 2020-11-17
 
 - Allow `...` to pass options from
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
-  to `GPfit::GP_fit()`.
+  to [`GPfit::GP_fit()`](https://rdrr.io/pkg/GPfit/man/GP_fit.html).
 
 - Additional checks are done for the initial grid that is given to
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md).

@@ -7,6 +7,8 @@ These are not intended for use by the general public.
 ``` r
 check_rset(x)
 
+.check_grid(grid, workflow, pset = NULL, call = caller_env())
+
 check_parameters(wflow, pset = NULL, data, grid_names = character(0))
 
 check_workflow(x, ..., pset = NULL, check_dials = FALSE, call = caller_env())
@@ -45,6 +47,14 @@ new_iteration_results(
   workflow
 )
 
+.get_config_key(grid, wflow)
+
+.determine_pred_types(wflow, metrics)
+
+.loop_over_all_stages(resamples, grid, static)
+
+.update_parallel_over(control, resamples, grid)
+
 get_tune_colors()
 
 encode_set(x, pset, ..., as_matrix = FALSE)
@@ -68,13 +78,17 @@ is_workflow(x)
 
   An object.
 
-- wflow:
+- workflow:
 
-  A `workflow` object.
+  The workflow used to fit the iteration results.
 
 - pset:
 
   A `parameters` object.
+
+- wflow:
+
+  A `workflow` object.
 
 - data:
 
@@ -132,10 +146,6 @@ is_workflow(x)
 - rset_info:
 
   Attributes from an `rset` object.
-
-- workflow:
-
-  The workflow used to fit the iteration results.
 
 - as_matrix:
 
