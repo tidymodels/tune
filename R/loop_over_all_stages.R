@@ -1,9 +1,12 @@
 # Notes on debugging:
 # 1. You can set `options(future.debug = TRUE)` to help
-# 2. If you are debugging loop_over_all_stages, use the control option
+# 2. If you are debugging .loop_over_all_stages, use the control option
 #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
-loop_over_all_stages <- function(resamples, grid, static) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.loop_over_all_stages <- function(resamples, grid, static) {
   # Some packages may use random numbers so attach them prior to initializing
   # the RNG seed
   attach_pkgs(static$pkgs, strategy = static$strategy)
@@ -366,7 +369,7 @@ loop_over_all_stages <- function(resamples, grid, static) {
 }
 
 loop_over_all_stages2 <- function(index, resamples, grid, static) {
-  loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
+  .loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
 }
 
 # ------------------------------------------------------------------------------

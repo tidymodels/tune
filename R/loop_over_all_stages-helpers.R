@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Helpers for loop_over_all_stages()
+# Helpers for .loop_over_all_stages()
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
@@ -29,7 +29,7 @@ make_static <- function(
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 
-  configs <- get_config_key(grid, workflow)
+  configs <- .get_config_key(grid, workflow)
 
   list(
     wflow = workflow,
@@ -40,7 +40,7 @@ make_static <- function(
     ),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
-    pred_types = determine_pred_types(workflow, metrics),
+    pred_types = .determine_pred_types(workflow, metrics),
     eval_time = eval_time,
     split_args = split_args,
     control = control,
@@ -360,7 +360,10 @@ replace_reserve_rows <- function(iter, chunk) {
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
-get_config_key <- function(grid, wflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.get_config_key <- function(grid, wflow) {
   info <- tune_args(wflow)
   key <- grid
 
@@ -440,7 +443,10 @@ make_config_labs <- function(grid, param, val = "pre") {
   res
 }
 
-determine_pred_types <- function(wflow, metrics) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
 
   pred_types <- unique(metrics_info(metrics)$type)

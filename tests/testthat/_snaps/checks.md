@@ -25,7 +25,7 @@
 # grid objects
 
     Code
-      tune:::check_grid(rbind(grid_1, grid_1), chi_wflow)
+      tune:::.check_grid(rbind(grid_1, grid_1), chi_wflow)
     Condition
       Warning:
       Duplicate rows in grid of tuning combinations found and removed.
@@ -47,25 +47,25 @@
 ---
 
     Code
-      tune:::check_grid(chi_wflow, chi_wflow)
+      tune:::.check_grid(chi_wflow, chi_wflow)
     Condition
-      Error in `tune:::check_grid()`:
+      Error in `tune:::.check_grid()`:
       ! `grid` should be a positive integer or a data frame.
 
 # Unknown `grid` columns are caught
 
     Code
-      tune:::check_grid(grid, workflow)
+      tune:::.check_grid(grid, workflow)
     Condition
-      Error in `tune:::check_grid()`:
+      Error in `tune:::.check_grid()`:
       ! The provided grid has 2 parameter columns (`other1` and `other2`) that have not been marked for tuning by `tune()`.
 
 # Missing required `grid` columns are caught
 
     Code
-      tune:::check_grid(grid, workflow)
+      tune:::.check_grid(grid, workflow)
     Condition
-      Error in `tune:::check_grid()`:
+      Error in `tune:::.check_grid()`:
       ! The provided grid is missing the following 1 parameter column that has been marked for tuning by `tune()`: "deg_free".
 
 # workflow objects

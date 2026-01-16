@@ -1,5 +1,12 @@
 # tune (development version)
 
+* Prepends a period to the name, and exports the following functions. This is to improve integration with other packages: 
+    - check_grid(),
+    - determine_pred_types()
+    - get_config_key()
+    - loop_over_all_stages()
+    - update_parallel_over()
+
 * When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
 
 * The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)

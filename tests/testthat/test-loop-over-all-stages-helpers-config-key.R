@@ -8,7 +8,7 @@ test_that("set configurations - single element", {
   # ------------------------------------------------------------------------------
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble::tibble(polynimial_degree = 1:2),
       wflow_pre
     ),
@@ -16,28 +16,28 @@ test_that("set configurations - single element", {
   )
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble::tibble(degree = 1:3),
       wflow_pre
     )
   )
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble::tibble(degree = 1),
       wflow_pre
     )
   )
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble::tibble(min_n = 10:12),
       wflow_mod
     )
   )
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble::tibble(cut = seq(0, 1, length.out = 5)),
       wflow_post
     )
@@ -54,14 +54,14 @@ test_that("set configurations - two elements", {
   # ------------------------------------------------------------------------------
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tidyr::crossing(degree = 1:3, neighbors = 1:2),
       wflow_1
     )
   )
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tidyr::crossing(min_n = 1:3, cut = (1:5) / 5) |> slice(-1),
       wflow_2
     )
@@ -73,7 +73,7 @@ test_that("set configurations - two elements", {
   ) |>
     setNames(c("degree", "cut"))
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       grid,
       wflow_3
     )
@@ -89,7 +89,7 @@ test_that("set configurations - all or none", {
   # ------------------------------------------------------------------------------
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       tibble(),
       wflow_none
     )
@@ -101,7 +101,7 @@ test_that("set configurations - all or none", {
     setNames(c("degree", "min_n", "cut"))
 
   expect_snapshot(
-    tune:::get_config_key(
+    tune:::.get_config_key(
       grid,
       wflow_all
     )
