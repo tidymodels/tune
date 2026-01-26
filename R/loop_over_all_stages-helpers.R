@@ -205,8 +205,6 @@ predict_all_types <- function(
   static,
   submodel_grid = NULL
 ) {
-  outputs <- get_output_columns(wflow_fit)
-
   .data <- static$data$pred$data
   .ind <- static$data$pred$ind
 
@@ -328,13 +326,6 @@ finalize_fit_model <- function(wflow_current, grid) {
 
 rebind_grid <- function(...) {
   list(...) |> purrr::map(remove_stage) |> purrr::list_cbind()
-}
-
-get_output_columns <- function(x) {
-  # This needs a fitted model or workflow
-  pred_cols <- parsnip::.get_prediction_column_names(x, syms = TRUE)
-  res <- c(list(outcome = rlang::syms(outcome_names(x))), pred_cols)
-  res
 }
 
 # ------------------------------------------------------------------------------
