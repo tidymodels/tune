@@ -202,15 +202,12 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
 
 predict_all_types <- function(
   wflow_fit,
+  processed_data_pred,
   static,
   submodel_grid = NULL
 ) {
   .data <- static$data$pred$data
   .ind <- static$data$pred$ind
-
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 

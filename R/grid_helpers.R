@@ -93,11 +93,22 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
 #' @rdname tune-internal-functions
 forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
-
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
   forged
 }
+
+# To call after the model is set and we loop over predict and/or post parameters
+process_prediction_data <- function(wflow_fit, static) {
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
+
+  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
+  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+    dplyr::mutate(.row = .ind)
+  processed_data_pred
+}
+
 
 get_metrics_by <- function(metric_set) {
   metrics <- attr(metric_set, "metrics")

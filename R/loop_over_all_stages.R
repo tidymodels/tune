@@ -78,6 +78,10 @@
     # values currently are tune()
     wflow_with_fitted_pre <- current_wflow
 
+    # Now we are going to need the data being predicted. These do not change
+    # over the next two loops, so compute them here, once.
+    pred_data <- process_prediction_data(current_wflow, static)
+
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
@@ -107,7 +111,7 @@
 
       # --------------------------------------------------------------------------
       # Iterate over prediction submodels; no multipredict, just one at a time
-      # wothout retraining the model
+      # without retraining the model
 
       for (iter_pred in seq_len(num_iterations_pred)) {
         current_sched_pred <- current_sched_model$predict_stage[[1]][
@@ -130,7 +134,7 @@
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
           current_pred <- .catch_and_log(
-            predict_all_types(current_wflow, static, sub_grid) |>
+            predict_all_types(current_wflow, pred_data, static, sub_grid) |>
               dplyr::select(-dplyr::all_of(sub_nm)),
             control = static$control,
             split_labels = split_labs,
@@ -142,7 +146,7 @@
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
           current_pred <- .catch_and_log(
-            predict_all_types(current_wflow, static),
+            predict_all_types(current_wflow, pred_data, static),
             control = static$control,
             split_labels = split_labs,
             location = location,
