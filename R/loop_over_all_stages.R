@@ -80,12 +80,21 @@
 
     # Now we are going to need the data being predicted. These do not change
     # over the next two loops, so compute them here, once.
+    location <- glue::glue(
+      "preprocessor {iter_pre}/{num_iterations_pre} (predictions)"
+    )
     pred_data <-
       .catch_and_log(
         process_prediction_data(current_wflow, static),
-        notes = notes,
-        control = static$control
+        control = static$control,
+        split_labels = split_labs,
+        location = location,
+        notes = notes
       )
+
+    if (is_failure(pred_data)) {
+      next
+    }
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
