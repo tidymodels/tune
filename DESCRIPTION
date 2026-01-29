@@ -27,7 +27,7 @@ Imports:
     GauPro (>= 0.2.15),
     hardhat (>= 1.4.2),
     parallel,
-    parsnip (>= 1.2.1.9003),
+    parsnip (>= 1.4.1.9002),
     purrr (>= 1.0.0),
     recipes (>= 1.1.0.9001),
     rlang (>= 1.1.4),
@@ -60,6 +60,8 @@ Suggests:
     testthat (>= 3.0.0),
     xgboost,
     xml2
+Remotes:
+    tidymodels/parsnip#1326
 Config/Needs/website: pkgdown, tidymodels, kknn, tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8
