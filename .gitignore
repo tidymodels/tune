@@ -12,3 +12,4 @@ vignettes/articles/Classification_cache/*
 tests/testthat/Rplots.pdf
 docs
 revdep
+tests/testthat/_snaps/notes.new.md
