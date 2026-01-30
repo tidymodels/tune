@@ -402,12 +402,12 @@ surv_summarize <- function(x, param, y) {
 
 quantile_summarize <- function(x) {
   lvl_key <-
-    tibble(
+    tibble::tibble(
       .quantile_levels = hardhat::extract_quantile_levels(x$.pred_quantile)
     ) |>
     dplyr::arrange(.quantile_levels) |>
     dplyr::mutate(
-      .index = gsub(" ", "0", format(row_number())),
+      .index = gsub(" ", "0", format(dplyr::row_number())),
       .index = paste0(".qp_", .index)
     )
   nms <- names(x)
@@ -417,10 +417,15 @@ quantile_summarize <- function(x) {
   tmp <-
     x |>
     dplyr::mutate(
-      .pred_quantile = map(.pred_quantile, as_tibble)
+      .pred_quantile = purrr::map(.pred_quantile, tibble::as_tibble)
     ) |>
-    dplyr::select(-.row) |>
+    # There are .row columns in .pred_quantile and in the tibble. We want the
+    # tibble column and, to avoid a name conflict, will temporarily rename
+    # that, then remove the extra, the rename back to .row.
+    dplyr::rename(.row_orig = .row) |>
     tidyr::unnest(cols = c(.pred_quantile)) |>
+    dplyr::select(-.row) |>
+    dplyr::rename(.row = .row_orig) |>
     dplyr::summarise(
       .pred_quantile = mean(.pred_quantile, na.rm = TRUE),
       .by = c(dplyr::all_of(all_group_cols))
@@ -437,7 +442,7 @@ quantile_summarize <- function(x) {
     tmp |>
     dplyr::select(dplyr::starts_with(".qp_")) |>
     as.matrix() |>
-    hardhat::quantile_pred(qnt_lvls)
+    hardhat::quantile_pred(lvl_key$.quantile_levels)
 
   tmp$.pred_quantile <- qp
 
