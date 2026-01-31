@@ -437,7 +437,7 @@ tune_bayes_workflow <- function(
       set.seed(control$seed[1] + i)
 
       gp_mod <- fit_gp(
-        mean_stats |> dplyr::select(-.iter),
+        mean_stats[setdiff(names(mean_stats), ".iter")],
         pset = param_info,
         metric = opt_metric_name,
         eval_time = opt_metric_time,
@@ -453,7 +453,7 @@ tune_bayes_workflow <- function(
           gp_mod,
           param_info,
           control = control,
-          current = mean_stats |> dplyr::select(dplyr::all_of(param_info$id))
+          current = mean_stats[param_info$id]
         )
 
       check_time(start_time, control$time_limit)
@@ -461,7 +461,7 @@ tune_bayes_workflow <- function(
       acq_summarizer(control, iter = i, objective = objective)
 
       candidates <-
-        dplyr::bind_cols(
+        vctrs::vec_cbind(
           candidates,
           stats::predict(
             objective,
@@ -536,15 +536,11 @@ tune_bayes_workflow <- function(
             config = iter_chr[i]
           )
         }
-        unsummarized <- dplyr::bind_rows(
-          unsummarized,
-          tmp_res |> mutate(.iter = i)
-        )
+        tmp_res$.iter <- i
+        unsummarized <- vctrs::vec_rbind(unsummarized, tmp_res)
         rs_estimate <- estimate_tune_results(tmp_res)
-        mean_stats <- dplyr::bind_rows(
-          mean_stats,
-          rs_estimate |> dplyr::mutate(.iter = i)
-        )
+        rs_estimate$.iter <- i
+        mean_stats <- vctrs::vec_rbind(mean_stats, rs_estimate)
         score_card <- update_score_card(score_card, i, tmp_res)
         log_progress(
           control,
@@ -622,9 +618,9 @@ check_iter <- function(iter, call) {
 set_config <- function(x, config = NULL, prefix = NULL) {
   if (!is.null(x)) {
     if (!is.null(prefix)) {
-      x <- dplyr::mutate(x, .config = paste0(prefix, "_", .config))
+      x$.config <- paste0(prefix, "_", x$.config)
     } else {
-      x <- dplyr::mutate(x, .config = config)
+      x$.config <- config
     }
   }
   x
@@ -697,15 +693,17 @@ pick_candidate <- function(results, info, control) {
 }
 
 update_score_card <- function(info, iter, results, control) {
-  current_val <-
-    results |>
-    estimate_tune_results() |>
-    dplyr::filter(.metric == info$metrics)
+  current_val <- estimate_tune_results(results)
+  current_val <- vctrs::vec_slice(
+    current_val,
+    current_val$.metric == info$metrics
+  )
 
   if (!is.null(info$eval_time)) {
-    current_val <-
-      current_val |>
-      dplyr::filter(.eval_time == info$eval_time)
+    current_val <- vctrs::vec_slice(
+      current_val,
+      current_val$.eval_time == info$eval_time
+    )
   }
 
   current_val <- current_val$mean
@@ -733,23 +731,16 @@ update_score_card <- function(info, iter, results, control) {
 
 # save opt_metric_name and maximize to simplify!!!!!!!!!!!!!!!
 initial_info <- function(stats, metrics, maximize, eval_time) {
-  best_res <-
-    stats |>
-    dplyr::filter(.metric == metrics) |>
-    dplyr::filter(!is.na(mean))
+  best_res <- vctrs::vec_slice(stats, stats$.metric == metrics)
+  best_res <- vctrs::vec_slice(best_res, !is.na(best_res$mean))
 
   # TODO a lot of slice_min/slice_max can be used now
   if (maximize) {
-    best_res <-
-      best_res |>
-      dplyr::arrange(desc(mean)) |>
-      slice(1)
+    best_idx <- which.max(best_res$mean)
   } else {
-    best_res <-
-      best_res |>
-      dplyr::arrange(mean) |>
-      slice(1)
+    best_idx <- which.min(best_res$mean)
   }
+  best_res <- best_res[best_idx, ]
   best_val <- best_res$mean[1]
   best_iter <- best_res$.iter[1]
   last_impr <- 0

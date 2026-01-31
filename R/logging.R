@@ -200,22 +200,22 @@ summarize_catalog <- function(catalog, sep = "   ") {
     return("")
   }
 
-  res <- dplyr::arrange(catalog, id)
-  res <- dplyr::mutate(
-    res,
-    color = dplyr::if_else(
-      type == "warning",
-      list(cli::col_yellow),
-      list(cli::col_red)
-    )
+  res <- catalog[order(catalog$id), ]
+  res$color <- ifelse(
+    res$type == "warning",
+    list(cli::col_yellow),
+    list(cli::col_red)
   )
-  res <- dplyr::rowwise(res)
-  res <- dplyr::mutate(
-    res,
-    msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}")
+  res$msg <- vapply(
+    seq_len(nrow(res)),
+    function(i) {
+      glue::glue(
+        "{res$color[[i]](cli::style_bold(lbls[res$id[i]]))}: x{res$n[i]}"
+      )
+    },
+    character(1)
   )
-  res <- dplyr::ungroup(res)
-  res <- dplyr::pull(res, msg)
+  res <- res[["msg"]]
   res <- glue::glue_collapse(res, sep = sep)
 
   res
@@ -487,9 +487,9 @@ log_progress <- function(
     return(invisible(NULL))
   }
 
-  x <- dplyr::filter(x, .metric == objective)
+  x <- vctrs::vec_slice(x, x$.metric == objective)
   if (!is.null(eval_time)) {
-    x <- dplyr::filter(x, .eval_time == eval_time)
+    x <- vctrs::vec_slice(x, x$.eval_time == eval_time)
   }
 
   if (maximize) {

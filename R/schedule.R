@@ -45,9 +45,7 @@ schedule_stages <- function(grid, wflow) {
   param_info <- get_param_info(wflow)
 
   # schedule preprocessing stage and push the rest into a nested tibble
-  param_pre_stage <- param_info |>
-    dplyr::filter(source == "recipe") |>
-    dplyr::pull(id)
+  param_pre_stage <- param_info[["id"]][param_info$source == "recipe"]
   schedule <- grid |>
     tidyr::nest(.by = dplyr::all_of(param_pre_stage), .key = "model_stage")
 
@@ -64,12 +62,10 @@ schedule_stages <- function(grid, wflow) {
 }
 
 schedule_model_stage_i <- function(model_stage, param_info, wflow) {
-  model_param <- param_info |>
-    dplyr::filter(source == "model_spec") |>
-    dplyr::pull(id)
-  non_submodel_param <- param_info |>
-    dplyr::filter(source == "model_spec" & !has_submodel) |>
-    dplyr::pull(id)
+  model_param <- param_info[["id"]][param_info$source == "model_spec"]
+  non_submodel_param <- param_info[["id"]][
+    param_info$source == "model_spec" & !param_info$has_submodel
+  ]
 
   any_non_submodel_param <- length(non_submodel_param) > 0
 
@@ -90,7 +86,7 @@ schedule_model_stage_i <- function(model_stage, param_info, wflow) {
       dplyr::left_join(schedule, by = non_submodel_param) |>
       dplyr::relocate(dplyr::all_of(model_param))
   } else {
-    schedule <- dplyr::bind_cols(schedule, next_stage)
+    schedule <- vctrs::vec_cbind(schedule, next_stage)
   }
 
   # schedule next stages nested within `schedule_predict_stage_i()`
@@ -119,9 +115,9 @@ min_model_grid <- function(grid, model_param, wflow) {
 }
 
 schedule_predict_stage_i <- function(predict_stage, param_info) {
-  submodel_param <- param_info |>
-    dplyr::filter(source == "model_spec" & has_submodel) |>
-    dplyr::pull(id)
+  submodel_param <- param_info[["id"]][
+    param_info$source == "model_spec" & param_info$has_submodel
+  ]
 
   predict_stage |>
     tidyr::nest(
@@ -138,9 +134,15 @@ get_param_info <- function(wflow) {
   model_type <- class(model_spec)[1]
   model_eng <- model_spec$engine
 
-  model_param <- parsnip::get_from_env(paste0(model_type, "_args")) |>
-    dplyr::filter(engine == model_spec$engine) |>
-    dplyr::select(name = parsnip, has_submodel)
+  model_param <- parsnip::get_from_env(paste0(model_type, "_args"))
+  model_param <- vctrs::vec_slice(
+    model_param,
+    model_param$engine == model_spec$engine
+  )
+  model_param <- tibble::tibble(
+    name = model_param$parsnip,
+    has_submodel = model_param$has_submodel
+  )
 
   param_info <- dplyr::left_join(param_info, model_param, by = "name")
   # Parameters for model engines, preprocessors, and postprocessors will have

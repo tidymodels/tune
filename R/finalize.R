@@ -44,7 +44,10 @@ finalize_model <- function(x, parameters) {
 
   parameters <- parameters[names(parameters) %in% pset$id]
 
-  discordant <- dplyr::filter(pset, id != name & id %in% names(parameters))
+  discordant <- vctrs::vec_slice(
+    pset,
+    pset$id != pset$name & pset$id %in% names(parameters)
+  )
   if (nrow(discordant) > 0) {
     for (i in 1:nrow(discordant)) {
       names(parameters)[names(parameters) == discordant$id[i]] <-
@@ -61,9 +64,11 @@ finalize_recipe <- function(x, parameters) {
     cli::cli_abort("{.arg x} should be a recipe, not {.obj_type_friendly {x}}.")
   }
   check_final_param(parameters)
-  pset <-
-    hardhat::extract_parameter_set_dials(x) |>
-    dplyr::filter(id %in% names(parameters) & source == "recipe")
+  pset <- hardhat::extract_parameter_set_dials(x)
+  pset <- vctrs::vec_slice(
+    pset,
+    pset$id %in% names(parameters) & pset$source == "recipe"
+  )
 
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)
@@ -116,10 +121,12 @@ finalize_tailor <- function(x, parameters) {
     cli::cli_abort("{.arg x} should be a tailor, not {.obj_type_friendly {x}}.")
   }
   check_final_param(parameters)
-  pset <-
-    hardhat::extract_parameter_set_dials(x) |>
-    dplyr::filter(id %in% names(parameters) & source == "tailor") |>
-    dplyr::as_tibble()
+  pset <- hardhat::extract_parameter_set_dials(x)
+  pset <- vctrs::vec_slice(
+    pset,
+    pset$id %in% names(parameters) & pset$source == "tailor"
+  )
+  pset <- tibble::as_tibble(pset)
 
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)

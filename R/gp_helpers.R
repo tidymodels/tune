@@ -114,7 +114,7 @@ partial_encode <- function(dat, pset) {
   }
 
   normalized <- encode_set(
-    dat |> dplyr::select(dplyr::all_of(pset$id)),
+    dat[pset$id],
     pset = pset,
     as_matrix = FALSE
   )
@@ -143,15 +143,14 @@ fit_gp <- function(
 ) {
   tune::empty_ellipses(...)
 
-  dat <- dat |> dplyr::filter(.metric == metric)
+  dat <- vctrs::vec_slice(dat, dat$.metric == metric)
 
   if (!is.null(eval_time)) {
-    dat <- dat |> dplyr::filter(.eval_time == eval_time)
+    dat <- vctrs::vec_slice(dat, dat$.eval_time == eval_time)
   }
 
-  dat <- dat |>
-    check_gp_data() |>
-    dplyr::select(dplyr::all_of(pset$id), mean)
+  dat <- check_gp_data(dat)
+  dat <- dat[c(pset$id, "mean")]
 
   qual_info <- find_qual_param(pset)
   num_pred <- nrow(pset)
@@ -255,8 +254,9 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
     x <- dplyr::anti_join(x, x_old, by = make.names(pset$id))
 
     keep_ind <- dissim_sample(x_old, x, pset, max_n = Inf)
-    candidates <- candidates[keep_ind, ] |>
-      dplyr::mutate(.mean = NA_real_, .sd = NA_real_)
+    candidates <- candidates[keep_ind, ]
+    candidates$.mean <- NA_real_
+    candidates$.sd <- NA_real_
 
     if (control$verbose_iter) {
       message_wrap(
@@ -288,7 +288,9 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
       prefix = cli::symbol$tick,
       color_text = get_tune_colors()$message$warning
     )
-    return(candidates |> dplyr::mutate(.mean = NA_real_, .sd = NA_real_))
+    candidates$.mean <- NA_real_
+    candidates$.sd <- NA_real_
+    return(candidates)
   }
 
   x <- partial_encode(candidates, pset)
@@ -296,9 +298,8 @@ pred_gp <- function(object, pset, size = 5000, current = NULL, control) {
 
   gp_pred <- quiet_pred_gp(object, x, se.fit = TRUE)
 
-  gp_pred <- tibble::as_tibble(gp_pred) |>
-    dplyr::select(.mean = mean, .sd = se)
-  dplyr::bind_cols(candidates, gp_pred)
+  gp_pred <- tibble::tibble(.mean = gp_pred$mean, .sd = gp_pred$se)
+  vctrs::vec_cbind(candidates, gp_pred)
 }
 
 
@@ -325,8 +326,8 @@ pick_candidate <- function(results, info, control) {
 
 dissim_sample <- function(ref_data, candidates, pset, max_n = Inf) {
   max_n <- min(max_n, nrow(candidates))
-  candidates <- candidates[1:max_n, , drop = FALSE]
-  all_data <- dplyr::bind_rows(ref_data, candidates)
+  candidates <- candidates[1:max_n, ]
+  all_data <- vctrs::vec_rbind(ref_data, candidates)
 
   # Deal with any qualitative predictors by casting them to c(0,1)
   qual_info <- find_qual_param(pset)

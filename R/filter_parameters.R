@@ -91,7 +91,7 @@ filter_by_join <- function(x, parameters = NULL, nm = "") {
   }
 
   # run a test to make sure that there are no issues in filtering
-  tst_orig <- bind_rows(x$.metrics)
+  tst_orig <- vctrs::vec_rbind(!!!x$.metrics)
   tst_filtered <- filter_join_iter(tst_orig, parameters)
   if (nrow(tst_filtered) == 0) {
     cli::cli_abort("No parameter combinations were selected using your subset.")
