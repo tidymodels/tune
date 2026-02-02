@@ -443,7 +443,7 @@
       res_fail <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area +
       Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
       metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
-        c(0.5, 0))))
+        c(0, 0.5))))
     Message
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! All of the rsq estimates were missing. The Gaussian process model cannot be
