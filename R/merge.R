@@ -77,7 +77,10 @@ merge.model_spec <- function(x, y, ...) {
 
 update_model <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
-    param_info <- pset |> dplyr::filter(id == i & source == "model_spec")
+    param_info <- vctrs::vec_slice(
+      pset,
+      pset$id == i & pset$source == "model_spec"
+    )
     if (nrow(param_info) > 1) {
       cli::cli_abort("Cannot update; there are too many parameters.")
     }
@@ -96,7 +99,7 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
 
 update_recipe <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
-    param_info <- pset |> dplyr::filter(id == i & source == "recipe")
+    param_info <- vctrs::vec_slice(pset, pset$id == i & pset$source == "recipe")
     if (nrow(param_info) == 1) {
       idx <- which(step_id == param_info$component_id)
       # check index
@@ -136,12 +139,9 @@ merger <- function(x, y, ...) {
     return(res)
   }
 
-  y |>
-    dplyr::mutate(
-      ..object = purrr::map(
-        1:nrow(y),
-        \(.x) updater(y[.x, ], x, pset, step_ids, grid_name)
-      )
-    ) |>
-    dplyr::select(x = ..object)
+  y$..object <- purrr::map(
+    seq_len(nrow(y)),
+    \(.x) updater(y[.x, ], x, pset, step_ids, grid_name)
+  )
+  tibble::tibble(x = y$..object)
 }

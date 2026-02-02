@@ -25,8 +25,8 @@
   }
 
   split <- resamples$splits[[1]]
-  split_labs <- resamples |>
-    dplyr::select(dplyr::starts_with("id"))
+  id_cols <- grep("^id", names(resamples), value = TRUE)
+  split_labs <- resamples[id_cols]
 
   pred_reserve <- NULL
   pred_iter <- 0
@@ -223,12 +223,12 @@
               next
             }
 
-            final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
+            final_pred <- vctrs::vec_cbind(post_pred, current_post_grid)
             current_extract_grid <- current_post_grid
             # end submodels
           } else {
             # No postprocessor so just use what we have
-            final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
+            final_pred <- vctrs::vec_cbind(current_pred, current_predict_grid)
             current_extract_grid <- current_predict_grid
           }
 
@@ -238,7 +238,7 @@
           # Allocate predictions to an overall object
 
           pred_iter <- pred_iter + 1
-          pred_reserve <- dplyr::bind_rows(pred_reserve, final_pred)
+          pred_reserve <- vctrs::vec_rbind(pred_reserve, final_pred)
 
           # --------------------------------------------------------------------
           # Extractions
@@ -355,13 +355,18 @@
       # Everything failed; return NULL for each row
       return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), \(x) NULL)
     } else {
+      pred_with_configs <- add_configs(pred_reserve, static)
+      # Filter out joined rows that corresponded to a config that failed
+      pred_with_configs <- vctrs::vec_slice(
+        pred_with_configs,
+        !is.na(pred_with_configs$.row)
+      )
       return_tbl$.predictions <-
-        list(
-          add_configs(pred_reserve, static) |>
-            # Filter out joined rows that corresponded to a config that failed
-            dplyr::filter(!is.na(.row)) |>
-            reorder_pred_cols(static$y_name, static$param_info$id)
-        )
+        list(reorder_pred_cols(
+          pred_with_configs,
+          static$y_name,
+          static$param_info$id
+        ))
     }
   }
 
@@ -381,11 +386,10 @@ loop_over_all_stages2 <- function(index, resamples, grid, static) {
 # values of the submodel.
 get_row_wise_grid <- function(wflow, grid) {
   param_tuned <- tune_args(wflow)$id
-  submodel <- wflow |>
+  submodel_info <- wflow |>
     hardhat::extract_spec_parsnip() |>
-    get_submodel_info() |>
-    dplyr::filter(has_submodel) |>
-    purrr::pluck("id")
+    get_submodel_info()
+  submodel <- submodel_info[["id"]][submodel_info$has_submodel]
 
   const_param <- setdiff(param_tuned, submodel)
   const_param <- rlang::syms(const_param)
@@ -397,8 +401,8 @@ get_row_wise_grid <- function(wflow, grid) {
       parsnip::add_rowindex() |>
       dplyr::group_nest(!!!const_param) |>
       dplyr::mutate(inds = dplyr::row_number()) |>
-      tidyr::unnest(c(data)) |>
-      dplyr::select(-.row)
+      tidyr::unnest(c(data))
+    grid_inds <- grid_inds[setdiff(names(grid_inds), ".row")]
     grid <- grid_inds[, param_tuned]
     inds <- grid_inds$inds
   }
@@ -412,7 +416,7 @@ add_configs <- function(x, static) {
   if (length(static$param_info$id) > 0) {
     x <- dplyr::left_join(x, config_tbl, by = static$param_info$id)
   } else {
-    x <- dplyr::bind_cols(x, config_tbl)
+    x <- vctrs::vec_cbind(x, config_tbl)
   }
 
   dplyr::arrange(x, .config)

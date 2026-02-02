@@ -209,8 +209,7 @@ predict_all_types <- function(
   .ind <- static$data$pred$ind
 
   processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
+  processed_data_pred$outcomes$.row <- .ind
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
@@ -274,7 +273,7 @@ predict_all_types <- function(
   if (has_case_weights(wflow_fit)) {
     case_weights <- extract_case_weights(.data, wflow_fit)
     if (.use_case_weights_with_yardstick(case_weights[[1]])) {
-      case_weights <- dplyr::mutate(case_weights, .row = .ind)
+      case_weights$.row <- .ind
       pred <- dplyr::full_join(pred, case_weights, by = ".row")
     }
   }
@@ -381,8 +380,7 @@ replace_reserve_rows <- function(iter, chunk) {
     key <- make_config_labs(grid, pre_param) |>
       dplyr::full_join(key, by = pre_param)
   } else {
-    key <- key |>
-      dplyr::mutate(pre = "pre0")
+    key$pre <- "pre0"
   }
 
   mod_param <- info$id[info$source == "model_spec"]
@@ -390,8 +388,7 @@ replace_reserve_rows <- function(iter, chunk) {
     key <- make_config_labs(grid, mod_param, "mod") |>
       dplyr::full_join(key, by = mod_param)
   } else {
-    key <- key |>
-      dplyr::mutate(mod = "mod0")
+    key$mod <- "mod0"
   }
 
   post_param <- info$id[info$source == "tailor"]
@@ -399,8 +396,7 @@ replace_reserve_rows <- function(iter, chunk) {
     key <- make_config_labs(grid, post_param, "post") |>
       dplyr::full_join(key, by = post_param)
   } else {
-    key <- key |>
-      dplyr::mutate(post = "post0")
+    key$post <- "post0"
   }
 
   # in the case of resampling without tuning, grid and thus key are 0-row tibbles
@@ -414,23 +410,17 @@ replace_reserve_rows <- function(iter, chunk) {
 
   key$.config <- paste(key$pre, key$mod, key$post, sep = "_")
   key$.config <- gsub("_$", "", key$.config)
-  key |>
-    dplyr::arrange(.config) |>
-    dplyr::select(dplyr::all_of(info$id), .config)
+  key <- dplyr::arrange(key, .config)
+  key[c(info$id, ".config")]
 }
 
 make_config_labs <- function(grid, param, val = "pre") {
-  res <- grid |>
-    dplyr::select(dplyr::all_of(param)) |>
-    dplyr::distinct() |>
-    dplyr::arrange(!!!rlang::syms(param)) |>
-    dplyr::mutate(
-      num = format(dplyr::row_number()),
-      num = gsub(" ", "0", num),
-      {{ val }} := paste0(val, num)
-    ) |>
-    dplyr::select(-num)
-
+  res <- grid[param]
+  res <- vctrs::vec_unique(res)
+  res <- dplyr::arrange(res, !!!rlang::syms(param))
+  num <- format(seq_len(nrow(res)))
+  num <- gsub(" ", "0", num)
+  res[[val]] <- paste0(val, num)
   res
 }
 
@@ -513,9 +503,9 @@ engine_to_parsnip <- function(wflow, grid) {
     return(grid)
   }
   grid_nm <- names(grid)
-  key <- parsnip::.model_param_name_key(wflow) |>
-    dplyr::filter(user != parsnip & user %in% grid_nm) |>
-    dplyr::select(-engine)
+  key <- parsnip::.model_param_name_key(wflow)
+  key <- vctrs::vec_slice(key, key$user != key$parsnip & key$user %in% grid_nm)
+  key <- key[setdiff(names(key), "engine")]
 
   if (nrow(key) == 0) {
     return(grid)
@@ -527,13 +517,17 @@ engine_to_parsnip <- function(wflow, grid) {
 
 parsnip_to_engine <- function(wflow, grid) {
   grid_nm <- names(grid)
-  key <- parsnip::.model_param_name_key(wflow) |>
-    dplyr::filter(user != parsnip & parsnip %in% grid_nm) |>
-    dplyr::select(-engine)
+  key <- parsnip::.model_param_name_key(wflow)
+  key <- vctrs::vec_slice(
+    key,
+    key$user != key$parsnip & key$parsnip %in% grid_nm
+  )
+  key <- key[setdiff(names(key), "engine")]
 
   if (nrow(key) == 0) {
     return(grid)
   }
+
   nm_lst <- key$parsnip
   names(nm_lst) <- key$user
   dplyr::rename(grid, dplyr::all_of(nm_lst))

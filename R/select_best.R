@@ -136,7 +136,7 @@ select_best.tune_results <- function(x, ..., metric = NULL, eval_time = NULL) {
     eval_time = eval_time,
     call = rlang::current_env()
   )
-  res |> dplyr::select(dplyr::all_of(param_names), .config)
+  res[c(param_names, ".config")]
 }
 
 #' @export
@@ -180,16 +180,13 @@ select_by_pct_loss.tune_results <- function(
     best_metric <- summary_res$mean[which_min]
   }
 
-  summary_res <-
-    summary_res |>
-    dplyr::rowwise() |>
-    dplyr::mutate(
-      .best = best_metric,
-      # can calculate loss without knowledge of direction since
-      # we know that losses must be larger than that for the best
-      .loss = abs((abs(mean) - abs(.best)) / .best) * 100
-    ) |>
-    dplyr::ungroup()
+  summary_res$.best <- best_metric
+  # can calculate loss without knowledge of direction since
+  # we know that losses must be larger than that for the best
+  summary_res$.loss <- abs(
+    (abs(summary_res$mean) - abs(summary_res$.best)) / summary_res$.best
+  ) *
+    100
 
   dots <- rlang::enquos(...)
   summary_res <- try(dplyr::arrange(summary_res, !!!dots), silent = TRUE)
@@ -203,11 +200,10 @@ select_by_pct_loss.tune_results <- function(
   # discard models more complex than the best and
   # remove models with greater increase in loss than the limit
   best_index <- which(summary_res$.loss == 0)
-  summary_res |>
-    dplyr::slice(1:best_index) |>
-    dplyr::filter(.loss < limit) |>
-    dplyr::slice(1) |>
-    dplyr::select(dplyr::all_of(param_names), .config)
+  summary_res <- summary_res[1:best_index, ]
+  summary_res <- vctrs::vec_slice(summary_res, summary_res$.loss < limit)
+  summary_res <- summary_res[1, ]
+  summary_res[c(param_names, ".config")]
 }
 
 #' @export
@@ -247,38 +243,36 @@ select_by_one_std_err.tune_results <- function(
     best_index <- which.max(summary_res$mean)
     best <- summary_res$mean[best_index]
     bound <- best - summary_res$std_err[best_index]
-    summary_res <-
-      summary_res |>
-      dplyr::mutate(
-        .best = best,
-        .bound = bound
-      ) |>
-      dplyr::filter(mean >= .bound)
+    summary_res$.best <- best
+    summary_res$.bound <- bound
+    summary_res <- vctrs::vec_slice(
+      summary_res,
+      summary_res$mean >= summary_res$.bound
+    )
   } else if (metric_info$direction == "minimize") {
     best_index <- which.min(summary_res$mean)
     best <- summary_res$mean[best_index]
     bound <- best + summary_res$std_err[best_index]
-    summary_res <-
-      summary_res |>
-      dplyr::mutate(
-        .best = best,
-        .bound = bound
-      ) |>
-      dplyr::filter(mean <= .bound)
+    summary_res$.best <- best
+    summary_res$.bound <- bound
+    summary_res <- vctrs::vec_slice(
+      summary_res,
+      summary_res$mean <= summary_res$.bound
+    )
   } else if (metric_info$direction == "zero") {
     best_index <- which.min(abs(summary_res$mean))
     best <- summary_res$mean[best_index]
     bound_lower <- -abs(best) - summary_res$std_err[best_index]
     bound_upper <- abs(best) + summary_res$std_err[best_index]
-    summary_res <-
-      summary_res |>
-      dplyr::rowwise() |>
-      dplyr::mutate(
-        .best = best,
-        .bound = list(c(lower = bound_lower, upper = bound_upper))
-      ) |>
-      dplyr::filter(mean >= .bound[[1]] & mean <= .bound[[2]]) |>
-      dplyr::ungroup()
+    summary_res$.best <- best
+    summary_res$.bound <- purrr::map(
+      seq_len(nrow(summary_res)),
+      \(x) c(lower = bound_lower, upper = bound_upper)
+    )
+    summary_res <- vctrs::vec_slice(
+      summary_res,
+      summary_res$mean >= bound_lower & summary_res$mean <= bound_upper
+    )
   }
 
   dots <- rlang::enquos(...)
@@ -289,9 +283,8 @@ select_by_one_std_err.tune_results <- function(
     var_nm <- var_nm[!var_nm %in% colnames(collect_metrics(x))]
     cli::cli_abort("Could not sort results by {.var {var_nm}}.")
   }
-  summary_res |>
-    dplyr::slice(1) |>
-    dplyr::select(dplyr::all_of(param_names), .config)
+  summary_res <- summary_res[1, ]
+  summary_res[c(param_names, ".config")]
 }
 
 check_select_dots <- function(..., call = rlang::caller_env()) {

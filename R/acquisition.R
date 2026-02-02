@@ -85,22 +85,15 @@ predict.prob_improve <-
       trade_off <- object$trade_off
     }
 
-    new_data <-
-      new_data |>
-      mutate(.sd = ifelse(.sd <= object$eps, object$eps, .sd))
+    new_data$.sd <- ifelse(new_data$.sd <= object$eps, object$eps, new_data$.sd)
 
     if (maximize) {
-      new_data <-
-        new_data |>
-        mutate(delta = ((.mean - best - trade_off) / .sd))
+      new_data$delta <- ((new_data$.mean - best - trade_off) / new_data$.sd)
     } else {
-      new_data <-
-        new_data |>
-        mutate(delta = ((trade_off + best - .mean) / .sd))
+      new_data$delta <- ((trade_off + best - new_data$.mean) / new_data$.sd)
     }
-    new_data |>
-      dplyr::mutate(objective = pnorm(delta)) |>
-      dplyr::select(objective)
+    new_data$objective <- pnorm(new_data$delta)
+    tibble::tibble(objective = new_data$objective)
   }
 
 # ------------------------------------------------------------------------------
@@ -140,24 +133,23 @@ predict.exp_improve <- function(object, new_data, maximize, iter, best, ...) {
     trade_off <- object$trade_off
   }
 
-  new_data <-
-    new_data |>
-    mutate(sd_trunc = ifelse(.sd <= object$eps, object$eps, .sd))
+  new_data$sd_trunc <- ifelse(
+    new_data$.sd <= object$eps,
+    object$eps,
+    new_data$.sd
+  )
 
   if (maximize) {
-    new_data <- new_data |> mutate(delta = .mean - best - trade_off)
+    new_data$delta <- new_data$.mean - best - trade_off
   } else {
-    new_data <- new_data |> mutate(delta = trade_off + best - .mean)
+    new_data$delta <- trade_off + best - new_data$.mean
   }
-  new_data <-
-    new_data |>
-    mutate(
-      snr = delta / sd_trunc,
-      z = ifelse(.sd <= object$eps, 0, snr),
-      objective = (delta * pnorm(z)) + (sd_trunc * dnorm(z))
-    )
+  new_data$snr <- new_data$delta / new_data$sd_trunc
+  new_data$z <- ifelse(new_data$.sd <= object$eps, 0, new_data$snr)
+  new_data$objective <- (new_data$delta * pnorm(new_data$z)) +
+    (new_data$sd_trunc * dnorm(new_data$z))
 
-  new_data |> dplyr::select(objective)
+  tibble::tibble(objective = new_data$objective)
 }
 
 
@@ -194,9 +186,9 @@ predict.conf_bound <- function(object, new_data, maximize, iter, ...) {
 
   # `tune` is setup to always maximize the objective function
   if (maximize) {
-    new_data <- new_data |> mutate(objective = .mean + kappa * .sd)
+    new_data$objective <- new_data$.mean + kappa * new_data$.sd
   } else {
-    new_data <- new_data |> mutate(objective = -(.mean + kappa * .sd))
+    new_data$objective <- -(new_data$.mean + kappa * new_data$.sd)
   }
-  new_data |> dplyr::select(objective)
+  tibble::tibble(objective = new_data$objective)
 }

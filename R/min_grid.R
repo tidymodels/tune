@@ -89,28 +89,35 @@ min_grid.model_spec <- function(x, grid, ...) {
 
 # Template for model results that do no have the sub-model feature
 blank_submodels <- function(grid) {
-  grid |>
-    dplyr::mutate(.submodels = purrr::map(1:nrow(grid), \(x) list())) |>
-    dplyr::mutate_if(is.factor, as.character)
+  grid$.submodels <- purrr::map(seq_len(nrow(grid)), \(x) list())
+  # Convert factors to character
+  factor_cols <- vapply(grid, is.factor, logical(1))
+  grid[factor_cols] <- lapply(grid[factor_cols], as.character)
+  grid
 }
 
 get_submodel_info <- function(spec) {
   if (is.null(spec$engine)) {
     cli::cli_abort("Please set the model's engine.")
   }
-  param_info <-
-    get_from_env(paste0(class(spec)[1], "_args")) |>
-    dplyr::filter(engine == spec$engine) |>
-    dplyr::select(name = parsnip, has_submodel) |>
-    dplyr::full_join(
-      hardhat::extract_parameter_set_dials(spec) |> dplyr::select(name, id),
-      by = "name"
-    ) |>
-    dplyr::mutate(id = ifelse(is.na(id), name, id)) |>
-    # In case the parameter is an engine parameter
-    dplyr::mutate(
-      has_submodel = ifelse(is.na(has_submodel), FALSE, has_submodel)
-    )
+  args_info <- get_from_env(paste0(class(spec)[1], "_args"))
+  args_info <- vctrs::vec_slice(args_info, args_info$engine == spec$engine)
+  args_info <- tibble::tibble(
+    name = args_info$parsnip,
+    has_submodel = args_info$has_submodel
+  )
+
+  pset <- hardhat::extract_parameter_set_dials(spec)
+  pset <- pset[c("name", "id")]
+
+  param_info <- dplyr::full_join(args_info, pset, by = "name")
+  param_info$id <- ifelse(is.na(param_info$id), param_info$name, param_info$id)
+  # In case the parameter is an engine parameter
+  param_info$has_submodel <- ifelse(
+    is.na(param_info$has_submodel),
+    FALSE,
+    param_info$has_submodel
+  )
 
   param_info
 }
@@ -131,7 +138,7 @@ submod_only <- function(grid) {
   sub_mods <- list(grid[[nm]][-which.max(grid[[nm]])])
   names(sub_mods) <- nm
   fit_only$.submodels <- list(sub_mods)
-  dplyr::select(fit_only, dplyr::all_of(names(grid)), .submodels)
+  fit_only[c(names(grid), ".submodels")]
 }
 
 # Assumes only one sub-model parameter and that the fitted one is the
@@ -157,8 +164,11 @@ submod_and_others <- function(grid, fixed_args) {
       dplyr::full_join(fit_only, grid, by = fixed_args)
   }
 
+  min_grid_df <- vctrs::vec_slice(
+    min_grid_df,
+    min_grid_df$..val != min_grid_df$max_val
+  )
   min_grid_df <- min_grid_df |>
-    dplyr::filter(..val != max_val) |>
     dplyr::group_by(!!!rlang::syms(fixed_args)) |>
     dplyr::summarize(.submodels = list(tibble::lst(!!subm_nm := ..val))) |>
     dplyr::ungroup()
@@ -181,8 +191,11 @@ submod_and_others <- function(grid, fixed_args) {
       purrr::map(1:nrow(min_grid_df), \(x) list())
     )
 
-  dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) |>
-    dplyr::mutate_if(is.factor, as.character)
+  min_grid_df <- min_grid_df[c(orig_names, ".submodels")]
+  # Convert factors to character
+  factor_cols <- vapply(min_grid_df, is.factor, logical(1))
+  min_grid_df[factor_cols] <- lapply(min_grid_df[factor_cols], as.character)
+  min_grid_df
 }
 
 # Determine the correct sub-model structure when the sub-model parameter's

@@ -550,7 +550,7 @@ check_initial <- function(
     }
   }
   if (!any(names(x) == ".iter")) {
-    x <- x |> dplyr::mutate(.iter = 0L)
+    x$.iter <- 0L
   }
   x
 }

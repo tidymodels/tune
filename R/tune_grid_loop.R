@@ -122,12 +122,12 @@ tune_grid_loop <- function(
   # ----------------------------------------------------------------------------
   # Separate results into different components
 
-  res <- dplyr::bind_rows(res)
+  res <- vctrs::vec_rbind(!!!res)
 
   outcome_names <- unique(unlist(res$outcome_names))
   res$outcome_names <- NULL
 
-  resamples <- dplyr::bind_rows(resamples)
+  resamples <- vctrs::vec_rbind(!!!resamples)
   id_cols <- grep("^id", names(resamples), value = TRUE)
 
   if (control$parallel_over == "resamples") {
