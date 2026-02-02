@@ -564,11 +564,11 @@ test_that("missing performance values", {
       tune_bayes(
         Sale_Price ~
           Neighborhood +
-            Gr_Liv_Area +
-            Year_Built +
-            Bldg_Type +
-            Latitude +
-            Longitude,
+          Gr_Liv_Area +
+          Year_Built +
+          Bldg_Type +
+          Latitude +
+          Longitude,
         resamples = folds,
         initial = 3,
         metrics = yardstick::metric_set(rsq),
@@ -583,15 +583,15 @@ test_that("missing performance values", {
       tune_bayes(
         Sale_Price ~
           Neighborhood +
-            Gr_Liv_Area +
-            Year_Built +
-            Bldg_Type +
-            Latitude +
-            Longitude,
+          Gr_Liv_Area +
+          Year_Built +
+          Bldg_Type +
+          Latitude +
+          Longitude,
         resamples = folds,
         initial = 5,
         metrics = yardstick::metric_set(rsq),
-        param_info = parameters(dials::cost_complexity(c(0.5, 0)))
+        param_info = parameters(dials::cost_complexity(c(0, 0.5)))
       )
   })
 })
