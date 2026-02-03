@@ -90,7 +90,7 @@ test_that("maker static object", {
     error = TRUE
   )
 
-  partitions <- tune:::get_data_subsets(wflow, two_class_rs$splits[[1]])
+  partitions <- tune:::.get_data_subsets(wflow, two_class_rs$splits[[1]])
 
   res_with_data <- tune:::update_static(res, partitions)
   expect_true(is.list(res_with_data))

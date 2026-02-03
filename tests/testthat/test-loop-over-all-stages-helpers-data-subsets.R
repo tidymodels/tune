@@ -6,7 +6,7 @@ test_that("extract data subsets - no postprocessing", {
   rs_split <- two_class_rs$splits[[1]]
 
   wflow_1 <- workflow(Class ~ ., dt_spec)
-  data_1 <- tune:::get_data_subsets(wflow_1, rs_split)
+  data_1 <- tune:::.get_data_subsets(wflow_1, rs_split)
   expect_named(data_1, c("fit", "pred", "cal"))
   expect_equal(data_1$fit$data, analysis(rs_split))
   expect_equal(data_1$pred$data, assessment(rs_split))
@@ -23,7 +23,7 @@ test_that("extract data subsets - no estimated postprocessing", {
   rs_split <- two_class_rs$splits[[1]]
 
   wflow_1 <- workflow(Class ~ ., dt_spec, cls_post)
-  data_1 <- tune:::get_data_subsets(wflow_1, rs_split)
+  data_1 <- tune:::.get_data_subsets(wflow_1, rs_split)
   expect_named(data_1, c("fit", "pred", "cal"))
   expect_equal(data_1$fit$data, analysis(rs_split))
   expect_equal(data_1$pred$data, assessment(rs_split))
@@ -47,7 +47,7 @@ test_that("extract data subsets - estimated postprocessing", {
   wflow_1 <- workflow(Class ~ ., dt_spec, cls_est_post)
 
   set.seed(1)
-  data_1 <- tune:::get_data_subsets(wflow_1, rs_split, mc_cv_args)
+  data_1 <- tune:::.get_data_subsets(wflow_1, rs_split, mc_cv_args)
 
   expect_named(
     data_1,
