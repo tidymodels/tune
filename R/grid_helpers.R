@@ -93,7 +93,6 @@ predict_wrapper <- function(model, new_data, type, eval_time, subgrid = NULL) {
 #' @rdname tune-internal-functions
 forge_from_workflow <- function(new_data, workflow) {
   blueprint <- workflow$pre$mold$blueprint
-
   forged <- hardhat::forge(new_data, blueprint, outcomes = TRUE)
 
   forged

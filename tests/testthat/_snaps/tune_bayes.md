@@ -17,65 +17,85 @@
       
       i Estimating performance
       i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1 (prediction data)
       i Fold01: preprocessor 1/1, model 1/1
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1 (prediction data)
       i Fold02: preprocessor 1/1, model 1/1
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1 (prediction data)
       i Fold03: preprocessor 1/1, model 1/1
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1 (prediction data)
       i Fold04: preprocessor 1/1, model 1/1
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1 (prediction data)
       i Fold05: preprocessor 1/1, model 1/1
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1 (prediction data)
       i Fold06: preprocessor 1/1, model 1/1
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1 (prediction data)
       i Fold07: preprocessor 1/1, model 1/1
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1 (prediction data)
       i Fold08: preprocessor 1/1, model 1/1
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1 (prediction data)
       i Fold09: preprocessor 1/1, model 1/1
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1 (prediction data)
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
       i Estimating performance
       i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1 (prediction data)
       i Fold01: preprocessor 1/1, model 1/1
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1 (prediction data)
       i Fold02: preprocessor 1/1, model 1/1
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1 (prediction data)
       i Fold03: preprocessor 1/1, model 1/1
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1 (prediction data)
       i Fold04: preprocessor 1/1, model 1/1
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1 (prediction data)
       i Fold05: preprocessor 1/1, model 1/1
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1 (prediction data)
       i Fold06: preprocessor 1/1, model 1/1
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1 (prediction data)
       i Fold07: preprocessor 1/1, model 1/1
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1 (prediction data)
       i Fold08: preprocessor 1/1, model 1/1
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1 (prediction data)
       i Fold09: preprocessor 1/1, model 1/1
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1 (prediction data)
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
@@ -164,33 +184,43 @@
       i num_comp=11
       i Estimating performance
       i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1 (prediction data)
       i Fold01: preprocessor 1/1, model 1/1
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1 (prediction data)
       i Fold02: preprocessor 1/1, model 1/1
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1 (prediction data)
       i Fold03: preprocessor 1/1, model 1/1
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1 (prediction data)
       i Fold04: preprocessor 1/1, model 1/1
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1 (prediction data)
       i Fold05: preprocessor 1/1, model 1/1
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1 (prediction data)
       i Fold06: preprocessor 1/1, model 1/1
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1 (prediction data)
       i Fold07: preprocessor 1/1, model 1/1
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1 (prediction data)
       i Fold08: preprocessor 1/1, model 1/1
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1 (prediction data)
       i Fold09: preprocessor 1/1, model 1/1
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1 (prediction data)
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
@@ -204,33 +234,43 @@
       i num_comp=4
       i Estimating performance
       i Fold01: preprocessor 1/1
+      i Fold01: preprocessor 1/1 (prediction data)
       i Fold01: preprocessor 1/1, model 1/1
       i Fold01: preprocessor 1/1, model 1/1 (predictions)
       i Fold02: preprocessor 1/1
+      i Fold02: preprocessor 1/1 (prediction data)
       i Fold02: preprocessor 1/1, model 1/1
       i Fold02: preprocessor 1/1, model 1/1 (predictions)
       i Fold03: preprocessor 1/1
+      i Fold03: preprocessor 1/1 (prediction data)
       i Fold03: preprocessor 1/1, model 1/1
       i Fold03: preprocessor 1/1, model 1/1 (predictions)
       i Fold04: preprocessor 1/1
+      i Fold04: preprocessor 1/1 (prediction data)
       i Fold04: preprocessor 1/1, model 1/1
       i Fold04: preprocessor 1/1, model 1/1 (predictions)
       i Fold05: preprocessor 1/1
+      i Fold05: preprocessor 1/1 (prediction data)
       i Fold05: preprocessor 1/1, model 1/1
       i Fold05: preprocessor 1/1, model 1/1 (predictions)
       i Fold06: preprocessor 1/1
+      i Fold06: preprocessor 1/1 (prediction data)
       i Fold06: preprocessor 1/1, model 1/1
       i Fold06: preprocessor 1/1, model 1/1 (predictions)
       i Fold07: preprocessor 1/1
+      i Fold07: preprocessor 1/1 (prediction data)
       i Fold07: preprocessor 1/1, model 1/1
       i Fold07: preprocessor 1/1, model 1/1 (predictions)
       i Fold08: preprocessor 1/1
+      i Fold08: preprocessor 1/1 (prediction data)
       i Fold08: preprocessor 1/1, model 1/1
       i Fold08: preprocessor 1/1, model 1/1 (predictions)
       i Fold09: preprocessor 1/1
+      i Fold09: preprocessor 1/1 (prediction data)
       i Fold09: preprocessor 1/1, model 1/1
       i Fold09: preprocessor 1/1, model 1/1 (predictions)
       i Fold10: preprocessor 1/1
+      i Fold10: preprocessor 1/1 (prediction data)
       i Fold10: preprocessor 1/1, model 1/1
       i Fold10: preprocessor 1/1, model 1/1 (predictions)
       v Estimating performance
@@ -443,7 +483,7 @@
       res_fail <- tune_bayes(mod, Sale_Price ~ Neighborhood + Gr_Liv_Area +
       Year_Built + Bldg_Type + Latitude + Longitude, resamples = folds, initial = 5,
       metrics = yardstick::metric_set(rsq), param_info = parameters(dials::cost_complexity(
-        c(0.5, 0))))
+        c(0, 0.5))))
     Message
       > A | warning: A correlation computation is required, but `estimate` is constant and has 0 standard deviation, resulting in a divide by 0 error. `NA` will be returned.
       ! All of the rsq estimates were missing. The Gaussian process model cannot be

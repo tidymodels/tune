@@ -1,11 +1,13 @@
 # tune (development version)
 
+* In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
+
 * Prepends a period to the name, and exports the following functions. This is to improve integration with other packages: 
-    - check_grid(),
-    - determine_pred_types()
-    - get_config_key()
-    - loop_over_all_stages()
-    - update_parallel_over()
+    - `check_grid()` (e.g., now named `.check_grid()`)
+    - `determine_pred_types()`
+    - `get_config_key()`
+    - `loop_over_all_stages()`
+    - `update_parallel_over()`
 
 * When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
 

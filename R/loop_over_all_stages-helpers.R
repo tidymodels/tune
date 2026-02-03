@@ -202,15 +202,12 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
 
 predict_all_types <- function(
   wflow_fit,
+  processed_data_pred,
   static,
   submodel_grid = NULL
 ) {
   .data <- static$data$pred$data
   .ind <- static$data$pred$ind
-
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
@@ -320,6 +317,20 @@ finalize_fit_model <- function(wflow_current, grid) {
   # .catch_and_log_fit()
   .fit_model(wflow_current, workflows::control_workflow())
 }
+
+# ------------------------------------------------------------------------------
+# To call after the model is set and we loop over predict and/or post parameters
+# See #1128
+process_prediction_data <- function(wflow_fit, static) {
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
+
+  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
+  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+    dplyr::mutate(.row = .ind)
+  processed_data_pred
+}
+
 
 # ------------------------------------------------------------------------------
 # Misc functions
