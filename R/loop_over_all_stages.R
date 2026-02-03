@@ -38,7 +38,7 @@
   config_tbl <- static$configs
 
   # Append data partitions here; these are the same for the duration of this function
-  data_splits <- get_data_subsets(static$wflow, split, static$split_args)
+  data_splits <- .get_data_subsets(static$wflow, split, static$split_args)
   static <- update_static(static, data_splits)
 
   # Now that we have data, determine the names of the outcome data. NOTE that

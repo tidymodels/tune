@@ -82,7 +82,10 @@ check_static_data <- function(x, elem = "fit") {
   x
 }
 
-get_data_subsets <- function(wflow, split, split_args = NULL) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.get_data_subsets <- function(wflow, split, split_args = NULL) {
   fit_lst <- pred_lst <- cal_lst <- list(data = NULL, ind = NULL)
   pred_lst$data <- rsample::assessment(split)
   pred_lst$ind <- as.integer(split, data = "assessment")
