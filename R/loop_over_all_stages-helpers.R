@@ -319,6 +319,20 @@ finalize_fit_model <- function(wflow_current, grid) {
 }
 
 # ------------------------------------------------------------------------------
+# To call after the model is set and we loop over predict and/or post parameters
+# See #1128
+process_prediction_data <- function(wflow_fit, static) {
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
+
+  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
+  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+    dplyr::mutate(.row = .ind)
+  processed_data_pred
+}
+
+
+# ------------------------------------------------------------------------------
 # Misc functions
 
 rebind_grid <- function(...) {

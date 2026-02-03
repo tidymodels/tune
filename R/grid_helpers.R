@@ -98,18 +98,6 @@ forge_from_workflow <- function(new_data, workflow) {
   forged
 }
 
-# To call after the model is set and we loop over predict and/or post parameters
-process_prediction_data <- function(wflow_fit, static) {
-  .data <- static$data$pred$data
-  .ind <- static$data$pred$ind
-
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
-  processed_data_pred
-}
-
-
 get_metrics_by <- function(metric_set) {
   metrics <- attr(metric_set, "metrics")
   metrics_by <- purrr::map(metrics, attr, "by")
