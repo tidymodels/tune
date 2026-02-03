@@ -264,6 +264,7 @@ control <- control_resamples(save_pred = TRUE)
 spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 #> → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 #> There were issues with some computations   A: x1
+#> There were issues with some computations   A: x3
 #> There were issues with some computations   A: x5
 #> 
 
