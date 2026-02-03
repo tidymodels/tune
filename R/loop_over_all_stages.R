@@ -53,7 +53,13 @@
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
+    0
     location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
+
+    # Note: finalize_fit_pre() will process the data used for modeling. We'll
+    # also need to process the data used for prediction in the same way. That
+    # will happen below (via process_prediction_data()).
+
     current_wflow <- .catch_and_log(
       finalize_fit_pre(static$wflow, current_sched_pre, static),
       control = static$control,
@@ -65,6 +71,21 @@
     if (is_failure(current_wflow)) {
       next
     }
+
+    # Now we can process the data being predicted. These do not change
+    # over the next two loops, so compute them here, once.
+    location <- glue::glue(
+      "preprocessor {iter_pre}/{num_iterations_pre} (prediction data)"
+    )
+    pred_data <-
+      .catch_and_log(
+        process_prediction_data(current_wflow, static),
+        control = static$control,
+        split_labels = split_labs,
+        location = location,
+        notes = notes
+      )
+
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
     static$y_name <- outcome_names(current_wflow)
 
@@ -78,20 +99,6 @@
     # values currently are tune()
     wflow_with_fitted_pre <- current_wflow
 
-    # Now we are going to need the data being predicted. These do not change
-    # over the next two loops, so compute them here, once.
-    location <- glue::glue(
-      "preprocessor {iter_pre}/{num_iterations_pre} (predictions)"
-    )
-    pred_data <-
-      .catch_and_log(
-        process_prediction_data(current_wflow, static),
-        control = static$control,
-        split_labels = split_labs,
-        location = location,
-        notes = notes
-      )
-
     if (is_failure(pred_data)) {
       next
     }
@@ -103,6 +110,7 @@
       location <- glue::glue(
         "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
+
       current_wflow <- .catch_and_log(
         finalize_fit_model(wflow_with_fitted_pre, current_sched_model),
         control = static$control,
