@@ -47,6 +47,8 @@ new_iteration_results(
   workflow
 )
 
+.get_data_subsets(wflow, split, split_args = NULL)
+
 .get_config_key(grid, wflow)
 
 .determine_pred_types(wflow, metrics)

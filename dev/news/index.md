@@ -18,6 +18,7 @@
   - `get_config_key()`
   - `loop_over_all_stages()`
   - `update_parallel_over()`
+  - `get_data_subsets()`
 
 - When calculating resampling estimates, we can now use a weighted mean
   based on the number of rows in the assessment set. You can opt-in to
