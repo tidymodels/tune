@@ -441,641 +441,841 @@ knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 2
 #> 
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
 #> i Estimating performance
 #> i Fold01: preprocessor 1/1
+#> i Fold01: preprocessor 1/1 (prediction data)
 #> i Fold01: preprocessor 1/1, model 1/1
 #> i Fold01: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold02: preprocessor 1/1
+#> i Fold02: preprocessor 1/1 (prediction data)
 #> i Fold02: preprocessor 1/1, model 1/1
 #> i Fold02: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold03: preprocessor 1/1
+#> i Fold03: preprocessor 1/1 (prediction data)
 #> i Fold03: preprocessor 1/1, model 1/1
 #> i Fold03: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold04: preprocessor 1/1
+#> i Fold04: preprocessor 1/1 (prediction data)
 #> i Fold04: preprocessor 1/1, model 1/1
 #> i Fold04: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold05: preprocessor 1/1
+#> i Fold05: preprocessor 1/1 (prediction data)
 #> i Fold05: preprocessor 1/1, model 1/1
 #> i Fold05: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold06: preprocessor 1/1
+#> i Fold06: preprocessor 1/1 (prediction data)
 #> i Fold06: preprocessor 1/1, model 1/1
 #> i Fold06: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold07: preprocessor 1/1
+#> i Fold07: preprocessor 1/1 (prediction data)
 #> i Fold07: preprocessor 1/1, model 1/1
 #> i Fold07: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold08: preprocessor 1/1
+#> i Fold08: preprocessor 1/1 (prediction data)
 #> i Fold08: preprocessor 1/1, model 1/1
 #> i Fold08: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold09: preprocessor 1/1
+#> i Fold09: preprocessor 1/1 (prediction data)
 #> i Fold09: preprocessor 1/1, model 1/1
 #> i Fold09: preprocessor 1/1, model 1/1 (predictions)
 #> i Fold10: preprocessor 1/1
+#> i Fold10: preprocessor 1/1 (prediction data)
 #> i Fold10: preprocessor 1/1, model 1/1
 #> i Fold10: preprocessor 1/1, model 1/1 (predictions)
 #> ✓ Estimating performance
@@ -1102,16 +1302,16 @@ collect_metrics(knn_search) |>
 #> # A tibble: 25 × 11
 #>    neighbors weight_func `long df` `lat df` .metric .estimator   mean
 #>        <int> <chr>           <int>    <int> <chr>   <chr>       <dbl>
-#>  1         9 inv                 5        5 rmse    standard   0.0814
-#>  2         7 inv                 6        5 rmse    standard   0.0821
-#>  3        10 inv                 6        6 rmse    standard   0.0824
-#>  4         7 inv                 6        7 rmse    standard   0.0825
-#>  5         5 inv                 5        6 rmse    standard   0.0825
-#>  6        11 gaussian            5        6 rmse    standard   0.0826
-#>  7        11 inv                 2        6 rmse    standard   0.0829
-#>  8         5 gaussian            8        5 rmse    standard   0.0829
-#>  9         5 inv                 2        6 rmse    standard   0.0832
-#> 10         5 gaussian            8        6 rmse    standard   0.0832
+#>  1        10 triangular          3        3 rmse    standard   0.0819
+#>  2        10 inv                 2        4 rmse    standard   0.0824
+#>  3         8 triangular          6        4 rmse    standard   0.0824
+#>  4         6 gaussian            6        5 rmse    standard   0.0824
+#>  5        11 gaussian            4        5 rmse    standard   0.0825
+#>  6         5 gaussian            3        5 rmse    standard   0.0827
+#>  7         6 gaussian            6        6 rmse    standard   0.0827
+#>  8         4 gaussian            4        6 rmse    standard   0.0835
+#>  9         4 gaussian            4        4 rmse    standard   0.0838
+#> 10         3 rectangular         6        6 rmse    standard   0.0843
 #> # ℹ 15 more rows
 #> # ℹ 4 more variables: n <int>, std_err <dbl>, .config <chr>,
 #> #   .iter <int>
