@@ -423,7 +423,7 @@ average_predictions <- function(x, grid = NULL) {
 
   if (all(metric_types == "numeric")) {
     x <- numeric_summarize(x)
-  } else if (any(metric_types == "prob")) {
+  } else if (any(metric_types %in% c("prob", "ordered_prob"))) {
     # Note that this will recompute the hard class predictions since the
     # probability estimates are changing. That's why there is a separate
     # branch below that summarizes the hard class predictions when those are
