@@ -10,7 +10,7 @@ Authors@R: c(
 Description: The ability to tune models is important. 'tune' contains
     functions and classes to be used in conjunction with other
     'tidymodels' packages for finding reasonable values of
-    hyper-parameters in models, pre-processing methods, and
+    hyper-parameters in models, preprocessing methods, and
     post-processing steps.
 License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
