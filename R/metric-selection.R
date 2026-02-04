@@ -320,6 +320,9 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
       'censored regression' = {
         mtr_set <- yardstick::metric_set(brier_survival)
       },
+      'quantile regression' = {
+        mtr_set <- yardstick::metric_set(weighted_interval_score)
+      },
       # workflows cannot be set with an unknown mode
       cli::cli_abort("Model value {.val {mode}} can't be used.", call = call)
     )

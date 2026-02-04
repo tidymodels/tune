@@ -1,5 +1,8 @@
 # tune (development version)
 
+
+* Model tuning has been enabled for quantile regression models. (#1125)
+
 * In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
 
 * Prepends a period to the name, and exports the following functions. This is to improve integration with other packages: 

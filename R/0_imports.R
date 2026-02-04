@@ -11,6 +11,7 @@
 #' @importFrom stats sd qt qnorm dnorm pnorm predict model.matrix setNames
 #' @importFrom stats model.matrix model.response model.frame update median
 #' @importFrom yardstick rsq rmse accuracy roc_auc brier_survival brier_class
+#' @importFrom yardstick weighted_interval_score
 #' @importFrom tidyr unnest nest
 #' @importFrom parsnip get_from_env required_pkgs
 #' @importFrom recipes all_predictors all_outcomes
@@ -128,7 +129,10 @@ utils::globalVariables(
     "num",
     "user",
     ".resample_weight",
-    "effective_n"
+    "effective_n",
+    ".index",
+    ".quantile_levels",
+    ".pred_quantile"
   )
 )
 
