@@ -97,7 +97,7 @@ test_that("tuning quantile regression models", {
 })
 
 
-test_that("bootstrap internvals for quantile regression models", {
+test_that("bootstrap intervals for quantile regression models", {
   skip_if_not_installed("parsnip", minimum_version = "1.4.1.9002")
   skip_if_not_installed("xgboost", minimum_version = "3.1.3.1")
   skip_if_not_installed("modeldata")
