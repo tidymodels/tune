@@ -424,13 +424,13 @@ average_predictions <- function(x, grid = NULL) {
     }
     if (length(param_names) == 0) {
       x$.predictions <-
-        purrr::map(x$.predictions, dplyr::cross_join, parameters)
+        purrr::map(x$.predictions, dplyr::cross_join, grid)
     } else {
       x$.predictions <-
         purrr::map(
           x$.predictions,
           dplyr::inner_join,
-          parameters,
+          grid,
           by = param_names
         )
     }
