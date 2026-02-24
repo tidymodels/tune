@@ -114,8 +114,21 @@ min_model_grid <- function(grid, model_param, wflow) {
     return(model_grid)
   }
 
-  min_grid(extract_spec_parsnip(wflow), model_grid) |>
-    dplyr::select(dplyr::all_of(model_param))
+  # But we check to see if there are _any_ model parameters. If not,
+  # act like `min_grid.model_spec()` and just add a placeholder for submodels.
+  # We want to avoid method dispatch to a more specific method (e.g.
+  # `min_grid.logistic_reg()`) because it assumes that _there is_ a model
+  # parameter and, at least for glmnet models, it fails. See issue #1119
+  if (ncol(model_grid) == 0) {
+    res <-
+      min_grid.model_spec(extract_spec_parsnip(wflow), model_grid) |>
+      dplyr::select(dplyr::all_of(model_param))
+  } else {
+    res <-
+      min_grid(extract_spec_parsnip(wflow), model_grid) |>
+      dplyr::select(dplyr::all_of(model_param))
+  }
+  res
 }
 
 schedule_predict_stage_i <- function(predict_stage, param_info) {
