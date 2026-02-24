@@ -82,7 +82,10 @@ check_static_data <- function(x, elem = "fit") {
   x
 }
 
-get_data_subsets <- function(wflow, split, split_args = NULL) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.get_data_subsets <- function(wflow, split, split_args = NULL) {
   fit_lst <- pred_lst <- cal_lst <- list(data = NULL, ind = NULL)
   pred_lst$data <- rsample::assessment(split)
   pred_lst$ind <- as.integer(split, data = "assessment")
@@ -202,15 +205,12 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
 
 predict_all_types <- function(
   wflow_fit,
+  processed_data_pred,
   static,
   submodel_grid = NULL
 ) {
   .data <- static$data$pred$data
   .ind <- static$data$pred$ind
-
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
@@ -320,6 +320,20 @@ finalize_fit_model <- function(wflow_current, grid) {
   # .catch_and_log_fit()
   .fit_model(wflow_current, workflows::control_workflow())
 }
+
+# ------------------------------------------------------------------------------
+# To call after the model is set and we loop over predict and/or post parameters
+# See #1128
+process_prediction_data <- function(wflow_fit, static) {
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
+
+  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
+  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+    dplyr::mutate(.row = .ind)
+  processed_data_pred
+}
+
 
 # ------------------------------------------------------------------------------
 # Misc functions

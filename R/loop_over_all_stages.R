@@ -38,7 +38,7 @@
   config_tbl <- static$configs
 
   # Append data partitions here; these are the same for the duration of this function
-  data_splits <- get_data_subsets(static$wflow, split, static$split_args)
+  data_splits <- .get_data_subsets(static$wflow, split, static$split_args)
   static <- update_static(static, data_splits)
 
   # Now that we have data, determine the names of the outcome data. NOTE that
@@ -53,7 +53,13 @@
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
+    0
     location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
+
+    # Note: finalize_fit_pre() will process the data used for modeling. We'll
+    # also need to process the data used for prediction in the same way. That
+    # will happen below (via process_prediction_data()).
+
     current_wflow <- .catch_and_log(
       finalize_fit_pre(static$wflow, current_sched_pre, static),
       control = static$control,
@@ -65,6 +71,21 @@
     if (is_failure(current_wflow)) {
       next
     }
+
+    # Now we can process the data being predicted. These do not change
+    # over the next two loops, so compute them here, once.
+    location <- glue::glue(
+      "preprocessor {iter_pre}/{num_iterations_pre} (prediction data)"
+    )
+    pred_data <-
+      .catch_and_log(
+        process_prediction_data(current_wflow, static),
+        control = static$control,
+        split_labels = split_labs,
+        location = location,
+        notes = notes
+      )
+
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
     static$y_name <- outcome_names(current_wflow)
 
@@ -78,6 +99,10 @@
     # values currently are tune()
     wflow_with_fitted_pre <- current_wflow
 
+    if (is_failure(pred_data)) {
+      next
+    }
+
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
 
@@ -85,6 +110,7 @@
       location <- glue::glue(
         "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}"
       )
+
       current_wflow <- .catch_and_log(
         finalize_fit_model(wflow_with_fitted_pre, current_sched_model),
         control = static$control,
@@ -107,7 +133,7 @@
 
       # --------------------------------------------------------------------------
       # Iterate over prediction submodels; no multipredict, just one at a time
-      # wothout retraining the model
+      # without retraining the model
 
       for (iter_pred in seq_len(num_iterations_pred)) {
         current_sched_pred <- current_sched_model$predict_stage[[1]][
@@ -130,7 +156,7 @@
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
           current_pred <- .catch_and_log(
-            predict_all_types(current_wflow, static, sub_grid) |>
+            predict_all_types(current_wflow, pred_data, static, sub_grid) |>
               dplyr::select(-dplyr::all_of(sub_nm)),
             control = static$control,
             split_labels = split_labs,
@@ -142,7 +168,7 @@
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
           )
           current_pred <- .catch_and_log(
-            predict_all_types(current_wflow, static),
+            predict_all_types(current_wflow, pred_data, static),
             control = static$control,
             split_labels = split_labs,
             location = location,

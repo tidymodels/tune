@@ -16,6 +16,7 @@
 \alias{estimate_tune_results}
 \alias{metrics_info}
 \alias{new_iteration_results}
+\alias{.get_data_subsets}
 \alias{.get_config_key}
 \alias{.determine_pred_types}
 \alias{.loop_over_all_stages}
@@ -71,6 +72,8 @@ new_iteration_results(
   rset_info,
   workflow
 )
+
+.get_data_subsets(wflow, split, split_args = NULL)
 
 .get_config_key(grid, wflow)
 
