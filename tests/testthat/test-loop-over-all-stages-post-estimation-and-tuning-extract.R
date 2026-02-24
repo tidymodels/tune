@@ -2,7 +2,7 @@
 # them (and the results) are found in the `inst` directory.
 # All tests are about extract argument
 
-test_that("verifying loop_over_all_stages, no submodels, post estimation with tuning", {
+test_that("verifying .loop_over_all_stages, no submodels, post estimation with tuning", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
   skip_if_not_installed("probably")
@@ -54,11 +54,11 @@ test_that("verifying loop_over_all_stages, no submodels, post estimation with tu
     control = control_grid(save_pred = TRUE, extract = ext_1)
   )
 
-  data_1 <- tune:::get_data_subsets(wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "outcome"
 
-  simple_res <- tune:::loop_over_all_stages(rs_iter, grd, static_1)
+  simple_res <- tune:::.loop_over_all_stages(rs_iter, grd, static_1)
   expect_true(!is.null(simple_res$.metrics[[1]]))
   expect_named(
     simple_res,
@@ -83,7 +83,7 @@ test_that("verifying loop_over_all_stages, no submodels, post estimation with tu
   # TODO more tests can be added when calibration method = "none" is implemented
 })
 
-test_that("verifying loop_over_all_stages, submodels, post estimation with tuning", {
+test_that("verifying .loop_over_all_stages, submodels, post estimation with tuning", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
   skip_if_not_installed("probably")
@@ -170,11 +170,11 @@ test_that("verifying loop_over_all_stages, submodels, post estimation with tunin
     control = tune::control_grid(save_pred = TRUE, extract = ext_1)
   )
 
-  data_1 <- tune:::get_data_subsets(submodel_wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(submodel_wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "outcome"
 
-  submodel_res <- tune:::loop_over_all_stages(rs_iter, submodel_grid, static_1)
+  submodel_res <- tune:::.loop_over_all_stages(rs_iter, submodel_grid, static_1)
   expect_true(!is.null(submodel_res$.metrics[[1]]))
   expect_named(
     submodel_res,
@@ -197,7 +197,7 @@ test_that("verifying loop_over_all_stages, submodels, post estimation with tunin
   )
 })
 
-test_that("verifying loop_over_all_stages, submodels only, post estimation with tuning", {
+test_that("verifying .loop_over_all_stages, submodels only, post estimation with tuning", {
   skip_if_not_installed("modeldata")
   skip_if_not_installed("kknn")
   skip_if_not_installed("probably")
@@ -247,11 +247,11 @@ test_that("verifying loop_over_all_stages, submodels only, post estimation with 
     control = tune::control_grid(save_pred = TRUE, extract = ext_1)
   )
 
-  data_1 <- tune:::get_data_subsets(submodel_only_wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(submodel_only_wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
-  submodel_only_res <- tune:::loop_over_all_stages(
+  submodel_only_res <- tune:::.loop_over_all_stages(
     rs_iter,
     submodel_only_grid,
     static_1

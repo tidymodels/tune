@@ -198,8 +198,18 @@ filter_predictions <- function(x, parameters) {
                     {.val {param_names}}."
     )
   }
-  x$.predictions <-
-    purrr::map(x$.predictions, dplyr::inner_join, parameters, by = param_names)
+  if (length(param_names) == 0) {
+    x$.predictions <-
+      purrr::map(x$.predictions, dplyr::cross_join, parameters)
+  } else {
+    x$.predictions <-
+      purrr::map(
+        x$.predictions,
+        dplyr::inner_join,
+        parameters,
+        by = param_names
+      )
+  }
   x
 }
 
@@ -378,6 +388,24 @@ surv_summarize <- function(x, param, y) {
     }
   }
 
+  # Simple mean to summarize linear predictors
+  if (any(pred_cols == ".pred_linear_pred")) {
+    tmp <-
+      dplyr::summarize(
+        x,
+        .pred_linear_pred = mean(.pred_linear_pred, na.rm = TRUE),
+        .by = c(.row, .config, dplyr::any_of(param), dplyr::any_of(".iter"))
+      )
+
+    if (!is.null(res)) {
+      dot_iter <- grep("\\.iter", nms, value = TRUE)
+      res <-
+        dplyr::full_join(tmp, res, by = c(".row", ".config", param, dot_iter))
+    } else {
+      res <- tmp
+    }
+  }
+
   res <- dplyr::full_join(outcomes, res, by = ".row")
   res[order(res$.row, res$.config), nms]
 }
@@ -394,8 +422,18 @@ average_predictions <- function(x, grid = NULL) {
         "{.arg grid} should only have columns: {.val {param_names}}."
       )
     }
-    x$.predictions <-
-      purrr::map(x$.predictions, dplyr::inner_join, grid, by = param_names)
+    if (length(param_names) == 0) {
+      x$.predictions <-
+        purrr::map(x$.predictions, dplyr::cross_join, grid)
+    } else {
+      x$.predictions <-
+        purrr::map(
+          x$.predictions,
+          dplyr::inner_join,
+          grid,
+          by = param_names
+        )
+    }
   }
 
   x <-
@@ -405,7 +443,7 @@ average_predictions <- function(x, grid = NULL) {
 
   if (all(metric_types == "numeric")) {
     x <- numeric_summarize(x)
-  } else if (any(metric_types == "prob")) {
+  } else if (any(metric_types %in% c("prob", "ordered_prob"))) {
     # Note that this will recompute the hard class predictions since the
     # probability estimates are changing. That's why there is a separate
     # branch below that summarizes the hard class predictions when those are
@@ -413,7 +451,7 @@ average_predictions <- function(x, grid = NULL) {
     x <- prob_summarize(x, param_names)
   } else if (any(metric_types == "class")) {
     x <- class_summarize(x, param_names)
-  } else if (any(metric_types %in% c("survival", "time"))) {
+  } else if (any(metric_types %in% c("survival", "time", "linear_pred"))) {
     x <- surv_summarize(x, param_names, y_nms)
   } else {
     cli::cli_abort(

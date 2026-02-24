@@ -15,7 +15,7 @@ test_that("predict classification - no submodels - no calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -36,12 +36,13 @@ test_that("predict classification - no submodels - no calibration", {
 
   static_class <- tune:::update_static(static_class, data_1)
   static_class$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_class)
 
   class_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_class,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -55,6 +56,7 @@ test_that("predict classification - no submodels - no calibration", {
 
   static_prob <- tune:::make_static(
     wflow,
+    pred_df_1,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
     metrics = prob_only,
@@ -65,12 +67,13 @@ test_that("predict classification - no submodels - no calibration", {
 
   static_prob <- tune:::update_static(static_prob, data_1)
   static_prob$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_prob)
 
   prob_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_prob,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -99,12 +102,13 @@ test_that("predict classification - no submodels - no calibration", {
 
   static_both <- tune:::update_static(static_both, data_1)
   static_both$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_both)
 
   both_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_both,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -118,31 +122,6 @@ test_that("predict classification - no submodels - no calibration", {
     )
   )
   expect_equal(nrow(both_res), nrow(assessment(cls$rs$splits[[1]])))
-
-  # ------------------------------------------------------------------------------
-  # bad arg
-
-  expect_snapshot(
-    tune:::predict_all_types(
-      wflow_fit,
-      static_both,
-      submodel_grid = NULL,
-      predictee = "potato"
-    ),
-    error = TRUE
-  )
-
-  static_bad <- static_both
-  static_bad$post_estimation <- TRUE
-  expect_snapshot(
-    tune:::predict_all_types(
-      wflow_fit,
-      static_bad,
-      submodel_grid = NULL,
-      predictee = "calibration"
-    ),
-    error = TRUE
-  )
 })
 
 test_that("predict classification - no submodels - with calibration", {
@@ -165,7 +144,7 @@ test_that("predict classification - no submodels - with calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -186,12 +165,13 @@ test_that("predict classification - no submodels - with calibration", {
 
   static_class <- tune:::update_static(static_class, data_1)
   static_class$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_class)
 
   class_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_class,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -205,27 +185,6 @@ test_that("predict classification - no submodels - with calibration", {
     )
   )
   expect_equal(nrow(class_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  class_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_class,
-    submodel_grid = NULL,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    class_res_cal[0, ],
-    tibble(
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(class_res_cal), nrow(data_1$cal$data))
 
   # ----------------------------------------------------------------------------
   # Only predict probabilities
@@ -242,12 +201,13 @@ test_that("predict classification - no submodels - with calibration", {
 
   static_prob <- tune:::update_static(static_prob, data_1)
   static_prob$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_prob)
 
   prob_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_prob,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -261,27 +221,6 @@ test_that("predict classification - no submodels - with calibration", {
     )
   )
   expect_equal(nrow(prob_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  prob_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_prob,
-    submodel_grid = NULL,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    prob_res_cal[0, ],
-    tibble(
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(prob_res_cal), nrow(data_1$cal$data))
 
   # ----------------------------------------------------------------------------
   # Both prediction types
@@ -298,12 +237,13 @@ test_that("predict classification - no submodels - with calibration", {
 
   static_both <- tune:::update_static(static_both, data_1)
   static_both$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_both)
 
   both_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_both,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -317,27 +257,6 @@ test_that("predict classification - no submodels - with calibration", {
     )
   )
   expect_equal(nrow(prob_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  both_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_both,
-    submodel_grid = NULL,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    both_res_cal[0, ],
-    tibble(
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(both_res_cal), nrow(data_1$cal$data))
 })
 
 test_that("predict classification - with submodels - no calibration", {
@@ -364,7 +283,7 @@ test_that("predict classification - with submodels - no calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -385,12 +304,13 @@ test_that("predict classification - with submodels - no calibration", {
 
   static_class <- tune:::update_static(static_class, data_1)
   static_class$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_class)
 
   class_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_class,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -419,12 +339,13 @@ test_that("predict classification - with submodels - no calibration", {
 
   static_prob <- tune:::update_static(static_prob, data_1)
   static_prob$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_prob)
 
   prob_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_prob,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -454,12 +375,13 @@ test_that("predict classification - with submodels - no calibration", {
 
   static_both <- tune:::update_static(static_both, data_1)
   static_both$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_both)
 
   both_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_both,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -474,31 +396,6 @@ test_that("predict classification - with submodels - no calibration", {
     )
   )
   expect_equal(nrow(both_res), nrow(assessment(cls$rs$splits[[1]])))
-
-  # ------------------------------------------------------------------------------
-  # bad arg
-
-  expect_snapshot(
-    tune:::predict_all_types(
-      wflow_fit,
-      static_both,
-      submodel_grid = five_neighbors,
-      predictee = "potato"
-    ),
-    error = TRUE
-  )
-
-  static_bad <- static_both
-  static_bad$post_estimation <- TRUE
-  expect_snapshot(
-    tune:::predict_all_types(
-      wflow_fit,
-      static_bad,
-      submodel_grid = five_neighbors,
-      predictee = "calibration"
-    ),
-    error = TRUE
-  )
 })
 
 test_that("predict classification - with submodels - with calibration", {
@@ -529,7 +426,7 @@ test_that("predict classification - with submodels - with calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -550,12 +447,13 @@ test_that("predict classification - with submodels - with calibration", {
 
   static_class <- tune:::update_static(static_class, data_1)
   static_class$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_class)
 
   class_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_class,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -570,28 +468,6 @@ test_that("predict classification - with submodels - with calibration", {
     )
   )
   expect_equal(nrow(class_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  class_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_class,
-    submodel_grid = five_neighbors,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    class_res_cal[0, ],
-    tibble(
-      neighbors = double(0),
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(class_res_cal), nrow(data_1$cal$data))
 
   # ----------------------------------------------------------------------------
   # Only predict probabilities
@@ -608,12 +484,13 @@ test_that("predict classification - with submodels - with calibration", {
 
   static_prob <- tune:::update_static(static_prob, data_1)
   static_prob$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_prob)
 
   prob_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_prob,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -628,28 +505,6 @@ test_that("predict classification - with submodels - with calibration", {
     )
   )
   expect_equal(nrow(prob_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  prob_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_prob,
-    submodel_grid = five_neighbors,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    prob_res_cal[0, ],
-    tibble(
-      neighbors = double(0),
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(prob_res_cal), nrow(data_1$cal$data))
 
   # ----------------------------------------------------------------------------
   # Both prediction types
@@ -666,12 +521,13 @@ test_that("predict classification - with submodels - with calibration", {
 
   static_both <- tune:::update_static(static_both, data_1)
   static_both$y_name <- "class"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_both)
 
   both_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_both,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -686,28 +542,6 @@ test_that("predict classification - with submodels - with calibration", {
     )
   )
   expect_equal(nrow(prob_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  both_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static_both,
-    submodel_grid = five_neighbors,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    both_res_cal[0, ],
-    tibble(
-      neighbors = double(0),
-      .pred_class = fac_0,
-      .row = integer(0),
-      .pred_class_1 = double(0),
-      .pred_class_2 = double(0),
-      class = fac_0
-    )
-  )
-  expect_equal(nrow(both_res_cal), nrow(data_1$cal$data))
 })
 
 test_that("predict regression - no submodels - no calibration", {
@@ -724,7 +558,7 @@ test_that("predict regression - no submodels - no calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -742,12 +576,13 @@ test_that("predict regression - no submodels - no calibration", {
 
   static <- tune:::update_static(static, data_1)
   static$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static)
 
   class_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -775,7 +610,7 @@ test_that("predict regression - no submodels - with calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -793,12 +628,13 @@ test_that("predict regression - no submodels - with calibration", {
 
   static <- tune:::update_static(static, data_1)
   static$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static)
 
   class_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -833,7 +669,7 @@ test_that("predict regression - with submodels - no calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -851,12 +687,13 @@ test_that("predict regression - with submodels - no calibration", {
 
   static <- tune:::update_static(static, data_1)
   static$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static)
 
   class_res <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -896,7 +733,7 @@ test_that("predict regression - with submodels - with calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -914,12 +751,13 @@ test_that("predict regression - with submodels - with calibration", {
 
   static <- tune:::update_static(static, data_1)
   static$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static)
 
   class_res_prd <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static,
-    submodel_grid = five_neighbors,
-    predictee = "assessment"
+    submodel_grid = five_neighbors
   )
 
   expect_equal(
@@ -932,26 +770,6 @@ test_that("predict regression - with submodels - with calibration", {
     )
   )
   expect_equal(nrow(class_res_prd), nrow(data_1$pred$data))
-
-  ###
-
-  class_res_cal <- tune:::predict_all_types(
-    wflow_fit,
-    static,
-    submodel_grid = five_neighbors,
-    predictee = "calibration"
-  )
-
-  expect_equal(
-    class_res_cal[0, ],
-    tibble(
-      neighbors = double(0),
-      .pred = double(0),
-      .row = integer(0),
-      outcome = double(0)
-    )
-  )
-  expect_equal(nrow(class_res_cal), nrow(data_1$cal$data))
 })
 
 test_that("predict censored regression - no submodels - no calibration", {
@@ -981,7 +799,7 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   .times <- c(15, 25)
 
-  data_1 <- tune:::get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
 
   ctrl <- tune::control_grid()
 
@@ -1000,12 +818,13 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   static_stc <- tune:::update_static(static_stc, data_1)
   static_stc$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_stc)
 
   res_stc <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_stc,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -1029,12 +848,13 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   static_dyn <- tune:::update_static(static_dyn, data_1)
   static_dyn$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_dyn)
 
   res_dyn <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_dyn,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -1083,7 +903,7 @@ test_that("predict censored regression - submodels - no calibration", {
 
   .times <- c(15, 25)
 
-  data_1 <- tune:::get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
 
   ctrl <- tune::control_grid()
 
@@ -1107,12 +927,13 @@ test_that("predict censored regression - submodels - no calibration", {
 
   static_stc <- tune:::update_static(static_stc, data_1)
   static_stc$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_stc)
 
   res_stc <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_stc,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(
@@ -1136,12 +957,13 @@ test_that("predict censored regression - submodels - no calibration", {
 
   static_dyn <- tune:::update_static(static_dyn, data_1)
   static_dyn$y_name <- "outcome"
+  pred_df_1 <- tune:::process_prediction_data(wflow_fit, static_dyn)
 
   res_dyn <- tune:::predict_all_types(
     wflow_fit,
+    pred_df_1,
     static_dyn,
-    submodel_grid = NULL,
-    predictee = "assessment"
+    submodel_grid = NULL
   )
 
   expect_equal(

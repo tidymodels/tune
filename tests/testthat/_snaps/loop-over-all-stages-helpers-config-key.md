@@ -1,7 +1,7 @@
 # set configurations - single element
 
     Code
-      tune:::get_config_key(tibble::tibble(polynimial_degree = 1:2), wflow_pre)
+      tune:::.get_config_key(tibble::tibble(polynimial_degree = 1:2), wflow_pre)
     Condition
       Error:
       ! Some parameters are tagged for tuning but are not in the grid: `degree`
@@ -9,7 +9,7 @@
 ---
 
     Code
-      tune:::get_config_key(tibble::tibble(degree = 1:3), wflow_pre)
+      tune:::.get_config_key(tibble::tibble(degree = 1:3), wflow_pre)
     Output
       # A tibble: 3 x 2
         degree .config        
@@ -21,7 +21,7 @@
 ---
 
     Code
-      tune:::get_config_key(tibble::tibble(degree = 1), wflow_pre)
+      tune:::.get_config_key(tibble::tibble(degree = 1), wflow_pre)
     Output
       # A tibble: 1 x 2
         degree .config        
@@ -31,7 +31,7 @@
 ---
 
     Code
-      tune:::get_config_key(tibble::tibble(min_n = 10:12), wflow_mod)
+      tune:::.get_config_key(tibble::tibble(min_n = 10:12), wflow_mod)
     Output
       # A tibble: 3 x 2
         min_n .config        
@@ -43,7 +43,7 @@
 ---
 
     Code
-      tune:::get_config_key(tibble::tibble(cut = seq(0, 1, length.out = 5)),
+      tune:::.get_config_key(tibble::tibble(cut = seq(0, 1, length.out = 5)),
       wflow_post)
     Output
       # A tibble: 5 x 2
@@ -58,7 +58,7 @@
 # set configurations - two elements
 
     Code
-      tune:::get_config_key(tidyr::crossing(degree = 1:3, neighbors = 1:2), wflow_1)
+      tune:::.get_config_key(tidyr::crossing(degree = 1:3, neighbors = 1:2), wflow_1)
     Output
       # A tibble: 6 x 3
         neighbors degree .config        
@@ -73,7 +73,7 @@
 ---
 
     Code
-      tune:::get_config_key(slice(tidyr::crossing(min_n = 1:3, cut = (1:5) / 5), -1),
+      tune:::.get_config_key(slice(tidyr::crossing(min_n = 1:3, cut = (1:5) / 5), -1),
       wflow_2)
     Output
       # A tibble: 14 x 3
@@ -97,7 +97,7 @@
 ---
 
     Code
-      tune:::get_config_key(grid, wflow_3)
+      tune:::.get_config_key(grid, wflow_3)
     Output
       # A tibble: 10 x 3
          degree   cut .config         
@@ -116,7 +116,7 @@
 # set configurations - all or none
 
     Code
-      tune:::get_config_key(tibble(), wflow_none)
+      tune:::.get_config_key(tibble(), wflow_none)
     Output
       # A tibble: 1 x 1
         .config        
@@ -126,7 +126,7 @@
 ---
 
     Code
-      tune:::get_config_key(grid, wflow_all)
+      tune:::.get_config_key(grid, wflow_all)
     Output
       # A tibble: 5 x 4
         min_n degree   cut .config        

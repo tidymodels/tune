@@ -13,7 +13,7 @@ tune_grid_loop <- function(
 
   mtr_info <- tibble::as_tibble(metrics)
 
-  control <- update_parallel_over(control, resamples, grid)
+  control <- .update_parallel_over(control, resamples, grid)
 
   # Determine how to process the tasks (i.e. parallel engines or sequential)
   strategy <- choose_framework(workflow, control)
@@ -41,7 +41,7 @@ tune_grid_loop <- function(
 
   # Notes on debugging:
   # 1. You can set `options(future.debug = TRUE)` to help
-  # 2. If you are debugging loop_over_all_stages, use the control option
+  # 2. If you are debugging .loop_over_all_stages, use the control option
   #    `allow_par = FALSE`; that will use `lapply()` so that you can see output.
 
   # ------------------------------------------------------------------------------

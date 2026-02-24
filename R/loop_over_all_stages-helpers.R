@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Helpers for loop_over_all_stages()
+# Helpers for .loop_over_all_stages()
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
@@ -29,7 +29,7 @@ make_static <- function(
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 
-  configs <- get_config_key(grid, workflow)
+  configs <- .get_config_key(grid, workflow)
 
   list(
     wflow = workflow,
@@ -40,7 +40,7 @@ make_static <- function(
     ),
     metrics = metrics,
     metric_info = tibble::as_tibble(metrics),
-    pred_types = determine_pred_types(workflow, metrics),
+    pred_types = .determine_pred_types(workflow, metrics),
     eval_time = eval_time,
     split_args = split_args,
     control = control,
@@ -82,7 +82,10 @@ check_static_data <- function(x, elem = "fit") {
   x
 }
 
-get_data_subsets <- function(wflow, split, split_args = NULL) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.get_data_subsets <- function(wflow, split, split_args = NULL) {
   fit_lst <- pred_lst <- cal_lst <- list(data = NULL, ind = NULL)
   pred_lst$data <- rsample::assessment(split)
   pred_lst$ind <- as.integer(split, data = "assessment")
@@ -202,30 +205,12 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
 
 predict_all_types <- function(
   wflow_fit,
+  processed_data_pred,
   static,
-  submodel_grid = NULL,
-  predictee = "assessment"
+  submodel_grid = NULL
 ) {
-  predictee <- rlang::arg_match(predictee, c("assessment", "calibration"))
-  outputs <- get_output_columns(wflow_fit)
-
-  if (predictee == "calibration" && static$post_estimation) {
-    if (is.null(static$data$cal)) {
-      cli::cli_abort(
-        "Calibration data were requested but not reserved.",
-        call = NULL
-      )
-    }
-    .data <- static$data$cal$data
-    .ind <- static$data$cal$ind
-  } else {
-    .data <- static$data$pred$data
-    .ind <- static$data$pred$ind
-  }
-
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
-    dplyr::mutate(.row = .ind)
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
@@ -337,17 +322,24 @@ finalize_fit_model <- function(wflow_current, grid) {
 }
 
 # ------------------------------------------------------------------------------
+# To call after the model is set and we loop over predict and/or post parameters
+# See #1128
+process_prediction_data <- function(wflow_fit, static) {
+  .data <- static$data$pred$data
+  .ind <- static$data$pred$ind
+
+  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
+  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+    dplyr::mutate(.row = .ind)
+  processed_data_pred
+}
+
+
+# ------------------------------------------------------------------------------
 # Misc functions
 
 rebind_grid <- function(...) {
   list(...) |> purrr::map(remove_stage) |> purrr::list_cbind()
-}
-
-get_output_columns <- function(x) {
-  # This needs a fitted model or workflow
-  pred_cols <- parsnip::.get_prediction_column_names(x, syms = TRUE)
-  res <- c(list(outcome = rlang::syms(outcome_names(x))), pred_cols)
-  res
 }
 
 # ------------------------------------------------------------------------------
@@ -373,7 +365,10 @@ replace_reserve_rows <- function(iter, chunk) {
 # ------------------------------------------------------------------------------
 # Add .config to grid
 
-get_config_key <- function(grid, wflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.get_config_key <- function(grid, wflow) {
   info <- tune_args(wflow)
   key <- grid
 
@@ -453,7 +448,10 @@ make_config_labs <- function(grid, param, val = "pre") {
   res
 }
 
-determine_pred_types <- function(wflow, metrics) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
 
   pred_types <- unique(metrics_info(metrics)$type)

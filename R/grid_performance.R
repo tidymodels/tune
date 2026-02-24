@@ -6,10 +6,12 @@ pred_type <- function(x) {
   res <- dplyr::case_when(
     cls == "class_metric" ~ "class",
     cls == "prob_metric" ~ "prob",
+    cls == "ordered_prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     cls == "dynamic_survival_metric" ~ "survival",
     cls == "integrated_survival_metric" ~ "survival",
     cls == "static_survival_metric" ~ "time",
+    cls == "linear_pred_survival_metric" ~ "linear_pred",
     TRUE ~ "unknown"
   )
   res
@@ -69,7 +71,7 @@ metrics_info <- function(x) {
   # The call stack is:
   #
   # tune_grid_loop()
-  #   loop_over_all_stages() <many times>
+  #   .loop_over_all_stages() <many times>
   #    .estimate_metrics()
 
   # predictions made in:
@@ -110,7 +112,9 @@ metrics_info <- function(x) {
       types,
       event_level
     )
-  } else if (all(types == "time" | types == "survival")) {
+  } else if (
+    all(types == "time" | types == "survival" | types == "linear_pred")
+  ) {
     estimate_surv(dat, metric, param_names, outcome_name, case_weights, types)
   } else {
     cli::cli_abort("Metric type not yet supported by {.pkg tune}.")
@@ -240,8 +244,20 @@ unnest_parameters <- function(x, params = NULL) {
 
 maybe_estimate <- function(x) {
   info <- tibble::as_tibble(x)
-  if (any(info$class == "static_survival_metric")) {
+
+  has_static <- any(info$class == "static_survival_metric")
+  has_linear_pred <- any(info$class == "linear_pred_survival_metric")
+  has_static_and_linear <- has_static && has_linear_pred
+
+  if (has_static_and_linear) {
+    res <- rlang::expr(c(
+      static = .pred_time,
+      linear_pred = .pred_linear_pred
+    ))
+  } else if (has_static) {
     res <- rlang::sym(".pred_time")
+  } else if (has_linear_pred) {
+    res <- rlang::sym(".pred_linear_pred")
   } else {
     res <- NULL
   }
