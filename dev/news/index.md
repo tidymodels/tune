@@ -35,6 +35,10 @@
 - A bug was fixed where `NULL` results generated during simulated
   annealing would cause errors when logging.
 
+- Fixed a bug for cases where we tune a grid without a model parameter
+  but with a postprocessing parameter
+  ([\#1119](https://github.com/tidymodels/tune/issues/1119))
+
 ### Breaking Changes
 
 - The Gaussian process model package was changed from to because the
