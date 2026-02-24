@@ -6,6 +6,7 @@ pred_type <- function(x) {
   res <- dplyr::case_when(
     cls == "class_metric" ~ "class",
     cls == "prob_metric" ~ "prob",
+    cls == "ordered_prob_metric" ~ "prob",
     cls == "numeric_metric" ~ "numeric",
     cls == "dynamic_survival_metric" ~ "survival",
     cls == "integrated_survival_metric" ~ "survival",

@@ -24,7 +24,7 @@ test_that("finalize_fit_pre() with formulas", {
   )
   form_stc <- tune:::update_static(
     form_stc,
-    tune:::get_data_subsets(form_stc$wflow, rs_split, form_stc$split_args)
+    tune:::.get_data_subsets(form_stc$wflow, rs_split, form_stc$split_args)
   )
   form_stc$y_name <- "Class"
 
@@ -65,7 +65,7 @@ test_that("finalize_fit_pre() with recipes", {
   )
   rec_stc <- tune:::update_static(
     rec_stc,
-    tune:::get_data_subsets(rec_stc$wflow, rs_split, rec_stc$split_args)
+    tune:::.get_data_subsets(rec_stc$wflow, rs_split, rec_stc$split_args)
   )
 
   rec_res <- tune:::finalize_fit_pre(rec_wflow, dt_grid, rec_stc)
@@ -107,7 +107,7 @@ test_that("finalize_fit_pre() with tuned recipes", {
   )
   rec_stc <- tune:::update_static(
     rec_stc,
-    tune:::get_data_subsets(rec_stc$wflow, rs_split, rec_stc$split_args)
+    tune:::.get_data_subsets(rec_stc$wflow, rs_split, rec_stc$split_args)
   )
 
   rec_res <- tune:::finalize_fit_pre(rec_wflow, rec_grid, rec_stc)
@@ -149,7 +149,7 @@ test_that("finalize_fit_pre() with selectors", {
   )
   vars_stc <- tune:::update_static(
     vars_stc,
-    tune:::get_data_subsets(vars_stc$wflow, rs_split, vars_stc$split_args)
+    tune:::.get_data_subsets(vars_stc$wflow, rs_split, vars_stc$split_args)
   )
 
   vars_res <- tune:::finalize_fit_pre(vars_wflow, dt_grid, vars_stc)
@@ -181,7 +181,7 @@ test_that("finalize_fit_model() for classification", {
   )
   dt_stc <- tune:::update_static(
     dt_stc,
-    tune:::get_data_subsets(dt_stc$wflow, rs_split, dt_stc$split_args)
+    tune:::.get_data_subsets(dt_stc$wflow, rs_split, dt_stc$split_args)
   )
 
   dt_0_res <- tune:::finalize_fit_pre(dt_wflow, dt_grid, dt_stc)

@@ -198,8 +198,18 @@ filter_predictions <- function(x, parameters) {
                     {.val {param_names}}."
     )
   }
-  x$.predictions <-
-    purrr::map(x$.predictions, dplyr::inner_join, parameters, by = param_names)
+  if (length(param_names) == 0) {
+    x$.predictions <-
+      purrr::map(x$.predictions, dplyr::cross_join, parameters)
+  } else {
+    x$.predictions <-
+      purrr::map(
+        x$.predictions,
+        dplyr::inner_join,
+        parameters,
+        by = param_names
+      )
+  }
   x
 }
 
@@ -463,8 +473,18 @@ average_predictions <- function(x, grid = NULL) {
         "{.arg grid} should only have columns: {.val {param_names}}."
       )
     }
-    x$.predictions <-
-      purrr::map(x$.predictions, dplyr::inner_join, grid, by = param_names)
+    if (length(param_names) == 0) {
+      x$.predictions <-
+        purrr::map(x$.predictions, dplyr::cross_join, grid)
+    } else {
+      x$.predictions <-
+        purrr::map(
+          x$.predictions,
+          dplyr::inner_join,
+          grid,
+          by = param_names
+        )
+    }
   }
 
   x <-
@@ -474,7 +494,7 @@ average_predictions <- function(x, grid = NULL) {
 
   if (all(metric_types == "numeric")) {
     x <- numeric_summarize(x)
-  } else if (any(metric_types == "prob")) {
+  } else if (any(metric_types %in% c("prob", "ordered_prob"))) {
     # Note that this will recompute the hard class predictions since the
     # probability estimates are changing. That's why there is a separate
     # branch below that summarizes the hard class predictions when those are

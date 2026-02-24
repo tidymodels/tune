@@ -15,7 +15,7 @@ test_that("predict classification - no submodels - no calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -144,7 +144,7 @@ test_that("predict classification - no submodels - with calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -283,7 +283,7 @@ test_that("predict classification - with submodels - no calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -426,7 +426,7 @@ test_that("predict classification - with submodels - with calibration", {
   prob_only <- metric_set(brier_class)
   both_types <- metric_set(brier_class, accuracy)
 
-  data_1 <- tune:::get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
   fac_0 <- factor(levels = levels(cls$data$class))
 
@@ -558,7 +558,7 @@ test_that("predict regression - no submodels - no calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -610,7 +610,7 @@ test_that("predict regression - no submodels - with calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -669,7 +669,7 @@ test_that("predict regression - with submodels - no calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -733,7 +733,7 @@ test_that("predict regression - with submodels - with calibration", {
 
   reg_mtr <- metric_set(rmse)
 
-  data_1 <- tune:::get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
+  data_1 <- tune:::.get_data_subsets(wflow, reg$rs$splits[[1]], reg$args)
 
   ctrl <- tune::control_grid()
 
@@ -799,7 +799,7 @@ test_that("predict censored regression - no submodels - no calibration", {
 
   .times <- c(15, 25)
 
-  data_1 <- tune:::get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
 
   ctrl <- tune::control_grid()
 
@@ -903,7 +903,7 @@ test_that("predict censored regression - submodels - no calibration", {
 
   .times <- c(15, 25)
 
-  data_1 <- tune:::get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
+  data_1 <- tune:::.get_data_subsets(wflow, cens$rs$splits[[1]], cens$args)
 
   ctrl <- tune::control_grid()
 

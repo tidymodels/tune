@@ -43,7 +43,7 @@ test_that("verifying .loop_over_all_stages, no submodels", {
     control = control_grid()
   )
 
-  data_1 <- tune:::get_data_subsets(wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "outcome"
 
@@ -144,7 +144,7 @@ test_that("verifying .loop_over_all_stages, submodels", {
     control = ctrl
   )
 
-  data_1 <- tune:::get_data_subsets(submodel_wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(submodel_wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "outcome"
 
@@ -215,7 +215,7 @@ test_that("verifying .loop_over_all_stages, submodels only", {
     control = ctrl
   )
 
-  data_1 <- tune:::get_data_subsets(submodel_only_wflow, rs_split, rs_args)
+  data_1 <- tune:::.get_data_subsets(submodel_only_wflow, rs_split, rs_args)
   static_1 <- tune:::update_static(static_1, data_1)
   static_1$y_name <- "class"
 
