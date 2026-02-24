@@ -12,6 +12,7 @@ pred_type <- function(x) {
     cls == "integrated_survival_metric" ~ "survival",
     cls == "static_survival_metric" ~ "time",
     cls == "linear_pred_survival_metric" ~ "linear_pred",
+    cls == "quantile_metric" ~ "quantile",
     TRUE ~ "unknown"
   )
   res
@@ -116,6 +117,15 @@ metrics_info <- function(x) {
     all(types == "time" | types == "survival" | types == "linear_pred")
   ) {
     estimate_surv(dat, metric, param_names, outcome_name, case_weights, types)
+  } else if (all(types == "quantile")) {
+    estimate_quantile_reg(
+      dat,
+      metric,
+      param_names,
+      outcome_name,
+      case_weights,
+      types
+    )
   } else {
     cli::cli_abort("Metric type not yet supported by {.pkg tune}.")
   }
@@ -126,6 +136,23 @@ estimate_reg <- function(dat, metric, param_names, outcome_name, case_weights) {
     dplyr::group_by(!!!rlang::syms(param_names)) |>
     metric(
       estimate = .pred,
+      truth = !!sym(outcome_name),
+      case_weights = !!case_weights
+    )
+}
+
+estimate_quantile_reg <- function(
+  dat,
+  metric,
+  param_names,
+  outcome_name,
+  case_weights,
+  types # not currently used but perhaps in future
+) {
+  dat |>
+    dplyr::group_by(!!!rlang::syms(param_names)) |>
+    metric(
+      estimate = .pred_quantile,
       truth = !!sym(outcome_name),
       case_weights = !!case_weights
     )

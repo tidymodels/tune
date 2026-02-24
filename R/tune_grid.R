@@ -105,6 +105,10 @@
 #'         of determination are computed.
 #'   \item For classification, the area under the ROC curve and overall accuracy
 #'         are computed.
+#'   \item For censored regression, the dynamic Brier score
+#'         ([yardstick::brier_survival()]) is used.
+#'   \item For quantile regression, the weighted interval score
+#'         ([yardstick::weighted_interval_score()]) is used.
 #' }
 #'
 #' Note that the metrics also determine what type of predictions are estimated

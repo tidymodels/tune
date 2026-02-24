@@ -410,6 +410,57 @@ surv_summarize <- function(x, param, y) {
   res[order(res$.row, res$.config), nms]
 }
 
+quantile_summarize <- function(x) {
+  lvl_key <-
+    tibble::tibble(
+      .quantile_levels = hardhat::extract_quantile_levels(x$.pred_quantile)
+    ) |>
+    dplyr::arrange(.quantile_levels) |>
+    dplyr::mutate(
+      .index = gsub(" ", "0", format(dplyr::row_number())),
+      .index = paste0(".qp_", .index)
+    )
+  nms <- names(x)
+  group_cols <- nms[!(nms %in% ".pred_quantile")]
+  group_cols <- group_cols[!grepl("^id", group_cols)]
+  all_group_cols <- c(".quantile_levels", group_cols)
+  tmp <-
+    x |>
+    dplyr::mutate(
+      .pred_quantile = purrr::map(.pred_quantile, tibble::as_tibble)
+    ) |>
+    # There are .row columns in .pred_quantile and in the tibble. We want the
+    # tibble column and, to avoid a name conflict, will temporarily rename
+    # that, then remove the extra, the rename back to .row.
+    dplyr::rename(.row_orig = .row) |>
+    tidyr::unnest(cols = c(.pred_quantile)) |>
+    dplyr::select(-.row) |>
+    dplyr::rename(.row = .row_orig) |>
+    dplyr::summarise(
+      .pred_quantile = mean(.pred_quantile, na.rm = TRUE),
+      .by = c(dplyr::all_of(all_group_cols))
+    ) |>
+    dplyr::full_join(lvl_key, by = ".quantile_levels") |>
+    dplyr::select(-.quantile_levels) |>
+    tidyr::pivot_wider(
+      id_cols = c(dplyr::all_of(group_cols)),
+      names_from = ".index",
+      values_from = ".pred_quantile"
+    )
+
+  qp <-
+    tmp |>
+    dplyr::select(dplyr::starts_with(".qp_")) |>
+    as.matrix() |>
+    hardhat::quantile_pred(lvl_key$.quantile_levels)
+
+  tmp$.pred_quantile <- qp
+
+  tmp |>
+    dplyr::select(-dplyr::starts_with(".qp_")) |>
+    dplyr::relocate(.pred_quantile)
+}
+
 average_predictions <- function(x, grid = NULL) {
   metric_types <- metrics_info(attr(x, "metrics"))$type
   param_names <- attr(x, "parameters")$id
@@ -453,6 +504,8 @@ average_predictions <- function(x, grid = NULL) {
     x <- class_summarize(x, param_names)
   } else if (any(metric_types %in% c("survival", "time", "linear_pred"))) {
     x <- surv_summarize(x, param_names, y_nms)
+  } else if (any(metric_types == "quantile")) {
+    x <- quantile_summarize(x)
   } else {
     cli::cli_abort(
       "We don't know about metrics of type: {.val {unique(metric_types)}}."

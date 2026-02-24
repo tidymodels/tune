@@ -400,6 +400,9 @@ check_metrics <- function(x, object) {
       'censored regression' = {
         x <- yardstick::metric_set(brier_survival)
       },
+      'quantile regression' = {
+        x <- yardstick::metric_set(weighted_interval_score)
+      },
       unknown = {
         cli::cli_abort(
           "Internal error: {.fn check_installs} should have
