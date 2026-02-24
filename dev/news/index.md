@@ -2,6 +2,9 @@
 
 ## tune (development version)
 
+- Model tuning has been enabled for quantile regression models.
+  ([\#1125](https://github.com/tidymodels/tune/issues/1125))
+
 - In
   [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md),
   a bug was fixed that caused inefficiency where preprocessing steps

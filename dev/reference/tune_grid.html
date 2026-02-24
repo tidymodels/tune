@@ -217,6 +217,10 @@ typical probability cutoff of 0.50), the <code>metrics</code> argument could be 
 of determination are computed.</p></li>
 <li><p>For classification, the area under the ROC curve and overall accuracy
 are computed.</p></li>
+<li><p>For censored regression, the dynamic Brier score
+(<code><a href="https://yardstick.tidymodels.org/reference/brier_survival.html" class="external-link">yardstick::brier_survival()</a></code>) is used.</p></li>
+<li><p>For quantile regression, the weighted interval score
+(<code><a href="https://yardstick.tidymodels.org/reference/weighted_interval_score.html" class="external-link">yardstick::weighted_interval_score()</a></code>) is used.</p></li>
 </ul><p>Note that the metrics also determine what type of predictions are estimated
 during tuning. For example, in a classification problem, if metrics are used
 that are all associated with hard class predictions, the classification

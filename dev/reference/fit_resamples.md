@@ -163,6 +163,14 @@ If no metric set is provided, one is created:
 - For classification, the area under the ROC curve and overall accuracy
   are computed.
 
+- For censored regression, the dynamic Brier score
+  ([`yardstick::brier_survival()`](https://yardstick.tidymodels.org/reference/brier_survival.html))
+  is used.
+
+- For quantile regression, the weighted interval score
+  ([`yardstick::weighted_interval_score()`](https://yardstick.tidymodels.org/reference/weighted_interval_score.html))
+  is used.
+
 Note that the metrics also determine what type of predictions are
 estimated during tuning. For example, in a classification problem, if
 metrics are used that are all associated with hard class predictions,

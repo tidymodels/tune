@@ -45,7 +45,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li><p>In <code><a href="../reference/tune_grid.html">tune_grid()</a></code>, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (<a href="https://github.com/tidymodels/tune/issues/1101" class="external-link">#1101</a>)</p></li>
+<ul><li><p>Model tuning has been enabled for quantile regression models. (<a href="https://github.com/tidymodels/tune/issues/1125" class="external-link">#1125</a>)</p></li>
+<li><p>In <code><a href="../reference/tune_grid.html">tune_grid()</a></code>, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (<a href="https://github.com/tidymodels/tune/issues/1101" class="external-link">#1101</a>)</p></li>
 <li>
 <p>Prepends a period to the name, and exports the following functions. This is to improve integration with other packages:</p>
 <ul><li>
