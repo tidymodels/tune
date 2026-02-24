@@ -198,8 +198,18 @@ filter_predictions <- function(x, parameters) {
                     {.val {param_names}}."
     )
   }
-  x$.predictions <-
-    purrr::map(x$.predictions, dplyr::inner_join, parameters, by = param_names)
+  if (length(param_names) == 0) {
+    x$.predictions <-
+      purrr::map(x$.predictions, dplyr::cross_join, parameters)
+  } else {
+    x$.predictions <-
+      purrr::map(
+        x$.predictions,
+        dplyr::inner_join,
+        parameters,
+        by = param_names
+      )
+  }
   x
 }
 
@@ -412,8 +422,18 @@ average_predictions <- function(x, grid = NULL) {
         "{.arg grid} should only have columns: {.val {param_names}}."
       )
     }
-    x$.predictions <-
-      purrr::map(x$.predictions, dplyr::inner_join, grid, by = param_names)
+    if (length(param_names) == 0) {
+      x$.predictions <-
+        purrr::map(x$.predictions, dplyr::cross_join, grid)
+    } else {
+      x$.predictions <-
+        purrr::map(
+          x$.predictions,
+          dplyr::inner_join,
+          grid,
+          by = param_names
+        )
+    }
   }
 
   x <-
