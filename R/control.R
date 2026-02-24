@@ -72,9 +72,45 @@ control_grid <- function(
   res
 }
 
+# Helper function to print control settings using cli
+print_control_settings <- function(x, default = FALSE, defaults = NULL) {
+  # Get the fields to print
+  fields <- names(x)
+
+  # Optionally reduce to only non-defaults
+  if (default && !is.null(defaults)) {
+    fields <- fields[
+      !vapply(
+        fields,
+        function(field) {
+          identical(x[[field]], defaults[[field]])
+        },
+        logical(1)
+      )
+    ]
+  }
+
+  # Build formatted lines for each field
+  for (field in fields) {
+    value <- x[[field]]
+
+    if (is.function(value)) {
+      cli::cli_bullets(c(" " = "{.arg {field}}: <function>"))
+    } else if (inherits(value, "tune_backend_options")) {
+      cli::cli_bullets(c(" " = "{.arg {field}}: <backend_options>"))
+    } else if (is.null(value)) {
+      cli::cli_bullets(c(" " = "{.arg {field}}: NULL"))
+    } else {
+      cli::cli_bullets(c(" " = "{.arg {field}}: {.val {value}}"))
+    }
+  }
+}
+
 #' @export
-print.control_grid <- function(x, ...) {
-  cat("grid/resamples control object\n")
+print.control_grid <- function(x, default = FALSE, ...) {
+  cli::cli_text("{.emph Grid/resamples control object}")
+  defaults <- control_grid()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 
@@ -115,8 +151,10 @@ control_last_fit <- function(
 }
 
 #' @export
-print.control_last_fit <- function(x, ...) {
-  cat("last fit control object\n")
+print.control_last_fit <- function(x, default = FALSE, ...) {
+  cli::cli_text("{.emph Last fit control object}")
+  defaults <- control_last_fit()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 
@@ -302,8 +340,10 @@ control_bayes <-
   }
 
 #' @export
-print.control_bayes <- function(x, ...) {
-  cat("bayes control object\n")
+print.control_bayes <- function(x, default = FALSE, ...) {
+  cli::cli_text("{.emph Bayes control object}")
+  defaults <- control_bayes()
+  print_control_settings(x, default = default, defaults = defaults)
   invisible(x)
 }
 
