@@ -132,7 +132,8 @@ utils::globalVariables(
     "effective_n",
     ".index",
     ".quantile_levels",
-    ".pred_quantile"
+    ".pred_quantile",
+    ".row_orig"
   )
 )
 
