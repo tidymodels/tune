@@ -132,8 +132,31 @@
       )
 
       # --------------------------------------------------------------------------
-      # Iterate over prediction submodels; no multipredict, just one at a time
-      # without retraining the model
+      # Predict all submodels at once (if applicable), then iterate over them
+      # for postprocessing
+
+      if (has_submodel) {
+        # Collect all submodel values and predict once
+        all_sub_sched <- current_sched_model$predict_stage[[1]]
+        sub_nm <- get_sub_param(all_sub_sched)
+        all_sub_grid <- all_sub_sched[, sub_nm, drop = FALSE]
+
+        location <- glue::glue(
+          "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
+        )
+        all_submodel_pred <- .catch_and_log(
+          predict_all_types(current_wflow, pred_data, static, all_sub_grid),
+          control = static$control,
+          split_labels = split_labs,
+          location = location,
+          notes = notes
+        )
+
+        if (is_failure(all_submodel_pred)) {
+          next
+        }
+        all_submodel_pred <- remove_log_notes(all_submodel_pred)
+      }
 
       for (iter_pred in seq_len(num_iterations_pred)) {
         current_sched_pred <- current_sched_model$predict_stage[[1]][
@@ -142,27 +165,18 @@
 
         if (has_submodel) {
           sub_nm <- get_sub_param(current_sched_pred)
-          sub_grid <- current_sched_pred[, sub_nm]
+          sub_val <- current_sched_pred[[sub_nm]]
 
           # The assigned submodel parameter (from min_grid()) is in the
           # current grid. Remove that and add the one that we are predicting on
-
           current_grid <- current_grid |>
             dplyr::select(-dplyr::all_of(sub_nm)) |>
             rebind_grid(current_sched_pred)
 
-          # Remove the submodel column since it is in the currrent grid.
-          location <- glue::glue(
-            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
-          )
-          current_pred <- .catch_and_log(
-            predict_all_types(current_wflow, pred_data, static, sub_grid) |>
-              dplyr::select(-dplyr::all_of(sub_nm)),
-            control = static$control,
-            split_labels = split_labs,
-            location = location,
-            notes = notes
-          )
+          # Filter to this submodel's predictions (already computed above)
+          current_pred <- all_submodel_pred |>
+            dplyr::filter(.data[[sub_nm]] == sub_val) |>
+            dplyr::select(-dplyr::all_of(sub_nm))
         } else {
           location <- glue::glue(
             "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
@@ -174,12 +188,12 @@
             location = location,
             notes = notes
           )
-        }
 
-        if (is_failure(current_pred)) {
-          next
+          if (is_failure(current_pred)) {
+            next
+          }
+          current_pred <- remove_log_notes(current_pred)
         }
-        current_pred <- remove_log_notes(current_pred)
 
         has_post <- has_tailor(current_wflow)
         num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
