@@ -16,11 +16,14 @@
 \alias{estimate_tune_results}
 \alias{metrics_info}
 \alias{new_iteration_results}
+\alias{make_static}
 \alias{.get_data_subsets}
 \alias{.get_config_key}
 \alias{.determine_pred_types}
 \alias{.loop_over_all_stages}
+\alias{loop_over_all_stages2}
 \alias{.update_parallel_over}
+\alias{loop_call}
 \alias{get_tune_colors}
 \alias{encode_set}
 \alias{check_time}
@@ -73,6 +76,19 @@ new_iteration_results(
   workflow
 )
 
+make_static(
+  workflow,
+  param_info,
+  grid,
+  metrics,
+  eval_time,
+  split_args,
+  control,
+  pkgs = "tune",
+  strategy = "sequential",
+  data = list(fit = NULL, pred = NULL, cal = NULL)
+)
+
 .get_data_subsets(wflow, split, split_args = NULL)
 
 .get_config_key(grid, wflow)
@@ -81,7 +97,11 @@ new_iteration_results(
 
 .loop_over_all_stages(resamples, grid, static)
 
+loop_over_all_stages2(index, resamples, grid, static)
+
 .update_parallel_over(control, resamples, grid)
+
+loop_call(strategy, framework, opts)
 
 get_tune_colors()
 
