@@ -28,8 +28,11 @@
   split <- resamples$splits[[1]]
   split_labs <- resamples |>
     dplyr::select(dplyr::starts_with("id"))
+  # Determine if we're using prediction-based or model-based metrics
+  is_model_metrics <- identical(static$metric_type, "model")
 
   pred_reserve <- NULL
+  metrics_reserve <- NULL
   notes <- new_note()
   extracts <- NULL
 
@@ -44,7 +47,9 @@
   # Now that we have data, determine the names of the outcome data. NOTE that
   # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
   # potentially change it later. See #1024
-  static$y_name <- outcome_names(static$wflow, data = split$data)
+  if (!is_model_metrics) {
+    static$y_name <- outcome_names(static$wflow, data = split$data)
+  }
 
   # ----------------------------------------------------------------------------
   # Iterate over preprocessors
@@ -73,8 +78,7 @@
       next
     }
 
-    # Now we can process the data being predicted. These do not change
-    # over the next two loops, so compute them here, once.
+    # Process prediction data
     location <- glue::glue(
       "preprocessor {iter_pre}/{num_iterations_pre} (prediction data)"
     )
@@ -109,7 +113,14 @@
     }
 
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
-    static$y_name <- outcome_names(current_wflow)
+    # Only for prediction-based metrics (model-based metrics do not have outcomes)
+    if (!is_model_metrics) {
+      static$y_name <- outcome_names(current_wflow)
+    }
+
+    if (is_failure(pred_data)) {
+      next
+    }
 
     num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
@@ -143,6 +154,70 @@
       if (is_failure(current_wflow)) {
         next
       }
+
+      # ------------------------------------------------------------------------
+      # For model-based metrics: compute metrics directly and handle extractions
+      if (is_model_metrics) {
+        current_wflow <- workflows::.fit_finalize(current_wflow)
+
+        # Compute model-based metrics directly from workflow + data
+        location <- glue::glue(
+          "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (model metrics)"
+        )
+
+        current_metrics <- .catch_and_log(
+          static$metrics(current_wflow, new_data = static$data$fit$data),
+          control = static$control,
+          split_labels = split_labs,
+          location = location,
+          notes = notes
+        )
+
+        if (!is_failure(current_metrics)) {
+          current_metrics <- dplyr::bind_cols(current_grid, current_metrics)
+          metrics_reserve <- dplyr::bind_rows(metrics_reserve, current_metrics)
+        }
+
+        # Extractions for model-based metrics
+        if (!is.null(static$control$extract)) {
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
+          )
+          elt_extract <- .catch_and_log(
+            extract_details(current_wflow, static$control$extract),
+            control = static$control,
+            split_labels = split_labs,
+            location = location,
+            notes = notes
+          )
+
+          if (is.null(extracts)) {
+            extracts <- tibble::tibble(.extracts = list(1))
+            if (nrow(static$param_info) > 0) {
+              extracts <- tibble::add_column(current_grid, .extracts = list(1))
+            }
+            extracts <- extracts[integer(), ]
+          }
+
+          if (nrow(static$param_info) > 0) {
+            extracts <- tibble::add_row(
+              extracts,
+              tibble::add_column(current_grid, .extracts = list(elt_extract))
+            )
+          } else {
+            extracts <- tibble::add_row(
+              extracts,
+              tibble::tibble(.extracts = list(elt_extract))
+            )
+          }
+        }
+
+        # Skip prediction/post loops for model-based metrics
+        next
+      }
+
+      # ------------------------------------------------------------------------
+      # For prediction-based metrics: continue with predict/post loops
 
       has_submodel <- has_sub_param(current_sched_model$predict_stage[[1]])
       num_iterations_pred <- max(
@@ -408,26 +483,40 @@
   # ----------------------------------------------------------------------------
   # Compute metrics on each config and eval_time
 
-  if (is.null(pred_reserve)) {
-    all_metrics <- NULL
+  if (is_model_metrics) {
+    # For model-based metrics, metrics were computed inline
+    if (is.null(metrics_reserve)) {
+      all_metrics <- NULL
+    } else {
+      all_metrics <- add_configs(metrics_reserve, static)
+      # Reorder columns to match original grid order
+      grid_cols <- names(grid)
+      other_cols <- setdiff(names(all_metrics), grid_cols)
+      all_metrics <- all_metrics[c(grid_cols, other_cols)]
+    }
   } else {
-    location <- glue::glue("internal")
-    all_metrics <- .catch_and_log(
-      pred_reserve |>
-        dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
-        .estimate_metrics(
-          metric = static$metrics,
-          param_names = static$param_info$id,
-          outcome_name = static$y_name,
-          event_level = static$control$event_level,
-          metrics_info = metrics_info(static$metrics)
-        ) |>
-        add_configs(static),
-      control = static$control,
-      split_labels = split_labs,
-      location = location,
-      notes = notes
-    )
+    # For prediction-based metrics, compute from collected predictions
+    if (is.null(pred_reserve)) {
+      all_metrics <- NULL
+    } else {
+      location <- glue::glue("internal")
+      all_metrics <- .catch_and_log(
+        pred_reserve |>
+          dplyr::group_by(!!!rlang::syms(static$param_info$id)) |>
+          .estimate_metrics(
+            metric = static$metrics,
+            param_names = static$param_info$id,
+            outcome_name = static$y_name,
+            event_level = static$control$event_level,
+            metrics_info = metrics_info(static$metrics)
+          ) |>
+          add_configs(static),
+        control = static$control,
+        split_labels = split_labs,
+        location = location,
+        notes = notes
+      )
+    }
   }
 
   if (!is.null(extracts)) {
@@ -445,9 +534,13 @@
 
   return_tbl <- tibble::tibble(
     .metrics = list(all_metrics),
-    .notes = list(notes),
-    outcome_names = static$y_name
+    .notes = list(notes)
   )
+
+  # Add outcome_names only for prediction-based metrics
+  if (!is_model_metrics) {
+    return_tbl$outcome_names <- static$y_name
+  }
 
   if (!is.null(static$control$extract)) {
     if (is.null(extracts)) {
@@ -460,7 +553,7 @@
 
   return_tbl <- vctrs::vec_cbind(return_tbl, split_labs)
 
-  if (static$control$save_pred) {
+  if (!is_model_metrics && static$control$save_pred) {
     if (is.null(pred_reserve)) {
       # Everything failed; return NULL for each row
       return_tbl$.predictions <- purrr::map(1:nrow(return_tbl), \(x) NULL)
@@ -478,6 +571,9 @@
   return_tbl
 }
 
+#'@export
+#'@keywords internal
+#'@rdname empty_ellipses
 loop_over_all_stages2 <- function(index, resamples, grid, static) {
   .loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
 }
