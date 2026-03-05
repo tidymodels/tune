@@ -2,9 +2,12 @@
 % Please edit documentation in R/schedule.R
 \name{schedule_grid}
 \alias{schedule_grid}
+\alias{get_model_source}
 \title{Schedule a grid}
 \usage{
 schedule_grid(grid, wflow)
+
+get_model_source(wflow)
 }
 \arguments{
 \item{grid}{A tibble containing the parameter grid.}
