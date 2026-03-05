@@ -394,6 +394,9 @@ par_fns <- function(framework) {
   res
 }
 
+#'@export
+#'@keywords internal
+#'@rdname empty_ellipses
 loop_call <-
   function(strategy, framework, opts) {
     if (strategy == "resamples") {
@@ -401,7 +404,7 @@ loop_call <-
         par_fns(framework)[[1]],
         .ns = par_fns(framework)[[2]],
         quote(resamples),
-        quote(.loop_over_all_stages)
+        quote(tune::.loop_over_all_stages)
       )
       base_args <- list(grid = quote(grid), static = quote(static))
     } else {
@@ -409,7 +412,7 @@ loop_call <-
         par_fns(framework)[[1]],
         .ns = par_fns(framework)[[2]],
         quote(inds),
-        quote(loop_over_all_stages2)
+        quote(tune::loop_over_all_stages2)
       )
       base_args <- list(
         resamples = quote(resamples),
