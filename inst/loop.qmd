@@ -1,0 +1,189 @@
+---
+title: Loop over all stages aka loopy
+---
+
+We have a big ol loop at the heart of `tune_grid()` (and thus the rest of the tuning/resampling functions). That can be a lot to hold in your head at once, so here's a memory aid.
+
+## Overview
+
+We need to work our way through a whole lot of resamples and tuning parameter combinations. We could take the whole grid of tuning parameters, splice them into the workflow, and fit all those workflows on all resamples. This repeats potentially costly calculations, so we have carefully crafted the loop to avoid redundant computation.
+
+The loop runs over a single resample. The basic structure is:
+
+- For each preproc parameter combination
+	- Fit preprocessor
+	- Apply it to analysis set
+	- Apply it to the assessment set
+	- For each (non-sub) model parameter combination
+		- Fit the model
+		- Predict for all submodel parameters at once (via multi_predict)
+		- For each submodel parameter value
+			- Filter to this submodel's predictions
+			- For each post parameter combination
+				- Fit the postprocessor
+				- Apply the postprocessor to the predictions (on the assessment set)
+				- Combine (post-processed) predictions with the grid to `final_pred`
+				- Save `final_pred` by appending it to `pred_reserve`
+				- Do the extracts
+- Compute the metrics
+
+## Inputs
+
+### The schedule
+
+The schedule is a nested tibble created by `schedule_grid()` that organizes tuning parameters by stage. Each stage contains the next stage in a list-column:
+
+```
+sched
+├── [preproc params]
+└── model_stage (list-col)
+    └── tibble
+        ├── [model params]
+        └── predict_stage (list-col)
+            └── tibble
+                ├── [submodel params]
+                └── post_stage (list-col)
+                    └── tibble
+                        └── [post params]
+```
+
+The four stages are:
+
+- **pre**: preprocessing via recipes
+- **model**: the model fit via parsnip (submodel parameters are collapsed via `min_grid()`)
+- **predict**: prediction (submodel parameters are expanded)
+- **post**: postprocessing via tailor
+
+To access the next stage, extract with `[[1]]`:
+
+- `current_sched_pre$model_stage[[1]]` → tibble of model param combinations
+- `current_sched_model$predict_stage[[1]]` → tibble of submodel param values
+- `current_sched_pred$post_stage[[1]]` → tibble of post param combinations
+
+### The `static` object
+
+The `static` list contains everything that stays constant throughout the loop:
+
+- `wflow` - the original workflow (template for finalization)
+- `param_info` - parameter set info from `tune_args()`
+- `configs` - tibble mapping parameter values to `.config` labels
+- `metrics` - the metric set
+- `pred_types` - prediction types needed (e.g., "class", "prob", "numeric")
+- `eval_time` - evaluation times for survival models
+- `control` - control options
+- `data` - list with `fit`, `pred`, and `cal` data partitions (added after setup)
+- `y_name` - outcome column name(s)
+
+### Data partitions
+
+The `static$data` list contains three partitions (set up once per resample):
+
+- `fit` - training data for preprocessor and model
+- `pred` - assessment data for predictions (used to compute metrics)
+- `cal` - calibration data for postprocessors that need fitting (e.g., probability calibration)
+
+When there's no postprocessor requiring calibration, `cal` is NULL and `fit` uses the full analysis set. When calibration is needed, the analysis set is further split into `fit` and `cal`.
+
+## Reading the code
+
+### Naming conventions
+
+**Loop variables:**
+
+- `iter_{stage}` - iteration counter (e.g., `iter_pre`, `iter_model`, `iter_pred`, `iter_post`)
+- `num_iterations_{stage}` - total iterations for that stage
+
+**Schedule objects:**
+
+- `sched` - the full nested schedule tibble
+- `current_sched_{stage}` - current row of the schedule at each stage
+
+**Grid objects** (accumulate tuning parameter values as we descend into nested loops):
+
+- `current_grid` - params from pre + model stages
+- `current_predict_grid` - adds submodel params
+- `current_post_grid` - adds post params
+- `current_extract_grid` - the grid used for extracts
+
+**Workflow snapshots** (saved to allow re-finalization in inner loops):
+
+- `current_wflow` - the workflow being modified
+- `wflow_with_fitted_pre` - snapshot after fitting preprocessor
+- `wflow_with_fitted_pre_and_model` - snapshot after fitting model
+
+**Prediction objects:**
+
+- `pred_data` - processed prediction data (features + outcomes)
+- `all_submodel_pred` - batched predictions for all submodel values
+- `current_pred` - predictions for current submodel iteration
+- `final_pred` - predictions after postprocessing (ready to save)
+- `pred_reserve` - accumulator for all final predictions
+
+**General conventions:**
+
+- `static` - things that don't change during the loop
+- `current_*` - value for the current iteration
+- `all_*` - batched/collected values (e.g., `all_submodel_pred`)
+- Stage suffixes: `_pre`, `_model`, `_pred`, `_post`
+
+### Key helper functions
+
+**Finalization** (splice tuning params into workflow and fit):
+
+- `finalize_fit_pre()` - finalize recipe params, fit preprocessor
+- `finalize_fit_model()` - finalize model params, fit model
+- `finalize_fit_post()` - finalize tailor params, fit postprocessor
+
+**Grid helpers:**
+
+- `rebind_grid()` - combine schedule rows from different stages (strips `*_stage` columns)
+- `remove_stage()` - remove nested stage columns from a schedule row
+
+**Prediction:**
+
+- `process_prediction_data()` - apply fitted preprocessor to assessment data
+- `predict_all_types()` - generate all needed prediction types
+
+### Error handling
+
+The loop uses a consistent error handling pattern:
+
+```r
+result <- .catch_and_log(
+  some_operation(),
+  control = static$control,
+  split_labels = split_labs,
+  location = location,
+  notes = notes
+)
+
+if (is_failure(result)) {
+  next
+}
+result <- remove_log_notes(result)
+```
+
+- `.catch_and_log()` wraps operations to capture errors/warnings without stopping
+- `is_failure()` checks if the operation failed
+- `next` skips to the next iteration (the failed config won't have results)
+- `remove_log_notes()` strips logging metadata from successful results
+
+## Efficiency
+
+The nested structure avoids redundant computation:
+
+| What | Computed | Reused for |
+|------|----------|------------|
+| Preprocessor fit | Once per preproc param combo | All model params below it |
+| Processed prediction data | Once per preproc param combo | All predictions below it |
+| Model fit | Once per model param combo | All submodel predictions |
+| Submodel predictions | Once per model (batched) | All submodel × post combos |
+| Postprocessor fit | Once per post param combo | That specific config |
+
+Submodel parameters (like `penalty` in glmnet) are predicted all at once using `multi_predict()`, which is much faster than predicting one at a time.
+
+## Debugging
+
+Set `control = control_grid(allow_par = FALSE)` to run sequentially with `lapply()` so you can see output and use `browser()`.
+
+For parallel debugging, `options(future.debug = TRUE)` can help.
