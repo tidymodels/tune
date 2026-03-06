@@ -42,6 +42,10 @@
   but with a postprocessing parameter
   ([\#1119](https://github.com/tidymodels/tune/issues/1119))
 
+- Tuning of models with submodel parameters now predicts all submodels
+  at once (again) to speed up the tuning process
+  ([\#1140](https://github.com/tidymodels/tune/issues/1140)).
+
 ### Breaking Changes
 
 - The Gaussian process model package was changed from to because the
