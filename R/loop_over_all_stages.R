@@ -138,9 +138,12 @@
 
       if (has_submodel) {
         # Collect all submodel values and predict once
-        all_sub_sched <- current_sched_model$predict_stage[[1]]
-        sub_nm <- get_sub_param(all_sub_sched)
-        all_sub_grid <- all_sub_sched[, sub_nm, drop = FALSE]
+        sched_pred_all_submodels <- current_sched_model$predict_stage[[1]]
+        sub_nm <- get_sub_param(sched_pred_all_submodels)
+        grid_pred_all_submodels <- sched_pred_all_submodels[,
+          sub_nm,
+          drop = FALSE
+        ]
 
         # Submodel parameters will be added in the predict stage
         grid_with_pre_model <- current_grid |>
@@ -149,18 +152,23 @@
         location <- glue::glue(
           "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
         )
-        all_submodel_pred <- .catch_and_log(
-          predict_all_types(current_wflow, pred_data, static, all_sub_grid),
+        pred_all_submodels <- .catch_and_log(
+          predict_all_types(
+            current_wflow,
+            pred_data,
+            static,
+            grid_pred_all_submodels
+          ),
           control = static$control,
           split_labels = split_labs,
           location = location,
           notes = notes
         )
 
-        if (is_failure(all_submodel_pred)) {
+        if (is_failure(pred_all_submodels)) {
           next
         }
-        all_submodel_pred <- remove_log_notes(all_submodel_pred)
+        pred_all_submodels <- remove_log_notes(pred_all_submodels)
       }
 
       for (iter_pred in seq_len(num_iterations_pred)) {
@@ -176,7 +184,7 @@
           current_grid <- extend_grid(grid_with_pre_model, current_sched_pred)
 
           # Filter to this submodel's predictions (already computed above)
-          current_pred <- all_submodel_pred |>
+          current_pred <- pred_all_submodels |>
             dplyr::filter(.data[[sub_nm]] == sub_val) |>
             dplyr::select(-dplyr::all_of(sub_nm))
         } else {

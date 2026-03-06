@@ -114,8 +114,8 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 **Prediction objects:**
 
 - `pred_data` - processed prediction data (features + outcomes)
-- `all_submodel_pred` - batched predictions for all submodel values
-- `current_pred` - predictions for current submodel iteration
+- `pred_all_submodels` - batched predictions for all submodel values (source for filtering)
+- `current_pred` - predictions for current pred iteration (filtered from `pred_all_submodels`)
 - `final_pred` - predictions after postprocessing (ready to save)
 - `pred_reserve` - accumulator for all final predictions
 
@@ -123,7 +123,7 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 
 - `static` - things that don't change during the loop
 - `current_*` - value for the current iteration
-- `all_*` - batched/collected values (e.g., `all_submodel_pred`)
+- `*_all_submodels` - batched values for all submodel params (e.g., `pred_all_submodels`)
 - Stage suffixes: `_pre`, `_model`, `_pred`, `_post`
 
 ### Key helper functions
