@@ -21,6 +21,8 @@
 
 * Fixed a bug for cases where we tune a grid without a model parameter but with a postprocessing parameter (#1119)
 
+* Tuning of models with submodel parameters now predicts all submodels at once (again) to speed up the tuning process (#1140).
+
 ## Breaking Changes
 
 * The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 
