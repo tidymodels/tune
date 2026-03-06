@@ -107,7 +107,7 @@
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
-      current_grid <- rebind_grid(grid_with_pre, current_sched_model)
+      current_grid <- extend_grid(grid_with_pre, current_sched_model)
 
       # Splice in any parameters marked for tuning and fit the model
       location <- glue::glue(
@@ -173,7 +173,7 @@
           sub_val <- current_sched_pred[[sub_nm]]
 
           # Add submodel param to grid
-          current_grid <- rebind_grid(grid_with_pre_model, current_sched_pred)
+          current_grid <- extend_grid(grid_with_pre_model, current_sched_pred)
 
           # Filter to this submodel's predictions (already computed above)
           current_pred <- all_submodel_pred |>
@@ -215,7 +215,7 @@
             current_sched_post <-
               current_sched_pred$post_stage[[1]][iter_post, ]
 
-            current_grid <- rebind_grid(
+            current_grid <- extend_grid(
               grid_with_pre_model_pred,
               current_sched_post
             )

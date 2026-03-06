@@ -136,7 +136,7 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 
 **Grid helpers:**
 
-- `rebind_grid()` - combine schedule rows from different stages (strips `*_stage` columns)
+- `extend_grid()` - extend a grid with params from a schedule row (strips `*_stage` columns)
 - `remove_stage()` - remove nested stage columns from a schedule row
 
 **Prediction:**
