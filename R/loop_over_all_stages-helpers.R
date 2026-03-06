@@ -338,7 +338,7 @@ process_prediction_data <- function(wflow_fit, static) {
 # ------------------------------------------------------------------------------
 # Misc functions
 
-rebind_grid <- function(...) {
+extend_grid <- function(...) {
   list(...) |> purrr::map(remove_stage) |> purrr::list_cbind()
 }
 
