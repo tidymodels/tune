@@ -29,7 +29,6 @@
     dplyr::select(dplyr::starts_with("id"))
 
   pred_reserve <- NULL
-  pred_iter <- 0
   notes <- new_note()
   extracts <- NULL
 
@@ -263,7 +262,6 @@
           # --------------------------------------------------------------------
           # Allocate predictions to an overall object
 
-          pred_iter <- pred_iter + 1
           pred_reserve <- dplyr::bind_rows(pred_reserve, final_pred)
 
           # --------------------------------------------------------------------
