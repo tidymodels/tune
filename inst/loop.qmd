@@ -98,12 +98,12 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 - `sched` - the full nested schedule tibble
 - `current_sched_{stage}` - current row of the schedule at each stage
 
-**Grid objects** (accumulate tuning parameter values as we descend into nested loops):
+**Grid objects:**
 
-- `current_grid` - params from pre + model stages
-- `current_predict_grid` - adds submodel params
-- `current_post_grid` - adds post params
-- `current_extract_grid` - the grid used for extracts
+- `current_grid` - progressively accumulates tuning params as we descend into loops
+- `grid_with_pre` - snapshot with pre params (before model loop)
+- `grid_with_pre_model` - snapshot with pre + model params, without submodel col (before pred loop)
+- `grid_with_pre_model_pred` - snapshot with pre + model + pred params (before post loop)
 
 **Workflow snapshots** (saved to allow re-finalization in inner loops):
 
