@@ -1,3 +1,4 @@
+# Notes for easier reading are in `inst/loop.qmd`.
 # Notes on debugging:
 # 1. You can set `options(future.debug = TRUE)` to help
 # 2. If you are debugging .loop_over_all_stages, use the control option
