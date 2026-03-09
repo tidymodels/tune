@@ -1,3 +1,4 @@
+# Notes for easier reading are in `inst/loop.qmd`.
 # Notes on debugging:
 # 1. You can set `options(future.debug = TRUE)` to help
 # 2. If you are debugging .loop_over_all_stages, use the control option
@@ -52,7 +53,8 @@
 
   for (iter_pre in seq_len(num_iterations_pre)) {
     current_sched_pre <- sched[iter_pre, ]
-    0
+    current_grid <- remove_stage(current_sched_pre)
+
     location <- glue::glue("preprocessor {iter_pre}/{num_iterations_pre}")
 
     # Note: finalize_fit_pre() will process the data used for modeling. We'll
@@ -98,12 +100,15 @@
     # values currently are tune()
     wflow_with_fitted_pre <- current_wflow
 
+    grid_with_pre <- current_grid
+
     if (is_failure(pred_data)) {
       next
     }
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
+      current_grid <- extend_grid(grid_with_pre, current_sched_model)
 
       # Splice in any parameters marked for tuning and fit the model
       location <- glue::glue(
@@ -122,8 +127,6 @@
         next
       }
 
-      current_grid <- rebind_grid(current_sched_pre, current_sched_model)
-
       has_submodel <- has_sub_param(current_sched_model$predict_stage[[1]])
       num_iterations_pred <- max(
         nrow(current_sched_model$predict_stage[[1]]),
@@ -136,25 +139,37 @@
 
       if (has_submodel) {
         # Collect all submodel values and predict once
-        all_sub_sched <- current_sched_model$predict_stage[[1]]
-        sub_nm <- get_sub_param(all_sub_sched)
-        all_sub_grid <- all_sub_sched[, sub_nm, drop = FALSE]
+        sched_pred_all_submodels <- current_sched_model$predict_stage[[1]]
+        sub_nm <- get_sub_param(sched_pred_all_submodels)
+        grid_pred_all_submodels <- sched_pred_all_submodels[,
+          sub_nm,
+          drop = FALSE
+        ]
+
+        # Submodel parameters will be added in the predict stage
+        grid_with_pre_model <- current_grid |>
+          dplyr::select(-dplyr::all_of(sub_nm))
 
         location <- glue::glue(
           "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (predictions)"
         )
-        all_submodel_pred <- .catch_and_log(
-          predict_all_types(current_wflow, pred_data, static, all_sub_grid),
+        pred_all_submodels <- .catch_and_log(
+          predict_all_types(
+            current_wflow,
+            pred_data,
+            static,
+            grid_pred_all_submodels
+          ),
           control = static$control,
           split_labels = split_labs,
           location = location,
           notes = notes
         )
 
-        if (is_failure(all_submodel_pred)) {
+        if (is_failure(pred_all_submodels)) {
           next
         }
-        all_submodel_pred <- remove_log_notes(all_submodel_pred)
+        pred_all_submodels <- remove_log_notes(pred_all_submodels)
       }
 
       for (iter_pred in seq_len(num_iterations_pred)) {
@@ -166,14 +181,11 @@
           sub_nm <- get_sub_param(current_sched_pred)
           sub_val <- current_sched_pred[[sub_nm]]
 
-          # The assigned submodel parameter (from min_grid()) is in the
-          # current grid. Remove that and add the one that we are predicting on
-          current_grid <- current_grid |>
-            dplyr::select(-dplyr::all_of(sub_nm)) |>
-            rebind_grid(current_sched_pred)
+          # Add submodel param to grid
+          current_grid <- extend_grid(grid_with_pre_model, current_sched_pred)
 
           # Filter to this submodel's predictions (already computed above)
-          current_pred <- all_submodel_pred |>
+          current_pred <- pred_all_submodels |>
             dplyr::filter(.data[[sub_nm]] == sub_val) |>
             dplyr::select(-dplyr::all_of(sub_nm))
         } else {
@@ -205,16 +217,15 @@
         # values currently are tune()
         wflow_with_fitted_pre_and_model <- current_wflow
 
-        current_predict_grid <- current_grid
+        grid_with_pre_model_pred <- current_grid
 
         for (iter_post in seq_len(num_iterations_post)) {
           if (has_post) {
             current_sched_post <-
               current_sched_pred$post_stage[[1]][iter_post, ]
-            post_grid <- current_sched_post
 
-            current_post_grid <- rebind_grid(
-              current_predict_grid,
+            current_grid <- extend_grid(
+              grid_with_pre_model_pred,
               current_sched_post
             )
 
@@ -236,7 +247,7 @@
               finalize_fit_post(
                 wflow_with_fitted_pre_and_model,
                 data_calibration = tailor_train_data,
-                grid = post_grid
+                grid = current_sched_post
               ),
               control = static$control,
               split_labels = split_labs,
@@ -262,13 +273,10 @@
               next
             }
 
-            final_pred <- dplyr::bind_cols(post_pred, current_post_grid)
-            current_extract_grid <- current_post_grid
-            # end submodels
+            final_pred <- dplyr::bind_cols(post_pred, current_grid)
           } else {
             # No postprocessor so just use what we have
-            final_pred <- dplyr::bind_cols(current_pred, current_predict_grid)
-            current_extract_grid <- current_predict_grid
+            final_pred <- dplyr::bind_cols(current_pred, current_grid)
           }
 
           current_wflow <- workflows::.fit_finalize(current_wflow)
@@ -298,7 +306,7 @@
               extracts <- tibble::tibble(.extracts = list(1))
               if (nrow(static$param_info) > 0) {
                 extracts <- tibble::add_column(
-                  current_extract_grid,
+                  current_grid,
                   .extracts = list(1)
                 )
               }
@@ -309,7 +317,7 @@
               extracts <- tibble::add_row(
                 extracts,
                 tibble::add_column(
-                  current_extract_grid,
+                  current_grid,
                   .extracts = list(elt_extract)
                 )
               )
