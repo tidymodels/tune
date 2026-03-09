@@ -99,15 +99,15 @@ collect_metrics(res)
 #> # A tibble: 2 × 6
 #>   .metric .estimator  mean     n std_err .config        
 #>   <chr>   <chr>      <dbl> <int>   <dbl> <chr>          
-#> 1 rmse    standard   3.37      5  0.206  pre0_mod0_post0
-#> 2 rsq     standard   0.731     5  0.0199 pre0_mod0_post0
+#> 1 rmse    standard   3.39      5  0.297  pre0_mod0_post0
+#> 2 rsq     standard   0.778     5  0.0104 pre0_mod0_post0
 
 # to compute new metrics:
 compute_metrics(res, metric_set(mae))
 #> # A tibble: 1 × 6
 #>   .metric .estimator  mean     n std_err .config        
 #>   <chr>   <chr>      <dbl> <int>   <dbl> <chr>          
-#> 1 mae     standard    2.72     5   0.251 pre0_mod0_post0
+#> 1 mae     standard    2.69     5   0.331 pre0_mod0_post0
 
 # if `metrics` is the same as that passed to `fit_resamples()`,
 # then `collect_metrics()` and `compute_metrics()` give the same
