@@ -189,7 +189,12 @@ has_tailor_estimated <- function(x) {
 # ------------------------------------------------------------------------------
 # Prediction and postprocessing
 
-finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
+finalize_fit_post <- function(
+  wflow_current,
+  data_calibration = NULL,
+  grid = NULL,
+  cal_predictions = NULL
+) {
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
@@ -198,7 +203,30 @@ finalize_fit_post <- function(wflow_current, data_calibration, grid = NULL) {
     finalize_tailor(grid)
   wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  workflows::.fit_post(wflow_current, data_calibration)
+  if (!is.null(cal_predictions)) {
+    fit_post_from_predictions(wflow_current, cal_predictions)
+  } else {
+    workflows::.fit_post(wflow_current, data_calibration)
+  }
+}
+
+fit_post_from_predictions <- function(wflow, cal_predictions) {
+  tailor_obj <- hardhat::extract_postprocessor(wflow)
+  outcome_names <- names(hardhat::extract_mold(wflow)$outcomes)
+
+  post_fit <- tailor::fit(
+    object = tailor_obj,
+    .data = cal_predictions,
+    outcome = outcome_names,
+    estimate = tidyselect::any_of(c(".pred", ".pred_class")),
+    probabilities = c(
+      tidyselect::contains(".pred_"),
+      -tidyselect::matches("^\\.pred$|^\\.pred_class$")
+    )
+  )
+
+  wflow$post$fit <- post_fit
+  wflow
 }
 
 # ------------------------------------------------------------------------------

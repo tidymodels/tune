@@ -87,6 +87,23 @@
         notes = notes
       )
 
+    # Also process the calibration data (if needed for postprocessor fitting).
+    # Reuse process_prediction_data() by temporarily swapping cal into the pred
+    # slot of static, since both have the same structure ($data + $ind).
+    cal_pred_data <- NULL
+    static_for_cal <- NULL
+    if (!is.null(static$data$cal)) {
+      static_for_cal <- static
+      static_for_cal$data$pred <- static$data$cal
+      cal_pred_data <- .catch_and_log(
+        process_prediction_data(current_wflow, static_for_cal),
+        control = static$control,
+        split_labels = split_labs,
+        location = location,
+        notes = notes
+      )
+    }
+
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
     static$y_name <- outcome_names(current_wflow)
 
@@ -170,6 +187,27 @@
           next
         }
         pred_all_submodels <- remove_log_notes(pred_all_submodels)
+
+        # Also predict on calibration data for all submodels at once
+        cal_pred_all_submodels <- NULL
+        if (!is.null(cal_pred_data) && !is_failure(cal_pred_data)) {
+          cal_pred_all_submodels <- .catch_and_log(
+            predict_all_types(
+              current_wflow,
+              cal_pred_data,
+              static_for_cal,
+              grid_pred_all_submodels
+            ),
+            control = static$control,
+            split_labels = split_labs,
+            location = location,
+            notes = notes
+          )
+
+          if (!is_failure(cal_pred_all_submodels)) {
+            cal_pred_all_submodels <- remove_log_notes(cal_pred_all_submodels)
+          }
+        }
       }
 
       for (iter_pred in seq_len(num_iterations_pred)) {
@@ -209,6 +247,36 @@
         has_post <- has_tailor(current_wflow)
         num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
 
+        # Compute calibration predictions for this predict iteration.
+        # For submodels these were pre-computed above; for non-submodels we
+        # predict here (once per model, shared across post iterations).
+        current_cal_pred <- NULL
+        if (static$post_estimation) {
+          if (has_submodel) {
+            if (
+              !is.null(cal_pred_all_submodels) &&
+                !is_failure(cal_pred_all_submodels)
+            ) {
+              current_cal_pred <- cal_pred_all_submodels |>
+                dplyr::filter(.data[[sub_nm]] == sub_val) |>
+                dplyr::select(-dplyr::all_of(sub_nm))
+            }
+          } else if (!is.null(cal_pred_data) && !is_failure(cal_pred_data)) {
+            current_cal_pred <- .catch_and_log(
+              predict_all_types(current_wflow, cal_pred_data, static_for_cal),
+              control = static$control,
+              split_labels = split_labs,
+              location = glue::glue(
+                "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (calibration predictions)"
+              ),
+              notes = notes
+            )
+            if (!is_failure(current_cal_pred)) {
+              current_cal_pred <- remove_log_notes(current_cal_pred)
+            }
+          }
+        }
+
         # ----------------------------------------------------------------------
         # Iterate over postprocessors
 
@@ -229,26 +297,27 @@
               current_sched_post
             )
 
-            # make data for post-processor
-            if (
-              workflows::.workflow_postprocessor_requires_fit(current_wflow)
-            ) {
-              tailor_train_data <- static$data$cal$data
-            } else {
-              # if the postprocessor does not require a fit,
-              # this does not cause data leakage
-              tailor_train_data <- static$data$fit$data
-            }
-
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
+
+            # If the postprocessor requires fitting (e.g. calibration), use
+            # pre-computed calibration predictions. Otherwise, use the raw
+            # training data (no data leakage since no fitting occurs).
             current_wflow <- .catch_and_log(
-              finalize_fit_post(
-                wflow_with_fitted_pre_and_model,
-                data_calibration = tailor_train_data,
-                grid = current_sched_post
-              ),
+              if (static$post_estimation) {
+                finalize_fit_post(
+                  wflow_with_fitted_pre_and_model,
+                  grid = current_sched_post,
+                  cal_predictions = current_cal_pred
+                )
+              } else {
+                finalize_fit_post(
+                  wflow_with_fitted_pre_and_model,
+                  data_calibration = static$data$fit$data,
+                  grid = current_sched_post
+                )
+              },
               control = static$control,
               split_labels = split_labs,
               location = location,
