@@ -233,3 +233,81 @@ test_that("verifying .loop_over_all_stages, submodels only, post estimation with
 
   # TODO more tests can be added when calibration method = "none" is implemented
 })
+
+test_that("submodel calibration varies per submodel value (#1144)", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("glmnet")
+  skip_if_not_installed("probably")
+  skip_if_not_installed("mgcv")
+
+  set.seed(1)
+  dat <- modeldata::sim_regression(500)
+  rs <- vfold_cv(dat, v = 3)
+
+  rs_split <- rs$splits[[1]]
+  rs_args <- rsample::.get_split_args(rs)
+
+  rs_iter <- vec_list_rowwise(rs) |>
+    purrr::pluck(1) |>
+    mutate(.seeds = get_parallel_seeds(1))
+
+  wflow <- workflow(outcome ~ ., glmn_spec, reg_cal)
+  grd <- tibble(penalty = c(0.001, 0.1), mixture = c(1, 1))
+
+  extract_cal_coef <- function(wf) {
+    extract_postprocessor(wf, estimated = TRUE)$adjustments[[
+      1
+    ]]$results$fit$estimates[[1]]$estimate |>
+      coefficients()
+  }
+
+  static <- make_static(
+    wflow,
+    param_info = extract_parameter_set_dials(wflow),
+    grid = grd,
+    metrics = metric_set(rmse),
+    eval_time = NULL,
+    split_args = rs_args,
+    control = control_grid(
+      save_pred = TRUE,
+      extract = extract_cal_coef
+    )
+  )
+
+  data_splits <- .get_data_subsets(wflow, rs_split, rs_args)
+  static <- update_static(static, data_splits)
+  static$y_name <- "outcome"
+
+  res <- .loop_over_all_stages(rs_iter, grd, static)
+  extracts <- res$.extracts[[1]]
+
+  loop_cal_p1 <- extracts$.extracts[[1]]
+  loop_cal_p2 <- extracts$.extracts[[2]]
+
+  # The two calibration models should differ because different penalty values
+  # produce different predictions on the calibration set.
+  expect_false(identical(loop_cal_p1, loop_cal_p2))
+
+  # Fit a reference model outside the loop for penalty = 0.001.
+  # Use the same seed so internal_calibration_split produces the same split.
+  withr::local_preserve_seed()
+  assign(".Random.seed", rs_iter$.seeds[[1]], envir = .GlobalEnv)
+  inner_split <- rsample::internal_calibration_split(
+    rs_split,
+    split_args = rs_args
+  )
+
+  ref_wf <- workflow(
+    outcome ~ .,
+    linear_reg(penalty = 0.001, mixture = 1, engine = "glmnet"),
+    reg_cal
+  ) |>
+    fit(
+      data = analysis(inner_split),
+      data_calibration = calibration(inner_split)
+    )
+
+  ref_cal <- extract_cal_coef(ref_wf)
+
+  expect_equal(loop_cal_p1, ref_cal)
+})
