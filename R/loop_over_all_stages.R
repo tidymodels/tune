@@ -100,6 +100,9 @@
         location = location,
         notes = notes
       )
+      if (is_failure(cal_pred_data)) {
+        next
+      }
     }
 
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
@@ -183,8 +186,7 @@
         pred_all_submodels <- remove_log_notes(pred_all_submodels)
 
         # Also predict on calibration data for all submodels at once
-        cal_pred_all_submodels <- NULL
-        if (has_post_estimation && !is_failure(cal_pred_data)) {
+        if (has_post_estimation) {
           cal_pred_all_submodels <- .catch_and_log(
             predict_all_types(
               current_wflow,
@@ -199,9 +201,10 @@
             notes = notes
           )
 
-          if (!is_failure(cal_pred_all_submodels)) {
-            cal_pred_all_submodels <- remove_log_notes(cal_pred_all_submodels)
+          if (is_failure(cal_pred_all_submodels)) {
+            next
           }
+          cal_pred_all_submodels <- remove_log_notes(cal_pred_all_submodels)
         }
       }
 
@@ -248,15 +251,10 @@
         current_cal_pred <- NULL
         if (has_post_estimation) {
           if (has_submodel) {
-            if (
-              !is.null(cal_pred_all_submodels) &&
-                !is_failure(cal_pred_all_submodels)
-            ) {
-              current_cal_pred <- cal_pred_all_submodels |>
-                dplyr::filter(.data[[sub_nm]] == sub_val) |>
-                dplyr::select(-dplyr::all_of(sub_nm))
-            }
-          } else if (!is_failure(cal_pred_data)) {
+            current_cal_pred <- cal_pred_all_submodels |>
+              dplyr::filter(.data[[sub_nm]] == sub_val) |>
+              dplyr::select(-dplyr::all_of(sub_nm))
+          } else {
             current_cal_pred <- .catch_and_log(
               predict_all_types(
                 current_wflow,
@@ -271,9 +269,11 @@
               ),
               notes = notes
             )
-            if (!is_failure(current_cal_pred)) {
-              current_cal_pred <- remove_log_notes(current_cal_pred)
+
+            if (is_failure(current_cal_pred)) {
+              next
             }
+            current_cal_pred <- remove_log_notes(current_cal_pred)
           }
         }
 
