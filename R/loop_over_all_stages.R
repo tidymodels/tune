@@ -86,6 +86,9 @@
         location = location,
         notes = notes
       )
+    if (is_failure(pred_data)) {
+      next
+    }
 
     # Also process the calibration data (if needed for postprocessor fitting).
     has_post_estimation <- static$post_estimation
@@ -113,10 +116,6 @@
     wflow_with_fitted_pre <- current_wflow
 
     grid_with_pre <- current_grid
-
-    if (is_failure(pred_data)) {
-      next
-    }
 
     for (iter_model in seq_len(num_iterations_model)) {
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
