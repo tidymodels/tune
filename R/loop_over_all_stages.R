@@ -88,8 +88,8 @@
       )
 
     # Also process the calibration data (if needed for postprocessor fitting).
-    cal_pred_data <- NULL
-    if (!is.null(static$data$cal)) {
+    has_post_estimation <- static$post_estimation
+    if (has_post_estimation) {
       cal_pred_data <- .catch_and_log(
         process_prediction_data(current_wflow, static, source = "cal"),
         control = static$control,
@@ -185,7 +185,7 @@
 
         # Also predict on calibration data for all submodels at once
         cal_pred_all_submodels <- NULL
-        if (!is.null(cal_pred_data) && !is_failure(cal_pred_data)) {
+        if (has_post_estimation && !is_failure(cal_pred_data)) {
           cal_pred_all_submodels <- .catch_and_log(
             predict_all_types(
               current_wflow,
@@ -247,7 +247,7 @@
         # For submodels these were pre-computed above; for non-submodels we
         # predict here (once per model, shared across post iterations).
         current_cal_pred <- NULL
-        if (static$post_estimation) {
+        if (has_post_estimation) {
           if (has_submodel) {
             if (
               !is.null(cal_pred_all_submodels) &&
@@ -257,7 +257,7 @@
                 dplyr::filter(.data[[sub_nm]] == sub_val) |>
                 dplyr::select(-dplyr::all_of(sub_nm))
             }
-          } else if (!is.null(cal_pred_data) && !is_failure(cal_pred_data)) {
+          } else if (!is_failure(cal_pred_data)) {
             current_cal_pred <- .catch_and_log(
               predict_all_types(
                 current_wflow,
@@ -306,7 +306,7 @@
             # pre-computed calibration predictions. Otherwise, use the raw
             # training data (no data leakage since no fitting occurs).
             current_wflow <- .catch_and_log(
-              if (static$post_estimation) {
+              if (has_post_estimation) {
                 finalize_fit_post(
                   wflow_with_fitted_pre_and_model,
                   grid = current_sched_post,
