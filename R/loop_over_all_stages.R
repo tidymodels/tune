@@ -88,15 +88,10 @@
       )
 
     # Also process the calibration data (if needed for postprocessor fitting).
-    # Reuse process_prediction_data() by temporarily swapping cal into the pred
-    # slot of static, since both have the same structure ($data + $ind).
     cal_pred_data <- NULL
-    static_for_cal <- NULL
     if (!is.null(static$data$cal)) {
-      static_for_cal <- static
-      static_for_cal$data$pred <- static$data$cal
       cal_pred_data <- .catch_and_log(
-        process_prediction_data(current_wflow, static_for_cal),
+        process_prediction_data(current_wflow, static, source = "cal"),
         control = static$control,
         split_labels = split_labs,
         location = location,

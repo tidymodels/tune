@@ -352,14 +352,19 @@ finalize_fit_model <- function(wflow_current, grid) {
 # ------------------------------------------------------------------------------
 # To call after the model is set and we loop over predict and/or post parameters
 # See #1128
-process_prediction_data <- function(wflow_fit, static) {
-  .data <- static$data$pred$data
-  .ind <- static$data$pred$ind
+process_prediction_data <- function(
+  wflow_fit,
+  static,
+  source = c("pred", "cal")
+) {
+  source <- rlang::arg_match(source)
+  .data <- static$data[[source]]$data
+  .ind <- static$data[[source]]$ind
 
-  processed_data_pred <- forge_from_workflow(.data, wflow_fit)
-  processed_data_pred$outcomes <- processed_data_pred$outcomes |>
+  processed_data <- forge_from_workflow(.data, wflow_fit)
+  processed_data$outcomes <- processed_data$outcomes |>
     dplyr::mutate(.row = .ind)
-  processed_data_pred
+  processed_data
 }
 
 
