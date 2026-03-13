@@ -190,8 +190,9 @@
             predict_all_types(
               current_wflow,
               cal_pred_data,
-              static_for_cal,
-              grid_pred_all_submodels
+              static,
+              grid_pred_all_submodels,
+              source = "cal"
             ),
             control = static$control,
             split_labels = split_labs,
@@ -258,7 +259,12 @@
             }
           } else if (!is.null(cal_pred_data) && !is_failure(cal_pred_data)) {
             current_cal_pred <- .catch_and_log(
-              predict_all_types(current_wflow, cal_pred_data, static_for_cal),
+              predict_all_types(
+                current_wflow,
+                cal_pred_data,
+                static,
+                source = "cal"
+              ),
               control = static$control,
               split_labels = split_labs,
               location = glue::glue(

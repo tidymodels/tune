@@ -233,12 +233,14 @@ fit_post_from_predictions <- function(wflow, cal_predictions) {
 
 predict_all_types <- function(
   wflow_fit,
-  processed_data_pred,
+  processed_data,
   static,
-  submodel_grid = NULL
+  submodel_grid = NULL,
+  source = c("pred", "cal")
 ) {
-  .data <- static$data$pred$data
-  .ind <- static$data$pred$ind
+  source <- rlang::arg_match(source)
+  .data <- static$data[[source]]$data
+  .ind <- static$data[[source]]$ind
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
@@ -253,7 +255,7 @@ predict_all_types <- function(
   for (type_iter in static$pred_types) {
     tmp_res <- predict_wrapper(
       model = model_fit,
-      new_data = processed_data_pred$predictors,
+      new_data = processed_data$predictors,
       type = type_iter,
       eval_time = static$eval_time,
       subgrid = submodel_grid
@@ -289,7 +291,7 @@ predict_all_types <- function(
   }
 
   pred <- pred |>
-    dplyr::full_join(processed_data_pred$outcomes, by = ".row")
+    dplyr::full_join(processed_data$outcomes, by = ".row")
 
   # Add implicitly grouped metric data, if applicable
   metrics_by <- get_metrics_by(static$metrics)
