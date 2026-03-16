@@ -255,9 +255,8 @@ test_that("submodel calibration varies per submodel value (#1144)", {
   grd <- tibble(penalty = c(0.001, 0.1), mixture = c(1, 1))
 
   extract_cal_coef <- function(wf) {
-    extract_postprocessor(wf, estimated = TRUE)$adjustments[[
-      1
-    ]]$results$fit$estimates[[1]]$estimate |>
+    postprocessor <- extract_postprocessor(wf, estimated = TRUE)
+    postprocessor$adjustments[[1]]$results$fit$estimates[[1]]$estimate |>
       coefficients()
   }
 
@@ -288,8 +287,6 @@ test_that("submodel calibration varies per submodel value (#1144)", {
   # produce different predictions on the calibration set.
   expect_false(identical(loop_cal_p1, loop_cal_p2))
 
-  # Fit a reference model outside the loop for penalty = 0.001.
-  # Use the same seed so internal_calibration_split produces the same split.
   withr::local_preserve_seed()
   assign(".Random.seed", rs_iter$.seeds[[1]], envir = .GlobalEnv)
   inner_split <- rsample::internal_calibration_split(
