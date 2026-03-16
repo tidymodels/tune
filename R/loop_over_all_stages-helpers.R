@@ -193,8 +193,15 @@ finalize_fit_post <- function(
   wflow_current,
   data_calibration = NULL,
   grid = NULL,
-  cal_predictions = NULL
+  predictions_calibration = NULL
 ) {
+  if (!is.null(data_calibration) && !is.null(predictions_calibration)) {
+    cli::cli_warn(
+      "Both {.arg data_calibration} and {.arg predictions_calibration} were
+      supplied; using {.arg predictions_calibration}."
+    )
+  }
+
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
@@ -203,20 +210,20 @@ finalize_fit_post <- function(
     finalize_tailor(grid)
   wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  if (!is.null(cal_predictions)) {
-    fit_post_from_predictions(wflow_current, cal_predictions)
+  if (!is.null(predictions_calibration)) {
+    fit_post_from_predictions(wflow_current, predictions_calibration)
   } else {
     workflows::.fit_post(wflow_current, data_calibration)
   }
 }
 
-fit_post_from_predictions <- function(wflow, cal_predictions) {
-  tailor_obj <- hardhat::extract_postprocessor(wflow)
+fit_post_from_predictions <- function(wflow, predictions_calibration) {
+  tailor_obj <- hardhat::extract_postprocessor(wflow, estimated = FALSE)
   outcome_names <- names(hardhat::extract_mold(wflow)$outcomes)
 
   post_fit <- tailor::fit(
     object = tailor_obj,
-    .data = cal_predictions,
+    .data = predictions_calibration,
     outcome = outcome_names,
     estimate = tidyselect::any_of(c(".pred", ".pred_class")),
     probabilities = c(

@@ -309,7 +309,7 @@
                 finalize_fit_post(
                   wflow_with_fitted_pre_and_model,
                   grid = current_sched_post,
-                  cal_predictions = current_cal_pred
+                  predictions_calibration = current_cal_pred
                 )
               } else {
                 finalize_fit_post(
