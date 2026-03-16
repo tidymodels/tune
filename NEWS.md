@@ -1,6 +1,5 @@
 # tune (development version)
 
-
 * Model tuning has been enabled for quantile regression models. (#1125)
 
 * In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
@@ -22,6 +21,8 @@
 * Fixed a bug for cases where we tune a grid without a model parameter but with a postprocessing parameter (#1119)
 
 * Tuning of models with submodel parameters now predicts all submodels at once (again) to speed up the tuning process (#1140).
+
+* Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (#1144).
 
 ## Breaking Changes
 
