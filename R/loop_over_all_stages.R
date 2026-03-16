@@ -258,6 +258,9 @@
               dplyr::filter(.data[[sub_nm]] == sub_val) |>
               dplyr::select(-dplyr::all_of(sub_nm))
           } else {
+            location <- glue::glue(
+              "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (calibration predictions)"
+            )
             current_cal_pred <- .catch_and_log(
               predict_all_types(
                 current_wflow,
@@ -267,9 +270,7 @@
               ),
               control = static$control,
               split_labels = split_labs,
-              location = glue::glue(
-                "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (calibration predictions)"
-              ),
+              location = location,
               notes = notes
             )
 
