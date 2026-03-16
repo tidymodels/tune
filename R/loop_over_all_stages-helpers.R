@@ -191,17 +191,9 @@ has_tailor_estimated <- function(x) {
 
 finalize_fit_post <- function(
   wflow_current,
-  data_calibration = NULL,
-  grid = NULL,
-  predictions_calibration = NULL
+  predictions_calibration,
+  grid = NULL
 ) {
-  if (!is.null(data_calibration) && !is.null(predictions_calibration)) {
-    cli::cli_warn(
-      "Both {.arg data_calibration} and {.arg predictions_calibration} were
-      supplied; using {.arg predictions_calibration}."
-    )
-  }
-
   if (is.null(grid)) {
     grid <- dplyr::tibble()
   }
@@ -210,13 +202,13 @@ finalize_fit_post <- function(
     finalize_tailor(grid)
   wflow_current <- set_workflow_tailor(wflow_current, post_obj)
 
-  if (!is.null(predictions_calibration)) {
-    fit_post_from_predictions(wflow_current, predictions_calibration)
-  } else {
-    workflows::.fit_post(wflow_current, data_calibration)
-  }
+  fit_post_from_predictions(wflow_current, predictions_calibration)
 }
 
+# This mimics `.fit_post()`, except it takes predictions instead of the
+# unprocessed calibration data.
+# We do that because we want to predict for all submodels at once
+# (as we do for the assessment set).
 fit_post_from_predictions <- function(wflow, predictions_calibration) {
   tailor_obj <- hardhat::extract_postprocessor(wflow, estimated = FALSE)
   outcome_names <- names(hardhat::extract_mold(wflow)$outcomes)

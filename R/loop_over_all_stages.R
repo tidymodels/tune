@@ -248,10 +248,9 @@
         has_post <- has_tailor(current_wflow)
         num_iterations_post <- max(nrow(current_sched_pred$post_stage[[1]]), 1)
 
-        # Compute calibration predictions for this predict iteration.
-        # For submodels these were pre-computed above; for non-submodels we
-        # predict here (once per model, shared across post iterations).
-        current_cal_pred <- NULL
+        # if the postprocessor does not require a fit,
+        # this does not cause data leakage
+        current_cal_pred <- current_pred
         if (has_post_estimation) {
           if (has_submodel) {
             current_cal_pred <- cal_pred_all_submodels |>
@@ -304,24 +303,12 @@
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model}, postprocessing {iter_pred}/{num_iterations_pred}"
             )
-
-            # If the postprocessor requires fitting (e.g. calibration), use
-            # pre-computed calibration predictions. Otherwise, use the raw
-            # training data (no data leakage since no fitting occurs).
             current_wflow <- .catch_and_log(
-              if (has_post_estimation) {
-                finalize_fit_post(
-                  wflow_with_fitted_pre_and_model,
-                  grid = current_sched_post,
-                  predictions_calibration = current_cal_pred
-                )
-              } else {
-                finalize_fit_post(
-                  wflow_with_fitted_pre_and_model,
-                  data_calibration = static$data$fit$data,
-                  grid = current_sched_post
-                )
-              },
+              finalize_fit_post(
+                wflow_with_fitted_pre_and_model,
+                current_cal_pred,
+                grid = current_sched_post
+              ),
               control = static$control,
               split_labels = split_labs,
               location = location,
