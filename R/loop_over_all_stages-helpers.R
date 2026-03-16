@@ -166,24 +166,6 @@ get_sub_param <- function(x) {
 has_tailor <- function(x) {
   "tailor" %in% names(x$post$actions)
 }
-
-has_tailor_tuned <- function(x) {
-  if (!has_tailor(x)) {
-    res <- FALSE
-  } else {
-    res <- any(tune_args(x)$source == "tailor")
-  }
-  res
-}
-has_tailor_estimated <- function(x) {
-  if (!has_tailor(x)) {
-    res <- FALSE
-  } else {
-    post <- hardhat::extract_postprocessor(x)
-    res <- tailor::tailor_requires_fit(post)
-  }
-  res
-}
 # nocov end
 
 # ------------------------------------------------------------------------------
