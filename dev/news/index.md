@@ -748,7 +748,7 @@ CRAN release: 2020-11-17
 
 - Allow `...` to pass options from
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
-  to [`GPfit::GP_fit()`](https://rdrr.io/pkg/GPfit/man/GP_fit.html).
+  to `GPfit::GP_fit()`.
 
 - Additional checks are done for the initial grid that is given to
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md).
