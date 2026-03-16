@@ -190,6 +190,9 @@
 
         # Also predict on calibration data for all submodels at once
         if (has_post_estimation) {
+          location <- glue::glue(
+            "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (calibration predictions)"
+          )
           cal_pred_all_submodels <- .catch_and_log(
             predict_all_types(
               current_wflow,
