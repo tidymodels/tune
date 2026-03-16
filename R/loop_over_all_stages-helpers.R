@@ -325,26 +325,6 @@ extend_grid <- function(...) {
 }
 
 # ------------------------------------------------------------------------------
-# pre-allocating predictions
-
-initialize_pred_reserve <- function(predictions, grid_size) {
-  if (!tibble::is_tibble(predictions)) {
-    predictions <- dplyr::as_tibble(predictions)
-  }
-  grid_size <- max(1, grid_size)
-  ptype <- predictions[0, ]
-  size <- nrow(predictions) * grid_size
-  res <- ptype[1:size, ]
-  dplyr::as_tibble(res)
-}
-
-replace_reserve_rows <- function(iter, chunk) {
-  start_loc <- (iter - 1) * chunk + 1
-  end_loc <- iter * chunk
-  start_loc:end_loc
-}
-
-# ------------------------------------------------------------------------------
 # Add .config to grid
 
 #' @export
