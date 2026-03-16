@@ -93,6 +93,9 @@
     # Also process the calibration data (if needed for postprocessor fitting).
     has_post_estimation <- static$post_estimation
     if (has_post_estimation) {
+      location <- glue::glue(
+        "preprocessor {iter_pre}/{num_iterations_pre} (calibration data)"
+      )
       cal_pred_data <- .catch_and_log(
         process_prediction_data(current_wflow, static, source = "cal"),
         control = static$control,
