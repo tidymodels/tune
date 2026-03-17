@@ -4,12 +4,12 @@ test_that("Light mode / default `tune_color`s work", {
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    black("hi")
+    cli::col_black("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    black("hi")
+    cli::col_black("hi")
   )
 })
 
@@ -19,12 +19,12 @@ test_that("Dark mode `tune_color`s work", {
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    white("hi")
+    cli::col_white("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    white("hi")
+    cli::col_white("hi")
   )
 })
 
@@ -34,11 +34,11 @@ test_that("`tune_color` falls back to light mode with back `tidymodels.dark` opt
 
   expect_equal(
     tune:::tune_color$symbol$go("hi"),
-    black("hi")
+    cli::col_black("hi")
   )
 
   expect_equal(
     tune:::tune_color$message$info("hi"),
-    black("hi")
+    cli::col_black("hi")
   )
 })

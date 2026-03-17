@@ -16,54 +16,39 @@ tune_symbol_ascii <- list(
 
 ## -----------------------------------------------------------------------------
 
-# To remove the crayon dependency, use the cli analogs. However, these
-# produce ansi_string objects and some of our logging code needs
-# the character values. Will not be needed for cli >= 2.1.0.9000
-yellow <- function(...) as.character(cli::col_yellow(...))
-black <- function(...) as.character(cli::col_black(...))
-white <- function(...) as.character(cli::col_white(...))
-red <- function(...) as.character(cli::col_red(...))
-yellow <- function(...) as.character(cli::col_yellow(...))
-green <- function(...) as.character(cli::col_green(...))
-blue <- function(...) as.character(cli::col_blue(...))
-silver <- function(...) as.character(cli::col_silver(...))
-bold <- function(...) as.character(cli::style_bold(...))
-
-# ------------------------------------------------------------------------------
-
 # For use in setting the `tune_color` active binding in `.onLoad()`
 
 tune_color_dark <- list(
   symbol = list(
-    "warning" = yellow,
-    "go" = white,
-    "danger" = red,
-    "success" = green,
-    "info" = blue
+    "warning" = cli::col_yellow,
+    "go" = cli::col_white,
+    "danger" = cli::col_red,
+    "success" = cli::col_green,
+    "info" = cli::col_blue
   ),
   message = list(
-    "warning" = yellow,
-    "go" = white,
-    "danger" = red,
-    "success" = white,
-    "info" = white
+    "warning" = cli::col_yellow,
+    "go" = cli::col_white,
+    "danger" = cli::col_red,
+    "success" = cli::col_white,
+    "info" = cli::col_white
   )
 )
 
 tune_color_light <- list(
   symbol = list(
-    "warning" = yellow,
-    "go" = black,
-    "danger" = red,
-    "success" = green,
-    "info" = blue
+    "warning" = cli::col_yellow,
+    "go" = cli::col_black,
+    "danger" = cli::col_red,
+    "success" = cli::col_green,
+    "info" = cli::col_blue
   ),
   message = list(
-    "warning" = yellow,
-    "go" = black,
-    "danger" = red,
-    "success" = black,
-    "info" = black
+    "warning" = cli::col_yellow,
+    "go" = cli::col_black,
+    "danger" = cli::col_red,
+    "success" = cli::col_black,
+    "info" = cli::col_black
   )
 )
 
