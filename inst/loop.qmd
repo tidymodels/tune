@@ -14,13 +14,16 @@ The loop runs over a single resample. The basic structure is:
 	- Fit preprocessor
 	- Apply it to analysis set
 	- Apply it to the assessment set
+	- Apply it to the calibration set
 	- For each (non-sub) model parameter combination
 		- Fit the model
 		- Predict for all submodel parameters at once (via multi_predict)
+		- Predict on calibration data for all submodels at once
 		- For each submodel parameter value
 			- Filter to this submodel's predictions
+			- Filter to this submodel's calibration predictions
 			- For each post parameter combination
-				- Fit the postprocessor
+				- Fit the postprocessor on the calibration predictions
 				- Apply the postprocessor to the predictions (on the assessment set)
 				- Combine (post-processed) predictions with the grid to `final_pred`
 				- Save `final_pred` by appending it to `pred_reserve`
@@ -119,6 +122,12 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 - `final_pred` - predictions after postprocessing (ready to save)
 - `pred_reserve` - accumulator for all final predictions
 
+**Calibration objects:**
+
+- `cal_pred_data` - processed calibration data (features + outcomes), analogous to `pred_data`
+- `cal_pred_all_submodels` - batched calibration predictions for all submodel values
+- `current_cal_pred` - calibration predictions for current pred iteration (filtered from `cal_pred_all_submodels`)
+
 **General conventions:**
 
 - `static` - things that don't change during the loop
@@ -132,7 +141,8 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 
 - `finalize_fit_pre()` - finalize recipe params, fit preprocessor
 - `finalize_fit_model()` - finalize model params, fit model
-- `finalize_fit_post()` - finalize tailor params, fit postprocessor
+- `finalize_fit_post()` - finalize tailor params, fit postprocessor on pre-computed predictions
+- `fit_post_from_predictions()` - fit the postprocessor from predictions (instead of raw data)
 
 **Grid helpers:**
 
@@ -141,8 +151,8 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 
 **Prediction:**
 
-- `process_prediction_data()` - apply fitted preprocessor to assessment data
-- `predict_all_types()` - generate all needed prediction types
+- `process_prediction_data()` - apply fitted preprocessor to data (`source = "pred"` for assessment, `source = "cal"` for calibration)
+- `predict_all_types()` - generate all needed prediction types (`source = "pred"` for assessment, `source = "cal"` for calibration)
 
 ### Error handling
 
@@ -178,6 +188,7 @@ The nested structure avoids redundant computation:
 | Processed prediction data | Once per preproc param combo | All predictions below it |
 | Model fit | Once per model param combo | All submodel predictions |
 | Submodel predictions | Once per model (batched) | All submodel × post combos |
+| Calibration predictions | Once per model (batched) | All submodel × post combos |
 | Postprocessor fit | Once per post param combo | That specific config |
 
 Submodel parameters (like `penalty` in glmnet) are predicted all at once using `multi_predict()`, which is much faster than predicting one at a time.

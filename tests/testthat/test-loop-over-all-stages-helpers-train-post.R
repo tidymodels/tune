@@ -4,13 +4,12 @@ test_that("tailor trains calibrator", {
 
   cls <- make_post_data()
 
-  wflow <- workflow(class ~ ., logistic_reg())
-
   wflow_cal <- workflow(class ~ ., logistic_reg(), cls_est_post)
   wflow_fit <- .fit_pre(wflow_cal, cls$data) |>
     .fit_model(control = control_workflow())
 
-  wflow_fit <- finalize_fit_post(wflow_fit, cls$data, grid = tibble())
+  cal_preds <- augment(extract_fit_parsnip(wflow_fit), cls$data)
+  wflow_fit <- finalize_fit_post(wflow_fit, cal_preds, grid = tibble())
   res <- extract_postprocessor(wflow_fit, estimated = TRUE)
   expect_s3_class(res, "tailor")
   expect_true(res$adjustments[[1]]$trained)
@@ -37,11 +36,8 @@ test_that("tailor updated with grid and fit", {
   wflow_fit <- .fit_pre(wflow_cal, cls$data) |>
     .fit_model(control = control_workflow())
 
-  wflow_fit <- finalize_fit_post(
-    wflow_fit,
-    cls$data,
-    grid = tibble(cut = 0)
-  )
+  cal_preds <- augment(extract_fit_parsnip(wflow_fit), cls$data)
+  wflow_fit <- finalize_fit_post(wflow_fit, cal_preds, grid = tibble(cut = 0))
   wflow_fit <- .fit_finalize(wflow_fit)
 
   re_predicted <- predict(wflow_fit, cls$data)
