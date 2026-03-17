@@ -287,7 +287,7 @@ min_grid.multinom_reg <- min_grid.linear_reg
 # Cox PH regression
 
 #' @export
-#' @export min_grid.multinom_reg
+#' @export min_grid.proportional_hazards
 #' @rdname min_grid
 min_grid.proportional_hazards <- min_grid.linear_reg
 
