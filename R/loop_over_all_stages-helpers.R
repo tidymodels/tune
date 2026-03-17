@@ -205,7 +205,7 @@ finalize_fit_post <- function(
   fit_post_from_predictions(wflow_current, predictions_calibration)
 }
 
-# This mimics `.fit_post()`, except it takes predictions instead of the
+# This mimics `workflows::.fit_post()`, except it takes predictions instead of the
 # unprocessed calibration data.
 # We do that because we want to predict for all submodels at once
 # (as we do for the assessment set).
