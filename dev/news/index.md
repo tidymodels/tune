@@ -46,6 +46,11 @@
   at once (again) to speed up the tuning process
   ([\#1140](https://github.com/tidymodels/tune/issues/1140)).
 
+- Fixed a bug where models with submodel parameters would train all
+  calibration models on predictions from a single submodel value instead
+  of the correct value for each submodel
+  ([\#1144](https://github.com/tidymodels/tune/issues/1144)).
+
 ### Breaking Changes
 
 - The Gaussian process model package was changed from to because the
@@ -748,7 +753,7 @@ CRAN release: 2020-11-17
 
 - Allow `...` to pass options from
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
-  to `GPfit::GP_fit()`.
+  to [`GPfit::GP_fit()`](https://rdrr.io/pkg/GPfit/man/GP_fit.html).
 
 - Additional checks are done for the initial grid that is given to
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md).
