@@ -688,7 +688,10 @@ pick_candidate <- function(results, info, control) {
       dplyr::slice(1)
   } else {
     if (control$verbose_iter) {
-      msg <- paste(blue(cli::symbol$circle_question_mark), "Uncertainty sample")
+      msg <- paste(
+        cli::col_blue(cli::symbol$circle_question_mark),
+        "Uncertainty sample"
+      )
       message(msg)
     }
     results <-
