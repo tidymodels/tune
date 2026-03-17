@@ -254,6 +254,7 @@
         # if the postprocessor does not require a fit,
         # this does not cause data leakage
         current_cal_pred <- current_pred
+        
         if (has_post_estimation) {
           if (has_submodel) {
             current_cal_pred <- cal_pred_all_submodels |>
