@@ -859,25 +859,6 @@ check_time <- function(origin, limit) {
 # May be better to completely refactor things to a high-level call then use
 # base's setTimeLimit().
 
-# Make sure that rset object attributes are kept once joined
-reup_rs <- function(resamples, res) {
-  sort_cols <- grep("^id", names(resamples), value = TRUE)
-  if (any(names(res) == ".iter")) {
-    sort_cols <- c(".iter", sort_cols)
-  }
-  res <- dplyr::arrange(res, !!!syms(sort_cols))
-  att <- attributes(res)
-  rsample_att <- attributes(resamples)
-  for (i in names(rsample_att)) {
-    if (!any(names(att) == i)) {
-      attr(res, i) <- rsample_att[[i]]
-    }
-  }
-
-  class(res) <- unique(c("tune_results", class(res)))
-  res
-}
-
 ## -----------------------------------------------------------------------------
 
 save_gp_results <- function(x, pset, ctrl, i, iter, candidates, score_card) {
