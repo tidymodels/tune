@@ -315,9 +315,10 @@ pick_candidate <- function(results, info, control) {
         color_text = get_tune_colors()$message$info
       )
     }
+    n_top <- max(floor(.1 * nrow(results)), 1L)
     results <- results |>
       dplyr::arrange(dplyr::desc(.sd)) |>
-      dplyr::slice(seq_len(floor(.1 * nrow(results)))) |>
+      dplyr::slice(seq_len(n_top)) |>
       dplyr::sample_n(1)
   }
   results
