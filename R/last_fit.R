@@ -211,17 +211,12 @@ last_fit_workflow <- function(
   splits <- list(split)
   resamples <- rsample::manual_rset(splits, ids = "train/test split")
 
-  # Turn off seed generation to ensure `last_fit()` and workflows `fit()`
-  # are reproducible
-  rng <- FALSE
-
   res <- resample_workflow(
     workflow = object,
     resamples = resamples,
     metrics = metrics,
     eval_time = eval_time,
     control = control,
-    rng = rng,
     call = call
   )
 

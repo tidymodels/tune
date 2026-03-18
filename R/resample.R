@@ -123,8 +123,7 @@ fit_resamples.workflow <- function(
       resamples = resamples,
       metrics = metrics,
       eval_time = eval_time,
-      control = control,
-      rng = TRUE
+      control = control
     )
   .stash_last_result(res)
   res
@@ -138,7 +137,6 @@ resample_workflow <- function(
   metrics,
   eval_time = NULL,
   control,
-  rng,
   call = caller_env()
 ) {
   check_no_tuning(workflow)
@@ -155,7 +153,6 @@ resample_workflow <- function(
     eval_time = eval_time,
     pset = pset,
     control = control,
-    rng = rng,
     call = call
   )
 
