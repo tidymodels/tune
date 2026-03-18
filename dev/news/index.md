@@ -51,6 +51,11 @@
   of the correct value for each submodel
   ([\#1144](https://github.com/tidymodels/tune/issues/1144)).
 
+- [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
+  now uses an uncertainty sample if all predictions from the Gaussian
+  process model fail
+  ([\#1167](https://github.com/tidymodels/tune/issues/1167)).
+
 ### Breaking Changes
 
 - The Gaussian process model package was changed from to because the
