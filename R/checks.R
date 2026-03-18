@@ -669,27 +669,6 @@ check_no_tuning <- function(x) {
   ))
 }
 
-dyn_inputs <- c("integrated_survival_metric", "dynamic_survival_metric")
-
-check_eval_time <- function(eval_time, metrics) {
-  metric_types <- tibble::as_tibble(metrics)$class
-  needs_eval_time <- any(metric_types %in% dyn_inputs)
-  if (!is.null(eval_time) & !needs_eval_time) {
-    cli::cli_abort(
-      "{.arg eval_time} is only used for dynamic and integrated survival metrics.",
-      call = NULL
-    )
-  }
-  if (is.null(eval_time) & needs_eval_time) {
-    cli::cli_abort(
-      "One or more metric requires the specification of time points in the
-       {.arg eval_time} argument.",
-      call = NULL
-    )
-  }
-  invisible(NULL)
-}
-
 check_time_limit_arg <- function(x, call = rlang::caller_env()) {
   if (!inherits(x, c("logical", "numeric")) || length(x) != 1L) {
     cli::cli_abort(

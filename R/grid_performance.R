@@ -291,9 +291,10 @@ maybe_estimate <- function(x) {
   res
 }
 
+dyn_inputs <- c("integrated_survival_metric", "dynamic_survival_metric")
+
 maybe_surv_prob <- function(x) {
   info <- tibble::as_tibble(x)
-  # dyn_inputs defined in checks.R
   if (any(info$class %in% dyn_inputs)) {
     res <- rlang::sym(".pred")
   } else {
