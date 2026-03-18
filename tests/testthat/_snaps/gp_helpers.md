@@ -29,6 +29,14 @@
     Message
       i Generating a candidate as far away from existing points as possible.
 
+# pick_candidate() emits uncertainty sample message when verbose
+
+    Code
+      set.seed(1)
+      res <- tune:::pick_candidate(results, info, ctrl)
+    Message
+      i Uncertainty sample
+
 # GP fit - knn
 
     Code

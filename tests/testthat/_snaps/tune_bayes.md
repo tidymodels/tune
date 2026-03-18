@@ -131,6 +131,7 @@
       (x) GP has a LOO R² of 0% and is unreliable.
       v Gaussian process model failed
       i Generating a candidate as far away from existing points as possible.
+      i Uncertainty sample
       i num_comp=11
       i Estimating performance
       v Estimating performance
@@ -181,6 +182,7 @@
       (x) GP has a LOO R² of 0% and is unreliable.
       v Gaussian process model failed
       i Generating a candidate as far away from existing points as possible.
+      i Uncertainty sample
       i num_comp=11
       i Estimating performance
       i Fold01: preprocessor 1/1

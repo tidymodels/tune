@@ -24,6 +24,8 @@
 
 * Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (#1144).
 
+* `tune_bayes()` now uses an uncertainty sample if all predictions from the Gaussian process model fail (#1167).
+
 ## Breaking Changes
 
 * The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 

@@ -681,28 +681,6 @@ encode_set <- function(x, pset, ..., as_matrix = FALSE) {
   x
 }
 
-pick_candidate <- function(results, info, control) {
-  if (info$uncertainty < control$uncertain) {
-    results <- results |>
-      dplyr::arrange(dplyr::desc(objective)) |>
-      dplyr::slice(1)
-  } else {
-    if (control$verbose_iter) {
-      msg <- paste(
-        cli::col_blue(cli::symbol$circle_question_mark),
-        "Uncertainty sample"
-      )
-      message(msg)
-    }
-    results <-
-      results |>
-      dplyr::arrange(dplyr::desc(.sd)) |>
-      dplyr::slice(1:floor(.1 * nrow(results))) |>
-      dplyr::sample_n(1)
-  }
-  results
-}
-
 update_score_card <- function(info, iter, results, control) {
   current_val <-
     results |>
