@@ -98,6 +98,56 @@ test_that("GP scoring with failed model", {
 
 # ------------------------------------------------------------------------------
 
+test_that("pick_candidate() selects best objective when GP succeeds", {
+  results <- tibble::tibble(
+    x = 1:10,
+    .mean = seq(0.1, 1, by = 0.1),
+    .sd = rev(seq(0.1, 1, by = 0.1)),
+    objective = seq(0.1, 1, by = 0.1)
+  )
+  info <- list(uncertainty = 0)
+  ctrl <- control_bayes(uncertain = 5)
+
+  res <- tune:::pick_candidate(results, info, ctrl)
+  expect_identical(nrow(res), 1L)
+  expect_identical(res$objective, 1)
+})
+
+test_that("pick_candidate() falls back to uncertainty sample when all GP predictions are NA", {
+  results <- tibble::tibble(
+    x = 1:20,
+    .mean = rep(NA_real_, 20),
+    .sd = seq(0.05, 1, by = 0.05),
+    objective = seq(0.05, 1, by = 0.05)
+  )
+  info <- list(uncertainty = 0)
+  ctrl <- control_bayes(uncertain = 5, verbose_iter = FALSE)
+
+  set.seed(1)
+  res <- tune:::pick_candidate(results, info, ctrl)
+  expect_identical(nrow(res), 1L)
+  # Should pick from top 10% by .sd, not by objective
+  expect_gte(res$.sd, 0.9)
+})
+
+test_that("pick_candidate() emits uncertainty sample message when verbose", {
+  results <- tibble::tibble(
+    x = 1:20,
+    .mean = rep(NA_real_, 20),
+    .sd = seq(0.05, 1, by = 0.05),
+    objective = seq(0.05, 1, by = 0.05)
+  )
+  info <- list(uncertainty = 0)
+  ctrl <- control_bayes(uncertain = 5, verbose_iter = TRUE)
+
+  expect_snapshot({
+    set.seed(1)
+    res <- tune:::pick_candidate(results, info, ctrl)
+  })
+})
+
+# ------------------------------------------------------------------------------
+
 test_that("GP fit - knn", {
   knn_results <- readRDS(test_path("data", "knn_results.rds"))
   knn_set <- attributes(knn_results)$parameters
