@@ -26,6 +26,7 @@ Imports:
     glue (>= 1.6.2),
     GauPro (>= 0.2.15),
     hardhat (>= 1.4.2),
+    lifecycle,
     parallel,
     parsnip (>= 1.4.1.9002),
     purrr (>= 1.0.0),
