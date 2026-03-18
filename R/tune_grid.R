@@ -351,7 +351,6 @@ tune_grid_workflow <- function(
   eval_time = NULL,
   pset = NULL,
   control = control_grid(),
-  rng = TRUE,
   call = caller_env()
 ) {
   if (!catalog_is_active()) {
