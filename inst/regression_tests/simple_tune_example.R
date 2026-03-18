@@ -26,9 +26,9 @@ simple_wflow <- workflow(outcome ~ ., mod)
 
 simple_grid <-
   tibble::tribble(
-    ~weight_func,
-    "rectangular",
-    "triangular",
+    ~weight_func   ,
+    "rectangular"  ,
+    "triangular"   ,
     "epanechnikov"
   )
 

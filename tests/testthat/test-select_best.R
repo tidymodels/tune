@@ -14,25 +14,25 @@ test_that("select_best()", {
   )
   best_rmse <-
     tibble::tribble(
-      ~deg_free,
-      ~degree,
-      ~`wt df`,
-      ~`wt degree`,
-      6L,
-      2L,
-      2L,
+      ~deg_free    ,
+      ~degree      ,
+      ~`wt df`     ,
+      ~`wt degree` ,
+      6L           ,
+      2L           ,
+      2L           ,
       1L
     )
   best_rsq <-
     tibble::tribble(
-      ~deg_free,
-      ~degree,
-      ~`wt df`,
-      ~`wt degree`,
-      10L,
-      2L,
-      2L,
-      2L
+      ~deg_free    ,
+      ~degree      ,
+      ~`wt df`     ,
+      ~`wt degree` ,
+      10L          ,
+       2L          ,
+       2L          ,
+       2L
     )
 
   expect_equal(
