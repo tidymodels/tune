@@ -114,7 +114,13 @@ has_metrics_by <- function(metrics_by) {
 
 #' @export
 #' @rdname tune-internal-functions
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `finalize_workflow_preprocessor()` is deprecated.
 finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
+  lifecycle::deprecate_warn("2.1.0", "finalize_workflow_preprocessor()")
+
   # Already finalized, nothing to tune
   if (ncol(grid_preprocessor) == 0L) {
     return(workflow)

@@ -67,6 +67,10 @@ always unique and do not represent a tuning "issue" can bypass the cataloger
 by setting \code{catalog = FALSE}.}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{finalize_workflow_preprocessor()} is deprecated.
+
 These are not to be meant to be invoked directly by users.
 }
 \keyword{internal}

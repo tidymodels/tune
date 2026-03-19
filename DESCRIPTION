@@ -10,8 +10,8 @@ Authors@R: c(
 Description: The ability to tune models is important. 'tune' contains
     functions and classes to be used in conjunction with other
     'tidymodels' packages for finding reasonable values of
-    hyper-parameters in models, preprocessing methods, and
-    post-processing steps.
+    hyper-parameters in models, preprocessing methods, and post-processing
+    steps.
 License: MIT + file LICENSE
 URL: https://tune.tidymodels.org/, https://github.com/tidymodels/tune
 BugReports: https://github.com/tidymodels/tune/issues
@@ -21,11 +21,12 @@ Imports:
     cli (>= 3.3.0),
     dials (>= 1.3.0.9000),
     dplyr (>= 1.1.0),
+    GauPro (>= 0.2.15),
     generics (>= 0.1.2),
     ggplot2,
     glue (>= 1.6.2),
-    GauPro (>= 0.2.15),
     hardhat (>= 1.4.2),
+    lifecycle,
     parallel,
     parsnip (>= 1.4.1.9002),
     purrr (>= 1.0.0),
