@@ -20,3 +20,4 @@ _cache$
 ^man-roxygen$
 ^\.vscode$
 ^[.]?air[.]toml$
+^\.claude$
