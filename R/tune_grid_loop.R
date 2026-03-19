@@ -78,14 +78,6 @@ tune_grid_loop <- function(
     strategy = strategy
   )
 
-  # fmt: skip
-  tm_pkgs <- c("rsample", "workflows", "hardhat", "tune", "parsnip", "tailor",
-               "yardstick")
-  load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
-  load_pkgs <- unique(load_pkgs)
-
-  par_opt <- list()
-
   # ----------------------------------------------------------------------------
   # Control execution
 
