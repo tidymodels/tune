@@ -493,11 +493,6 @@ tune_bayes_workflow <- function(
 
       candidates <- pick_candidate(candidates, score_card, control)
 
-      # These were temp used to replace pick_candidate()
-      # candidates <- candidates |>
-      #   dplyr::arrange(dplyr::desc(objective)) |>
-      #   dplyr::slice(1)
-
       if (score_card$uncertainty >= control$uncertain) {
         score_card$uncertainty <- -1 # is updated in update_score_card() below
       }
