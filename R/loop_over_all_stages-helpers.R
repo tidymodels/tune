@@ -225,8 +225,6 @@ predict_all_types <- function(
 
   model_fit <- wflow_fit |> hardhat::extract_fit_parsnip()
 
-  # TODO tune::predict_model has some pre-prediction checks
-
   sub_param <- names(submodel_grid)
 
   # Convert argument names to parsnip format see #1011
@@ -345,6 +343,22 @@ process_prediction_data <- function(
   .ind <- static$data[[source]]$ind
 
   processed_data <- forge_from_workflow(.data, wflow_fit)
+
+  if (nrow(processed_data$predictors) != nrow(.data)) {
+    set_name <- if (source == "pred") "assessment" else "calibration"
+    msg <- "Some {set_name} set rows are not available at prediction time."
+    if (has_preprocessor_recipe(wflow_fit)) {
+      msg <- c(
+        msg,
+        i = "Consider using {.code skip = TRUE} on any recipe steps that
+             remove rows to avoid calling them on the {set_name} set."
+      )
+    } else {
+      msg <- c(msg, i = "Did your preprocessing steps filter or remove rows?")
+    }
+    cli::cli_abort(msg)
+  }
+
   processed_data$outcomes <- processed_data$outcomes |>
     dplyr::mutate(.row = .ind)
   processed_data
