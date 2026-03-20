@@ -1012,6 +1012,44 @@ test_that("process_prediction_data errors when recipe drops rows", {
   )
 })
 
+test_that("process_prediction_data errors when recipe drops calibration rows", {
+  skip_if_not_installed("modeldata")
+  skip_if_not_installed("probably")
+
+  cls <- make_post_data()
+
+  filter_rec <- recipe(class ~ ., data = cls$data) |>
+    step_filter(non_linear_1 > 0, skip = FALSE)
+
+  wflow <- workflow(filter_rec, logistic_reg(), cls_est_post)
+  # TODO just use cls$data
+  # after https://github.com/tidymodels/workflows/issues/315 is fixed
+  wflow_fit <- fit(
+    wflow,
+    data = cls$data,
+    data_calibration = cls$data |> filter(non_linear_1 > 0)
+  )
+
+  ctrl <- tune::control_grid()
+  data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
+
+  static <- tune:::make_static(
+    wflow,
+    param_info = wflow |> extract_parameter_set_dials(),
+    grid = tibble(),
+    metrics = metric_set(accuracy),
+    eval_time = NULL,
+    split_args = cls$args,
+    control = ctrl
+  )
+  static <- tune:::update_static(static, data_1)
+
+  expect_snapshot(
+    tune:::process_prediction_data(wflow_fit, static, source = "cal"),
+    error = TRUE
+  )
+})
+
 test_that("process_prediction_data errors when non-recipe preprocessor drops rows", {
   skip_if_not_installed("modeldata")
 
