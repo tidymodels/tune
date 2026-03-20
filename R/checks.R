@@ -384,8 +384,12 @@ check_extra_tune_parameters <- function(x) {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-#' @param object A `workflow` object.
+#' @param object
+#'   `r lifecycle::badge("deprecated")`
+#'
+#'   A `workflow` object.
 check_metrics <- function(x, object) {
+  lifecycle::deprecate_warn("2.1.0", "check_metrics()", "check_metrics_arg()")
   mode <- extract_spec_parsnip(object)$mode
 
   if (is.null(x)) {
