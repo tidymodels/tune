@@ -1,5 +1,7 @@
 # tune (development version)
 
+* `check_metrics()` is deprecated in favor of `check_metrics_arg()` (#1160).
+
 * Model tuning has been enabled for quantile regression models. (#1125)
 
 * In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
