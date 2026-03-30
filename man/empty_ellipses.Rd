@@ -127,9 +127,11 @@ metrics should be computed (e.g. the time-dependent ROC curve, etc).}
 
 \item{ctrl}{A \code{control_grid} object.}
 
-\item{cls}{A character vector of possible classes}
+\item{cls}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} A character vector of
+possible classes}
 
-\item{where}{A character string for the calling function.}
+\item{where}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} A character string for
+the calling function.}
 
 \item{parameters}{A \code{parameters} object.}
 

@@ -567,9 +567,13 @@ check_class_or_null <- function(x, cls = "numeric") {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-#' @param cls A character vector of possible classes
-#' @param where A character string for the calling function.
+#' @param cls `r lifecycle::badge("deprecated")` A character vector of
+#'   possible classes
+#' @param where `r lifecycle::badge("deprecated")` A character string for
+#'   the calling function.
 val_class_or_null <- function(x, cls = "numeric", where = NULL) {
+  lifecycle::deprecate_warn("2.1.0", "val_class_or_null()")
+
   cl <- match.call()
   fine <- check_class_or_null(x, cls)
   cls <- paste(cls, collapse = " or ")
@@ -582,7 +586,6 @@ val_class_or_null <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-# TODO remove this once finetune is updated
 
 check_class_and_single <- function(x, cls = "numeric") {
   isTRUE(inherits(x, cls) & length(x) == 1)
@@ -592,6 +595,8 @@ check_class_and_single <- function(x, cls = "numeric") {
 #' @keywords internal
 #' @rdname empty_ellipses
 val_class_and_single <- function(x, cls = "numeric", where = NULL) {
+  lifecycle::deprecate_warn("2.1.0", "val_class_and_single()")
+
   cl <- match.call()
   fine <- check_class_and_single(x, cls)
   cls <- paste(cls, collapse = " or ")
@@ -606,7 +611,6 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-# TODO remove this once finetune is updated
 
 # Check the data going into the GP. If there are all missing values, fail. If some
 # are missing, remove them and send a warning. If all metrics are the same, fail.
