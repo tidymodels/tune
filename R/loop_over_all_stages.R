@@ -78,7 +78,8 @@
       next
     }
 
-    # Process prediction data
+    # Now we can process the data being predicted. These do not change
+    # over the next two loops, so compute them here, once.
     location <- glue::glue(
       "preprocessor {iter_pre}/{num_iterations_pre} (prediction data)"
     )
@@ -116,10 +117,6 @@
     # Only for prediction-based metrics (model-based metrics do not have outcomes)
     if (!is_model_metrics) {
       static$y_name <- outcome_names(current_wflow)
-    }
-
-    if (is_failure(pred_data)) {
-      next
     }
 
     num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)

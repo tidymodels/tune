@@ -44,7 +44,6 @@ schedule_stages <- function(grid, wflow) {
   # Which parameter belongs to which stage and which is a submodel parameter?
   param_info <- get_param_info(wflow)
 
-  # Determine the model source type (model_spec or cluster_spec)
   model_source <- get_model_source(wflow)
 
   # schedule preprocessing stage and push the rest into a nested tibble
@@ -58,7 +57,7 @@ schedule_stages <- function(grid, wflow) {
   schedule |>
     dplyr::mutate(
       model_stage = purrr::map(
-        model_stage,
+        # model_stage,
         schedule_model_stage_i,
         param_info = param_info,
         wflow = wflow,

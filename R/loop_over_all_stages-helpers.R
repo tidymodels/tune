@@ -25,7 +25,6 @@ make_static <- function(
   if (!inherits(param_info, "parameters")) {
     cli::cli_abort("{.arg param_info} should be a {.cls parameters} object.")
   }
-  # Allow metric_set or other metric set classes (e.g., cluster_metric_set)
   if (!is_valid_metric_set(metrics)) {
     cli::cli_abort("{.arg metrics} should be a metric set object.")
   }
@@ -35,14 +34,10 @@ make_static <- function(
 
   configs <- .get_config_key(grid, workflow)
 
-  # Determine if this is a prediction-based or model-based metric workflow
-  # Model-based metrics (like clustering) compute metrics from workflow + data
   metric_type <- get_metric_type(metrics)
-  is_model_metrics <- metric_type == "model"
 
-  # Build metric_info from prediction metrics (for yardstick compatibility)
-  # For model-based metrics, use an empty tibble
-  if (is_model_metrics) {
+  if (metric_type == "model") {
+    # tidyclust model based metrics
     metric_info <- tibble::tibble(
       metric = character(0),
       class = character(0),
@@ -74,15 +69,10 @@ make_static <- function(
   )
 }
 
-# Helper to check if metrics object is valid
-# Can be extended by other packages
 is_valid_metric_set <- function(x) {
   inherits(x, "metric_set") || inherits(x, "cluster_metric_set")
 }
 
-# Determine metric computation type
-# "prediction" = standard yardstick (compute from predictions)
-# "model" = compute from fitted workflow + data (e.g., clustering)
 get_metric_type <- function(metrics) {
   if (inherits(metrics, "cluster_metric_set")) {
     "model"
@@ -436,7 +426,6 @@ extend_grid <- function(...) {
       dplyr::mutate(pre = "pre0")
   }
 
-  # Support both model_spec (parsnip) and cluster_spec (tidyclust)
   model_source <- get_model_source(wflow)
   mod_param <- info$id[info$source == model_source]
   if (length(mod_param) > 0) {
@@ -493,9 +482,7 @@ make_config_labs <- function(grid, param, val = "pre") {
 .determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
 
-  # For clustering (partition mode), metrics are model-based, not prediction-based
-  # Return empty character vector to signal no predictions needed
-
+  # For clustering (partition mode), no predictions needed
   if (model_mode == "partition") {
     return(character(0))
   }
@@ -529,7 +516,7 @@ make_config_labs <- function(grid, param, val = "pre") {
       )
     } else {
       cli::cli_abort(
-        "No prediction types are known for mode {.val {model_mode}}."
+        "No prediction types are known for mode {.val model_mode}."
       )
     }
 
