@@ -166,7 +166,7 @@
         )
 
         current_metrics <- .catch_and_log(
-          static$metrics(current_wflow, new_data = static$data$fit$data),
+          static$metrics(current_wflow, new_data = static$data$pred$data),
           control = static$control,
           split_labels = split_labs,
           location = location,
