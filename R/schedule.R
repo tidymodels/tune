@@ -57,7 +57,7 @@ schedule_stages <- function(grid, wflow) {
   schedule |>
     dplyr::mutate(
       model_stage = purrr::map(
-        # model_stage,
+        model_stage,
         schedule_model_stage_i,
         param_info = param_info,
         wflow = wflow,
