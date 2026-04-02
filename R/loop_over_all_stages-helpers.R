@@ -9,7 +9,6 @@
 make_static <- function(
   workflow,
   param_info,
-
   grid,
   metrics,
   eval_time,
