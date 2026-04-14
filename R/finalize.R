@@ -32,7 +32,7 @@
 finalize_model <- function(x, parameters) {
   if (!inherits(x, "model_spec") && !inherits(x, "cluster_spec")) {
     cli::cli_abort(
-      "{.arg x} should be a parsnip model specification, not
+      "{.arg x} should be a parsnip or tidymodels model specification, not
                     {.obj_type_friendly {x}}."
     )
   }
