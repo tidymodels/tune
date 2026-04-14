@@ -437,6 +437,14 @@ test_that("initial values", {
 
 # ------------------------------------------------------------------------------
 
+test_that("val_class_or_null() is deprecated", {
+  expect_snapshot(res <- val_class_or_null("a", "character"))
+})
+
+test_that("val_class_and_single() is deprecated", {
+  expect_snapshot(res <- val_class_and_single("a", "character"))
+})
+
 test_that("validation helpers", {
   expect_true(tune:::check_class_or_null("a", "character"))
   expect_true(tune:::check_class_or_null(letters, "character"))

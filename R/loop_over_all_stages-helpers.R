@@ -25,7 +25,7 @@ make_static <- function(
   if (!inherits(metrics, "metric_set")) {
     cli::cli_abort("{.arg metrics} should be a {.cls metric_set} object.")
   }
-  if (!check_class_or_null(eval_time, "numeric")) {
+  if (!(inherits(eval_time, "numeric") || is.null(eval_time))) {
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
   }
 

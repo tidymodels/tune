@@ -28,6 +28,8 @@
 
 * `tune_bayes()` now uses an uncertainty sample if all predictions from the Gaussian process model fail (#1167).
 
+* The developer functions `val_class_and_single()` and `val_class_or_null()` are now deprecated (#1161).
+
 ## Breaking Changes
 
 * The Gaussian process model package was changed from \pkg{GPfit} to \pkg{GauPro} because the former is no longer actively maintained. There are some differences: 
