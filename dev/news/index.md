@@ -2,6 +2,10 @@
 
 ## tune (development version)
 
+- [`finalize_workflow_preprocessor()`](https://tune.tidymodels.org/dev/reference/tune-internal-functions.md)
+  is deprecated
+  ([\#1157](https://github.com/tidymodels/tune/issues/1157)).
+
 - Model tuning has been enabled for quantile regression models.
   ([\#1125](https://github.com/tidymodels/tune/issues/1125))
 
@@ -758,7 +762,7 @@ CRAN release: 2020-11-17
 
 - Allow `...` to pass options from
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
-  to [`GPfit::GP_fit()`](https://rdrr.io/pkg/GPfit/man/GP_fit.html).
+  to `GPfit::GP_fit()`.
 
 - Additional checks are done for the initial grid that is given to
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md).

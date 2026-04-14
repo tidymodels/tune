@@ -1,5 +1,9 @@
 # Internal functions used by other tidymodels packages
 
+**\[deprecated\]**
+
+`finalize_workflow_preprocessor()` is deprecated.
+
 These are not to be meant to be invoked directly by users.
 
 ## Usage
