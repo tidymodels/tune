@@ -131,11 +131,11 @@ is_workflow(x)
 
 - cls:
 
-  A character vector of possible classes
+  **\[deprecated\]** A character vector of possible classes
 
 - where:
 
-  A character string for the calling function.
+  **\[deprecated\]** A character string for the calling function.
 
 - parameters:
 

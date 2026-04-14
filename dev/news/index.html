@@ -65,6 +65,7 @@
 <li><p>Tuning of models with submodel parameters now predicts all submodels at once (again) to speed up the tuning process (<a href="https://github.com/tidymodels/tune/issues/1140" class="external-link">#1140</a>).</p></li>
 <li><p>Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (<a href="https://github.com/tidymodels/tune/issues/1144" class="external-link">#1144</a>).</p></li>
 <li><p><code><a href="../reference/tune_bayes.html">tune_bayes()</a></code> now uses an uncertainty sample if all predictions from the Gaussian process model fail (<a href="https://github.com/tidymodels/tune/issues/1167" class="external-link">#1167</a>).</p></li>
+<li><p>The developer functions <code><a href="../reference/empty_ellipses.html">val_class_and_single()</a></code> and <code><a href="../reference/empty_ellipses.html">val_class_or_null()</a></code> are now deprecated (<a href="https://github.com/tidymodels/tune/issues/1161" class="external-link">#1161</a>).</p></li>
 </ul><div class="section level3">
 <h3 id="breaking-changes-development-version">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
 <ul><li>

@@ -60,6 +60,13 @@
   process model fail
   ([\#1167](https://github.com/tidymodels/tune/issues/1167)).
 
+- The developer functions
+  [`val_class_and_single()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  and
+  [`val_class_or_null()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  are now deprecated
+  ([\#1161](https://github.com/tidymodels/tune/issues/1161)).
+
 ### Breaking Changes
 
 - The Gaussian process model package was changed from to because the
