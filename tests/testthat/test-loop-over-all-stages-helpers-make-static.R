@@ -8,7 +8,7 @@ test_that("maker static object", {
 
   wflow <- workflow(Class ~ ., dt_spec, cls_est_post)
 
-  res <- tune:::make_static(
+  res <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = dt_grid,
@@ -40,7 +40,7 @@ test_that("maker static object", {
   )
 
   expect_snapshot(
-    tune:::make_static(
+    tune:::.make_static(
       1,
       param_info = wflow |> extract_parameter_set_dials(),
       grid = dt_grid,
@@ -53,7 +53,7 @@ test_that("maker static object", {
   )
 
   expect_snapshot(
-    tune:::make_static(
+    tune:::.make_static(
       wflow,
       param_info = 2,
       grid = dt_grid,
@@ -66,7 +66,7 @@ test_that("maker static object", {
   )
 
   expect_snapshot(
-    tune:::make_static(
+    tune:::.make_static(
       wflow,
       param_info = wflow |> extract_parameter_set_dials(),
       grid = dt_grid,
@@ -79,7 +79,7 @@ test_that("maker static object", {
   )
 
   expect_snapshot(
-    tune:::make_static(
+    tune:::.make_static(
       wflow,
       param_info = wflow |> extract_parameter_set_dials(),
       grid = dt_grid,

@@ -13,7 +13,7 @@ test_that("finalize_fit_pre() with formulas", {
     extract_parameter_set_dials() |>
     grid_space_filling(size = 3)
 
-  form_stc <- tune:::make_static(
+  form_stc <- tune:::.make_static(
     form_wflow,
     param_info = form_wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -54,7 +54,7 @@ test_that("finalize_fit_pre() with recipes", {
     extract_parameter_set_dials() |>
     grid_space_filling(size = 3)
 
-  rec_stc <- tune:::make_static(
+  rec_stc <- tune:::.make_static(
     rec_wflow,
     param_info = rec_wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -96,7 +96,7 @@ test_that("finalize_fit_pre() with tuned recipes", {
     extract_parameter_set_dials() |>
     grid_space_filling(size = 3)
 
-  rec_stc <- tune:::make_static(
+  rec_stc <- tune:::.make_static(
     rec_wflow,
     param_info = rec_wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -138,7 +138,7 @@ test_that("finalize_fit_pre() with selectors", {
     extract_parameter_set_dials() |>
     grid_space_filling(size = 3)
 
-  vars_stc <- tune:::make_static(
+  vars_stc <- tune:::.make_static(
     vars_wflow,
     param_info = vars_wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -170,7 +170,7 @@ test_that("finalize_fit_model() for classification", {
   dt_wflow <- workflow(Class ~ ., dt_spec)
   dt_grid <- tibble(min_n = 5)
 
-  dt_stc <- tune:::make_static(
+  dt_stc <- tune:::.make_static(
     dt_wflow,
     param_info = dt_wflow |> extract_parameter_set_dials(),
     grid = dt_grid,

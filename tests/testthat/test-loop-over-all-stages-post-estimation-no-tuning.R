@@ -35,7 +35,7 @@ test_that("verifying .loop_over_all_stages, no submodels, post estimation withou
   wflow <- workflow(outcome ~ ., mod, reg_cal)
   grd <- wflow |> extract_parameter_set_dials() |> grid_regular()
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -134,7 +134,7 @@ test_that("verifying .loop_over_all_stages, submodels, post estimation without t
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_wflow,
     param_info = submodel_wflow |> extract_parameter_set_dials(),
     grid = submodel_grid,
@@ -201,7 +201,7 @@ test_that("verifying .loop_over_all_stages, submodels only, post estimation with
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_only_wflow,
     param_info = submodel_only_wflow |> extract_parameter_set_dials(),
     grid = submodel_only_grid,
@@ -260,7 +260,7 @@ test_that("submodel calibration varies per submodel value (#1144)", {
       coefficients()
   }
 
-  static <- make_static(
+  static <- .make_static(
     wflow,
     param_info = extract_parameter_set_dials(wflow),
     grid = grd,

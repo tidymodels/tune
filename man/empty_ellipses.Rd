@@ -16,7 +16,7 @@
 \alias{estimate_tune_results}
 \alias{metrics_info}
 \alias{new_iteration_results}
-\alias{make_static}
+\alias{.make_static}
 \alias{.get_data_subsets}
 \alias{.get_config_key}
 \alias{.determine_pred_types}
@@ -76,7 +76,7 @@ new_iteration_results(
   workflow
 )
 
-make_static(
+.make_static(
   workflow,
   param_info,
   grid,

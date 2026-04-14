@@ -6,7 +6,7 @@
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-make_static <- function(
+.make_static <- function(
   workflow,
   param_info,
   grid,

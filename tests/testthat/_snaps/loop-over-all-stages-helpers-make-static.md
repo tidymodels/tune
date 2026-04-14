@@ -1,40 +1,40 @@
 # maker static object
 
     Code
-      tune:::make_static(1, param_info = extract_parameter_set_dials(wflow), grid = dt_grid,
+      tune:::.make_static(1, param_info = extract_parameter_set_dials(wflow), grid = dt_grid,
       metrics = metric_set(accuracy), eval_time = NULL, split_args = mc_cv_args,
       control = control_resamples())
     Condition
-      Error in `tune:::make_static()`:
+      Error in `tune:::.make_static()`:
       ! `workflow` should be a <workflow> object.
 
 ---
 
     Code
-      tune:::make_static(wflow, param_info = 2, grid = dt_grid, metrics = metric_set(
+      tune:::.make_static(wflow, param_info = 2, grid = dt_grid, metrics = metric_set(
         accuracy), eval_time = NULL, split_args = mc_cv_args, control = control_resamples())
     Condition
-      Error in `tune:::make_static()`:
+      Error in `tune:::.make_static()`:
       ! `param_info` should be a <parameters> object.
 
 ---
 
     Code
-      tune:::make_static(wflow, param_info = extract_parameter_set_dials(wflow),
+      tune:::.make_static(wflow, param_info = extract_parameter_set_dials(wflow),
       grid = dt_grid, metrics = 3, eval_time = NULL, split_args = mc_cv_args,
       control = control_resamples())
     Condition
-      Error in `tune:::make_static()`:
+      Error in `tune:::.make_static()`:
       ! `metrics` should be a metric set object.
 
 ---
 
     Code
-      tune:::make_static(wflow, param_info = extract_parameter_set_dials(wflow),
+      tune:::.make_static(wflow, param_info = extract_parameter_set_dials(wflow),
       grid = dt_grid, metrics = metric_set(accuracy), eval_time = "four", split_args = mc_cv_args,
       control = control_resamples())
     Condition
-      Error in `tune:::make_static()`:
+      Error in `tune:::.make_static()`:
       ! `eval_time` should be a numeric vector.
 
 ---

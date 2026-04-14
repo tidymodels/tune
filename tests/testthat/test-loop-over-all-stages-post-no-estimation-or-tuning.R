@@ -33,7 +33,7 @@ test_that("verifying .loop_over_all_stages, no submodels, no post estimation or 
   wflow <- workflow(outcome ~ ., mod, reg_post)
   grd <- wflow |> extract_parameter_set_dials() |> grid_regular()
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -156,7 +156,7 @@ test_that("verifying .loop_over_all_stages, submodels, no post estimation or tun
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_wflow,
     param_info = submodel_wflow |> extract_parameter_set_dials(),
     grid = submodel_grid,
@@ -254,7 +254,7 @@ test_that("verifying .loop_over_all_stages, submodels only, no post estimation o
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_only_wflow,
     param_info = submodel_only_wflow |> extract_parameter_set_dials(),
     grid = submodel_only_grid,
