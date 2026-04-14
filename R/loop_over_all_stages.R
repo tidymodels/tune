@@ -47,9 +47,7 @@
   # Now that we have data, determine the names of the outcome data. NOTE that
   # if an inline function is used (e.g. add_formula(log(mpg) ~ .)), We will
   # potentially change it later. See #1024
-  if (!is_model_metrics) {
-    static$y_name <- outcome_names(static$wflow, data = split$data)
-  }
+  static$y_name <- outcome_names(static$wflow, data = split$data)
 
   # ----------------------------------------------------------------------------
   # Iterate over preprocessors
