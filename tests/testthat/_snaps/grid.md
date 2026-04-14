@@ -65,3 +65,11 @@
        9 <split [29/3]> Fold09 <tibble [6 x 5]> <tibble [0 x 4]>
       10 <split [29/3]> Fold10 <tibble [6 x 5]> <tibble [0 x 4]>
 
+# finalize_workflow_preprocessor() is deprecated
+
+    Code
+      wflow <- finalize_workflow_preprocessor(wflow, grid)
+    Condition
+      Warning:
+      `finalize_workflow_preprocessor()` was deprecated in tune 2.1.0.
+
