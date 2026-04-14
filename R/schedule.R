@@ -44,7 +44,7 @@ schedule_stages <- function(grid, wflow) {
   # Which parameter belongs to which stage and which is a submodel parameter?
   param_info <- get_param_info(wflow)
 
-  model_source <- .get_model_source(wflow)
+  model_source <- get_model_source(wflow)
 
   # schedule preprocessing stage and push the rest into a nested tibble
   param_pre_stage <- param_info |>
@@ -182,10 +182,7 @@ get_param_info <- function(wflow) {
 
 # Determine the source type for model parameters
 # Returns "model_spec" for parsnip models, "cluster_spec" for tidyclust models
-#' @export
-#' @keywords internal
-#' @rdname schedule_grid
-.get_model_source <- function(wflow) {
+get_model_source <- function(wflow) {
   spec <- extract_spec_parsnip(wflow)
   if (inherits(spec, "cluster_spec")) {
     "cluster_spec"
