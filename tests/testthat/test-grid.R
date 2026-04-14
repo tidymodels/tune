@@ -787,3 +787,12 @@ test_that("retain extra attributes", {
   expect_null(attr(res, "workflow"))
   expect_true(inherits(attr(res2, "workflow"), "workflow"))
 })
+
+test_that("finalize_workflow_preprocessor() is deprecated", {
+  helper_objects <- helper_objects_tune()
+  wflow <- workflow() |>
+    add_recipe(helper_objects$rec_tune_1) |>
+    add_model(helper_objects$lm_mod)
+  grid <- tibble::tibble(num_comp = 1L)
+  expect_snapshot(wflow <- finalize_workflow_preprocessor(wflow, grid))
+})
