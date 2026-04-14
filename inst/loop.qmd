@@ -203,6 +203,8 @@ result <- remove_log_notes(result)
 
 ## Efficiency
 
+The nested structure avoids redundant computation:
+
 ### Prediction-based metrics
 
 | What | Computed | Reused for |
