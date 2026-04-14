@@ -70,7 +70,7 @@ make_static <- function(
 }
 
 is_valid_metric_set <- function(x) {
-  inherits(x, "metric_set") || inherits(x, "cluster_metric_set")
+  inherits(x, "metric_set")
 }
 
 get_metric_type <- function(metrics) {
