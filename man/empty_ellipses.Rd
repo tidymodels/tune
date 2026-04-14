@@ -21,7 +21,7 @@
 \alias{.get_config_key}
 \alias{.determine_pred_types}
 \alias{.loop_over_all_stages}
-\alias{loop_over_all_stages2}
+\alias{.loop_over_all_stages2}
 \alias{.update_parallel_over}
 \alias{loop_call}
 \alias{get_tune_colors}
@@ -97,7 +97,7 @@ new_iteration_results(
 
 .loop_over_all_stages(resamples, grid, static)
 
-loop_over_all_stages2(index, resamples, grid, static)
+.loop_over_all_stages2(index, resamples, grid, static)
 
 .update_parallel_over(control, resamples, grid)
 

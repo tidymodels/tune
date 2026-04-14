@@ -571,7 +571,7 @@
 #'@export
 #'@keywords internal
 #'@rdname empty_ellipses
-loop_over_all_stages2 <- function(index, resamples, grid, static) {
+.loop_over_all_stages2 <- function(index, resamples, grid, static) {
   .loop_over_all_stages(resamples[[index$b]], grid[[index$s]], static)
 }
 

@@ -412,7 +412,7 @@ loop_call <-
         .par_fns(framework)[[1]],
         .ns = .par_fns(framework)[[2]],
         quote(inds),
-        quote(tune::loop_over_all_stages2)
+        quote(tune::.loop_over_all_stages2)
       )
       base_args <- list(
         resamples = quote(resamples),

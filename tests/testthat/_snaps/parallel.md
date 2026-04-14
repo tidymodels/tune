@@ -160,7 +160,7 @@
     Code
       tune:::loop_call("everything", "sequential", list())
     Output
-      lapply(inds, tune::loop_over_all_stages2, resamples = resamples, 
+      lapply(inds, tune::.loop_over_all_stages2, resamples = resamples, 
           grid = candidates, static = static)
 
 ---
@@ -168,7 +168,7 @@
     Code
       tune:::loop_call("everything", "sequential", list(a = quote(a)))
     Output
-      lapply(inds, tune::loop_over_all_stages2, resamples = resamples, 
+      lapply(inds, tune::.loop_over_all_stages2, resamples = resamples, 
           grid = candidates, static = static, a = a)
 
 ---
@@ -196,7 +196,7 @@
     Code
       tune:::loop_call("everything", "future", list())
     Output
-      future.apply::future_lapply(inds, tune::loop_over_all_stages2, 
+      future.apply::future_lapply(inds, tune::.loop_over_all_stages2, 
           resamples = resamples, grid = candidates, static = static, 
           future.label = "tune-grid-%d", future.stdout = TRUE, future.seed = TRUE, 
           future.globals = c("resamples", "grid", "static"))
@@ -206,7 +206,7 @@
     Code
       tune:::loop_call("everything", "future", list(a = quote(a)))
     Output
-      future.apply::future_lapply(inds, tune::loop_over_all_stages2, 
+      future.apply::future_lapply(inds, tune::.loop_over_all_stages2, 
           resamples = resamples, grid = candidates, static = static, 
           a = a, future.label = "tune-grid-%d", future.stdout = TRUE, 
           future.seed = TRUE, future.globals = c("resamples", "grid", 
@@ -233,7 +233,7 @@
     Code
       tune:::loop_call("everything", "mirai", list())
     Output
-      eval_mirai(inds, tune::loop_over_all_stages2, .args = list(resamples = resamples, 
+      eval_mirai(inds, tune::.loop_over_all_stages2, .args = list(resamples = resamples, 
           grid = candidates, static = static))
 
 ---
@@ -241,6 +241,6 @@
     Code
       tune:::loop_call("everything", "mirai", list(a = quote(a)))
     Output
-      eval_mirai(inds, tune::loop_over_all_stages2, .args = list(resamples = resamples, 
+      eval_mirai(inds, tune::.loop_over_all_stages2, .args = list(resamples = resamples, 
           grid = candidates, static = static, a = a))
 
