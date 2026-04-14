@@ -186,25 +186,12 @@
             notes = notes
           )
 
-          if (is.null(extracts)) {
-            extracts <- tibble::tibble(.extracts = list(1))
-            if (nrow(static$param_info) > 0) {
-              extracts <- tibble::add_column(current_grid, .extracts = list(1))
-            }
-            extracts <- extracts[integer(), ]
-          }
-
-          if (nrow(static$param_info) > 0) {
-            extracts <- tibble::add_row(
-              extracts,
-              tibble::add_column(current_grid, .extracts = list(elt_extract))
-            )
-          } else {
-            extracts <- tibble::add_row(
-              extracts,
-              tibble::tibble(.extracts = list(elt_extract))
-            )
-          }
+          extracts <- append_extracts(
+            extracts,
+            elt_extract,
+            current_grid,
+            static
+          )
         }
 
         # Skip prediction/post loops for model-based metrics
@@ -423,7 +410,6 @@
           # --------------------------------------------------------------------
           # Extractions
 
-          # TODO modularize this:
           if (!is.null(static$control$extract)) {
             location <- glue::glue(
               "preprocessor {iter_pre}/{num_iterations_pre}, model {iter_model}/{num_iterations_model} (extracts)"
@@ -436,31 +422,13 @@
               notes = notes
             )
 
-            if (is.null(extracts)) {
-              extracts <- tibble::tibble(.extracts = list(1))
-              if (nrow(static$param_info) > 0) {
-                extracts <- tibble::add_column(
-                  current_grid,
-                  .extracts = list(1)
-                )
-              }
-              extracts <- extracts[integer(), ]
-            }
+            extracts <- append_extracts(
+              extracts,
+              elt_extract,
+              current_grid,
+              static
+            )
 
-            if (nrow(static$param_info) > 0) {
-              extracts <- tibble::add_row(
-                extracts,
-                tibble::add_column(
-                  current_grid,
-                  .extracts = list(elt_extract)
-                )
-              )
-            } else {
-              extracts <- tibble::add_row(
-                extracts,
-                tibble::tibble(.extracts = list(elt_extract))
-              )
-            }
             if (is_failure(elt_extract)) {
               next
             }

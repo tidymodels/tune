@@ -605,3 +605,27 @@ extract_details <- function(object, extractor) {
   }
   extractor(object)
 }
+
+append_extracts <- function(extracts, elt_extract, current_grid, static) {
+  if (is.null(extracts)) {
+    extracts <- tibble::tibble(.extracts = list(1))
+    if (nrow(static$param_info) > 0) {
+      extracts <- tibble::add_column(current_grid, .extracts = list(1))
+    }
+    extracts <- extracts[integer(), ]
+  }
+
+  if (nrow(static$param_info) > 0) {
+    extracts <- tibble::add_row(
+      extracts,
+      tibble::add_column(current_grid, .extracts = list(elt_extract))
+    )
+  } else {
+    extracts <- tibble::add_row(
+      extracts,
+      tibble::tibble(.extracts = list(elt_extract))
+    )
+  }
+
+  extracts
+}
