@@ -159,18 +159,20 @@ get_param_info <- function(wflow) {
   model_type <- class(model_spec)[1]
   model_eng <- model_spec$engine
 
+  # NULL for tidyclust workflows since tidyclust models are not in parsnip's
+  # registry
   model_param <- parsnip::get_from_env(paste0(model_type, "_args"))
 
-  # Handle models not in parsnip's registry (e.g., cluster_spec from tidyclust)
   if (!is.null(model_param)) {
     model_param <- model_param |>
       dplyr::filter(engine == model_spec$engine) |>
       dplyr::select(name = parsnip, has_submodel)
     param_info <- dplyr::left_join(param_info, model_param, by = "name")
+  } else {
+    # tidyclust models never use submodels
+    param_info$has_submodel <- FALSE
   }
 
-  # Parameters not in the registry or engine-specific ones will have NA for
-  # has_submodel after this merge. They are not submodels so convert to FALSE.
   if (!"has_submodel" %in% names(param_info)) {
     param_info$has_submodel <- FALSE
   } else {
