@@ -426,7 +426,7 @@ extend_grid <- function(...) {
       dplyr::mutate(pre = "pre0")
   }
 
-  model_source <- get_model_source(wflow)
+  model_source <- .get_model_source(wflow)
   mod_param <- info$id[info$source == model_source]
   if (length(mod_param) > 0) {
     key <- make_config_labs(grid, mod_param, "mod") |>
