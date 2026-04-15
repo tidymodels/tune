@@ -394,7 +394,7 @@ tune_grid_workflow <- function(
 
   y_name <- outcome_names(resamples)
 
-  if (is_cataclysmic(resamples)) {
+  if (.is_cataclysmic(resamples)) {
     cli::cli_warn(
       "All models failed. Run {.code show_notes(.Last.tune.result)} for more
        information."

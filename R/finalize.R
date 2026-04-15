@@ -92,12 +92,12 @@ finalize_workflow <- function(x, parameters) {
 
   mod <- extract_spec_parsnip(x)
   mod <- finalize_model(mod, parameters)
-  x <- set_workflow_spec(x, mod)
+  x <- .set_workflow_spec(x, mod)
 
-  if (has_preprocessor_recipe(x)) {
+  if (.has_preprocessor_recipe(x)) {
     rec <- extract_preprocessor(x)
     rec <- finalize_recipe(rec, parameters)
-    x <- set_workflow_recipe(x, rec)
+    x <- .set_workflow_recipe(x, rec)
   }
 
   if (has_postprocessor(x)) {

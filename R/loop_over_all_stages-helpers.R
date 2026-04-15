@@ -336,7 +336,7 @@ finalize_fit_pre <- function(wflow_current, grid, static) {
     if (length(pre_proc_id) > 0) {
       grid <- grid[, pre_proc_id]
       pre_proc <- finalize_recipe(pre_proc, grid)
-      wflow_current <- set_workflow_recipe(wflow_current, pre_proc)
+      wflow_current <- .set_workflow_recipe(wflow_current, pre_proc)
     }
   }
   workflows::.fit_pre(wflow_current, static$data$fit$data)
@@ -352,7 +352,7 @@ finalize_fit_model <- function(wflow_current, grid) {
   if (length(mod_id) > 0) {
     grid <- grid[, mod_id]
     mod_spec <- finalize_model(mod_spec, grid)
-    wflow_current <- set_workflow_spec(wflow_current, mod_spec)
+    wflow_current <- .set_workflow_spec(wflow_current, mod_spec)
   }
 
   # .catch_and_log_fit()

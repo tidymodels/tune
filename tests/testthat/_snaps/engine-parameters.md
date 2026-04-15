@@ -3,7 +3,7 @@
     Code
       rf_tune <- tune_grid(rf_mod, mpg ~ ., resamples = rs, grid = 3)
     Condition
-      Error in `check_param_objects()`:
+      Error in `.check_param_objects()`:
       ! The workflow has arguments to be tuned that are missing some parameter objects: "corr.bias"
 
 ---
@@ -19,6 +19,6 @@
     Code
       rf_search <- tune_bayes(rf_mod, mpg ~ ., resamples = rs)
     Condition
-      Error in `check_param_objects()`:
+      Error in `.check_param_objects()`:
       ! The workflow has arguments to be tuned that are missing some parameter objects: "corr.bias"
 

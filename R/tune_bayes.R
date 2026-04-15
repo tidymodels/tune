@@ -396,7 +396,7 @@ tune_bayes_workflow <- function(
 
     # Preempt `estimate_tune_results()` error and rely
     # on `on.exit()` condition to return preliminary results
-    if (is_cataclysmic(unsummarized)) {
+    if (.is_cataclysmic(unsummarized)) {
       return()
     }
 
@@ -514,7 +514,7 @@ tune_bayes_workflow <- function(
 
       check_time(start_time, control$time_limit)
 
-      all_bad <- is_cataclysmic(tmp_res)
+      all_bad <- .is_cataclysmic(tmp_res)
       if (!inherits(tmp_res, "try-error") & !all_bad) {
         tmp_res[[".metrics"]] <- purrr::map(
           tmp_res[[".metrics"]],
@@ -597,7 +597,7 @@ tune_bayes_workflow <- function(
 }
 
 create_initial_set <- function(param, n = NULL, checks) {
-  check_param_objects(param)
+  .check_param_objects(param)
   if (is.null(n)) {
     n <- nrow(param) + 1
   }
@@ -799,7 +799,7 @@ more_results <- function(
       type = "danger"
     )
   } else {
-    all_bad <- is_cataclysmic(tmp_res)
+    all_bad <- .is_cataclysmic(tmp_res)
     if (all_bad) {
       p_chr <- glue::glue_collapse(
         p_chr,
@@ -822,7 +822,10 @@ more_results <- function(
 }
 
 
-is_cataclysmic <- function(x) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.is_cataclysmic <- function(x) {
   is_err <- purrr::map_lgl(x$.metrics, inherits, c("simpleError", "error"))
   if (any(!is_err)) {
     is_good <- purrr::map_lgl(
