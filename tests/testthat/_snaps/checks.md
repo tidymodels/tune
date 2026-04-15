@@ -150,6 +150,15 @@
       Error in `tune:::check_metrics()`:
       ! The parsnip model has `mode = 'classification'`, but `metrics` is a metric set for a different model mode.
 
+# check_metrics() is deprecated
+
+    Code
+      metric <- check_metrics(NULL, wflow)
+    Condition
+      Warning:
+      `check_metrics()` was deprecated in tune 2.1.0.
+      i Please use `check_metrics_arg()` instead.
+
 # grid control objects
 
     Code

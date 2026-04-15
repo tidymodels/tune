@@ -116,7 +116,9 @@ is_workflow(x)
 
 \item{check_dials}{A logical for check for a NULL parameter object.}
 
-\item{object}{A \code{workflow} object.}
+\item{object}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+A \code{workflow} object.}
 
 \item{resamples}{An \code{rset} object.}
 

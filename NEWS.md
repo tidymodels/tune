@@ -1,5 +1,7 @@
 # tune (development version)
 
+* `check_metrics()` is deprecated in favor of `check_metrics_arg()` (#1160).
+
 * `finalize_workflow_preprocessor()` is deprecated (#1157).
 
 * Model tuning has been enabled for quantile regression models. (#1125)
