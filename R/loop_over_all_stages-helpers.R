@@ -345,11 +345,11 @@ process_prediction_data <- function(
   processed_data <- forge_from_workflow(.data, wflow_fit)
 
   if (nrow(processed_data$predictors) != nrow(.data)) {
-  if (source == "pred") {
-    set_name <- "assessment" 
-  } else {
-    set_name <- "calibration"
-  }
+    if (source == "pred") {
+      set_name <- "assessment"
+    } else {
+      set_name <- "calibration"
+    }
     msg <- "Some {set_name} set rows are not available at prediction time."
     if (has_preprocessor_recipe(wflow_fit)) {
       msg <- c(
