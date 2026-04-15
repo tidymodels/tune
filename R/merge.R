@@ -78,7 +78,15 @@ merge.model_spec <- function(x, y, ...) {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-.update_model <- function(grid, object, pset, step_id, nms, ..., source = "model_spec") {
+.update_model <- function(
+  grid,
+  object,
+  pset,
+  step_id,
+  nms,
+  ...,
+  source = "model_spec"
+) {
   for (i in nms) {
     param_info <- pset |> dplyr::filter(id == i & .data$source == .env$source)
     if (nrow(param_info) > 1) {
