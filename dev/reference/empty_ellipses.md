@@ -9,7 +9,11 @@ check_rset(x)
 
 .check_grid(grid, workflow, pset = NULL, call = caller_env())
 
+.needs_finalization(x, nms = character(0))
+
 check_parameters(wflow, pset = NULL, data, grid_names = character(0))
+
+.check_param_objects(pset)
 
 check_workflow(x, ..., pset = NULL, check_dials = FALSE, call = caller_env())
 
@@ -33,6 +37,20 @@ val_class_and_single(x, cls = "numeric", where = NULL)
 .config_key_from_metrics(x)
 
 estimate_tune_results(x, ..., col_name = ".metrics")
+
+.has_preprocessor(workflow)
+
+.has_preprocessor_recipe(workflow)
+
+.has_preprocessor_formula(workflow)
+
+.has_preprocessor_variables(workflow)
+
+.has_spec(workflow)
+
+.set_workflow_spec(workflow, spec)
+
+.set_workflow_recipe(workflow, recipe)
 
 metrics_info(x)
 
@@ -70,6 +88,10 @@ new_iteration_results(
 
 .loop_over_all_stages2(index, resamples, grid, static)
 
+.update_model(grid, object, pset, step_id, nms, ..., source = "model_spec")
+
+.update_recipe(grid, object, pset, step_id, nms, ...)
+
 .update_parallel_over(control, resamples, grid)
 
 loop_call(strategy, framework, opts)
@@ -78,9 +100,13 @@ get_tune_colors()
 
 encode_set(x, pset, ..., as_matrix = FALSE)
 
+.is_cataclysmic(x)
+
 check_time(origin, limit)
 
 pull_rset_attributes(x)
+
+.set_workflow(workflow, control)
 
 empty_ellipses(...)
 
@@ -89,6 +115,8 @@ is_recipe(x)
 is_preprocessor(x)
 
 is_workflow(x)
+
+new_bare_tibble(x, ..., class = character())
 ```
 
 ## Arguments
