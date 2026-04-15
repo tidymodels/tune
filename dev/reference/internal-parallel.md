@@ -26,7 +26,7 @@ get_parallel_seeds(workers)
 
 eval_mirai(.x, .f, ..., .args)
 
-par_fns(framework)
+.par_fns(framework)
 ```
 
 ## Arguments

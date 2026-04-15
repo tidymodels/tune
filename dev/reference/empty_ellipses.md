@@ -47,6 +47,19 @@ new_iteration_results(
   workflow
 )
 
+.make_static(
+  workflow,
+  param_info,
+  grid,
+  metrics,
+  eval_time,
+  split_args,
+  control,
+  pkgs = "tune",
+  strategy = "sequential",
+  data = list(fit = NULL, pred = NULL, cal = NULL)
+)
+
 .get_data_subsets(wflow, split, split_args = NULL)
 
 .get_config_key(grid, wflow)
@@ -55,7 +68,11 @@ new_iteration_results(
 
 .loop_over_all_stages(resamples, grid, static)
 
+.loop_over_all_stages2(index, resamples, grid, static)
+
 .update_parallel_over(control, resamples, grid)
+
+loop_call(strategy, framework, opts)
 
 get_tune_colors()
 
