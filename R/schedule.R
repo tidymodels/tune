@@ -44,6 +44,8 @@ schedule_stages <- function(grid, wflow) {
   # Which parameter belongs to which stage and which is a submodel parameter?
   param_info <- get_param_info(wflow)
 
+  model_source <- get_model_source(wflow)
+
   # schedule preprocessing stage and push the rest into a nested tibble
   param_pre_stage <- param_info |>
     dplyr::filter(source == "recipe") |>
@@ -58,17 +60,23 @@ schedule_stages <- function(grid, wflow) {
         model_stage,
         schedule_model_stage_i,
         param_info = param_info,
-        wflow = wflow
+        wflow = wflow,
+        model_source = model_source
       )
     )
 }
 
-schedule_model_stage_i <- function(model_stage, param_info, wflow) {
+schedule_model_stage_i <- function(
+  model_stage,
+  param_info,
+  wflow,
+  model_source = "model_spec"
+) {
   model_param <- param_info |>
-    dplyr::filter(source == "model_spec") |>
+    dplyr::filter(source == model_source) |>
     dplyr::pull(id)
   non_submodel_param <- param_info |>
-    dplyr::filter(source == "model_spec" & !has_submodel) |>
+    dplyr::filter(source == model_source & !has_submodel) |>
     dplyr::pull(id)
 
   any_non_submodel_param <- length(non_submodel_param) > 0
@@ -151,15 +159,36 @@ get_param_info <- function(wflow) {
   model_type <- class(model_spec)[1]
   model_eng <- model_spec$engine
 
-  model_param <- parsnip::get_from_env(paste0(model_type, "_args")) |>
-    dplyr::filter(engine == model_spec$engine) |>
-    dplyr::select(name = parsnip, has_submodel)
+  # NULL for tidyclust workflows since tidyclust models are not in parsnip's
+  # registry
+  model_param <- parsnip::get_from_env(paste0(model_type, "_args"))
 
-  param_info <- dplyr::left_join(param_info, model_param, by = "name")
-  # Parameters for model engines, preprocessors, and postprocessors will have
-  # NA values for `has_submodel` after this merge. Since they cannot be
-  # submodels, we'll convert them to FALSE
-  param_info$has_submodel[is.na(param_info$has_submodel)] <- FALSE
+  if (!is.null(model_param)) {
+    model_param <- model_param |>
+      dplyr::filter(engine == model_spec$engine) |>
+      dplyr::select(name = parsnip, has_submodel)
+    param_info <- dplyr::left_join(param_info, model_param, by = "name")
+  } else {
+    # tidyclust models never use submodels
+    param_info$has_submodel <- FALSE
+  }
+
+  if (!"has_submodel" %in% names(param_info)) {
+    param_info$has_submodel <- FALSE
+  } else {
+    param_info$has_submodel[is.na(param_info$has_submodel)] <- FALSE
+  }
 
   param_info
+}
+
+# Determine the source type for model parameters
+# Returns "model_spec" for parsnip models, "cluster_spec" for tidyclust models
+get_model_source <- function(wflow) {
+  spec <- extract_spec_parsnip(wflow)
+  if (inherits(spec, "cluster_spec")) {
+    "cluster_spec"
+  } else {
+    "model_spec"
+  }
 }

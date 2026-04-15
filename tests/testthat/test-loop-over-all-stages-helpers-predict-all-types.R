@@ -24,7 +24,7 @@ test_that("predict classification - no submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Only predict classes
 
-  static_class <- tune:::make_static(
+  static_class <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -54,7 +54,7 @@ test_that("predict classification - no submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Only predict probabilities
 
-  static_prob <- tune:::make_static(
+  static_prob <- tune:::.make_static(
     wflow,
     pred_df_1,
     param_info = wflow |> extract_parameter_set_dials(),
@@ -90,7 +90,7 @@ test_that("predict classification - no submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Both prediction types
 
-  static_both <- tune:::make_static(
+  static_both <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -153,7 +153,7 @@ test_that("predict classification - no submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Only predict classes
 
-  static_class <- tune:::make_static(
+  static_class <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -189,7 +189,7 @@ test_that("predict classification - no submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Only predict probabilities
 
-  static_prob <- tune:::make_static(
+  static_prob <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -225,7 +225,7 @@ test_that("predict classification - no submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Both prediction types
 
-  static_both <- tune:::make_static(
+  static_both <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -292,7 +292,7 @@ test_that("predict classification - with submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Only predict classes
 
-  static_class <- tune:::make_static(
+  static_class <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -327,7 +327,7 @@ test_that("predict classification - with submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Only predict probabilities
 
-  static_prob <- tune:::make_static(
+  static_prob <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -363,7 +363,7 @@ test_that("predict classification - with submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # Both prediction types
 
-  static_both <- tune:::make_static(
+  static_both <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -435,7 +435,7 @@ test_that("predict classification - with submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Only predict classes
 
-  static_class <- tune:::make_static(
+  static_class <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -472,7 +472,7 @@ test_that("predict classification - with submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Only predict probabilities
 
-  static_prob <- tune:::make_static(
+  static_prob <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -509,7 +509,7 @@ test_that("predict classification - with submodels - with calibration", {
   # ----------------------------------------------------------------------------
   # Both prediction types
 
-  static_both <- tune:::make_static(
+  static_both <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -564,7 +564,7 @@ test_that("predict regression - no submodels - no calibration", {
 
   # ----------------------------------------------------------------------------
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -616,7 +616,7 @@ test_that("predict regression - no submodels - with calibration", {
 
   # ----------------------------------------------------------------------------
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -675,7 +675,7 @@ test_that("predict regression - with submodels - no calibration", {
 
   # ----------------------------------------------------------------------------
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = tibble(),
@@ -739,7 +739,7 @@ test_that("predict regression - with submodels - with calibration", {
 
   # ----------------------------------------------------------------------------
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = tibble(),
@@ -806,7 +806,7 @@ test_that("predict censored regression - no submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # static metrics
 
-  static_stc <- tune:::make_static(
+  static_stc <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -836,7 +836,7 @@ test_that("predict censored regression - no submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # dynamic metrics
 
-  static_dyn <- tune:::make_static(
+  static_dyn <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -915,7 +915,7 @@ test_that("predict censored regression - submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # static metrics
 
-  static_stc <- tune:::make_static(
+  static_stc <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,
@@ -945,7 +945,7 @@ test_that("predict censored regression - submodels - no calibration", {
   # ----------------------------------------------------------------------------
   # dynamic metrics
 
-  static_dyn <- tune:::make_static(
+  static_dyn <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = grd,

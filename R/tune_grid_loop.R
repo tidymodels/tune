@@ -66,7 +66,7 @@ tune_grid_loop <- function(
   # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
-  static <- make_static(
+  static <- .make_static(
     workflow,
     param_info = param_info,
     grid = grid,

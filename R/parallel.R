@@ -381,7 +381,7 @@ eval_mirai <- function(.x, .f, ..., .args) {
 #' @export
 #' @keywords internal
 #' @rdname internal-parallel
-par_fns <- function(framework) {
+.par_fns <- function(framework) {
   if (framework == "sequential") {
     res <- list(fn = "lapply", ns = NULL)
   } else if (framework == "future") {
@@ -394,22 +394,25 @@ par_fns <- function(framework) {
   res
 }
 
+#'@export
+#'@keywords internal
+#'@rdname empty_ellipses
 loop_call <-
   function(strategy, framework, opts) {
     if (strategy == "resamples") {
       base_cl <- rlang::call2(
-        par_fns(framework)[[1]],
-        .ns = par_fns(framework)[[2]],
+        .par_fns(framework)[[1]],
+        .ns = .par_fns(framework)[[2]],
         quote(resamples),
-        quote(.loop_over_all_stages)
+        quote(tune::.loop_over_all_stages)
       )
       base_args <- list(grid = quote(grid), static = quote(static))
     } else {
       base_cl <- rlang::call2(
-        par_fns(framework)[[1]],
-        .ns = par_fns(framework)[[2]],
+        .par_fns(framework)[[1]],
+        .ns = .par_fns(framework)[[2]],
         quote(inds),
-        quote(loop_over_all_stages2)
+        quote(tune::.loop_over_all_stages2)
       )
       base_args <- list(
         resamples = quote(resamples),
@@ -471,8 +474,8 @@ pctl_call <- function(framework, args = list()) {
   args <- c(main_args, args)
 
   base_cl <- rlang::call2(
-    par_fns(framework)[[1]],
-    .ns = par_fns(framework)[[2]],
+    .par_fns(framework)[[1]],
+    .ns = .par_fns(framework)[[2]],
     quote(rs$splits),
     quote(boot_metrics)
   )

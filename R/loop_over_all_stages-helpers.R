@@ -3,7 +3,10 @@
 
 # Note: in loop(), we add more elements for the outcome name(s), and the
 # data partitions
-make_static <- function(
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.make_static <- function(
   workflow,
   param_info,
   grid,
@@ -31,6 +34,21 @@ make_static <- function(
 
   configs <- .get_config_key(grid, workflow)
 
+  metric_type <- get_metric_type(metrics)
+
+  if (metric_type == "model") {
+    # tidyclust model based metrics
+    metric_info <- tibble::tibble(
+      metric = character(0),
+      class = character(0),
+      direction = character(0)
+    )
+    pred_types <- character(0)
+  } else {
+    metric_info <- tibble::as_tibble(metrics)
+    pred_types <- .determine_pred_types(workflow, metrics)
+  }
+
   list(
     wflow = workflow,
     param_info = param_info,
@@ -39,8 +57,9 @@ make_static <- function(
       workflow
     ),
     metrics = metrics,
-    metric_info = tibble::as_tibble(metrics),
-    pred_types = .determine_pred_types(workflow, metrics),
+    metric_info = metric_info,
+    metric_type = metric_type,
+    pred_types = pred_types,
     eval_time = eval_time,
     split_args = split_args,
     control = control,
@@ -48,6 +67,14 @@ make_static <- function(
     strategy = strategy,
     data = data
   )
+}
+
+get_metric_type <- function(metrics) {
+  if (inherits(metrics, "cluster_metric_set")) {
+    "model"
+  } else {
+    "prediction"
+  }
 }
 
 check_static_data <- function(x, elem = "fit") {
@@ -395,7 +422,8 @@ extend_grid <- function(...) {
       dplyr::mutate(pre = "pre0")
   }
 
-  mod_param <- info$id[info$source == "model_spec"]
+  model_source <- get_model_source(wflow)
+  mod_param <- info$id[info$source == model_source]
   if (length(mod_param) > 0) {
     key <- make_config_labs(grid, mod_param, "mod") |>
       dplyr::full_join(key, by = mod_param)
@@ -449,6 +477,11 @@ make_config_labs <- function(grid, param, val = "pre") {
 #' @rdname empty_ellipses
 .determine_pred_types <- function(wflow, metrics) {
   model_mode <- extract_spec_parsnip(wflow)$mode
+
+  # For clustering (partition mode), no predictions needed
+  if (model_mode == "partition") {
+    return(character(0))
+  }
 
   pred_types <- unique(metrics_info(metrics)$type)
   if (has_tailor(wflow)) {
@@ -567,4 +600,28 @@ extract_details <- function(object, extractor) {
     return(list())
   }
   extractor(object)
+}
+
+append_extracts <- function(extracts, elt_extract, current_grid, static) {
+  if (is.null(extracts)) {
+    extracts <- tibble::tibble(.extracts = list(1))
+    if (nrow(static$param_info) > 0) {
+      extracts <- tibble::add_column(current_grid, .extracts = list(1))
+    }
+    extracts <- extracts[integer(), ]
+  }
+
+  if (nrow(static$param_info) > 0) {
+    extracts <- tibble::add_row(
+      extracts,
+      tibble::add_column(current_grid, .extracts = list(elt_extract))
+    )
+  } else {
+    extracts <- tibble::add_row(
+      extracts,
+      tibble::tibble(.extracts = list(elt_extract))
+    )
+  }
+
+  extracts
 }
