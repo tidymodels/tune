@@ -25,8 +25,8 @@
   if (!inherits(param_info, "parameters")) {
     cli::cli_abort("{.arg param_info} should be a {.cls parameters} object.")
   }
-  if (!is_valid_metric_set(metrics)) {
-    cli::cli_abort("{.arg metrics} should be a metric set object.")
+  if (!inherits(metrics, "metric_set")) {
+    cli::cli_abort("{.arg metrics} should be a {.cls metric_set} object.")
   }
   if (!check_class_or_null(eval_time, "numeric")) {
     cli::cli_abort("{.arg eval_time} should be a numeric vector.")
@@ -67,10 +67,6 @@
     strategy = strategy,
     data = data
   )
-}
-
-is_valid_metric_set <- function(x) {
-  inherits(x, "metric_set")
 }
 
 get_metric_type <- function(metrics) {

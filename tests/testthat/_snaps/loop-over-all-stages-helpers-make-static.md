@@ -25,7 +25,7 @@
       control = control_resamples())
     Condition
       Error in `tune:::.make_static()`:
-      ! `metrics` should be a metric set object.
+      ! `metrics` should be a <metric_set> object.
 
 ---
 
