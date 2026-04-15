@@ -45,7 +45,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="tune-development-version">tune (development version)<a class="anchor" aria-label="anchor" href="#tune-development-version"></a></h2>
-<ul><li><p><code><a href="../reference/tune-internal-functions.html">finalize_workflow_preprocessor()</a></code> is deprecated (<a href="https://github.com/tidymodels/tune/issues/1157" class="external-link">#1157</a>).</p></li>
+<ul><li><p><code><a href="../reference/empty_ellipses.html">check_metrics()</a></code> is deprecated in favor of <code><a href="../reference/choose_metric.html">check_metrics_arg()</a></code> (<a href="https://github.com/tidymodels/tune/issues/1160" class="external-link">#1160</a>).</p></li>
+<li><p><code><a href="../reference/tune-internal-functions.html">finalize_workflow_preprocessor()</a></code> is deprecated (<a href="https://github.com/tidymodels/tune/issues/1157" class="external-link">#1157</a>).</p></li>
 <li><p>Model tuning has been enabled for quantile regression models. (<a href="https://github.com/tidymodels/tune/issues/1125" class="external-link">#1125</a>)</p></li>
 <li><p>In <code><a href="../reference/tune_grid.html">tune_grid()</a></code>, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (<a href="https://github.com/tidymodels/tune/issues/1101" class="external-link">#1101</a>)</p></li>
 <li>

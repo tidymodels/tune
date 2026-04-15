@@ -2,6 +2,11 @@
 
 ## tune (development version)
 
+- [`check_metrics()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  is deprecated in favor of
+  [`check_metrics_arg()`](https://tune.tidymodels.org/dev/reference/choose_metric.md)
+  ([\#1160](https://github.com/tidymodels/tune/issues/1160)).
+
 - [`finalize_workflow_preprocessor()`](https://tune.tidymodels.org/dev/reference/tune-internal-functions.md)
   is deprecated
   ([\#1157](https://github.com/tidymodels/tune/issues/1157)).

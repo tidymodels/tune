@@ -110,6 +110,8 @@ is_workflow(x)
 
 - object:
 
+  **\[deprecated\]**
+
   A `workflow` object.
 
 - resamples:
