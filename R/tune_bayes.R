@@ -574,7 +574,7 @@ tune_bayes_workflow <- function(
       check_time(start_time, control$time_limit)
     }
 
-    workflow_output <- set_workflow(object, control)
+    workflow_output <- .set_workflow(object, control)
 
     # Reset `on.exit()` hook
     on.exit()

@@ -40,6 +40,7 @@
 \alias{.is_cataclysmic}
 \alias{check_time}
 \alias{pull_rset_attributes}
+\alias{.set_workflow}
 \alias{empty_ellipses}
 \alias{is_recipe}
 \alias{is_preprocessor}
@@ -147,6 +148,8 @@ encode_set(x, pset, ..., as_matrix = FALSE)
 check_time(origin, limit)
 
 pull_rset_attributes(x)
+
+.set_workflow(workflow, control)
 
 empty_ellipses(...)
 
