@@ -112,10 +112,7 @@
     }
 
     # Update y_name in case the workflow had an inline function like `log(mpg) ~ .`
-    # Only for prediction-based metrics (model-based metrics do not have outcomes)
-    if (!is_model_metrics) {
-      static$y_name <- outcome_names(current_wflow)
-    }
+    static$y_name <- outcome_names(current_wflow)
 
     num_iterations_model <- max(nrow(current_sched_pre$model_stage[[1]]), 1)
 
@@ -500,10 +497,7 @@
     .notes = list(notes)
   )
 
-  # Add outcome_names only for prediction-based metrics
-  if (!is_model_metrics) {
-    return_tbl$outcome_names <- static$y_name
-  }
+  return_tbl$outcome_names <- static$y_name
 
   if (!is.null(static$control$extract)) {
     if (is.null(extracts)) {
