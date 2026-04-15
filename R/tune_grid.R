@@ -394,14 +394,14 @@ tune_grid_workflow <- function(
 
   y_name <- outcome_names(resamples)
 
-  if (is_cataclysmic(resamples)) {
+  if (.is_cataclysmic(resamples)) {
     cli::cli_warn(
       "All models failed. Run {.code show_notes(.Last.tune.result)} for more
        information."
     )
   }
 
-  workflow <- set_workflow(workflow, control)
+  workflow <- .set_workflow(workflow, control)
 
   new_tune_results(
     x = resamples,
@@ -441,7 +441,10 @@ pull_rset_attributes <- function(x) {
 
 # ------------------------------------------------------------------------------
 
-set_workflow <- function(workflow, control) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.set_workflow <- function(workflow, control) {
   if (control$save_workflow) {
     if (!is.null(workflow)) {
       w_size <- utils::object.size(workflow)

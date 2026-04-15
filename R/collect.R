@@ -648,7 +648,7 @@ estimate_tune_results <- function(x, ..., col_name = ".metrics") {
   id_names <- grep("^id", names(x), value = TRUE)
   group_cols <- .get_extra_col_names(x)
 
-  all_bad <- is_cataclysmic(x)
+  all_bad <- .is_cataclysmic(x)
   if (all_bad) {
     cli::cli_abort(
       "All models failed. Run {.code show_notes(.Last.tune.result)} for more

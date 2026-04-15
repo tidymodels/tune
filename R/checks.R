@@ -153,7 +153,10 @@ grid_msg <- "{.arg grid} should be a positive integer or a data frame."
   grid
 }
 
-needs_finalization <- function(x, nms = character(0)) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.needs_finalization <- function(x, nms = character(0)) {
   # If an unknown engine-specific parameter, the object column is missing and
   # no need for finalization
   x <- x[!is.na(x$object), ]
@@ -187,7 +190,7 @@ check_parameters <- function(
   tune_recipe <- tune_param$id[tune_param$source == "recipe"]
   tune_recipe <- length(tune_recipe) > 0
 
-  if (needs_finalization(pset, grid_names)) {
+  if (.needs_finalization(pset, grid_names)) {
     if (tune_recipe) {
       cli::cli_abort(
         c(
@@ -289,7 +292,10 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
   invisible(NULL)
 }
 
-check_param_objects <- function(pset) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.check_param_objects <- function(pset) {
   params <- purrr::map_lgl(pset$object, inherits, "param")
 
   if (!all(params)) {
@@ -318,11 +324,11 @@ check_workflow <- function(
     )
   }
 
-  if (!has_preprocessor(x)) {
+  if (!.has_preprocessor(x)) {
     cli::cli_abort("A formula, recipe, or variables preprocessor is required.")
   }
 
-  if (!has_spec(x)) {
+  if (!.has_spec(x)) {
     cli::cli_abort("A parsnip model is required.")
   }
 
@@ -333,7 +339,7 @@ check_workflow <- function(
       pset <- hardhat::extract_parameter_set_dials(x)
     }
 
-    check_param_objects(pset)
+    .check_param_objects(pset)
 
     incompl <- dials::has_unknowns(pset$object)
 

@@ -7,17 +7,17 @@ test_that("check for finalization with engine parameters", {
   pset_4 <- pset_3
   pset_4$object[[3]] <- NA
 
-  expect_true(needs_finalization(pset_1))
-  expect_true(needs_finalization(pset_2))
-  expect_true(needs_finalization(pset_1, "potato"))
-  expect_true(needs_finalization(pset_2, "potato"))
+  expect_true(.needs_finalization(pset_1))
+  expect_true(.needs_finalization(pset_2))
+  expect_true(.needs_finalization(pset_1, "potato"))
+  expect_true(.needs_finalization(pset_2, "potato"))
 
-  expect_false(needs_finalization(pset_1, "mtry"))
-  expect_false(needs_finalization(pset_2, "mtry"))
-  expect_false(needs_finalization(pset_3, "mtry"))
-  expect_false(needs_finalization(pset_4, "mtry"))
-  expect_false(needs_finalization(pset_3))
-  expect_false(needs_finalization(pset_4))
+  expect_false(.needs_finalization(pset_1, "mtry"))
+  expect_false(.needs_finalization(pset_2, "mtry"))
+  expect_false(.needs_finalization(pset_3, "mtry"))
+  expect_false(.needs_finalization(pset_4, "mtry"))
+  expect_false(.needs_finalization(pset_3))
+  expect_false(.needs_finalization(pset_4))
 })
 
 ## -----------------------------------------------------------------------------
