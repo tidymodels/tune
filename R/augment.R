@@ -105,7 +105,7 @@ merge_pred <- function(dat, pred, y) {
   }
 
   if (!any(names(dat) == ".row")) {
-    dat$.row <- 1:nrow(dat)
+    dat$.row <- seq_len(nrow(dat))
   }
 
   dat <- dplyr::left_join(dat, pred, by = ".row")
