@@ -995,7 +995,7 @@ test_that("process_prediction_data errors when recipe drops rows", {
   ctrl <- tune::control_grid()
   data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = tibble(),
@@ -1033,7 +1033,7 @@ test_that("process_prediction_data errors when recipe drops calibration rows", {
   ctrl <- tune::control_grid()
   data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = tibble(),
@@ -1061,7 +1061,7 @@ test_that("process_prediction_data errors when non-recipe preprocessor drops row
   ctrl <- tune::control_grid()
   data_1 <- tune:::.get_data_subsets(wflow, cls$rs$splits[[1]], cls$args)
 
-  static <- tune:::make_static(
+  static <- tune:::.make_static(
     wflow,
     param_info = wflow |> extract_parameter_set_dials(),
     grid = tibble(),
