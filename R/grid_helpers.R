@@ -1,4 +1,3 @@
-
 trim_ipcw <- function(x) {
   x$.weight_time <- NULL
   x$.pred_censored <- NULL
