@@ -378,7 +378,7 @@ process_prediction_data <- function(
       set_name <- "calibration"
     }
     msg <- "Some {set_name} set rows are not available at prediction time."
-    if (has_preprocessor_recipe(wflow_fit)) {
+    if (.has_preprocessor_recipe(wflow_fit)) {
       msg <- c(
         msg,
         i = "Consider using {.code skip = TRUE} on any recipe steps that
