@@ -286,6 +286,7 @@ test_that("workflow objects (will not tune, tidymodels/tune#548)", {
 
 test_that("yardstick objects", {
   skip_if_not_installed("splines2")
+  withr::local_options(lifecycle_verbosity = "quiet")
 
   spline_rec <-
     recipes::recipe(ridership ~ ., data = head(Chicago)) |>
@@ -326,6 +327,7 @@ test_that("yardstick objects", {
 })
 
 test_that("metrics must match the parsnip engine", {
+  withr::local_options(lifecycle_verbosity = "quiet")
   metric_set1 <- yardstick::metric_set(yardstick::accuracy)
   metric_set2 <- yardstick::metric_set(yardstick::rmse)
 
@@ -342,6 +344,12 @@ test_that("metrics must match the parsnip engine", {
   expect_snapshot(error = TRUE, {
     tune:::check_metrics(metric_set2, workflow2)
   })
+})
+
+test_that("check_metrics() is deprecated", {
+  mod <- parsnip::rand_forest(mode = "regression")
+  wflow <- add_model(workflow(), mod)
+  expect_snapshot(metric <- check_metrics(NULL, wflow))
 })
 
 # ------------------------------------------------------------------------------
@@ -436,6 +444,14 @@ test_that("initial values", {
 })
 
 # ------------------------------------------------------------------------------
+
+test_that("val_class_or_null() is deprecated", {
+  expect_snapshot(res <- val_class_or_null("a", "character"))
+})
+
+test_that("val_class_and_single() is deprecated", {
+  expect_snapshot(res <- val_class_and_single("a", "character"))
+})
 
 test_that("validation helpers", {
   expect_true(tune:::check_class_or_null("a", "character"))

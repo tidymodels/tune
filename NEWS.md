@@ -1,5 +1,9 @@
 # tune (development version)
 
+* `check_metrics()` is deprecated in favor of `check_metrics_arg()` (#1160).
+
+* `finalize_workflow_preprocessor()` is deprecated (#1157).
+
 * Model tuning has been enabled for quantile regression models. (#1125)
 
 * In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
@@ -25,6 +29,8 @@
 * Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (#1144).
 
 * `tune_bayes()` now uses an uncertainty sample if all predictions from the Gaussian process model fail (#1167).
+
+* The developer functions `val_class_and_single()` and `val_class_or_null()` are now deprecated (#1161).
 
 ## Breaking Changes
 

@@ -66,7 +66,7 @@ tune_grid_loop <- function(
   # ----------------------------------------------------------------------------
   # Collect "static" data into a single object for a cleaner interface
 
-  static <- make_static(
+  static <- .make_static(
     workflow,
     param_info = param_info,
     grid = grid,
@@ -77,14 +77,6 @@ tune_grid_loop <- function(
     pkgs = load_pkgs,
     strategy = strategy
   )
-
-  # fmt: skip
-  tm_pkgs <- c("rsample", "workflows", "hardhat", "tune", "parsnip", "tailor",
-               "yardstick")
-  load_pkgs <- c(required_pkgs(workflow), control$pkgs, tm_pkgs)
-  load_pkgs <- unique(load_pkgs)
-
-  par_opt <- list()
 
   # ----------------------------------------------------------------------------
   # Control execution

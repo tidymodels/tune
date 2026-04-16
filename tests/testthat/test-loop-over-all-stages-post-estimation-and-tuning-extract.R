@@ -44,7 +44,7 @@ test_that("verifying .loop_over_all_stages, no submodels, post estimation with t
 
   ext_1 <- function(x) x
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     wflow,
     param_info = max_param,
     grid = grd,
@@ -160,7 +160,7 @@ test_that("verifying .loop_over_all_stages, submodels, post estimation with tuni
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_wflow,
     param_info = max_param,
     grid = submodel_grid,
@@ -237,7 +237,7 @@ test_that("verifying .loop_over_all_stages, submodels only, post estimation with
 
   # ------------------------------------------------------------------------------
 
-  static_1 <- tune:::make_static(
+  static_1 <- tune:::.make_static(
     submodel_only_wflow,
     param_info = submodel_only_wflow |> extract_parameter_set_dials(),
     grid = submodel_only_grid,

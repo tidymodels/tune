@@ -1,3 +1,4 @@
+
 trim_ipcw <- function(x) {
   x$.weight_time <- NULL
   x$.pred_censored <- NULL
@@ -88,7 +89,13 @@ has_metrics_by <- function(metrics_by) {
 
 #' @export
 #' @rdname tune-internal-functions
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `finalize_workflow_preprocessor()` is deprecated.
 finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
+  lifecycle::deprecate_warn("2.1.0", "finalize_workflow_preprocessor()")
+
   # Already finalized, nothing to tune
   if (ncol(grid_preprocessor) == 0L) {
     return(workflow)
@@ -97,28 +104,40 @@ finalize_workflow_preprocessor <- function(workflow, grid_preprocessor) {
   recipe <- extract_preprocessor(workflow)
   recipe <- merge(recipe, grid_preprocessor)$x[[1]]
 
-  workflow <- set_workflow_recipe(workflow, recipe)
+  workflow <- .set_workflow_recipe(workflow, recipe)
 
   workflow
 }
 
 # ------------------------------------------------------------------------------
 
-has_preprocessor <- function(workflow) {
-  has_preprocessor_recipe(workflow) ||
-    has_preprocessor_formula(workflow) ||
-    has_preprocessor_variables(workflow)
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.has_preprocessor <- function(workflow) {
+  .has_preprocessor_recipe(workflow) ||
+    .has_preprocessor_formula(workflow) ||
+    .has_preprocessor_variables(workflow)
 }
 
-has_preprocessor_recipe <- function(workflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.has_preprocessor_recipe <- function(workflow) {
   "recipe" %in% names(workflow$pre$actions)
 }
 
-has_preprocessor_formula <- function(workflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.has_preprocessor_formula <- function(workflow) {
   "formula" %in% names(workflow$pre$actions)
 }
 
-has_preprocessor_variables <- function(workflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.has_preprocessor_variables <- function(workflow) {
   "variables" %in% names(workflow$pre$actions)
 }
 
@@ -130,16 +149,25 @@ has_case_weights <- function(workflow) {
   "case_weights" %in% names(workflow$pre$actions)
 }
 
-has_spec <- function(workflow) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.has_spec <- function(workflow) {
   "model" %in% names(workflow$fit$actions)
 }
 
-set_workflow_spec <- function(workflow, spec) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.set_workflow_spec <- function(workflow, spec) {
   workflow$fit$actions$model$spec <- spec
   workflow
 }
 
-set_workflow_recipe <- function(workflow, recipe) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.set_workflow_recipe <- function(workflow, recipe) {
   workflow$pre$actions$recipe$recipe <- recipe
   workflow
 }

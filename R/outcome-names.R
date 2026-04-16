@@ -40,6 +40,10 @@ outcome_names.recipe <- function(x, ...) {
 #' @export
 #' @rdname outcome_names
 outcome_names.workflow <- function(x, ...) {
+  if (inherits(extract_spec_parsnip(x), "cluster_spec")) {
+    return(NULL)
+  }
+
   if (!is.null(x$pre$mold)) {
     y_vals <- extract_mold(x)$outcomes
     res <- colnames(y_vals)

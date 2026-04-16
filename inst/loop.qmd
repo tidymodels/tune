@@ -8,7 +8,9 @@ We have a big ol loop at the heart of `tune_grid()` (and thus the rest of the tu
 
 We need to work our way through a whole lot of resamples and tuning parameter combinations. We could take the whole grid of tuning parameters, splice them into the workflow, and fit all those workflows on all resamples. This repeats potentially costly calculations, so we have carefully crafted the loop to avoid redundant computation.
 
-The loop runs over a single resample. The basic structure is:
+The loop runs over a single resample. There are two paths depending on whether metrics are **prediction-based** (standard yardstick metrics) or **model-based** (metrics computed directly from the fitted workflow, e.g. clustering).
+
+### Prediction-based metrics path (default)
 
 - For each preproc parameter combination
 	- Fit preprocessor
@@ -28,7 +30,21 @@ The loop runs over a single resample. The basic structure is:
 				- Combine (post-processed) predictions with the grid to `final_pred`
 				- Save `final_pred` by appending it to `pred_reserve`
 				- Do the extracts
-- Compute the metrics
+- Compute the metrics from `pred_reserve`
+
+### Model-based metrics path (e.g. clustering)
+
+Used when `static$metric_type == "model"`. Metrics are computed directly from the fitted workflow and the assessment data, bypassing the predict/submodel/post stages entirely.
+
+- For each preproc parameter combination
+	- Fit preprocessor
+	- Apply it to analysis set
+	- For each model parameter combination
+		- Fit the model
+		- Compute metrics directly: `metrics(workflow, new_data = pred_data)`
+		- Save metrics to `metrics_reserve`
+		- Do the extracts
+- Collect metrics from `metrics_reserve`
 
 ## Inputs
 
@@ -63,6 +79,8 @@ To access the next stage, extract with `[[1]]`:
 - `current_sched_model$predict_stage[[1]]` → tibble of submodel param values
 - `current_sched_pred$post_stage[[1]]` → tibble of post param combinations
 
+For model-based metrics (e.g. clustering), the predict and post stages are never entered.
+
 ### The `static` object
 
 The `static` list contains everything that stays constant throughout the loop:
@@ -71,11 +89,12 @@ The `static` list contains everything that stays constant throughout the loop:
 - `param_info` - parameter set info from `tune_args()`
 - `configs` - tibble mapping parameter values to `.config` labels
 - `metrics` - the metric set
-- `pred_types` - prediction types needed (e.g., "class", "prob", "numeric")
+- `metric_type` - `"prediction"` for standard yardstick metrics, `"model"` for metrics computed directly from the fitted workflow (e.g. clustering)
+- `pred_types` - prediction types needed (e.g., "class", "prob", "numeric"); empty for model-based metrics
 - `eval_time` - evaluation times for survival models
 - `control` - control options
 - `data` - list with `fit`, `pred`, and `cal` data partitions (added after setup)
-- `y_name` - outcome column name(s)
+- `y_name` - outcome column name(s); not set for model-based metrics
 
 ### Data partitions
 
@@ -114,13 +133,17 @@ When there's no postprocessor requiring calibration, `cal` is NULL and `fit` use
 - `wflow_with_fitted_pre` - snapshot after fitting preprocessor
 - `wflow_with_fitted_pre_and_model` - snapshot after fitting model
 
-**Prediction objects:**
+**Prediction objects (prediction-based metrics path):**
 
 - `pred_data` - processed prediction data (features + outcomes)
 - `pred_all_submodels` - batched predictions for all submodel values (source for filtering)
 - `current_pred` - predictions for current pred iteration (filtered from `pred_all_submodels`)
 - `final_pred` - predictions after postprocessing (ready to save)
 - `pred_reserve` - accumulator for all final predictions
+
+**Metric objects (model-based metrics path):**
+
+- `metrics_reserve` - accumulator for metrics computed directly per model fit
 
 **Calibration objects:**
 
@@ -182,6 +205,8 @@ result <- remove_log_notes(result)
 
 The nested structure avoids redundant computation:
 
+### Prediction-based metrics
+
 | What | Computed | Reused for |
 |------|----------|------------|
 | Preprocessor fit | Once per preproc param combo | All model params below it |
@@ -192,6 +217,15 @@ The nested structure avoids redundant computation:
 | Postprocessor fit | Once per post param combo | That specific config |
 
 Submodel parameters (like `penalty` in glmnet) are predicted all at once using `multi_predict()`, which is much faster than predicting one at a time.
+
+### Model-based metrics
+
+| What | Computed | Reused for |
+|------|----------|------------|
+| Preprocessor fit | Once per preproc param combo | All model params below it |
+| Model fit | Once per model param combo | Metric computation for that config |
+
+There are no predictions, submodels, calibration, or postprocessing steps. Metrics are computed immediately after each model fit from the assessment data (`static$data$pred$data`).
 
 ## Debugging
 

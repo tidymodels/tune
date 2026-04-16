@@ -9,7 +9,7 @@
 \alias{choose_framework}
 \alias{get_parallel_seeds}
 \alias{eval_mirai}
-\alias{par_fns}
+\alias{.par_fns}
 \title{Internal functions to help use parallel processing}
 \usage{
 has_non_par_pkgs(object, control, verbose = FALSE)
@@ -33,7 +33,7 @@ get_parallel_seeds(workers)
 
 eval_mirai(.x, .f, ..., .args)
 
-par_fns(framework)
+.par_fns(framework)
 }
 \arguments{
 \item{object}{A workflow.}

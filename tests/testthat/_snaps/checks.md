@@ -150,6 +150,15 @@
       Error in `tune:::check_metrics()`:
       ! The parsnip model has `mode = 'classification'`, but `metrics` is a metric set for a different model mode.
 
+# check_metrics() is deprecated
+
+    Code
+      metric <- check_metrics(NULL, wflow)
+    Condition
+      Warning:
+      `check_metrics()` was deprecated in tune 2.1.0.
+      i Please use `check_metrics_arg()` instead.
+
 # grid control objects
 
     Code
@@ -303,6 +312,22 @@
     Condition
       Error in `tune:::check_initial()`:
       ! `initial` should be a positive integer or the results of `tune_grid()`
+
+# val_class_or_null() is deprecated
+
+    Code
+      res <- val_class_or_null("a", "character")
+    Condition
+      Warning:
+      `val_class_or_null()` was deprecated in tune 2.1.0.
+
+# val_class_and_single() is deprecated
+
+    Code
+      res <- val_class_and_single("a", "character")
+    Condition
+      Warning:
+      `val_class_and_single()` was deprecated in tune 2.1.0.
 
 # check parameter finalization
 

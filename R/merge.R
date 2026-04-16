@@ -75,9 +75,20 @@ merge.model_spec <- function(x, y, ...) {
   merger(x, y, ...)
 }
 
-update_model <- function(grid, object, pset, step_id, nms, ...) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.update_model <- function(
+  grid,
+  object,
+  pset,
+  step_id,
+  nms,
+  ...,
+  source = "model_spec"
+) {
   for (i in nms) {
-    param_info <- pset |> dplyr::filter(id == i & source == "model_spec")
+    param_info <- pset |> dplyr::filter(id == i & .data$source == .env$source)
     if (nrow(param_info) > 1) {
       cli::cli_abort("Cannot update; there are too many parameters.")
     }
@@ -94,7 +105,10 @@ update_model <- function(grid, object, pset, step_id, nms, ...) {
   object
 }
 
-update_recipe <- function(grid, object, pset, step_id, nms, ...) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.update_recipe <- function(grid, object, pset, step_id, nms, ...) {
   for (i in nms) {
     param_info <- pset |> dplyr::filter(id == i & source == "recipe")
     if (nrow(param_info) == 1) {
@@ -123,10 +137,10 @@ merger <- function(x, y, ...) {
   # We will deliberately allow `y` to lack some tunable parameters in `x`
 
   if (inherits(x, "recipe")) {
-    updater <- update_recipe
+    updater <- .update_recipe
     step_ids <- purrr::map_chr(x$steps, "id")
   } else {
-    updater <- update_model
+    updater <- .update_model
     step_ids <- NULL
   }
 

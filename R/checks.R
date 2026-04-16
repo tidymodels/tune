@@ -153,7 +153,10 @@ grid_msg <- "{.arg grid} should be a positive integer or a data frame."
   grid
 }
 
-needs_finalization <- function(x, nms = character(0)) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.needs_finalization <- function(x, nms = character(0)) {
   # If an unknown engine-specific parameter, the object column is missing and
   # no need for finalization
   x <- x[!is.na(x$object), ]
@@ -187,7 +190,7 @@ check_parameters <- function(
   tune_recipe <- tune_param$id[tune_param$source == "recipe"]
   tune_recipe <- length(tune_recipe) > 0
 
-  if (needs_finalization(pset, grid_names)) {
+  if (.needs_finalization(pset, grid_names)) {
     if (tune_recipe) {
       cli::cli_abort(
         c(
@@ -289,7 +292,10 @@ check_bayes_initial_size <- function(num_param, num_grid, race = FALSE) {
   invisible(NULL)
 }
 
-check_param_objects <- function(pset) {
+#' @export
+#' @keywords internal
+#' @rdname empty_ellipses
+.check_param_objects <- function(pset) {
   params <- purrr::map_lgl(pset$object, inherits, "param")
 
   if (!all(params)) {
@@ -318,11 +324,11 @@ check_workflow <- function(
     )
   }
 
-  if (!has_preprocessor(x)) {
+  if (!.has_preprocessor(x)) {
     cli::cli_abort("A formula, recipe, or variables preprocessor is required.")
   }
 
-  if (!has_spec(x)) {
+  if (!.has_spec(x)) {
     cli::cli_abort("A parsnip model is required.")
   }
 
@@ -333,7 +339,7 @@ check_workflow <- function(
       pset <- hardhat::extract_parameter_set_dials(x)
     }
 
-    check_param_objects(pset)
+    .check_param_objects(pset)
 
     incompl <- dials::has_unknowns(pset$object)
 
@@ -384,8 +390,12 @@ check_extra_tune_parameters <- function(x) {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-#' @param object A `workflow` object.
+#' @param object
+#'   `r lifecycle::badge("deprecated")`
+#'
+#'   A `workflow` object.
 check_metrics <- function(x, object) {
+  lifecycle::deprecate_warn("2.1.0", "check_metrics()", "check_metrics_arg()")
   mode <- extract_spec_parsnip(object)$mode
 
   if (is.null(x)) {
@@ -567,9 +577,13 @@ check_class_or_null <- function(x, cls = "numeric") {
 #' @export
 #' @keywords internal
 #' @rdname empty_ellipses
-#' @param cls A character vector of possible classes
-#' @param where A character string for the calling function.
+#' @param cls `r lifecycle::badge("deprecated")` A character vector of
+#'   possible classes
+#' @param where `r lifecycle::badge("deprecated")` A character string for
+#'   the calling function.
 val_class_or_null <- function(x, cls = "numeric", where = NULL) {
+  lifecycle::deprecate_warn("2.1.0", "val_class_or_null()")
+
   cl <- match.call()
   fine <- check_class_or_null(x, cls)
   cls <- paste(cls, collapse = " or ")
@@ -582,7 +596,6 @@ val_class_or_null <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-# TODO remove this once finetune is updated
 
 check_class_and_single <- function(x, cls = "numeric") {
   isTRUE(inherits(x, cls) & length(x) == 1)
@@ -592,6 +605,8 @@ check_class_and_single <- function(x, cls = "numeric") {
 #' @keywords internal
 #' @rdname empty_ellipses
 val_class_and_single <- function(x, cls = "numeric", where = NULL) {
+  lifecycle::deprecate_warn("2.1.0", "val_class_and_single()")
+
   cl <- match.call()
   fine <- check_class_and_single(x, cls)
   cls <- paste(cls, collapse = " or ")
@@ -606,7 +621,6 @@ val_class_and_single <- function(x, cls = "numeric", where = NULL) {
   }
   invisible(NULL)
 }
-# TODO remove this once finetune is updated
 
 # Check the data going into the GP. If there are all missing values, fail. If some
 # are missing, remove them and send a warning. If all metrics are the same, fail.
