@@ -1,29 +1,3 @@
-# TODO old predict_model bits to check into
-#   # TODO patch since parsnip does not record the column names when Surv objects
-#   # are used with fit_xy()
-#   if (model$spec$mode == "censored regression") {
-#     model$preproc$y_var <- names(y_vals)
-#   }
-#
-#   if (length(orig_rows) != nrow(x_vals)) {
-#     msg <- "Some assessment set rows are not available at prediction time."
-#
-#     if (.has_preprocessor_recipe(workflow)) {
-#       msg <-
-#         c(
-#           msg,
-#           i =
-#             "Consider using {.code skip = TRUE} on any recipe steps that
-#              remove rows to avoid calling them on the assessment set."
-#
-#         )
-#     } else {
-#       msg <- c(msg, i = "Did your preprocessing steps filter or remove rows?")
-#     }
-#
-#     cli::cli_abort(msg)
-#   }
-
 trim_ipcw <- function(x) {
   x$.weight_time <- NULL
   x$.pred_censored <- NULL
