@@ -74,10 +74,19 @@ augment.resample_results <- function(x, ...) {
 augment.last_fit <- function(x, ...) {
   rlang::check_dots_empty()
 
-  pred <- collect_predictions(x, summarize = TRUE)
-  pred$.row <- 1:nrow(pred)
+  pred <-
+    x |>
+    collect_predictions(summarize = TRUE) |>
+    dplyr::arrange(.row)
   y_nm <- .get_tune_outcome_names(x)
-  merge_pred(rsample::assessment(x$splits[[1]]), pred, y_nm)
+  dat <-
+    rsample::assessment(x$splits[[1]]) |>
+    dplyr::mutate(
+      .row = as.integer(x$splits[[1]], data = "assessment")
+    ) |>
+    dplyr::arrange(.row)
+
+  merge_pred(dat, pred, y_nm)
 }
 
 merge_pred <- function(dat, pred, y) {
@@ -95,13 +104,15 @@ merge_pred <- function(dat, pred, y) {
     dat <- tibble::as_tibble(dat)
   }
 
-  dat$.row <- 1:nrow(dat)
+  if (!any(names(dat) == ".row")) {
+    dat$.row <- 1:nrow(dat)
+  }
+
   dat <- dplyr::left_join(dat, pred, by = ".row")
   dat$.row <- NULL
   if (all(pred_cols == ".pred")) {
     dat$.resid <- dat[[y]] - dat$.pred
   }
-  dat <- dplyr::relocate(dat, dplyr::starts_with("."))
-
-  dat
+  # dat <- dplyr::relocate(dat, dplyr::starts_with("."))
+  reorder_pred_cols(dat, outcome = y, param = character(0))
 }

@@ -535,6 +535,7 @@ reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
       dplyr::matches("^\\.pred$"),
       dplyr::matches("^\\.pred_class$"),
       dplyr::matches("^\\.pred_."),
+      dplyr::matches("^\\.resid"),
       # Row indicator
       dplyr::any_of("^\\.row"),
       # Resample indicator(s)
@@ -545,7 +546,7 @@ reorder_pred_cols <- function(x, outcome = character(0), param = character(0)) {
     # Put any tuning parameters at the end, .config at the very end
     dplyr::relocate(
       dplyr::all_of(param),
-      .config,
+      dplyr::any_of(".config"),
       .after = dplyr::everything()
     )
 }
