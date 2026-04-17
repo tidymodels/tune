@@ -1,36 +1,14 @@
 # tune (development version)
 
-* `check_metrics()` is deprecated in favor of `check_metrics_arg()` (#1160).
-
-* `finalize_workflow_preprocessor()` is deprecated (#1157).
-
 * Model tuning has been enabled for quantile regression models. (#1125)
-
-* In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
-
-* Prepends a period to the name, and exports the following functions. This is to improve integration with other packages: 
-    - `check_grid()` (e.g., now named `.check_grid()`)
-    - `determine_pred_types()`
-    - `get_config_key()`
-    - `loop_over_all_stages()`
-    - `update_parallel_over()`
-    - `get_data_subsets()`
 
 * When calculating resampling estimates, we can now use a weighted mean based on the number of rows in the assessment set. You can opt-in to this using the new `add_resample_weights()` function. See `?calculate_resample_weights` (#990)
 
 * The warning threshold when check the size of a workflow is now a parameter to the control functions and has a new default of 100MB. (#914)
 
-* A bug was fixed where `NULL` results generated during simulated annealing would cause errors when logging. 
-
-* Fixed a bug for cases where we tune a grid without a model parameter but with a postprocessing parameter (#1119)
-
 * Tuning of models with submodel parameters now predicts all submodels at once (again) to speed up the tuning process (#1140).
 
-* Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (#1144).
-
 * `tune_bayes()` now uses an uncertainty sample if all predictions from the Gaussian process model fail (#1167).
-
-* The developer functions `val_class_and_single()` and `val_class_or_null()` are now deprecated (#1161).
 
 ## Breaking Changes
 
@@ -40,7 +18,34 @@
    - The GP no longer uses binary indicators for qualitative predictors. Instead, a "categorical kernel" is used for those parameter columns. Fewer starting values are required with this change. 
    - For numeric predictors, the Matern 3/2 kernel is always used. 
 
+## Bug Fixes
 
+* Fixed a bug where models with submodel parameters would train all calibration models on predictions from a single submodel value instead of the correct value for each submodel (#1144).
+
+* A bug was fixed where `NULL` results generated during simulated annealing would cause errors when logging. 
+
+* Fixed a bug for cases where we tune a grid without a model parameter but with a postprocessing parameter (#1119)
+
+* Fixed a bug in `augment()` when using `last_fit()` objects (#1110)
+
+* In `tune_grid()`, a bug was fixed that caused inefficiency where preprocessing steps were applied to data being predicted several times (redundantly). We now execute that operation once. (#1101)
+
+## Other Changes
+
+* The developer functions `val_class_and_single()` and `val_class_or_null()` are now deprecated (#1161).
+
+* `check_metrics()` is deprecated in favor of `check_metrics_arg()` (#1160).
+
+* `finalize_workflow_preprocessor()` is deprecated (#1157).
+
+* Prepends a period to the name, and exports the following functions. This is to improve integration with other packages: 
+    - `check_grid()` (e.g., now named `.check_grid()`)
+    - `determine_pred_types()`
+    - `get_config_key()`
+    - `loop_over_all_stages()`
+    - `update_parallel_over()`
+    - `get_data_subsets()`
+    
 # tune 2.0.1
 
 * Fixed a bug where `int_pctl()` wouldn't work on `last_fit()` outcomes when future parallelism was enabled. (#1099) 

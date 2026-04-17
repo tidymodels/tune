@@ -21,20 +21,9 @@ test_that("augment fit_resamples", {
   expect_true(nrow(aug_1) == nrow(two_class_dat))
   expect_equal(aug_1[["A"]], two_class_dat[["A"]])
   expect_true(sum(!is.na(aug_1$.pred_class)) == nrow(two_class_dat))
-  expect_true(sum(names(aug_1) == ".pred_class") == 1)
-  expect_true(sum(names(aug_1) == ".pred_Class1") == 1)
-  expect_true(sum(names(aug_1) == ".pred_Class2") == 1)
-  expect_true(sum(names(aug_1) == ".resid") == 0)
+  expect_snapshot(names(aug_1))
+
   expect_s3_class_bare_tibble(aug_1)
-
-  expect_true(names(aug_1)[1] == ".pred_class")
-  expect_true(names(aug_1)[2] == ".pred_Class1")
-  expect_true(names(aug_1)[3] == ".pred_Class2")
-
-  expect_identical(
-    rle(grepl("^\\.", names(aug_1)))$values,
-    c(TRUE, FALSE)
-  )
 
   expect_snapshot(error = TRUE, augment(fit_1, hey = "you"))
 })
@@ -65,19 +54,8 @@ test_that("augment fit_resamples", {
   expect_true(nrow(aug_2) == nrow(two_class_dat))
   expect_equal(aug_2[["A"]], two_class_dat[["A"]])
   expect_true(sum(!is.na(aug_2$.pred_class)) < nrow(two_class_dat))
-  expect_true(sum(names(aug_2) == ".pred_class") == 1)
-  expect_true(sum(names(aug_2) == ".pred_Class1") == 1)
-  expect_true(sum(names(aug_2) == ".pred_Class2") == 1)
+  expect_snapshot(names(aug_2))
   expect_s3_class_bare_tibble(aug_2)
-
-  expect_true(names(aug_2)[1] == ".pred_class")
-  expect_true(names(aug_2)[2] == ".pred_Class1")
-  expect_true(names(aug_2)[3] == ".pred_Class2")
-
-  expect_identical(
-    rle(grepl("^\\.", names(aug_2)))$values,
-    c(TRUE, FALSE)
-  )
 })
 
 # ------------------------------------------------------------------------------
@@ -103,16 +81,9 @@ test_that("augment tune_grid", {
   expect_true(nrow(aug_1) == nrow(mtcars))
   expect_equal(aug_1[["wt"]], mtcars[["wt"]])
   expect_true(sum(!is.na(aug_1$.pred)) == nrow(mtcars))
-  expect_true(sum(names(aug_1) == ".pred") == 1)
-  expect_true(sum(names(aug_1) == ".resid") == 1)
+
+  expect_snapshot(names(aug_1))
   expect_s3_class_bare_tibble(aug_1)
-
-  expect_true(names(aug_1)[1] == ".pred")
-
-  expect_identical(
-    rle(grepl("^\\.", names(aug_1)))$values,
-    c(TRUE, FALSE)
-  )
 
   aug_2 <- augment(fit_1, parameters = data.frame(cost = 3))
   expect_true(any(abs(aug_1$.pred - aug_2$.pred) > 1))
@@ -147,11 +118,8 @@ test_that("augment tune_grid", {
   expect_true(nrow(aug_3) == nrow(mtcars))
   expect_equal(aug_3[["wt"]], mtcars[["wt"]])
   expect_true(sum(!is.na(aug_3$.pred)) == nrow(mtcars))
-  expect_true(sum(names(aug_3) == ".pred") == 1)
-  expect_true(sum(names(aug_3) == ".resid") == 1)
+  expect_snapshot(names(aug_3))
   expect_s3_class_bare_tibble(aug_3)
-
-  expect_true(names(aug_3)[1] == ".pred")
 })
 
 
@@ -174,19 +142,22 @@ test_that("augment last_fit", {
   expect_true(
     sum(!is.na(aug_1$.pred_class)) == nrow(rsample::assessment(split))
   )
-  expect_true(sum(names(aug_1) == ".pred_class") == 1)
-  expect_true(sum(names(aug_1) == ".pred_Class1") == 1)
-  expect_true(sum(names(aug_1) == ".pred_Class2") == 1)
+  expect_snapshot(names(aug_1))
   expect_s3_class_bare_tibble(aug_1)
 
-  expect_true(names(aug_1)[1] == ".pred_class")
-  expect_true(names(aug_1)[2] == ".pred_Class1")
-  expect_true(names(aug_1)[3] == ".pred_Class2")
+  test_data <-
+    split |>
+    assessment() |>
+    mutate(.row = as.integer(split, data = "assessment"))
 
-  expect_identical(
-    rle(grepl("^\\.", names(aug_1)))$values,
-    c(TRUE, FALSE)
-  )
+  exp_augment <-
+    fit_1 |>
+    collect_predictions(summarize = TRUE) |>
+    arrange(.row, .config) |>
+    inner_join(test_data |> select(-Class), by = ".row") |>
+    dplyr::select(!!!names(aug_1))
+
+  expect_equal(aug_1, exp_augment)
 
   expect_snapshot(error = TRUE, augment(fit_1, potato = TRUE))
 })
