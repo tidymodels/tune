@@ -12,7 +12,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/tidymodels/tune/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/tidymodels/tune/blob/v2.1.0/DESCRIPTION)
 
 Kuhn M (2026). *tune: Tidy Tuning Tools*. R package version 2.1.0,
 <https://tune.tidymodels.org/>.
