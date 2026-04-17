@@ -2,35 +2,8 @@
 
 ## tune (development version)
 
-- [`check_metrics()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
-  is deprecated in favor of
-  [`check_metrics_arg()`](https://tune.tidymodels.org/dev/reference/choose_metric.md)
-  ([\#1160](https://github.com/tidymodels/tune/issues/1160)).
-
-- [`finalize_workflow_preprocessor()`](https://tune.tidymodels.org/dev/reference/tune-internal-functions.md)
-  is deprecated
-  ([\#1157](https://github.com/tidymodels/tune/issues/1157)).
-
 - Model tuning has been enabled for quantile regression models.
   ([\#1125](https://github.com/tidymodels/tune/issues/1125))
-
-- In
-  [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md),
-  a bug was fixed that caused inefficiency where preprocessing steps
-  were applied to data being predicted several times (redundantly). We
-  now execute that operation once.
-  ([\#1101](https://github.com/tidymodels/tune/issues/1101))
-
-- Prepends a period to the name, and exports the following functions.
-  This is to improve integration with other packages:
-
-  - `check_grid()` (e.g., now named
-    [`.check_grid()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md))
-  - `determine_pred_types()`
-  - `get_config_key()`
-  - `loop_over_all_stages()`
-  - `update_parallel_over()`
-  - `get_data_subsets()`
 
 - When calculating resampling estimates, we can now use a weighted mean
   based on the number of rows in the assessment set. You can opt-in to
@@ -44,33 +17,14 @@
   parameter to the control functions and has a new default of 100MB.
   ([\#914](https://github.com/tidymodels/tune/issues/914))
 
-- A bug was fixed where `NULL` results generated during simulated
-  annealing would cause errors when logging.
-
-- Fixed a bug for cases where we tune a grid without a model parameter
-  but with a postprocessing parameter
-  ([\#1119](https://github.com/tidymodels/tune/issues/1119))
-
 - Tuning of models with submodel parameters now predicts all submodels
   at once (again) to speed up the tuning process
   ([\#1140](https://github.com/tidymodels/tune/issues/1140)).
-
-- Fixed a bug where models with submodel parameters would train all
-  calibration models on predictions from a single submodel value instead
-  of the correct value for each submodel
-  ([\#1144](https://github.com/tidymodels/tune/issues/1144)).
 
 - [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
   now uses an uncertainty sample if all predictions from the Gaussian
   process model fail
   ([\#1167](https://github.com/tidymodels/tune/issues/1167)).
-
-- The developer functions
-  [`val_class_and_single()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
-  and
-  [`val_class_or_null()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
-  are now deprecated
-  ([\#1161](https://github.com/tidymodels/tune/issues/1161)).
 
 ### Breaking Changes
 
@@ -84,6 +38,62 @@
     Instead, a “categorical kernel” is used for those parameter columns.
     Fewer starting values are required with this change.
   - For numeric predictors, the Matern 3/2 kernel is always used.
+
+### Bug Fixes
+
+- Fixed a bug where models with submodel parameters would train all
+  calibration models on predictions from a single submodel value instead
+  of the correct value for each submodel
+  ([\#1144](https://github.com/tidymodels/tune/issues/1144)).
+
+- A bug was fixed where `NULL` results generated during simulated
+  annealing would cause errors when logging.
+
+- Fixed a bug for cases where we tune a grid without a model parameter
+  but with a postprocessing parameter
+  ([\#1119](https://github.com/tidymodels/tune/issues/1119))
+
+- Fixed a bug in
+  [`augment()`](https://generics.r-lib.org/reference/augment.html) when
+  using
+  [`last_fit()`](https://tune.tidymodels.org/dev/reference/last_fit.md)
+  objects ([\#1110](https://github.com/tidymodels/tune/issues/1110))
+
+- In
+  [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md),
+  a bug was fixed that caused inefficiency where preprocessing steps
+  were applied to data being predicted several times (redundantly). We
+  now execute that operation once.
+  ([\#1101](https://github.com/tidymodels/tune/issues/1101))
+
+### Other Changes
+
+- The developer functions
+  [`val_class_and_single()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  and
+  [`val_class_or_null()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  are now deprecated
+  ([\#1161](https://github.com/tidymodels/tune/issues/1161)).
+
+- [`check_metrics()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md)
+  is deprecated in favor of
+  [`check_metrics_arg()`](https://tune.tidymodels.org/dev/reference/choose_metric.md)
+  ([\#1160](https://github.com/tidymodels/tune/issues/1160)).
+
+- [`finalize_workflow_preprocessor()`](https://tune.tidymodels.org/dev/reference/tune-internal-functions.md)
+  is deprecated
+  ([\#1157](https://github.com/tidymodels/tune/issues/1157)).
+
+- Prepends a period to the name, and exports the following functions.
+  This is to improve integration with other packages:
+
+  - `check_grid()` (e.g., now named
+    [`.check_grid()`](https://tune.tidymodels.org/dev/reference/empty_ellipses.md))
+  - `determine_pred_types()`
+  - `get_config_key()`
+  - `loop_over_all_stages()`
+  - `update_parallel_over()`
+  - `get_data_subsets()`
 
 ## tune 2.0.1
 
@@ -774,7 +784,7 @@ CRAN release: 2020-11-17
 
 - Allow `...` to pass options from
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md)
-  to `GPfit::GP_fit()`.
+  to [`GPfit::GP_fit()`](https://rdrr.io/pkg/GPfit/man/GP_fit.html).
 
 - Additional checks are done for the initial grid that is given to
   [`tune_bayes()`](https://tune.tidymodels.org/dev/reference/tune_bayes.md).

@@ -25,8 +25,9 @@ There are two frameworks that can be used to explicitly parallel process
 your work in tune: the
 [future](https://future.futureverse.org/reference/future.html) package
 and the [mirai](https://mirai.r-lib.org/reference/mirai.html) package.
-Previously, you could use the foreach package, but this has been
-deprecated as of version 1.2.1 of tune.
+Previously, you could use the
+[foreach](https://rdrr.io/pkg/foreach/man/foreach.html) package, but
+this has been deprecated as of version 1.2.1 of tune.
 
 By default, no parallelism is used to process models in tune; you have
 to opt-in.
