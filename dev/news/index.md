@@ -2,6 +2,10 @@
 
 ## tune (development version)
 
+## tune 2.1.0
+
+CRAN release: 2026-04-17
+
 - Model tuning has been enabled for quantile regression models.
   ([\#1125](https://github.com/tidymodels/tune/issues/1125))
 
@@ -480,8 +484,8 @@ total evaluation time to tune hyperparameters in the tidymodels.
 
 - Implemented various optimizations in tune’s backend that
   [substantially decrease the total evaluation
-  time](https://www.simonpcouch.com/blog/speedups-2023/#tidymodels) to
-  tune hyperparameters with the tidymodels.
+  time](https://simonpcouch.com/blog/2023-03-24-speedups-2023/index.html)
+  to tune hyperparameters with the tidymodels.
   ([\#634](https://github.com/tidymodels/tune/issues/634),
   [\#635](https://github.com/tidymodels/tune/issues/635),
   [\#636](https://github.com/tidymodels/tune/issues/636),

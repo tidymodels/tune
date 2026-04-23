@@ -14,13 +14,13 @@
 Source:
 [`DESCRIPTION`](https://github.com/tidymodels/tune/blob/main/DESCRIPTION)
 
-Kuhn M (2026). *tune: Tidy Tuning Tools*. R package version 2.0.1.9004,
+Kuhn M (2026). *tune: Tidy Tuning Tools*. R package version 2.1.0.9000,
 <https://tune.tidymodels.org/>.
 
     @Manual{,
       title = {tune: Tidy Tuning Tools},
       author = {Max Kuhn},
       year = {2026},
-      note = {R package version 2.0.1.9004},
+      note = {R package version 2.1.0.9000},
       url = {https://tune.tidymodels.org/},
     }
