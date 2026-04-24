@@ -297,7 +297,7 @@
       Error in `last_fit()`:
       ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
 
----
+# metric inputs are checked for quantile regression models
 
     Code
       check_metrics_arg(NULL, wflow)

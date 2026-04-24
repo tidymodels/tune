@@ -184,7 +184,7 @@ test_that("metric inputs are checked for censored regression models", {
   expect_snapshot(last_fit(wflow, split, metrics = met_reg), error = TRUE)
 })
 
-test_that("metric inputs are checked for censored regression models", {
+test_that("metric inputs are checked for quantile regression models", {
   wflow <- workflow(
     y ~ x,
     linear_reg(engine = "quantreg", mode = "quantile regression")
