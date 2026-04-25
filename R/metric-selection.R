@@ -345,8 +345,7 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
   if (mode == "regression" && !is_numeric_metric_set) {
     cli::cli_abort(
       "The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.arg metrics} is a metric set for a
-                   different model mode.",
+       but {.arg metrics} is a metric set for a different model mode.",
       call = call
     )
   }
