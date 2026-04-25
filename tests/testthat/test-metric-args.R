@@ -21,11 +21,14 @@ test_that("metric inputs are checked for regression models", {
     metric_set(brier_survival_integrated, brier_survival, concordance_survival)
   met_reg <- metric_set(rmse)
   met_cls <- metric_set(brier_class)
+  met_qnt <- metric_set(weighted_interval_score)
 
   # ------------------------------------------------------------------------------
   # check inputs
 
   expect_snapshot(check_metrics_arg(NULL, wflow))
+
+  expect_snapshot(check_metrics_arg(rmse, wflow), error = TRUE)
 
   expect_snapshot(check_metrics_arg(met_reg, wflow))
   expect_snapshot(check_metrics_arg(met_cls, wflow), error = TRUE)
@@ -179,4 +182,18 @@ test_that("metric inputs are checked for censored regression models", {
 
   expect_snapshot(last_fit(wflow, split, metrics = met_cls), error = TRUE)
   expect_snapshot(last_fit(wflow, split, metrics = met_reg), error = TRUE)
+})
+
+test_that("metric inputs are checked for quantile regression models", {
+  wflow <- workflow(
+    y ~ x,
+    linear_reg(engine = "quantreg", mode = "quantile regression")
+  )
+
+  expect_snapshot(check_metrics_arg(NULL, wflow))
+
+  expect_snapshot(check_metrics_arg(metric_set(rmse), wflow), error = TRUE)
+  expect_snapshot(
+    check_metrics_arg(metric_set(weighted_interval_score), wflow)
+  )
 })

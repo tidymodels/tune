@@ -1,5 +1,9 @@
 # tune (development version)
 
+## Bug Fixes
+
+* Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (#1186)
+
 # tune 2.1.0
 
 * Model tuning has been enabled for quantile regression models. (#1125)

@@ -10,6 +10,14 @@
 ---
 
     Code
+      check_metrics_arg(rmse, wflow)
+    Condition
+      Error:
+      ! The `metrics` argument should have class <metric_set>, not <numeric_metric/metric/function>.
+
+---
+
+    Code
       check_metrics_arg(met_reg, wflow)
     Output
       A metric set, consisting of:
@@ -288,4 +296,28 @@
     Condition
       Error in `last_fit()`:
       ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+
+# metric inputs are checked for quantile regression models
+
+    Code
+      check_metrics_arg(NULL, wflow)
+    Output
+      A metric set, consisting of:
+      - `weighted_interval_score()`, a quantile metric | direction: minimize
+
+---
+
+    Code
+      check_metrics_arg(metric_set(rmse), wflow)
+    Condition
+      Error:
+      ! The parsnip model has `mode` value of "quantile regression", but the `metrics` is a metric set for a different model mode.
+
+---
+
+    Code
+      check_metrics_arg(metric_set(weighted_interval_score), wflow)
+    Output
+      A metric set, consisting of:
+      - `weighted_interval_score()`, a quantile metric | direction: minimize
 
