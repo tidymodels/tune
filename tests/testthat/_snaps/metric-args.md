@@ -29,7 +29,7 @@
       check_metrics_arg(met_cls, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -37,7 +37,7 @@
       check_metrics_arg(met_mix_int, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -45,7 +45,7 @@
       fit_resamples(wflow, rs, metrics = met_cls)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -53,7 +53,7 @@
       fit_resamples(wflow, rs, metrics = met_mix_int)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -61,7 +61,7 @@
       tune_grid(wflow_tune, rs, metrics = met_cls)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -69,7 +69,7 @@
       tune_grid(wflow_tune, rs, metrics = met_mix_int)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -77,7 +77,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_cls)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -85,7 +85,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_mix_int)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -93,7 +93,7 @@
       last_fit(wflow, split, metrics = met_cls)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 ---
 
@@ -101,7 +101,7 @@
       last_fit(wflow, split, metrics = met_mix_int)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "regression", but the metric set for a different model mode.
 
 # metric inputs are checked for classification models
 
@@ -119,7 +119,7 @@
       check_metrics_arg(met_reg, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -135,7 +135,7 @@
       check_metrics_arg(met_mix_int, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -143,7 +143,7 @@
       fit_resamples(wflow, rs, metrics = met_reg)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -151,7 +151,7 @@
       fit_resamples(wflow, rs, metrics = met_mix_int)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -159,7 +159,7 @@
       tune_grid(wflow_tune, rs, metrics = met_reg)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -167,7 +167,7 @@
       tune_grid(wflow_tune, rs, metrics = met_mix_int)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -175,7 +175,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_reg)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -183,7 +183,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_mix_int)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -191,7 +191,7 @@
       last_fit(wflow, split, metrics = met_reg)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 ---
 
@@ -199,7 +199,7 @@
       last_fit(wflow, split, metrics = met_mix_int)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "classification", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "classification", but the metric set for a different model mode.
 
 # metric inputs are checked for censored regression models
 
@@ -215,7 +215,7 @@
       check_metrics_arg(met_reg, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -223,7 +223,7 @@
       check_metrics_arg(met_cls, wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -239,7 +239,7 @@
       fit_resamples(wflow, rs, metrics = met_cls)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -247,7 +247,7 @@
       fit_resamples(wflow, rs, metrics = met_reg)
     Condition
       Error in `fit_resamples()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -255,7 +255,7 @@
       tune_grid(wflow_tune, rs, metrics = met_cls)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -263,7 +263,7 @@
       tune_grid(wflow_tune, rs, metrics = met_reg)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -271,7 +271,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_cls)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -279,7 +279,7 @@
       tune_bayes(wflow_tune, rs, metrics = met_reg)
     Condition
       Error in `tune_bayes()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -287,7 +287,7 @@
       last_fit(wflow, split, metrics = met_cls)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 
@@ -295,7 +295,7 @@
       last_fit(wflow, split, metrics = met_reg)
     Condition
       Error in `last_fit()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 # metric inputs are checked for quantile regression models
 
@@ -311,7 +311,7 @@
       check_metrics_arg(metric_set(rmse), wflow)
     Condition
       Error:
-      ! The parsnip model has `mode` value of "quantile regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "quantile regression", but the metric set for a different model mode.
 
 ---
 
