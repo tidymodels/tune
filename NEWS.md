@@ -1,5 +1,8 @@
 # tune (development version)
 
+* Tuning parameters contained in lists are more easily handled (#1190)
+
+
 ## Bug Fixes
 
 * Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (#1186)

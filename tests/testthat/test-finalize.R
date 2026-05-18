@@ -206,3 +206,45 @@ test_that("finalize workflows with tailors", {
     1 / 3
   )
 })
+
+test_that("finalize list parameters", {
+  skip_if_not_installed("modeldata")
+
+  # ----------------------------------------------------------------------------
+  # recipes
+
+  rec <- recipes::recipe(Class ~ ., data = modeldata::two_class_dat) |>
+    recipes::step_pca(recipes::all_predictors(), num_comp = tune())
+
+  rec_grid <- dplyr::tibble(num_comp = list(2L))
+  rec_res <- finalize_recipe(rec, rec_grid)
+  expect_equal(rec_res$steps[[1]]$num_comp, 2L)
+
+  # ----------------------------------------------------------------------------
+  # models
+
+  nnet2l <-
+    mlp(hidden_units = tune(), learn_rate = tune()) |>
+    set_engine("brulee") |>
+    set_mode("classification")
+
+  model_grid <- tibble::as_tibble(list(
+    hidden_units = list(4:7),
+    learn_rate = 0.1
+  ))
+  model_res <- finalize_model(nnet2l, model_grid)
+  model_param <- rlang::eval_tidy(model_res$args[[1]])
+  expect_true(inherits(model_param, "integer"))
+  expect_true(length(model_param) == 4)
+
+  # ----------------------------------------------------------------------------
+  # tailor
+
+  tlr <-
+    tailor::tailor() |>
+    tailor::adjust_probability_threshold(threshold = tune())
+
+  tlr_grid <- dplyr::tibble(threshold = list(1 / 2))
+  tlr_res <- finalize_tailor(tlr, tlr_grid)
+  expect_equal(tlr_res$adjustments[[1]]$arguments$threshold, 1 / 2)
+})
