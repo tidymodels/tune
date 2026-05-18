@@ -191,8 +191,6 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 test_that("interactive logger works (fit_resamples, rlang warning + error)", {
@@ -237,8 +235,6 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 
@@ -281,8 +277,6 @@ test_that("interactive logger works (fit_resamples, multiline)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 test_that("interactive logger works (fit_resamples, occasional error)", {
@@ -330,8 +324,6 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 test_that("interactive logger works (fit_resamples, occasional errors)", {
@@ -401,8 +393,6 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 
@@ -452,8 +442,6 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 test_that("interactive logger works (tune grid, error)", {
@@ -492,8 +480,6 @@ test_that("interactive logger works (tune grid, error)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })
 
 test_that("interactive logger works (bayesian, error)", {
@@ -534,6 +520,4 @@ test_that("interactive logger works (bayesian, error)", {
     transform = catalog_lines
   )
 
-  # `catalog_summary_test` written to this env via `redefer_initialize_catalog()`
-  expect_snapshot(catalog_summary_test)
 })

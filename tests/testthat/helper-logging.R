@@ -60,5 +60,5 @@ bake.step_logging_helper <- function(object, new_data, ...) {
 }
 
 catalog_lines <- function(lines) {
-  lines[grepl("^>", lines)]
+  lines[grepl("^(!|x|✖|✘)", lines) | grepl("^Issue totals:", lines)]
 }

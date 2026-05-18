@@ -43,32 +43,17 @@ helper_objects_tune <- function() {
 #
 # ...we just want to see the unique issues, e.g.
 #
-# > A | error:   AHHhH
 catalog_lines <- function(lines) {
-  lines[grepl("^>", lines)]
+  lines[grepl("^(!|x|✖|✘)", lines) | grepl("^Issue totals:", lines)]
 }
 
 # Make a new binding to prevent infinite recursion when the original is mocked.
 initialize_catalog_ <- tune:::initialize_catalog
 
-# Sets a new exit handler on `initialize_catalog()` that stores the summary
-# of issues before it's cleared along with the progress bar. Together with
-# the above, we can test the full catalog output.
 redefer_initialize_catalog <- function(test_env) {
   local({
     function(control, env = rlang::caller_env(), workflow = NULL) {
       initialize_catalog_(control, env, workflow)
-
-      withr::defer(
-        assign(
-          "catalog_summary_test",
-          tune:::tune_env$progress_env$catalog_summary,
-          test_env
-        ),
-        envir = env,
-        priority = "first"
-      )
-
       NULL
     }
   })

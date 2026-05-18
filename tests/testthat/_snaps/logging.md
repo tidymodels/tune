@@ -159,15 +159,9 @@
           raise_error()
         }))
     Message
-      > A | warning: ope! yikes.
-      > B | error:   AHHhH
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x5   B: x5
+      ! warning (x1):
+      x error (x1):
+      Issue totals: warning (x5), error (x5)
 
 # interactive logger works (fit_resamples, rlang warning + error)
 
@@ -179,15 +173,9 @@
           raise_error_rl()
         }))
     Message
-      > A | warning: ope! yikes. (but rlang)
-      > B | error:   AHHhH (but rlang)
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x5   B: x5
+      ! warning (x1):
+      x error (x1):
+      Issue totals: warning (x5), error (x5)
 
 # interactive logger works (fit_resamples, multiline)
 
@@ -196,15 +184,9 @@
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = raise_multiline_conditions))
     Message
-      > A | warning: hmmm what's happening
-      > B | error:   aHHHksdjvndiuf
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x5   B: x5
+      ! warning (x1):
+      x error (x1):
+      Issue totals: warning (x5), error (x5)
 
 # interactive logger works (fit_resamples, occasional error)
 
@@ -213,14 +195,8 @@
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = later))
     Message
-      > A | error:   this errors now! ha!
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x2
+      x error (x1):
+      Issue totals: error (x2)
 
 # interactive logger works (fit_resamples, occasional errors)
 
@@ -232,15 +208,9 @@
         later()
       }))
     Message
-      > A | error:   oh no
-      > B | error:   this errors now! ha!
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x1   B: x6
+      x error (x1):
+      x error (x1):
+      Issue totals: error (x1), error (x6)
 
 # interactive logger works (fit_resamples, many distinct errors)
 
@@ -249,18 +219,11 @@
       Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(72, 40:45)], 5), control = control_resamples(
         extract = numbered))
     Message
-      > A | error:   error number 1
-      > B | error:   error number 2
-      > C | error:   error number 3
-      > D | error:   error number 4
-      > E | error:   error number 5
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x1   B: x1   C: x1   D: x1   E: x1
+      x error (x1):
+      x error (x1):
+      x error (x1):
+      x error (x1):
+      x error (x1):
 
 # interactive logger works (tune grid, error)
 
@@ -269,14 +232,8 @@
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
         72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
     Message
-      > A | error:   AHHhH
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x75
+      x error (x1):
+      Issue totals: error (x75)
 
 # interactive logger works (bayesian, error)
 
@@ -285,12 +242,6 @@
         dist_power = tune()), Sale_Price ~ ., rsample::vfold_cv(modeldata::ames[, c(
         72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
-      > A | error:   AHHhH
-
----
-
-    Code
-      catalog_summary_test
-    Output
-      A: x100
+      x error (x1):
+      Issue totals: error (x100)
 

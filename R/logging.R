@@ -105,11 +105,9 @@ tune_env <- rlang::new_environment(
     progress_env = NULL,
     progress_active = FALSE,
     progress_catalog = NULL,
-    progress_started = FALSE
+    progress_status_ids = list()
   )
 )
-
-lbls <- c(LETTERS, letters, 1:1e3)
 
 # determines whether a currently running tuning process uses the cataloger.
 uses_catalog <- function() {
@@ -185,40 +183,64 @@ initialize_catalog <- function(
     rlang::env_bind(tune_env, progress_active = FALSE),
     envir = env
   )
+
+  rlang::env_bind(tune_env, progress_status_ids = list())
   withr::defer(
-    rlang::env_bind(tune_env, progress_started = FALSE),
+    catalog_cleanup(),
     envir = env
   )
 
   invisible(NULL)
 }
 
-# given a catalog, summarize errors and warnings in a 1-length glue vector.
-# for use by the progress bar inside of `tune_catalog()`.
-summarize_catalog <- function(catalog, sep = "   ") {
-  if (nrow(catalog) == 0) {
-    return("")
+catalog_cleanup <- function() {
+  ids <- tune_env$progress_status_ids
+  catalog <- tune_env$progress_catalog
+
+  if (length(ids) > 0 && !is.null(catalog) && nrow(catalog) > 0) {
+    if (cli::is_dynamic_tty()) {
+      # Update headers with final counts, then keep as permanent output
+      for (i in seq_len(nrow(catalog))) {
+        entry_id <- catalog$id[i]
+        entry <- ids[[entry_id]]
+        if (!is.null(entry)) {
+          header <- catalog_header(catalog$type[i], catalog$n[i])
+          cli::cli_status_update(id = entry$header, msg = header)
+          cli::cli_status_clear(entry$header, result = "clear")
+          for (cont_id in entry$continuation) {
+            cli::cli_status_clear(cont_id, result = "clear")
+          }
+        }
+      }
+    } else {
+      # Non-dynamic: print compact summary, then clear silently
+      has_duplicates <- any(catalog$n > 1)
+      if (has_duplicates) {
+        parts <- vapply(seq_len(nrow(catalog)), function(i) {
+          color <- if (catalog$type[i] == "warning") {
+            cli::col_yellow
+          } else {
+            cli::col_red
+          }
+          color(paste0(catalog$type[i], " (x", catalog$n[i], ")"))
+        }, character(1))
+        cli::cli_inform(paste0(
+          "Issue totals: ",
+          paste(parts, collapse = ", ")
+        ))
+      }
+      suppressMessages(
+        for (entry in ids) {
+          for (cont_id in rev(entry$continuation)) {
+            try(cli::cli_status_clear(cont_id, result = "clear"), silent = TRUE)
+          }
+          try(cli::cli_status_clear(entry$header, result = "clear"), silent = TRUE)
+        }
+      )
+    }
   }
 
-  res <- dplyr::arrange(catalog, id)
-  res <- dplyr::mutate(
-    res,
-    color = dplyr::if_else(
-      type == "warning",
-      list(cli::col_yellow),
-      list(cli::col_red)
-    )
-  )
-  res <- dplyr::rowwise(res)
-  res <- dplyr::mutate(
-    res,
-    msg = glue::glue("{color(cli::style_bold(lbls[id]))}: x{n}")
-  )
-  res <- dplyr::ungroup(res)
-  res <- dplyr::pull(res, msg)
-  res <- glue::glue_collapse(res, sep = sep)
-
-  res
+  rlang::env_bind(tune_env, progress_status_ids = list())
 }
 
 # catching and logging ---------------------------------------------------------
@@ -356,6 +378,15 @@ catalog_log <- function(x) {
     if (x_note %in% catalog$note) {
       idx <- match(x_note, catalog$note)
       catalog$n[idx] <- catalog$n[idx] + 1
+
+      if (uses_catalog() && cli::is_dynamic_tty()) {
+        entry_id <- catalog$id[idx]
+        ids <- tune_env$progress_status_ids[[entry_id]]
+        if (!is.null(ids)) {
+          header <- catalog_header(x_type, catalog$n[idx])
+          cli::cli_status_update(id = ids$header, msg = header)
+        }
+      }
     } else {
       new_id <- nrow(catalog) + 1
       catalog <- tibble::add_row(
@@ -368,47 +399,56 @@ catalog_log <- function(x) {
         )
       )
 
-      # construct issue summary
-      color <- if (x_type == "warning") cli::col_yellow else cli::col_red
-      # pad by nchar(label) + nchar("warning") + additional spaces and symbols
-      pad <- nchar(new_id) + 14L
-      justify <- paste0("\n", strrep("\u00a0", pad))
-      note <- gsub("\n", justify, x_note)
-      # pad `nchar("warning") - nchar("error")` spaces to the right of the `:`
-      if (x_type == "error") {
-        note <- paste0("\u00a0\u00a0", note)
+      if (uses_catalog()) {
+        header <- catalog_header(x_type, 1L)
+        body_lines <- catalog_body_lines(x_note)
+
+        header_id <- cli::cli_status(
+          header,
+          msg_done = header,
+          .keep = TRUE,
+          .auto_close = FALSE
+        )
+        cont_ids <- vapply(body_lines, function(line) {
+          cli::cli_status(line, msg_done = line, .keep = TRUE, .auto_close = FALSE)
+        }, character(1))
+
+        tune_env$progress_status_ids[[new_id]] <- list(
+          header = header_id,
+          continuation = cont_ids
+        )
+      } else {
+        color <- if (x_type == "warning") cli::col_yellow else cli::col_red
+        symbol <- if (x_type == "warning") "!" else cli::symbol$cross
+        header_text <- paste0(color(symbol), " ", color(x_type), " (x1):")
+        body_lines <- catalog_body_lines(x_note)
+        cli::cli_alert(paste0(
+          header_text, "\n",
+          paste0(body_lines, collapse = "\n")
+        ))
       }
-      msg <- glue::glue(
-        "{color(cli::style_bold(lbls[new_id]))} | {color(x_type)}: {note}"
-      )
-      cli::cli_alert(msg)
     }
   }
 
   rlang::env_bind(tune_env, progress_catalog = catalog)
-  if (uses_catalog()) {
-    rlang::env_bind(
-      tune_env$progress_env,
-      catalog_summary = summarize_catalog(catalog)
-    )
-
-    if (!tune_env$progress_started) {
-      rlang::with_options(
-        cli::cli_progress_bar(
-          type = "custom",
-          format = "There were issues with some computations   {catalog_summary}",
-          clear = FALSE,
-          .envir = tune_env$progress_env
-        ),
-        cli.progress_show_after = 0
-      )
-      rlang::env_bind(tune_env, progress_started = TRUE)
-    }
-
-    cli::cli_progress_update(.envir = tune_env$progress_env)
-  }
 
   return(NULL)
+}
+
+catalog_header <- function(type, n) {
+  color <- if (type == "warning") cli::col_yellow else cli::col_red
+  symbol <- if (type == "warning") "!" else cli::symbol$cross
+  paste0(color(symbol), " ", color(paste0(type, " (x", n, "):")))
+}
+
+catalog_body_lines <- function(note) {
+  indent <- 2L
+  width <- cli::console_width() - indent
+  lines <- strsplit(note, "\n")[[1]]
+  wrapped <- unlist(lapply(lines, function(line) {
+    strwrap(line, width = width)
+  }))
+  paste0(strrep(" ", indent), wrapped)
 }
 
 remove_log_notes <- function(x) {

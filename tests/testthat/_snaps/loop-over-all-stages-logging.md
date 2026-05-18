@@ -5,7 +5,6 @@
         dist_power = tune()), Sale_Price ~ ., folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   invalid type (list) for variable 'First_Flr_SF'
     Condition
 
 # model error doesn't stop grid
@@ -14,7 +13,6 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   invalid type (list) for variable 'First_Flr_SF'
     Condition
 
 # prediction error doesn't stop grid
@@ -23,7 +21,9 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   Assigned data `.ind` must be compatible with existing data.
+      x Existing data has 0 rows.
+      x Assigned data has 1465 rows.
+      ! Can't recycle input of size 1465 to size 0.
     Condition
 
 # capturing error correctly in notes
@@ -32,7 +32,7 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   Error in `step_logging_helper()`:
+      ! testing error
     Condition
 
 # capturing warning correctly in notes
@@ -41,7 +41,6 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | warning: testing warning
 
 # doesn't capturing message in notes
 
@@ -56,18 +55,8 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE, extract = extract_error))
     Message
-      > A | error:   extract error
 
 # captures kknn R errors
-
-    Code
-      res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
-        allow_par = FALSE))
-    Message
-      > A | error:   NA/NaN/Inf in foreign function call (arg 1)
-    Condition
-
-# captures xgboost C errors
 
     Code
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
@@ -81,7 +70,7 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   Error in `step_logging_helper()`:
+      ! testing error
     Condition
 
 # emitter works with errors
@@ -90,6 +79,6 @@
       res_fit <- tune_grid(wf_spec, folds, grid = 2, control = control_grid(
         allow_par = FALSE))
     Message
-      > A | error:   Error in `step_logging_helper()`:
+      ! testing error
     Condition
 
