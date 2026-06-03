@@ -105,7 +105,9 @@ tune_env <- rlang::new_environment(
     progress_env = NULL,
     progress_active = FALSE,
     progress_catalog = NULL,
-    progress_status_ids = list()
+    progress_status_ids = list(),
+    progress_modulus = 1L,
+    progress_in_unit = 0L
   )
 )
 
@@ -216,14 +218,18 @@ catalog_cleanup <- function() {
       # Non-dynamic: print compact summary, then clear silently
       has_duplicates <- any(catalog$n > 1)
       if (has_duplicates) {
-        parts <- vapply(seq_len(nrow(catalog)), function(i) {
-          color <- if (catalog$type[i] == "warning") {
-            cli::col_yellow
-          } else {
-            cli::col_red
-          }
-          color(paste0(catalog$type[i], " (x", catalog$n[i], ")"))
-        }, character(1))
+        parts <- vapply(
+          seq_len(nrow(catalog)),
+          function(i) {
+            color <- if (catalog$type[i] == "warning") {
+              cli::col_yellow
+            } else {
+              cli::col_red
+            }
+            color(paste0(catalog$type[i], " (x", catalog$n[i], ")"))
+          },
+          character(1)
+        )
         cli::cli_inform(paste0(
           "Issue totals: ",
           paste(parts, collapse = ", ")
@@ -234,13 +240,119 @@ catalog_cleanup <- function() {
           for (cont_id in rev(entry$continuation)) {
             try(cli::cli_status_clear(cont_id, result = "clear"), silent = TRUE)
           }
-          try(cli::cli_status_clear(entry$header, result = "clear"), silent = TRUE)
+          try(
+            cli::cli_status_clear(entry$header, result = "clear"),
+            silent = TRUE
+          )
         }
       )
     }
   }
 
   rlang::env_bind(tune_env, progress_status_ids = list())
+}
+
+# The catalog heartbeat: a single progress bar that sits at the top of the
+# progress area and advances once per model fit, so that a tuning run shows it's
+# making progress even when no issues are caught. Gated on `uses_catalog()`, so
+# it only appears in sequential, non-verbose, non-testing runs.
+#
+# `total` is the number of model fits across the whole run and `modulus` is the
+# number per resample (the per-resample tick budget). We force an initial render
+# at creation so the bar claims the top status-bar slot before any issue bar is
+# created during the first resample; otherwise issues caught mid-resample would
+# render above it. `progress_in_unit` counts ticks within the current resample so
+# `catalog_progress_trueup()` can pad the bar up to the next multiple of
+# `modulus` when upstream failures cause a resample to fit fewer models than the
+# schedule allows for.
+catalog_progress_init <- function(total, modulus = 1L) {
+  if (!uses_catalog()) {
+    return(invisible(NULL))
+  }
+
+  rlang::env_bind(tune_env, progress_modulus = modulus, progress_in_unit = 0L)
+
+  rlang::with_options(
+    cli::cli_progress_bar(
+      total = total,
+      format = paste(
+        "{cli::pb_spin} tuning {cli::pb_bar}",
+        "{cli::pb_current}/{cli::pb_total} {cli::pb_eta_str}"
+      ),
+      format_done = "{cli::col_green(cli::symbol$tick)} tuning complete [{cli::pb_elapsed}]",
+      clear = FALSE,
+      .envir = tune_env$progress_env
+    ),
+    cli.progress_show_after = 0
+  )
+
+  cli::cli_progress_update(
+    set = 0,
+    force = TRUE,
+    .envir = tune_env$progress_env
+  )
+
+  invisible(NULL)
+}
+
+catalog_progress_tick <- function() {
+  if (!uses_catalog()) {
+    return(invisible(NULL))
+  }
+
+  # `force` so the displayed count keeps pace with the issue bars, which repaint
+  # on every occurrence; without it the throttled heartbeat lags behind and can
+  # show fewer fits than there are issues (#tune-heartbeat).
+  cli::cli_progress_update(force = TRUE, .envir = tune_env$progress_env)
+  tune_env$progress_in_unit <- tune_env$progress_in_unit + 1L
+
+  invisible(NULL)
+}
+
+catalog_progress_trueup <- function() {
+  if (!uses_catalog()) {
+    return(invisible(NULL))
+  }
+
+  pad <- tune_env$progress_modulus - tune_env$progress_in_unit
+  if (pad > 0) {
+    cli::cli_progress_update(
+      inc = pad,
+      force = TRUE,
+      .envir = tune_env$progress_env
+    )
+  }
+  tune_env$progress_in_unit <- 0L
+
+  invisible(NULL)
+}
+
+# The number of model fits the grid loop performs per resample, used as the
+# heartbeat's per-resample tick budget. The schedule depends only on the grid
+# and workflow (not the split), so it's the same for every resample. Submodel
+# parameters share a single fit, so a grid that only tunes submodel parameters
+# counts as one fit per resample.
+catalog_count_model_iters <- function(grid, workflow) {
+  if (is.null(grid) || nrow(grid) == 0) {
+    return(1L)
+  }
+
+  sched <- schedule_grid(grid, workflow)
+  as.integer(sum(vapply(
+    sched$model_stage,
+    function(m) max(nrow(m), 1L),
+    integer(1)
+  )))
+}
+
+catalog_progress_done <- function() {
+  if (!uses_catalog()) {
+    return(invisible(NULL))
+  }
+
+  cli::cli_progress_done(.envir = tune_env$progress_env)
+
+  invisible(NULL)
 }
 
 # catching and logging ---------------------------------------------------------
@@ -259,8 +371,10 @@ catalog_cleanup <- function() {
   tmp <- catcher(.expr)
 
   if (has_log_notes(tmp)) {
+    # log only the notes from this catch; `catalog_log()` increments counts, so
+    # passing the resample's accumulated `notes` would re-count earlier entries
+    catalog_log(append_log_notes(NULL, tmp, dots$location))
     notes <- append_log_notes(notes, tmp, dots$location)
-    catalog_log(notes)
   }
   tmp <- remove_log_notes(tmp)
   assign("notes", notes, envir = parent.frame())
@@ -409,9 +523,18 @@ catalog_log <- function(x) {
           .keep = TRUE,
           .auto_close = FALSE
         )
-        cont_ids <- vapply(body_lines, function(line) {
-          cli::cli_status(line, msg_done = line, .keep = TRUE, .auto_close = FALSE)
-        }, character(1))
+        cont_ids <- vapply(
+          body_lines,
+          function(line) {
+            cli::cli_status(
+              line,
+              msg_done = line,
+              .keep = TRUE,
+              .auto_close = FALSE
+            )
+          },
+          character(1)
+        )
 
         tune_env$progress_status_ids[[new_id]] <- list(
           header = header_id,
@@ -423,7 +546,8 @@ catalog_log <- function(x) {
         header_text <- paste0(color(symbol), " ", color(x_type), " (x1):")
         body_lines <- catalog_body_lines(x_note)
         cli::cli_alert(paste0(
-          header_text, "\n",
+          header_text,
+          "\n",
           paste0(body_lines, collapse = "\n")
         ))
       }

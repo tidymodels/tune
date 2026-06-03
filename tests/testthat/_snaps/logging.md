@@ -233,7 +233,7 @@
         72, 40:45)], 5), grid = 5, control = control_grid(extract = raise_error))
     Message
       x error (x1):
-      Issue totals: error (x75)
+      Issue totals: error (x25)
 
 # interactive logger works (bayesian, error)
 
@@ -243,5 +243,5 @@
         72, 40:45)], 5), initial = 5, iter = 5, control = control_bayes(extract = raise_error))
     Message
       x error (x1):
-      Issue totals: error (x100)
+      Issue totals: error (x50)
 

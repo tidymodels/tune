@@ -190,7 +190,6 @@ test_that("interactive logger works (fit_resamples, warning + error)", {
     },
     transform = catalog_lines
   )
-
 })
 
 test_that("interactive logger works (fit_resamples, rlang warning + error)", {
@@ -234,7 +233,6 @@ test_that("interactive logger works (fit_resamples, rlang warning + error)", {
     },
     transform = catalog_lines
   )
-
 })
 
 
@@ -276,7 +274,6 @@ test_that("interactive logger works (fit_resamples, multiline)", {
     },
     transform = catalog_lines
   )
-
 })
 
 test_that("interactive logger works (fit_resamples, occasional error)", {
@@ -323,7 +320,6 @@ test_that("interactive logger works (fit_resamples, occasional error)", {
     },
     transform = catalog_lines
   )
-
 })
 
 test_that("interactive logger works (fit_resamples, occasional errors)", {
@@ -392,7 +388,6 @@ test_that("interactive logger works (fit_resamples, occasional errors)", {
     },
     transform = catalog_lines
   )
-
 })
 
 
@@ -441,7 +436,6 @@ test_that("interactive logger works (fit_resamples, many distinct errors)", {
     },
     transform = catalog_lines
   )
-
 })
 
 test_that("interactive logger works (tune grid, error)", {
@@ -479,7 +473,6 @@ test_that("interactive logger works (tune grid, error)", {
     },
     transform = catalog_lines
   )
-
 })
 
 test_that("interactive logger works (bayesian, error)", {
@@ -519,5 +512,56 @@ test_that("interactive logger works (bayesian, error)", {
     },
     transform = catalog_lines
   )
+})
 
+test_that("catalog heartbeat helpers no-op when the catalog is inactive", {
+  expect_null(catalog_progress_init(10))
+  expect_null(catalog_progress_tick())
+  expect_null(catalog_progress_done())
+})
+
+test_that("catalog heartbeat creates, advances, and tears down a bar", {
+  local_mocked_bindings(is_testing = function() FALSE)
+
+  env <- rlang::current_env()
+  rlang::env_bind(tune_env, progress_env = env, progress_active = TRUE)
+  withr::defer(
+    rlang::env_bind(tune_env, progress_env = NULL, progress_active = FALSE)
+  )
+
+  n0 <- cli::cli_progress_num()
+
+  catalog_progress_init(6, modulus = 3L)
+  expect_equal(cli::cli_progress_num(), n0 + 1)
+
+  catalog_progress_tick()
+  catalog_progress_tick()
+  expect_equal(tune_env$progress_in_unit, 2L)
+
+  # a resample that fit fewer models than the schedule allows still advances the
+  # bar by a full modulus, and resets the per-resample counter
+  catalog_progress_trueup()
+  expect_equal(tune_env$progress_in_unit, 0L)
+
+  catalog_progress_done()
+  expect_equal(cli::cli_progress_num(), n0)
+})
+
+test_that("catalog_count_model_iters counts model fits per resample", {
+  skip_if_not_installed("kknn")
+
+  expect_equal(catalog_count_model_iters(NULL, workflow()), 1L)
+  expect_equal(catalog_count_model_iters(tibble::tibble(), workflow()), 1L)
+
+  wflow <- workflow() |>
+    add_formula(mpg ~ .) |>
+    add_model(parsnip::nearest_neighbor(
+      "regression",
+      "kknn",
+      dist_power = tune()
+    ))
+  grid <- tibble::tibble(dist_power = c(1, 1.5, 2))
+
+  # `dist_power` is not a submodel parameter, so each candidate is its own fit
+  expect_equal(catalog_count_model_iters(grid, wflow), 3L)
 })

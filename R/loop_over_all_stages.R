@@ -127,6 +127,8 @@
     grid_with_pre <- current_grid
 
     for (iter_model in seq_len(num_iterations_model)) {
+      catalog_progress_tick()
+
       current_sched_model <- current_sched_pre$model_stage[[1]][iter_model, ]
       current_grid <- extend_grid(grid_with_pre, current_sched_model)
 
@@ -524,6 +526,8 @@
         )
     }
   }
+
+  catalog_progress_trueup()
 
   return_tbl
 }

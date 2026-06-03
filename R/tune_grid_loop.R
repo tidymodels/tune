@@ -108,8 +108,25 @@ tune_grid_loop <- function(
     inds <- vec_list_rowwise(inds)
   }
 
+  if (control$parallel_over == "everything") {
+    # each unit is already a single resample x candidate, so one fit per unit
+    catalog_progress_init(length(inds), modulus = 1L)
+  } else {
+    fits_per_resample <- if (uses_catalog()) {
+      catalog_count_model_iters(grid, workflow)
+    } else {
+      1L
+    }
+    catalog_progress_init(
+      length(resamples) * fits_per_resample,
+      modulus = fits_per_resample
+    )
+  }
+
   cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
+
+  catalog_progress_done()
 
   # ----------------------------------------------------------------------------
   # Separate results into different components
