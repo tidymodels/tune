@@ -83,6 +83,7 @@ A fitted workflow.
 
 This function is a shortcut for the manual steps of:
 
+
       best_param <- select_best(tune_results, metric) # or other `select_*()`
       wflow <- finalize_workflow(wflow, best_param)  # or just `finalize_model()`
       wflow_fit <- fit(wflow, data_set)

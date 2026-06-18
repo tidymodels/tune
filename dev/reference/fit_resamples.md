@@ -151,6 +151,7 @@ estimate the area under the ROC curve as well as the sensitivity and
 specificity (under the typical probability cutoff of 0.50), the
 `metrics` argument could be given:
 
+
       metrics = metric_set(roc_auc, sens, spec)
 
 Each metric is calculated for each candidate model.
@@ -230,6 +231,7 @@ and
 As an example, if there is interest in getting each parsnip model fit
 back, one could use:
 
+
       extract = function (x) extract_fit_parsnip(x)
 
 Note that the function given to the `extract` argument is evaluated on
@@ -272,7 +274,6 @@ control <- control_resamples(save_pred = TRUE)
 spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 #> → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 #> There were issues with some computations   A: x1
-#> There were issues with some computations   A: x2
 #> There were issues with some computations   A: x5
 #> 
 

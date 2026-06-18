@@ -200,6 +200,7 @@ estimate the area under the ROC curve as well as the sensitivity and
 specificity (under the typical probability cutoff of 0.50), the
 `metrics` argument could be given:
 
+
       metrics = metric_set(roc_auc, sens, spec)
 
 Each metric is calculated for each candidate model.
@@ -347,6 +348,7 @@ and
 
 As an example, if there is interest in getting each parsnip model fit
 back, one could use:
+
 
       extract = function (x) extract_fit_parsnip(x)
 

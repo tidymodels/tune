@@ -13,12 +13,14 @@ tidymodels packages. It relies heavily on
 Install from CRAN:
 
 ``` r
+
 install.packages("tune", repos = "http://cran.r-project.org") #or your local mirror
 ```
 
 or you can install the current development version using:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("tidymodels/tune")
 ```

@@ -21,6 +21,7 @@ function that enables this feature. Printing the S3 methods for it lists
 the possible models:
 
 ``` r
+
 library(tidymodels)
 methods("multi_predict")
 ```
@@ -33,6 +34,7 @@ methods("multi_predict")
     ## see '?methods' for accessing help and source code
 
 ``` r
+
 # There are arguments for the parameter(s) that can create multiple predictions.
 # For xgboost, `trees` are cheap to evaluate: 
 parsnip:::multi_predict._xgb.Booster |> 
@@ -54,6 +56,7 @@ scaling](https://en.wikipedia.org/wiki/Isomap) is used to pre-process
 the data prior to tuning a K-nearest neighbor regression:
 
 ``` r
+
 data(Chicago)
 iso_rec <- 
   recipe(ridership ~ ., data = Chicago) |> 
@@ -67,6 +70,7 @@ iso_rec <-
     ## To install run: `install.packages(c("dimRed", "RSpectra", "RANN"))`
 
 ``` r
+
 knn_mod <- 
   nearest_neighbor(neighbors = tune(), weight_func = tune()) |> 
   set_engine("kknn") |> 
@@ -76,6 +80,7 @@ knn_mod <-
 With the following grid:
 
 ``` r
+
 grid <- 
   parameters(num_terms(c(1, 9)), neighbors(), weight_func()) |> 
   grid_regular(levels = c(5, 10, 7)) |> 
@@ -167,6 +172,7 @@ provide a [`plan()`](https://future.futureverse.org/reference/plan.html)
 and tune will take care of the rest. For example:
 
 ``` r
+
 library(future)
 plan("multisession")
 ```
@@ -174,6 +180,7 @@ plan("multisession")
 For mirai, you can set the number of worker processes via
 
 ``` r
+
 library(mirai)
 daemons(4)
 ```
@@ -198,6 +205,7 @@ Registering a parallel backend is also somewhat dependent of the
 package. For doParallel, one could use:
 
 ``` r
+
 all_cores <- parallel::detectCores(logical = FALSE)
 
 library(doParallel)
@@ -210,6 +218,7 @@ foreach backend packages `library(do*)` as well as lines registering
 that technology with `registerDo*()`, and add the following lines:
 
 ``` r
+
 library(future)
 plan(multisession)
 ```
@@ -230,6 +239,7 @@ variables in the global environment. These may not be found when the
 code is run inside of a worker process. For example:
 
 ``` r
+
 num_pcs <- 3
 
 recipe(mpg ~ ., data = mtcars) |> 

@@ -24,21 +24,22 @@ The acquisition functions themselves have quasi-tuning parameters that
 are usually trade-offs between exploitation and exploration. For
 example, if the performance measure being used should be maximized
 (i.e. accuracy, the area under the ROC curve, etc), then one acquisition
-function would be a lower confidence bound $L = \mu - C \times \sigma$.
-The multiplier $C$ would be used to penalize based on the predicted
-standard error ($\sigma$) of different parameter combinations. Note that
-the acquisition function is not the performance measure, but a function
-of what metric is used to evaluate the model.
+function would be a lower confidence bound
+$`L = \mu - C \times \sigma`$. The multiplier $`C`$ would be used to
+penalize based on the predicted standard error ($`\sigma`$) of different
+parameter combinations. Note that the acquisition function is not the
+performance measure, but a function of what metric is used to evaluate
+the model.
 
 One of the most common acquisition functions is the *expected
 improvement*. Based on basic probability theory, this can be computed
 relative to the current estimate of the optimal performance. Suppose
 that our performance metric should be maximized (e.g. accuracy, area
 under the ROC curve, etc). For any tuning parameter combination
-$\theta$, we have the predicted mean and standard error of that metric
-(call those $\mu(\theta)$ and $\sigma(\theta)$). From previous data, the
-best (mean) performance value was $m_{opt}$). The expected improvement
-is determined using:
+$`\theta`$, we have the predicted mean and standard error of that metric
+(call those $`\mu(\theta)`$ and $`\sigma(\theta)`$). From previous data,
+the best (mean) performance value was $`m_{opt}`$). The expected
+improvement is determined using:
 
 \$\$ \begin{align} EI(\theta; m\_{opt}) &= \delta(\theta)
 \Phi\left(\frac{\delta(\theta)}{\sigma(\theta)}\right) + \sigma(\theta)
@@ -46,12 +47,12 @@ is determined using:
 &\text{where} \notag \\ \delta(\theta) &= \mu(\theta) - m\_{opt} \notag
 \end{align} \$\$
 
-The function $\Phi( \cdot )$ is the cumulative standard normal and
-$\phi( \cdot )$ is the standard normal density.
+The function $`\Phi(\cdot)`$ is the cumulative standard normal and
+$`\phi(\cdot)`$ is the standard normal density.
 
-The value $\delta(\theta)$ measures how close we are (on average) to the
-current best performance value[¹](#fn1). When new candidate tuning
-parameters are needed, the space of $\theta$ is searched for the value
+The value $`\delta(\theta)`$ measures how close we are (on average) to
+the current best performance value[^1]. When new candidate tuning
+parameters are needed, the space of $`\theta`$ is searched for the value
 that maximizes the expected improvement.
 
 Suppose a single parameter were being optimized and that parameter was
@@ -65,9 +66,9 @@ trend.](figures/initial.svg)
 
 In the first iteration of Bayesian optimization, these three data points
 are given to the Gaussian process model to produce predictions across a
-wider range of values. The fitted curve (i.e. $\mu(\theta)$) is shown on
-the top panel below, along with approximate 95% credible intervals
-$\mu(\theta) \pm 1.96\sigma(\theta)$:
+wider range of values. The fitted curve (i.e. $`\mu(\theta)`$) is shown
+on the top panel below, along with approximate 95% credible intervals
+$`\mu(\theta) \pm 1.96 \sigma(\theta)`$:
 
 ![A ggplot line plot. The data are the same as that plotted above, but a
 curved line is plotted over the points, now. A shaded region,
@@ -82,10 +83,10 @@ data points.
 The bottom panel shows the expected improvement across the range of
 candidate values. Of the observed points, the expected improvement near
 the middle point has the largest improvement. This is because the first
-term in the equation above (with the $\delta(\theta)$ coefficient) is
-very large while the second term (with the coefficient $\sigma(\theta)$
-is virtually zero. This focus on the mean portion will keep the search
-mostly in the region of the best performance.
+term in the equation above (with the $`\delta(\theta)`$ coefficient) is
+very large while the second term (with the coefficient
+$`\sigma(\theta)`$ is virtually zero. This focus on the mean portion
+will keep the search mostly in the region of the best performance.
 
 Using these results, the parameter value with the largest improvement is
 then evaluated using cross-validation. The GP model is then updated and
@@ -108,11 +109,13 @@ between exploitation and exploration is the use of a “trade-off” value.
 This value is the amount of performance (in the original units) that can
 be sacrificed when computing the improvement. This has the effect of
 down-playing the contribution of the mean effect in the computations.
-For a trade-off value $\tau$, the equation above uses:
+For a trade-off value $`\tau`$, the equation above uses:
 
-$$\delta(\theta) = \mu(\theta) - m_{opt} - \tau$$
+``` math
+\delta(\theta) = \mu(\theta) - m_{opt} - \tau
+```
 
-Suppose that we were willing to trade-off $\tau = 0.05$% of the
+Suppose that we were willing to trade-off $`\tau = 0.05`$% of the
 predicted accuracy during the search. Using the same three initial
 results, the procedure would end up in the same general location but
 would have explored more values across the total range:
@@ -142,9 +145,7 @@ optimization:
   design points. This may find a location in the parameter space to help
   the optimization make improvements.
 
-------------------------------------------------------------------------
-
-1.  This equation treats $m_{opt}$ as if it has no variation and no
-    correlation to $\mu(\theta)$. Neither of those are true so consider
-    this a “first order approximation” instead of a highly accurate
-    estimate.
+[^1]: This equation treats $`m_{opt}`$ as if it has no variation and no
+    correlation to $`\mu(\theta)`$. Neither of those are true so
+    consider this a “first order approximation” instead of a highly
+    accurate estimate.

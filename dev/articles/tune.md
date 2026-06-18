@@ -10,6 +10,7 @@ values until a combination with good performance is found.
 As an example, let’s model the Ames housing data:
 
 ``` r
+
 library(tidymodels)
 
 data(ames)
@@ -27,6 +28,7 @@ of its geo-location. These predictors appear to have nonlinear
 relationships with the outcome:
 
 ``` r
+
 ames_train |> 
   dplyr::select(Sale_Price, Longitude, Latitude) |> 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -57,6 +59,7 @@ We can tag these parameters for optimization using the
 [`tune()`](https://hardhat.tidymodels.org/reference/tune.html) function:
 
 ``` r
+
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) |> 
   step_log(Gr_Liv_Area, base = 10) |> 
@@ -82,6 +85,7 @@ option to provide a text annotation so that each tuning parameter has a
 unique identifier:
 
 ``` r
+
 ames_rec <- 
   recipe(Sale_Price ~ Gr_Liv_Area + Longitude + Latitude, data = ames_train) |> 
   step_log(Gr_Liv_Area, base = 10) |> 
@@ -94,6 +98,7 @@ The function
 can detect and collect the parameters that have been flagged for tuning.
 
 ``` r
+
 extract_parameter_set_dials(ames_rec)
 #> Collection of 2 parameters for tuning
 #> 
@@ -109,6 +114,7 @@ parameter function for
 a fairly small range:
 
 ``` r
+
 deg_free()
 #> Degrees of Freedom (quantitative)
 #> Range: [1, 5]
@@ -118,6 +124,7 @@ However, there is a function in dials that is more appropriate for
 splines:
 
 ``` r
+
 spline_degree()
 #> Spline Degrees of Freedom (quantitative)
 #> Range: [1, 10]
@@ -127,6 +134,7 @@ The parameter objects can be easily changed using the
 [`update()`](https://rdrr.io/r/stats/update.html) function:
 
 ``` r
+
 ames_param <- 
   ames_rec |> 
   extract_parameter_set_dials() |> 
@@ -162,6 +170,7 @@ created grids (named `grid_*()`). For example, a space-filling design
 can be created by:
 
 ``` r
+
 spline_grid <- grid_max_entropy(ames_param, size = 10)
 #> Warning: `grid_max_entropy()` was deprecated in dials 1.3.0.
 #> ℹ Please use `grid_space_filling()` instead.
@@ -188,6 +197,7 @@ Alternately, [`expand.grid()`](https://rdrr.io/r/base/expand.grid.html)
 also works to create a regular grid:
 
 ``` r
+
 df_vals <- seq(2, 18, by = 2)
 # A regular grid:
 spline_grid <- expand.grid(`long df` = df_vals, `lat df` = df_vals)
@@ -201,6 +211,7 @@ First is a model specification. Using functions in parsnip, a basic
 linear model can be used:
 
 ``` r
+
 lm_mod <- linear_reg() |> set_engine("lm")
 ```
 
@@ -210,6 +221,7 @@ As mentioned above, a resampling specification is also needed. The Ames
 data set is large enough to use simple 10-fold cross-validation:
 
 ``` r
+
 set.seed(2453)
 cv_splits <- vfold_cv(ames_train, v = 10, strata = Sale_Price)
 ```
@@ -219,9 +231,10 @@ this is the default for regression problems).
 
 Using these objects,
 [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md)
-can be used[¹](#fn1):
+can be used[^1]:
 
 ``` r
+
 ames_res <- tune_grid(lm_mod, ames_rec, resamples = cv_splits, grid = spline_grid)
 ```
 
@@ -229,6 +242,7 @@ The object is similar to the `rsample` object but with one or more extra
 columns:
 
 ``` r
+
 ames_res
 #> # Tuning results
 #> # 10-fold cross-validation using stratification 
@@ -247,10 +261,11 @@ ames_res
 #> 10 <split [1980/217]> Fold10 <tibble [162 × 6]> <tibble [0 × 4]>
 ```
 
-The `.metrics` column has all of the holdout performance
-estimates[²](#fn2) for each parameter combination:
+The `.metrics` column has all of the holdout performance estimates[^2]
+for each parameter combination:
 
 ``` r
+
 ames_res$.metrics[[1]]
 #> # A tibble: 162 × 6
 #>    `long df` `lat df` .metric .estimator .estimate .config         
@@ -273,6 +288,7 @@ To get the average metric value for each parameter combination,
 can be put to use:
 
 ``` r
+
 estimates <- collect_metrics(ames_res)
 estimates
 #> # A tibble: 162 × 8
@@ -295,6 +311,7 @@ The values in the `mean` column are the averages of the 10 resamples.
 The best RMSE values corresponded to:
 
 ``` r
+
 rmse_vals <- 
   estimates |> 
   dplyr::filter(.metric == "rmse") |> 
@@ -321,6 +338,7 @@ but the grid search indicates that more nonlinearity is better. What was
 the relationship between these two parameters and RMSE?
 
 ``` r
+
 autoplot(ames_res, metric = "rmse")
 ```
 
@@ -338,6 +356,7 @@ Let’s plot these spline functions over the data for both good and bad
 values of `deg_free`:
 
 ``` r
+
 ames_train |> 
   dplyr::select(Sale_Price, Longitude, Latitude) |> 
   tidyr::pivot_longer(cols = c(Longitude, Latitude), 
@@ -372,6 +391,7 @@ example, the number of neighbors and the distance weighting function
 will be optimized:
 
 ``` r
+
 # requires the kknn package
 knn_mod <- 
   nearest_neighbor(neighbors = tune(), weight_func = tune()) |> 
@@ -383,6 +403,7 @@ The easiest approach to optimize the pre-processing and model parameters
 is to bundle these objects into a *workflow*:
 
 ``` r
+
 library(workflows)
 knn_wflow <- 
   workflow() |> 
@@ -391,9 +412,10 @@ knn_wflow <-
 ```
 
 From this, the parameter set can be used to modify the range and values
-of parameters being optimized[³](#fn3):
+of parameters being optimized[^3]:
 
 ``` r
+
 knn_param <- 
   knn_wflow |> 
   extract_parameter_set_dials() |> 
@@ -431,6 +453,7 @@ pieces of information:
 The code to conduct the search is:
 
 ``` r
+
 ctrl <- control_bayes(verbose = TRUE)
 set.seed(8154)
 knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 20,
@@ -1284,6 +1307,7 @@ knn_search <- tune_bayes(knn_wflow, resamples = cv_splits, initial = 5, iter = 2
 Visually, the performance gain was:
 
 ``` r
+
 autoplot(knn_search, type = "performance", metric = "rmse")
 ```
 
@@ -1296,22 +1320,23 @@ increases.](tune_files/figure-html/bo-iter-1.png)
 The best results here were:
 
 ``` r
+
 collect_metrics(knn_search) |> 
   dplyr::filter(.metric == "rmse") |> 
   arrange(mean)
 #> # A tibble: 25 × 11
 #>    neighbors weight_func `long df` `lat df` .metric .estimator   mean
 #>        <int> <chr>           <int>    <int> <chr>   <chr>       <dbl>
-#>  1         9 inv                 5        5 rmse    standard   0.0814
-#>  2         7 inv                 6        5 rmse    standard   0.0821
-#>  3        10 inv                 6        6 rmse    standard   0.0824
-#>  4         7 inv                 6        7 rmse    standard   0.0825
-#>  5         5 inv                 5        6 rmse    standard   0.0825
-#>  6        11 gaussian            5        6 rmse    standard   0.0826
-#>  7        11 inv                 2        6 rmse    standard   0.0829
-#>  8         5 gaussian            8        5 rmse    standard   0.0829
-#>  9         5 inv                 2        6 rmse    standard   0.0832
-#> 10         5 gaussian            8        6 rmse    standard   0.0832
+#>  1        10 triangular          3        3 rmse    standard   0.0819
+#>  2        10 inv                 2        4 rmse    standard   0.0824
+#>  3         8 triangular          6        4 rmse    standard   0.0824
+#>  4         6 gaussian            6        5 rmse    standard   0.0824
+#>  5        11 gaussian            4        5 rmse    standard   0.0825
+#>  6         5 gaussian            3        5 rmse    standard   0.0827
+#>  7         6 gaussian            6        6 rmse    standard   0.0827
+#>  8         4 gaussian            4        6 rmse    standard   0.0835
+#>  9         4 gaussian            4        4 rmse    standard   0.0838
+#> 10         3 rectangular         6        6 rmse    standard   0.0843
 #> # ℹ 15 more rows
 #> # ℹ 4 more variables: n <int>, std_err <dbl>, .config <chr>,
 #> #   .iter <int>
@@ -1320,18 +1345,16 @@ collect_metrics(knn_search) |>
 With this intrinsically nonlinear model there is less reliance on the
 nonlinear terms created by the recipe.
 
-------------------------------------------------------------------------
-
-1.  A simple R model formula could have been used here, such as
+[^1]: A simple R model formula could have been used here, such as
     `Sale_Price ~ log10(Gr_Liv_Area) + Longitude + Latitude`. A recipe
     is not required.
 
-2.  the tune package has default measures of performance that it uses if
-    none are specified. Here the RMSE and R² are estimated. This can be
-    changed using the `metrics` option.
+[^2]: the tune package has default measures of performance that it uses
+    if none are specified. Here the RMSE and R² are estimated. This can
+    be changed using the `metrics` option.
 
-3.  One of the tuning parameters (`weight_func`) is categorical and, by
-    default, has 9 unique values. The model used to predict new test
+[^3]: One of the tuning parameters (`weight_func`) is categorical and,
+    by default, has 9 unique values. The model used to predict new test
     parameters is a Gaussian process model, and this can become slow to
     fit when the number of tuning parameters is large or when a
     categorical parameter generates many dummy variables. We’ve reduced

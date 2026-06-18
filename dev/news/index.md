@@ -2,6 +2,9 @@
 
 ## tune (development version)
 
+- Tuning parameters contained in lists are more easily handled
+  ([\#1190](https://github.com/tidymodels/tune/issues/1190))
+
 ### Bug Fixes
 
 - Resampling and tuning would fail for quantile regression models if
