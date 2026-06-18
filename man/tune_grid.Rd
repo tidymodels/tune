@@ -33,9 +33,8 @@ tune_grid(object, ...)
 }
 \arguments{
 \item{object}{A \code{parsnip} model specification or an unfitted
-\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
-have been marked with \link[hardhat:tune]{tune()}, their values must be
-\link[=finalize_model]{finalized}.}
+\link[workflows:workflow]{workflow()}. Tuning parameters may be marked with
+\code{\link[=tune]{tune()}} and are evaluated over the values supplied in \code{grid}.}
 
 \item{...}{Not currently used.}
 
