@@ -27,6 +27,77 @@
 #'
 #' [control_resamples()] is an alias for [control_grid()] and is meant to be
 #' used with [fit_resamples()].
+#'
+#' @return An S3 object of class `control_grid` (also used for
+#' `control_resamples` and `control_last_fit`) used to contain the control
+#' settings in a grid search as a list.
+#'
+#' @examples
+#'
+#' library(rsample)
+#' library(parsnip)
+#' library(workflows)
+#'
+#' set.seed(1234)
+#'
+#' folds <- vfold_cv(mtcars, v = 5)
+#'
+#' recipe <- recipe(mpg ~ ., data = mtcars)
+#'
+#' spec <- linear_reg() |>
+#'   set_engine("lm")
+#'
+#' wf <- workflow() |>
+#'   add_model(spec) |>
+#'   add_recipe(recipe)
+#'
+#' # ---------------------------------------------------------------------------
+#' # control_grid() example:
+#' # Configure how `tune_grid()` evaluates a grid of tuning parameters —
+#' # here, save out-of-sample predictions and print progress while tuning.
+#' ctrl <- control_grid(
+#'   save_pred = TRUE,
+#'   verbose = TRUE
+#' )
+#'
+#' tune_grid(
+#'   wf,
+#'   resamples = folds,
+#'   grid = 5,
+#'   control = ctrl
+#')
+#'
+#' # ---------------------------------------------------------------------------
+#' # control_resamples() example:
+#' # Configure `fit_resamples()` for a single model (no tuning) —
+#' # retain the holdout predictions and the fitted workflows from each fold.
+#' keep_pred <- control_resamples(
+#'   save_pred = TRUE,
+#'   save_workflow = TRUE
+#' )
+#'
+#' fit_resamples(
+#'   wf,
+#'   resamples = folds,
+#'   control = keep_pred,
+#' )
+#'
+#' # ---------------------------------------------------------------------------
+#' # control_last_fit() example:
+#' # Configure the final train/test evaluation via `last_fit()` —
+#' # fit on the training split, evaluate on the held-out test set,
+#' # and print progress.
+#'
+#' split <- initial_split(mtcars)
+#'
+#' ctrl_last_fit <- control_last_fit(verbose = TRUE)
+#'
+#' last_fit(
+#'   wf,
+#'   split = split,
+#'   control = ctrl_last_fit
+#' )
+#'
 #' @export
 control_grid <- function(
   verbose = FALSE,
