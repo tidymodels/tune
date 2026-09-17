@@ -34,6 +34,7 @@
 #'
 #' @examples
 #'
+#' library(recipes)
 #' library(rsample)
 #' library(parsnip)
 #' library(workflows)
@@ -42,14 +43,15 @@
 #'
 #' folds <- vfold_cv(mtcars, v = 5)
 #'
-#' recipe <- recipe(mpg ~ ., data = mtcars)
+#' recipe <- recipe(mpg ~ ., data = mtcars) |>
+#'   step_normalize(all_numeric_predictors())
 #'
 #' # Model with tuning parameters, used for `tune_grid()` and `tune_bayes()`.
-#' spec <- decision_tree(
-#'   cost_complexity = tune(),
-#'   min_n = tune()
+#' spec <- mlp(
+#'   hidden_units = tune(),
+#'   penalty = tune()
 #' ) |>
-#'   set_engine("rpart") |>
+#'   set_engine("nnet") |>
 #'   set_mode("regression")
 #'
 #' wf <- workflow() |>
@@ -114,19 +116,10 @@
 #' )
 #'
 #' # ---------------------------------------------------------------------------
-#' # control_last_fit(): Control last fit process by allowing parallel
-#' # processing and printing progress.
+#' # control_last_fit(): Control last fit process by printing progress.
 #' split <- initial_split(mtcars)
 #'
-#' # Register parallel backend
-#' if (requireNamespace("doParallel", quietly = TRUE)) {
-#'   doParallel::registerDoParallel(cores = 2)
-#' }
-#'
-#' ctrl_last_fit <- control_last_fit(
-#'   allow_par = TRUE, # allow parallel processing
-#'   verbose = TRUE
-#' )
+#' ctrl_last_fit <- control_last_fit(verbose = TRUE)
 #'
 #' last_fit(
 #'   wf_fixed,

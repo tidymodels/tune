@@ -287,115 +287,145 @@ export(val_class_or_null)
 import(rlang)
 import(vctrs)
 import(workflows)
-importFrom(cli,cli_abort)
-importFrom(cli,cli_alert)
-importFrom(cli,cli_alert_danger)
-importFrom(cli,cli_alert_info)
-importFrom(cli,cli_alert_success)
-importFrom(cli,cli_alert_warning)
-importFrom(cli,cli_inform)
-importFrom(cli,cli_warn)
-importFrom(cli,qty)
-importFrom(dials,encode_unit)
-importFrom(dials,is_unknown)
-importFrom(dials,parameters)
-importFrom(dplyr,all_of)
-importFrom(dplyr,anti_join)
-importFrom(dplyr,arrange)
-importFrom(dplyr,bind_cols)
-importFrom(dplyr,bind_rows)
-importFrom(dplyr,case_when)
-importFrom(dplyr,desc)
-importFrom(dplyr,distinct)
-importFrom(dplyr,dplyr_reconstruct)
-importFrom(dplyr,filter)
-importFrom(dplyr,full_join)
-importFrom(dplyr,inner_join)
-importFrom(dplyr,last)
-importFrom(dplyr,mutate)
-importFrom(dplyr,mutate_if)
-importFrom(dplyr,pull)
-importFrom(dplyr,rename)
-importFrom(dplyr,sample_n)
-importFrom(dplyr,select)
-importFrom(dplyr,slice)
-importFrom(dplyr,starts_with)
-importFrom(dplyr,ungroup)
-importFrom(dplyr,vars)
-importFrom(generics,augment)
-importFrom(generics,min_grid)
-importFrom(generics,required_pkgs)
-importFrom(generics,tunable)
-importFrom(generics,tune_args)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,aes_)
-importFrom(ggplot2,aes_string)
-importFrom(ggplot2,autoplot)
-importFrom(ggplot2,facet_grid)
-importFrom(ggplot2,facet_wrap)
-importFrom(ggplot2,geom_errorbar)
-importFrom(ggplot2,geom_line)
-importFrom(ggplot2,geom_point)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,scale_x_continuous)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
-importFrom(glue,glue)
-importFrom(glue,glue_collapse)
-importFrom(hardhat,extract_fit_engine)
-importFrom(hardhat,extract_fit_parsnip)
-importFrom(hardhat,extract_mold)
-importFrom(hardhat,extract_parameter_set_dials)
-importFrom(hardhat,extract_preprocessor)
-importFrom(hardhat,extract_recipe)
-importFrom(hardhat,extract_spec_parsnip)
-importFrom(hardhat,extract_workflow)
-importFrom(hardhat,tune)
+importFrom(cli,
+  cli_abort,
+  cli_alert,
+  cli_alert_danger,
+  cli_alert_info,
+  cli_alert_success,
+  cli_alert_warning,
+  cli_inform,
+  cli_warn,
+  qty
+)
+importFrom(dials,
+  encode_unit,
+  is_unknown,
+  parameters
+)
+importFrom(dplyr,
+  all_of,
+  anti_join,
+  arrange,
+  bind_cols,
+  bind_rows,
+  case_when,
+  desc,
+  distinct,
+  dplyr_reconstruct,
+  filter,
+  full_join,
+  inner_join,
+  last,
+  mutate,
+  mutate_if,
+  pull,
+  rename,
+  sample_n,
+  select,
+  slice,
+  starts_with,
+  ungroup,
+  vars
+)
+importFrom(generics,
+  augment,
+  min_grid,
+  required_pkgs,
+  tunable,
+  tune_args
+)
+importFrom(ggplot2,
+  aes,
+  aes_,
+  aes_string,
+  autoplot,
+  facet_grid,
+  facet_wrap,
+  geom_errorbar,
+  geom_line,
+  geom_point,
+  ggplot,
+  scale_x_continuous,
+  xlab,
+  ylab
+)
+importFrom(glue,
+  glue,
+  glue_collapse
+)
+importFrom(hardhat,
+  extract_fit_engine,
+  extract_fit_parsnip,
+  extract_mold,
+  extract_parameter_set_dials,
+  extract_preprocessor,
+  extract_recipe,
+  extract_spec_parsnip,
+  extract_workflow,
+  tune
+)
 importFrom(lifecycle,deprecated)
-importFrom(parsnip,get_from_env)
-importFrom(parsnip,required_pkgs)
+importFrom(parsnip,
+  get_from_env,
+  required_pkgs
+)
 importFrom(purrr,map_int)
-importFrom(recipes,all_outcomes)
-importFrom(recipes,all_predictors)
-importFrom(rlang,"%||%")
-importFrom(rlang,":=")
-importFrom(rlang,call2)
-importFrom(rlang,call_name)
-importFrom(rlang,caller_env)
-importFrom(rlang,env_get)
-importFrom(rlang,eval_tidy)
-importFrom(rlang,expr)
-importFrom(rlang,is_false)
-importFrom(rlang,is_function)
-importFrom(rlang,is_missing)
-importFrom(rlang,is_quosure)
-importFrom(rlang,is_quosures)
-importFrom(rlang,ns_env)
-importFrom(rlang,quo_get_expr)
-importFrom(rlang,sym)
-importFrom(rlang,syms)
-importFrom(rsample,.get_fingerprint)
-importFrom(rsample,int_pctl)
-importFrom(stats,dnorm)
-importFrom(stats,median)
-importFrom(stats,model.frame)
-importFrom(stats,model.matrix)
-importFrom(stats,model.response)
-importFrom(stats,pnorm)
-importFrom(stats,predict)
-importFrom(stats,qnorm)
-importFrom(stats,qt)
-importFrom(stats,sd)
-importFrom(stats,setNames)
-importFrom(stats,update)
-importFrom(tibble,obj_sum)
-importFrom(tibble,size_sum)
-importFrom(tidyr,nest)
-importFrom(tidyr,unnest)
-importFrom(yardstick,accuracy)
-importFrom(yardstick,brier_class)
-importFrom(yardstick,brier_survival)
-importFrom(yardstick,rmse)
-importFrom(yardstick,roc_auc)
-importFrom(yardstick,rsq)
-importFrom(yardstick,weighted_interval_score)
+importFrom(recipes,
+  all_outcomes,
+  all_predictors
+)
+importFrom(rlang,
+  "%||%",
+  ":=",
+  call2,
+  call_name,
+  caller_env,
+  env_get,
+  eval_tidy,
+  expr,
+  is_false,
+  is_function,
+  is_missing,
+  is_quosure,
+  is_quosures,
+  ns_env,
+  quo_get_expr,
+  sym,
+  syms
+)
+importFrom(rsample,
+  .get_fingerprint,
+  int_pctl
+)
+importFrom(stats,
+  dnorm,
+  median,
+  model.frame,
+  model.matrix,
+  model.response,
+  pnorm,
+  predict,
+  qnorm,
+  qt,
+  sd,
+  setNames,
+  update
+)
+importFrom(tibble,
+  obj_sum,
+  size_sum
+)
+importFrom(tidyr,
+  nest,
+  unnest
+)
+importFrom(yardstick,
+  accuracy,
+  brier_class,
+  brier_survival,
+  rmse,
+  roc_auc,
+  rsq,
+  weighted_interval_score
+)

@@ -26,7 +26,7 @@ resampling results to the main R process (e.g., \code{\link[=fit_resamples]{fit_
 
 There are two frameworks that can be used to explicitly parallel process
 your work in \pkg{tune}: the \link[future:future]{future} package and the
-\link[mirai:mirai]{mirai} package. Previously, you could use the
+\link[mirai: mirai]{mirai} package. Previously, you could use the
 \link[foreach:foreach]{foreach} package, but this has been deprecated as of
 version 1.2.1 of tune.
 

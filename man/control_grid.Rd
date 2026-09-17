@@ -95,6 +95,11 @@ backend. Defaults to \code{NULL} for default backend options.}
 threshold for a warning regarding the size of the workflow. Only used when
 \code{save_workflow = TRUE}.}
 }
+\value{
+An S3 object of class \code{control_grid} (also used for
+\code{control_resamples}, \code{control_last_fit}, \code{control_bayes}) used to contain the
+control settings in a grid search as a list.
+}
 \description{
 Control aspects of the grid search process
 }
@@ -140,4 +145,99 @@ See \url{https://parsnip.tidymodels.org/articles/Submodels.html} to learn
 more about submodels.
 }
 
+\examples{
+
+library(recipes)
+library(rsample)
+library(parsnip)
+library(workflows)
+
+set.seed(1234)
+
+folds <- vfold_cv(mtcars, v = 5)
+
+recipe <- recipe(mpg ~ ., data = mtcars) |>
+  step_normalize(all_numeric_predictors())
+
+# Model with tuning parameters, used for `tune_grid()` and `tune_bayes()`.
+spec <- mlp(
+  hidden_units = tune(),
+  penalty = tune()
+) |>
+  set_engine("nnet") |>
+  set_mode("regression")
+
+wf <- workflow() |>
+  add_model(spec) |>
+  add_recipe(recipe)
+
+# ---------------------------------------------------------------------------
+# control_grid(): Modify tuning process in `tune_grid()`.
+ctrl <- control_grid(
+  # save out-of-sample predictions
+  save_pred = TRUE,
+  # print progress while tuning
+  verbose = TRUE
+)
+
+tune_grid(
+  wf,
+  resamples = folds,
+  grid = 5,
+  control = ctrl
+)
+
+# ---------------------------------------------------------------------------
+# control_bayes(): Modify tuning process in `tune_bayes()`.
+ctrl_bayes <- control_bayes(
+  save_pred = TRUE,
+  verbose = TRUE
+)
+
+set.seed(3246)
+tune_bayes(
+  wf,
+  resamples = folds,
+  initial = 5,
+  iter = 10,
+  control = ctrl_bayes
+)
+
+# ---------------------------------------------------------------------------
+# `fit_resamples()` and `last_fit()` can't use `tune()` placeholders, so for
+# `control_resamples()` and `control_last_fit()` we use a model with fixed
+# parameters.
+# ---------------------------------------------------------------------------
+# control_resamples(): Retain out-of-sample predictions and fitted workflows
+# in the grid and each fold.
+spec_fixed <- linear_reg() |>
+  set_engine("lm")
+
+wf_fixed <- workflow() |>
+  add_model(spec_fixed) |>
+  add_recipe(recipe)
+
+keep_pred <- control_resamples(
+  save_pred = TRUE,
+  save_workflow = TRUE
+)
+
+fit_resamples(
+  wf_fixed,
+  resamples = folds,
+  control = keep_pred
+)
+
+# ---------------------------------------------------------------------------
+# control_last_fit(): Control last fit process by printing progress.
+split <- initial_split(mtcars)
+
+ctrl_last_fit <- control_last_fit(verbose = TRUE)
+
+last_fit(
+  wf_fixed,
+  split = split,
+  control = ctrl_last_fit
+)
+}
 \keyword{internal}

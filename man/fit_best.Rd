@@ -80,7 +80,7 @@ To know if your model is capable of using case weights, create a model spec
 and test it using \code{\link[parsnip:case_weights_allowed]{parsnip::case_weights_allowed()}}.
 
 To use them, you will need a numeric column in your data set that has been
-passed through either \code{\link[hardhat:importance_weights]{hardhat:: importance_weights()}} or
+passed through either \code{\link[hardhat: importance_weights]{hardhat:: importance_weights()}} or
 \code{\link[hardhat:frequency_weights]{hardhat::frequency_weights()}}.
 
 For functions such as \code{\link[=fit_resamples]{fit_resamples()}} and the \verb{tune_*()} functions, the
