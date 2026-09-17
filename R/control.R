@@ -29,8 +29,8 @@
 #' used with [fit_resamples()].
 #'
 #' @return An S3 object of class `control_grid` (also used for
-#' `control_resamples` and `control_last_fit`) used to contain the control
-#' settings in a grid search as a list.
+#' `control_resamples`, `control_last_fit`, `control_bayes`) used to contain the
+#' control settings in a grid search as a list.
 #'
 #' @examples
 #'
@@ -44,19 +44,24 @@
 #'
 #' recipe <- recipe(mpg ~ ., data = mtcars)
 #'
-#' spec <- linear_reg() |>
-#'   set_engine("lm")
+#' # Model with tuning parameters, used for `tune_grid()` and `tune_bayes()`.
+#' spec <- decision_tree(
+#'   cost_complexity = tune(),
+#'   min_n = tune()
+#' ) |>
+#'   set_engine("rpart") |>
+#'   set_mode("regression")
 #'
 #' wf <- workflow() |>
 #'   add_model(spec) |>
 #'   add_recipe(recipe)
 #'
 #' # ---------------------------------------------------------------------------
-#' # control_grid() example:
-#' # Configure how `tune_grid()` evaluates a grid of tuning parameters —
-#' # here, save out-of-sample predictions and print progress while tuning.
+#' # control_grid(): Modify tuning process in `tune_grid()`.
 #' ctrl <- control_grid(
+#'   # save out-of-sample predictions
 #'   save_pred = TRUE,
+#'   # print progress while tuning
 #'   verbose = TRUE
 #' )
 #'
@@ -65,39 +70,69 @@
 #'   resamples = folds,
 #'   grid = 5,
 #'   control = ctrl
-#')
+#' )
 #'
 #' # ---------------------------------------------------------------------------
-#' # control_resamples() example:
-#' # Configure `fit_resamples()` for a single model (no tuning) —
-#' # retain the holdout predictions and the fitted workflows from each fold.
+#' # control_bayes(): Modify tuning process in `tune_bayes()`.
+#' ctrl_bayes <- control_bayes(
+#'   save_pred = TRUE,
+#'   verbose = TRUE
+#' )
+#'
+#' set.seed(3246)
+#' tune_bayes(
+#'   wf,
+#'   resamples = folds,
+#'   initial = 5,
+#'   iter = 10,
+#'   control = ctrl_bayes
+#' )
+#'
+#' # ---------------------------------------------------------------------------
+#' # `fit_resamples()` and `last_fit()` can't use `tune()` placeholders, so for
+#' # `control_resamples()` and `control_last_fit()` we use a model with fixed
+#' # parameters.
+#' # ---------------------------------------------------------------------------
+#' # control_resamples(): Retain out-of-sample predictions and fitted workflows
+#' # in the grid and each fold.
+#' spec_fixed <- linear_reg() |>
+#'   set_engine("lm")
+#'
+#' wf_fixed <- workflow() |>
+#'   add_model(spec_fixed) |>
+#'   add_recipe(recipe)
+#'
 #' keep_pred <- control_resamples(
 #'   save_pred = TRUE,
 #'   save_workflow = TRUE
 #' )
 #'
 #' fit_resamples(
-#'   wf,
+#'   wf_fixed,
 #'   resamples = folds,
-#'   control = keep_pred,
+#'   control = keep_pred
 #' )
 #'
 #' # ---------------------------------------------------------------------------
-#' # control_last_fit() example:
-#' # Configure the final train/test evaluation via `last_fit()` —
-#' # fit on the training split, evaluate on the held-out test set,
-#' # and print progress.
-#'
+#' # control_last_fit(): Control last fit process by allowing parallel
+#' # processing and printing progress.
 #' split <- initial_split(mtcars)
 #'
-#' ctrl_last_fit <- control_last_fit(verbose = TRUE)
+#' # Register parallel backend
+#' if (requireNamespace("doParallel", quietly = TRUE)) {
+#'   doParallel::registerDoParallel(cores = 2)
+#' }
+#'
+#' ctrl_last_fit <- control_last_fit(
+#'   allow_par = TRUE, # allow parallel processing
+#'   verbose = TRUE
+#' )
 #'
 #' last_fit(
-#'   wf,
+#'   wf_fixed,
 #'   split = split,
 #'   control = ctrl_last_fit
 #' )
-#'
 #' @export
 control_grid <- function(
   verbose = FALSE,
