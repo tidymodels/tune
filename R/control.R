@@ -28,8 +28,8 @@
 #' [control_resamples()] is an alias for [control_grid()] and is meant to be
 #' used with [fit_resamples()].
 #'
-#' @return An S3 object of class `control_grid` (also used for
-#' `control_resamples`, `control_last_fit`, `control_bayes`) used to contain the
+#' @return An S3 object of class `control_grid` (also used for `control_bayes`,
+#' `control_resamples`, `control_last_fit`) used to contain the
 #' control settings in a grid search as a list.
 #'
 #' @examples

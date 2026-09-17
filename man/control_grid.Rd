@@ -96,8 +96,8 @@ threshold for a warning regarding the size of the workflow. Only used when
 \code{save_workflow = TRUE}.}
 }
 \value{
-An S3 object of class \code{control_grid} (also used for
-\code{control_resamples}, \code{control_last_fit}, \code{control_bayes}) used to contain the
+An S3 object of class \code{control_grid} (also used for \code{control_bayes},
+\code{control_resamples}, \code{control_last_fit}) used to contain the
 control settings in a grid search as a list.
 }
 \description{
