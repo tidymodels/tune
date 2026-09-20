@@ -22,11 +22,9 @@ and return their resampling results to the main R process (e.g.,
 [`fit_resamples()`](https://tune.tidymodels.org/dev/reference/fit_resamples.md)).
 
 There are two frameworks that can be used to explicitly parallel process
-your work in tune: the
-[future](https://future.futureverse.org/reference/future.html) package
-and the [mirai](https://mirai.r-lib.org/reference/mirai.html) package.
-Previously, you could use the foreach package, but this has been
-deprecated as of version 1.2.1 of tune.
+your work in tune: the future package and the mirai package. Previously,
+you could use the foreach package, but this has been deprecated as of
+version 1.2.1 of tune.
 
 By default, no parallelism is used to process models in tune; you have
 to opt-in.

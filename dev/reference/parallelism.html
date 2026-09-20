@@ -306,9 +306,9 @@ search for the optimal splitting routine using multiple threads.</p>
 create <em>B</em> new R jobs to train <em>B</em> boosted trees in parallel and return their
 resampling results to the main R process (e.g., <code><a href="fit_resamples.html">fit_resamples()</a></code>).</p>
 <p>There are two frameworks that can be used to explicitly parallel process
-your work in <span class="pkg">tune</span>: the <a href="https://future.futureverse.org/reference/future.html" class="external-link">future</a> package and the
-<a href="https://mirai.r-lib.org/reference/mirai.html" class="external-link">mirai</a> package. Previously, you could use the
-foreach package, but this has been deprecated as of
+your work in <span class="pkg">tune</span>: the <span class="pkg">future</span> package and the
+<span class="pkg">mirai</span> package. Previously, you could use the
+<span class="pkg">foreach</span> package, but this has been deprecated as of
 version 1.2.1 of tune.</p>
 <p>By default, no parallelism is used to process models in <span class="pkg">tune</span>; you have
 to opt-in.</p><div class="section">

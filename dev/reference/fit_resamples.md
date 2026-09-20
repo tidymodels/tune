@@ -94,7 +94,7 @@ spec and test it using
 
 To use them, you will need a numeric column in your data set that has
 been passed through either
-[`hardhat:: importance_weights()`](https://hardhat.tidymodels.org/reference/importance_weights.html)
+[`hardhat::importance_weights()`](https://hardhat.tidymodels.org/reference/importance_weights.html)
 or
 [`hardhat::frequency_weights()`](https://hardhat.tidymodels.org/reference/frequency_weights.html).
 
@@ -274,6 +274,7 @@ control <- control_resamples(save_pred = TRUE)
 spline_res <- fit_resamples(lin_mod, spline_rec, folds, control = control)
 #> → A | warning: prediction from rank-deficient fit; consider predict(., rankdeficient="NA")
 #> There were issues with some computations   A: x1
+#> There were issues with some computations   A: x5
 #> There were issues with some computations   A: x5
 #> 
 

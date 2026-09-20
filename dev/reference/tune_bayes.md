@@ -269,7 +269,7 @@ spec and test it using
 
 To use them, you will need a numeric column in your data set that has
 been passed through either
-[`hardhat:: importance_weights()`](https://hardhat.tidymodels.org/reference/importance_weights.html)
+[`hardhat::importance_weights()`](https://hardhat.tidymodels.org/reference/importance_weights.html)
 or
 [`hardhat::frequency_weights()`](https://hardhat.tidymodels.org/reference/frequency_weights.html).
 

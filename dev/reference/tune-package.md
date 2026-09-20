@@ -20,6 +20,11 @@ Useful links:
 **Maintainer**: Max Kuhn <max@posit.co>
 ([ORCID](https://orcid.org/0000-0003-2402-136X))
 
+Authors:
+
+- Max Kuhn <max@posit.co>
+  ([ORCID](https://orcid.org/0000-0003-2402-136X))
+
 Other contributors:
 
 - Posit Software, PBC ([ROR](https://ror.org/03wc8by49)) \[copyright
