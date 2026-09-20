@@ -25,9 +25,9 @@ create \emph{B} new R jobs to train \emph{B} boosted trees in parallel and retur
 resampling results to the main R process (e.g., \code{\link[=fit_resamples]{fit_resamples()}}).
 
 There are two frameworks that can be used to explicitly parallel process
-your work in \pkg{tune}: the \link[future:future]{future} package and the
-\link[mirai:mirai]{mirai} package. Previously, you could use the
-\link[foreach:foreach]{foreach} package, but this has been deprecated as of
+your work in \pkg{tune}: the \pkg{future} package and the
+\pkg{mirai} package. Previously, you could use the
+\pkg{foreach} package, but this has been deprecated as of
 version 1.2.1 of tune.
 
 By default, no parallelism is used to process models in \pkg{tune}; you have
