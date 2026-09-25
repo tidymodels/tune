@@ -5,6 +5,9 @@
 
 ## Bug Fixes
 
+* The `tune_grid()` documentation no longer states that `object` must be
+  finalized without tuning parameters (#982).
+
 * Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (#1186)
 
 # tune 2.1.0
