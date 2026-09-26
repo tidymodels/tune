@@ -225,6 +225,28 @@ test_that("percent loss", {
   )
 })
 
+test_that("select_by_pct_loss() handles ties for the best loss (#1195)", {
+  skip_if_not_installed("dials", minimum_version = "1.4.0")
+
+  knn_results <- readRDS(test_path("data", "knn_results.rds"))
+
+  tied_metrics <- tibble::tibble(
+    K = c(1, 4, 12, 14, 17),
+    weight_func = "rectangular",
+    exponent = 1,
+    .config = paste0("cfg", 1:5),
+    mean = c(0.70, 0.75, 0.90, 0.90, 0.80)
+  )
+  local_mocked_bindings(
+    .filter_perf_metrics = function(...) tied_metrics
+  )
+
+  expect_snapshot(
+    res <- select_by_pct_loss(knn_results, metric = "accuracy", limit = 5, K)
+  )
+  expect_equal(res$K, 12)
+})
+
 test_that("select_by_* can handle metrics with direction == 'zero'", {
   skip_on_cran()
   skip_if_not_installed("kknn")

@@ -12,6 +12,8 @@
 
 * `min_grid()` now returns rows in the order of the non-submodel parameters rather than putting rows with submodels first (#987).
 
+* `select_by_pct_loss()` no longer emits a spurious warning when multiple tuning parameter combinations tie for the best loss (#1195)
+
 # tune 2.1.0
 
 * Model tuning has been enabled for quantile regression models. (#1125)
