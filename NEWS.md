@@ -7,6 +7,8 @@
 
 * Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (#1186)
 
+* `min_grid()` now returns rows in the order of the non-submodel parameters rather than putting rows with submodels first (#987).
+
 # tune 2.1.0
 
 * Model tuning has been enabled for quantile regression models. (#1125)
