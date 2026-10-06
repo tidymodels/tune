@@ -139,6 +139,64 @@ test_that("break parallelism tie", {
   plan(sequential)
 })
 
+test_that("enable mizu parallelism", {
+  skip_if_not_installed("mizu", minimum_version = "0.0.1.9000")
+  skip_on_cran()
+
+  svm_spec <- svm_rbf(mode = "classification")
+  ctrl_no <- control_grid(allow_par = FALSE)
+  ctrl_java <- control_grid(pkgs = "rJava")
+
+  # ----------------------------------------------------------------------------
+  # sequential; no pool or not enough workers
+
+  mizu::mizu_local_pool(NULL)
+  expect_equal(tune:::choose_framework(), "sequential")
+
+  pool_1 <- mizu::mizu_pool(n_workers = 1)
+  withr::defer(mizu::mizu_pool_stop(pool_1))
+  mizu::mizu_local_pool(pool_1)
+
+  expect_equal(tune:::choose_framework(), "sequential")
+
+  # ----------------------------------------------------------------------------
+  # parallel
+
+  pool_2 <- mizu::mizu_pool(n_workers = 2)
+  withr::defer(mizu::mizu_pool_stop(pool_2))
+  mizu::mizu_local_pool(pool_2)
+
+  expect_equal(tune:::choose_framework(), "mizu")
+  expect_snapshot(tune:::choose_framework(verbose = TRUE))
+  expect_equal(tune:::choose_framework(svm_spec), "mizu")
+
+  # ----------------------------------------------------------------------------
+  # sequential due to restrictions
+
+  expect_equal(tune:::choose_framework(control = ctrl_no), "sequential")
+  expect_equal(tune:::choose_framework(control = ctrl_java), "sequential")
+
+  mizu::mizu_pool_stop(pool_2)
+  expect_equal(tune:::choose_framework(), "sequential")
+})
+
+test_that("break parallelism tie with mizu", {
+  skip_if_not_installed("mirai", minimum_version = "2.4.0")
+  skip_if_not_installed("mizu", minimum_version = "0.0.1.9000")
+  skip_on_cran()
+
+  pool <- mizu::mizu_pool(n_workers = 2)
+  withr::defer(mizu::mizu_pool_stop(pool))
+  mizu::mizu_local_pool(pool)
+
+  mirai::daemons(2)
+  withr::defer(mirai::daemons(0))
+
+  expect_equal(tune:::choose_framework(), "mirai")
+  expect_snapshot(tune:::choose_framework(verbose = TRUE))
+  expect_equal(tune:::choose_framework(default = "mizu"), "mizu")
+})
+
 test_that("loop execution code", {
   skip_if_not_installed("mirai")
 
@@ -197,6 +255,13 @@ test_that("loop execution code", {
   )
 })
 
+test_that("loop execution code for mizu", {
+  skip_if_not_installed("mizu", minimum_version = "0.0.1.9000")
+
+  expect_snapshot(tune:::loop_call("resamples", "mizu", list()))
+  expect_snapshot(tune:::loop_call("everything", "mizu", list()))
+})
+
 
 test_that("same results using mirai", {
   skip_if_not_installed("mirai")
@@ -240,6 +305,60 @@ test_that("same results using mirai", {
   expect_equal(seq_mtr, mirai_mtr)
 
   tmp <- mirai::daemons(0)
+})
+
+test_that("same results using mizu", {
+  skip_if_not_installed("mizu", minimum_version = "0.0.1.9000")
+  skip_if_not_installed("xgboost")
+  skip_if_not_installed("modeldata")
+  skip_on_cran()
+
+  set.seed(6083)
+  dat <- modeldata::sim_regression(500)
+  rs <- vfold_cv(dat)
+
+  mod <- boost_tree(min_n = tune(), trees = 20, learn_rate = tune()) |>
+    set_mode("regression")
+
+  simple_wflow <- workflow(outcome ~ ., mod)
+
+  set.seed(6083)
+  seq_res <- tune_grid(
+    simple_wflow,
+    resamples = rs,
+    grid = 4,
+    control = control_grid(save_pred = TRUE)
+  )
+  seq_mtr <- collect_metrics(seq_res)
+  set.seed(3917)
+  seq_int <- int_pctl(seq_res, times = 1001)
+
+  pool <- mizu::mizu_pool(n_workers = 2)
+  withr::defer(mizu::mizu_pool_stop(pool))
+  mizu::mizu_local_pool(pool)
+
+  set.seed(6083)
+  mizu_res <- tune_grid(
+    simple_wflow,
+    resamples = rs,
+    grid = 4,
+    control = control_grid(save_pred = TRUE)
+  )
+  mizu_mtr <- collect_metrics(mizu_res)
+
+  expect_equal(seq_mtr, mizu_mtr)
+
+  set.seed(3917)
+  expect_equal(seq_int, int_pctl(mizu_res, times = 1001))
+
+  set.seed(6083)
+  mizu_all_res <- tune_grid(
+    simple_wflow,
+    resamples = rs,
+    grid = 4,
+    control = control_grid(parallel_over = "everything")
+  )
+  expect_equal(seq_mtr, collect_metrics(mizu_all_res))
 })
 
 

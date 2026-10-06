@@ -24,9 +24,9 @@ Alternatively, if you are resampling a model \emph{B} times, you can explicitly
 create \emph{B} new R jobs to train \emph{B} boosted trees in parallel and return their
 resampling results to the main R process (e.g., \code{\link[=fit_resamples]{fit_resamples()}}).
 
-There are two frameworks that can be used to explicitly parallel process
-your work in \pkg{tune}: the \pkg{future} package and the
-\pkg{mirai} package. Previously, you could use the
+There are three frameworks that can be used to explicitly parallel process
+your work in \pkg{tune}: the \pkg{future}, \pkg{mirai}, and \pkg{mizu}
+packages. Previously, you could use the
 \pkg{foreach} package, but this has been deprecated as of
 version 1.2.1 of tune.
 
@@ -73,6 +73,28 @@ of parallel workers. Using \code{daemons(0)} reverts to sequential processing.
 The arguments \code{url} and \code{remote} are used to set up and launch parallel
 processes over the network for distributed computing. See \code{\link[mirai:daemons]{mirai::daemons()}}
 documentation for more details.
+}
+
+\subsection{Using mizu}{
+
+\pkg{mizu} uses shared memory to communicate with worker processes on the
+same machine. Create a pool of workers with \code{mizu::mizu_pool()} and
+register it as the default pool so that \pkg{tune} can find it:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{   library(mizu)
+   pool <- mizu_pool(n_workers = 4)
+   mizu_set_default_pool(pool)
+}\if{html}{\out{</div>}}
+
+Use \code{mizu_set_default_pool(NULL)} to revert to sequential processing.
+\code{mizu::mizu_with_pool()} and \code{mizu::mizu_local_pool()} can also set the
+default pool temporarily.
+}
+
+\subsection{Using more than one framework}{
+
+If workers are available from more than one framework, \pkg{mirai} is used
+when it is one of them. Otherwise, \pkg{future} is used.
 }
 
 \subsection{Reverting to sequential processing}{

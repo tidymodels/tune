@@ -4,11 +4,14 @@
 \alias{has_non_par_pkgs}
 \alias{future_installed}
 \alias{mirai_installed}
+\alias{mizu_installed}
 \alias{get_future_workers}
 \alias{get_mirai_workers}
+\alias{get_mizu_workers}
 \alias{choose_framework}
 \alias{get_parallel_seeds}
 \alias{eval_mirai}
+\alias{eval_mizu}
 \alias{.par_fns}
 \title{Internal functions to help use parallel processing}
 \usage{
@@ -18,9 +21,13 @@ future_installed()
 
 mirai_installed()
 
+mizu_installed()
+
 get_future_workers(verbose)
 
 get_mirai_workers(verbose)
+
+get_mizu_workers(verbose)
 
 choose_framework(
   object = NULL,
@@ -32,6 +39,8 @@ choose_framework(
 get_parallel_seeds(workers)
 
 eval_mirai(.x, .f, ..., .args)
+
+eval_mizu(.x, .f, ...)
 
 .par_fns(framework)
 }

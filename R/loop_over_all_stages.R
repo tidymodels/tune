@@ -18,6 +18,10 @@
   # If we are using last_fit() (= zero seed length), don't mess with the RNG
   # stream; otherwise set everything up.
   if (seed_length > 0) {
+    # Fresh worker processes (e.g., from mizu) may not have an RNG state yet
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      set.seed(NULL)
+    }
     orig_seed <- .Random.seed
     # Set seed within the worker process
     assign(".Random.seed", resamples$.seeds[[1]], envir = .GlobalEnv)
