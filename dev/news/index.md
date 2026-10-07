@@ -7,6 +7,12 @@
 
 ### Bug Fixes
 
+- The
+  [`tune_grid()`](https://tune.tidymodels.org/dev/reference/tune_grid.md)
+  documentation no longer states that `object` must be finalized without
+  tuning parameters
+  ([\#982](https://github.com/tidymodels/tune/issues/982)).
+
 - Resampling and tuning would fail for quantile regression models if
   they passed a quantile regression metric
   ([\#1186](https://github.com/tidymodels/tune/issues/1186))

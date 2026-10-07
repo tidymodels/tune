@@ -41,10 +41,9 @@ tune_grid(
 
   A `parsnip` model specification or an unfitted
   [workflow()](https://workflows.tidymodels.org/reference/workflow.html).
-  No tuning parameters are allowed; if arguments have been marked with
-  [tune()](https://hardhat.tidymodels.org/reference/tune.html), their
-  values must be
-  [finalized](https://tune.tidymodels.org/dev/reference/finalize_model.md).
+  Tuning parameters may be marked with
+  [`tune()`](https://hardhat.tidymodels.org/reference/tune.html) and are
+  evaluated over the values supplied in `grid`.
 
 - ...:
 

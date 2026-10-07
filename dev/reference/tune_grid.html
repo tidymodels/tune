@@ -90,9 +90,8 @@ recipe across one or more resamples of the data.</p>
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>A <code>parsnip</code> model specification or an unfitted
-<a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflow()</a>. No tuning parameters are allowed; if arguments
-have been marked with <a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a>, their values must be
-<a href="finalize_model.html">finalized</a>.</p></dd>
+<a href="https://workflows.tidymodels.org/reference/workflow.html" class="external-link">workflow()</a>. Tuning parameters may be marked with
+<code><a href="https://hardhat.tidymodels.org/reference/tune.html" class="external-link">tune()</a></code> and are evaluated over the values supplied in <code>grid</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
