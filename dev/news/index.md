@@ -17,6 +17,11 @@
   they passed a quantile regression metric
   ([\#1186](https://github.com/tidymodels/tune/issues/1186))
 
+- [`min_grid()`](https://generics.r-lib.org/reference/min_grid.html) now
+  returns rows in the order of the non-submodel parameters rather than
+  putting rows with submodels first
+  ([\#987](https://github.com/tidymodels/tune/issues/987)).
+
 ## tune 2.1.0
 
 CRAN release: 2026-04-17

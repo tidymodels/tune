@@ -50,6 +50,7 @@
 <h3 id="bug-fixes-development-version">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li><p>The <code><a href="../reference/tune_grid.html">tune_grid()</a></code> documentation no longer states that <code>object</code> must be finalized without tuning parameters (<a href="https://github.com/tidymodels/tune/issues/982" class="external-link">#982</a>).</p></li>
 <li><p>Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (<a href="https://github.com/tidymodels/tune/issues/1186" class="external-link">#1186</a>)</p></li>
+<li><p><code><a href="https://generics.r-lib.org/reference/min_grid.html" class="external-link">min_grid()</a></code> now returns rows in the order of the non-submodel parameters rather than putting rows with submodels first (<a href="https://github.com/tidymodels/tune/issues/987" class="external-link">#987</a>).</p></li>
 </ul></div>
 </div>
     <div class="section level2">
