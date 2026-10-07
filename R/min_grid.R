@@ -181,6 +181,10 @@ submod_and_others <- function(grid, fixed_args) {
       purrr::map(1:nrow(min_grid_df), \(x) list())
     )
 
+  # The joins above put rows with submodels first, so re-sort (#987)
+  min_grid_df <- min_grid_df |>
+    dplyr::arrange(!!!rlang::syms(fixed_args))
+
   dplyr::select(min_grid_df, dplyr::all_of(orig_names), .submodels) |>
     dplyr::mutate_if(is.factor, as.character)
 }

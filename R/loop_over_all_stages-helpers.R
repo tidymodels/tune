@@ -530,7 +530,7 @@ make_config_labs <- function(grid, param, val = "pre") {
       )
     } else {
       cli::cli_abort(
-        "No prediction types are known for mode {.val model_mode}."
+        "No prediction types are known for mode {.val {model_mode}}."
       )
     }
 

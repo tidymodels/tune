@@ -1,5 +1,17 @@
 # tune (development version)
 
+* Tuning parameters contained in lists are more easily handled (#1190)
+
+
+## Bug Fixes
+
+* The `tune_grid()` documentation no longer states that `object` must be
+  finalized without tuning parameters (#982).
+
+* Resampling and tuning would fail for quantile regression models if they passed a quantile regression metric (#1186)
+
+* `min_grid()` now returns rows in the order of the non-submodel parameters rather than putting rows with submodels first (#987).
+
 # tune 2.1.0
 
 * Model tuning has been enabled for quantile regression models. (#1125)

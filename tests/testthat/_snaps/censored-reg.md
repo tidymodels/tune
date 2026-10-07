@@ -12,7 +12,7 @@
       tune_grid(spec, Surv(time, status) ~ ., resamples = rs, metrics = reg_mtr)
     Condition
       Error in `tune_grid()`:
-      ! The parsnip model has `mode` value of "censored regression", but the `metrics` is a metric set for a different model mode.
+      ! The parsnip model has `mode` value of "censored regression", but the metric set for a different model mode.
 
 ---
 

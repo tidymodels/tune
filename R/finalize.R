@@ -51,6 +51,10 @@ finalize_model <- function(x, parameters) {
         discordant$name[i]
     }
   }
+
+  # In case the parameter is not a scalar value
+  parameters <- delist(parameters)
+
   rlang::exec(update, object = x, !!!parameters)
 }
 
@@ -68,6 +72,9 @@ finalize_recipe <- function(x, parameters) {
   if (tibble::is_tibble(parameters)) {
     parameters <- as.list(parameters)
   }
+
+  # In case the parameter is not a scalar value
+  parameters <- delist(parameters)
 
   parameters <- parameters[names(parameters) %in% pset$id]
   parameters <- parameters[pset$id]
@@ -125,6 +132,9 @@ finalize_tailor <- function(x, parameters) {
     parameters <- as.list(parameters)
   }
 
+  # In case the parameter is not a scalar value
+  parameters <- delist(parameters)
+
   parameters <- parameters[names(parameters) %in% pset$id]
   parameters <- parameters[pset$id]
 
@@ -169,4 +179,15 @@ complete_steps <- function(param, pset, object) {
   step_to_update <- rlang::exec(update, object = step_to_update, !!!param)
   object$steps[[step_index]] <- step_to_update
   object
+}
+
+delist <- function(x) {
+  grid <- as.list(x)
+  is_list_param <- purrr::map_lgl(grid, is.list)
+  if (any(is_list_param)) {
+    for (inx in which(is_list_param)) {
+      grid[[inx]] <- grid[[inx]][[1]]
+    }
+  }
+  grid
 }

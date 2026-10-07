@@ -29,16 +29,16 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dials}{\code{\link[dials]{parameters}}}
+  \item{dials}{\code{\link[dials:parameters]{parameters()}}}
 
-  \item{dplyr}{\code{\link[dplyr:dplyr_extending]{dplyr_reconstruct}}}
+  \item{dplyr}{\code{\link[dplyr:dplyr_reconstruct]{dplyr_reconstruct()}}}
 
-  \item{generics}{\code{\link[generics]{augment}}, \code{\link[generics]{min_grid}}, \code{\link[generics]{required_pkgs}}, \code{\link[generics]{tunable}}, \code{\link[generics]{tune_args}}}
+  \item{generics}{\code{\link[generics:augment]{augment()}}, \code{\link[generics:min_grid]{min_grid()}}, \code{\link[generics:required_pkgs]{required_pkgs()}}, \code{\link[generics:tunable]{tunable()}}, \code{\link[generics:tune_args]{tune_args()}}}
 
-  \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
+  \item{ggplot2}{\code{\link[ggplot2:autoplot]{autoplot()}}}
 
-  \item{hardhat}{\code{\link[hardhat:hardhat-extract]{extract_fit_engine}}, \code{\link[hardhat:hardhat-extract]{extract_fit_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_mold}}, \code{\link[hardhat:hardhat-extract]{extract_parameter_set_dials}}, \code{\link[hardhat:hardhat-extract]{extract_preprocessor}}, \code{\link[hardhat:hardhat-extract]{extract_recipe}}, \code{\link[hardhat:hardhat-extract]{extract_spec_parsnip}}, \code{\link[hardhat:hardhat-extract]{extract_workflow}}, \code{\link[hardhat]{tune}}}
+  \item{hardhat}{\code{\link[hardhat:extract_fit_engine]{extract_fit_engine()}}, \code{\link[hardhat:extract_fit_parsnip]{extract_fit_parsnip()}}, \code{\link[hardhat:extract_mold]{extract_mold()}}, \code{\link[hardhat:extract_parameter_set_dials]{extract_parameter_set_dials()}}, \code{\link[hardhat:extract_preprocessor]{extract_preprocessor()}}, \code{\link[hardhat:extract_recipe]{extract_recipe()}}, \code{\link[hardhat:extract_spec_parsnip]{extract_spec_parsnip()}}, \code{\link[hardhat:extract_workflow]{extract_workflow()}}, \code{\link[hardhat:tune]{tune()}}}
 
-  \item{rsample}{\code{\link[rsample:get_fingerprint]{.get_fingerprint}}, \code{\link[rsample]{int_pctl}}}
+  \item{rsample}{\code{\link[rsample:.get_fingerprint]{.get_fingerprint()}}, \code{\link[rsample:int_pctl]{int_pctl()}}}
 }}
 

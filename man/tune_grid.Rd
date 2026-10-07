@@ -33,9 +33,8 @@ tune_grid(object, ...)
 }
 \arguments{
 \item{object}{A \code{parsnip} model specification or an unfitted
-\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
-have been marked with \link[hardhat:tune]{tune()}, their values must be
-\link[=finalize_model]{finalized}.}
+\link[workflows:workflow]{workflow()}. Tuning parameters may be marked with
+\code{\link[=tune]{tune()}} and are evaluated over the values supplied in \code{grid}.}
 
 \item{...}{Not currently used.}
 
@@ -212,8 +211,8 @@ argument that is given to the function in each resample is a workflow
 object (see \code{\link[workflows:workflow]{workflows::workflow()}} for more information). Several
 helper functions can be used to easily pull out the preprocessing
 and/or model information from the workflow, such as
-\code{\link[workflows:extract-workflow]{extract_preprocessor()}} and
-\code{\link[workflows:extract-workflow]{extract_fit_parsnip()}}.
+\code{\link[workflows:extract_preprocessor.workflow]{extract_preprocessor()}} and
+\code{\link[workflows:extract_fit_parsnip.workflow]{extract_fit_parsnip()}}.
 
 As an example, if there is interest in getting each parsnip model fit back,
 one could use:
@@ -244,7 +243,7 @@ To know if your model is capable of using case weights, create a model spec
 and test it using \code{\link[parsnip:case_weights_allowed]{parsnip::case_weights_allowed()}}.
 
 To use them, you will need a numeric column in your data set that has been
-passed through either \code{\link[hardhat:importance_weights]{hardhat:: importance_weights()}} or
+passed through either \code{\link[hardhat:importance_weights]{hardhat::importance_weights()}} or
 \code{\link[hardhat:frequency_weights]{hardhat::frequency_weights()}}.
 
 For functions such as \code{\link[=fit_resamples]{fit_resamples()}} and the \verb{tune_*()} functions, the

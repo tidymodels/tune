@@ -330,25 +330,22 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
     return(mtr_set)
   }
 
-  is_numeric_metric_set <- inherits(mtr_set, "numeric_metric_set")
-  is_class_prob_metric_set <- inherits(mtr_set, "class_prob_metric_set")
-  is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
-
-  if (
-    !is_numeric_metric_set && !is_class_prob_metric_set && !is_surv_metric_set
-  ) {
+  if (!inherits(mtr_set, "metric_set")) {
     cli::cli_abort(
-      "The {.arg metrics} argument should be the results of
-                   {.fn yardstick::metric_set}.",
+      "The {.arg metrics} argument should have class {.cls metric_set}, not {.cls {class(mtr_set)}}.",
       call = call
     )
   }
 
+  is_numeric_metric_set <- inherits(mtr_set, "numeric_metric_set")
+  is_class_prob_metric_set <- inherits(mtr_set, "class_prob_metric_set")
+  is_surv_metric_set <- inherits(mtr_set, c("survival_metric_set"))
+  is_qnt_metric_set <- inherits(mtr_set, c("quantile_metric_set"))
+
   if (mode == "regression" && !is_numeric_metric_set) {
     cli::cli_abort(
       "The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.arg metrics} is a metric set for a
-                   different model mode.",
+       but the metric set for a different model mode.",
       call = call
     )
   }
@@ -356,8 +353,7 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
   if (mode == "classification" && !is_class_prob_metric_set) {
     cli::cli_abort(
       "The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.arg metrics} is a metric set for a
-                   different model mode.",
+       but the metric set for a different model mode.",
       call = call
     )
   }
@@ -365,8 +361,15 @@ check_metrics_arg <- function(mtr_set, wflow, ..., call = rlang::caller_env()) {
   if (mode == "censored regression" && !is_surv_metric_set) {
     cli::cli_abort(
       "The parsnip model has {.code mode} value of {.val {mode}},
-                   but the {.arg metrics} is a metric set for a
-                   different model mode.",
+       but the metric set for a different model mode.",
+      call = call
+    )
+  }
+
+  if (mode == "quantile regression" && !is_qnt_metric_set) {
+    cli::cli_abort(
+      "The parsnip model has {.code mode} value of {.val {mode}},
+       but the metric set for a different model mode.",
       call = call
     )
   }

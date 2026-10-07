@@ -87,6 +87,28 @@ test_that("boosted tree grid reduction - xgboost", {
 
 # ------------------------------------------------------------------------------
 
+test_that("rows are sorted by the non-submodel parameters (#987)", {
+  skip_if_not_installed("xgboost")
+  mod <- parsnip::boost_tree() |> parsnip::set_engine("xgboost")
+
+  model_grid <- list(
+    tibble::tibble(trees = 2:3, min_n = 3L),
+    tibble::tibble(trees = 1:2, min_n = 1L),
+    tibble::tibble(trees = 2L, min_n = 2L)
+  ) |>
+    purrr::list_rbind()
+
+  reg_grid_smol <- min_grid(mod, model_grid)
+
+  expect_equal(reg_grid_smol$min_n, 1:3)
+  expect_equal(reg_grid_smol$trees, c(2, 2, 3))
+  expect_equal(reg_grid_smol$.submodels[[1]], list(trees = 1))
+  expect_length(reg_grid_smol$.submodels[[2]], 0)
+  expect_equal(reg_grid_smol$.submodels[[3]], list(trees = 2))
+})
+
+# ------------------------------------------------------------------------------
+
 test_that("boosted tree grid reduction - C5.0", {
   mod <- parsnip::boost_tree() |> parsnip::set_engine("C5.0")
 

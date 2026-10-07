@@ -6,6 +6,9 @@
 #'
 #' @inheritParams last_fit
 #' @inheritParams fit_resamples
+#' @param object A `parsnip` model specification or an unfitted
+#'   [workflows::workflow()]. Tuning parameters may be marked with
+#'   [tune()] and are evaluated over the values supplied in `grid`.
 #' @param param_info A [dials::parameters()] object or `NULL`. If none is given,
 #' a parameters set is derived from other arguments. Passing this argument can
 #' be useful when parameter ranges need to be customized.
