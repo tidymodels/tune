@@ -5,6 +5,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -16,6 +17,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -27,7 +29,8 @@
     Message
       mirai is not active.
       future is active with 2 workers.
-      future will be used for parallel processing}.
+      mizu is not active.
+      future will be used for parallel processing.
     Output
       [1] "future"
 
@@ -54,6 +57,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -65,6 +69,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -76,6 +81,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -87,7 +93,8 @@
     Message
       mirai is active with 2 workers.
       future is active with 1 worker.
-      mirai will be used for parallel processing}.
+      mizu is not active.
+      mirai will be used for parallel processing.
     Output
       [1] "mirai"
 
@@ -114,6 +121,7 @@
     Message
       mirai is active with 1 worker.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -125,6 +133,7 @@
     Message
       mirai is not active.
       future is active with 1 worker.
+      mizu is not active.
       Too few workers for parallel processing.
     Output
       [1] "sequential"
@@ -136,7 +145,32 @@
     Message
       mirai is active with 2 workers.
       future is active with 2 workers.
-      Multiple workers exist for both mirai and future; falling back to the default of mirai.
+      mizu is not active.
+      Multiple workers exist for mirai and future; using mirai.
+    Output
+      [1] "mirai"
+
+# enable mizu parallelism
+
+    Code
+      tune:::choose_framework(verbose = TRUE)
+    Message
+      mirai is not active.
+      future is active with 1 worker.
+      mizu is active with 2 workers.
+      mizu will be used for parallel processing.
+    Output
+      [1] "mizu"
+
+# break parallelism tie with mizu
+
+    Code
+      tune:::choose_framework(verbose = TRUE)
+    Message
+      mirai is active with 2 workers.
+      future is active with 1 worker.
+      mizu is active with 2 workers.
+      Multiple workers exist for mirai and mizu; using mirai.
     Output
       [1] "mirai"
 
@@ -243,4 +277,20 @@
     Output
       eval_mirai(inds, tune::.loop_over_all_stages2, .args = list(resamples = resamples, 
           grid = candidates, static = static, a = a))
+
+# loop execution code for mizu
+
+    Code
+      tune:::loop_call("resamples", "mizu", list())
+    Output
+      eval_mizu(resamples, tune::.loop_over_all_stages, grid = grid, 
+          static = static)
+
+---
+
+    Code
+      tune:::loop_call("everything", "mizu", list())
+    Output
+      eval_mizu(inds, tune::.loop_over_all_stages2, resamples = resamples, 
+          grid = candidates, static = static)
 

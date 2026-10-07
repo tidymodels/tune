@@ -2,6 +2,8 @@
 
 * Tuning parameters contained in lists are more easily handled (#1190)
 
+* The mizu package can now be used for parallel processing. Register a pool of workers with `mizu::mizu_set_default_pool()` and tune will use it. See `?parallelism`.
+
 
 ## Bug Fixes
 

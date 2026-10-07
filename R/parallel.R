@@ -55,6 +55,14 @@ mirai_installed <- function() {
 #' @export
 #' @keywords internal
 #' @rdname internal-parallel
+mizu_installed <- function() {
+  # 0.0.1.9000 added the default pool used to detect workers
+  rlang::is_installed("mizu", version = "0.0.1.9000")
+}
+
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 get_future_workers <- function(verbose) {
   has_future <- future_installed()
 
@@ -113,6 +121,41 @@ get_mirai_workers <- function(verbose) {
 #' @export
 #' @keywords internal
 #' @rdname internal-parallel
+get_mizu_workers <- function(verbose) {
+  if (!mizu_installed()) {
+    if (verbose) {
+      cli::cli_inform("{.pkg mizu} is not installed.")
+    }
+    return(0L)
+  }
+
+  pool <- mizu::mizu_default_pool()
+  # The default can be a stopped pool, which errors here
+  status <- tryCatch(mizu::mizu_pool_status(pool), error = function(e) NULL)
+  if (is.null(pool) || is.null(status) || isTRUE(status$shutdown)) {
+    mizu_workers <- 0L
+  } else {
+    mizu_workers <- sum(status$workers == "live")
+  }
+
+  if (verbose) {
+    if (mizu_workers == 0) {
+      cli::cli_inform(
+        "{.pkg mizu} is not active."
+      )
+    } else {
+      cli::cli_inform(
+        "{.pkg mizu} is active with {mizu_workers} worker{?s}."
+      )
+    }
+  }
+
+  mizu_workers
+}
+
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
 #' @param default The default parallel processor.
 choose_framework <- function(
   object = NULL,
@@ -130,47 +173,47 @@ choose_framework <- function(
     return("sequential")
   }
 
-  has_future <- future_installed()
-  has_mirai <- mirai_installed()
-
-  if (!has_future & !has_mirai) {
+  if (!future_installed() & !mirai_installed() & !mizu_installed()) {
     if (verbose) {
-      cli::cli_inform("Neither {.pkg mirai} or {.pkg future} are installed.")
+      cli::cli_inform(
+        "None of {.pkg mirai}, {.pkg future}, or {.pkg mizu} are installed."
+      )
     }
     return("sequential")
   }
 
-  mirai_workers <- get_mirai_workers(verbose)
-  future_workers <- get_future_workers(verbose)
+  workers <- c(
+    mirai = get_mirai_workers(verbose),
+    future = get_future_workers(verbose),
+    mizu = get_mizu_workers(verbose)
+  )
+  active <- names(workers)[workers >= 2]
 
-  neither <- future_workers < 2 & mirai_workers < 2
-  both <- future_workers >= 2 & mirai_workers >= 2
-
-  if (neither) {
+  if (length(active) == 0) {
     if (verbose) {
       cli::cli_inform("Too few workers for parallel processing.")
     }
     return("sequential")
   }
 
-  if (both) {
+  if (length(active) > 1) {
+    if (default %in% active) {
+      res <- default
+    } else {
+      res <- active[1]
+    }
     if (verbose) {
       cli::cli_inform(
-        "Multiple workers exist for both {.pkg mirai} and {.pkg future};
-        falling back to the default of {.pkg {default}}."
+        "Multiple workers exist for {.pkg {active}}; using {.pkg {res}}."
       )
     }
-    return(default)
+    return(res)
   }
 
-  if (future_workers >= 2) {
-    res <- "future"
-  } else {
-    res <- "mirai"
-  }
+  res <- active
 
   if (verbose) {
-    cli::cli_inform("{.pkg {res}} will be used for parallel processing}.")
+    cli::cli_inform("{.pkg {res}} will be used for parallel processing.")
   }
 
   res
@@ -230,9 +273,9 @@ get_parallel_seeds <- function(workers) {
 #' create _B_ new R jobs to train _B_ boosted trees in parallel and return their
 #' resampling results to the main R process (e.g., [fit_resamples()]).
 #'
-#' There are two frameworks that can be used to explicitly parallel process
-#' your work in \pkg{tune}: the \pkg{future} package and the
-#' \pkg{mirai} package. Previously, you could use the
+#' There are three frameworks that can be used to explicitly parallel process
+#' your work in \pkg{tune}: the \pkg{future}, \pkg{mirai}, and \pkg{mizu}
+#' packages. Previously, you could use the
 #' \pkg{foreach} package, but this has been deprecated as of
 #' version 1.2.1 of tune.
 #'
@@ -280,6 +323,27 @@ get_parallel_seeds <- function(workers) {
 #' The arguments `url` and `remote` are used to set up and launch parallel
 #' processes over the network for distributed computing. See [mirai::daemons()]
 #' documentation for more details.
+#'
+#' ## Using mizu
+#'
+#' \pkg{mizu} uses shared memory to communicate with worker processes on the
+#' same machine. Create a pool of workers with `mizu::mizu_pool()` and
+#' register it as the default pool so that \pkg{tune} can find it:
+#'
+#' ```r
+#'    library(mizu)
+#'    pool <- mizu_pool(n_workers = 4)
+#'    mizu_set_default_pool(pool)
+#' ```
+#'
+#' Use `mizu_set_default_pool(NULL)` to revert to sequential processing.
+#' `mizu::mizu_with_pool()` and `mizu::mizu_local_pool()` can also set the
+#' default pool temporarily.
+#'
+#' ## Using more than one framework
+#'
+#' If workers are available from more than one framework, \pkg{mirai} is used
+#' when it is one of them. Otherwise, \pkg{future} is used.
 #'
 #' ## Reverting to sequential processing
 #'
@@ -378,6 +442,18 @@ eval_mirai <- function(.x, .f, ..., .args) {
   mirai::collect_mirai(res)
 }
 
+# Unlike mirai_map(), mizu_map() takes constant arguments via `...` and stages
+# them once. tune's tasks are expensive, so each element is its own morsel to
+# balance the load across workers.
+
+#' @export
+#' @keywords internal
+#' @rdname internal-parallel
+eval_mizu <- function(.x, .f, ...) {
+  pool <- mizu::mizu_default_pool()
+  mizu::mizu_map(pool, .x, .f, ..., .chunks = length(.x))
+}
+
 #' @export
 #' @keywords internal
 #' @rdname internal-parallel
@@ -388,8 +464,10 @@ eval_mirai <- function(.x, .f, ..., .args) {
     res <- list(fn = "future_lapply", ns = "future.apply")
   } else if (framework == "mirai") {
     res <- list(fn = "eval_mirai", ns = NULL)
+  } else if (framework == "mizu") {
+    res <- list(fn = "eval_mizu", ns = NULL)
   } else {
-    cli::cli_abort("Frmework {.val framework} is unknown.")
+    cli::cli_abort("Framework {.val {framework}} is unknown.")
   }
   res
 }
@@ -436,6 +514,10 @@ loop_call <-
       base_args <- c(base_args, future_opts)
     }
 
+    if (framework == "mizu") {
+      rlang::check_installed("mizu", version = "0.0.1.9000")
+    }
+
     if (framework == "mirai") {
       rlang::check_installed("mirai")
       cl <- rlang::call_modify(base_cl, .args = base_args)
@@ -461,6 +543,10 @@ pctl_call <- function(framework, args = list()) {
       future_opts$future.globals <- names(args)
     }
     args <- c(args, future_opts)
+  }
+
+  if (framework == "mizu") {
+    rlang::check_installed("mizu", version = "0.0.1.9000")
   }
 
   main_args <- list(
