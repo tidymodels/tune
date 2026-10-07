@@ -389,7 +389,7 @@ eval_mirai <- function(.x, .f, ..., .args) {
   } else if (framework == "mirai") {
     res <- list(fn = "eval_mirai", ns = NULL)
   } else {
-    cli::cli_abort("Frmework {.val framework} is unknown.")
+    cli::cli_abort("Framework {.val {framework}} is unknown.")
   }
   res
 }
