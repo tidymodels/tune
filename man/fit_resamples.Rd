@@ -28,9 +28,9 @@ fit_resamples(object, ...)
 )
 }
 \arguments{
-\item{object}{A \code{parsnip} model specification or an unfitted
-\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if arguments
-have been marked with \link[hardhat:tune]{tune()}, their values must be
+\item{object}{A \code{parsnip} model specification or a
+\link[workflows:workflow]{workflow()}. No tuning parameters are allowed; if
+arguments have been marked with \code{\link[hardhat:tune]{hardhat::tune()}}, their values must be
 \link[=finalize_model]{finalized}.}
 
 \item{...}{Currently unused.}
@@ -57,6 +57,12 @@ process.}
 resamples. It does not perform any tuning (see \code{\link[=tune_grid]{tune_grid()}} and
 \code{\link[=tune_bayes]{tune_bayes()}} for that), and is instead used for fitting a single
 model+recipe or model+formula combination across many resamples.
+}
+\details{
+A fitted workflow can be supplied, but its existing fit is not used to
+calculate resampling results. The workflow is fitted again within each
+resample, using that resample's analysis set. Pass an unfitted workflow to
+avoid the unnecessary initial fit.
 }
 \section{Case Weights}{
 

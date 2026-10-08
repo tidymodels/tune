@@ -7,6 +7,10 @@
 #'
 #' @inheritParams last_fit
 #' @inheritParams tune_grid
+#' @param object A `parsnip` model specification or a
+#'   [workflow()][workflows::workflow]. No tuning parameters are allowed; if
+#'   arguments have been marked with [hardhat::tune()], their values must be
+#'   [finalized][finalize_model()].
 #'
 #' @param resamples An `rset` resampling object created from an `rsample`
 #' function, such as [rsample::vfold_cv()].
@@ -17,6 +21,11 @@
 #' @inheritSection tune_grid Performance Metrics
 #' @inheritSection tune_grid Obtaining Predictions
 #' @inheritSection tune_grid Extracting Information
+#' @details
+#' A fitted workflow can be supplied, but its existing fit is not used to
+#' calculate resampling results. The workflow is fitted again within each
+#' resample, using that resample's analysis set. Pass an unfitted workflow to
+#' avoid the unnecessary initial fit.
 #' @template case-weights
 #' @template censored-regression
 #' @seealso [control_resamples()], [collect_predictions()], [collect_metrics()]
