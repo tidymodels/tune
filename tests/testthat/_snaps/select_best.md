@@ -213,6 +213,11 @@
       Error in `select_by_pct_loss()`:
       ! Could not sort results by `weight_funk` and `desc(K)`.
 
+# select_by_pct_loss() handles ties for the best loss (#1195)
+
+    Code
+      res <- select_by_pct_loss(knn_results, metric = "accuracy", limit = 5, K)
+
 # show_best with survival models
 
     Code
