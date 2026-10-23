@@ -2,6 +2,8 @@
 
 * Tuning parameters contained in lists are more easily handled (#1190)
 
+* Ensure that `.Random.seed` exists prior to random numbers been used or the seed being set (#1211)
+
 
 ## Bug Fixes
 
