@@ -182,7 +182,12 @@ choose_framework <- function(
 #' @param workers The number of existing workers
 get_parallel_seeds <- function(workers) {
   # Get current rng info and save
-  orig_state <- .Random.seed
+  orig_state <- try(.Random.seed, silent = TRUE)
+  if (inherits(orig_state, "try-error")) {
+    # consume a random number without disrupting the stream
+    withr::with_seed(1, 1)
+    orig_state <- try(.Random.seed, silent = TRUE)
+  }
   orig_kind <- RNGkind()[1]
   # Reset the stream to get new rng's
   on.exit({

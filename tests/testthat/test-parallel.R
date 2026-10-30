@@ -317,3 +317,10 @@ test_that("generating parallel seeds does not affect the space-time continuum", 
   expect_equal(unif_1, unif_2)
   assign(".Random.seed", og_seed, envir = .GlobalEnv)
 })
+
+test_that("no .Random.seed", {
+  # see #1211
+  rm(.Random.seed)
+  tmp <- tune:::get_parallel_seeds(3)
+  expect_true(is.list(tmp))
+})
