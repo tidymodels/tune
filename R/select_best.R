@@ -202,7 +202,8 @@ select_by_pct_loss.tune_results <- function(
 
   # discard models more complex than the best and
   # remove models with greater increase in loss than the limit
-  best_index <- which(summary_res$.loss == 0)
+  # (use max() since multiple configurations can tie for the best loss)
+  best_index <- max(which(summary_res$.loss == 0))
   summary_res |>
     dplyr::slice(1:best_index) |>
     dplyr::filter(.loss < limit) |>
