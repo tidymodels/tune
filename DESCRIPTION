@@ -53,6 +53,7 @@ Suggests:
     mgcv,
     mirai (>= 2.4.0),
     modeldata,
+    mori,
     probably,
     scales,
     spelling,

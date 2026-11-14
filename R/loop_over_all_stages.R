@@ -26,6 +26,9 @@
   }
 
   split <- resamples$splits[[1]]
+  if (!is.null(static$mori_shared_name)) {
+    split$data <- mori::map_shared(static$mori_shared_name)
+  }
   split_labs <- resamples |>
     dplyr::select(dplyr::starts_with("id"))
   # Determine if we're using prediction-based or model-based metrics

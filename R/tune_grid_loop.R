@@ -108,6 +108,20 @@ tune_grid_loop <- function(
     inds <- vec_list_rowwise(inds)
   }
 
+  # Share the full training data via mori to avoid serializing it to every
+  # worker. Instead, workers receive lightweight split objects (indices + schema
+  # only) and map the shared memory region directly.
+  mori_ref <- NULL
+  if (strategy != "sequential" && rlang::is_installed("mori")) {
+    full_data <- resamples[[1]]$splits[[1]]$data
+    mori_ref <- mori::share(full_data)
+    static$mori_shared_name <- mori::shared_name(mori_ref)
+    resamples <- purrr::map(resamples, function(res_row) {
+      res_row$splits[[1]]$data <- full_data[0L, ]
+      res_row
+    })
+  }
+
   cl <- loop_call(control$parallel_over, strategy, par_opt)
   res <- rlang::eval_bare(cl)
 
