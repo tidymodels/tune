@@ -75,7 +75,7 @@ conf_mat_resampled <- function(x, ..., parameters = NULL, tidy = TRUE) {
     cli::cli_abort("Cannot determine the proper outcome name")
   }
 
-  id_cols <- grep("(^id$)|($id[1-9]$)", names(preds), value = TRUE)
+  id_cols <- grep("(^id$)|(^id[1-9]$)", names(preds), value = TRUE)
   preds <-
     preds |>
     dplyr::group_nest(!!!syms(id_cols)) |>
